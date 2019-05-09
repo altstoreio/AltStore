@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>name</key>
+		<string>Delta</string>
+		<key>subtitle</key>
+		<string>All-in-one Nintendo emulator</string>
+		<key>iconName</key>
+		<string>DeltaIcon</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>Clipboard Manager</string>
+		<key>subtitle</key>
+		<string>Simple but powerful clipboard manager</string>
+		<key>iconName</key>
+		<string>ClipboardIcon</string>
+	</dict>
+</array>
+</plist>

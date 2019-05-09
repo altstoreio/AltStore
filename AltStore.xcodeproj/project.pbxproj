@@ -8,13 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
-		BFD247702284B9A500981D42 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476F2284B9A500981D42 /* FirstViewController.swift */; };
+		BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476F2284B9A500981D42 /* AppsViewController.swift */; };
 		BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247712284B9A500981D42 /* SecondViewController.swift */; };
 		BFD247752284B9A500981D42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247732284B9A500981D42 /* Main.storyboard */; };
 		BFD247772284B9A700981D42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFD247762284B9A700981D42 /* Assets.xcassets */; };
 		BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247782284B9A700981D42 /* LaunchScreen.storyboard */; };
 		BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
 		BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
+		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
+		BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247922284D4B700981D42 /* AppTableViewCell.swift */; };
+		BFD247952284D7BD00981D42 /* Apps.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD247942284D7BD00981D42 /* Apps.plist */; };
+		BFD2479A2284D80900981D42 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247992284D80900981D42 /* App.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,13 +39,18 @@
 /* Begin PBXFileReference section */
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476D2284B9A500981D42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BFD2476F2284B9A500981D42 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		BFD2476F2284B9A500981D42 /* AppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsViewController.swift; sourceTree = "<group>"; };
 		BFD247712284B9A500981D42 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		BFD247742284B9A500981D42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BFD247762284B9A700981D42 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFD247792284B9A700981D42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFD2477B2284B9A700981D42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFD247862284BB3B00981D42 /* Roxas.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFD2478B2284C4C300981D42 /* AppIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageView.swift; sourceTree = "<group>"; };
+		BFD2478E2284C8F900981D42 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		BFD247922284D4B700981D42 /* AppTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
+		BFD247942284D7BD00981D42 /* Apps.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Apps.plist; sourceTree = "<group>"; };
+		BFD247992284D80900981D42 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,12 +86,13 @@
 			isa = PBXGroup;
 			children = (
 				BFD2476D2284B9A500981D42 /* AppDelegate.swift */,
-				BFD2476F2284B9A500981D42 /* FirstViewController.swift */,
-				BFD247712284B9A500981D42 /* SecondViewController.swift */,
 				BFD247732284B9A500981D42 /* Main.storyboard */,
-				BFD247762284B9A700981D42 /* Assets.xcassets */,
-				BFD247782284B9A700981D42 /* LaunchScreen.storyboard */,
-				BFD2477B2284B9A700981D42 /* Info.plist */,
+				BFD2478A2284C49000981D42 /* Apps */,
+				BFD247982284D7FC00981D42 /* Model */,
+				BFD2478D2284C4C700981D42 /* Components */,
+				BFD247712284B9A500981D42 /* SecondViewController.swift */,
+				BFD247962284D7C100981D42 /* Resources */,
+				BFD247972284D7D800981D42 /* Supporting Files */,
 			);
 			path = AltStore;
 			sourceTree = "<group>";
@@ -92,6 +103,50 @@
 				BFD247862284BB3B00981D42 /* Roxas.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BFD2478A2284C49000981D42 /* Apps */ = {
+			isa = PBXGroup;
+			children = (
+				BFD2476F2284B9A500981D42 /* AppsViewController.swift */,
+				BFD247922284D4B700981D42 /* AppTableViewCell.swift */,
+			);
+			path = Apps;
+			sourceTree = "<group>";
+		};
+		BFD2478D2284C4C700981D42 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				BFD2478B2284C4C300981D42 /* AppIconImageView.swift */,
+				BFD2478E2284C8F900981D42 /* Button.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		BFD247962284D7C100981D42 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BFD247762284B9A700981D42 /* Assets.xcassets */,
+				BFD247942284D7BD00981D42 /* Apps.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BFD247972284D7D800981D42 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BFD247782284B9A700981D42 /* LaunchScreen.storyboard */,
+				BFD2477B2284B9A700981D42 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BFD247982284D7FC00981D42 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BFD247992284D80900981D42 /* App.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD247952284D7BD00981D42 /* Apps.plist in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
@@ -166,9 +222,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */,
+				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
-				BFD247702284B9A500981D42 /* FirstViewController.swift in Sources */,
+				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
+				BFD2479A2284D80900981D42 /* App.swift in Sources */,
+				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
