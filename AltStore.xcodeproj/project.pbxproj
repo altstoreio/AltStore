@@ -13,7 +13,23 @@
 		BFD247752284B9A500981D42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247732284B9A500981D42 /* Main.storyboard */; };
 		BFD247772284B9A700981D42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFD247762284B9A700981D42 /* Assets.xcassets */; };
 		BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247782284B9A700981D42 /* LaunchScreen.storyboard */; };
+		BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
+		BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BFD247842284BB2C00981D42 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -24,6 +40,7 @@
 		BFD247762284B9A700981D42 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFD247792284B9A700981D42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFD2477B2284B9A700981D42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFD247862284BB3B00981D42 /* Roxas.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD2476C2284B9A500981D42 /* AltStore */,
+				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,6 +86,14 @@
 			path = AltStore;
 			sourceTree = "<group>";
 		};
+		BFD247852284BB3300981D42 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BFD247862284BB3B00981D42 /* Roxas.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,6 +104,7 @@
 				BFD247662284B9A500981D42 /* Sources */,
 				BFD247672284B9A500981D42 /* Frameworks */,
 				BFD247682284B9A500981D42 /* Resources */,
+				BFD247842284BB2C00981D42 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
