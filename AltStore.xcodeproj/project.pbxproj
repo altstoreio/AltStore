@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
+		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
 		BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476F2284B9A500981D42 /* AppsViewController.swift */; };
 		BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247712284B9A500981D42 /* SecondViewController.swift */; };
@@ -32,6 +34,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */,
+				BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -39,6 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476D2284B9A500981D42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFD2476F2284B9A500981D42 /* AppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsViewController.swift; sourceTree = "<group>"; };
@@ -63,6 +67,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */,
+				BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD247862284BB3B00981D42 /* Roxas.framework */,
+				BF5AB3A72285FE6C00DC914B /* AltSign.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

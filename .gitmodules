@@ -1,3 +1,6 @@
 [submodule "Dependencies/Roxas"]
 	path = Dependencies/Roxas
 	url = https://github.com/rileytestut/Roxas.git
+[submodule "Dependencies/AltSign"]
+	path = Dependencies/AltSign
+	url = https://github.com/rileytestut/AltSign.git

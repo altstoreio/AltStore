@@ -5,6 +5,9 @@
       location = "container:AltStore.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Dependencies/AltSign/AltSign.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Dependencies/Roxas/Roxas.xcodeproj">
    </FileRef>
 </Workspace>
