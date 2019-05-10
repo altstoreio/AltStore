@@ -22,6 +22,18 @@ class AppsViewController: UITableViewController
         // Hide trailing row separators.
         self.tableView.tableFooterView = UIView()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard segue.identifier == "showAppDetail" else { return }
+        
+        guard let cell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell) else { return }
+        
+        let app = self.dataSource.item(at: indexPath)
+        
+        let appDetailViewController = segue.destination as! AppDetailViewController
+        appDetailViewController.app = app
+    }
 }
 
 private extension AppsViewController

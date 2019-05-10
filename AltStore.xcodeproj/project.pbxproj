@@ -20,6 +20,7 @@
 		BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247922284D4B700981D42 /* AppTableViewCell.swift */; };
 		BFD247952284D7BD00981D42 /* Apps.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD247942284D7BD00981D42 /* Apps.plist */; };
 		BFD2479A2284D80900981D42 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247992284D80900981D42 /* App.swift */; };
+		BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +52,7 @@
 		BFD247922284D4B700981D42 /* AppTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
 		BFD247942284D7BD00981D42 /* Apps.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Apps.plist; sourceTree = "<group>"; };
 		BFD247992284D80900981D42 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 			children = (
 				BFD2476F2284B9A500981D42 /* AppsViewController.swift */,
 				BFD247922284D4B700981D42 /* AppTableViewCell.swift */,
+				BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */,
 			);
 			path = Apps;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
+				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
 				BFD2479A2284D80900981D42 /* App.swift in Sources */,

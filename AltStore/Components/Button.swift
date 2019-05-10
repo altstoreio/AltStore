@@ -13,6 +13,7 @@ class Button: UIButton
     override var intrinsicContentSize: CGSize {
         var size = super.intrinsicContentSize
         size.width += 20
+        size.height += 10
         return size
     }
     

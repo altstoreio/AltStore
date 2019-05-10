@@ -12,6 +12,10 @@ class App: NSObject, Codable
 {
     var name: String
     var subtitle: String
+    var developer: String
+    
+    var localizedDescription: String
     
     var iconName: String
+    var screenshotNames: [String]
 }
