@@ -118,7 +118,6 @@
                                                                 <constraint firstAttribute="height" constant="30" id="71g-sg-TqR"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                                            <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <state key="normal" title="Download"/>
                                                         </button>
                                                     </subviews>
@@ -393,4 +392,5 @@
     <inferredMetricsTieBreakers>
         <segue reference="F38-66-skN"/>
     </inferredMetricsTieBreakers>
+    <color key="tintColor" name="Purple"/>
 </document>

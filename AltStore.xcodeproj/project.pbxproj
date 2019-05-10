@@ -21,6 +21,7 @@
 		BFD247952284D7BD00981D42 /* Apps.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD247942284D7BD00981D42 /* Apps.plist */; };
 		BFD2479A2284D80900981D42 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247992284D80900981D42 /* App.swift */; };
 		BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */; };
+		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,7 @@
 		BFD247942284D7BD00981D42 /* Apps.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Apps.plist; sourceTree = "<group>"; };
 		BFD247992284D80900981D42 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailViewController.swift; sourceTree = "<group>"; };
+		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				BFD2478A2284C49000981D42 /* Apps */,
 				BFD247982284D7FC00981D42 /* Model */,
 				BFD2478D2284C4C700981D42 /* Components */,
+				BFD2479D2284FBBD00981D42 /* Extensions */,
 				BFD247712284B9A500981D42 /* SecondViewController.swift */,
 				BFD247962284D7C100981D42 /* Resources */,
 				BFD247972284D7D800981D42 /* Supporting Files */,
@@ -150,6 +153,14 @@
 				BFD247992284D80900981D42 /* App.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		BFD2479D2284FBBD00981D42 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,6 +244,7 @@
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
 				BFD2479A2284D80900981D42 /* App.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
+				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
