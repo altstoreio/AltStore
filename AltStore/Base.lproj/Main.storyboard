@@ -59,6 +59,12 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="hR3-go-2DG" kind="show" identifier="showAppDetail" id="VNt-zB-flO">
+                                        <segue key="commit" inheritsFrom="parent" id="8jj-zE-2hk"/>
+                                        <segue key="preview" inheritsFrom="commit" id="9iz-NY-nvu"/>
+                                    </segue>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

@@ -26,6 +26,19 @@ class MyAppsViewController: UITableViewController
         
         self.tableView.dataSource = self.dataSource
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard segue.identifier == "showAppDetail" else { return }
+        
+        guard let cell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell) else { return }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        guard let app = installedApp.app else { return }
+        
+        let appDetailViewController = segue.destination as! AppDetailViewController
+        appDetailViewController.app = app
+    }
 }
 
 private extension MyAppsViewController
