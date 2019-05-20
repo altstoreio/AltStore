@@ -41,12 +41,25 @@ class Button: UIButton
             self.update()
         }
     }
+    
+    override var isEnabled: Bool {
+        didSet {
+            self.update()
+        }
+    }
 }
 
 private extension Button
 {
     func update()
     {
-        self.backgroundColor = self.tintColor
+        if self.isEnabled
+        {
+            self.backgroundColor = self.tintColor
+        }
+        else
+        {
+            self.backgroundColor = .lightGray
+        }
     }
 }

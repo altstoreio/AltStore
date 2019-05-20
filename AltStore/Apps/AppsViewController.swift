@@ -59,6 +59,15 @@ private extension AppsViewController
             cell.developerLabel.text = app.developerName
             cell.appIconImageView.image = UIImage(named: app.iconName)
             
+            if app.installedApp != nil
+            {
+                cell.button.isEnabled = false
+                cell.button.setTitle(NSLocalizedString("Installed", comment: ""), for: .normal)
+            }
+            else
+            {
+                cell.button.isEnabled = true
+                cell.button.setTitle(NSLocalizedString("Download", comment: ""), for: .normal)
             }
         }
         

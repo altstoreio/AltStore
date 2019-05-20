@@ -48,6 +48,8 @@ class AppDetailViewController: UITableViewController
         self.tableView.delegate = self
         self.screenshotsCollectionView.dataSource = self.screenshotsDataSource
         
+        self.downloadButton.activityIndicatorView.style = .white
+        
         self.update()
     }
     
@@ -92,6 +94,39 @@ private extension AppDetailViewController
         }
         
         return dataSource
+    }
+}
+
+private extension AppDetailViewController
+{
+    @IBAction func downloadApp(_ sender: UIButton)
+    {
+        guard self.app.installedApp == nil else { return }
+        
+        sender.isIndicatingActivity = true
+        
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            let app = context.object(with: self.app.objectID) as! App
+            
+            _ = InstalledApp(app: app,
+                             bundleIdentifier: app.identifier,
+                             signedDate: Date(),
+                             expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
+                             context: context)
+            
+            do
+            {
+                try context.save()
+            }
+            catch
+            {
+                print("Failed to download app.", error)
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                sender.isIndicatingActivity = false
+            }
+        }
     }
 }
 

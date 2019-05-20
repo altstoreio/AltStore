@@ -22,6 +22,9 @@ class App: NSManagedObject, Decodable
     @NSManaged private(set) var iconName: String
     @NSManaged private(set) var screenshotNames: [String]
     
+    /* Relationships */
+    @NSManaged private(set) var installedApp: InstalledApp?
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
