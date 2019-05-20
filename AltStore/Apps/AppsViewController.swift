@@ -13,6 +13,12 @@ class AppsViewController: UITableViewController
 {
     private lazy var dataSource = self.makeDataSource()
     
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter
+    }()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -84,6 +90,7 @@ private extension AppsViewController
                 let data = try Data(contentsOf: appsFileURL)
                 
                 let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .formatted(self.dateFormatter)
                 decoder.managedObjectContext = context
                 
                 _ = try decoder.decode([App].self, from: data)

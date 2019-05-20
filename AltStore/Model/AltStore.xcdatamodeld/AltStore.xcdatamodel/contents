@@ -7,6 +7,9 @@
         <attribute name="localizedDescription" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="screenshotNames" attributeType="Transformable" syncable="YES"/>
+        <attribute name="version" attributeType="String" syncable="YES"/>
+        <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="versionDescription" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="app" inverseEntity="InstalledApp" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -19,10 +22,11 @@
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="signedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="version" attributeType="String" syncable="YES"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
     </entity>
     <elements>
-        <element name="App" positionX="-63" positionY="-18" width="128" height="150"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
+        <element name="App" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="135"/>
     </elements>
 </model>

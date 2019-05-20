@@ -22,6 +22,10 @@ class App: NSManagedObject, Decodable
     @NSManaged private(set) var iconName: String
     @NSManaged private(set) var screenshotNames: [String]
     
+    @NSManaged private(set) var version: String
+    @NSManaged private(set) var versionDate: Date
+    @NSManaged private(set) var versionDescription: String?
+    
     /* Relationships */
     @NSManaged private(set) var installedApp: InstalledApp?
     
@@ -36,6 +40,9 @@ class App: NSManagedObject, Decodable
         case identifier
         case developerName
         case localizedDescription
+        case version
+        case versionDescription
+        case versionDate
         case iconName
         case screenshotNames
     }
@@ -52,14 +59,16 @@ class App: NSManagedObject, Decodable
         self.developerName = try container.decode(String.self, forKey: .developerName)
         self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
         
+        self.version = try container.decode(String.self, forKey: .version)
+        self.versionDate = try container.decode(Date.self, forKey: .versionDate)
+        self.versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
+        
         self.iconName = try container.decode(String.self, forKey: .iconName)
         self.screenshotNames = try container.decodeIfPresent([String].self, forKey: .screenshotNames) ?? []
         
         context.insert(self)
     }
 }
-
-
 
 extension App
 {

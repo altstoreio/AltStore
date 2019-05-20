@@ -14,6 +14,7 @@ class InstalledApp: NSManagedObject
 {
     /* Properties */
     @NSManaged var bundleIdentifier: String
+    @NSManaged var version: String
     
     @NSManaged var signedDate: Date
     @NSManaged var expirationDate: Date
@@ -34,6 +35,7 @@ class InstalledApp: NSManagedObject
         
         let app = context.object(with: app.objectID) as! App
         self.app = app
+        self.version = "0.9"
         
         self.bundleIdentifier = bundleIdentifier
         self.signedDate = signedDate

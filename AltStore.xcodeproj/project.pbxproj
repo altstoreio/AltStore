@@ -12,6 +12,7 @@
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
 		BFB1169D22932DB100BB457C /* Apps.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps.json */; };
+		BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169F22933DEB00BB457C /* UpdatesViewController.swift */; };
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
 		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
 		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
@@ -50,6 +51,7 @@
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* Apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Apps.json; sourceTree = "<group>"; };
+		BFB1169F22933DEB00BB457C /* UpdatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesViewController.swift; sourceTree = "<group>"; };
 		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
 		BFBBE2DE22931F73002097FA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BFBBE2E022931F81002097FA /* InstalledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledApp.swift; sourceTree = "<group>"; };
@@ -82,6 +84,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BFB1169E22933DDC00BB457C /* Updates */ = {
+			isa = PBXGroup;
+			children = (
+				BFB1169F22933DEB00BB457C /* UpdatesViewController.swift */,
+			);
+			path = Updates;
+			sourceTree = "<group>";
+		};
 		BFBBE2E2229320A2002097FA /* My Apps */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +124,7 @@
 				BFD247732284B9A500981D42 /* Main.storyboard */,
 				BFD2478A2284C49000981D42 /* Apps */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
+				BFB1169E22933DDC00BB457C /* Updates */,
 				BFD247982284D7FC00981D42 /* Model */,
 				BFD2478D2284C4C700981D42 /* Components */,
 				BFD2479D2284FBBD00981D42 /* Extensions */,
@@ -271,6 +282,7 @@
 				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
+				BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,

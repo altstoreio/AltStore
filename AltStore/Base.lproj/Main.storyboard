@@ -21,6 +21,7 @@
                     <connections>
                         <segue destination="XF0-gk-CxQ" kind="relationship" relationship="viewControllers" id="uf8-vX-M3B"/>
                         <segue destination="v8c-d9-T9x" kind="relationship" relationship="viewControllers" id="fqx-5p-YCD"/>
+                        <segue destination="gJ2-NJ-8DO" kind="relationship" relationship="viewControllers" id="J4s-tm-3YV"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -371,7 +372,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BLa-Qn-j83" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2308" y="-319.79010494752629"/>
+            <point key="canvasLocation" x="2626" y="420"/>
         </scene>
         <!--Apps-->
         <scene sceneID="YAm-Ca-4vd">
@@ -411,6 +412,76 @@
             </objects>
             <point key="canvasLocation" x="749.60000000000002" y="420.53973013493254"/>
         </scene>
+        <!--Updates-->
+        <scene sceneID="TJO-Cq-tOL">
+            <objects>
+                <tableViewController id="u4s-6L-zyx" customClass="UpdatesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="vfp-b5-W5p">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="ewc-hz-Cyc" detailTextLabel="CXo-DZ-vv6" style="IBUITableViewCellStyleSubtitle" id="IXp-LN-P7W">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IXp-LN-P7W" id="sO0-Yc-Rhv">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ewc-hz-Cyc">
+                                            <rect key="frame" x="16" y="5" width="33.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CXo-DZ-vv6">
+                                            <rect key="frame" x="16" y="25.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="hR3-go-2DG" kind="show" identifier="showAppDetail" id="miz-8X-gFg">
+                                        <segue key="commit" inheritsFrom="parent" id="fQ8-cb-1An"/>
+                                        <segue key="preview" inheritsFrom="commit" id="wBX-0o-Ywz"/>
+                                    </segue>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="u4s-6L-zyx" id="eML-9F-BXh"/>
+                            <outlet property="delegate" destination="u4s-6L-zyx" id="3AF-E2-2B6"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Updates" id="hvX-Ly-Y2C"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H7V-ct-fO1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1518" y="1124"/>
+        </scene>
+        <!--My Apps-->
+        <scene sceneID="H4l-3g-QrV">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gJ2-NJ-8DO" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="My Apps" image="second" id="n2m-w3-Ltw"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="mb8-TA-qKp">
+                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="u4s-6L-zyx" kind="relationship" relationship="rootViewController" id="HlY-Wa-In2"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dR5-RY-R8S" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="750" y="1124"/>
+        </scene>
     </scenes>
     <resources>
         <image name="DeltaIcon" width="512" height="512"/>
@@ -418,7 +489,7 @@
         <image name="second" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="F38-66-skN"/>
+        <segue reference="miz-8X-gFg"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Purple"/>
 </document>
