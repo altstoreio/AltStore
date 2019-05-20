@@ -13,9 +13,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
+    {
+        DatabaseManager.shared.start { (error) in
+            if let error = error
+            {
+                print("Failed to start DatabaseManager.", error)
+            }
+            else
+            {
+                print("Started DatabaseManager")
+            }
+        }
+        
         return true
     }
 

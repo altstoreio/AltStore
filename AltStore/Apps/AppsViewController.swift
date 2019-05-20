@@ -23,6 +23,13 @@ class AppsViewController: UITableViewController
         self.tableView.tableFooterView = UIView()
     }
     
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        self.fetchApps()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         guard segue.identifier == "showAppDetail" else { return }
@@ -38,27 +45,45 @@ class AppsViewController: UITableViewController
 
 private extension AppsViewController
 {
-    func makeDataSource() -> RSTArrayTableViewDataSource<App>
+    func makeDataSource() -> RSTFetchedResultsTableViewDataSource<App>
     {
-        let appsFileURL = Bundle.main.url(forResource: "Apps", withExtension: "plist")!
+        let fetchRequest = App.fetchRequest() as NSFetchRequest<App>
+        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.name, ascending: true)]
+        fetchRequest.returnsObjectsAsFaults = false
         
-        do
-        {
-            let data = try Data(contentsOf: appsFileURL)
-            let apps = try PropertyListDecoder().decode([App].self, from: data)
+        let dataSource = RSTFetchedResultsTableViewDataSource(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
+            let cell = cell as! AppTableViewCell
+            cell.nameLabel.text = app.name
+            cell.developerLabel.text = app.developerName
+            cell.appIconImageView.image = UIImage(named: app.iconName)
             
-            let dataSource = RSTArrayTableViewDataSource(items: apps)
-            dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
-                let cell = cell as! AppTableViewCell
-                cell.nameLabel.text = app.name
-                cell.subtitleLabel.text = app.subtitle
-                cell.appIconImageView.image = UIImage(named: app.iconName)
             }
-            return dataSource
         }
-        catch
-        {
-            fatalError("Failed to load apps. \(error)")
+        
+        return dataSource
+    }
+    
+    func fetchApps()
+    {
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            let appsFileURL = Bundle.main.url(forResource: "Apps", withExtension: "json")!
+            
+            do
+            {
+                let data = try Data(contentsOf: appsFileURL)
+                
+                let decoder = JSONDecoder()
+                decoder.managedObjectContext = context
+                
+                _ = try decoder.decode([App].self, from: data)
+                try context.save()
+            }
+            catch
+            {
+                fatalError("Failed to save fetched apps. \(error)")
+            }
         }
     }
 }

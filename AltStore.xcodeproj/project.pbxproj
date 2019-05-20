@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
+		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
+		BFB1169D22932DB100BB457C /* Apps.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps.json */; };
+		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
+		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
 		BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476F2284B9A500981D42 /* AppsViewController.swift */; };
 		BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247712284B9A500981D42 /* SecondViewController.swift */; };
@@ -20,8 +25,6 @@
 		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
 		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
 		BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247922284D4B700981D42 /* AppTableViewCell.swift */; };
-		BFD247952284D7BD00981D42 /* Apps.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD247942284D7BD00981D42 /* Apps.plist */; };
-		BFD2479A2284D80900981D42 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247992284D80900981D42 /* App.swift */; };
 		BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */; };
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 /* End PBXBuildFile section */
@@ -43,6 +46,11 @@
 
 /* Begin PBXFileReference section */
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
+		BFB1169C22932DB100BB457C /* Apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Apps.json; sourceTree = "<group>"; };
+		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
+		BFBBE2DE22931F73002097FA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476D2284B9A500981D42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFD2476F2284B9A500981D42 /* AppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsViewController.swift; sourceTree = "<group>"; };
@@ -55,8 +63,6 @@
 		BFD2478B2284C4C300981D42 /* AppIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageView.swift; sourceTree = "<group>"; };
 		BFD2478E2284C8F900981D42 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BFD247922284D4B700981D42 /* AppTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
-		BFD247942284D7BD00981D42 /* Apps.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Apps.plist; sourceTree = "<group>"; };
-		BFD247992284D80900981D42 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailViewController.swift; sourceTree = "<group>"; };
 		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -139,7 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
-				BFD247942284D7BD00981D42 /* Apps.plist */,
+				BFB1169C22932DB100BB457C /* Apps.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -156,7 +162,9 @@
 		BFD247982284D7FC00981D42 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				BFD247992284D80900981D42 /* App.swift */,
+				BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */,
+				BFB11691229322E400BB457C /* DatabaseManager.swift */,
+				BFBBE2DE22931F73002097FA /* App.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -165,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */,
+				BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -228,7 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFD247952284D7BD00981D42 /* Apps.plist in Resources */,
+				BFB1169D22932DB100BB457C /* Apps.json in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
@@ -244,11 +253,14 @@
 			files = (
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD247722284B9A500981D42 /* SecondViewController.swift in Sources */,
+				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
+				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
-				BFD2479A2284D80900981D42 /* App.swift in Sources */,
+				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
+				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 			);
@@ -450,6 +462,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */,
+			);
+			currentVersion = BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */;
+			path = AltStore.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BFD247622284B9A500981D42 /* Project object */;
 }

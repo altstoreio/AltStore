@@ -143,8 +143,8 @@
                                 <connections>
                                     <outlet property="appIconImageView" destination="gsm-sN-j56" id="1ip-RW-xBe"/>
                                     <outlet property="button" destination="ScM-Z2-rAe" id="VnW-vG-JCc"/>
+                                    <outlet property="developerLabel" destination="xnf-XX-iX9" id="CYk-ud-YHz"/>
                                     <outlet property="nameLabel" destination="d4v-IK-LuC" id="wFw-Js-PXE"/>
-                                    <outlet property="subtitleLabel" destination="xnf-XX-iX9" id="CYk-ud-YHz"/>
                                     <segue destination="hR3-go-2DG" kind="show" identifier="showAppDetail" id="F38-66-skN">
                                         <segue key="commit" inheritsFrom="parent" id="K6B-kg-jJz"/>
                                         <segue key="preview" inheritsFrom="commit" id="sJk-KX-3sw"/>
@@ -196,7 +196,7 @@
                                                                     </constraints>
                                                                 </imageView>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="F4R-0I-ucL">
-                                                                    <rect key="frame" x="125" y="0.0" width="218" height="68"/>
+                                                                    <rect key="frame" x="125" y="0.0" width="218" height="46"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O5s-oz-KYW">
                                                                             <rect key="frame" x="0.0" y="0.0" width="55" height="24"/>
@@ -204,14 +204,8 @@
                                                                             <nil key="textColor"/>
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ozE-C3-F1B">
-                                                                            <rect key="frame" x="0.0" y="28" width="53" height="18"/>
-                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMJ-KT-YRw">
-                                                                            <rect key="frame" x="0.0" y="50" width="70" height="18"/>
+                                                                            <rect key="frame" x="0.0" y="28" width="70" height="18"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="18" id="2hT-PA-EjP"/>
                                                                             </constraints>
@@ -272,7 +266,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OCS-uW-Big">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="138" height="300"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="138" height="253"/>
                                                                             </imageView>
                                                                         </subviews>
                                                                     </view>
@@ -357,7 +351,6 @@
                         <outlet property="downloadButton" destination="i1B-Mu-s1h" id="xbF-fk-xF8"/>
                         <outlet property="nameLabel" destination="O5s-oz-KYW" id="seg-JJ-VfB"/>
                         <outlet property="screenshotsCollectionView" destination="UJY-8X-bkB" id="6CI-Jg-yt6"/>
-                        <outlet property="subtitleLabel" destination="ozE-C3-F1B" id="daJ-dx-5se"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BLa-Qn-j83" userLabel="First Responder" sceneMemberID="firstResponder"/>

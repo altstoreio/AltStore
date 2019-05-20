@@ -32,7 +32,6 @@ class AppDetailViewController: UITableViewController
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
     
     @IBOutlet private var nameLabel: UILabel!
-    @IBOutlet private var subtitleLabel: UILabel!
     @IBOutlet private var developerButton: UIButton!
     @IBOutlet private var appIconImageView: UIImageView!
     
@@ -73,8 +72,7 @@ private extension AppDetailViewController
     func update()
     {
         self.nameLabel.text = self.app.name
-        self.subtitleLabel.text = self.app.subtitle
-        self.developerButton.setTitle(self.app.developer, for: .normal)
+        self.developerButton.setTitle(self.app.developerName, for: .normal)
         self.appIconImageView.image = UIImage(named: self.app.iconName)
         
         let text = String(format: NSLocalizedString("Download %@", comment: ""), self.app.name)

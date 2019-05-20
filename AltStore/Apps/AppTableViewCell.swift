@@ -11,7 +11,7 @@ import UIKit
 @objc class AppTableViewCell: UITableViewCell
 {
     @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var subtitleLabel: UILabel!
+    @IBOutlet var developerLabel: UILabel!
     @IBOutlet var appIconImageView: UIImageView!
     @IBOutlet var button: UIButton!
     
