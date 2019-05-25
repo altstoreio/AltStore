@@ -4,3 +4,9 @@
 [submodule "Dependencies/AltSign"]
 	path = Dependencies/AltSign
 	url = https://github.com/rileytestut/AltSign.git
+[submodule "Dependencies/libimobiledevice"]
+	path = Dependencies/libimobiledevice
+	url = https://github.com/libimobiledevice/libimobiledevice.git
+[submodule "Dependencies/libusbmuxd"]
+	path = Dependencies/libusbmuxd
+	url = https://github.com/libimobiledevice/libusbmuxd.git
