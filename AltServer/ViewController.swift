@@ -10,18 +10,17 @@ import Cocoa
 
 class ViewController: NSViewController {
 
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
-
 }
 
+private extension ViewController
+{
+    @IBAction func listConnectedDevices(_ sender: NSButton)
+    {
+        let devices = ALTDeviceManager.shared.connectedDevices
+        print(devices)
+    }
+}
