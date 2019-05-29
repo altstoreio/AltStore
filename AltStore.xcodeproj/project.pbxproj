@@ -110,6 +110,8 @@
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF9B63C6229DD44E002F0A62 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
+		BF9B63F6229DE476002F0A62 /* App.ipa in Resources */ = {isa = PBXBuildFile; fileRef = BF9B63F5229DE476002F0A62 /* App.ipa */; };
+		BF9B6426229E1331002F0A62 /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9B6425229E1331002F0A62 /* Result+Conveniences.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
 		BFB1169D22932DB100BB457C /* Apps.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps.json */; };
@@ -275,6 +277,8 @@
 		BF4588962298DE6E00BD7491 /* libzip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = libzip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF9B63F5229DE476002F0A62 /* App.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = App.ipa; sourceTree = "<group>"; };
+		BF9B6425229E1331002F0A62 /* Result+Conveniences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Conveniences.swift"; sourceTree = "<group>"; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* Apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Apps.json; sourceTree = "<group>"; };
@@ -334,14 +338,12 @@
 			isa = PBXGroup;
 			children = (
 				BF45868F229872EA00BD7491 /* AppDelegate.swift */,
-				BF458691229872EA00BD7491 /* ViewController.swift */,
-				BF4586C32298CDB800BD7491 /* ALTDeviceManager.h */,
-				BF4586C42298CDB800BD7491 /* ALTDeviceManager.mm */,
-				BF458693229872EA00BD7491 /* Assets.xcassets */,
 				BF458695229872EA00BD7491 /* Main.storyboard */,
-				BF458698229872EA00BD7491 /* Info.plist */,
-				BF458699229872EA00BD7491 /* AltServer.entitlements */,
-				BF4586C22298CDB800BD7491 /* AltServer-Bridging-Header.h */,
+				BF458691229872EA00BD7491 /* ViewController.swift */,
+				BF703195229F36FF006E110F /* Devices */,
+				BF703193229F36E5006E110F /* Extensions */,
+				BF703194229F36F6006E110F /* Resources */,
+				BF703196229F370F006E110F /* Supporting Files */,
 			);
 			path = AltServer;
 			sourceTree = "<group>";
@@ -482,6 +484,42 @@
 				BF45888F2298DE0C00BD7491 /* node.c */,
 			);
 			name = libcnary;
+			sourceTree = "<group>";
+		};
+		BF703193229F36E5006E110F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B6425229E1331002F0A62 /* Result+Conveniences.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BF703194229F36F6006E110F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BF458693229872EA00BD7491 /* Assets.xcassets */,
+				BF9B63F5229DE476002F0A62 /* App.ipa */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		BF703195229F36FF006E110F /* Devices */ = {
+			isa = PBXGroup;
+			children = (
+				BF4586C32298CDB800BD7491 /* ALTDeviceManager.h */,
+				BF4586C42298CDB800BD7491 /* ALTDeviceManager.mm */,
+			);
+			path = Devices;
+			sourceTree = "<group>";
+		};
+		BF703196229F370F006E110F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BF458698229872EA00BD7491 /* Info.plist */,
+				BF458699229872EA00BD7491 /* AltServer.entitlements */,
+				BF4586C22298CDB800BD7491 /* AltServer-Bridging-Header.h */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		BFB1169E22933DDC00BB457C /* Updates */ = {
@@ -762,6 +800,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF9B63F6229DE476002F0A62 /* App.ipa in Resources */,
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
 			);
@@ -787,6 +826,7 @@
 			files = (
 				BF458692229872EA00BD7491 /* ViewController.swift in Sources */,
 				BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */,
+				BF9B6426229E1331002F0A62 /* Result+Conveniences.swift in Sources */,
 				BF4586C52298CDB800BD7491 /* ALTDeviceManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
