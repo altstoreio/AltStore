@@ -57,7 +57,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
     
     NSUUID *UUID = [NSUUID UUID];
-    char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
+    __block char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
     strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
     uuidString[UUID.UUIDString.length] = '\0';
     
@@ -77,6 +77,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         lockdownd_service_descriptor_free(service);
         
         free(uuidString);
+        uuidString = NULL;
         
         if (error != nil)
         {
@@ -149,7 +150,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     
     np_set_notify_callback(np, ALTDeviceManagerDidFinishAppInstallation, uuidString);
     
-    const char *notifications[3] = { NP_APP_INSTALLED, NP_APP_UNINSTALLED, NULL };
+    const char *notifications[2] = { NP_APP_INSTALLED, NULL };
     np_observe_notifications(np, notifications);
     
     if (service)
@@ -426,9 +427,9 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 #pragma mark - Callbacks -
 
-void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *udid)
+void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *uuid)
 {
-    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)udid]];
+    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)uuid]];
     
     void (^completionHandler)(void) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
     if (completionHandler != nil)
@@ -439,9 +440,9 @@ void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *ud
     }
 }
 
-void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid)
+void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
 {
-    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)udid]];
+    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)uuid]];
     
     NSProgress *progress = ALTDeviceManager.sharedManager.installationProgress[UUID];
     if (progress == nil)
@@ -455,7 +456,7 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid)
     if (progress.completedUnitCount < percent)
     {
         progress.completedUnitCount = percent;
+        
+        NSLog(@"Installation Progress: %@", @(percent));
     }
-    
-    NSLog(@"Installation Progress: %@", @(percent));
 }
