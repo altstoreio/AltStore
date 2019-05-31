@@ -8,6 +8,9 @@
 
 import UIKit
 
+import AltSign
+import Roxas
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        ServerManager.shared.startDiscovering()
+        
         DatabaseManager.shared.start { (error) in
             if let error = error
             {
@@ -25,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Started DatabaseManager")
             }
         }
-        
+                
         return true
     }
 
@@ -34,13 +39,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    func applicationDidEnterBackground(_ application: UIApplication)
+    {
+        ServerManager.shared.stopDiscovering()
     }
 
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+    func applicationWillEnterForeground(_ application: UIApplication)
+    {
+        ServerManager.shared.startDiscovering()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -50,7 +56,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
-

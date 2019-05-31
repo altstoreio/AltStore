@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Result
+public extension Result
 {
     init(_ value: Success?, _ error: Failure?)
     {
@@ -21,7 +21,7 @@ extension Result
     }
 }
 
-extension Result where Success == Void
+public extension Result where Success == Void
 {
     init(_ success: Bool, _ error: Failure?)
     {

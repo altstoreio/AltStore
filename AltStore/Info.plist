@@ -51,5 +51,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>ALTDeviceID</key>
+	<string>1c3416b7b0ab68773e6e7eb7f0d110f7c9353acc</string>
 </dict>
 </plist>

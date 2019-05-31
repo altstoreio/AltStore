@@ -39,6 +39,20 @@ class ViewController: NSViewController
     {
         super.viewDidLoad()
         
+        ConnectionManager.shared.stateUpdateHandler = { (state) in
+            DispatchQueue.main.async {
+                switch state
+                {
+                case .notRunning: self.view.window?.title = ""
+                case .connecting: self.view.window?.title = "Connecting..."
+                case .running(let service): self.view.window?.title = service.name ?? ""
+                case .failed(let error): self.view.window?.title = error.localizedDescription
+                }
+            }
+        }
+        
+        ConnectionManager.shared.start()
+        
         self.update()
     }
     
@@ -336,7 +350,7 @@ private extension ViewController
             let infoPlistURL = appBundleURL.appendingPathComponent("Info.plist")
             
             guard var infoDictionary = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
-            infoDictionary["altstore"] = ["udid": device.identifier]
+            infoDictionary[Bundle.Info.deviceID] = device.identifier
             try (infoDictionary as NSDictionary).write(to: infoPlistURL)
             
             let zippedURL = try FileManager.default.zipAppBundle(at: appBundleURL)
@@ -346,7 +360,7 @@ private extension ViewController
                 do
                 {
                     let resignedURL = try Result(resignedURL, error).get()
-                    ALTDeviceManager.shared.installApp(at: resignedURL, to: device) { (success, error) in
+                    ALTDeviceManager.shared.installApp(at: resignedURL, toDeviceWithUDID: device.identifier) { (success, error) in
                         let result = Result(success, error)
                         print(result)
                     }

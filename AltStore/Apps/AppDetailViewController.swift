@@ -53,6 +53,13 @@ class AppDetailViewController: UITableViewController
         self.update()
     }
     
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        self.update()
+    }
+    
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
@@ -77,10 +84,19 @@ private extension AppDetailViewController
         self.developerButton.setTitle(self.app.developerName, for: .normal)
         self.appIconImageView.image = UIImage(named: self.app.iconName)
         
-        let text = String(format: NSLocalizedString("Download %@", comment: ""), self.app.name)
-        self.downloadButton.setTitle(text, for: .normal)
-        
         self.descriptionLabel.text = self.app.localizedDescription
+        
+        if self.app.installedApp == nil
+        {
+            let text = String(format: NSLocalizedString("Download %@", comment: ""), self.app.name)
+            self.downloadButton.setTitle(text, for: .normal)
+            self.downloadButton.isEnabled = true
+        }
+        else
+        {
+            self.downloadButton.setTitle(NSLocalizedString("Installed", comment: ""), for: .normal)
+            self.downloadButton.isEnabled = false
+        }
     }
     
     func makeScreenshotsDataSource() -> RSTArrayCollectionViewDataSource<UIImage>
@@ -103,29 +119,68 @@ private extension AppDetailViewController
     {
         guard self.app.installedApp == nil else { return }
         
-        sender.isIndicatingActivity = true
+        let appURL = Bundle.main.url(forResource: "App", withExtension: "ipa")!
         
-        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let app = context.object(with: self.app.objectID) as! App
+        do
+        {
+            try FileManager.default.copyItem(at: appURL, to: self.app.ipaURL, shouldReplace: true)
+        }
+        catch
+        {
+            print("Failed to copy .ipa", error)
+        }
+        
+        if let server = ServerManager.shared.discoveredServers.first
+        {
+            sender.isIndicatingActivity = true
             
-            _ = InstalledApp(app: app,
-                             bundleIdentifier: app.identifier,
-                             signedDate: Date(),
-                             expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
-                             context: context)
-            
-            do
-            {
-                try context.save()
+            server.install(self.app) { (result) in
+                DispatchQueue.main.async {
+                    switch result
+                    {
+                    case .success:
+                        let toastView = RSTToastView(text: "Installed \(self.app.name)!", detailText: nil)
+                        toastView.tintColor = .altPurple
+                        toastView.show(in: self.navigationController!.view, duration: 2)
+                        
+                        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                            let app = context.object(with: self.app.objectID) as! App
+                            
+                            _ = InstalledApp(app: app,
+                                             bundleIdentifier: app.identifier,
+                                             signedDate: Date(),
+                                             expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
+                                             context: context)
+                            
+                            do
+                            {
+                                try context.save()
+                            }
+                            catch
+                            {
+                                print("Failed to save context for downloaded app app.", error)
+                            }
+                            
+                            DispatchQueue.main.async {
+                                self.update()
+                            }
+                        }
+                        
+                    case .failure(let error):
+                        let toastView = RSTToastView(text: "Failed to install \(self.app.name)", detailText: error.localizedDescription)
+                        toastView.tintColor = .altPurple
+                        toastView.show(in: self.navigationController!.view, duration: 2)
+                    }
+                    
+                    sender.isIndicatingActivity = false
+                }
             }
-            catch
-            {
-                print("Failed to download app.", error)
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                sender.isIndicatingActivity = false
-            }
+        }
+        else
+        {
+            let toastView = RSTToastView(text: "Could not find AltServer", detailText: nil)
+            toastView.tintColor = .altPurple
+            toastView.show(in: self.navigationController!.view, duration: 2)
         }
     }
 }

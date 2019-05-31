@@ -9,6 +9,8 @@
 import Foundation
 import CoreData
 
+import Roxas
+
 @objc(App)
 class App: NSManagedObject, Decodable
 {
@@ -75,5 +77,31 @@ extension App
     @nonobjc class func fetchRequest() -> NSFetchRequest<App>
     {
         return NSFetchRequest<App>(entityName: "App")
+    }
+}
+
+extension App
+{
+    class var appsDirectoryURL: URL {
+        let appsDirectoryURL = FileManager.default.applicationSupportDirectory.appendingPathComponent("Apps")
+        
+        do { try FileManager.default.createDirectory(at: appsDirectoryURL, withIntermediateDirectories: true, attributes: nil) }
+        catch { print(error) }
+        
+        return appsDirectoryURL
+    }
+    
+    var directoryURL: URL {
+        let directoryURL = App.appsDirectoryURL.appendingPathComponent(self.identifier)
+        
+        do { try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil) }
+        catch { print(error) }
+        
+        return directoryURL
+    }
+    
+    var ipaURL: URL {
+        let ipaURL = self.directoryURL.appendingPathComponent("App.ipa")
+        return ipaURL
     }
 }

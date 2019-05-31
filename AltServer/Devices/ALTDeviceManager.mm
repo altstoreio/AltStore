@@ -7,6 +7,7 @@
 //
 
 #import "ALTDeviceManager.h"
+#import "NSError+ALTServerError.h"
 
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
@@ -51,7 +52,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     return self;
 }
 
-- (NSProgress *)installAppAtURL:(NSURL *)fileURL toDevice:(ALTDevice *)altDevice completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+- (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
 {
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
     
@@ -119,29 +120,29 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     }
     
     /* Find Device */
-    if (idevice_new(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorNotConnected userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         return progress;
     }
     
     /* Connect to Device */
     if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
     /* Connect to Notification Proxy */
     if ((lockdownd_start_service(client, "com.apple.mobile.notification_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
     if (np_client_new(device, service, &np) != NP_E_SUCCESS)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
@@ -159,13 +160,13 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     /* Connect to Installation Proxy */
     if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
     if (instproxy_client_new(device, service, &ipc) != INSTPROXY_E_SUCCESS)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
@@ -181,7 +182,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     /* Connect to AFC service */
     if ((lockdownd_start_service(client, "com.apple.afc", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
@@ -190,7 +191,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     
     if (afc_client_new(device, service, &afc) != AFC_E_SUCCESS)
     {
-        finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorConnectionFailed userInfo:nil]);
+        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         return progress;
     }
     
@@ -202,7 +203,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     {
         if (afc_make_directory(afc, stagingURL.relativePath.fileSystemRepresentation) != AFC_E_SUCCESS)
         {
-            finish([NSError errorWithDomain:ALTDeviceErrorDomain code:ALTDeviceErrorWriteFailed userInfo:nil]);
+            finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceWriteFailed userInfo:nil]);
             return progress;
         }
     }
@@ -454,4 +455,6 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid)
     {
         progress.completedUnitCount = percent;
     }
+    
+    NSLog(@"Installation Progress: %@", @(percent));
 }
