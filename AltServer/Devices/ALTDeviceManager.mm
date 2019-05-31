@@ -59,6 +59,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     NSUUID *UUID = [NSUUID UUID];
     char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
     strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
+    uuidString[UUID.UUIDString.length] = '\0';
     
     idevice_t device = NULL;
     lockdownd_client_t client = NULL;
