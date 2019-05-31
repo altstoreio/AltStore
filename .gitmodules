@@ -10,3 +10,6 @@
 [submodule "Dependencies/libusbmuxd"]
 	path = Dependencies/libusbmuxd
 	url = https://github.com/libimobiledevice/libusbmuxd.git
+[submodule "Dependencies/libplist"]
+	path = Dependencies/libplist
+	url = https://github.com/libimobiledevice/libplist.git

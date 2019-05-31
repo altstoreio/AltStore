@@ -83,37 +83,7 @@
 		BF45884A2298D55000BD7491 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588482298D55000BD7491 /* thread.c */; };
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588552298DC5400BD7491 /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588542298DC5400BD7491 /* openssl.framework */; };
-		BF45886F2298DCDE00BD7491 /* Uid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588572298DCDC00BD7491 /* Uid.cpp */; };
-		BF4588702298DCDE00BD7491 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588582298DCDC00BD7491 /* base64.c */; };
-		BF4588712298DCDE00BD7491 /* Date.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588592298DCDC00BD7491 /* Date.cpp */; };
-		BF4588722298DCDE00BD7491 /* bplist.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45885A2298DCDC00BD7491 /* bplist.c */; };
-		BF4588732298DCDE00BD7491 /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF45885B2298DCDC00BD7491 /* Key.cpp */; };
-		BF4588742298DCDE00BD7491 /* bytearray.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45885C2298DCDD00BD7491 /* bytearray.c */; };
-		BF4588752298DCDE00BD7491 /* Boolean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF45885D2298DCDD00BD7491 /* Boolean.cpp */; };
-		BF4588762298DCDE00BD7491 /* String.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF45885E2298DCDD00BD7491 /* String.cpp */; };
-		BF4588772298DCDE00BD7491 /* Integer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF45885F2298DCDD00BD7491 /* Integer.cpp */; };
-		BF4588782298DCDE00BD7491 /* Dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588602298DCDD00BD7491 /* Dictionary.cpp */; };
-		BF4588792298DCDE00BD7491 /* Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588612298DCDD00BD7491 /* Data.cpp */; };
-		BF45887A2298DCDE00BD7491 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588622298DCDD00BD7491 /* Node.cpp */; };
-		BF45887B2298DCDE00BD7491 /* plist.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588632298DCDD00BD7491 /* plist.c */; };
-		BF45887C2298DCDE00BD7491 /* xplist.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588642298DCDD00BD7491 /* xplist.c */; };
-		BF45887D2298DCDE00BD7491 /* Array.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588652298DCDD00BD7491 /* Array.cpp */; };
-		BF45887E2298DCDE00BD7491 /* hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588662298DCDD00BD7491 /* hashtable.h */; };
-		BF45887F2298DCDE00BD7491 /* plist.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588672298DCDD00BD7491 /* plist.h */; };
-		BF4588802298DCDE00BD7491 /* Structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF4588682298DCDD00BD7491 /* Structure.cpp */; };
-		BF4588812298DCDE00BD7491 /* bytearray.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588692298DCDD00BD7491 /* bytearray.h */; };
-		BF4588822298DCDE00BD7491 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45886A2298DCDD00BD7491 /* hashtable.c */; };
-		BF4588832298DCDE00BD7491 /* ptrarray.h in Headers */ = {isa = PBXBuildFile; fileRef = BF45886B2298DCDD00BD7491 /* ptrarray.h */; };
-		BF4588842298DCDE00BD7491 /* Real.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF45886C2298DCDD00BD7491 /* Real.cpp */; };
-		BF4588852298DCDE00BD7491 /* base64.h in Headers */ = {isa = PBXBuildFile; fileRef = BF45886D2298DCDD00BD7491 /* base64.h */; };
-		BF4588862298DCDE00BD7491 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45886E2298DCDE00BD7491 /* ptrarray.c */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
-		BF4588902298DE0C00BD7491 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888A2298DE0B00BD7491 /* list.c */; };
-		BF4588912298DE0C00BD7491 /* node_iterator.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888B2298DE0C00BD7491 /* node_iterator.c */; };
-		BF4588922298DE0C00BD7491 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888C2298DE0C00BD7491 /* node_list.c */; };
-		BF4588932298DE0C00BD7491 /* iterator.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888D2298DE0C00BD7491 /* iterator.c */; };
-		BF4588942298DE0C00BD7491 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888E2298DE0C00BD7491 /* cnary.c */; };
-		BF4588952298DE0C00BD7491 /* node.c in Sources */ = {isa = PBXBuildFile; fileRef = BF45888F2298DE0C00BD7491 /* node.c */; };
 		BF4713A522976D1E00784A2F /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; };
 		BF4713A622976D1E00784A2F /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
@@ -142,6 +112,37 @@
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
 		BFD52BD622A08A85000B7ED1 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD522A08A85000B7ED1 /* Server.swift */; };
 		BFD52BDA22A099FA000B7ED1 /* App.ipa in Resources */ = {isa = PBXBuildFile; fileRef = BFD52BD922A099FA000B7ED1 /* App.ipa */; };
+		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
+		BFD52C0222A1A9CB000B7ED1 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE622A1A9CA000B7ED1 /* base64.c */; };
+		BFD52C0322A1A9CB000B7ED1 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE722A1A9CA000B7ED1 /* hashtable.c */; };
+		BFD52C0422A1A9CB000B7ED1 /* Dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE822A1A9CA000B7ED1 /* Dictionary.cpp */; };
+		BFD52C0522A1A9CB000B7ED1 /* ptrarray.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BE922A1A9CA000B7ED1 /* ptrarray.h */; };
+		BFD52C0622A1A9CB000B7ED1 /* bplist.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BEA22A1A9CA000B7ED1 /* bplist.c */; };
+		BFD52C0722A1A9CB000B7ED1 /* String.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BEB22A1A9CA000B7ED1 /* String.cpp */; };
+		BFD52C0822A1A9CB000B7ED1 /* time64.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BEC22A1A9CA000B7ED1 /* time64.c */; };
+		BFD52C0922A1A9CB000B7ED1 /* plist.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BED22A1A9CA000B7ED1 /* plist.h */; };
+		BFD52C0A22A1A9CB000B7ED1 /* plist.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BEE22A1A9CA000B7ED1 /* plist.c */; };
+		BFD52C0B22A1A9CB000B7ED1 /* hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BEF22A1A9CA000B7ED1 /* hashtable.h */; };
+		BFD52C0C22A1A9CB000B7ED1 /* Date.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF022A1A9CA000B7ED1 /* Date.cpp */; };
+		BFD52C0D22A1A9CB000B7ED1 /* Uid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF122A1A9CA000B7ED1 /* Uid.cpp */; };
+		BFD52C0E22A1A9CB000B7ED1 /* Boolean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF222A1A9CA000B7ED1 /* Boolean.cpp */; };
+		BFD52C0F22A1A9CB000B7ED1 /* Real.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF322A1A9CA000B7ED1 /* Real.cpp */; };
+		BFD52C1022A1A9CB000B7ED1 /* strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BF422A1A9CA000B7ED1 /* strbuf.h */; };
+		BFD52C1122A1A9CB000B7ED1 /* bytearray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF522A1A9CA000B7ED1 /* bytearray.c */; };
+		BFD52C1222A1A9CB000B7ED1 /* base64.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BF622A1A9CA000B7ED1 /* base64.h */; };
+		BFD52C1322A1A9CB000B7ED1 /* Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF722A1A9CA000B7ED1 /* Data.cpp */; };
+		BFD52C1422A1A9CB000B7ED1 /* Array.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF822A1A9CB000B7ED1 /* Array.cpp */; };
+		BFD52C1522A1A9CB000B7ED1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BF922A1A9CB000B7ED1 /* Node.cpp */; };
+		BFD52C1622A1A9CB000B7ED1 /* bytearray.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BFA22A1A9CB000B7ED1 /* bytearray.h */; };
+		BFD52C1722A1A9CB000B7ED1 /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BFB22A1A9CB000B7ED1 /* Key.cpp */; };
+		BFD52C1822A1A9CB000B7ED1 /* Integer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BFC22A1A9CB000B7ED1 /* Integer.cpp */; };
+		BFD52C1922A1A9CB000B7ED1 /* Structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BFD22A1A9CB000B7ED1 /* Structure.cpp */; };
+		BFD52C1A22A1A9CB000B7ED1 /* time64_limits.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BFE22A1A9CB000B7ED1 /* time64_limits.h */; };
+		BFD52C1B22A1A9CB000B7ED1 /* time64.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BFF22A1A9CB000B7ED1 /* time64.h */; };
+		BFD52C1C22A1A9CB000B7ED1 /* xplist.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C0022A1A9CB000B7ED1 /* xplist.c */; };
+		BFD52C2022A1A9EC000B7ED1 /* node.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1D22A1A9EC000B7ED1 /* node.c */; };
+		BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1E22A1A9EC000B7ED1 /* node_list.c */; };
+		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -285,37 +286,7 @@
 		BF4588482298D55000BD7491 /* thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thread.c; path = Dependencies/libusbmuxd/common/thread.c; sourceTree = SOURCE_ROOT; };
 		BF4588492298D55000BD7491 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread.h; path = Dependencies/libusbmuxd/common/thread.h; sourceTree = SOURCE_ROOT; };
 		BF4588542298DC5400BD7491 /* openssl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF4588572298DCDC00BD7491 /* Uid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Uid.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Uid.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588582298DCDC00BD7491 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/base64.c; sourceTree = SOURCE_ROOT; };
-		BF4588592298DCDC00BD7491 /* Date.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Date.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Date.cpp; sourceTree = SOURCE_ROOT; };
-		BF45885A2298DCDC00BD7491 /* bplist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bplist.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/bplist.c; sourceTree = SOURCE_ROOT; };
-		BF45885B2298DCDC00BD7491 /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Key.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Key.cpp; sourceTree = SOURCE_ROOT; };
-		BF45885C2298DCDD00BD7491 /* bytearray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bytearray.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/bytearray.c; sourceTree = SOURCE_ROOT; };
-		BF45885D2298DCDD00BD7491 /* Boolean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Boolean.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Boolean.cpp; sourceTree = SOURCE_ROOT; };
-		BF45885E2298DCDD00BD7491 /* String.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = String.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/String.cpp; sourceTree = SOURCE_ROOT; };
-		BF45885F2298DCDD00BD7491 /* Integer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Integer.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Integer.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588602298DCDD00BD7491 /* Dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Dictionary.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Dictionary.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588612298DCDD00BD7491 /* Data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Data.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Data.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588622298DCDD00BD7491 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Node.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588632298DCDD00BD7491 /* plist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = plist.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/plist.c; sourceTree = SOURCE_ROOT; };
-		BF4588642298DCDD00BD7491 /* xplist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xplist.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/xplist.c; sourceTree = SOURCE_ROOT; };
-		BF4588652298DCDD00BD7491 /* Array.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Array.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Array.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588662298DCDD00BD7491 /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hashtable.h; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/hashtable.h; sourceTree = SOURCE_ROOT; };
-		BF4588672298DCDD00BD7491 /* plist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plist.h; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/plist.h; sourceTree = SOURCE_ROOT; };
-		BF4588682298DCDD00BD7491 /* Structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Structure.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Structure.cpp; sourceTree = SOURCE_ROOT; };
-		BF4588692298DCDD00BD7491 /* bytearray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bytearray.h; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/bytearray.h; sourceTree = SOURCE_ROOT; };
-		BF45886A2298DCDD00BD7491 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/hashtable.c; sourceTree = SOURCE_ROOT; };
-		BF45886B2298DCDD00BD7491 /* ptrarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ptrarray.h; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/ptrarray.h; sourceTree = SOURCE_ROOT; };
-		BF45886C2298DCDD00BD7491 /* Real.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Real.cpp; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/Real.cpp; sourceTree = SOURCE_ROOT; };
-		BF45886D2298DCDD00BD7491 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/base64.h; sourceTree = SOURCE_ROOT; };
-		BF45886E2298DCDE00BD7491 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
 		BF4588872298DD3F00BD7491 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib/libxml2.tbd; sourceTree = DEVELOPER_DIR; };
-		BF45888A2298DE0B00BD7491 /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/list.c; sourceTree = SOURCE_ROOT; };
-		BF45888B2298DE0C00BD7491 /* node_iterator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node_iterator.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/node_iterator.c; sourceTree = SOURCE_ROOT; };
-		BF45888C2298DE0C00BD7491 /* node_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node_list.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/node_list.c; sourceTree = SOURCE_ROOT; };
-		BF45888D2298DE0C00BD7491 /* iterator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iterator.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/iterator.c; sourceTree = SOURCE_ROOT; };
-		BF45888E2298DE0C00BD7491 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
-		BF45888F2298DE0C00BD7491 /* node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node.c; path = Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/node.c; sourceTree = SOURCE_ROOT; };
 		BF4588962298DE6E00BD7491 /* libzip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = libzip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4713A422976CFC00784A2F /* openssl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -346,6 +317,37 @@
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
 		BFD52BD522A08A85000B7ED1 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		BFD52BD922A099FA000B7ED1 /* App.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = App.ipa; sourceTree = "<group>"; };
+		BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
+		BFD52BE622A1A9CA000B7ED1 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Dependencies/libplist/src/base64.c; sourceTree = SOURCE_ROOT; };
+		BFD52BE722A1A9CA000B7ED1 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = Dependencies/libplist/src/hashtable.c; sourceTree = SOURCE_ROOT; };
+		BFD52BE822A1A9CA000B7ED1 /* Dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Dictionary.cpp; path = Dependencies/libplist/src/Dictionary.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BE922A1A9CA000B7ED1 /* ptrarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ptrarray.h; path = Dependencies/libplist/src/ptrarray.h; sourceTree = SOURCE_ROOT; };
+		BFD52BEA22A1A9CA000B7ED1 /* bplist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bplist.c; path = Dependencies/libplist/src/bplist.c; sourceTree = SOURCE_ROOT; };
+		BFD52BEB22A1A9CA000B7ED1 /* String.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = String.cpp; path = Dependencies/libplist/src/String.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BEC22A1A9CA000B7ED1 /* time64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = time64.c; path = Dependencies/libplist/src/time64.c; sourceTree = SOURCE_ROOT; };
+		BFD52BED22A1A9CA000B7ED1 /* plist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plist.h; path = Dependencies/libplist/src/plist.h; sourceTree = SOURCE_ROOT; };
+		BFD52BEE22A1A9CA000B7ED1 /* plist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = plist.c; path = Dependencies/libplist/src/plist.c; sourceTree = SOURCE_ROOT; };
+		BFD52BEF22A1A9CA000B7ED1 /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hashtable.h; path = Dependencies/libplist/src/hashtable.h; sourceTree = SOURCE_ROOT; };
+		BFD52BF022A1A9CA000B7ED1 /* Date.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Date.cpp; path = Dependencies/libplist/src/Date.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF122A1A9CA000B7ED1 /* Uid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Uid.cpp; path = Dependencies/libplist/src/Uid.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF222A1A9CA000B7ED1 /* Boolean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Boolean.cpp; path = Dependencies/libplist/src/Boolean.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF322A1A9CA000B7ED1 /* Real.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Real.cpp; path = Dependencies/libplist/src/Real.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF422A1A9CA000B7ED1 /* strbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strbuf.h; path = Dependencies/libplist/src/strbuf.h; sourceTree = SOURCE_ROOT; };
+		BFD52BF522A1A9CA000B7ED1 /* bytearray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bytearray.c; path = Dependencies/libplist/src/bytearray.c; sourceTree = SOURCE_ROOT; };
+		BFD52BF622A1A9CA000B7ED1 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Dependencies/libplist/src/base64.h; sourceTree = SOURCE_ROOT; };
+		BFD52BF722A1A9CA000B7ED1 /* Data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Data.cpp; path = Dependencies/libplist/src/Data.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF822A1A9CB000B7ED1 /* Array.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Array.cpp; path = Dependencies/libplist/src/Array.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BF922A1A9CB000B7ED1 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = Dependencies/libplist/src/Node.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BFA22A1A9CB000B7ED1 /* bytearray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bytearray.h; path = Dependencies/libplist/src/bytearray.h; sourceTree = SOURCE_ROOT; };
+		BFD52BFB22A1A9CB000B7ED1 /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Key.cpp; path = Dependencies/libplist/src/Key.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BFC22A1A9CB000B7ED1 /* Integer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Integer.cpp; path = Dependencies/libplist/src/Integer.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BFD22A1A9CB000B7ED1 /* Structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Structure.cpp; path = Dependencies/libplist/src/Structure.cpp; sourceTree = SOURCE_ROOT; };
+		BFD52BFE22A1A9CB000B7ED1 /* time64_limits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = time64_limits.h; path = Dependencies/libplist/src/time64_limits.h; sourceTree = SOURCE_ROOT; };
+		BFD52BFF22A1A9CB000B7ED1 /* time64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = time64.h; path = Dependencies/libplist/src/time64.h; sourceTree = SOURCE_ROOT; };
+		BFD52C0022A1A9CB000B7ED1 /* xplist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xplist.c; path = Dependencies/libplist/src/xplist.c; sourceTree = SOURCE_ROOT; };
+		BFD52C1D22A1A9EC000B7ED1 /* node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node.c; path = Dependencies/libplist/libcnary/node.c; sourceTree = SOURCE_ROOT; };
+		BFD52C1E22A1A9EC000B7ED1 /* node_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node_list.c; path = Dependencies/libplist/libcnary/node_list.c; sourceTree = SOURCE_ROOT; };
+		BFD52C1F22A1A9EC000B7ED1 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -506,30 +508,34 @@
 			isa = PBXGroup;
 			children = (
 				BF4588892298DDEA00BD7491 /* libcnary */,
-				BF4588652298DCDD00BD7491 /* Array.cpp */,
-				BF4588582298DCDC00BD7491 /* base64.c */,
-				BF45886D2298DCDD00BD7491 /* base64.h */,
-				BF45885D2298DCDD00BD7491 /* Boolean.cpp */,
-				BF45885A2298DCDC00BD7491 /* bplist.c */,
-				BF45885C2298DCDD00BD7491 /* bytearray.c */,
-				BF4588692298DCDD00BD7491 /* bytearray.h */,
-				BF4588612298DCDD00BD7491 /* Data.cpp */,
-				BF4588592298DCDC00BD7491 /* Date.cpp */,
-				BF4588602298DCDD00BD7491 /* Dictionary.cpp */,
-				BF45886A2298DCDD00BD7491 /* hashtable.c */,
-				BF4588662298DCDD00BD7491 /* hashtable.h */,
-				BF45885F2298DCDD00BD7491 /* Integer.cpp */,
-				BF45885B2298DCDC00BD7491 /* Key.cpp */,
-				BF4588622298DCDD00BD7491 /* Node.cpp */,
-				BF4588632298DCDD00BD7491 /* plist.c */,
-				BF4588672298DCDD00BD7491 /* plist.h */,
-				BF45886E2298DCDE00BD7491 /* ptrarray.c */,
-				BF45886B2298DCDD00BD7491 /* ptrarray.h */,
-				BF45886C2298DCDD00BD7491 /* Real.cpp */,
-				BF45885E2298DCDD00BD7491 /* String.cpp */,
-				BF4588682298DCDD00BD7491 /* Structure.cpp */,
-				BF4588572298DCDC00BD7491 /* Uid.cpp */,
-				BF4588642298DCDD00BD7491 /* xplist.c */,
+				BFD52BF822A1A9CB000B7ED1 /* Array.cpp */,
+				BFD52BE622A1A9CA000B7ED1 /* base64.c */,
+				BFD52BF622A1A9CA000B7ED1 /* base64.h */,
+				BFD52BF222A1A9CA000B7ED1 /* Boolean.cpp */,
+				BFD52BEA22A1A9CA000B7ED1 /* bplist.c */,
+				BFD52BF522A1A9CA000B7ED1 /* bytearray.c */,
+				BFD52BFA22A1A9CB000B7ED1 /* bytearray.h */,
+				BFD52BF722A1A9CA000B7ED1 /* Data.cpp */,
+				BFD52BF022A1A9CA000B7ED1 /* Date.cpp */,
+				BFD52BE822A1A9CA000B7ED1 /* Dictionary.cpp */,
+				BFD52BE722A1A9CA000B7ED1 /* hashtable.c */,
+				BFD52BEF22A1A9CA000B7ED1 /* hashtable.h */,
+				BFD52BFC22A1A9CB000B7ED1 /* Integer.cpp */,
+				BFD52BFB22A1A9CB000B7ED1 /* Key.cpp */,
+				BFD52BF922A1A9CB000B7ED1 /* Node.cpp */,
+				BFD52BEE22A1A9CA000B7ED1 /* plist.c */,
+				BFD52BED22A1A9CA000B7ED1 /* plist.h */,
+				BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */,
+				BFD52BE922A1A9CA000B7ED1 /* ptrarray.h */,
+				BFD52BF322A1A9CA000B7ED1 /* Real.cpp */,
+				BFD52BF422A1A9CA000B7ED1 /* strbuf.h */,
+				BFD52BEB22A1A9CA000B7ED1 /* String.cpp */,
+				BFD52BFD22A1A9CB000B7ED1 /* Structure.cpp */,
+				BFD52BFE22A1A9CB000B7ED1 /* time64_limits.h */,
+				BFD52BEC22A1A9CA000B7ED1 /* time64.c */,
+				BFD52BFF22A1A9CB000B7ED1 /* time64.h */,
+				BFD52BF122A1A9CA000B7ED1 /* Uid.cpp */,
+				BFD52C0022A1A9CB000B7ED1 /* xplist.c */,
 			);
 			name = libplist;
 			sourceTree = "<group>";
@@ -537,12 +543,9 @@
 		BF4588892298DDEA00BD7491 /* libcnary */ = {
 			isa = PBXGroup;
 			children = (
-				BF45888E2298DE0C00BD7491 /* cnary.c */,
-				BF45888D2298DE0C00BD7491 /* iterator.c */,
-				BF45888A2298DE0B00BD7491 /* list.c */,
-				BF45888B2298DE0C00BD7491 /* node_iterator.c */,
-				BF45888C2298DE0C00BD7491 /* node_list.c */,
-				BF45888F2298DE0C00BD7491 /* node.c */,
+				BFD52C1F22A1A9EC000B7ED1 /* cnary.c */,
+				BFD52C1E22A1A9EC000B7ED1 /* node_list.c */,
+				BFD52C1D22A1A9EC000B7ED1 /* node.c */,
 			);
 			name = libcnary;
 			sourceTree = "<group>";
@@ -731,39 +734,42 @@
 			files = (
 				BF4588112298D3AB00BD7491 /* misagent.h in Headers */,
 				BF4588042298D3AB00BD7491 /* lockdown.h in Headers */,
-				BF4588812298DCDE00BD7491 /* bytearray.h in Headers */,
 				BF4588402298D3F800BD7491 /* collection.h in Headers */,
 				BF45880B2298D3AB00BD7491 /* mobilesync.h in Headers */,
 				BF4588002298D3AB00BD7491 /* restore.h in Headers */,
 				BF4588332298D3C100BD7491 /* socket.h in Headers */,
 				BF4588152298D3AB00BD7491 /* mobilebackup.h in Headers */,
 				BF4588182298D3AB00BD7491 /* syslog_relay.h in Headers */,
-				BF4588832298DCDE00BD7491 /* ptrarray.h in Headers */,
+				BFD52C1022A1A9CB000B7ED1 /* strbuf.h in Headers */,
 				BF45881D2298D3AB00BD7491 /* file_relay.h in Headers */,
-				BF45887F2298DCDE00BD7491 /* plist.h in Headers */,
+				BFD52C0922A1A9CB000B7ED1 /* plist.h in Headers */,
 				BF4587FD2298D3AB00BD7491 /* sbservices.h in Headers */,
 				BF4588362298D3C100BD7491 /* debug.h in Headers */,
 				BF4588202298D3AB00BD7491 /* mobile_image_mounter.h in Headers */,
 				BF4588122298D3AB00BD7491 /* house_arrest.h in Headers */,
 				BF45881F2298D3AB00BD7491 /* device_link_service.h in Headers */,
+				BFD52C1A22A1A9CB000B7ED1 /* time64_limits.h in Headers */,
 				BF45880E2298D3AB00BD7491 /* debugserver.h in Headers */,
 				BF45884B2298D55000BD7491 /* thread.h in Headers */,
 				BF4588102298D3AB00BD7491 /* heartbeat.h in Headers */,
-				BF4588852298DCDE00BD7491 /* base64.h in Headers */,
 				BF4587FA2298D3AB00BD7491 /* diagnostics_relay.h in Headers */,
+				BFD52C1622A1A9CB000B7ED1 /* bytearray.h in Headers */,
+				BFD52C1222A1A9CB000B7ED1 /* base64.h in Headers */,
 				BF4588192298D3AB00BD7491 /* webinspector.h in Headers */,
 				BF4588342298D3C100BD7491 /* userpref.h in Headers */,
 				BF45880A2298D3AB00BD7491 /* screenshotr.h in Headers */,
 				BF45883C2298D3C100BD7491 /* utils.h in Headers */,
+				BFD52C0B22A1A9CB000B7ED1 /* hashtable.h in Headers */,
 				BF4587FE2298D3AB00BD7491 /* mobilebackup2.h in Headers */,
+				BFD52C0522A1A9CB000B7ED1 /* ptrarray.h in Headers */,
 				BF45881C2298D3AB00BD7491 /* afc.h in Headers */,
 				BF45881A2298D3AB00BD7491 /* mobileactivation.h in Headers */,
-				BF45887E2298DCDE00BD7491 /* hashtable.h in Headers */,
 				BF4588052298D3AB00BD7491 /* idevice.h in Headers */,
 				BF4588012298D3AB00BD7491 /* installation_proxy.h in Headers */,
 				BF4587F82298D3AB00BD7491 /* service.h in Headers */,
 				BF4588252298D3AB00BD7491 /* property_list_service.h in Headers */,
 				BF4588132298D3AB00BD7491 /* notification_proxy.h in Headers */,
+				BFD52C1B22A1A9CB000B7ED1 /* time64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -947,61 +953,59 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF45881B2298D3AB00BD7491 /* house_arrest.c in Sources */,
+				BFD52C0622A1A9CB000B7ED1 /* bplist.c in Sources */,
 				BF4588232298D3AB00BD7491 /* mobilesync.c in Sources */,
-				BF4588762298DCDE00BD7491 /* String.cpp in Sources */,
 				BF4588072298D3AB00BD7491 /* afc.c in Sources */,
 				BF4588082298D3AB00BD7491 /* mobile_image_mounter.c in Sources */,
-				BF4588922298DE0C00BD7491 /* node_list.c in Sources */,
-				BF4588712298DCDE00BD7491 /* Date.cpp in Sources */,
+				BFD52C1122A1A9CB000B7ED1 /* bytearray.c in Sources */,
 				BF4588022298D3AB00BD7491 /* file_relay.c in Sources */,
 				BF45880F2298D3AB00BD7491 /* debugserver.c in Sources */,
 				BF4588162298D3AB00BD7491 /* restore.c in Sources */,
-				BF4588822298DCDE00BD7491 /* hashtable.c in Sources */,
+				BFD52C0422A1A9CB000B7ED1 /* Dictionary.cpp in Sources */,
 				BF4588412298D3F800BD7491 /* collection.c in Sources */,
 				BF4588372298D3C100BD7491 /* utils.c in Sources */,
+				BFD52C0222A1A9CB000B7ED1 /* base64.c in Sources */,
+				BFD52C2022A1A9EC000B7ED1 /* node.c in Sources */,
 				BF4588092298D3AB00BD7491 /* installation_proxy.c in Sources */,
 				BF4587FF2298D3AB00BD7491 /* heartbeat.c in Sources */,
 				BF4588222298D3AB00BD7491 /* mobileactivation.c in Sources */,
-				BF4588802298DCDE00BD7491 /* Structure.cpp in Sources */,
-				BF45887A2298DCDE00BD7491 /* Node.cpp in Sources */,
-				BF4588862298DCDE00BD7491 /* ptrarray.c in Sources */,
+				BFD52C1822A1A9CB000B7ED1 /* Integer.cpp in Sources */,
 				BF4588212298D3AB00BD7491 /* idevice.c in Sources */,
+				BFD52C1C22A1A9CB000B7ED1 /* xplist.c in Sources */,
 				BF4587F92298D3AB00BD7491 /* diagnostics_relay.c in Sources */,
-				BF4588932298DE0C00BD7491 /* iterator.c in Sources */,
-				BF45886F2298DCDE00BD7491 /* Uid.cpp in Sources */,
-				BF45887D2298DCDE00BD7491 /* Array.cpp in Sources */,
-				BF4588742298DCDE00BD7491 /* bytearray.c in Sources */,
-				BF4588792298DCDE00BD7491 /* Data.cpp in Sources */,
-				BF45887C2298DCDE00BD7491 /* xplist.c in Sources */,
-				BF45887B2298DCDE00BD7491 /* plist.c in Sources */,
 				BF4588062298D3AB00BD7491 /* webinspector.c in Sources */,
-				BF4588752298DCDE00BD7491 /* Boolean.cpp in Sources */,
+				BFD52C1722A1A9CB000B7ED1 /* Key.cpp in Sources */,
 				BF45880D2298D3AB00BD7491 /* mobilebackup.c in Sources */,
-				BF4588842298DCDE00BD7491 /* Real.cpp in Sources */,
+				BFD52C0C22A1A9CB000B7ED1 /* Date.cpp in Sources */,
+				BFD52C0A22A1A9CB000B7ED1 /* plist.c in Sources */,
+				BFD52C1322A1A9CB000B7ED1 /* Data.cpp in Sources */,
 				BF45883A2298D3C100BD7491 /* debug.c in Sources */,
+				BFD52C0F22A1A9CB000B7ED1 /* Real.cpp in Sources */,
 				BF45884A2298D55000BD7491 /* thread.c in Sources */,
 				BF4587FB2298D3AB00BD7491 /* notification_proxy.c in Sources */,
-				BF4588732298DCDE00BD7491 /* Key.cpp in Sources */,
 				BF4588352298D3C100BD7491 /* userpref.c in Sources */,
+				BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */,
+				BFD52C0E22A1A9CB000B7ED1 /* Boolean.cpp in Sources */,
+				BFD52C0822A1A9CB000B7ED1 /* time64.c in Sources */,
+				BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */,
+				BFD52C1422A1A9CB000B7ED1 /* Array.cpp in Sources */,
 				BF4588242298D3AB00BD7491 /* property_list_service.c in Sources */,
 				BF45881E2298D3AB00BD7491 /* misagent.c in Sources */,
-				BF4588782298DCDE00BD7491 /* Dictionary.cpp in Sources */,
-				BF4588902298DE0C00BD7491 /* list.c in Sources */,
 				BF4587FC2298D3AB00BD7491 /* sbservices.c in Sources */,
 				BF4588392298D3C100BD7491 /* socket.c in Sources */,
-				BF4588912298DE0C00BD7491 /* node_iterator.c in Sources */,
+				BFD52C1522A1A9CB000B7ED1 /* Node.cpp in Sources */,
 				BF4588142298D3AB00BD7491 /* device_link_service.c in Sources */,
 				BF4588172298D3AB00BD7491 /* screenshotr.c in Sources */,
+				BFD52C0D22A1A9CB000B7ED1 /* Uid.cpp in Sources */,
+				BFD52C0322A1A9CB000B7ED1 /* hashtable.c in Sources */,
 				BF4588432298D40000BD7491 /* libusbmuxd.c in Sources */,
 				BF4588032298D3AB00BD7491 /* syslog_relay.c in Sources */,
-				BF4588722298DCDE00BD7491 /* bplist.c in Sources */,
-				BF4588952298DE0C00BD7491 /* node.c in Sources */,
-				BF4588702298DCDE00BD7491 /* base64.c in Sources */,
 				BF4588272298D3AB00BD7491 /* service.c in Sources */,
+				BFD52C0722A1A9CB000B7ED1 /* String.cpp in Sources */,
 				BF4588262298D3AB00BD7491 /* lockdown.c in Sources */,
-				BF4588942298DE0C00BD7491 /* cnary.c in Sources */,
+				BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */,
 				BF45880C2298D3AB00BD7491 /* mobilebackup2.c in Sources */,
-				BF4588772298DCDE00BD7491 /* Integer.cpp in Sources */,
+				BFD52C1922A1A9CB000B7ED1 /* Structure.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1215,13 +1219,13 @@
 				);
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/include\"",
+					"\"$(SRCROOT)/Dependencies/libplist/include\"",
 					"\"$(SRCROOT)/Dependencies/libimobiledevice\"",
 					"\"$(SRCROOT)/Dependencies/libimobiledevice/include\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/macos/include\"",
 					"\"$(SRCROOT)/Dependencies/libusbmuxd/include\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/lib\"",
-					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/include\"",
+					"\"$(SRCROOT)/Dependencies/libplist/libcnary/include\"",
 					"\"${SDKROOT}/usr/include/libxml2\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/xcode\"",
 				);
@@ -1252,13 +1256,13 @@
 				);
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/include\"",
+					"\"$(SRCROOT)/Dependencies/libplist/include\"",
 					"\"$(SRCROOT)/Dependencies/libimobiledevice\"",
 					"\"$(SRCROOT)/Dependencies/libimobiledevice/include\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/macos/include\"",
 					"\"$(SRCROOT)/Dependencies/libusbmuxd/include\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/lib\"",
-					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/include\"",
+					"\"$(SRCROOT)/Dependencies/libplist/libcnary/include\"",
 					"\"${SDKROOT}/usr/include/libxml2\"",
 					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/xcode\"",
 				);
