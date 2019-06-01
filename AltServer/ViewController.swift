@@ -276,8 +276,7 @@ private extension ViewController
     
     func registerAppID(name appName: String, identifier: String, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        var bundleID = "com." + team.account.firstName.lowercased() + team.account.lastName.lowercased() + "." + identifier
-        bundleID = bundleID.replacingOccurrences(of: " ", with: "")
+        let bundleID = "com.\(team.identifier).\(identifier)"
         
         ALTAppleAPI.shared.fetchAppIDs(for: team) { (appIDs, error) in
             do

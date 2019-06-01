@@ -39,3 +39,22 @@ public extension Result where Success == Void
         }
     }
 }
+
+public extension Result
+{
+    init<T, U>(_ values: (T?, U?), _ error: Failure?) where Success == (T, U)
+    {
+        if let value1 = values.0, let value2 = values.1
+        {
+            self = .success((value1, value2))
+        }
+        else if let error = error
+        {
+            self = .failure(error)
+        }
+        else
+        {
+            preconditionFailure("Error must be non-nil if either provided values are nil")
+        }
+    }
+}

@@ -41,11 +41,8 @@ struct Server: Equatable
     
     private let dispatchQueue = DispatchQueue(label: "com.rileytestut.AltStore.server", qos: .utility)
     
-    func install(_ app: App, completionHandler: @escaping (Result<Void, InstallError>) -> Void)
+    func installApp(at fileURL: URL, identifier: String, completionHandler: @escaping (Result<Void, InstallError>) -> Void)
     {
-        let ipaURL = app.ipaURL
-        let appID = app.identifier
-        
         var isFinished = false
         
         var serverConnection: NWConnection?
@@ -63,12 +60,12 @@ struct Server: Equatable
             
             if let error = error
             {
-                print("Failed to install \(appID).", error)
+                print("Failed to install \(identifier).", error)
                 completionHandler(.failure(error))
             }
             else
             {
-                print("Installed \(appID)!")
+                print("Installed \(identifier)!")
                 completionHandler(.success(()))
             }
         }        
@@ -80,7 +77,7 @@ struct Server: Equatable
             case .success(let connection):
                 serverConnection = connection
                 
-                self.sendApp(at: ipaURL, via: connection) { (result) in
+                self.sendApp(at: fileURL, via: connection) { (result) in
                     switch result
                     {
                     case .failure(let error): finish(error: error)
@@ -140,6 +137,7 @@ private extension Server
             let requestSizeData = withUnsafeBytes(of: requestSize) { Data($0) }
             
             // Send request data size.
+            print("Sending request data size \(requestSize)")
             connection.send(content: requestSizeData, completion: .contentProcessed { (error) in
                 if error != nil
                 {
@@ -148,6 +146,7 @@ private extension Server
                 else
                 {
                     // Send request.
+                    print("Sending request \(request)")
                     connection.send(content: requestData, completion: .contentProcessed { (error) in
                         if error != nil
                         {
@@ -156,6 +155,7 @@ private extension Server
                         else
                         {
                             // Send app data.
+                            print("Sending app data (Size: \(appData.count))")
                             connection.send(content: appData, completion: .contentProcessed { (error) in
                                 if error != nil
                                 {

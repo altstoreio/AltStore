@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18D109" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="App" representedClassName="App" syncable="YES">
         <attribute name="developerName" attributeType="String" syncable="YES"/>
+        <attribute name="downloadURL" attributeType="URI" syncable="YES"/>
         <attribute name="iconName" attributeType="String" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="localizedDescription" attributeType="String" syncable="YES"/>
@@ -26,7 +27,7 @@
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
     </entity>
     <elements>
-        <element name="App" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="App" positionX="-63" positionY="-18" width="128" height="210"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="135"/>
     </elements>
 </model>

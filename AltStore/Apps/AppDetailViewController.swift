@@ -118,69 +118,36 @@ private extension AppDetailViewController
     @IBAction func downloadApp(_ sender: UIButton)
     {
         guard self.app.installedApp == nil else { return }
+
+        sender.isIndicatingActivity = true
         
-        let appURL = Bundle.main.url(forResource: "App", withExtension: "ipa")!
-        
-        do
-        {
-            try FileManager.default.copyItem(at: appURL, to: self.app.ipaURL, shouldReplace: true)
-        }
-        catch
-        {
-            print("Failed to copy .ipa", error)
-        }
-        
-        if let server = ServerManager.shared.discoveredServers.first
-        {
-            sender.isIndicatingActivity = true
-            
-            server.install(self.app) { (result) in
+        AppManager.shared.install(self.app, presentingViewController: self) { (result) in
+            do
+            {
+                let installedApp = try result.get()
+                
+                do { try installedApp.managedObjectContext?.save() }
+                catch { print("Failed to save context.", error) }
+                
                 DispatchQueue.main.async {
-                    switch result
-                    {
-                    case .success:
-                        let toastView = RSTToastView(text: "Installed \(self.app.name)!", detailText: nil)
-                        toastView.tintColor = .altPurple
-                        toastView.show(in: self.navigationController!.view, duration: 2)
-                        
-                        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                            let app = context.object(with: self.app.objectID) as! App
-                            
-                            _ = InstalledApp(app: app,
-                                             bundleIdentifier: app.identifier,
-                                             signedDate: Date(),
-                                             expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
-                                             context: context)
-                            
-                            do
-                            {
-                                try context.save()
-                            }
-                            catch
-                            {
-                                print("Failed to save context for downloaded app app.", error)
-                            }
-                            
-                            DispatchQueue.main.async {
-                                self.update()
-                            }
-                        }
-                        
-                    case .failure(let error):
-                        let toastView = RSTToastView(text: "Failed to install \(self.app.name)", detailText: error.localizedDescription)
-                        toastView.tintColor = .altPurple
-                        toastView.show(in: self.navigationController!.view, duration: 2)
-                    }
-                    
-                    sender.isIndicatingActivity = false
+                    let toastView = RSTToastView(text: "Installed \(self.app.name)!", detailText: nil)
+                    toastView.tintColor = .altPurple
+                    toastView.show(in: self.navigationController!.view, duration: 2)
                 }
             }
-        }
-        else
-        {
-            let toastView = RSTToastView(text: "Could not find AltServer", detailText: nil)
-            toastView.tintColor = .altPurple
-            toastView.show(in: self.navigationController!.view, duration: 2)
+            catch
+            {
+                DispatchQueue.main.async {
+                    let toastView = RSTToastView(text: "Failed to install \(self.app.name)", detailText: error.localizedDescription)
+                    toastView.tintColor = .altPurple
+                    toastView.show(in: self.navigationController!.view, duration: 2)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.update()
+                sender.isIndicatingActivity = false
+            }
         }
     }
 }

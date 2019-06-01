@@ -173,6 +173,27 @@ private extension ConnectionManager
         guard !self.connections.contains(where: { $0 === connection }) else { return }
         self.connections.append(connection)
         
+        func finish(error: ALTServerError?)
+        {
+            if let error = error
+            {
+                print("Failed to process request from \(connection.endpoint).", error)
+            }
+            else
+            {
+                print("Processed request from \(connection.endpoint).")
+            }
+            
+            let success = (error == nil)
+            let response = ServerResponse(success: success, error: error)
+            
+            self.send(response, to: connection) { (result) in
+                print("Sent response to \(connection.endpoint) with result:", result)
+                
+                self.disconnect(connection)
+            }
+        }
+        
         connection.stateUpdateHandler = { [weak self] (state) in
             switch state
             {
@@ -180,6 +201,23 @@ private extension ConnectionManager
                 
             case .ready:
                 print("Connected to client:", connection.endpoint)
+                
+                self?.receiveRequest(from: connection) { (result) in
+                    print("Received request with result:", result)
+                    
+                    switch result
+                    {
+                    case .failure(let error): finish(error: error)
+                    case .success(let request, let fileURL):
+                        print("Installing to device..")
+                        
+                        ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: request.udid) { (success, error) in
+                            print("Installed app with result:", result)
+                            let error = error.map { $0 as? ALTServerError ?? ALTServerError(.unknown) }
+                            finish(error: error)
+                        }
+                    }
+                }
                 
             case .waiting:
                 print("Waiting for connection...")
@@ -196,49 +234,19 @@ private extension ConnectionManager
         }
         
         connection.start(queue: self.dispatchQueue)
-        
-        func finish(error: ALTServerError?)
-        {
-            if let error = error
-            {
-                print("Failed to process request from \(connection.endpoint).", error)
-            }
-            else
-            {
-                print("Processed request from \(connection.endpoint).")
-            }
-            
-            let success = (error == nil)
-            let response = ServerResponse(success: success, error: error)
-            
-            self.send(response, to: connection) { (result) in
-                print("Sent response to \(connection) with result:", result)
-                
-                self.disconnect(connection)
-            }
-        }
-        
-        self.receiveRequest(from: connection) { (result) in
-            switch result
-            {
-            case .failure(let error): finish(error: error)
-            case .success(let request, let fileURL):
-                ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: request.udid) { (success, error) in
-                    let error = error.map { $0 as? ALTServerError ?? ALTServerError(.unknown) }
-                    finish(error: error)
-                }
-            }
-        }
     }
     
     func receiveRequest(from connection: NWConnection, completionHandler: @escaping (Result<(ServerRequest, URL), ALTServerError>) -> Void)
     {
         let size = MemoryLayout<Int32>.size
         
+        print("Receiving request size")
         connection.receive(minimumIncompleteLength: size, maximumLength: size) { (data, _, _, error) in
             do
             {
                 let data = try self.process(data: data, error: error, from: connection)
+                
+                print("Receiving request")
                 
                 let expectedBytes = Int(data.withUnsafeBytes { $0.load(as: Int32.self) })
                 connection.receive(minimumIncompleteLength: expectedBytes, maximumLength: expectedBytes) { (data, _, _, error) in
@@ -247,6 +255,9 @@ private extension ConnectionManager
                         let data = try self.process(data: data, error: error, from: connection)
                         
                         let request = try JSONDecoder().decode(ServerRequest.self, from: data)
+                        
+                        print("Receiving app data (Size: \(request.contentSize))")
+                        
                         self.process(request, from: connection, completionHandler: completionHandler)
                     }
                     catch
@@ -267,9 +278,15 @@ private extension ConnectionManager
         connection.receive(minimumIncompleteLength: request.contentSize, maximumLength: request.contentSize) { (data, _, _, error) in
             do
             {
+                print("Received app data!")
+                
                 let data = try self.process(data: data, error: error, from: connection)
                 
+                print("Processed app data!")
+                
                 guard ALTDeviceManager.shared.connectedDevices.contains(where: { $0.identifier == request.udid }) else { throw ALTServerError(.deviceNotFound) }
+                
+                print("Writing app data...")
                 
                 let temporaryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".ipa")
                 try data.write(to: temporaryURL, options: .atomic)
@@ -280,6 +297,8 @@ private extension ConnectionManager
             }
             catch
             {
+                print("Error processing app data:", error)
+                
                 completionHandler(.failure(ALTServerError(error)))
             }
         }

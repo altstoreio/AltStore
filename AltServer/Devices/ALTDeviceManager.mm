@@ -24,6 +24,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(void)> *installationCompletionHandlers;
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
+@property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSValue *> *installationClients;
 
 @end
 
@@ -47,6 +48,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     {
         _installationCompletionHandlers = [NSMutableDictionary dictionary];
         _installationProgress = [NSMutableDictionary dictionary];
+        _installationClients = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -235,6 +237,9 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         return progress;
     }
     
+    NSValue *value = [NSValue valueWithPointer:(const void *)np];
+    
+    self.installationClients[UUID] = value;
     self.installationProgress[UUID] = progress;
     self.installationCompletionHandlers[UUID] = ^{
         finish(nil);
@@ -357,17 +362,16 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 #pragma mark - Getters -
 
 - (NSArray<ALTDevice *> *)connectedDevices
-{
+{    
+    NSMutableArray *connectedDevices = [NSMutableArray array];
+    
     int count = 0;
     char **udids = NULL;
-    
     if (idevice_get_device_list(&udids, &count) < 0)
     {
         fprintf(stderr, "ERROR: Unable to retrieve device list!\n");
         return @[];
     }
-    
-    NSMutableArray *connectedDevices = [NSMutableArray array];
     
     for (int i = 0; i < count; i++)
     {
@@ -435,8 +439,18 @@ void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *uu
     if (completionHandler != nil)
     {
         completionHandler();
+        
         ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID] = nil;
         ALTDeviceManager.sharedManager.installationProgress[UUID] = nil;
+    }
+    
+    NSValue *value = ALTDeviceManager.sharedManager.installationClients[UUID];
+    if (value != nil)
+    {
+        np_client_t np = (np_client_t)value.pointerValue;
+        np_set_notify_callback(np, NULL, uuid);
+        
+        ALTDeviceManager.sharedManager.installationClients[UUID] = nil;
     }
 }
 

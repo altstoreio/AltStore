@@ -28,6 +28,8 @@ class App: NSManagedObject, Decodable
     @NSManaged private(set) var versionDate: Date
     @NSManaged private(set) var versionDescription: String?
     
+    @NSManaged private(set) var downloadURL: URL
+    
     /* Relationships */
     @NSManaged private(set) var installedApp: InstalledApp?
     
@@ -47,6 +49,7 @@ class App: NSManagedObject, Decodable
         case versionDate
         case iconName
         case screenshotNames
+        case downloadURL
     }
     
     required init(from decoder: Decoder) throws
@@ -67,6 +70,8 @@ class App: NSManagedObject, Decodable
         
         self.iconName = try container.decode(String.self, forKey: .iconName)
         self.screenshotNames = try container.decodeIfPresent([String].self, forKey: .screenshotNames) ?? []
+        
+        self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
         
         context.insert(self)
     }
