@@ -168,37 +168,39 @@ private extension AppManager
     
     func authenticate(presentingViewController: UIViewController, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
     {
-        let alertController = UIAlertController(title: "Enter Apple ID + Password", message: "", preferredStyle: .alert)
-        alertController.addTextField { (textField) in
-            textField.placeholder = "Apple ID"
-            textField.textContentType = .emailAddress
-        }
-        alertController.addTextField { (textField) in
-            textField.placeholder = "Password"
-            textField.textContentType = .password
-        }
-        alertController.addAction(.cancel)
-        alertController.addAction(UIAlertAction(title: "Sign In", style: .default) { [unowned alertController] (action) in
-            guard
-                let emailAddress = alertController.textFields![0].text,
-                let password = alertController.textFields![1].text,
-                !emailAddress.isEmpty, !password.isEmpty
-            else { return completionHandler(.failure(ALTAppleAPIError(.incorrectCredentials))) }
-            
-            ALTAppleAPI.shared.authenticate(appleID: emailAddress, password: password) { (account, error) in
-                do
-                {
-                    let account = try Result(account, error).get()
-                    self.fetchTeam(for: account, presentingViewController: presentingViewController, completionHandler: completionHandler)
-                }
-                catch
-                {
-                    completionHandler(.failure(error))
-                }
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Enter Apple ID + Password", message: "", preferredStyle: .alert)
+            alertController.addTextField { (textField) in
+                textField.placeholder = "Apple ID"
+                textField.textContentType = .emailAddress
             }
-        })
-        
-        presentingViewController.present(alertController, animated: true, completion: nil)
+            alertController.addTextField { (textField) in
+                textField.placeholder = "Password"
+                textField.textContentType = .password
+            }
+            alertController.addAction(.cancel)
+            alertController.addAction(UIAlertAction(title: "Sign In", style: .default) { [unowned alertController] (action) in
+                guard
+                    let emailAddress = alertController.textFields![0].text,
+                    let password = alertController.textFields![1].text,
+                    !emailAddress.isEmpty, !password.isEmpty
+                    else { return completionHandler(.failure(ALTAppleAPIError(.incorrectCredentials))) }
+                
+                ALTAppleAPI.shared.authenticate(appleID: emailAddress, password: password) { (account, error) in
+                    do
+                    {
+                        let account = try Result(account, error).get()
+                        self.fetchTeam(for: account, presentingViewController: presentingViewController, completionHandler: completionHandler)
+                    }
+                    catch
+                    {
+                        completionHandler(.failure(error))
+                    }
+                }
+            })
+            
+            presentingViewController.present(alertController, animated: true, completion: nil)
+        }
     }
     
     func fetchSigningResources(for app: App, team: ALTTeam, presentingViewController: UIViewController, completionHandler: @escaping (Result<(ALTCertificate, ALTProvisioningProfile), Error>) -> Void)
