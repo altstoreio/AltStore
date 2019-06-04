@@ -111,7 +111,6 @@
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
 		BFD52BD622A08A85000B7ED1 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD522A08A85000B7ED1 /* Server.swift */; };
-		BFD52BDA22A099FA000B7ED1 /* App.ipa in Resources */ = {isa = PBXBuildFile; fileRef = BFD52BD922A099FA000B7ED1 /* App.ipa */; };
 		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
 		BFD52C0222A1A9CB000B7ED1 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE622A1A9CA000B7ED1 /* base64.c */; };
 		BFD52C0322A1A9CB000B7ED1 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE722A1A9CA000B7ED1 /* hashtable.c */; };
@@ -317,7 +316,6 @@
 		BFD52BD222A06EFB000B7ED1 /* AltKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltKit.h; sourceTree = "<group>"; };
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
 		BFD52BD522A08A85000B7ED1 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
-		BFD52BD922A099FA000B7ED1 /* App.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = App.ipa; sourceTree = "<group>"; };
 		BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
 		BFD52BE622A1A9CA000B7ED1 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Dependencies/libplist/src/base64.c; sourceTree = SOURCE_ROOT; };
 		BFD52BE722A1A9CA000B7ED1 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = Dependencies/libplist/src/hashtable.c; sourceTree = SOURCE_ROOT; };
@@ -683,7 +681,6 @@
 		BFD247962284D7C100981D42 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BFD52BD922A099FA000B7ED1 /* App.ipa */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BFB1169C22932DB100BB457C /* Apps.json */,
 			);
@@ -919,7 +916,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFB1169D22932DB100BB457C /* Apps.json in Resources */,
-				BFD52BDA22A099FA000B7ED1 /* App.ipa in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
