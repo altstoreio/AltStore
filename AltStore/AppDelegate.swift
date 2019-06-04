@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             else
             {
                 print("Started DatabaseManager")
+                
+                AppManager.shared.refresh()
             }
         }
                 
@@ -46,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication)
     {
+        AppManager.shared.refresh()
         ServerManager.shared.startDiscovering()
     }
 

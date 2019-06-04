@@ -22,7 +22,7 @@ class InstalledApp: NSManagedObject
     @NSManaged var isBeta: Bool
     
     /* Relationships */
-    @NSManaged private(set) var app: App?
+    @NSManaged private(set) var app: App!
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -48,5 +48,50 @@ extension InstalledApp
     @nonobjc class func fetchRequest() -> NSFetchRequest<InstalledApp>
     {
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
+    }
+}
+
+extension InstalledApp
+{
+    var openAppURL: URL {
+        // Don't use the actual bundle ID yet since we're hardcoding support for the first apps in AltStore.
+        let openAppURL = URL(string: "altstore-" + self.app.identifier + "://")!
+        return openAppURL
+    }
+}
+
+extension InstalledApp
+{
+    class var appsDirectoryURL: URL {
+        let appsDirectoryURL = FileManager.default.applicationSupportDirectory.appendingPathComponent("Apps")
+        
+        do { try FileManager.default.createDirectory(at: appsDirectoryURL, withIntermediateDirectories: true, attributes: nil) }
+        catch { print(error) }
+        
+        return appsDirectoryURL
+    }
+    
+    class func ipaURL(for app: App) -> URL
+    {
+        let ipaURL = self.directoryURL(for: app).appendingPathComponent("App.ipa")
+        return ipaURL
+    }
+    
+    class func directoryURL(for app: App) -> URL
+    {
+        let directoryURL = InstalledApp.appsDirectoryURL.appendingPathComponent(app.identifier)
+        
+        do { try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil) }
+        catch { print(error) }
+        
+        return directoryURL
+    }
+    
+    var directoryURL: URL {
+        return InstalledApp.directoryURL(for: self.app)
+    }
+    
+    var ipaURL: URL {
+        return InstalledApp.ipaURL(for: self.app)
     }
 }

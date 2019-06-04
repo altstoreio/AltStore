@@ -355,11 +355,11 @@ private extension ViewController
             let zippedURL = try FileManager.default.zipAppBundle(at: appBundleURL)
             
             let resigner = ALTSigner(team: team, certificate: certificate)
-            resigner.signApp(at: zippedURL, provisioningProfile: profile) { (resignedURL, error) in
+            resigner.signApp(at: zippedURL, provisioningProfile: profile) { (success, error) in
                 do
                 {
-                    let resignedURL = try Result(resignedURL, error).get()
-                    ALTDeviceManager.shared.installApp(at: resignedURL, toDeviceWithUDID: device.identifier) { (success, error) in
+                    try Result(success, error).get()
+                    ALTDeviceManager.shared.installApp(at: ipaURL, toDeviceWithUDID: device.identifier) { (success, error) in
                         let result = Result(success, error)
                         print(result)
                     }

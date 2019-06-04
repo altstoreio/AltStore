@@ -27,7 +27,7 @@ extension AppManager
         case download(URLError)
         case authentication(Error)
         case fetchingSigningResources(Error)
-        case sign(Error)
+        case prepare(Error)
         case install(Error)
         
         var errorDescription: String? {
@@ -41,7 +41,7 @@ extension AppManager
             case .download(let error): return error.localizedDescription
             case .authentication(let error): return error.localizedDescription
             case .fetchingSigningResources(let error): return error.localizedDescription
-            case .sign(let error): return error.localizedDescription
+            case .prepare(let error): return error.localizedDescription
             case .install(let error): return error.localizedDescription
             }
         }
@@ -61,9 +61,42 @@ class AppManager
 
 extension AppManager
 {
+    func refresh()
+    {
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
+        
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+        
+        do
+        {
+            let installedApps = try context.fetch(fetchRequest)
+            for app in installedApps
+            {
+                if UIApplication.shared.canOpenURL(app.openAppURL)
+                {
+                    // App is still installed, good!
+                }
+                else
+                {
+                    context.delete(app)
+                }
+            }
+            
+            try context.save()
+        }
+        catch
+        {
+            print("Error while fetching installed apps")
+        }
+    }
+}
+
+extension AppManager
+{
     func install(_ app: App, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, AppError>) -> Void)
     {
-        let ipaURL = app.ipaURL
+        let ipaURL = InstalledApp.ipaURL(for: app)
         
         let backgroundTaskID = RSTBeginBackgroundTask("com.rileytestut.AltStore.InstallApp")
         
@@ -86,7 +119,6 @@ extension AppManager
             {
             case .failure(let error): finish(.failure(.download(error)))
             case .success:
-                
                 // Authenticate
                 self.authenticate(presentingViewController: presentingViewController) { (result) in
                     switch result
@@ -101,31 +133,30 @@ extension AppManager
                             case .failure(let error): finish(.failure(.fetchingSigningResources(error)))
                             case .success(let certificate, let profile):
                                 
-                                // Sign app
-                                app.managedObjectContext?.perform {
-                                    self.sign(app, team: team, certificate: certificate, provisioningProfile: profile) { (result) in
+                                // Prepare app
+                                DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                                    let app = context.object(with: app.objectID) as! App
+                                    
+                                    let installedApp = InstalledApp(app: app,
+                                                                    bundleIdentifier: profile.appID.bundleIdentifier,
+                                                                    signedDate: Date(),
+                                                                    expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
+                                                                    context: context)
+                                    
+                                    self.prepare(installedApp, team: team, certificate: certificate, provisioningProfile: profile) { (result) in
                                         switch result
                                         {
-                                        case .failure(let error): finish(.failure(.sign(error)))
+                                        case .failure(let error): finish(.failure(.prepare(error)))
                                         case .success(let resignedURL):
                                             
                                             // Send app to server
-                                            app.managedObjectContext?.perform {
-                                                self.sendAppToServer(fileURL: resignedURL, identifier: app.identifier) { (result) in
+                                            context.perform {
+                                                self.sendAppToServer(fileURL: resignedURL, identifier: installedApp.bundleIdentifier) { (result) in
                                                     switch result
                                                     {
                                                     case .failure(let error): finish(.failure(.install(error)))
                                                     case .success:
-                                                        
-                                                        // Update database
-                                                        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                                                            let app = context.object(with: app.objectID) as! App
-                                                            
-                                                            let installedApp = InstalledApp(app: app,
-                                                                                            bundleIdentifier: app.identifier,
-                                                                                            signedDate: Date(),
-                                                                                            expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
-                                                                                            context: context)
+                                                        context.perform {
                                                             finish(.success(installedApp))
                                                         }
                                                     }
@@ -255,12 +286,52 @@ private extension AppManager
         }
     }
     
-    func sign(_ app: App, team: ALTTeam, certificate: ALTCertificate, provisioningProfile: ALTProvisioningProfile, completionHandler: @escaping (Result<URL, Error>) -> Void)
+    func prepare(_ installedApp: InstalledApp, team altTeam: ALTTeam, certificate: ALTCertificate, provisioningProfile: ALTProvisioningProfile, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        let signer = ALTSigner(team: team, certificate: certificate)
-        signer.signApp(at: app.ipaURL, provisioningProfile: provisioningProfile) { (resignedURL, error) in
-            let result = Result(resignedURL, error)
-            completionHandler(result)
+        do
+        {
+            let refreshedAppDirectory = installedApp.directoryURL.appendingPathComponent("Refreshed", isDirectory: true)
+            
+            if FileManager.default.fileExists(atPath: refreshedAppDirectory.path)
+            {
+                try FileManager.default.removeItem(at: refreshedAppDirectory)
+            }
+            try FileManager.default.createDirectory(at: refreshedAppDirectory, withIntermediateDirectories: true, attributes: nil)
+            
+            let appBundleURL = try FileManager.default.unzipAppBundle(at: installedApp.ipaURL, toDirectory: refreshedAppDirectory)
+            guard let bundle = Bundle(url: appBundleURL) else { throw ALTError(.missingAppBundle) }
+            
+            guard var infoDictionary = NSDictionary(contentsOf: bundle.infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
+            
+            var allURLSchemes = infoDictionary[Bundle.Info.urlTypes] as? [[String: Any]] ?? []
+            
+            let altstoreURLScheme = ["CFBundleTypeRole": "Editor",
+                                     "CFBundleURLName": installedApp.bundleIdentifier,
+                                     "CFBundleURLSchemes": [installedApp.openAppURL.scheme!]] as [String : Any]
+            allURLSchemes.append(altstoreURLScheme)
+            
+            infoDictionary[Bundle.Info.urlTypes] = allURLSchemes
+            
+            try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
+            
+            let signer = ALTSigner(team: altTeam, certificate: certificate)
+            signer.signApp(at: appBundleURL, provisioningProfile: provisioningProfile) { (success, error) in
+                do
+                {
+                    try Result(success, error).get()
+                    
+                    let resignedURL = try FileManager.default.zipAppBundle(at: appBundleURL)
+                    completionHandler(.success(resignedURL))
+                }
+                catch
+                {
+                    completionHandler(.failure(error))
+                }
+            }
+        }
+        catch
+        {
+            completionHandler(.failure(error))
         }
     }
     
