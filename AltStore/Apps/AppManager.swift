@@ -146,8 +146,7 @@ extension AppManager
                                     
                                     let installedApp = InstalledApp(app: app,
                                                                     bundleIdentifier: profile.appID.bundleIdentifier,
-                                                                    signedDate: Date(),
-                                                                    expirationDate: Date().addingTimeInterval(60 * 60 * 24 * 7),
+                                                                    expirationDate: profile.expirationDate,
                                                                     context: context)
                                     
                                     let signer = ALTSigner(team: team, certificate: certificate)

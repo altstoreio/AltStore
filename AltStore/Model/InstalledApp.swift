@@ -16,7 +16,6 @@ class InstalledApp: NSManagedObject
     @NSManaged var bundleIdentifier: String
     @NSManaged var version: String
     
-    @NSManaged var signedDate: Date
     @NSManaged var expirationDate: Date
     
     @NSManaged var isBeta: Bool
@@ -29,7 +28,7 @@ class InstalledApp: NSManagedObject
         super.init(entity: entity, insertInto: context)
     }
     
-    init(app: App, bundleIdentifier: String, signedDate: Date, expirationDate: Date, context: NSManagedObjectContext)
+    init(app: App, bundleIdentifier: String, expirationDate: Date, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -38,7 +37,6 @@ class InstalledApp: NSManagedObject
         self.version = "0.9"
         
         self.bundleIdentifier = bundleIdentifier
-        self.signedDate = signedDate
         self.expirationDate = expirationDate
     }
 }

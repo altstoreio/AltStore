@@ -59,12 +59,12 @@ private extension MyAppsViewController
             
             let detailText =
             """
-            Signed: \(self.dateFormatter.string(from: installedApp.signedDate))
             Expires: \(self.dateFormatter.string(from: installedApp.expirationDate))
             """
             
-            cell.detailTextLabel?.numberOfLines = 2
+            cell.detailTextLabel?.numberOfLines = 1
             cell.detailTextLabel?.text = detailText
+            cell.detailTextLabel?.textColor = .red
         }
         
         return dataSource
