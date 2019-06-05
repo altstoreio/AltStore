@@ -180,11 +180,48 @@ extension AppManager
         }
     }
     
-    func refreshAllApps(completionHandler: @escaping (Result<[String: Result<Void, Error>], AppError>) -> Void)
+    func refresh(_ app: InstalledApp, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        self.refresh([app]) { (result) in
+            do
+            {
+                guard let (_, result) = try result.get().first else { throw AppError.unknown }
+                completionHandler(result)
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func refreshAllApps(completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void)
+    {
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            do
+            {
+                let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+                fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+                
+                let installedApps = try context.fetch(fetchRequest)
+                self.refresh(installedApps) { (result) in
+                    context.perform { // keep context alive
+                        completionHandler(result)
+                    }
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(.prepare(error)))
+            }
+        }
+    }
+    
+    private func refresh<T: Collection>(_ installedApps: T, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void) where T.Element == InstalledApp
     {
         let backgroundTaskID = RSTBeginBackgroundTask("com.rileytestut.AltStore.RefreshApps")
         
-        func finish(_ result: Result<[String: Result<Void, Error>], AppError>)
+        func finish(_ result: Result<[String: Result<InstalledApp, Error>], AppError>)
         {
             completionHandler(result)
             
@@ -206,40 +243,30 @@ extension AppManager
                     case .success(let certificate):
                         let signer = ALTSigner(team: team, certificate: certificate)
                         
-                        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                            do
-                            {
-                                let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-                                fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+                        let dispatchGroup = DispatchGroup()
+                        var results = [String: Result<InstalledApp, Error>]()
+                        
+                        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                        
+                        for app in installedApps
+                        {
+                            dispatchGroup.enter()
+                            
+                            app.managedObjectContext?.perform {
+                                let bundleIdentifier = app.bundleIdentifier
+                                print("Refreshing App:", bundleIdentifier)
                                 
-                                let installedApps = try context.fetch(fetchRequest)
-                                
-                                let dispatchGroup = DispatchGroup()
-                                var results = [String: Result<Void, Error>]()
-                                
-                                for app in installedApps
-                                {
-                                    dispatchGroup.enter()
-                                    
-                                    let bundleIdentifier = app.bundleIdentifier
-                                    print("Refreshing App:", bundleIdentifier)
-                                    
-                                    self.refresh(app, signer: signer) { (result) in
-                                        print("Refreshed App: \(bundleIdentifier).", result)
-                                        results[bundleIdentifier] = result
-                                        dispatchGroup.leave()
-                                    }
-                                }
-                                
-                                dispatchGroup.notify(queue: .global()) {
-                                    context.perform { // Keep context alive
-                                        finish(.success(results))
-                                    }
+                                self.refresh(app, signer: signer, context: context) { (result) in
+                                    print("Refreshed App: \(bundleIdentifier).", result)
+                                    results[bundleIdentifier] = result
+                                    dispatchGroup.leave()
                                 }
                             }
-                            catch
-                            {
-                                finish(.failure(.prepare(error)))
+                        }
+                        
+                        dispatchGroup.notify(queue: .global()) {
+                            context.perform {
+                                finish(.success(results))
                             }
                         }
                     }
@@ -643,7 +670,7 @@ private extension AppManager
         }
     }
     
-    func refresh(_ installedApp: InstalledApp, signer: ALTSigner, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    func refresh(_ installedApp: InstalledApp, signer: ALTSigner, context: NSManagedObjectContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
     {
         self.prepareProvisioningProfile(for: installedApp.app, team: signer.team) { (result) in
             switch result
@@ -660,7 +687,20 @@ private extension AppManager
                             
                             // Send app to server
                             installedApp.managedObjectContext?.perform {
-                                self.sendAppToServer(fileURL: resignedURL, identifier: installedApp.bundleIdentifier, completionHandler: completionHandler)
+                                self.sendAppToServer(fileURL: resignedURL, identifier: installedApp.bundleIdentifier) { (result) in
+                                    context.perform {
+                                        switch result
+                                        {
+                                        case .success:
+                                            let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+                                            installedApp.expirationDate = profile.expirationDate
+                                            completionHandler(.success(installedApp))
+                                            
+                                        case .failure(let error):
+                                            completionHandler(.failure(error))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
