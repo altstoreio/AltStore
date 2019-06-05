@@ -26,13 +26,21 @@ extension ALTServerError
     }
 }
 
-enum InstallError: Error
+enum InstallError: LocalizedError
 {
     case unknown
     case cancelled
     case invalidApp
     case noUDID
     case server(ALTServerError)
+    
+    var errorDescription: String? {
+        switch self
+        {
+        case .server(let error): return error.localizedDescription
+        default: return nil
+        }
+    }
 }
 
 struct Server: Equatable
