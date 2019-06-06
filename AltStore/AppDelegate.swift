@@ -36,11 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if UserDefaults.standard.firstLaunch == nil
         {
-            Keychain.shared.appleIDEmailAddress = nil
-            Keychain.shared.appleIDPassword = nil
-            Keychain.shared.signingCertificatePrivateKey = nil
-            Keychain.shared.signingCertificateIdentifier = nil
-            
+            Keychain.shared.reset()
             UserDefaults.standard.firstLaunch = Date()
         }
         

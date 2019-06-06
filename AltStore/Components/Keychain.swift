@@ -20,6 +20,14 @@ class Keychain
     private init()
     {
     }
+    
+    func reset()
+    {
+        self.appleIDEmailAddress = nil
+        self.appleIDPassword = nil
+        self.signingCertificatePrivateKey = nil
+        self.signingCertificateIdentifier = nil
+    }
 }
 
 extension Keychain

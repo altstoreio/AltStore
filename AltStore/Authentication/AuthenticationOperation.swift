@@ -77,21 +77,29 @@ class AuthenticationOperation: RSTOperation
                     
                     // Account
                     let account = Account(altAccount, context: context)
+                    account.isActiveAccount = true
                     
                     let otherAccountsFetchRequest = Account.fetchRequest() as NSFetchRequest<Account>
                     otherAccountsFetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(Account.identifier), account.identifier)
                     
                     let otherAccounts = try context.fetch(otherAccountsFetchRequest)
-                    otherAccounts.forEach(context.delete(_:))
+                    for account in otherAccounts
+                    {
+                        account.isActiveAccount = false
+                    }
                     
                     // Team
                     let team = Team(altTeam, account: account, context: context)
+                    team.isActiveTeam = true
                     
                     let otherTeamsFetchRequest = Team.fetchRequest() as NSFetchRequest<Team>
                     otherTeamsFetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(Team.identifier), team.identifier)
                     
                     let otherTeams = try context.fetch(otherTeamsFetchRequest)
-                    otherTeams.forEach(context.delete(_:))
+                    for team in otherTeams
+                    {
+                        team.isActiveTeam = false
+                    }
                     
                     // Save
                     try context.save()
@@ -264,27 +272,12 @@ private extension AuthenticationOperation
             case .success(let teams):
                 
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                    do
+                    if let activeTeam = DatabaseManager.shared.activeTeam(in: context), let altTeam = teams.first(where: { $0.identifier == activeTeam.identifier })
                     {
-                        let fetchRequest = Team.fetchRequest() as NSFetchRequest<Team>
-                        fetchRequest.fetchLimit = 1
-                        fetchRequest.returnsObjectsAsFaults = false
-                        
-                        let fetchedTeams = try context.fetch(fetchRequest)
-
-                        if let fetchedTeam = fetchedTeams.first, let altTeam = teams.first(where: { $0.identifier == fetchedTeam.identifier })
-                        {
-                            completionHandler(.success(altTeam))
-                        }
-                        else
-                        {
-                            selectTeam(from: teams)
-                        }
+                        completionHandler(.success(altTeam))
                     }
-                    catch
+                    else
                     {
-                        print("Error fetching Teams.", error)
-                        
                         selectTeam(from: teams)
                     }
                 }

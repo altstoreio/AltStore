@@ -12,7 +12,7 @@ import CoreData
 import AltSign
 
 @objc(Account)
-class Account: NSManagedObject
+class Account: NSManagedObject, Fetchable
 {
     var localizedName: String {
         var components = PersonNameComponents()
@@ -29,6 +29,8 @@ class Account: NSManagedObject
     
     @NSManaged var firstName: String
     @NSManaged var lastName: String
+    
+    @NSManaged var isActiveAccount: Bool
     
     /* Relationships */
     @NSManaged var teams: Set<Team>

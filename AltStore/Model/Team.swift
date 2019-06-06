@@ -11,13 +11,29 @@ import CoreData
 
 import AltSign
 
+extension ALTTeamType
+{
+    var localizedDescription: String {
+        switch self
+        {
+        case .free: return NSLocalizedString("Free Developer Account", comment: "")
+        case .individual: return NSLocalizedString("Individual", comment: "")
+        case .organization: return NSLocalizedString("Organization", comment: "")
+        case .unknown: fallthrough
+        @unknown default: return NSLocalizedString("Unknown", comment: "")
+        }
+    }
+}
+
 @objc(Team)
-class Team: NSManagedObject
+class Team: NSManagedObject, Fetchable
 {
     /* Properties */
     @NSManaged var name: String
     @NSManaged var identifier: String
     @NSManaged var type: ALTTeamType
+    
+    @NSManaged var isActiveTeam: Bool
     
     /* Relationships */
     @NSManaged private(set) var account: Account!

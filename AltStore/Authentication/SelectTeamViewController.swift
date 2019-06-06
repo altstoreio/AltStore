@@ -57,16 +57,7 @@ private extension SelectTeamViewController
         dataSource.proxy = self
         dataSource.cellConfigurationHandler = { [weak self] (cell, team, indexPath) in
             cell.textLabel?.text = team.name
-            
-            switch team.type
-            {
-            case .unknown: cell.detailTextLabel?.text = NSLocalizedString("Unknown", comment: "")
-            case .free: cell.detailTextLabel?.text = NSLocalizedString("Free Developer Account", comment: "")
-            case .individual: cell.detailTextLabel?.text = NSLocalizedString("Individual", comment: "")
-            case .organization: cell.detailTextLabel?.text = NSLocalizedString("Organization", comment: "")
-            @unknown default: cell.detailTextLabel?.text = nil
-            }
-            
+            cell.detailTextLabel?.text = team.type.localizedDescription
             cell.accessoryType = (self?.selectedTeam == team) ? .checkmark : .none
         }
         

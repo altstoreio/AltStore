@@ -4,6 +4,7 @@
         <attribute name="appleID" attributeType="String" syncable="YES"/>
         <attribute name="firstName" attributeType="String" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="isActiveAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="lastName" attributeType="String" syncable="YES"/>
         <relationship name="teams" toMany="YES" deletionRule="Cascade" destinationEntity="Team" inverseName="account" inverseEntity="Team" syncable="YES"/>
         <uniquenessConstraints>
@@ -39,6 +40,7 @@
     </entity>
     <entity name="Team" representedClassName="Team" syncable="YES">
         <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="isActiveTeam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="teams" inverseEntity="Account" syncable="YES"/>
@@ -49,9 +51,9 @@
         </uniquenessConstraints>
     </entity>
     <elements>
+        <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
         <element name="App" positionX="-63" positionY="-18" width="128" height="210"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
-        <element name="Team" positionX="-45" positionY="81" width="128" height="105"/>
-        <element name="Account" positionX="-36" positionY="90" width="128" height="120"/>
+        <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
     </elements>
 </model>
