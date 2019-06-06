@@ -101,6 +101,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     }
     else if ([fileURL.pathExtension.lowercaseString isEqualToString:@"ipa"])
     {
+        NSLog(@"Unzipping .ipa...");
+        
         temporaryDirectoryURL = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:[[NSUUID UUID] UUIDString] isDirectory:YES];
         
         NSError *error = nil;
@@ -225,6 +227,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         free(files);
     }
     
+    NSLog(@"Writing to device...");
+    
     plist_t options = instproxy_client_options_new();
     instproxy_client_options_add(options, "PackageType", "Developer", NULL);
     
@@ -236,6 +240,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         finish(writeError);
         return progress;
     }
+    
+    NSLog(@"Finished writing to device.");
     
     NSValue *value = [NSValue valueWithPointer:(const void *)np];
     
@@ -253,6 +259,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
             }
         }
     };
+    
+    NSLog(@"Installing to device %@...", udid);
     
     instproxy_install(ipc, destinationURL.relativePath.fileSystemRepresentation, options, ALTDeviceManagerUpdateStatus, uuidString);
     instproxy_client_options_free(options);
@@ -387,9 +395,10 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         }
         
         lockdownd_client_t client = NULL;
-        if (lockdownd_client_new(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        int result = lockdownd_client_new(device, &client, "altserver");
+        if (result != LOCKDOWN_E_SUCCESS)
         {
-            fprintf(stderr, "ERROR: Connecting to device failed!\n");
+            fprintf(stderr, "ERROR: Connecting to device %s failed! (%d)\n", udid, result);
             
             idevice_free(device);
             
