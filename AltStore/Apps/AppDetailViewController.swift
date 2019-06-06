@@ -86,16 +86,19 @@ private extension AppDetailViewController
         
         self.descriptionLabel.text = self.app.localizedDescription
         
-        if self.app.installedApp == nil
+        if !self.downloadButton.isIndicatingActivity
         {
-            let text = String(format: NSLocalizedString("Download %@", comment: ""), self.app.name)
-            self.downloadButton.setTitle(text, for: .normal)
-            self.downloadButton.isEnabled = true
-        }
-        else
-        {
-            self.downloadButton.setTitle(NSLocalizedString("Installed", comment: ""), for: .normal)
-            self.downloadButton.isEnabled = false
+            if self.app.installedApp == nil
+            {
+                let text = String(format: NSLocalizedString("Download %@", comment: ""), self.app.name)
+                self.downloadButton.setTitle(text, for: .normal)
+                self.downloadButton.isEnabled = true
+            }
+            else
+            {
+                self.downloadButton.setTitle(NSLocalizedString("Installed", comment: ""), for: .normal)
+                self.downloadButton.isEnabled = false
+            }
         }
     }
     
@@ -135,6 +138,10 @@ private extension AppDetailViewController
                     toastView.show(in: self.navigationController!.view, duration: 2)
                 }
             }
+            catch AppManager.AppError.authentication(AuthenticationOperation.Error.cancelled)
+            {
+                // Ignore
+            }
             catch
             {
                 DispatchQueue.main.async {
@@ -145,8 +152,8 @@ private extension AppDetailViewController
             }
             
             DispatchQueue.main.async {
-                self.update()
                 sender.isIndicatingActivity = false
+                self.update()
             }
         }
     }

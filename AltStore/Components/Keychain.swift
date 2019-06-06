@@ -53,4 +53,14 @@ extension Keychain
             self.keychain[data: "signingCertificatePrivateKey"] = newValue
         }
     }
+    
+    var signingCertificateIdentifier: String? {
+        get {
+            let identifier = try? self.keychain.get("signingCertificateIdentifier")
+            return identifier
+        }
+        set {
+            self.keychain["signingCertificateIdentifier"] = newValue
+        }
+    }
 }

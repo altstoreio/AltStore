@@ -144,6 +144,13 @@
 		BFD52C2022A1A9EC000B7ED1 /* node.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1D22A1A9EC000B7ED1 /* node.c */; };
 		BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1E22A1A9EC000B7ED1 /* node_list.c */; };
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
+		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
+		BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */; };
+		BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */; };
+		BFE6326622A857C200F30809 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326522A857C100F30809 /* Team.swift */; };
+		BFE6326822A858F300F30809 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
+		BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */; };
+		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
 		BFFC044E22A204F40066B31F /* App.ipa in Resources */ = {isa = PBXBuildFile; fileRef = BFFC044D22A204F30066B31F /* App.ipa */; };
 		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
@@ -354,6 +361,13 @@
 		BFD52C1D22A1A9EC000B7ED1 /* node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node.c; path = Dependencies/libplist/libcnary/node.c; sourceTree = SOURCE_ROOT; };
 		BFD52C1E22A1A9EC000B7ED1 /* node_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = node_list.c; path = Dependencies/libplist/libcnary/node_list.c; sourceTree = SOURCE_ROOT; };
 		BFD52C1F22A1A9EC000B7ED1 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
+		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
+		BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
+		BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
+		BFE6326522A857C100F30809 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
+		BFE6326722A858F300F30809 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceCertificateViewController.swift; sourceTree = "<group>"; };
+		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
 		BFFC044D22A204F30066B31F /* App.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = App.ipa; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -657,6 +671,7 @@
 			children = (
 				BFD2476D2284B9A500981D42 /* AppDelegate.swift */,
 				BFD247732284B9A500981D42 /* Main.storyboard */,
+				BFE6325822A83BA800F30809 /* Authentication */,
 				BFD2478A2284C49000981D42 /* Apps */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
 				BFB1169E22933DDC00BB457C /* Updates */,
@@ -730,8 +745,10 @@
 			children = (
 				BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */,
 				BFB11691229322E400BB457C /* DatabaseManager.swift */,
+				BFE6326722A858F300F30809 /* Account.swift */,
 				BFBBE2DE22931F73002097FA /* App.swift */,
 				BFBBE2E022931F81002097FA /* InstalledApp.swift */,
+				BFE6326522A857C100F30809 /* Team.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -752,6 +769,18 @@
 				BF1E3129229F474900370A3C /* ConnectionManager.swift */,
 			);
 			path = Connections;
+			sourceTree = "<group>";
+		};
+		BFE6325822A83BA800F30809 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				BFE6325922A83BEB00F30809 /* Authentication.storyboard */,
+				BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */,
+				BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */,
+				BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */,
+				BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */,
+			);
+			path = Authentication;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -956,6 +985,7 @@
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
+				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1096,23 +1126,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
+				BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */,
 				BFD247722284B9A500981D42 /* MyAppsViewController.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
+				BFE6326822A858F300F30809 /* Account.swift in Sources */,
+				BFE6326622A857C200F30809 /* Team.swift in Sources */,
 				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
 				BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
+				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
 				BFD52BD622A08A85000B7ED1 /* Server.swift in Sources */,
+				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
 			);

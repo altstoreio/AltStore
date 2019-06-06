@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18F203" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Account" representedClassName="Account" syncable="YES">
+        <attribute name="appleID" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" attributeType="String" syncable="YES"/>
+        <relationship name="teams" toMany="YES" deletionRule="Cascade" destinationEntity="Team" inverseName="account" inverseEntity="Team" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="App" representedClassName="App" syncable="YES">
         <attribute name="developerName" attributeType="String" syncable="YES"/>
         <attribute name="downloadURL" attributeType="URI" syncable="YES"/>
@@ -25,8 +37,21 @@
         <attribute name="version" attributeType="String" syncable="YES"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
     </entity>
+    <entity name="Team" representedClassName="Team" syncable="YES">
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="teams" inverseEntity="Account" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <elements>
         <element name="App" positionX="-63" positionY="-18" width="128" height="210"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
+        <element name="Team" positionX="-45" positionY="81" width="128" height="105"/>
+        <element name="Account" positionX="-36" positionY="90" width="128" height="120"/>
     </elements>
 </model>

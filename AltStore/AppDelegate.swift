@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Keychain.shared.appleIDEmailAddress = nil
             Keychain.shared.appleIDPassword = nil
             Keychain.shared.signingCertificatePrivateKey = nil
+            Keychain.shared.signingCertificateIdentifier = nil
             
             UserDefaults.standard.firstLaunch = Date()
         }

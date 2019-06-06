@@ -11,5 +11,4 @@ import Foundation
 extension UserDefaults
 {
     @NSManaged var firstLaunch: Date?
-    @NSManaged var signingCertificateIdentifier: String?
 }

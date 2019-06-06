@@ -60,9 +60,11 @@ class AppManager
     static let shared = AppManager()
     
     private let session = URLSession(configuration: .default)
+    private let operationQueue = OperationQueue()
     
     private init()
     {
+        self.operationQueue.name = "com.rileytestut.AltStore.AppManager"
     }
 }
 
@@ -96,6 +98,15 @@ extension AppManager
         {
             print("Error while fetching installed apps")
         }
+    }
+    
+    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTTeam, ALTCertificate), Error>) -> Void)
+    {
+        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
+        authenticationOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        self.operationQueue.addOperation(authenticationOperation)
     }
 }
 
@@ -131,14 +142,14 @@ extension AppManager
                     switch result
                     {
                     case .failure(let error): finish(.failure(.authentication(error)))
-                    case .success(let team):
+                    case .success(let team, let certificate):
                         
-                        // Fetch signing resources
-                        self.fetchSigningResources(for: app, team: team, presentingViewController: presentingViewController) { (result) in
+                        // Fetch provisioning profile
+                        self.prepareProvisioningProfile(for: app, team: team) { (result) in
                             switch result
                             {
                             case .failure(let error): finish(.failure(.fetchingSigningResources(error)))
-                            case .success(let certificate, let profile):
+                            case .success(let profile):
                                 
                                 // Prepare app
                                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
@@ -233,42 +244,35 @@ extension AppManager
             switch result
             {
             case .failure(let error): finish(.failure(.authentication(error)))
-            case .success(let team):
+            case .success(let team, let certificate):
                 
-                // Fetch Certificate
-                self.fetchCertificate(for: team, presentingViewController: nil) { (result) in
-                    switch result
-                    {
-                    case .failure(let error): finish(.failure(.fetchingSigningResources(error)))
-                    case .success(let certificate):
-                        let signer = ALTSigner(team: team, certificate: certificate)
+                // Sign
+                let signer = ALTSigner(team: team, certificate: certificate)
+                
+                let dispatchGroup = DispatchGroup()
+                var results = [String: Result<InstalledApp, Error>]()
+                
+                let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                
+                for app in installedApps
+                {
+                    dispatchGroup.enter()
+                    
+                    app.managedObjectContext?.perform {
+                        let bundleIdentifier = app.bundleIdentifier
+                        print("Refreshing App:", bundleIdentifier)
                         
-                        let dispatchGroup = DispatchGroup()
-                        var results = [String: Result<InstalledApp, Error>]()
-                        
-                        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-                        
-                        for app in installedApps
-                        {
-                            dispatchGroup.enter()
-                            
-                            app.managedObjectContext?.perform {
-                                let bundleIdentifier = app.bundleIdentifier
-                                print("Refreshing App:", bundleIdentifier)
-                                
-                                self.refresh(app, signer: signer, context: context) { (result) in
-                                    print("Refreshed App: \(bundleIdentifier).", result)
-                                    results[bundleIdentifier] = result
-                                    dispatchGroup.leave()
-                                }
-                            }
+                        self.refresh(app, signer: signer, context: context) { (result) in
+                            print("Refreshed App: \(bundleIdentifier).", result)
+                            results[bundleIdentifier] = result
+                            dispatchGroup.leave()
                         }
-                        
-                        dispatchGroup.notify(queue: .global()) {
-                            context.perform {
-                                finish(.success(results))
-                            }
-                        }
+                    }
+                }
+                
+                dispatchGroup.notify(queue: .global()) {
+                    context.perform {
+                        finish(.success(results))
                     }
                 }
             }
@@ -297,63 +301,6 @@ private extension AppManager
         }
         
         downloadTask.resume()
-    }
-    
-    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
-    {
-        func authenticate(emailAddress: String, password: String)
-        {
-            ALTAppleAPI.shared.authenticate(appleID: emailAddress, password: password) { (account, error) in
-                do
-                {
-                    let account = try Result(account, error).get()
-                    
-                    Keychain.shared.appleIDEmailAddress = emailAddress
-                    Keychain.shared.appleIDPassword = password
-                    
-                    self.fetchTeam(for: account, presentingViewController: presentingViewController, completionHandler: completionHandler)
-                }
-                catch
-                {
-                    completionHandler(.failure(error))
-                }
-            }
-        }
-        
-        if let emailAddress = Keychain.shared.appleIDEmailAddress, let password = Keychain.shared.appleIDPassword
-        {
-            authenticate(emailAddress: emailAddress, password: password)
-        }
-        else if let presentingViewController = presentingViewController
-        {
-            DispatchQueue.main.async {
-                let alertController = UIAlertController(title: "Enter Apple ID + Password", message: "", preferredStyle: .alert)
-                alertController.addTextField { (textField) in
-                    textField.placeholder = "Apple ID"
-                    textField.textContentType = .emailAddress
-                }
-                alertController.addTextField { (textField) in
-                    textField.placeholder = "Password"
-                    textField.textContentType = .password
-                }
-                alertController.addAction(.cancel)
-                alertController.addAction(UIAlertAction(title: "Sign In", style: .default) { [unowned alertController] (action) in
-                    guard
-                        let emailAddress = alertController.textFields![0].text,
-                        let password = alertController.textFields![1].text,
-                        !emailAddress.isEmpty, !password.isEmpty
-                    else { return completionHandler(.failure(ALTAppleAPIError(.incorrectCredentials))) }
-                    
-                    authenticate(emailAddress: emailAddress, password: password)
-                })
-                
-                presentingViewController.present(alertController, animated: true, completion: nil)
-            }
-        }
-        else
-        {
-            completionHandler(.failure(AppError.notAuthenticated))
-        }
     }
     
     func prepareProvisioningProfile(for app: App, team: ALTTeam, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
@@ -387,32 +334,6 @@ private extension AppManager
                         {
                             completionHandler(.failure(error))
                         }
-                    }
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
-    func fetchSigningResources(for app: App, team: ALTTeam, presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTCertificate, ALTProvisioningProfile), Error>) -> Void)
-    {
-        self.fetchCertificate(for: team, presentingViewController: presentingViewController) { (result) in
-            do
-            {
-                let certificate = try result.get()
-                
-                self.prepareProvisioningProfile(for: app, team: team) { (result) in
-                    do
-                    {
-                        let provisioningProfile = try result.get()
-                        completionHandler(.success((certificate, provisioningProfile)))
-                    }
-                    catch
-                    {
-                        completionHandler(.failure(error))
                     }
                 }
             }
@@ -484,132 +405,6 @@ private extension AppManager
 
 private extension AppManager
 {
-    func fetchTeam(for account: ALTAccount, presentingViewController: UIViewController?, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
-    {
-        ALTAppleAPI.shared.fetchTeams(for: account) { (teams, error) in
-            do
-            {
-                let teams = try Result(teams, error).get()
-                guard teams.count > 0 else { throw ALTAppleAPIError(.noTeams) }
-                
-                if let team = teams.first, teams.count == 1
-                {
-                    completionHandler(.success(team))
-                }
-                else
-                {
-                    DispatchQueue.main.async {
-                        let alertController = UIAlertController(title: "Select Team", message: "", preferredStyle: .actionSheet)
-                        alertController.addAction(.cancel)
-                        
-                        for team in teams
-                        {
-                            alertController.addAction(UIAlertAction(title: team.name, style: .default) { (action) in
-                                completionHandler(.success(team))
-                            })
-                        }
-                        
-                        presentingViewController?.present(alertController, animated: true, completion: nil)
-                    }
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
-    func fetchCertificate(for team: ALTTeam, presentingViewController: UIViewController?, completionHandler: @escaping (Result<ALTCertificate, Error>) -> Void)
-    {
-        ALTAppleAPI.shared.fetchCertificates(for: team) { (certificates, error) in
-            do
-            {
-                let certificates = try Result(certificates, error).get()
-                
-                if
-                    let identifier = UserDefaults.standard.signingCertificateIdentifier,
-                    let privateKey = Keychain.shared.signingCertificatePrivateKey,
-                    let certificate = certificates.first(where: { $0.identifier == identifier })
-                {
-                    certificate.privateKey = privateKey
-                    completionHandler(.success(certificate))
-                }
-                else if certificates.count < 1
-                {
-                    let machineName = "AltStore - " + UIDevice.current.name
-                    ALTAppleAPI.shared.addCertificate(machineName: machineName, to: team) { (certificate, error) in
-                        do
-                        {
-                            let certificate = try Result(certificate, error).get()
-                            guard let privateKey = certificate.privateKey else { throw AppError.missingPrivateKey }
-                            
-                            ALTAppleAPI.shared.fetchCertificates(for: team) { (certificates, error) in
-                                do
-                                {
-                                    let certificates = try Result(certificates, error).get()
-                                    
-                                    guard let certificate = certificates.first(where: { $0.identifier == certificate.identifier }) else {
-                                        throw AppError.missingCertificate
-                                    }
-                                    
-                                    certificate.privateKey = privateKey
-                                    
-                                    UserDefaults.standard.signingCertificateIdentifier = certificate.identifier
-                                    Keychain.shared.signingCertificatePrivateKey = privateKey
-                                    
-                                    completionHandler(.success(certificate))
-                                }
-                                catch
-                                {
-                                    completionHandler(.failure(error))
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            completionHandler(.failure(error))
-                        }
-                    }
-                }
-                else if let presentingViewController = presentingViewController
-                {
-                    DispatchQueue.main.async {
-                        let alertController = UIAlertController(title: "Too Many Certificates", message: "Please select the certificate you would like to revoke.", preferredStyle: .actionSheet)
-                        alertController.addAction(.cancel)
-                        
-                        for certificate in certificates
-                        {
-                            alertController.addAction(UIAlertAction(title: certificate.name, style: .default) { (action) in
-                                ALTAppleAPI.shared.revoke(certificate, for: team) { (success, error) in
-                                    do
-                                    {
-                                        try Result(success, error).get()
-                                        self.fetchCertificate(for: team, presentingViewController: presentingViewController, completionHandler: completionHandler)
-                                    }
-                                    catch
-                                    {
-                                        completionHandler(.failure(error))
-                                    }
-                                }
-                            })
-                        }
-                        
-                        presentingViewController.present(alertController, animated: true, completion: nil)
-                    }
-                }
-                else
-                {
-                    completionHandler(.failure(AppError.multipleCertificates))
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
     func register(_ device: ALTDevice, team: ALTTeam, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
         ALTAppleAPI.shared.fetchDevices(for: team) { (devices, error) in
