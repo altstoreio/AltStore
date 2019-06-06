@@ -159,7 +159,9 @@ private extension AuthenticationOperation
         
         if self.navigationController.viewControllers.isEmpty
         {
-            self.navigationController.setViewControllers([viewController], animated: false)
+            guard presentingViewController.presentedViewController == nil else { return false }
+            
+            self.navigationController.setViewControllers([viewController], animated: false)            
             presentingViewController.present(self.navigationController, animated: true, completion: nil)
         }
         else

@@ -77,7 +77,7 @@ extension AppDelegate
         ServerManager.shared.startDiscovering()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            AppManager.shared.refreshAllApps() { (result) in
+            AppManager.shared.refreshAllApps(presentingViewController: nil) { (result) in
                 ServerManager.shared.stopDiscovering()
                 
                 let content = UNMutableNotificationContent()

@@ -191,9 +191,9 @@ extension AppManager
         }
     }
     
-    func refresh(_ app: InstalledApp, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    func refresh(_ app: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
     {
-        self.refresh([app]) { (result) in
+        self.refresh([app], presentingViewController: presentingViewController) { (result) in
             do
             {
                 guard let (_, result) = try result.get().first else { throw AppError.unknown }
@@ -206,7 +206,7 @@ extension AppManager
         }
     }
     
-    func refreshAllApps(completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void)
+    func refreshAllApps(presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             do
@@ -215,7 +215,7 @@ extension AppManager
                 fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
                 
                 let installedApps = try context.fetch(fetchRequest)
-                self.refresh(installedApps) { (result) in
+                self.refresh(installedApps, presentingViewController: presentingViewController) { (result) in
                     context.perform { // keep context alive
                         completionHandler(result)
                     }
@@ -228,7 +228,7 @@ extension AppManager
         }
     }
     
-    private func refresh<T: Collection>(_ installedApps: T, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void) where T.Element == InstalledApp
+    private func refresh<T: Collection>(_ installedApps: T, presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], AppError>) -> Void) where T.Element == InstalledApp
     {
         let backgroundTaskID = RSTBeginBackgroundTask("com.rileytestut.AltStore.RefreshApps")
         
@@ -239,8 +239,10 @@ extension AppManager
             RSTEndBackgroundTask(backgroundTaskID)
         }
         
+        guard !ServerManager.shared.discoveredServers.isEmpty else { return finish(.failure(.noServersFound)) }
+        
         // Authenticate
-        self.authenticate(presentingViewController: nil) { (result) in
+        self.authenticate(presentingViewController: presentingViewController) { (result) in
             switch result
             {
             case .failure(let error): finish(.failure(.authentication(error)))

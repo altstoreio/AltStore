@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -73,7 +72,13 @@
                             <outlet property="delegate" destination="Xf1-LZ-1vU" id="0YS-oa-D9d"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My Apps" id="dz9-0e-LKa"/>
+                    <navigationItem key="navigationItem" title="My Apps" id="dz9-0e-LKa">
+                        <barButtonItem key="rightBarButtonItem" title="Refresh All" id="0Ke-yl-tAg">
+                            <connections>
+                                <action selector="refreshAllApps:" destination="Xf1-LZ-1vU" id="6op-Mf-HSD"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nb5-5T-hHT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
