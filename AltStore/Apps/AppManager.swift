@@ -72,6 +72,11 @@ extension AppManager
 {
     func update()
     {
+        #if targetEnvironment(simulator)
+        // Apps aren't ever actually installed to simulator, so just do nothing rather than delete them from database.
+        return
+        #else
+        
         let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
         
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
@@ -98,6 +103,8 @@ extension AppManager
         {
             print("Error while fetching installed apps")
         }
+        
+        #endif
     }
     
     func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTTeam, ALTCertificate), Error>) -> Void)
