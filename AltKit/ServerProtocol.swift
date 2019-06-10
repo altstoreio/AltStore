@@ -27,7 +27,8 @@ public struct ServerRequest: Codable
 
 public struct ServerResponse: Codable
 {
-    public var success: Bool
+    public var progress: Double
+    
     public var error: ALTServerError? {
         get {
             guard let code = self.errorCode else { return nil }
@@ -37,12 +38,11 @@ public struct ServerResponse: Codable
             self.errorCode = newValue?.code
         }
     }
-    
     private var errorCode: ALTServerError.Code?
     
-    public init(success: Bool, error: ALTServerError?)
+    public init(progress: Double, error: ALTServerError?)
     {
-        self.success = success
+        self.progress = progress
         self.error = error
     }
 }

@@ -98,6 +98,7 @@
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
 		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
 		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
+		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
 		BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476F2284B9A500981D42 /* AppsViewController.swift */; };
 		BFD247722284B9A500981D42 /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD247712284B9A500981D42 /* MyAppsViewController.swift */; };
@@ -112,7 +113,6 @@
 		BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */; };
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
-		BFD52BD622A08A85000B7ED1 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD522A08A85000B7ED1 /* Server.swift */; };
 		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
 		BFD52C0222A1A9CB000B7ED1 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE622A1A9CA000B7ED1 /* base64.c */; };
 		BFD52C0322A1A9CB000B7ED1 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE722A1A9CA000B7ED1 /* hashtable.c */; };
@@ -146,6 +146,10 @@
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
 		BFDB69FD22A9A7B7007EA6D6 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB69FC22A9A7B7007EA6D6 /* AccountViewController.swift */; };
 		BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */; };
+		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
+		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
+		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
+		BFDB6A0F22AB2776007EA6D6 /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0E22AB2776007EA6D6 /* InstallAppOperation.swift */; };
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
 		BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */; };
 		BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */; };
@@ -315,6 +319,7 @@
 		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
 		BFBBE2DE22931F73002097FA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BFBBE2E022931F81002097FA /* InstalledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledApp.swift; sourceTree = "<group>"; };
+		BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAppOperation.swift; sourceTree = "<group>"; };
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476D2284B9A500981D42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFD2476F2284B9A500981D42 /* AppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsViewController.swift; sourceTree = "<group>"; };
@@ -331,7 +336,6 @@
 		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 		BFD52BD222A06EFB000B7ED1 /* AltKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltKit.h; sourceTree = "<group>"; };
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
-		BFD52BD522A08A85000B7ED1 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
 		BFD52BE622A1A9CA000B7ED1 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Dependencies/libplist/src/base64.c; sourceTree = SOURCE_ROOT; };
 		BFD52BE722A1A9CA000B7ED1 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = Dependencies/libplist/src/hashtable.c; sourceTree = SOURCE_ROOT; };
@@ -365,6 +369,10 @@
 		BFD52C1F22A1A9EC000B7ED1 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
 		BFDB69FC22A9A7B7007EA6D6 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
+		BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignAppOperation.swift; sourceTree = "<group>"; };
+		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
+		BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationError.swift; sourceTree = "<group>"; };
+		BFDB6A0E22AB2776007EA6D6 /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
 		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
@@ -641,7 +649,6 @@
 			isa = PBXGroup;
 			children = (
 				BFD52BD322A0800A000B7ED1 /* ServerManager.swift */,
-				BFD52BD522A08A85000B7ED1 /* Server.swift */,
 			);
 			path = Server;
 			sourceTree = "<group>";
@@ -682,6 +689,7 @@
 				BFDB69FB22A9A7A6007EA6D6 /* Account */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BFD247982284D7FC00981D42 /* Model */,
+				BFDB6A0922AAEDA1007EA6D6 /* Operations */,
 				BFD2478D2284C4C700981D42 /* Components */,
 				BFDB6A0622A9B114007EA6D6 /* Protocols */,
 				BFD2479D2284FBBD00981D42 /* Extensions */,
@@ -793,6 +801,19 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		BFDB6A0922AAEDA1007EA6D6 /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */,
+				BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */,
+				BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */,
+				BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */,
+				BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */,
+				BFDB6A0E22AB2776007EA6D6 /* InstallAppOperation.swift */,
+			);
+			path = Operations;
+			sourceTree = "<group>";
+		};
 		BFE6325822A83BA800F30809 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -800,7 +821,6 @@
 				BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */,
 				BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */,
 				BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */,
-				BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -1148,12 +1168,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFDB6A0F22AB2776007EA6D6 /* InstallAppOperation.swift in Sources */,
+				BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */,
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFDB69FD22A9A7B7007EA6D6 /* AccountViewController.swift in Sources */,
 				BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */,
 				BFD247722284B9A500981D42 /* MyAppsViewController.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
+				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
@@ -1163,14 +1186,15 @@
 				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
+				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
+				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
-				BFD52BD622A08A85000B7ED1 /* Server.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,

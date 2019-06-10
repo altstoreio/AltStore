@@ -25,6 +25,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(void)> *installationCompletionHandlers;
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSValue *> *installationClients;
+@property (nonatomic, readonly) dispatch_queue_t installationQueue;
 
 @end
 
@@ -49,6 +50,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         _installationCompletionHandlers = [NSMutableDictionary dictionary];
         _installationProgress = [NSMutableDictionary dictionary];
         _installationClients = [NSMutableDictionary dictionary];
+        
+        _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
     }
     
     return self;
@@ -56,221 +59,238 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
 {
-    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
+    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:4];
     
-    NSUUID *UUID = [NSUUID UUID];
-    __block char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
-    strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
-    uuidString[UUID.UUIDString.length] = '\0';
-    
-    idevice_t device = NULL;
-    lockdownd_client_t client = NULL;
-    instproxy_client_t ipc = NULL;
-    np_client_t np = NULL;
-    afc_client_t afc = NULL;
-    lockdownd_service_descriptor_t service = NULL;
-    
-    void (^finish)(NSError *error) = ^(NSError *error) {
-        np_client_free(np);
-        instproxy_client_free(ipc);
-        afc_client_free(afc);
-        lockdownd_client_free(client);
-        idevice_free(device);
-        lockdownd_service_descriptor_free(service);
+    dispatch_async(self.installationQueue, ^{
+        NSUUID *UUID = [NSUUID UUID];
+        __block char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
+        strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
+        uuidString[UUID.UUIDString.length] = '\0';
         
-        free(uuidString);
-        uuidString = NULL;
+        idevice_t device = NULL;
+        lockdownd_client_t client = NULL;
+        instproxy_client_t ipc = NULL;
+        np_client_t np = NULL;
+        afc_client_t afc = NULL;
+        lockdownd_service_descriptor_t service = NULL;
         
-        if (error != nil)
+        void (^finish)(NSError *error) = ^(NSError *error) {
+            np_client_free(np);
+            instproxy_client_free(ipc);
+            afc_client_free(afc);
+            lockdownd_client_free(client);
+            idevice_free(device);
+            lockdownd_service_descriptor_free(service);
+            
+            free(uuidString);
+            uuidString = NULL;
+            
+            if (error != nil)
+            {
+                completionHandler(NO, error);
+            }
+            else
+            {
+                completionHandler(YES, nil);
+            }
+        };
+        
+        NSURL *appBundleURL = nil;
+        NSURL *temporaryDirectoryURL = nil;
+        
+        if ([fileURL.pathExtension.lowercaseString isEqualToString:@"app"])
         {
-            completionHandler(NO, error);
+            appBundleURL = fileURL;
+            temporaryDirectoryURL = nil;
+        }
+        else if ([fileURL.pathExtension.lowercaseString isEqualToString:@"ipa"])
+        {
+            NSLog(@"Unzipping .ipa...");
+            
+            temporaryDirectoryURL = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:[[NSUUID UUID] UUIDString] isDirectory:YES];
+            
+            NSError *error = nil;
+            if (![[NSFileManager defaultManager] createDirectoryAtURL:temporaryDirectoryURL withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                return finish(error);
+            }
+            
+            appBundleURL = [[NSFileManager defaultManager] unzipAppBundleAtURL:fileURL toDirectory:temporaryDirectoryURL error:&error];
+            if (appBundleURL == nil)
+            {
+                return finish(error);
+            }
         }
         else
         {
-            completionHandler(YES, nil);
+            return finish([NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSURLErrorKey: fileURL}]);
         }
-    };
-    
-    NSURL *appBundleURL = nil;
-    NSURL *temporaryDirectoryURL = nil;
-    
-    if ([fileURL.pathExtension.lowercaseString isEqualToString:@"app"])
-    {
-        appBundleURL = fileURL;
-        temporaryDirectoryURL = nil;
-    }
-    else if ([fileURL.pathExtension.lowercaseString isEqualToString:@"ipa"])
-    {
-        NSLog(@"Unzipping .ipa...");
         
-        temporaryDirectoryURL = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:[[NSUUID UUID] UUIDString] isDirectory:YES];
-        
-        NSError *error = nil;
-        if (![[NSFileManager defaultManager] createDirectoryAtURL:temporaryDirectoryURL withIntermediateDirectories:YES attributes:nil error:&error])
+        /* Find Device */
+        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
         {
-            finish(error);
-            return progress;
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
         
-        appBundleURL = [[NSFileManager defaultManager] unzipAppBundleAtURL:fileURL toDirectory:temporaryDirectoryURL error:&error];
-        if (appBundleURL == nil)
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
         {
-            finish(error);
-            return progress;
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
-    }
-    else
-    {
-        finish([NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSURLErrorKey: fileURL}]);
-        return progress;
-    }
-    
-    /* Find Device */
-    if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
-        return progress;
-    }
-    
-    /* Connect to Device */
-    if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    /* Connect to Notification Proxy */
-    if ((lockdownd_start_service(client, "com.apple.mobile.notification_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    if (np_client_new(device, service, &np) != NP_E_SUCCESS)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    np_set_notify_callback(np, ALTDeviceManagerDidFinishAppInstallation, uuidString);
-    
-    const char *notifications[2] = { NP_APP_INSTALLED, NULL };
-    np_observe_notifications(np, notifications);
-    
-    if (service)
-    {
+        
+        /* Connect to Notification Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.notification_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (np_client_new(device, service, &np) != NP_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        np_set_notify_callback(np, ALTDeviceManagerDidFinishAppInstallation, uuidString);
+        
+        const char *notifications[2] = { NP_APP_INSTALLED, NULL };
+        np_observe_notifications(np, notifications);
+        
+        if (service)
+        {
+            lockdownd_service_descriptor_free(service);
+            service = NULL;
+        }
+        
+        /* Connect to Installation Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (instproxy_client_new(device, service, &ipc) != INSTPROXY_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (service)
+        {
+            lockdownd_service_descriptor_free(service);
+            service = NULL;
+        }
+        
         lockdownd_service_descriptor_free(service);
         service = NULL;
-    }
-    
-    /* Connect to Installation Proxy */
-    if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    if (instproxy_client_new(device, service, &ipc) != INSTPROXY_E_SUCCESS)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    if (service)
-    {
-        lockdownd_service_descriptor_free(service);
-        service = NULL;
-    }
-    
-    lockdownd_service_descriptor_free(service);
-    service = NULL;
-    
-    /* Connect to AFC service */
-    if ((lockdownd_start_service(client, "com.apple.afc", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    lockdownd_client_free(client);
-    client = NULL;
-    
-    if (afc_client_new(device, service, &afc) != AFC_E_SUCCESS)
-    {
-        finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        return progress;
-    }
-    
-    NSURL *stagingURL = [NSURL fileURLWithPath:@"PublicStaging" isDirectory:YES];
-    
-    /* Prepare for installation */
-    char **files = NULL;
-    if (afc_get_file_info(afc, stagingURL.relativePath.fileSystemRepresentation, &files) != AFC_E_SUCCESS)
-    {
-        if (afc_make_directory(afc, stagingURL.relativePath.fileSystemRepresentation) != AFC_E_SUCCESS)
-        {
-            finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceWriteFailed userInfo:nil]);
-            return progress;
-        }
-    }
-    
-    if (files)
-    {
-        int i = 0;
         
-        while (files[i])
+        /* Connect to AFC service */
+        if ((lockdownd_start_service(client, "com.apple.afc", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
         {
-            free(files[i]);
-            i++;
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
-        free(files);
-    }
-    
-    NSLog(@"Writing to device...");
-    
-    plist_t options = instproxy_client_options_new();
-    instproxy_client_options_add(options, "PackageType", "Developer", NULL);
-    
-    NSURL *destinationURL = [stagingURL URLByAppendingPathComponent:appBundleURL.lastPathComponent];
-    
-    NSError *writeError = nil;
-    if (![self writeDirectory:appBundleURL toDestinationURL:destinationURL client:afc error:&writeError])
-    {
-        finish(writeError);
-        return progress;
-    }
-    
-    NSLog(@"Finished writing to device.");
-    
-    NSValue *value = [NSValue valueWithPointer:(const void *)np];
-    
-    self.installationClients[UUID] = value;
-    self.installationProgress[UUID] = progress;
-    self.installationCompletionHandlers[UUID] = ^{
-        finish(nil);
+        lockdownd_client_free(client);
+        client = NULL;
         
-        if (temporaryDirectoryURL != nil)
+        if (afc_client_new(device, service, &afc) != AFC_E_SUCCESS)
         {
-            NSError *error = nil;
-            if (![[NSFileManager defaultManager] removeItemAtURL:temporaryDirectoryURL error:&error])
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        NSURL *stagingURL = [NSURL fileURLWithPath:@"PublicStaging" isDirectory:YES];
+        
+        /* Prepare for installation */
+        char **files = NULL;
+        if (afc_get_file_info(afc, stagingURL.relativePath.fileSystemRepresentation, &files) != AFC_E_SUCCESS)
+        {
+            if (afc_make_directory(afc, stagingURL.relativePath.fileSystemRepresentation) != AFC_E_SUCCESS)
             {
-                NSLog(@"Error removing temporary directory. %@", error);
+                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceWriteFailed userInfo:nil]);
             }
         }
-    };
-    
-    NSLog(@"Installing to device %@...", udid);
-    
-    instproxy_install(ipc, destinationURL.relativePath.fileSystemRepresentation, options, ALTDeviceManagerUpdateStatus, uuidString);
-    instproxy_client_options_free(options);
+        
+        if (files)
+        {
+            int i = 0;
+            
+            while (files[i])
+            {
+                free(files[i]);
+                i++;
+            }
+            
+            free(files);
+        }
+        
+        NSLog(@"Writing to device...");
+        
+        plist_t options = instproxy_client_options_new();
+        instproxy_client_options_add(options, "PackageType", "Developer", NULL);
+        
+        NSURL *destinationURL = [stagingURL URLByAppendingPathComponent:appBundleURL.lastPathComponent];
+        
+        // Writing files to device should be worth 3/4 of total work.
+        [progress becomeCurrentWithPendingUnitCount:3];
+        
+        NSError *writeError = nil;
+        if (![self writeDirectory:appBundleURL toDestinationURL:destinationURL client:afc progress:nil error:&writeError])
+        {
+            return finish(writeError);
+        }
+        
+        NSLog(@"Finished writing to device.");
+        
+        NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
+        
+        NSValue *value = [NSValue valueWithPointer:(const void *)np];
+        
+        self.installationClients[UUID] = value;
+        self.installationProgress[UUID] = installationProgress;
+        self.installationCompletionHandlers[UUID] = ^{
+            finish(nil);
+            
+            if (temporaryDirectoryURL != nil)
+            {
+                NSError *error = nil;
+                if (![[NSFileManager defaultManager] removeItemAtURL:temporaryDirectoryURL error:&error])
+                {
+                    NSLog(@"Error removing temporary directory. %@", error);
+                }
+            }
+        };
+        
+        NSLog(@"Installing to device %@...", udid);
+        
+        instproxy_install(ipc, destinationURL.relativePath.fileSystemRepresentation, options, ALTDeviceManagerUpdateStatus, uuidString);
+        instproxy_client_options_free(options);
+    });
         
     return progress;
 }
 
-- (BOOL)writeDirectory:(NSURL *)directoryURL toDestinationURL:(NSURL *)destinationURL client:(afc_client_t)afc error:(NSError **)error
+- (BOOL)writeDirectory:(NSURL *)directoryURL toDestinationURL:(NSURL *)destinationURL client:(afc_client_t)afc progress:(NSProgress *)progress error:(NSError **)error
 {
     afc_make_directory(afc, destinationURL.relativePath.fileSystemRepresentation);
+    
+    if (progress == nil)
+    {
+        NSDirectoryEnumerator *countEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:directoryURL
+                                                                      includingPropertiesForKeys:@[]
+                                                                                         options:0
+                                                                                    errorHandler:^BOOL(NSURL * _Nonnull url, NSError * _Nonnull error) {
+                                                                                        if (error) {
+                                                                                            NSLog(@"[Error] %@ (%@)", error, url);
+                                                                                            return NO;
+                                                                                        }
+                                                                                        
+                                                                                        return YES;
+                                                                                    }];
+        
+        NSInteger totalCount = 0;
+        for (NSURL *__unused fileURL in countEnumerator)
+        {
+            totalCount++;
+        }
+        
+        progress = [NSProgress progressWithTotalUnitCount:totalCount];
+    }
     
     NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtURL:directoryURL
                                                              includingPropertiesForKeys:@[NSURLIsDirectoryKey]
@@ -295,7 +315,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         if ([isDirectory boolValue])
         {
             NSURL *destinationDirectoryURL = [destinationURL URLByAppendingPathComponent:fileURL.lastPathComponent isDirectory:YES];
-            if (![self writeDirectory:fileURL toDestinationURL:destinationDirectoryURL client:afc error:error])
+            if (![self writeDirectory:fileURL toDestinationURL:destinationDirectoryURL client:afc progress:progress error:error])
             {
                 return NO;
             }
@@ -308,6 +328,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 return NO;
             }
         }
+        
+        progress.completedUnitCount += 1;
     }
     
     return YES;
@@ -315,12 +337,19 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 - (BOOL)writeFile:(NSURL *)fileURL toDestinationURL:(NSURL *)destinationURL client:(afc_client_t)afc error:(NSError **)error
 {
-    NSData *data = [NSData dataWithContentsOfURL:fileURL options:0 error:error];
-    if (data == nil)
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:fileURL.path];
+    if (fileHandle == nil)
     {
+        if (error)
+        {
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:@{NSURLErrorKey: fileURL}];
+        }
+        
         return NO;
     }
     
+    NSData *data = [fileHandle readDataToEndOfFile];
+
     uint64_t af = 0;
     if ((afc_file_open(afc, destinationURL.relativePath.fileSystemRepresentation, AFC_FOPEN_WRONLY, &af) != AFC_E_SUCCESS) || af == 0)
     {
@@ -334,11 +363,12 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     
     BOOL success = YES;
     uint32_t bytesWritten = 0;
-    
+        
     while (bytesWritten < data.length)
     {
         uint32_t count = 0;
-        if (afc_file_write(afc, af, (const char *)data.bytes, (uint32_t)data.length, &bytesWritten) != AFC_E_SUCCESS)
+        
+        if (afc_file_write(afc, af, (const char *)data.bytes + bytesWritten, (uint32_t)data.length - bytesWritten, &count) != AFC_E_SUCCESS)
         {
             if (error)
             {

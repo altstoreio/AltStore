@@ -62,7 +62,7 @@ extension AppDelegate
     private func prepareForBackgroundFetch()
     {
         // Fetch every 6 hours.
-        UIApplication.shared.setMinimumBackgroundFetchInterval(60 * 60 * 6)
+        UIApplication.shared.setMinimumBackgroundFetchInterval(60 * 60)
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }
@@ -72,8 +72,10 @@ extension AppDelegate
     {
         ServerManager.shared.startDiscovering()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            AppManager.shared.refreshAllApps(presentingViewController: nil) { (result) in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            let installedApps = InstalledApp.all(in: DatabaseManager.shared.viewContext)
+            
+            _ = AppManager.shared.refresh(installedApps, presentingViewController: nil) { (result) in
                 ServerManager.shared.stopDiscovering()
                 
                 let content = UNMutableNotificationContent()
@@ -87,9 +89,7 @@ extension AppDelegate
                         guard case let .failure(error) = result else { continue }
                         throw error
                     }
-                    
-                    print(results)
-                    
+                                        
                     content.title = "Refreshed Apps!"
                     content.body = "Successfully refreshed all apps."
                     

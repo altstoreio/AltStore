@@ -76,12 +76,19 @@
                     <navigationItem key="navigationItem" title="My Apps" id="dz9-0e-LKa">
                         <barButtonItem key="rightBarButtonItem" title="Refresh All" id="0Ke-yl-tAg">
                             <connections>
-                                <action selector="refreshAllApps:" destination="Xf1-LZ-1vU" id="6op-Mf-HSD"/>
+                                <action selector="refreshAllApps:" destination="Xf1-LZ-1vU" id="GOS-gx-qKD"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="progressView" destination="CuF-K7-fn8" id="SPP-VP-a9e"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nb5-5T-hHT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" id="CuF-K7-fn8">
+                    <rect key="frame" x="0.0" y="0.0" width="150" height="2.5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </progressView>
             </objects>
             <point key="canvasLocation" x="1518" y="420"/>
         </scene>
@@ -629,7 +636,7 @@
         <image name="second" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="miz-8X-gFg"/>
+        <segue reference="8jj-zE-2hk"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Purple"/>
 </document>

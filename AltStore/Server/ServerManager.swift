@@ -11,6 +11,11 @@ import Network
 
 import AltKit
 
+struct Server: Equatable
+{
+    var service: NetService
+}
+
 class ServerManager: NSObject
 {
     static let shared = ServerManager()

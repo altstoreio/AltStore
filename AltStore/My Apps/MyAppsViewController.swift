@@ -9,6 +9,8 @@
 import UIKit
 import Roxas
 
+import AltSign
+
 class MyAppsViewController: UITableViewController
 {
     private var refreshErrors = [String: Error]()
@@ -22,11 +24,22 @@ class MyAppsViewController: UITableViewController
         return dateFormatter
     }()
     
+    @IBOutlet private var progressView: UIProgressView!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
         self.tableView.dataSource = self.dataSource
+        
+        if let navigationBar = self.navigationController?.navigationBar
+        {
+            self.progressView.translatesAutoresizingMaskIntoConstraints = false
+            navigationBar.addSubview(self.progressView)
+            
+            NSLayoutConstraint.activate([self.progressView.widthAnchor.constraint(equalTo: navigationBar.widthAnchor),
+                                         self.progressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
+        }
         
         self.update()
     }
@@ -106,7 +119,9 @@ private extension MyAppsViewController
     {
         sender.isIndicatingActivity = true
         
-        AppManager.shared.refreshAllApps(presentingViewController: self) { (result) in
+        let installedApps = InstalledApp.all(in: DatabaseManager.shared.viewContext)
+        
+        let progress = AppManager.shared.refresh(installedApps, presentingViewController: self) { (result) in
             DispatchQueue.main.async {
                 switch result
                 {
@@ -146,10 +161,49 @@ private extension MyAppsViewController
                     self.refreshErrors = failures
                 }
                 
+                self.progressView.observedProgress = nil
+                self.progressView.progress = 0.0
+                
                 sender.isIndicatingActivity = false
                 self.update()
             }
         }
+        
+        self.progressView.observedProgress = progress
+    }
+    
+    func refresh(_ installedApp: InstalledApp)
+    {
+        let progress = AppManager.shared.refresh(installedApp, presentingViewController: self) { (result) in
+            do
+            {
+                let app = try result.get()
+                try app.managedObjectContext?.save()
+                
+                DispatchQueue.main.async {
+                    let toastView = RSTToastView(text: "Refreshed \(installedApp.app.name)!", detailText: nil)
+                    toastView.tintColor = .altPurple
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    
+                    self.update()
+                }
+            }
+            catch
+            {
+                DispatchQueue.main.async {
+                    let toastView = RSTToastView(text: "Failed to refresh \(installedApp.app.name)", detailText: error.localizedDescription)
+                    toastView.tintColor = .altPurple
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.progressView.observedProgress = nil
+                self.progressView.progress = 0.0
+            }
+        }
+        
+        self.progressView.observedProgress = progress
     }
 }
 
@@ -183,7 +237,7 @@ extension MyAppsViewController
             toastView.activityIndicatorView.startAnimating()
             toastView.show(in: self.navigationController?.view ?? self.view)
             
-            AppManager.shared.refresh(installedApp, presentingViewController: self) { (result) in
+            let progress = AppManager.shared.refresh(installedApp, presentingViewController: self) { (result) in
                 do
                 {
                     let app = try result.get()
@@ -203,11 +257,16 @@ extension MyAppsViewController
                         let toastView = RSTToastView(text: "Failed to refresh \(installedApp.app.name)", detailText: error.localizedDescription)
                         toastView.tintColor = .altPurple
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                        
-                        self.update()
                     }
                 }
+                
+                DispatchQueue.main.async {
+                    self.progressView.observedProgress = nil
+                    self.progressView.progress = 0.0
+                }
             }
+            
+            self.progressView.observedProgress = progress
         }
         
         return [deleteAction, refreshAction]

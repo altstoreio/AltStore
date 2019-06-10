@@ -184,8 +184,7 @@ private extension ConnectionManager
                 print("Processed request from \(connection.endpoint).")
             }
             
-            let success = (error == nil)
-            let response = ServerResponse(success: success, error: error)
+            let response = ServerResponse(progress: 1.0, error: error)
             
             self.send(response, to: connection) { (result) in
                 print("Sent response to \(connection.endpoint) with result:", result)
@@ -209,12 +208,15 @@ private extension ConnectionManager
                     {
                     case .failure(let error): finish(error: error)
                     case .success(let request, let fileURL):
-                        print("Installing to device..")
+                        print("Installing to device \(request.udid)...")
                         
-                        ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: request.udid) { (success, error) in
-                            print("Installed app with result:", result)
-                            let error = error.map { $0 as? ALTServerError ?? ALTServerError(.unknown) }
-                            finish(error: error)
+                        self?.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
+                            print("Installed to device with result:", result)
+                            switch result
+                            {
+                            case .failure(let error): finish(error: error)
+                            case .success: finish(error: nil)
+                            }
                         }
                     }
                 }
@@ -302,6 +304,46 @@ private extension ConnectionManager
                 completionHandler(.failure(ALTServerError(error)))
             }
         }
+    }
+    
+    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    {
+        let serialQueue = DispatchQueue(label: "com.altstore.ConnectionManager.installQueue", qos: .default)
+        var isSending = false
+        
+        var observation: NSKeyValueObservation?
+        
+        let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid) { (success, error) in
+            print("Installed app with result:", error == nil ? "Success" : error!.localizedDescription)
+            
+            if let error = error.map({ $0 as? ALTServerError ?? ALTServerError(.unknown) })
+            {
+                completionHandler(.failure(error))
+            }
+            else
+            {
+                completionHandler(.success(()))
+            }
+            
+            observation?.invalidate()
+            observation = nil
+        }
+        
+        observation = progress.observe(\.fractionCompleted, changeHandler: { (progress, change) in
+            serialQueue.async {
+                guard !isSending else { return }
+                isSending = true
+                
+                print("Progress:", progress.fractionCompleted)
+                let response = ServerResponse(progress: progress.fractionCompleted, error: nil)
+                
+                self.send(response, to: connection) { (result) in                    
+                    serialQueue.async {
+                        isSending = false
+                    }
+                }
+            }
+        })
     }
 
     func send(_ response: ServerResponse, to connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)

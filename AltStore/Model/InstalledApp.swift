@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(InstalledApp)
-class InstalledApp: NSManagedObject
+class InstalledApp: NSManagedObject, Fetchable
 {
     /* Properties */
     @NSManaged var bundleIdentifier: String
@@ -75,6 +75,13 @@ extension InstalledApp
         return ipaURL
     }
     
+    class func refreshedIPAURL(for app: App) -> URL
+    {
+        let ipaURL = self.directoryURL(for: app).appendingPathComponent("Refreshed.ipa")
+        return ipaURL
+    }
+    
+    
     class func directoryURL(for app: App) -> URL
     {
         let directoryURL = InstalledApp.appsDirectoryURL.appendingPathComponent(app.identifier)
@@ -91,5 +98,9 @@ extension InstalledApp
     
     var ipaURL: URL {
         return InstalledApp.ipaURL(for: self.app)
+    }
+    
+    var refreshedIPAURL: URL {
+        return InstalledApp.refreshedIPAURL(for: self.app)
     }
 }

@@ -124,7 +124,11 @@ private extension AppDetailViewController
 
         sender.isIndicatingActivity = true
         
-        AppManager.shared.install(self.app, presentingViewController: self) { (result) in
+        let progressView = UIProgressView(progressViewStyle: .bar)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progress = 0.0
+
+        let progress = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
             do
             {
                 let installedApp = try result.get()
@@ -138,7 +142,7 @@ private extension AppDetailViewController
                     toastView.show(in: self.navigationController!.view, duration: 2)
                 }
             }
-            catch AppManager.AppError.authentication(AuthenticationOperation.Error.cancelled)
+            catch OperationError.cancelled
             {
                 // Ignore
             }
@@ -150,11 +154,27 @@ private extension AppDetailViewController
                     toastView.show(in: self.navigationController!.view, duration: 2)
                 }
             }
-            
+
             DispatchQueue.main.async {
+                UIView.animate(withDuration: 0.4, animations: {
+                    progressView.alpha = 0.0
+                }) { _ in
+                    progressView.removeFromSuperview()
+                }
+                
                 sender.isIndicatingActivity = false
                 self.update()
             }
+        }
+        
+        progressView.observedProgress = progress
+
+        if let navigationBar = self.navigationController?.navigationBar
+        {
+            navigationBar.addSubview(progressView)
+            
+            NSLayoutConstraint.activate([progressView.widthAnchor.constraint(equalTo: navigationBar.widthAnchor),
+                                         progressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
         }
     }
 }
