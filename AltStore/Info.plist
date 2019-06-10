@@ -23,6 +23,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>altstore-com.rileytestut.Delta</string>
+		<string>altstore-com.rileytestut.ClipboardManager</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
