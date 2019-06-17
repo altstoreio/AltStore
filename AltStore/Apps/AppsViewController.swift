@@ -11,13 +11,7 @@ import Roxas
 
 class AppsViewController: UITableViewController
 {
-    private lazy var dataSource = self.makeDataSource()
-    
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }()
+    private lazy var dataSource = self.makeDataSource()    
     
     override func viewDidLoad()
     {
@@ -82,23 +76,19 @@ private extension AppsViewController
     
     func fetchApps()
     {
-        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let appsFileURL = Bundle.main.url(forResource: "Apps", withExtension: "json")!
-            
+        AppManager.shared.fetchApps { (result) in
             do
             {
-                let data = try Data(contentsOf: appsFileURL)
-                
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .formatted(self.dateFormatter)
-                decoder.managedObjectContext = context
-                
-                _ = try decoder.decode([App].self, from: data)
-                try context.save()
+                let apps = try result.get()
+                try apps.first?.managedObjectContext?.save()
             }
             catch
             {
-                fatalError("Failed to save fetched apps. \(error)")
+                DispatchQueue.main.async {
+                    let toastView = RSTToastView(text: NSLocalizedString("Failed to fetch apps", comment: ""), detailText: error.localizedDescription)
+                    toastView.tintColor = .altPurple
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                }
             }
         }
     }

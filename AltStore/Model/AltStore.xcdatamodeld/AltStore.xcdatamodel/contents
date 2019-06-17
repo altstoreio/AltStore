@@ -34,9 +34,13 @@
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="version" attributeType="String" syncable="YES"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Team" representedClassName="Team" syncable="YES">
         <attribute name="identifier" attributeType="String" syncable="YES"/>
@@ -53,7 +57,7 @@
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
         <element name="App" positionX="-63" positionY="-18" width="128" height="210"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="105"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
     </elements>
 </model>

@@ -18,8 +18,6 @@ class InstalledApp: NSManagedObject, Fetchable
     
     @NSManaged var expirationDate: Date
     
-    @NSManaged var isBeta: Bool
-    
     /* Relationships */
     @NSManaged private(set) var app: App!
     
@@ -34,7 +32,7 @@ class InstalledApp: NSManagedObject, Fetchable
         
         let app = context.object(with: app.objectID) as! App
         self.app = app
-        self.version = "0.9"
+        self.version = app.version
         
         self.bundleIdentifier = bundleIdentifier
         self.expirationDate = expirationDate

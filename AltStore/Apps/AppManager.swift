@@ -14,6 +14,11 @@ import AltKit
 
 import Roxas
 
+extension AppManager
+{
+    static let didFetchAppsNotification = Notification.Name("com.altstore.AppManager.didFetchApps")
+}
+
 class AppManager
 {
     static let shared = AppManager()
@@ -72,6 +77,26 @@ extension AppManager
             completionHandler(result)
         }
         self.operationQueue.addOperation(authenticationOperation)
+    }
+}
+
+extension AppManager
+{
+    func fetchApps(completionHandler: @escaping (Result<[App], Error>) -> Void)
+    {
+        let fetchAppsOperation = FetchAppsOperation()
+        fetchAppsOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error):
+                completionHandler(.failure(error))
+                
+            case .success(let apps):
+                completionHandler(.success(apps))
+                NotificationCenter.default.post(name: AppManager.didFetchAppsNotification, object: self)
+            }
+        }
+        self.operationQueue.addOperation(fetchAppsOperation)
     }
 }
 

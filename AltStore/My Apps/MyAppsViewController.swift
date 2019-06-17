@@ -79,7 +79,7 @@ private extension MyAppsViewController
         dataSource.cellConfigurationHandler = { [weak self] (cell, installedApp, indexPath) in
             guard let app = installedApp.app else { return }
             
-            cell.textLabel?.text = app.name
+            cell.textLabel?.text = app.name + " (\(installedApp.version))"
             
             let detailText =
             """

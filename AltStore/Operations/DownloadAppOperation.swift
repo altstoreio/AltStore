@@ -45,11 +45,22 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                     let app = context.object(with: self.app.objectID) as! App
                     
-                    let installedApp = InstalledApp(app: app,
+                    let installedApp: InstalledApp
+                    
+                    if let app = app.installedApp
+                    {
+                        installedApp = app
+                        
+                    }
+                    else
+                    {
+                        installedApp = InstalledApp(app: app,
                                                     bundleIdentifier: app.identifier,
                                                     expirationDate: Date(),
                                                     context: context)
+                    }
                     
+                    installedApp.version = app.version
                     self.finish(.success(installedApp))
                 }
             }

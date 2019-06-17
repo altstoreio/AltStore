@@ -471,8 +471,15 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Updates" id="hvX-Ly-Y2C"/>
+                    <connections>
+                        <outlet property="progressView" destination="QaM-dt-nHj" id="Tlq-vj-Bo9"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H7V-ct-fO1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" id="QaM-dt-nHj">
+                    <rect key="frame" x="0.0" y="0.0" width="150" height="2.5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </progressView>
             </objects>
             <point key="canvasLocation" x="1518" y="1124"/>
         </scene>
@@ -636,7 +643,7 @@
         <image name="second" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8jj-zE-2hk"/>
+        <segue reference="wBX-0o-Ywz"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Purple"/>
 </document>
