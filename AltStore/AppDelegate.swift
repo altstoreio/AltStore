@@ -30,7 +30,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             {
                 print("Started DatabaseManager")
                 
-                AppManager.shared.update()
+                DispatchQueue.main.async {
+                    AppManager.shared.update()
+                }
             }
         }
         

@@ -33,9 +33,15 @@ public extension DatabaseManager
         self.persistentContainer.loadPersistentStores { (description, error) in
             guard error == nil else { return completionHandler(error!) }
             
-            self.isStarted = true
-            
-            completionHandler(error)
+            self.prepareDatabase() { (result) in
+                switch result
+                {
+                case .failure(let error): completionHandler(error)
+                case .success:
+                    self.isStarted = true
+                    completionHandler(nil)
+                }
+            }
         }
     }
     
@@ -92,5 +98,47 @@ extension DatabaseManager
         
         let activeTeam = Team.first(satisfying: predicate, in: context)
         return activeTeam
+    }
+}
+
+private extension DatabaseManager
+{
+    func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.persistentContainer.performBackgroundTask { (context) in
+            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+            
+            let altStoreApp: App
+            
+            if let app = App.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(App.identifier), App.altstoreAppID), in: context)
+            {
+                altStoreApp = app
+            }
+            else
+            {
+                altStoreApp = App.makeAltStoreApp(in: context)
+                altStoreApp.version = version
+            }
+            
+            if let installedApp = altStoreApp.installedApp
+            {
+                installedApp.version = version
+            }
+            else
+            {
+                let installedApp = InstalledApp(app: altStoreApp, bundleIdentifier: altStoreApp.identifier, expirationDate: Date(), context: context)
+                installedApp.version = version
+            }
+            
+            do
+            {
+                try context.save()
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
     }
 }

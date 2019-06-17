@@ -11,8 +11,13 @@ import CoreData
 
 import Roxas
 
+extension App
+{
+    static let altstoreAppID = "com.rileytestut.AltStore"
+}
+
 @objc(App)
-class App: NSManagedObject, Decodable
+class App: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged private(set) var name: String
@@ -24,7 +29,7 @@ class App: NSManagedObject, Decodable
     @NSManaged private(set) var iconName: String
     @NSManaged private(set) var screenshotNames: [String]
     
-    @NSManaged private(set) var version: String
+    @NSManaged var version: String
     @NSManaged private(set) var versionDate: Date
     @NSManaged private(set) var versionDescription: String?
     
@@ -82,5 +87,21 @@ extension App
     @nonobjc class func fetchRequest() -> NSFetchRequest<App>
     {
         return NSFetchRequest<App>(entityName: "App")
+    }
+    
+    class func makeAltStoreApp(in context: NSManagedObjectContext) -> App
+    {
+        let app = App(context: context)
+        app.name = "AltStore"
+        app.identifier = "com.rileytestut.AltStore"
+        app.developerName = "Riley Testut"
+        app.localizedDescription = "AltStore is an alternative App Store."
+        app.iconName = ""
+        app.screenshotNames = []
+        app.version = "1.0"
+        app.versionDate = Date()
+        app.downloadURL = URL(string: "http://rileytestut.com")!
+        
+        return app
     }
 }

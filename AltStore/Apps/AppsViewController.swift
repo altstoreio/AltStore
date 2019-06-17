@@ -50,6 +50,7 @@ private extension AppsViewController
         let fetchRequest = App.fetchRequest() as NSFetchRequest<App>
         fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.name, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.identifier), App.altstoreAppID)
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsTableViewDataSource(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)

@@ -113,43 +113,61 @@ private extension UpdatesViewController
 {
     func update(_ installedApp: InstalledApp)
     {
-        let toastView = RSTToastView(text: "Updating...", detailText: nil)
-        toastView.tintColor = .altPurple
-        toastView.activityIndicatorView.startAnimating()
-        toastView.show(in: self.navigationController?.view ?? self.view)
-        
-        let progress = AppManager.shared.install(installedApp.app, presentingViewController: self) { (result) in
-            do
-            {
-                let app = try result.get()
-                try app.managedObjectContext?.save()
+        func updateApp()
+        {
+            let toastView = RSTToastView(text: "Updating...", detailText: nil)
+            toastView.tintColor = .altPurple
+            toastView.activityIndicatorView.startAnimating()
+            toastView.show(in: self.navigationController?.view ?? self.view)
+            
+            let progress = AppManager.shared.install(installedApp.app, presentingViewController: self) { (result) in
+                do
+                {
+                    let app = try result.get()
+                    try app.managedObjectContext?.save()
+                    
+                    DispatchQueue.main.async {
+                        let installedApp = DatabaseManager.shared.persistentContainer.viewContext.object(with: installedApp.objectID) as! InstalledApp
+                        
+                        let toastView = RSTToastView(text: "Updated \(installedApp.app.name) to version \(installedApp.version)!", detailText: nil)
+                        toastView.tintColor = .altPurple
+                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                        
+                        self.update()
+                    }
+                }
+                catch
+                {
+                    DispatchQueue.main.async {
+                        let toastView = RSTToastView(text: "Failed to update \(installedApp.app.name)", detailText: error.localizedDescription)
+                        toastView.tintColor = .altPurple
+                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    }
+                }
                 
                 DispatchQueue.main.async {
-                    let installedApp = DatabaseManager.shared.persistentContainer.viewContext.object(with: installedApp.objectID) as! InstalledApp
-                    
-                    let toastView = RSTToastView(text: "Updated \(installedApp.app.name) to version \(installedApp.version)!", detailText: nil)
-                    toastView.tintColor = .altPurple
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                    
-                    self.update()
-                }
-            }
-            catch
-            {
-                DispatchQueue.main.async {
-                    let toastView = RSTToastView(text: "Failed to update \(installedApp.app.name)", detailText: error.localizedDescription)
-                    toastView.tintColor = .altPurple
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    self.progressView.observedProgress = nil
+                    self.progressView.progress = 0.0
                 }
             }
             
-            DispatchQueue.main.async {
-                self.progressView.observedProgress = nil
-                self.progressView.progress = 0.0
-            }
+            self.progressView.observedProgress = progress
         }
         
-        self.progressView.observedProgress = progress
+        if installedApp.app.identifier == App.altstoreAppID
+        {
+            let alertController = UIAlertController(title: NSLocalizedString("Update AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit upon completion.", comment: ""), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Update and Quit", comment: ""), style: .default, handler: { (action) in
+                updateApp()
+            }))
+            alertController.addAction(.cancel)
+            
+            self.present(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            updateApp()
+        }
     }
     
     @objc func didFetchApps(_ notification: Notification)
