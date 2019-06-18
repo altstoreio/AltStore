@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSErrorDomain const AltServerErrorDomain;
+extern NSErrorDomain const AltServerInstallationErrorDomain;
 
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
@@ -23,6 +24,8 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorInvalidResponse,
     
     ALTServerErrorInvalidApp,
+    ALTServerErrorInstallationFailed,
+    ALTServerErrorMaximumFreeAppLimitReached,
 };
 
 NS_ASSUME_NONNULL_BEGIN

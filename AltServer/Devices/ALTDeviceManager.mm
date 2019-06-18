@@ -15,16 +15,14 @@
 #include <libimobiledevice/notification_proxy.h>
 #include <libimobiledevice/afc.h>
 
-void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *udid);
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
 
 NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 @interface ALTDeviceManager ()
 
-@property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(void)> *installationCompletionHandlers;
+@property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *installationCompletionHandlers;
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
-@property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSValue *> *installationClients;
 @property (nonatomic, readonly) dispatch_queue_t installationQueue;
 
 @end
@@ -49,7 +47,6 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     {
         _installationCompletionHandlers = [NSMutableDictionary dictionary];
         _installationProgress = [NSMutableDictionary dictionary];
-        _installationClients = [NSMutableDictionary dictionary];
         
         _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
     }
@@ -75,7 +72,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         lockdownd_service_descriptor_t service = NULL;
         
         void (^finish)(NSError *error) = ^(NSError *error) {
-            np_client_free(np);
+            
             instproxy_client_free(ipc);
             afc_client_free(afc);
             lockdownd_client_free(client);
@@ -138,28 +135,6 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
-        /* Connect to Notification Proxy */
-        if ((lockdownd_start_service(client, "com.apple.mobile.notification_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
-        {
-            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        }
-        
-        if (np_client_new(device, service, &np) != NP_E_SUCCESS)
-        {
-            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-        }
-        
-        np_set_notify_callback(np, ALTDeviceManagerDidFinishAppInstallation, uuidString);
-        
-        const char *notifications[2] = { NP_APP_INSTALLED, NULL };
-        np_observe_notifications(np, notifications);
-        
-        if (service)
-        {
-            lockdownd_service_descriptor_free(service);
-            service = NULL;
-        }
-        
         /* Connect to Installation Proxy */
         if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
         {
@@ -177,17 +152,11 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
             service = NULL;
         }
         
-        lockdownd_service_descriptor_free(service);
-        service = NULL;
-        
         /* Connect to AFC service */
         if ((lockdownd_start_service(client, "com.apple.afc", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
-        
-        lockdownd_client_free(client);
-        client = NULL;
         
         if (afc_client_new(device, service, &afc) != AFC_E_SUCCESS)
         {
@@ -239,12 +208,11 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         
         NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
         
-        NSValue *value = [NSValue valueWithPointer:(const void *)np];
+        NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
         
-        self.installationClients[UUID] = value;
         self.installationProgress[UUID] = installationProgress;
-        self.installationCompletionHandlers[UUID] = ^{
-            finish(nil);
+        self.installationCompletionHandlers[UUID] = ^(NSError *error) {
+            finish(error);
             
             if (temporaryDirectoryURL != nil)
             {
@@ -470,29 +438,6 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 #pragma mark - Callbacks -
 
-void ALTDeviceManagerDidFinishAppInstallation(const char *notification, void *uuid)
-{
-    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)uuid]];
-    
-    void (^completionHandler)(void) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
-    if (completionHandler != nil)
-    {
-        completionHandler();
-        
-        ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID] = nil;
-        ALTDeviceManager.sharedManager.installationProgress[UUID] = nil;
-    }
-    
-    NSValue *value = ALTDeviceManager.sharedManager.installationClients[UUID];
-    if (value != nil)
-    {
-        np_client_t np = (np_client_t)value.pointerValue;
-        np_set_notify_callback(np, NULL, uuid);
-        
-        ALTDeviceManager.sharedManager.installationClients[UUID] = nil;
-    }
-}
-
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
 {
     NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)uuid]];
@@ -506,7 +451,46 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
     int percent = -1;
     instproxy_status_get_percent_complete(status, &percent);
     
-    if (progress.completedUnitCount < percent)
+    char *name = NULL;
+    char *description = NULL;
+    uint64_t code = 0;
+    instproxy_status_get_error(status, &name, &description, &code);
+    
+    if ((percent == -1 && progress.completedUnitCount > 0) || code != 0)
+    {
+        void (^completionHandler)(NSError *) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
+        if (completionHandler != nil)
+        {
+            if (code != 0)
+            {
+                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name), @(description));
+                
+                NSError *error = nil;
+                
+                if (code == 3892346913)
+                {
+                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:nil];
+                }
+                else
+                {
+                    NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description)}];
+                    
+                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
+                }
+                
+                completionHandler(error);
+            }
+            else
+            {
+                NSLog(@"Finished installing app!");
+                completionHandler(nil);
+            }
+            
+            ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID] = nil;
+            ALTDeviceManager.sharedManager.installationProgress[UUID] = nil;
+        }
+    }
+    else if (progress.completedUnitCount < percent)
     {
         progress.completedUnitCount = percent;
         
