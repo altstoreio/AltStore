@@ -319,6 +319,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
             client = NULL;
         }
         
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
         NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
         
         self.installationProgress[UUID] = installationProgress;
@@ -333,12 +335,16 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                     NSLog(@"Error removing temporary directory. %@", error);
                 }
             }
+            
+            dispatch_semaphore_signal(semaphore);
         };
         
         NSLog(@"Installing to device %@...", udid);
         
         instproxy_install(ipc, destinationURL.relativePath.fileSystemRepresentation, options, ALTDeviceManagerUpdateStatus, uuidString);
         instproxy_client_options_free(options);
+        
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     });
         
     return progress;
