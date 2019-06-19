@@ -138,7 +138,7 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
                 Keychain.shared.appleIDEmailAddress = altAccount.appleID // "account" may have nil appleID since we just saved.
                 Keychain.shared.appleIDPassword = self.appleIDPassword
                 
-                Keychain.shared.signingCertificateIdentifier = signer.certificate.identifier
+                Keychain.shared.signingCertificateSerialNumber = signer.certificate.serialNumber
                 Keychain.shared.signingCertificatePrivateKey = signer.certificate.privateKey
                 
                 super.finish(.success(signer))
@@ -299,7 +299,7 @@ private extension AuthenticationOperation
                         {
                             let certificates = try Result(certificates, error).get()
                             
-                            guard let certificate = certificates.first(where: { $0.identifier == certificate.identifier }) else {
+                            guard let certificate = certificates.first(where: { $0.serialNumber == certificate.serialNumber }) else {
                                 throw AuthenticationError.missingCertificate
                             }
                             
@@ -349,9 +349,9 @@ private extension AuthenticationOperation
                 let certificates = try Result(certificates, error).get()
                 
                 if
-                    let identifier = Keychain.shared.signingCertificateIdentifier,
+                    let serialNumber = Keychain.shared.signingCertificateSerialNumber,
                     let privateKey = Keychain.shared.signingCertificatePrivateKey,
-                    let certificate = certificates.first(where: { $0.identifier == identifier })
+                    let certificate = certificates.first(where: { $0.serialNumber == serialNumber })
                 {
                     certificate.privateKey = privateKey
                     completionHandler(.success(certificate))

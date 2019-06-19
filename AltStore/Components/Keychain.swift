@@ -26,7 +26,7 @@ class Keychain
         self.appleIDEmailAddress = nil
         self.appleIDPassword = nil
         self.signingCertificatePrivateKey = nil
-        self.signingCertificateIdentifier = nil
+        self.signingCertificateSerialNumber = nil
     }
 }
 
@@ -62,13 +62,13 @@ extension Keychain
         }
     }
     
-    var signingCertificateIdentifier: String? {
+    var signingCertificateSerialNumber: String? {
         get {
-            let identifier = try? self.keychain.get("signingCertificateIdentifier")
-            return identifier
+            let serialNumber = try? self.keychain.get("signingCertificateSerialNumber")
+            return serialNumber
         }
         set {
-            self.keychain["signingCertificateIdentifier"] = newValue
+            self.keychain["signingCertificateSerialNumber"] = newValue
         }
     }
 }

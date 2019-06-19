@@ -246,7 +246,7 @@ private extension ViewController
                                 {
                                     let certificates = try Result(certificates, error).get()
                                     
-                                    guard let certificate = certificates.first(where: { $0.identifier == certificate.identifier }) else {
+                                    guard let certificate = certificates.first(where: { $0.serialNumber == certificate.serialNumber }) else {
                                         throw InstallError.missingCertificate
                                     }
                                     

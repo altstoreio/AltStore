@@ -14,6 +14,7 @@
 #include <libimobiledevice/installation_proxy.h>
 #include <libimobiledevice/notification_proxy.h>
 #include <libimobiledevice/afc.h>
+#include <libimobiledevice/misagent.h>
 
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
 
@@ -64,18 +65,52 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
         uuidString[UUID.UUIDString.length] = '\0';
         
-        idevice_t device = NULL;
-        lockdownd_client_t client = NULL;
-        instproxy_client_t ipc = NULL;
-        np_client_t np = NULL;
-        afc_client_t afc = NULL;
-        lockdownd_service_descriptor_t service = NULL;
+        __block idevice_t device = NULL;
+        __block lockdownd_client_t client = NULL;
+        __block instproxy_client_t ipc = NULL;
+        __block afc_client_t afc = NULL;
+        __block misagent_client_t mis = NULL;
+        __block lockdownd_service_descriptor_t service = NULL;
+        
+        NSURL *removedProfilesDirectoryURL = [[[NSFileManager defaultManager] temporaryDirectory] URLByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
         
         void (^finish)(NSError *error) = ^(NSError *error) {
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:removedProfilesDirectoryURL.path isDirectory:nil])
+            {
+                // Reinstall all provisioning profiles we removed before installation.
+                
+                NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:removedProfilesDirectoryURL.path error:nil];
+                for (NSString *filename in contents)
+                {
+                    NSURL *fileURL = [removedProfilesDirectoryURL URLByAppendingPathComponent:filename];
+                    
+                    ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:fileURL];
+                    if (provisioningProfile == nil)
+                    {
+                        continue;
+                    }
+                    
+                    plist_t pdata = plist_new_data((const char *)provisioningProfile.data.bytes, provisioningProfile.data.length);
+                    
+                    if (misagent_install(mis, pdata) == MISAGENT_E_SUCCESS)
+                    {
+                        NSLog(@"Reinstalled profile: %@", provisioningProfile.identifier);
+                    }
+                    else
+                    {
+                        int code = misagent_get_status_code(mis);
+                        NSLog(@"Failed to reinstall provisioning profile %@. (%@)", provisioningProfile.identifier, @(code));
+                    }
+                }
+                
+                [[NSFileManager defaultManager] removeItemAtURL:removedProfilesDirectoryURL error:nil];
+            }
             
             instproxy_client_free(ipc);
             afc_client_free(afc);
             lockdownd_client_free(client);
+            misagent_client_free(mis);
             idevice_free(device);
             lockdownd_service_descriptor_free(service);
             
@@ -206,7 +241,83 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         
         NSLog(@"Finished writing to device.");
         
-        NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
+        /* Provisioning Profiles */
+        NSURL *provisioningProfileURL = [appBundleURL URLByAppendingPathComponent:@"embedded.mobileprovision"];
+        ALTProvisioningProfile *installationProvisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:provisioningProfileURL];
+        if (installationProvisioningProfile != nil)
+        {
+            NSError *error = nil;
+            if (![[NSFileManager defaultManager] createDirectoryAtURL:removedProfilesDirectoryURL withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                return finish(error);
+            }
+
+            if ((lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+            {
+                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            }
+
+            if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
+            {
+                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            }
+
+            plist_t profiles = NULL;
+            if (misagent_copy_all(mis, &profiles) != MISAGENT_E_SUCCESS)
+            {
+                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            }
+
+            uint32_t profileCount = plist_array_get_size(profiles);
+            for (int i = 0; i < profileCount; i++)
+            {
+                plist_t profile = plist_array_get_item(profiles, i);
+                if (plist_get_node_type(profile) != PLIST_DATA)
+                {
+                    continue;
+                }
+
+                char *bytes = NULL;
+                uint64_t length = 0;
+
+                plist_get_data_val(profile, &bytes, &length);
+                if (bytes == NULL)
+                {
+                    continue;
+                }
+
+                NSData *data = [NSData dataWithBytes:(const void *)bytes length:length];
+                ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithData:data];
+
+                if (![provisioningProfile.teamIdentifier isEqualToString:installationProvisioningProfile.teamIdentifier])
+                {
+                    continue;
+                }
+
+                NSString *filename = [NSString stringWithFormat:@"%@.mobileprovision", [[NSUUID UUID] UUIDString]];
+                NSURL *fileURL = [removedProfilesDirectoryURL URLByAppendingPathComponent:filename];
+
+                NSError *copyError = nil;
+                if (![provisioningProfile.data writeToURL:fileURL options:NSDataWritingAtomic error:&copyError])
+                {
+                    NSLog(@"Failed to copy profile to temporary URL. %@", copyError);
+                    continue;
+                }
+
+                if (misagent_remove(mis, provisioningProfile.identifier.UTF8String) == MISAGENT_E_SUCCESS)
+                {
+                    NSLog(@"Removed provisioning profile: %@", provisioningProfile.identifier);
+                }
+                else
+                {
+                    int code = misagent_get_status_code(mis);
+                    NSLog(@"Failed to remove provisioning profile %@. Error Code: %@", provisioningProfile.identifier, @(code));
+                }
+            }
+
+            lockdownd_client_free(client);
+            client = NULL;
+        }
         
         NSProgress *installationProgress = [NSProgress progressWithTotalUnitCount:100 parent:progress pendingUnitCount:1];
         
