@@ -104,48 +104,17 @@ extension AppManager
 {
     func install(_ app: App, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        let progress = Progress.discreteProgress(totalUnitCount: 100)
-        
-        // Authenticate
-        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
-        authenticationOperation.resultHandler = { (result) in
-            switch result
+        let progress = self.install([app], forceDownload: true, presentingViewController: presentingViewController) { (result) in
+            do
             {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let signer):
-                
-                // Download
-                app.managedObjectContext?.perform {
-                    let downloadAppOperation = DownloadAppOperation(app: app)
-                    downloadAppOperation.resultHandler = { (result) in
-                        switch result
-                        {
-                        case .failure(let error): completionHandler(.failure(error))
-                        case .success(let installedApp):
-                            let context = installedApp.managedObjectContext
-                            
-                            // Refresh/Install
-                            let (resignProgress, installProgress) = self.refresh(installedApp, signer: signer, presentingViewController: presentingViewController) { (result) in
-                                switch result
-                                {
-                                case .failure(let error): completionHandler(.failure(error))
-                                case .success:
-                                    context?.perform {
-                                        completionHandler(.success(installedApp))
-                                    }
-                                }
-                            }
-                            progress.addChild(resignProgress, withPendingUnitCount: 10)
-                            progress.addChild(installProgress, withPendingUnitCount: 45)
-                        }
-                    }
-                    progress.addChild(downloadAppOperation.progress, withPendingUnitCount: 40)
-                    self.operationQueue.addOperation(downloadAppOperation)
-                }
+                guard let (_, result) = try result.get().first else { throw OperationError.unknown }
+                completionHandler(result)
+            }
+            catch
+            {
+                completionHandler(.failure(error))
             }
         }
-        progress.addChild(authenticationOperation.progress, withPendingUnitCount: 5)
-        self.operationQueue.addOperation(authenticationOperation)
         
         return progress
     }
@@ -167,9 +136,20 @@ extension AppManager
     
     @discardableResult func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> Progress
     {
-        let progress = Progress.discreteProgress(totalUnitCount: Int64(installedApps.count))
+        let apps = installedApps.compactMap { $0.app }
         
-        guard let context = installedApps.first?.managedObjectContext else {
+        let progress = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, completionHandler: completionHandler)
+        return progress
+    }
+}
+
+private extension AppManager
+{
+    func install(_ apps: [App], forceDownload: Bool, presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: Int64(apps.count))
+        
+        guard let context = apps.first?.managedObjectContext else {
             completionHandler(.success([:]))
             return progress
         }
@@ -182,33 +162,76 @@ extension AppManager
             case .failure(let error): completionHandler(.failure(error))
             case .success(let signer):
                 
-                // Refresh
+                // Download
                 context.perform {
                     let dispatchGroup = DispatchGroup()
                     var results = [String: Result<InstalledApp, Error>]()
                     
-                    for installedApp in installedApps
+                    let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                    
+                    for app in apps
                     {
-                        let bundleIdentifier = installedApp.bundleIdentifier
-                        print("Refreshing App:", bundleIdentifier)
+                        let appProgress = Progress(totalUnitCount: 100)
+                        
+                        let appID = app.identifier
+                        print("Installing app:", appID)
                         
                         dispatchGroup.enter()
                         
-                        let (resignProgress, installProgress) = self.refresh(installedApp, signer: signer, presentingViewController: presentingViewController) { (result) in
-                            print("Refreshed App: \(bundleIdentifier).", result)
-                            results[bundleIdentifier] = result
+                        func finishApp(_ result: Result<InstalledApp, Error>)
+                        {
+                            switch result
+                            {
+                            case .failure(let error): print("Failed to install app \(appID).", error)
+                            case .success: print("Installed app:", appID)
+                            }
+                            
+                            results[appID] = result
                             dispatchGroup.leave()
                         }
                         
-                        let refreshProgress = Progress(totalUnitCount: 100)
-                        refreshProgress.addChild(resignProgress, withPendingUnitCount: 20)
-                        refreshProgress.addChild(installProgress, withPendingUnitCount: 80)
+                        // Ensure app is downloaded.
+                        let downloadAppOperation = DownloadAppOperation(app: app)
+                        downloadAppOperation.useCachedAppIfAvailable = !forceDownload
+                        downloadAppOperation.context = backgroundContext
+                        downloadAppOperation.resultHandler = { (result) in
+                            switch result
+                            {
+                            case .failure(let error):
+                                finishApp(.failure(error))
+                                
+                            case .success(let installedApp):
+                                
+                                // Refresh
+                                let (resignProgress, installProgress) = self.refresh(installedApp, signer: signer, presentingViewController: presentingViewController) { (result) in
+                                    finishApp(result)
+                                }
+                                
+                                if forceDownload
+                                {
+                                    appProgress.addChild(resignProgress, withPendingUnitCount: 10)
+                                    appProgress.addChild(installProgress, withPendingUnitCount: 50)
+                                }
+                                else
+                                {
+                                    appProgress.addChild(resignProgress, withPendingUnitCount: 20)
+                                    appProgress.addChild(installProgress, withPendingUnitCount: 80)
+                                }
+                            }
+                        }
                         
-                        progress.addChild(refreshProgress, withPendingUnitCount: 1)
+                        if forceDownload
+                        {
+                            appProgress.addChild(downloadAppOperation.progress, withPendingUnitCount: 40)
+                        }
+                        
+                        progress.addChild(appProgress, withPendingUnitCount: 1)
+                        
+                        self.operationQueue.addOperation(downloadAppOperation)
                     }
                     
                     dispatchGroup.notify(queue: .global()) {
-                        context.perform {
+                        backgroundContext.perform {
                             completionHandler(.success(results))
                         }
                     }
@@ -220,10 +243,7 @@ extension AppManager
         
         return progress
     }
-}
-
-private extension AppManager
-{
+    
     func refresh(_ installedApp: InstalledApp, signer: ALTSigner, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> (Progress, Progress)
     {
         let context = installedApp.managedObjectContext

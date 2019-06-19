@@ -15,6 +15,10 @@ import AltSign
 class DownloadAppOperation: ResultOperation<InstalledApp>
 {
     let app: App
+    
+    var useCachedAppIfAvailable = false
+    lazy var context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+    
     private let downloadURL: URL
     private let ipaURL: URL
     
@@ -35,15 +39,16 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
     {
         super.main()
         
-        let downloadTask = self.session.downloadTask(with: self.downloadURL) { (fileURL, response, error) in
-            do
+        func finish(error: Error?)
+        {
+            if let error = error
             {
-                let (fileURL, _) = try Result((fileURL, response), error).get()
-                
-                try FileManager.default.copyItem(at: fileURL, to: self.ipaURL, shouldReplace: true)
-
-                DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                    let app = context.object(with: self.app.objectID) as! App
+                self.finish(.failure(error))
+            }
+            else
+            {
+                self.context.perform {
+                    let app = self.context.object(with: self.app.objectID) as! App
                     
                     let installedApp: InstalledApp
                     
@@ -57,16 +62,33 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
                         installedApp = InstalledApp(app: app,
                                                     bundleIdentifier: app.identifier,
                                                     expirationDate: Date(),
-                                                    context: context)
+                                                    context: self.context)
                     }
                     
                     installedApp.version = app.version
                     self.finish(.success(installedApp))
                 }
             }
+        }
+        
+        if self.useCachedAppIfAvailable && FileManager.default.fileExists(atPath: self.ipaURL.path)
+        {
+            finish(error: nil)
+            return
+        }
+        
+        let downloadTask = self.session.downloadTask(with: self.downloadURL) { (fileURL, response, error) in
+            do
+            {
+                let (fileURL, _) = try Result((fileURL, response), error).get()
+                
+                try FileManager.default.copyItem(at: fileURL, to: self.ipaURL, shouldReplace: true)
+                
+                finish(error: nil)
+            }
             catch let error
             {
-                self.finish(.failure(error))
+                finish(error: error)
             }
         }
         
