@@ -183,6 +183,7 @@ private extension ResignAppOperation
         let ipaURL = installedApp.ipaURL
         let bundleIdentifier = installedApp.bundleIdentifier
         let openURL = installedApp.openAppURL
+        let appIdentifier = installedApp.app.identifier
         
         DispatchQueue.global().async {
             do
@@ -209,6 +210,12 @@ private extension ResignAppOperation
                 allURLSchemes.append(altstoreURLScheme)
                 
                 infoDictionary[Bundle.Info.urlTypes] = allURLSchemes
+                
+                if appIdentifier == App.altstoreAppID
+                {
+                    guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
+                    infoDictionary[Bundle.Info.deviceID] = udid
+                }
                 
                 try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
                 
