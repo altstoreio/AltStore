@@ -95,12 +95,12 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                     
                     if (misagent_install(mis, pdata) == MISAGENT_E_SUCCESS)
                     {
-                        NSLog(@"Reinstalled profile: %@", provisioningProfile.identifier);
+                        NSLog(@"Reinstalled profile: %@", provisioningProfile.UUID);
                     }
                     else
                     {
                         int code = misagent_get_status_code(mis);
-                        NSLog(@"Failed to reinstall provisioning profile %@. (%@)", provisioningProfile.identifier, @(code));
+                        NSLog(@"Failed to reinstall provisioning profile %@. (%@)", provisioningProfile.UUID, @(code));
                     }
                 }
                 
@@ -315,14 +315,14 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                     continue;
                 }
 
-                if (misagent_remove(mis, provisioningProfile.identifier.UTF8String) == MISAGENT_E_SUCCESS)
+                if (misagent_remove(mis, provisioningProfile.UUID.UUIDString.lowercaseString.UTF8String) == MISAGENT_E_SUCCESS)
                 {
-                    NSLog(@"Removed provisioning profile: %@", provisioningProfile.identifier);
+                    NSLog(@"Removed provisioning profile: %@", provisioningProfile.UUID);
                 }
                 else
                 {
                     int code = misagent_get_status_code(mis);
-                    NSLog(@"Failed to remove provisioning profile %@. Error Code: %@", provisioningProfile.identifier, @(code));
+                    NSLog(@"Failed to remove provisioning profile %@. Error Code: %@", provisioningProfile.UUID, @(code));
                 }
             }
 

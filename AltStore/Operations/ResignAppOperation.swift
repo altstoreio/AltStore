@@ -203,7 +203,25 @@ private extension ResignAppOperation
     func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
         ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team) { (profile, error) in
-            completionHandler(Result(profile, error))
+            switch Result(profile, error)
+            {
+            case .failure(let error): completionHandler(.failure(error))
+            case .success(let profile):
+                
+                // Delete existing profile
+                ALTAppleAPI.shared.delete(profile, for: team) { (success, error) in
+                    switch Result(success, error)
+                    {
+                    case .failure(let error): completionHandler(.failure(error))
+                    case .success:
+                        
+                        // Fetch new provisiong profile
+                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team) { (profile, error) in
+                            completionHandler(Result(profile, error))
+                        }
+                    }
+                }
+            }            
         }
     }
     
