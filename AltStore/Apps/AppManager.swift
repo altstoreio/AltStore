@@ -24,10 +24,11 @@ class AppManager
     static let shared = AppManager()
     
     private let operationQueue = OperationQueue()
+    private let processingQueue = DispatchQueue(label: "com.altstore.AppManager.processingQueue")
     
     private init()
     {
-        self.operationQueue.name = "com.rileytestut.AltStore.AppManager"
+        self.operationQueue.name = "com.altstore.AppManager.operationQueue"
     }
 }
 
@@ -104,7 +105,8 @@ extension AppManager
 {
     func install(_ app: App, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        let progress = self.install([app], forceDownload: true, presentingViewController: presentingViewController) { (result) in
+        let group = self.install([app], forceDownload: true, presentingViewController: presentingViewController)
+        group.completionHandler = { (result) in
             do
             {
                 guard let (_, result) = try result.get().first else { throw OperationError.unknown }
@@ -116,170 +118,179 @@ extension AppManager
             }
         }
         
-        return progress
+        return group.progress
     }
     
-    func refresh(_ app: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
-    {
-        return self.refresh([app], presentingViewController: presentingViewController) { (result) in
-            do
-            {
-                guard let (_, result) = try result.get().first else { throw OperationError.unknown }
-                completionHandler(result)
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
-    @discardableResult func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> Progress
+    func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
         let apps = installedApps.compactMap { $0.app }
-        
-        let progress = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, completionHandler: completionHandler)
-        return progress
+
+        let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
+        return group
     }
 }
 
 private extension AppManager
 {
-    func install(_ apps: [App], forceDownload: Bool, presentingViewController: UIViewController?, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> Progress
+    func install(_ apps: [App], forceDownload: Bool, presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
-        let progress = Progress.discreteProgress(totalUnitCount: Int64(apps.count))
+        // Authenticate -> Download (if necessary) -> Resign -> Send -> Install.
+        let group = group ?? OperationGroup()
         
-        guard let context = apps.first?.managedObjectContext else {
-            completionHandler(.success([:]))
-            return progress
+        guard let server = ServerManager.shared.discoveredServers.first else {
+            DispatchQueue.main.async {
+                group.completionHandler?(.failure(ConnectionError.serverNotFound))
+            }
+            
+            return group
         }
         
-        // Authenticate
+        group.server = server
+        
+        var operations = [Operation]()
+        
+        
+        /* Authenticate */
         let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
         authenticationOperation.resultHandler = { (result) in
             switch result
             {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let signer):
-                
-                // Download
-                context.perform {
-                    let dispatchGroup = DispatchGroup()
-                    var results = [String: Result<InstalledApp, Error>]()
-                    
-                    let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-                    
-                    for app in apps
-                    {
-                        let appProgress = Progress(totalUnitCount: 100)
-                        
-                        let appID = app.identifier
-                        print("Installing app:", appID)
-                        
-                        dispatchGroup.enter()
-                        
-                        func finishApp(_ result: Result<InstalledApp, Error>)
-                        {
-                            switch result
-                            {
-                            case .failure(let error): print("Failed to install app \(appID).", error)
-                            case .success: print("Installed app:", appID)
-                            }
-                            
-                            results[appID] = result
-                            dispatchGroup.leave()
-                        }
-                        
-                        // Ensure app is downloaded.
-                        let downloadAppOperation = DownloadAppOperation(app: app)
-                        downloadAppOperation.useCachedAppIfAvailable = !forceDownload
-                        downloadAppOperation.context = backgroundContext
-                        downloadAppOperation.resultHandler = { (result) in
-                            switch result
-                            {
-                            case .failure(let error):
-                                finishApp(.failure(error))
-                                
-                            case .success(let installedApp):
-                                
-                                // Refresh
-                                let (resignProgress, installProgress) = self.refresh(installedApp, signer: signer, presentingViewController: presentingViewController) { (result) in
-                                    finishApp(result)
-                                }
-                                
-                                if forceDownload
-                                {
-                                    appProgress.addChild(resignProgress, withPendingUnitCount: 10)
-                                    appProgress.addChild(installProgress, withPendingUnitCount: 50)
-                                }
-                                else
-                                {
-                                    appProgress.addChild(resignProgress, withPendingUnitCount: 20)
-                                    appProgress.addChild(installProgress, withPendingUnitCount: 80)
-                                }
-                            }
-                        }
-                        
-                        if forceDownload
-                        {
-                            appProgress.addChild(downloadAppOperation.progress, withPendingUnitCount: 40)
-                        }
-                        
-                        progress.addChild(appProgress, withPendingUnitCount: 1)
-                        
-                        self.operationQueue.addOperation(downloadAppOperation)
-                    }
-                    
-                    dispatchGroup.notify(queue: .global()) {
-                        backgroundContext.perform {
-                            completionHandler(.success(results))
-                        }
-                    }
-                }
+            case .failure(let error): group.error = error
+            case .success(let signer): group.signer = signer
             }
         }
+        operations.append(authenticationOperation)
         
-        self.operationQueue.addOperation(authenticationOperation)
         
-        return progress
+        for app in apps
+        {
+            let context = AppOperationContext(appIdentifier: app.identifier, group: group)
+            let progress = Progress.discreteProgress(totalUnitCount: 100)
+            
+            
+            /* Resign */
+            let resignAppOperation = ResignAppOperation(context: context)
+            resignAppOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): context.error = error
+                case .success(let fileURL): context.resignedFileURL = fileURL
+                }
+            }
+            resignAppOperation.addDependency(authenticationOperation)
+            progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
+            operations.append(resignAppOperation)
+            
+            
+            /* Download */
+            let fileURL = InstalledApp.fileURL(for: app)
+            if let installedApp = app.installedApp, FileManager.default.fileExists(atPath: fileURL.path), !forceDownload
+            {
+                // Already installed, don't need to download.
+                
+                // If we don't need to download the app, reduce the total unit count by 40.
+                progress.totalUnitCount -= 40
+                
+                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                backgroundContext.performAndWait {
+                    let installedApp = backgroundContext.object(with: installedApp.objectID) as! InstalledApp
+                    context.installedApp = installedApp
+                }
+            }
+            else
+            {
+                // App is not yet installed (or we're forcing it to download a new version), so download it before resigning it.
+                
+                let downloadOperation = DownloadAppOperation(app: app)
+                downloadOperation.resultHandler = { (result) in
+                    switch result
+                    {
+                    case .failure(let error): context.error = error
+                    case .success(let installedApp): context.installedApp = installedApp
+                    }
+                }
+                progress.addChild(downloadOperation.progress, withPendingUnitCount: 40)
+                resignAppOperation.addDependency(downloadOperation)
+                operations.append(downloadOperation)
+            }
+            
+            
+            /* Send */
+            let sendAppOperation = SendAppOperation(context: context)
+            sendAppOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): context.error = error
+                case .success(let connection): context.connection = connection
+                }
+            }
+            progress.addChild(sendAppOperation.progress, withPendingUnitCount: 10)
+            sendAppOperation.addDependency(resignAppOperation)
+            operations.append(sendAppOperation)
+            
+            
+            /* Install */
+            let installOperation = InstallAppOperation(context: context)
+            installOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): context.error = error
+                case .success: break
+                }
+                
+                self.finishAppOperation(context)
+            }
+            progress.addChild(installOperation.progress, withPendingUnitCount: 30)
+            installOperation.addDependency(sendAppOperation)
+            operations.append(installOperation)
+            
+            group.progress.totalUnitCount += 1
+            group.progress.addChild(progress, withPendingUnitCount: 1)
+        }
+        
+        group.addOperations(operations)
+        
+        return group
     }
     
-    func refresh(_ installedApp: InstalledApp, signer: ALTSigner, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> (Progress, Progress)
+    @discardableResult func process<T>(_ result: Result<T, Error>, context: AppOperationContext) -> T?
     {
-        let context = installedApp.managedObjectContext
-        
-        let resignAppOperation = ResignAppOperation(installedApp: installedApp)
-        let installAppOperation = InstallAppOperation()
-        
-        // Resign
-        resignAppOperation.signer = signer
-        resignAppOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error):
-                installAppOperation.cancel()
-                completionHandler(.failure(error))
-                
-            case .success(let resignedURL):
-                installAppOperation.fileURL = resignedURL
-            }
+        do
+        {
+            let value = try result.get()
+            return value
         }
-        
-        // Install
-        installAppOperation.addDependency(resignAppOperation)
-        installAppOperation.resultHandler = { (result) in
-            switch result
+        catch
+        {
+            context.error = error
+            return nil
+        }
+    }
+    
+    func finishAppOperation(_ context: AppOperationContext)
+    {
+        self.processingQueue.sync {
+            if let error = context.error
             {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success:
-                context?.perform {
-                    completionHandler(.success(installedApp))
+                context.group.results[context.appIdentifier] = .failure(error)
+            }
+            else if let installedApp = context.installedApp
+            {
+                context.group.results[context.appIdentifier] = .success(installedApp)
+                
+                // Save after each installation.
+                installedApp.managedObjectContext?.perform {
+                    do { try installedApp.managedObjectContext?.save() }
+                    catch { print("Error saving installed app.", error) }
                 }
             }
+            
+            print("Finished operation!", context.appIdentifier)
+
+            if context.group.results.count == context.group.progress.totalUnitCount
+            {
+                context.group.completionHandler?(.success(context.group.results))
+            }
         }
-        
-        self.operationQueue.addOperations([resignAppOperation, installAppOperation], waitUntilFinished: false)
-        
-        return (resignAppOperation.progress, installAppOperation.progress)
     }
 }

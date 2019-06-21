@@ -24,6 +24,8 @@ class MyAppsViewController: UITableViewController
         return dateFormatter
     }()
     
+    private var refreshGroup: OperationGroup?
+    
     @IBOutlet private var progressView: UIProgressView!
     
     override func viewDidLoad()
@@ -119,9 +121,25 @@ private extension MyAppsViewController
     {
         sender.isIndicatingActivity = true
         
-        let installedApps = InstalledApp.all(in: DatabaseManager.shared.viewContext)
+        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
         
-        let progress = AppManager.shared.refresh(installedApps, presentingViewController: self) { (result) in
+        self.refresh(installedApps) { (result) in
+            sender.isIndicatingActivity = false
+        }
+    }
+    
+    func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
+    {
+        if self.refreshGroup == nil
+        {
+            let toastView = RSTToastView(text: "Refreshing...", detailText: nil)
+            toastView.tintColor = .altPurple
+            toastView.activityIndicatorView.startAnimating()
+            toastView.show(in: self.navigationController?.view ?? self.view)
+        }
+        
+        let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.refreshGroup)
+        group.completionHandler = { (result) in
             DispatchQueue.main.async {
                 switch result
                 {
@@ -164,46 +182,16 @@ private extension MyAppsViewController
                 self.progressView.observedProgress = nil
                 self.progressView.progress = 0.0
                 
-                sender.isIndicatingActivity = false
                 self.update()
-            }
-        }
-        
-        self.progressView.observedProgress = progress
-    }
-    
-    func refresh(_ installedApp: InstalledApp)
-    {
-        let progress = AppManager.shared.refresh(installedApp, presentingViewController: self) { (result) in
-            do
-            {
-                let app = try result.get()
-                try app.managedObjectContext?.save()
                 
-                DispatchQueue.main.async {
-                    let toastView = RSTToastView(text: "Refreshed \(installedApp.app.name)!", detailText: nil)
-                    toastView.tintColor = .altPurple
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                    
-                    self.update()
-                }
-            }
-            catch
-            {
-                DispatchQueue.main.async {
-                    let toastView = RSTToastView(text: "Failed to refresh \(installedApp.app.name)", detailText: error.localizedDescription)
-                    toastView.tintColor = .altPurple
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                }
-            }
-            
-            DispatchQueue.main.async {
-                self.progressView.observedProgress = nil
-                self.progressView.progress = 0.0
+                self.refreshGroup = nil
+                completionHandler(result)
             }
         }
         
-        self.progressView.observedProgress = progress
+        self.progressView.observedProgress = group.progress
+        
+        self.refreshGroup = group
     }
 }
 
@@ -231,42 +219,9 @@ extension MyAppsViewController
         
         let refreshAction = UITableViewRowAction(style: .normal, title: "Refresh") { (action, indexPath) in
             let installedApp = self.dataSource.item(at: indexPath)
-            
-            let toastView = RSTToastView(text: "Refreshing...", detailText: nil)
-            toastView.tintColor = .altPurple
-            toastView.activityIndicatorView.startAnimating()
-            toastView.show(in: self.navigationController?.view ?? self.view)
-            
-            let progress = AppManager.shared.refresh(installedApp, presentingViewController: self) { (result) in
-                do
-                {
-                    let app = try result.get()
-                    try app.managedObjectContext?.save()
-                    
-                    DispatchQueue.main.async {
-                        let toastView = RSTToastView(text: "Refreshed \(installedApp.app.name)!", detailText: nil)
-                        toastView.tintColor = .altPurple
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                        
-                        self.update()
-                    }
-                }
-                catch
-                {
-                    DispatchQueue.main.async {
-                        let toastView = RSTToastView(text: "Failed to refresh \(installedApp.app.name)", detailText: error.localizedDescription)
-                        toastView.tintColor = .altPurple
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.progressView.observedProgress = nil
-                    self.progressView.progress = 0.0
-                }
+            self.refresh([installedApp]) { (result) in
+                print("Refreshed", installedApp.app.identifier)
             }
-            
-            self.progressView.observedProgress = progress
         }
         
         return [deleteAction, refreshAction]

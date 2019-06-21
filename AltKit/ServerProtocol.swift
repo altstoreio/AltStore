@@ -13,8 +13,17 @@ public let ALTServerServiceType = "_altserver._tcp"
 // Can only automatically conform ALTServerError.Code to Codable, not ALTServerError itself
 extension ALTServerError.Code: Codable {}
 
-public struct ServerRequest: Codable
+protocol ServerMessage: Codable
 {
+    var version: Int { get }
+    var identifier: String { get }
+}
+
+public struct PrepareAppRequest: ServerMessage
+{
+    public var version = 1
+    public var identifier = "PrepareApp"
+    
     public var udid: String
     public var contentSize: Int
     
@@ -25,8 +34,21 @@ public struct ServerRequest: Codable
     }
 }
 
-public struct ServerResponse: Codable
+public struct BeginInstallationRequest: ServerMessage
 {
+    public var version = 1
+    public var identifier = "BeginInstallation"
+    
+    public init()
+    {
+    }
+}
+
+public struct ServerResponse: ServerMessage
+{
+    public var version = 1
+    public var identifier = "ServerResponse"
+    
     public var progress: Double
     
     public var error: ALTServerError? {

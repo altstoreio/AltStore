@@ -23,9 +23,9 @@ class ResultOperation<ResultType>: Operation
     {
         guard !self.isFinished else { return }
         
-        super.finish()
-        
         self.resultHandler?(result)
+        
+        super.finish()
     }
 }
 
@@ -73,6 +73,8 @@ class Operation: RSTOperation, ProgressReporting
     
     override func finish()
     {
+        guard !self.isFinished else { return }
+        
         super.finish()
         
         if let backgroundTaskID = self.backgroundTaskID

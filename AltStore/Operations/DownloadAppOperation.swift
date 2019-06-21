@@ -19,16 +19,18 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
     var useCachedAppIfAvailable = false
     lazy var context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
     
-    private let downloadURL: URL
-    private let ipaURL: URL
+    private let appIdentifier: String
+    private let sourceURL: URL
+    private let destinationURL: URL
     
     private let session = URLSession(configuration: .default)
     
     init(app: App)
     {
         self.app = app
-        self.downloadURL = app.downloadURL
-        self.ipaURL = InstalledApp.ipaURL(for: app)
+        self.appIdentifier = app.identifier
+        self.sourceURL = app.downloadURL
+        self.destinationURL = InstalledApp.fileURL(for: app)
         
         super.init()
         
@@ -39,14 +41,36 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
     {
         super.main()
         
-        func finish(error: Error?)
+        print("Downloading App:", self.appIdentifier)
+        
+        func finishOperation(_ result: Result<URL, Error>)
         {
-            if let error = error
+            do
             {
-                self.finish(.failure(error))
-            }
-            else
-            {
+                let fileURL = try result.get()
+                
+                var isDirectory: ObjCBool = false
+                guard FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory) else { throw OperationError.appNotFound }
+                
+                if isDirectory.boolValue
+                {
+                    // Directory, so assuming this is .app bundle.
+                    guard Bundle(url: fileURL) != nil else { throw OperationError.invalidApp }
+                    
+                    try FileManager.default.copyItem(at: fileURL, to: self.destinationURL, shouldReplace: true)
+                }
+                else
+                {
+                    // File, so assuming this is a .ipa file.
+                    
+                    let temporaryDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                    try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+                    defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+                    
+                    let bundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
+                    try FileManager.default.copyItem(at: bundleURL, to: self.destinationURL, shouldReplace: true)
+                }
+                
                 self.context.perform {
                     let app = self.context.object(with: self.app.objectID) as! App
                     
@@ -59,40 +83,41 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
                     }
                     else
                     {
-                        installedApp = InstalledApp(app: app,
-                                                    bundleIdentifier: app.identifier,
-                                                    expirationDate: Date(),
-                                                    context: self.context)
+                        installedApp = InstalledApp(app: app, bundleIdentifier: app.identifier, context: self.context)
                     }
                     
                     installedApp.version = app.version
                     self.finish(.success(installedApp))
                 }
             }
+            catch
+            {
+                self.finish(.failure(error))
+            }
         }
         
-        if self.useCachedAppIfAvailable && FileManager.default.fileExists(atPath: self.ipaURL.path)
+        if self.sourceURL.isFileURL
         {
-            finish(error: nil)
-            return
+            finishOperation(.success(self.sourceURL))
+            
+            self.progress.completedUnitCount += 1
         }
-        
-        let downloadTask = self.session.downloadTask(with: self.downloadURL) { (fileURL, response, error) in
-            do
-            {
-                let (fileURL, _) = try Result((fileURL, response), error).get()
-                
-                try FileManager.default.copyItem(at: fileURL, to: self.ipaURL, shouldReplace: true)
-                
-                finish(error: nil)
+        else
+        {
+            let downloadTask = self.session.downloadTask(with: self.sourceURL) { (fileURL, response, error) in
+                do
+                {
+                    let (fileURL, _) = try Result((fileURL, response), error).get()
+                    finishOperation(.success(fileURL))
+                }
+                catch
+                {
+                    finishOperation(.failure(error))
+                }
             }
-            catch let error
-            {
-                finish(error: error)
-            }
+            self.progress.addChild(downloadTask.progress, withPendingUnitCount: 1)
+            
+            downloadTask.resume()
         }
-        
-        self.progress.addChild(downloadTask.progress, withPendingUnitCount: 1)
-        downloadTask.resume()
     }
 }

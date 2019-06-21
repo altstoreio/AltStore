@@ -19,6 +19,9 @@ enum OperationError: LocalizedError
     
     case unknownUDID
     
+    case invalidApp
+    case invalidParameters
+    
     var errorDescription: String? {
         switch self {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
@@ -27,6 +30,8 @@ enum OperationError: LocalizedError
         case .notAuthenticated: return NSLocalizedString("You are not signed in.", comment: "")
         case .appNotFound: return NSLocalizedString("App not found.", comment: "")
         case .unknownUDID: return NSLocalizedString("Unknown device UDID.", comment: "")
+        case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
+        case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
         }
     }
 }

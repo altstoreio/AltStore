@@ -123,8 +123,7 @@ private extension UpdatesViewController
             let progress = AppManager.shared.install(installedApp.app, presentingViewController: self) { (result) in
                 do
                 {
-                    let app = try result.get()
-                    try app.managedObjectContext?.save()
+                    _ = try result.get()
                     
                     DispatchQueue.main.async {
                         let installedApp = DatabaseManager.shared.persistentContainer.viewContext.object(with: installedApp.objectID) as! InstalledApp

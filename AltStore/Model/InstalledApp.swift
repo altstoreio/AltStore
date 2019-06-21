@@ -16,6 +16,7 @@ class InstalledApp: NSManagedObject, Fetchable
     @NSManaged var bundleIdentifier: String
     @NSManaged var version: String
     
+    @NSManaged var refreshedDate: Date
     @NSManaged var expirationDate: Date
     
     /* Relationships */
@@ -26,7 +27,7 @@ class InstalledApp: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    init(app: App, bundleIdentifier: String, expirationDate: Date, context: NSManagedObjectContext)
+    init(app: App, bundleIdentifier: String, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -35,7 +36,9 @@ class InstalledApp: NSManagedObject, Fetchable
         self.version = app.version
         
         self.bundleIdentifier = bundleIdentifier
-        self.expirationDate = expirationDate
+        
+        self.refreshedDate = Date()
+        self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
     }
 }
 
@@ -44,6 +47,52 @@ extension InstalledApp
     @nonobjc class func fetchRequest() -> NSFetchRequest<InstalledApp>
     {
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
+    }
+    
+    class func fetchAltStore(in context: NSManagedObjectContext) -> InstalledApp?
+    {
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.app.identifier), App.altstoreAppID)
+        
+        let altStore = InstalledApp.first(satisfying: predicate, in: context)
+        return altStore
+    }
+    
+    class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
+    {
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.app.identifier), App.altstoreAppID)
+        
+        var installedApps = InstalledApp.all(satisfying: predicate,
+                                             sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
+                                             in: context)
+        
+        if let altStoreApp = InstalledApp.fetchAltStore(in: context)
+        {
+            // Refresh AltStore last since it causes app to quit.
+            installedApps.append(altStoreApp)
+        }
+        
+        return installedApps
+    }
+    
+    class func fetchAppsForBackgroundRefresh(in context: NSManagedObjectContext) -> [InstalledApp]
+    {
+        let date = Date().addingTimeInterval(-120)
+        
+        let predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
+                                    #keyPath(InstalledApp.refreshedDate), date as NSDate,
+                                    #keyPath(InstalledApp.app.identifier), App.altstoreAppID)
+        
+        var installedApps = InstalledApp.all(satisfying: predicate,
+                                             sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
+                                             in: context)
+        
+        if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
+        {
+            // Refresh AltStore last since it causes app to quit.
+            installedApps.append(altStoreApp)
+        }
+        
+        return installedApps
     }
 }
 
@@ -67,10 +116,10 @@ extension InstalledApp
         return appsDirectoryURL
     }
     
-    class func ipaURL(for app: App) -> URL
+    class func fileURL(for app: App) -> URL
     {
-        let ipaURL = self.directoryURL(for: app).appendingPathComponent("App.ipa")
-        return ipaURL
+        let appURL = self.directoryURL(for: app).appendingPathComponent("App.app")
+        return appURL
     }
     
     class func refreshedIPAURL(for app: App) -> URL
@@ -78,7 +127,6 @@ extension InstalledApp
         let ipaURL = self.directoryURL(for: app).appendingPathComponent("Refreshed.ipa")
         return ipaURL
     }
-    
     
     class func directoryURL(for app: App) -> URL
     {
@@ -94,8 +142,8 @@ extension InstalledApp
         return InstalledApp.directoryURL(for: self.app)
     }
     
-    var ipaURL: URL {
-        return InstalledApp.ipaURL(for: self.app)
+    var fileURL: URL {
+        return InstalledApp.fileURL(for: self.app)
     }
     
     var refreshedIPAURL: URL {

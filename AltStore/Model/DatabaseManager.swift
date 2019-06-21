@@ -8,6 +8,7 @@
 
 import CoreData
 
+import AltSign
 import Roxas
 
 public class DatabaseManager
@@ -120,14 +121,23 @@ private extension DatabaseManager
                 altStoreApp.version = version
             }
             
-            if let installedApp = altStoreApp.installedApp
+            let installedApp: InstalledApp
+            
+            if let app = altStoreApp.installedApp
             {
-                installedApp.version = version
+                installedApp = app
             }
             else
             {
-                let installedApp = InstalledApp(app: altStoreApp, bundleIdentifier: altStoreApp.identifier, expirationDate: Date(), context: context)
-                installedApp.version = version
+                installedApp = InstalledApp(app: altStoreApp, bundleIdentifier: altStoreApp.identifier, context: context)
+            }
+            
+            installedApp.version = version
+            
+            if let provisioningProfileURL = Bundle.main.url(forResource: "embedded", withExtension: "mobileprovision"), let provisioningProfile = ALTProvisioningProfile(url: provisioningProfileURL)
+            {
+                installedApp.refreshedDate = provisioningProfile.creationDate
+                installedApp.expirationDate = provisioningProfile.expirationDate
             }
             
             do

@@ -127,14 +127,11 @@ private extension AppDetailViewController
         let progressView = UIProgressView(progressViewStyle: .bar)
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.progress = 0.0
-
+        
         let progress = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
             do
             {
-                let installedApp = try result.get()
-                
-                do { try installedApp.managedObjectContext?.save() }
-                catch { print("Failed to save context.", error) }
+                _ = try result.get()
                 
                 DispatchQueue.main.async {
                     let toastView = RSTToastView(text: "Installed \(self.app.name)!", detailText: nil)
@@ -154,7 +151,7 @@ private extension AppDetailViewController
                     toastView.show(in: self.navigationController!.view, duration: 2)
                 }
             }
-
+            
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.4, animations: {
                     progressView.alpha = 0.0
