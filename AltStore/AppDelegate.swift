@@ -91,81 +91,90 @@ extension AppDelegate
             }
         }
         
-        // Wait a few seconds so we have a chance to discover nearby AltServers.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            
-            func finish(_ result: Result<[String: Result<InstalledApp, Error>], Error>)
+        BackgroundTaskManager.shared.performExtendedBackgroundTask { (taskResult, taskCompletionHandler) in
+            if let error = taskResult.error
             {
-                ServerManager.shared.stopDiscovering()
+                print("Error starting extended background task.", error)
+            }
+            
+            // Wait a few seconds so we have a chance to discover nearby AltServers.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 
-                let content = UNMutableNotificationContent()
-                var shouldPresentAlert = true
-                
-                do
+                func finish(_ result: Result<[String: Result<InstalledApp, Error>], Error>)
                 {
-                    let results = try result.get()
-                    shouldPresentAlert = !results.isEmpty
+                    ServerManager.shared.stopDiscovering()
                     
-                    for (_, result) in results
+                    let content = UNMutableNotificationContent()
+                    var shouldPresentAlert = true
+                    
+                    do
                     {
-                        guard case let .failure(error) = result else { continue }
-                        throw error
+                        let results = try result.get()
+                        shouldPresentAlert = !results.isEmpty
+                        
+                        for (_, result) in results
+                        {
+                            guard case let .failure(error) = result else { continue }
+                            throw error
+                        }
+                        
+                        content.title = NSLocalizedString("Refreshed all apps!", comment: "")
+                    }
+                    catch
+                    {
+                        print("Failed to refresh apps in background.", error)
+                        
+                        content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
+                        content.body = error.localizedDescription
+                        
+                        shouldPresentAlert = true
                     }
                     
-                    content.title = NSLocalizedString("Refreshed all apps!", comment: "")
-                }
-                catch
-                {
-                    print("Failed to refresh apps in background.", error)
-                    
-                    content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
-                    content.body = error.localizedDescription
-                    
-                    shouldPresentAlert = true
-                }
-                
-                if shouldPresentAlert
-                {
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                    
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-                    UNUserNotificationCenter.current().add(request) { (error) in
-                        if let error = error {
-                            print(error)
+                    if shouldPresentAlert
+                    {
+                        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
+                        
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                        UNUserNotificationCenter.current().add(request) { (error) in
+                            if let error = error {
+                                print(error)
+                            }
                         }
                     }
-                }
-                
-                switch result
-                {
-                case .failure(ConnectionError.serverNotFound): completionHandler(.newData)
-                case .failure: completionHandler(.failed)
-                case .success: completionHandler(.newData)
-                }
-            }
-            
-            let group = AppManager.shared.refresh(installedApps, presentingViewController: nil)
-            group.beginInstallationHandler = { (installedApp) in
-                guard installedApp.app.identifier == App.altstoreAppID else { return }
-                
-                // We're starting to install AltStore, which means the app is about to quit.
-                // So, we say we were successful even though we technically don't know 100% yet.
-                // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
-                
-                if let error = group.error
-                {
-                    finish(.failure(error))
-                }
-                else
-                {
-                    var results = group.results
-                    results[installedApp.app.identifier] = .success(installedApp)
                     
-                    finish(.success(results))
+                    switch result
+                    {
+                    case .failure(ConnectionError.serverNotFound): completionHandler(.newData)
+                    case .failure: completionHandler(.failed)
+                    case .success: completionHandler(.newData)
+                    }
+                    
+                    taskCompletionHandler()
                 }
-            }
-            group.completionHandler = { (result) in
-                finish(result)
+                
+                let group = AppManager.shared.refresh(installedApps, presentingViewController: nil)
+                group.beginInstallationHandler = { (installedApp) in
+                    guard installedApp.app.identifier == App.altstoreAppID else { return }
+                    
+                    // We're starting to install AltStore, which means the app is about to quit.
+                    // So, we say we were successful even though we technically don't know 100% yet.
+                    // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
+                    
+                    if let error = group.error
+                    {
+                        finish(.failure(error))
+                    }
+                    else
+                    {
+                        var results = group.results
+                        results[installedApp.app.identifier] = .success(installedApp)
+                        
+                        finish(.success(results))
+                    }
+                }
+                group.completionHandler = { (result) in
+                    finish(result)
+                }
             }
         }
     }

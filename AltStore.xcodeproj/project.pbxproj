@@ -94,6 +94,8 @@
 		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
 		BF770E5622BC3C03002A40FE /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5522BC3C02002A40FE /* Server.swift */; };
 		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
+		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
+		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
 		BF9B63C6229DD44E002F0A62 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
@@ -319,6 +321,8 @@
 		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
 		BF770E5522BC3C02002A40FE /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
+		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -742,6 +746,7 @@
 				BFD2478B2284C4C300981D42 /* AppIconImageView.swift */,
 				BFD2478E2284C8F900981D42 /* Button.swift */,
 				BF43002D22A714AF0051E2BC /* Keychain.swift */,
+				BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -751,6 +756,7 @@
 			children = (
 				BFB1169C22932DB100BB457C /* Apps.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
+				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1040,6 +1046,7 @@
 			files = (
 				BFB1169D22932DB100BB457C /* Apps.json in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
+				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
 				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
@@ -1205,6 +1212,7 @@
 				BFD247702284B9A500981D42 /* AppsViewController.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */,
+				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
