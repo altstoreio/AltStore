@@ -187,6 +187,20 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
             service = NULL;
         }
         
+        
+        /* Connect to Misagent */
+        // Must connect now, since if we take too long writing files to device, connecting may fail later when managing profiles.
+        if (lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        
         /* Connect to AFC service */
         if ((lockdownd_start_service(client, "com.apple.afc", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
         {
@@ -241,6 +255,12 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         
         NSLog(@"Finished writing to device.");
         
+        if (service)
+        {
+            lockdownd_service_descriptor_free(service);
+            service = NULL;
+        }
+        
         /* Provisioning Profiles */
         NSURL *provisioningProfileURL = [appBundleURL URLByAppendingPathComponent:@"embedded.mobileprovision"];
         ALTProvisioningProfile *installationProvisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:provisioningProfileURL];
@@ -252,17 +272,8 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 return finish(error);
             }
 
-            if ((lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
-            {
-                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-            }
-
-            if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
-            {
-                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
-            }
-
             plist_t profiles = NULL;
+            
             if (misagent_copy_all(mis, &profiles) != MISAGENT_E_SUCCESS)
             {
                 return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
