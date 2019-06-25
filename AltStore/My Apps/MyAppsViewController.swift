@@ -130,68 +130,85 @@ private extension MyAppsViewController
     
     func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
     {
-        if self.refreshGroup == nil
+        func refresh()
         {
-            let toastView = RSTToastView(text: "Refreshing...", detailText: nil)
-            toastView.tintColor = .altPurple
-            toastView.activityIndicatorView.startAnimating()
-            toastView.show(in: self.navigationController?.view ?? self.view)
-        }
-        
-        let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.refreshGroup)
-        group.completionHandler = { (result) in
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(let error):
-                    let toastView = RSTToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.tintColor = .red
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
-                    
-                    self.refreshErrors = [:]
-                    
-                case .success(let results):
-                    let failures = results.compactMapValues { $0.error }
-                    
-                    if failures.isEmpty
+            if self.refreshGroup == nil
+            {
+                let toastView = RSTToastView(text: "Refreshing...", detailText: nil)
+                toastView.tintColor = .altPurple
+                toastView.activityIndicatorView.startAnimating()
+                toastView.show(in: self.navigationController?.view ?? self.view)
+            }
+            
+            let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.refreshGroup)
+            group.completionHandler = { (result) in
+                DispatchQueue.main.async {
+                    switch result
                     {
-                        let toastView = RSTToastView(text: NSLocalizedString("Successfully refreshed apps!", comment: ""), detailText: nil)
-                        toastView.tintColor = .altPurple
+                    case .failure(let error):
+                        let toastView = RSTToastView(text: error.localizedDescription, detailText: nil)
+                        toastView.tintColor = .red
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
-                    }
-                    else
-                    {
-                        let localizedText: String
-                        if failures.count == 1
+                        
+                        self.refreshErrors = [:]
+                        
+                    case .success(let results):
+                        let failures = results.compactMapValues { $0.error }
+                        
+                        if failures.isEmpty
                         {
-                            localizedText = String(format: NSLocalizedString("Failed to refresh %@ app.", comment: ""), NSNumber(value: failures.count))
+                            let toastView = RSTToastView(text: NSLocalizedString("Successfully refreshed apps!", comment: ""), detailText: nil)
+                            toastView.tintColor = .altPurple
+                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                         }
                         else
                         {
-                            localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
+                            let localizedText: String
+                            if failures.count == 1
+                            {
+                                localizedText = String(format: NSLocalizedString("Failed to refresh %@ app.", comment: ""), NSNumber(value: failures.count))
+                            }
+                            else
+                            {
+                                localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
+                            }
+                            
+                            let toastView = RSTToastView(text: localizedText, detailText: nil)
+                            toastView.tintColor = .red
+                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                         }
                         
-                        let toastView = RSTToastView(text: localizedText, detailText: nil)
-                        toastView.tintColor = .red
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        self.refreshErrors = failures
                     }
                     
-                    self.refreshErrors = failures
+                    self.progressView.observedProgress = nil
+                    self.progressView.progress = 0.0
+                    
+                    self.update()
+                    
+                    self.refreshGroup = nil
+                    completionHandler(result)
                 }
-                
-                self.progressView.observedProgress = nil
-                self.progressView.progress = 0.0
-                
-                self.update()
-                
-                self.refreshGroup = nil
-                completionHandler(result)
             }
+            
+            self.progressView.observedProgress = group.progress
+            
+            self.refreshGroup = group
         }
         
-        self.progressView.observedProgress = group.progress
-        
-        self.refreshGroup = group
+        if installedApps.contains(where: { $0.app.identifier == App.altstoreAppID })
+        {
+            let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
+            alertController.addAction(.cancel)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Refresh", comment: ""), style: .default) { (action) in
+                refresh()
+            })
+            self.present(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            refresh()
+        }
     }
 }
 
