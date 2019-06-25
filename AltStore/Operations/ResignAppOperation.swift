@@ -409,6 +409,11 @@ private extension ResignAppOperation
                 infoDictionary[key] = value
             }
             
+            if let appGroups = profile.entitlements[.appGroups] as? [String]
+            {
+                infoDictionary[Bundle.Info.appGroups] = appGroups
+            }
+            
             try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
         }
         
@@ -464,7 +469,6 @@ private extension ResignAppOperation
     
     func resignAppBundle(at fileURL: URL, signer: ALTSigner, profiles: [ALTProvisioningProfile], completionHandler: @escaping (Result<URL, Error>) -> Void) -> Progress
     {
-        
         let progress = signer.signApp(at: fileURL, provisioningProfiles: profiles) { (success, error) in
             do
             {

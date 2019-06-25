@@ -13,6 +13,7 @@ public extension Bundle
     struct Info
     {
         public static let deviceID = "ALTDeviceID"
+        public static let appGroups = "ALTAppGroups"
         
         public static let urlTypes = "CFBundleURLTypes"
     }
