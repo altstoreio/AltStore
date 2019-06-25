@@ -355,7 +355,7 @@ private extension ViewController
             let zippedURL = try FileManager.default.zipAppBundle(at: appBundleURL)
             
             let resigner = ALTSigner(team: team, certificate: certificate)
-            resigner.signApp(at: zippedURL, provisioningProfile: profile) { (success, error) in
+            resigner.signApp(at: zippedURL, provisioningProfiles: [profile]) { (success, error) in
                 do
                 {
                     try Result(success, error).get()
