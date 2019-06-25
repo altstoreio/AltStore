@@ -94,7 +94,20 @@ extension AppDelegate
         BackgroundTaskManager.shared.performExtendedBackgroundTask { (taskResult, taskCompletionHandler) in
             if let error = taskResult.error
             {
-                print("Error starting extended background task.", error)
+                print("Error starting extended background task. Aborting.", error)
+                
+                let content = UNMutableNotificationContent()
+                content.title = NSLocalizedString("Failed to refresh apps.", comment: "")
+                content.body = taskResult.error?.localizedDescription ?? ""
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
+                
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request) { (error) in
+                    if let error = error {
+                        print(error)
+                    }
+                }
             }
             
             // Wait a few seconds so we have a chance to discover nearby AltServers.
