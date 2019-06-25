@@ -112,12 +112,45 @@ private extension ViewController
 {
     func installAltStore(to device: ALTDevice)
     {
-        func present(_ error: Error, title: String)
+        let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        
+        func finish(_ error: Error?, title: String = "")
         {
             DispatchQueue.main.async {
-                let alert = NSAlert(error: error)
+                let alert = NSAlert()
+                
+                if let error = error
+                {
+                    alert.messageText = title
+                    alert.informativeText = error.localizedDescription
+                }
+                else
+                {
+                    alert.messageText = NSLocalizedString("Successfully installed AltStore!", comment: "")
+                }
+                
                 alert.runModal()
             }
+            
+            try? FileManager.default.removeItem(at: destinationDirectoryURL)
+        }
+        
+        let ipaURL = Bundle.main.url(forResource: "App", withExtension: ".ipa")!
+        let application: ALTApplication
+        
+        do
+        {
+            try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            
+            let appBundleURL = try FileManager.default.unzipAppBundle(at: ipaURL, toDirectory: destinationDirectoryURL)
+            
+            guard let app = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+            application = app
+        }
+        catch
+        {
+            finish(error, title: "Failed to Install App")
+            return
         }
         
         self.authenticate() { (result) in
@@ -143,46 +176,60 @@ private extension ViewController
                                             do
                                             {
                                                 let appID = try result.get()
-                                                self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                                
+                                                self.updateFeatures(for: appID, app: application, team: team) { (result) in
                                                     do
                                                     {
-                                                        let provisioningProfile = try result.get()
-                                                        try self.installIPA(to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile)
+                                                        let appID = try result.get()
+                                                        
+                                                        self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                                            do
+                                                            {
+                                                                let provisioningProfile = try result.get()
+                                                                
+                                                                self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
+                                                                    finish(result.error, title: "Failed to Install AltStore")
+                                                                }
+                                                            }
+                                                            catch
+                                                            {
+                                                                finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                            }
+                                                        }
                                                     }
                                                     catch
                                                     {
-                                                        present(error, title: "Failed to Fetch Provisioning Profile")
+                                                        finish(error, title: "Failed to Update App ID")
                                                     }
                                                 }
-                                                
                                             }
                                             catch
                                             {
-                                                present(error, title: "Failed to Register App")
+                                                finish(error, title: "Failed to Register App")
                                             }
                                         }
                                     }
                                     catch
                                     {
-                                        present(error, title: "Failed to Fetch Certificate")
+                                        finish(error, title: "Failed to Fetch Certificate")
                                     }
                                 }
                             }
                             catch
                             {
-                                present(error, title: "Failed to Register Device")
+                                finish(error, title: "Failed to Register Device")
                             }
                         }
                     }
                     catch
                     {
-                        present(error, title: "Failed to Fetch Team")
+                        finish(error, title: "Failed to Fetch Team")
                     }
                 }
             }
             catch
             {
-                present(error, title: "Failed to Authenticate")
+                finish(error, title: "Failed to Authenticate")
             }
         }
     }
@@ -301,6 +348,28 @@ private extension ViewController
         }
     }
     
+    func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    {
+        let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
+            guard let feature = ALTFeature(entitlement) else { return nil }
+            return (feature, value)
+        }
+        
+        var features = requiredFeatures.reduce(into: [ALTFeature: Any]()) { $0[$1.0] = $1.1 }
+        
+        if let applicationGroups = app.entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
+        {
+            features[.appGroups] = true
+        }
+        
+        let appID = appID.copy() as! ALTAppID
+        appID.features = features
+        
+        ALTAppleAPI.shared.update(appID, team: team) { (appID, error) in
+            completionHandler(Result(appID, error))
+        }
+    }
+    
     func register(_ device: ALTDevice, team: ALTTeam, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
         ALTAppleAPI.shared.fetchDevices(for: team) { (devices, error) in
@@ -333,46 +402,40 @@ private extension ViewController
         }
     }
     
-    func installIPA(to device: ALTDevice, team: ALTTeam, appID: ALTAppID, certificate: ALTCertificate, profile: ALTProvisioningProfile) throws
+    func install(_ application: ALTApplication, to device: ALTDevice, team: ALTTeam, appID: ALTAppID, certificate: ALTCertificate, profile: ALTProvisioningProfile, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        let ipaURL = Bundle.main.url(forResource: "App", withExtension: ".ipa")!
-        
-        let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        
-        do
-        {
-            try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-            
-            let appBundleURL = try FileManager.default.unzipAppBundle(at: ipaURL, toDirectory: destinationDirectoryURL)
-            print(appBundleURL)
-            
-            let infoPlistURL = appBundleURL.appendingPathComponent("Info.plist")
-            
-            guard var infoDictionary = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
-            infoDictionary[Bundle.Info.deviceID] = device.identifier
-            try (infoDictionary as NSDictionary).write(to: infoPlistURL)
-            
-            let zippedURL = try FileManager.default.zipAppBundle(at: appBundleURL)
-            
-            let resigner = ALTSigner(team: team, certificate: certificate)
-            resigner.signApp(at: zippedURL, provisioningProfiles: [profile]) { (success, error) in
-                do
-                {
-                    try Result(success, error).get()
-                    ALTDeviceManager.shared.installApp(at: ipaURL, toDeviceWithUDID: device.identifier) { (success, error) in
-                        let result = Result(success, error)
-                        print(result)
+        DispatchQueue.global().async {
+            do
+            {
+                let infoPlistURL = application.fileURL.appendingPathComponent("Info.plist")
+                
+                guard var infoDictionary = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
+                infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
+                infoDictionary[Bundle.Info.deviceID] = device.identifier
+                try (infoDictionary as NSDictionary).write(to: infoPlistURL)
+                
+                let resigner = ALTSigner(team: team, certificate: certificate)
+                resigner.signApp(at: application.fileURL, provisioningProfiles: [profile]) { (success, error) in
+                    do
+                    {
+                        try Result(success, error).get()
+                        
+                        ALTDeviceManager.shared.installApp(at: application.fileURL, toDeviceWithUDID: device.identifier) { (success, error) in
+                            completionHandler(Result(success, error))
+                        }
+                    }
+                    catch
+                    {
+                        print("Failed to install app", error)
+                        completionHandler(.failure(error))
                     }
                 }
-                catch
-                {
-                    print("Failed to install app", error)
-                }
             }
-        }
-        catch
-        {
-            print("Failed to install AltStore", error)
+            catch
+            {
+                print("Failed to install AltStore", error)
+                completionHandler(.failure(error))
+            }
         }
     }
 }
