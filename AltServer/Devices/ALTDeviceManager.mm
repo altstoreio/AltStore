@@ -73,6 +73,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         __block lockdownd_service_descriptor_t service = NULL;
         
         NSURL *removedProfilesDirectoryURL = [[[NSFileManager defaultManager] temporaryDirectory] URLByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+        NSMutableDictionary<NSString *, ALTProvisioningProfile *> *preferredProfiles = [NSMutableDictionary dictionary];
         
         void (^finish)(NSError *error) = ^(NSError *error) {
             
@@ -87,6 +88,12 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                     
                     ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:fileURL];
                     if (provisioningProfile == nil)
+                    {
+                        continue;
+                    }
+                    
+                    ALTProvisioningProfile *preferredProfile = preferredProfiles[provisioningProfile.bundleIdentifier];
+                    if (![preferredProfile isEqual:provisioningProfile])
                     {
                         continue;
                     }
@@ -287,7 +294,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 {
                     continue;
                 }
-
+                
                 char *bytes = NULL;
                 uint64_t length = 0;
 
@@ -302,7 +309,21 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
                 if (![provisioningProfile.teamIdentifier isEqualToString:installationProvisioningProfile.teamIdentifier])
                 {
+                    NSLog(@"Ignoring: %@", installationProvisioningProfile.teamIdentifier);
                     continue;
+                }
+                
+                ALTProvisioningProfile *preferredProfile = preferredProfiles[provisioningProfile.bundleIdentifier];
+                if (preferredProfile != nil)
+                {
+                    if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
+                    {
+                        preferredProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+                    }
+                }
+                else
+                {
+                    preferredProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
                 }
 
                 NSString *filename = [NSString stringWithFormat:@"%@.mobileprovision", [[NSUUID UUID] UUIDString]];
