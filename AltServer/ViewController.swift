@@ -44,7 +44,7 @@ class ViewController: NSViewController
                 switch state
                 {
                 case .notRunning: self.view.window?.title = ""
-                case .connecting: self.view.window?.title = "Connecting..."
+                case .connecting: self.view.window?.title = "Connecting...."
                 case .running(let service): self.view.window?.title = service.name ?? ""
                 case .failed(let error): self.view.window?.title = error.localizedDescription
                 }
@@ -135,24 +135,6 @@ private extension ViewController
             try? FileManager.default.removeItem(at: destinationDirectoryURL)
         }
         
-        let ipaURL = Bundle.main.url(forResource: "App", withExtension: ".ipa")!
-        let application: ALTApplication
-        
-        do
-        {
-            try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-            
-            let appBundleURL = try FileManager.default.unzipAppBundle(at: ipaURL, toDirectory: destinationDirectoryURL)
-            
-            guard let app = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
-            application = app
-        }
-        catch
-        {
-            finish(error, title: "Failed to Install App")
-            return
-        }
-        
         self.authenticate() { (result) in
             do
             {
@@ -172,40 +154,58 @@ private extension ViewController
                                     {
                                         let certificate = try result.get()
                                         
-                                        self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team) { (result) in
+                                        self.downloadApp { (result) in
                                             do
                                             {
-                                                let appID = try result.get()
+                                                let fileURL = try result.get()
                                                 
-                                                self.updateFeatures(for: appID, app: application, team: team) { (result) in
+                                                try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                                                
+                                                let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
+                                                
+                                                guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+                                                
+                                                self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team) { (result) in
                                                     do
                                                     {
                                                         let appID = try result.get()
                                                         
-                                                        self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                                        self.updateFeatures(for: appID, app: application, team: team) { (result) in
                                                             do
                                                             {
-                                                                let provisioningProfile = try result.get()
+                                                                let appID = try result.get()
                                                                 
-                                                                self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
-                                                                    finish(result.error, title: "Failed to Install AltStore")
+                                                                self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                                                    do
+                                                                    {
+                                                                        let provisioningProfile = try result.get()
+                                                                        
+                                                                        self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
+                                                                            finish(result.error, title: "Failed to Install AltStore")
+                                                                        }
+                                                                    }
+                                                                    catch
+                                                                    {
+                                                                        finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                    }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                finish(error, title: "Failed to Update App ID")
                                                             }
                                                         }
                                                     }
                                                     catch
                                                     {
-                                                        finish(error, title: "Failed to Update App ID")
+                                                        finish(error, title: "Failed to Register App")
                                                     }
                                                 }
                                             }
                                             catch
                                             {
-                                                finish(error, title: "Failed to Register App")
+                                                finish(error, title: "Failed to Download AltStore")
+                                                return
                                             }
                                         }
                                     }
@@ -232,6 +232,25 @@ private extension ViewController
                 finish(error, title: "Failed to Authenticate")
             }
         }
+    }
+    
+    func downloadApp(completionHandler: @escaping (Result<URL, Error>) -> Void)
+    {
+        let appURL = URL(string: "https://www.dropbox.com/s/w1gn9iztlqvltyp/AltStore.ipa?dl=1")!
+        
+        let downloadTask = URLSession.shared.downloadTask(with: appURL) { (fileURL, response, error) in
+            do
+            {
+                let (fileURL, _) = try Result((fileURL, response), error).get()
+                completionHandler(.success(fileURL))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        downloadTask.resume()
     }
     
     func authenticate(completionHandler: @escaping (Result<ALTAccount, Error>) -> Void)
