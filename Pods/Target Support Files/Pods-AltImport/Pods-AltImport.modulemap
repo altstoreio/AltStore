@@ -1,0 +1,6 @@
+framework module Pods_AltImport {
+  umbrella header "Pods-AltImport-umbrella.h"
+
+  export *
+  module * { export * }
+}

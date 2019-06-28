@@ -7,16 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19F554732D63BD76CD88563023F43BC4 /* Pods-AltImport-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF65079620CBA049EC51D9D673178B0 /* Pods-AltImport-dummy.m */; };
 		5A8E10AA29B392DAE441976836D393A5 /* KeychainAccess-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DC95F84ADCC7EA0D937C9F7E1A13FD3F /* KeychainAccess-dummy.m */; };
+		6D0D7A02B029C92511A6060C8B7A35E3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 		84799F206FB756858DA1341F7AEC702F /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A8D4AA4DF9DABA6B3E0870FA4FF211 /* Keychain.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		853F25B704B9C1E0728C8355490C3E8B /* Pods-AltStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B40162929DC081B191D728E6A63F10 /* Pods-AltStore-dummy.m */; };
-		8C461642DA35C9D0EE56FAC4A9B7EB98 /* Pods-AltStore-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A6C251E1905FCD10CB7FAFE104093724 /* Pods-AltStore-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		853F25B704B9C1E0728C8355490C3E8B /* Pods-AltStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C13CE1C07D8A800603D74EA1674BA937 /* Pods-AltStore-dummy.m */; };
+		87814C2865C79FC732E93B8B5D948D5D /* Pods-AltImport-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BABF8B707D6481579B25ED7321594B0E /* Pods-AltImport-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C461642DA35C9D0EE56FAC4A9B7EB98 /* Pods-AltStore-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 608257B77C0E0B193102CF6F0DB928B9 /* Pods-AltStore-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		92B9A2B19BE39566C6CACFD26BF134C4 /* KeychainAccess-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C9FE5B73BA33889545E29DB12D4DF6CF /* KeychainAccess-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E508379E4792F37F65760D68B758E547 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 		E8395200A45B1D891CABD0675CDFEB7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		410AD6992F02987EC12E676A3D6D836E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F895CBA524B654D3F837F25BFBE2262;
+			remoteInfo = KeychainAccess;
+		};
 		9FFDB3D153C5FA18B6FD59B50C54CAAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -27,29 +37,46 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		12FBD321A774CE97AC1213C6B240DC9F /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
-		26B0AFC87F31102D2BE23BCC938B1223 /* Pods-AltStore-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-acknowledgements.plist"; sourceTree = "<group>"; };
-		381EB86F7712B890E418E54C20FB51E3 /* Pods-AltStore-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-Info.plist"; sourceTree = "<group>"; };
-		4DBA4D739ECCF9E52DA7C1AFF75568B0 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
-		5EA1AF6D01DBBAE8075A59F88B649449 /* KeychainAccess.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = KeychainAccess.framework; path = KeychainAccess.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C427BB81ED9D451507D845A4C02BA8B /* Pods_AltImport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltImport.framework; path = "Pods-AltImport.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0D0A04D131140E7CD6D76C787679B297 /* KeychainAccess.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = KeychainAccess.framework; path = KeychainAccess.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		26517D2F741A0A6A2481D41A04F7D9DF /* Pods-AltImport-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltImport-acknowledgements.plist"; sourceTree = "<group>"; };
+		2A9C23B0D0BC45406B4E81C48069E912 /* Pods-AltStore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStore.modulemap"; sourceTree = "<group>"; };
+		4D88A85D0979F1D131FB5FC4CEA78BE3 /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltStore.framework; path = "Pods-AltStore.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DEDED22F60F3C27B77041847242AA57 /* Pods-AltImport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltImport.release.xcconfig"; sourceTree = "<group>"; };
+		5C124BC40CD8D59ABD41D727298589D9 /* Pods-AltStore-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-Info.plist"; sourceTree = "<group>"; };
+		608257B77C0E0B193102CF6F0DB928B9 /* Pods-AltStore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltStore-umbrella.h"; sourceTree = "<group>"; };
 		70C1D1D165319C9CE56A3D43DDFBF1DC /* KeychainAccess-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "KeychainAccess-Info.plist"; sourceTree = "<group>"; };
+		798DB680EA22055EDB7019AB65E219B9 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
+		7B57DBD0AFF9E3E58F60937646A1F9F2 /* Pods-AltImport.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltImport.modulemap"; sourceTree = "<group>"; };
+		81ED2608B29E84C3E628D2F620FC7513 /* Pods-AltStore-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-acknowledgements.plist"; sourceTree = "<group>"; };
 		87BB091C7209D9D07DFA5FFB06428B65 /* KeychainAccess.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = KeychainAccess.xcconfig; sourceTree = "<group>"; };
-		96AD8FCF302BCD7BCBBEE0FEB1F64ACE /* Pods-AltStore-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltStore-acknowledgements.markdown"; sourceTree = "<group>"; };
+		93859E370266BC40FCF94DBCB33A664A /* Pods-AltStore-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltStore-acknowledgements.markdown"; sourceTree = "<group>"; };
+		974B10BFD2E7BFAD8415ACF70EE8C0BD /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A6C251E1905FCD10CB7FAFE104093724 /* Pods-AltStore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltStore-umbrella.h"; sourceTree = "<group>"; };
+		AB987245B51BA7D76F6A0237FD6510CF /* Pods-AltImport.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltImport.debug.xcconfig"; sourceTree = "<group>"; };
+		ADF65079620CBA049EC51D9D673178B0 /* Pods-AltImport-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltImport-dummy.m"; sourceTree = "<group>"; };
 		B329E578A66D5B034937A60730C4AEA7 /* KeychainAccess.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = KeychainAccess.modulemap; sourceTree = "<group>"; };
-		B38C6112DA4290AC0E677628F897988F /* Pods-AltStore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStore.modulemap"; sourceTree = "<group>"; };
-		BD6733F0EF9D699F0FFB110363BB951D /* Pods-AltStore-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltStore-frameworks.sh"; sourceTree = "<group>"; };
+		BABF8B707D6481579B25ED7321594B0E /* Pods-AltImport-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltImport-umbrella.h"; sourceTree = "<group>"; };
+		BE1941618ABF89F774C16EC78F0EB982 /* Pods-AltStore-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltStore-frameworks.sh"; sourceTree = "<group>"; };
+		C13CE1C07D8A800603D74EA1674BA937 /* Pods-AltStore-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltStore-dummy.m"; sourceTree = "<group>"; };
 		C1A8D4AA4DF9DABA6B3E0870FA4FF211 /* Keychain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Keychain.swift; path = Lib/KeychainAccess/Keychain.swift; sourceTree = "<group>"; };
 		C6FE0CABF5936907F3B06C5EC42CC92A /* KeychainAccess-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KeychainAccess-prefix.pch"; sourceTree = "<group>"; };
 		C9FE5B73BA33889545E29DB12D4DF6CF /* KeychainAccess-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KeychainAccess-umbrella.h"; sourceTree = "<group>"; };
 		CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		D5075B2053B7227455ED7D58FDFE1B22 /* Pods-AltImport-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltImport-Info.plist"; sourceTree = "<group>"; };
 		DC95F84ADCC7EA0D937C9F7E1A13FD3F /* KeychainAccess-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "KeychainAccess-dummy.m"; sourceTree = "<group>"; };
-		F1AAD8D354A54F78205D3DC08E311FA3 /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltStore.framework; path = "Pods-AltStore.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5B40162929DC081B191D728E6A63F10 /* Pods-AltStore-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltStore-dummy.m"; sourceTree = "<group>"; };
+		F78B350705D8BCEA82F78A881BABA2D3 /* Pods-AltImport-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltImport-acknowledgements.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		224D4E70CFA6E6A33CEE64A91BB5AD40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D0D7A02B029C92511A6060C8B7A35E3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97AFD54D8F68D9249D86AB9692333E16 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -87,21 +114,20 @@
 			path = KeychainAccess;
 			sourceTree = "<group>";
 		};
-		2D98B260CC94787B2358F221289A3927 /* Pods-AltStore */ = {
+		5184A6A711B6BD87D588CAA4E264F22D /* Pods-AltImport */ = {
 			isa = PBXGroup;
 			children = (
-				B38C6112DA4290AC0E677628F897988F /* Pods-AltStore.modulemap */,
-				96AD8FCF302BCD7BCBBEE0FEB1F64ACE /* Pods-AltStore-acknowledgements.markdown */,
-				26B0AFC87F31102D2BE23BCC938B1223 /* Pods-AltStore-acknowledgements.plist */,
-				F5B40162929DC081B191D728E6A63F10 /* Pods-AltStore-dummy.m */,
-				BD6733F0EF9D699F0FFB110363BB951D /* Pods-AltStore-frameworks.sh */,
-				381EB86F7712B890E418E54C20FB51E3 /* Pods-AltStore-Info.plist */,
-				A6C251E1905FCD10CB7FAFE104093724 /* Pods-AltStore-umbrella.h */,
-				4DBA4D739ECCF9E52DA7C1AFF75568B0 /* Pods-AltStore.debug.xcconfig */,
-				12FBD321A774CE97AC1213C6B240DC9F /* Pods-AltStore.release.xcconfig */,
+				7B57DBD0AFF9E3E58F60937646A1F9F2 /* Pods-AltImport.modulemap */,
+				F78B350705D8BCEA82F78A881BABA2D3 /* Pods-AltImport-acknowledgements.markdown */,
+				26517D2F741A0A6A2481D41A04F7D9DF /* Pods-AltImport-acknowledgements.plist */,
+				ADF65079620CBA049EC51D9D673178B0 /* Pods-AltImport-dummy.m */,
+				D5075B2053B7227455ED7D58FDFE1B22 /* Pods-AltImport-Info.plist */,
+				BABF8B707D6481579B25ED7321594B0E /* Pods-AltImport-umbrella.h */,
+				AB987245B51BA7D76F6A0237FD6510CF /* Pods-AltImport.debug.xcconfig */,
+				4DEDED22F60F3C27B77041847242AA57 /* Pods-AltImport.release.xcconfig */,
 			);
-			name = "Pods-AltStore";
-			path = "Target Support Files/Pods-AltStore";
+			name = "Pods-AltImport";
+			path = "Target Support Files/Pods-AltImport";
 			sourceTree = "<group>";
 		};
 		9B055D0CFEA43187E72B03DED11F5662 /* iOS */ = {
@@ -126,13 +152,21 @@
 			path = "../Target Support Files/KeychainAccess";
 			sourceTree = "<group>";
 		};
-		C503C40C4D61FFD0A7542EA7A5BA8470 /* Products */ = {
+		C2126D5F6019E8641027587FFB20D6AB /* Pods-AltStore */ = {
 			isa = PBXGroup;
 			children = (
-				5EA1AF6D01DBBAE8075A59F88B649449 /* KeychainAccess.framework */,
-				F1AAD8D354A54F78205D3DC08E311FA3 /* Pods_AltStore.framework */,
+				2A9C23B0D0BC45406B4E81C48069E912 /* Pods-AltStore.modulemap */,
+				93859E370266BC40FCF94DBCB33A664A /* Pods-AltStore-acknowledgements.markdown */,
+				81ED2608B29E84C3E628D2F620FC7513 /* Pods-AltStore-acknowledgements.plist */,
+				C13CE1C07D8A800603D74EA1674BA937 /* Pods-AltStore-dummy.m */,
+				BE1941618ABF89F774C16EC78F0EB982 /* Pods-AltStore-frameworks.sh */,
+				5C124BC40CD8D59ABD41D727298589D9 /* Pods-AltStore-Info.plist */,
+				608257B77C0E0B193102CF6F0DB928B9 /* Pods-AltStore-umbrella.h */,
+				974B10BFD2E7BFAD8415ACF70EE8C0BD /* Pods-AltStore.debug.xcconfig */,
+				798DB680EA22055EDB7019AB65E219B9 /* Pods-AltStore.release.xcconfig */,
 			);
-			name = Products;
+			name = "Pods-AltStore";
+			path = "Target Support Files/Pods-AltStore";
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -141,8 +175,8 @@
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				1822CF174BA8C3BC1C6A1BCD70C74D9E /* Pods */,
-				C503C40C4D61FFD0A7542EA7A5BA8470 /* Products */,
-				EF5F913657CC5FD110C6B562EDEABE4B /* Targets Support Files */,
+				FAA820FC60BE2C3913369A2D9FA637A6 /* Products */,
+				EE759DBCA303BBFF8B8AAB6FE2B78F6A /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -154,12 +188,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EF5F913657CC5FD110C6B562EDEABE4B /* Targets Support Files */ = {
+		EE759DBCA303BBFF8B8AAB6FE2B78F6A /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				2D98B260CC94787B2358F221289A3927 /* Pods-AltStore */,
+				5184A6A711B6BD87D588CAA4E264F22D /* Pods-AltImport */,
+				C2126D5F6019E8641027587FFB20D6AB /* Pods-AltStore */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		FAA820FC60BE2C3913369A2D9FA637A6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0D0A04D131140E7CD6D76C787679B297 /* KeychainAccess.framework */,
+				0C427BB81ED9D451507D845A4C02BA8B /* Pods_AltImport.framework */,
+				4D88A85D0979F1D131FB5FC4CEA78BE3 /* Pods_AltStore.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,6 +226,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F69967AFB8CC23C2180F253BAD673C08 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				87814C2865C79FC732E93B8B5D948D5D /* Pods-AltImport-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -199,7 +252,7 @@
 			);
 			name = KeychainAccess;
 			productName = KeychainAccess;
-			productReference = 5EA1AF6D01DBBAE8075A59F88B649449 /* KeychainAccess.framework */;
+			productReference = 0D0A04D131140E7CD6D76C787679B297 /* KeychainAccess.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A24BCCF0615F19EF15C5175F5155059B /* Pods-AltStore */ = {
@@ -218,7 +271,26 @@
 			);
 			name = "Pods-AltStore";
 			productName = "Pods-AltStore";
-			productReference = F1AAD8D354A54F78205D3DC08E311FA3 /* Pods_AltStore.framework */;
+			productReference = 4D88A85D0979F1D131FB5FC4CEA78BE3 /* Pods_AltStore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CC1E359352F773D6C5D6AC75B0AB9D8A /* Pods-AltImport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 345904CE394D8B0D00647EC745F73DD3 /* Build configuration list for PBXNativeTarget "Pods-AltImport" */;
+			buildPhases = (
+				F69967AFB8CC23C2180F253BAD673C08 /* Headers */,
+				C2235D7FFD2BF191F44A6475FA9E78C0 /* Sources */,
+				224D4E70CFA6E6A33CEE64A91BB5AD40 /* Frameworks */,
+				3D91E6F23AA2F77A7B25F30AEDD8758A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24DAA9CD3537B7ADB6D2F54CEF9C2B17 /* PBXTargetDependency */,
+			);
+			name = "Pods-AltImport";
+			productName = "Pods-AltImport";
+			productReference = 0C427BB81ED9D451507D845A4C02BA8B /* Pods_AltImport.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -238,11 +310,12 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = C503C40C4D61FFD0A7542EA7A5BA8470 /* Products */;
+			productRefGroup = FAA820FC60BE2C3913369A2D9FA637A6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				3F895CBA524B654D3F837F25BFBE2262 /* KeychainAccess */,
+				CC1E359352F773D6C5D6AC75B0AB9D8A /* Pods-AltImport */,
 				A24BCCF0615F19EF15C5175F5155059B /* Pods-AltStore */,
 			);
 		};
@@ -250,6 +323,13 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		153594991ADE9BDDE5FB6C2FDB474216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3D91E6F23AA2F77A7B25F30AEDD8758A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -283,9 +363,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2235D7FFD2BF191F44A6475FA9E78C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19F554732D63BD76CD88563023F43BC4 /* Pods-AltImport-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		24DAA9CD3537B7ADB6D2F54CEF9C2B17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KeychainAccess;
+			target = 3F895CBA524B654D3F837F25BFBE2262 /* KeychainAccess */;
+			targetProxy = 410AD6992F02987EC12E676A3D6D836E /* PBXContainerItemProxy */;
+		};
 		E524462E97292EC1913EB28B4E5A395E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = KeychainAccess;
@@ -297,7 +391,7 @@
 /* Begin XCBuildConfiguration section */
 		0DFF4363645F04A33C4CA0552E2894B6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 12FBD321A774CE97AC1213C6B240DC9F /* Pods-AltStore.release.xcconfig */;
+			baseConfigurationReference = 798DB680EA22055EDB7019AB65E219B9 /* Pods-AltStore.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -398,10 +492,48 @@
 			};
 			name = Debug;
 		};
-		55F18E06825E1BFC1A262F9FC0752F52 /* Debug */ = {
+		50ADC00436481DCF017D60B1DB6EF17F /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 87BB091C7209D9D07DFA5FFB06428B65 /* KeychainAccess.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/KeychainAccess/KeychainAccess-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/KeychainAccess/KeychainAccess-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/KeychainAccess/KeychainAccess.modulemap";
+				PRODUCT_MODULE_NAME = KeychainAccess;
+				PRODUCT_NAME = KeychainAccess;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6CE82779B478F0E05675D27BA18ADB39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87BB091C7209D9D07DFA5FFB06428B65 /* KeychainAccess.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -493,10 +625,13 @@
 			};
 			name = Release;
 		};
-		BC334190485B1F4408F03EDF94A692EF /* Release */ = {
+		D95D15C543D3401A719F1AE918210D9D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87BB091C7209D9D07DFA5FFB06428B65 /* KeychainAccess.xcconfig */;
+			baseConfigurationReference = AB987245B51BA7D76F6A0237FD6510CF /* Pods-AltImport.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -506,22 +641,62 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/KeychainAccess/KeychainAccess-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/KeychainAccess/KeychainAccess-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-AltImport/Pods-AltImport-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MODULEMAP_FILE = "Target Support Files/KeychainAccess/KeychainAccess.modulemap";
-				PRODUCT_MODULE_NAME = KeychainAccess;
-				PRODUCT_NAME = KeychainAccess;
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AltImport/Pods-AltImport.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		E63C2EC05F82DB567160FA4D75ACA709 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4DEDED22F60F3C27B77041847242AA57 /* Pods-AltImport.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-AltImport/Pods-AltImport-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AltImport/Pods-AltImport.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -531,7 +706,7 @@
 		};
 		F1AB5B87B0E318FCDC88C0E5FF60B9A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4DBA4D739ECCF9E52DA7C1AFF75568B0 /* Pods-AltStore.debug.xcconfig */;
+			baseConfigurationReference = 974B10BFD2E7BFAD8415ACF70EE8C0BD /* Pods-AltStore.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -570,6 +745,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		345904CE394D8B0D00647EC745F73DD3 /* Build configuration list for PBXNativeTarget "Pods-AltImport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D95D15C543D3401A719F1AE918210D9D /* Debug */,
+				E63C2EC05F82DB567160FA4D75ACA709 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -591,8 +775,8 @@
 		DE15D3D37E993FBD358414CD9F51D3B6 /* Build configuration list for PBXNativeTarget "KeychainAccess" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				55F18E06825E1BFC1A262F9FC0752F52 /* Debug */,
-				BC334190485B1F4408F03EDF94A692EF /* Release */,
+				6CE82779B478F0E05675D27BA18ADB39 /* Debug */,
+				50ADC00436481DCF017D60B1DB6EF17F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

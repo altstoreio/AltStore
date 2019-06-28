@@ -61,14 +61,14 @@ class Operation: RSTOperation, ProgressReporting
         super.main()
         
         let name = "com.altstore." + NSStringFromClass(type(of: self))
-        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
-            guard let backgroundTask = self?.backgroundTaskID else { return }
-            
-            self?.cancel()
-            
-            UIApplication.shared.endBackgroundTask(backgroundTask)
-            self?.backgroundTaskID = .invalid
-        }        
+//        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+//            guard let backgroundTask = self?.backgroundTaskID else { return }
+//
+//            self?.cancel()
+//
+//            UIApplication.shared.endBackgroundTask(backgroundTask)
+//            self?.backgroundTaskID = .invalid
+//        }
     }
     
     override func finish()
@@ -77,10 +77,10 @@ class Operation: RSTOperation, ProgressReporting
         
         super.finish()
         
-        if let backgroundTaskID = self.backgroundTaskID
-        {
-            UIApplication.shared.endBackgroundTask(backgroundTaskID)
-            self.backgroundTaskID = .invalid
-        }
+//        if let backgroundTaskID = self.backgroundTaskID
+//        {
+//            UIApplication.shared.endBackgroundTask(backgroundTaskID)
+//            self.backgroundTaskID = .invalid
+//        }
     }
 }

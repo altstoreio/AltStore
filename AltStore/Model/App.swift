@@ -20,20 +20,20 @@ extension App
 class App: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
-    @NSManaged private(set) var name: String
-    @NSManaged private(set) var identifier: String
+    @NSManaged var name: String
+    @NSManaged var identifier: String
     
-    @NSManaged private(set) var developerName: String
-    @NSManaged private(set) var localizedDescription: String
+    @NSManaged var developerName: String
+    @NSManaged var localizedDescription: String
     
-    @NSManaged private(set) var iconName: String
-    @NSManaged private(set) var screenshotNames: [String]
+    @NSManaged  var iconName: String
+    @NSManaged  var screenshotNames: [String]
     
     @NSManaged var version: String
-    @NSManaged private(set) var versionDate: Date
-    @NSManaged private(set) var versionDescription: String?
+    @NSManaged  var versionDate: Date
+    @NSManaged  var versionDescription: String?
     
-    @NSManaged private(set) var downloadURL: URL
+    @NSManaged  var downloadURL: URL
     
     /* Relationships */
     @NSManaged private(set) var installedApp: InstalledApp?

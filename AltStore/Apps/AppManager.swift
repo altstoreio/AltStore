@@ -51,14 +51,14 @@ extension AppManager
             let installedApps = try context.fetch(fetchRequest)
             for app in installedApps
             {
-                if UIApplication.shared.canOpenURL(app.openAppURL)
-                {
-                    // App is still installed, good!
-                }
-                else
-                {
-                    context.delete(app)
-                }
+//                if UIApplication.shared.canOpenURL(app.openAppURL)
+//                {
+//                    // App is still installed, good!
+//                }
+//                else
+//                {
+//                    context.delete(app)
+//                }
             }
             
             try context.save()

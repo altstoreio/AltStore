@@ -119,13 +119,17 @@ private extension MyAppsViewController
 {
     @IBAction func refreshAllApps(_ sender: UIBarButtonItem)
     {
-        sender.isIndicatingActivity = true
         
-        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
+        let documentBrowser = UIDocumentBrowserViewController(forOpeningFilesWithContentTypes: ["com.rileytestut.altstore.app"])
+        self.present(documentBrowser, animated: true, completion: nil)
         
-        self.refresh(installedApps) { (result) in
-            sender.isIndicatingActivity = false
-        }
+//        sender.isIndicatingActivity = true
+//
+//        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
+//
+//        self.refresh(installedApps) { (result) in
+//            sender.isIndicatingActivity = false
+//        }
     }
     
     func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
