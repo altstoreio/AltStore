@@ -1,12 +1,13 @@
 //
-//  ViewController.swift
+//  ALTDeviceManager+Installation.swift
 //  AltServer
 //
-//  Created by Riley Testut on 5/24/19.
+//  Created by Riley Testut on 7/1/19.
 //  Copyright © 2019 Riley Testut. All rights reserved.
 //
 
 import Cocoa
+import UserNotifications
 
 enum InstallError: Error
 {
@@ -26,119 +27,39 @@ enum InstallError: Error
     }
 }
 
-class ViewController: NSViewController
+extension ALTDeviceManager
 {
-    @IBOutlet private var emailAddressTextField: NSTextField!
-    @IBOutlet private var passwordTextField: NSSecureTextField!
-    
-    @IBOutlet private var devicesButton: NSPopUpButton!
-    
-    private var currentDevice: ALTDevice?
-    
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-        
-        ConnectionManager.shared.stateUpdateHandler = { (state) in
-            DispatchQueue.main.async {
-                switch state
-                {
-                case .notRunning: self.view.window?.title = ""
-                case .connecting: self.view.window?.title = "Connecting...."
-                case .running(let service): self.view.window?.title = service.name ?? ""
-                case .failed(let error): self.view.window?.title = error.localizedDescription
-                }
-            }
-        }
-        
-        ConnectionManager.shared.start()
-        
-        self.update()
-    }
-    
-    func update()
-    {
-        self.devicesButton.removeAllItems()
-        
-        let devices = ALTDeviceManager.shared.connectedDevices
-        
-        if devices.isEmpty
-        {
-            self.devicesButton.addItem(withTitle: "No Connected Device")
-        }
-        else
-        {
-            for device in devices
-            {
-                self.devicesButton.addItem(withTitle: device.name)
-            }
-        }
-        
-        if let currentDevice = self.currentDevice, let index = devices.firstIndex(of: currentDevice)
-        {
-            self.devicesButton.selectItem(at: index)
-        }
-        else
-        {
-            self.currentDevice = devices.first
-            self.devicesButton.selectItem(at: 0)
-        }
-    }
-}
-
-private extension ViewController
-{
-    @IBAction func installAltStore(_ sender: NSButton)
-    {
-        guard let device = self.currentDevice else { return }
-        guard !self.emailAddressTextField.stringValue.isEmpty, !self.passwordTextField.stringValue.isEmpty else { return }
-        
-        self.installAltStore(to: device)
-    }
-    
-    @IBAction func chooseDevice(_ sender: NSPopUpButton)
-    {
-        let devices = ALTDeviceManager.shared.connectedDevices
-        guard !devices.isEmpty else { return }
-        
-        let index = sender.indexOfSelectedItem
-        
-        let device = devices[index]
-        self.currentDevice = device
-    }
-}
-
-private extension ViewController
-{
-    func installAltStore(to device: ALTDevice)
+    func installAltStore(to device: ALTDevice, appleID: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
     {
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
         func finish(_ error: Error?, title: String = "")
         {
             DispatchQueue.main.async {
-                let alert = NSAlert()
-                
                 if let error = error
                 {
-                    alert.messageText = title
-                    alert.informativeText = error.localizedDescription
+                    completion(.failure(error))
                 }
                 else
                 {
-                    alert.messageText = NSLocalizedString("Successfully installed AltStore!", comment: "")
+                    completion(.success(()))
                 }
-                
-                alert.runModal()
             }
             
             try? FileManager.default.removeItem(at: destinationDirectoryURL)
         }
         
-        self.authenticate() { (result) in
+        self.authenticate(appleID: appleID, password: password) { (result) in
             do
             {
                 let account = try result.get()
+                
+                let content = UNMutableNotificationContent()
+                content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
+                
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(request)
+                
                 self.fetchTeam(for: account) { (result) in
                     do
                     {
@@ -253,9 +174,9 @@ private extension ViewController
         downloadTask.resume()
     }
     
-    func authenticate(completionHandler: @escaping (Result<ALTAccount, Error>) -> Void)
+    func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<ALTAccount, Error>) -> Void)
     {
-        ALTAppleAPI.shared.authenticate(appleID: self.emailAddressTextField.stringValue, password: self.passwordTextField.stringValue) { (account, error) in
+        ALTAppleAPI.shared.authenticate(appleID: appleID, password: password) { (account, error) in
             let result = Result(account, error)
             completionHandler(result)
         }

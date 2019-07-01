@@ -277,7 +277,7 @@ private extension ConnectionManager
                 
                 print("Processed app data!")
                 
-                guard ALTDeviceManager.shared.connectedDevices.contains(where: { $0.identifier == request.udid }) else { throw ALTServerError(.deviceNotFound) }
+                guard ALTDeviceManager.shared.availableDevices.contains(where: { $0.identifier == request.udid }) else { throw ALTServerError(.deviceNotFound) }
                 
                 print("Writing app data...")
                 

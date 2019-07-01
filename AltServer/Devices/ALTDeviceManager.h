@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, readonly) ALTDeviceManager *sharedManager;
 
 @property (nonatomic, readonly) NSArray<ALTDevice *> *connectedDevices;
+@property (nonatomic, readonly) NSArray<ALTDevice *> *availableDevices;
 
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
 

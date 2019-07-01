@@ -518,7 +518,17 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
 - (NSArray<ALTDevice *> *)connectedDevices
 {    
-    NSMutableArray *connectedDevices = [NSMutableArray array];
+    return [self availableDevicesIncludingNetworkDevices:NO];
+}
+
+- (NSArray<ALTDevice *> *)availableDevices
+{
+    return [self availableDevicesIncludingNetworkDevices:YES];
+}
+
+- (NSArray<ALTDevice *> *)availableDevicesIncludingNetworkDevices:(BOOL)includingNetworkDevices
+{
+    NSMutableSet *connectedDevices = [NSMutableSet set];
     
     int count = 0;
     char **udids = NULL;
@@ -533,11 +543,18 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         char *udid = udids[i];
         
         idevice_t device = NULL;
-        idevice_new(&device, udid);
+        
+        if (includingNetworkDevices)
+        {
+            idevice_new(&device, udid);
+        }
+        else
+        {
+            idevice_new_ignore_network(&device, udid);
+        }
         
         if (!device)
         {
-            fprintf(stderr, "ERROR: No device with UDID %s attached.\n", udid);
             continue;
         }
         
@@ -580,7 +597,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     
     idevice_device_list_free(udids);
     
-    return connectedDevices;
+    return connectedDevices.allObjects;
 }
 
 @end
