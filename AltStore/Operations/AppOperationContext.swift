@@ -25,7 +25,15 @@ class AppOperationContext
     var resignedFileURL: URL?
     var connection: NWConnection?
     
-    var error: Error?
+    var error: Error? {
+        get {
+            return _error ?? self.group.error
+        }
+        set {
+            _error = newValue
+        }
+    }
+    private var _error: Error?
     
     init(appIdentifier: String, group: OperationGroup)
     {
