@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "ALTConnectionManager.h"
 
 @interface ViewController ()
 
@@ -17,6 +18,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+}
+
+- (IBAction)start
+{
+    [[ALTConnectionManager sharedManager] start];
 }
 
 

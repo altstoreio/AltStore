@@ -112,6 +112,7 @@
 		BF7993FC22CBE07B00694040 /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF7993FF22CBE22000694040 /* libimobiledevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF45872B2298D31600BD7491 /* libimobiledevice.a */; };
 		BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4586C42298CDB800BD7491 /* ALTDeviceManager.mm */; };
+		BF79940622CBE8A100694040 /* ALTConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF79940522CBE8A100694040 /* ALTConnectionManager.m */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
@@ -369,6 +370,8 @@
 		BF7993EF22CBDF9800694040 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF7993F122CBDF9800694040 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF7993F222CBDF9800694040 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BF79940422CBE8A100694040 /* ALTConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTConnectionManager.h; sourceTree = "<group>"; };
+		BF79940522CBE8A100694040 /* ALTConnectionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTConnectionManager.m; sourceTree = "<group>"; };
 		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -705,6 +708,8 @@
 				BF7993E422CBDF9700694040 /* AppDelegate.m */,
 				BF7993E622CBDF9700694040 /* ViewController.h */,
 				BF7993E722CBDF9700694040 /* ViewController.m */,
+				BF79940422CBE8A100694040 /* ALTConnectionManager.h */,
+				BF79940522CBE8A100694040 /* ALTConnectionManager.m */,
 				BF7993E922CBDF9700694040 /* Main.storyboard */,
 				BF7993EC22CBDF9800694040 /* Assets.xcassets */,
 				BF7993EE22CBDF9800694040 /* LaunchScreen.storyboard */,
@@ -1304,6 +1309,7 @@
 			files = (
 				BF7993E822CBDF9700694040 /* ViewController.m in Sources */,
 				BF7993F322CBDF9800694040 /* main.m in Sources */,
+				BF79940622CBE8A100694040 /* ALTConnectionManager.m in Sources */,
 				BF7993E522CBDF9700694040 /* AppDelegate.m in Sources */,
 				BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */,
 			);
