@@ -99,6 +99,19 @@
 		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
+		BF7993E522CBDF9700694040 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7993E422CBDF9700694040 /* AppDelegate.m */; };
+		BF7993E822CBDF9700694040 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7993E722CBDF9700694040 /* ViewController.m */; };
+		BF7993EB22CBDF9700694040 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF7993E922CBDF9700694040 /* Main.storyboard */; };
+		BF7993ED22CBDF9800694040 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF7993EC22CBDF9800694040 /* Assets.xcassets */; };
+		BF7993F022CBDF9800694040 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF7993EE22CBDF9800694040 /* LaunchScreen.storyboard */; };
+		BF7993F322CBDF9800694040 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7993F222CBDF9800694040 /* main.m */; };
+		BF7993F722CBE01500694040 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
+		BF7993F822CBE01500694040 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF7993FA22CBE01A00694040 /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588542298DC5400BD7491 /* openssl.framework */; };
+		BF7993FB22CBE01A00694040 /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588542298DC5400BD7491 /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF7993FC22CBE07B00694040 /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
+		BF7993FF22CBE22000694040 /* libimobiledevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF45872B2298D31600BD7491 /* libimobiledevice.a */; };
+		BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4586C42298CDB800BD7491 /* ALTDeviceManager.mm */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
@@ -191,6 +204,13 @@
 			remoteGlobalIDString = BF45872A2298D31600BD7491;
 			remoteInfo = libimobiledevice;
 		};
+		BF7993FD22CBE0A100694040 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF1E314F22A0616100370A3C;
+			remoteInfo = AltKit;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -213,6 +233,18 @@
 			dstSubfolderSpec = 16;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7993F922CBE01500694040 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BF7993F822CBE01500694040 /* AltSign.framework in Embed Frameworks */,
+				BF7993FB22CBE01A00694040 /* openssl.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BFD247842284BB2C00981D42 /* Embed Frameworks */ = {
@@ -327,6 +359,16 @@
 		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
+		BF7993E122CBDF9700694040 /* AltServer-Windows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AltServer-Windows.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF7993E322CBDF9700694040 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BF7993E422CBDF9700694040 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BF7993E622CBDF9700694040 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		BF7993E722CBDF9700694040 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		BF7993EA22CBDF9700694040 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BF7993EC22CBDF9800694040 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF7993EF22CBDF9800694040 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BF7993F122CBDF9800694040 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF7993F222CBDF9800694040 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -425,6 +467,17 @@
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
 				BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */,
 				BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7993DE22CBDF9700694040 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF7993FF22CBE22000694040 /* libimobiledevice.a in Frameworks */,
+				BF7993FC22CBE07B00694040 /* libAltKit.a in Frameworks */,
+				BF7993F722CBE01500694040 /* AltSign.framework in Frameworks */,
+				BF7993FA22CBE01A00694040 /* openssl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +698,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BF7993E222CBDF9700694040 /* AltServer-Windows */ = {
+			isa = PBXGroup;
+			children = (
+				BF7993E322CBDF9700694040 /* AppDelegate.h */,
+				BF7993E422CBDF9700694040 /* AppDelegate.m */,
+				BF7993E622CBDF9700694040 /* ViewController.h */,
+				BF7993E722CBDF9700694040 /* ViewController.m */,
+				BF7993E922CBDF9700694040 /* Main.storyboard */,
+				BF7993EC22CBDF9800694040 /* Assets.xcassets */,
+				BF7993EE22CBDF9800694040 /* LaunchScreen.storyboard */,
+				BF7993F122CBDF9800694040 /* Info.plist */,
+				BF7993F222CBDF9800694040 /* main.m */,
+			);
+			path = "AltServer-Windows";
+			sourceTree = "<group>";
+		};
 		BFB1169E22933DDC00BB457C /* Updates */ = {
 			isa = PBXGroup;
 			children = (
@@ -675,6 +744,7 @@
 			children = (
 				BFD2476C2284B9A500981D42 /* AltStore */,
 				BF45868E229872EA00BD7491 /* AltServer */,
+				BF7993E222CBDF9700694040 /* AltServer-Windows */,
 				BF1E315122A0616100370A3C /* AltKit */,
 				BF45872C2298D31600BD7491 /* libimobiledevice */,
 				BFD247852284BB3300981D42 /* Frameworks */,
@@ -690,6 +760,7 @@
 				BF45868D229872EA00BD7491 /* AltServer.app */,
 				BF45872B2298D31600BD7491 /* libimobiledevice.a */,
 				BF1E315022A0616100370A3C /* libAltKit.a */,
+				BF7993E122CBDF9700694040 /* AltServer-Windows.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -954,6 +1025,25 @@
 			productReference = BF45872B2298D31600BD7491 /* libimobiledevice.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		BF7993E022CBDF9700694040 /* AltServer-Windows */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF7993F622CBDF9800694040 /* Build configuration list for PBXNativeTarget "AltServer-Windows" */;
+			buildPhases = (
+				BF7993DD22CBDF9700694040 /* Sources */,
+				BF7993DE22CBDF9700694040 /* Frameworks */,
+				BF7993DF22CBDF9700694040 /* Resources */,
+				BF7993F922CBE01500694040 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BF7993FE22CBE0A100694040 /* PBXTargetDependency */,
+			);
+			name = "AltServer-Windows";
+			productName = "AltServer-Windows";
+			productReference = BF7993E122CBDF9700694040 /* AltServer-Windows.app */;
+			productType = "com.apple.product-type.application";
+		};
 		BFD247692284B9A500981D42 /* AltStore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFD2477E2284B9A700981D42 /* Build configuration list for PBXNativeTarget "AltStore" */;
@@ -1003,6 +1093,9 @@
 					BF45872A2298D31600BD7491 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
+					BF7993E022CBDF9700694040 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
 					BFD247692284B9A500981D42 = {
 						CreatedOnToolsVersion = 10.2.1;
 						LastSwiftMigration = 1020;
@@ -1032,6 +1125,7 @@
 			targets = (
 				BFD247692284B9A500981D42 /* AltStore */,
 				BF45868C229872EA00BD7491 /* AltServer */,
+				BF7993E022CBDF9700694040 /* AltServer-Windows */,
 				BF1E314F22A0616100370A3C /* AltKit */,
 				BF45872A2298D31600BD7491 /* libimobiledevice */,
 			);
@@ -1045,6 +1139,16 @@
 			files = (
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7993DF22CBDF9700694040 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF7993F022CBDF9800694040 /* LaunchScreen.storyboard in Resources */,
+				BF7993ED22CBDF9800694040 /* Assets.xcassets in Resources */,
+				BF7993EB22CBDF9700694040 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1194,6 +1298,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BF7993DD22CBDF9700694040 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF7993E822CBDF9700694040 /* ViewController.m in Sources */,
+				BF7993F322CBDF9800694040 /* main.m in Sources */,
+				BF7993E522CBDF9700694040 /* AppDelegate.m in Sources */,
+				BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BFD247662284B9A500981D42 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1256,6 +1371,11 @@
 			target = BF45872A2298D31600BD7491 /* libimobiledevice */;
 			targetProxy = BF4588442298D48B00BD7491 /* PBXContainerItemProxy */;
 		};
+		BF7993FE22CBE0A100694040 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF1E314F22A0616100370A3C /* AltKit */;
+			targetProxy = BF7993FD22CBE0A100694040 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1265,6 +1385,22 @@
 				BF458696229872EA00BD7491 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BF7993E922CBDF9700694040 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF7993EA22CBDF9700694040 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BF7993EE22CBDF9800694040 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF7993EF22CBDF9800694040 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 		BFD247732284B9A500981D42 /* Main.storyboard */ = {
@@ -1481,6 +1617,64 @@
 			};
 			name = Release;
 		};
+		BF7993F422CBDF9800694040 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/include\"",
+					"\"$(SRCROOT)/Dependencies/libimobiledevice\"",
+					"\"$(SRCROOT)/Dependencies/libimobiledevice/include\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/ios/include\"",
+					"\"$(SRCROOT)/Dependencies/libusbmuxd/include\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/lib\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/include\"",
+					"\"${SDKROOT}/usr/include/libxml2\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/xcode\"",
+				);
+				INFOPLIST_FILE = "AltServer-Windows/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rileytestut.AltServer-Windows";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF7993F522CBDF9800694040 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/include\"",
+					"\"$(SRCROOT)/Dependencies/libimobiledevice\"",
+					"\"$(SRCROOT)/Dependencies/libimobiledevice/include\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/ios/include\"",
+					"\"$(SRCROOT)/Dependencies/libusbmuxd/include\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/lib\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/ldid/libplist/libcnary/include\"",
+					"\"${SDKROOT}/usr/include/libxml2\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/libzip/xcode\"",
+				);
+				INFOPLIST_FILE = "AltServer-Windows/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rileytestut.AltServer-Windows";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		BFD2477C2284B9A700981D42 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1674,6 +1868,15 @@
 			buildConfigurations = (
 				BF4587342298D31600BD7491 /* Debug */,
 				BF4587352298D31600BD7491 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF7993F622CBDF9800694040 /* Build configuration list for PBXNativeTarget "AltServer-Windows" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF7993F422CBDF9800694040 /* Debug */,
+				BF7993F522CBDF9800694040 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
