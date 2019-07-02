@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import AVFoundation
 
 import AltSign
 import Roxas
@@ -42,9 +43,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     private var runningApplications: Set<String>?
+    private var isLaunching = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        self.isLaunching = true
+        
         ServerManager.shared.startDiscovering()
         
         DatabaseManager.shared.start { (error) in
@@ -69,10 +73,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         self.prepareForBackgroundFetch()
+        
+        DispatchQueue.main.async {
+            self.isLaunching = false
+        }
                 
         return true
     }
-
+    
     func applicationDidEnterBackground(_ application: UIApplication)
     {
         ServerManager.shared.stopDiscovering()
@@ -98,8 +106,14 @@ extension AppDelegate
     
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
     {
+        let isLaunching = self.isLaunching
+        
         let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: DatabaseManager.shared.viewContext)
-        guard !installedApps.isEmpty else { return completionHandler(.noData) }
+        guard !installedApps.isEmpty else {
+            ServerManager.shared.stopDiscovering()
+            completionHandler(.noData)
+            return
+        }
         
         self.runningApplications = []
         
@@ -118,26 +132,6 @@ extension AppDelegate
                 CFNotificationCenterPostNotification(notificationCenter, requestAppStateNotification, nil, nil, true)
             }
         }
-        
-        ServerManager.shared.startDiscovering()
-        
-        let content = UNMutableNotificationContent()
-        content.title = NSLocalizedString("Refreshing apps...", comment: "")
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request) { (error) in
-            if let error = error {
-                print(error)
-            }
-        }
-        
-        // Sleep for three seconds to:
-        // a) give us time to discover AltServers
-        // b) give other processes a chance to respond to requestAppState notification
-        // NOTE: We need to sleep, *not* DispatchQueue.asyncAfter, or else background audio might fail to start.
-        Thread.sleep(forTimeInterval: 3)
         
         BackgroundTaskManager.shared.performExtendedBackgroundTask { (taskResult, taskCompletionHandler) in
             
@@ -161,6 +155,26 @@ extension AppDelegate
                     
                     content.title = NSLocalizedString("Refreshed all apps!", comment: "")
                 }
+                catch let error as NSError where
+                    (error.domain == NSOSStatusErrorDomain || error.domain == AVFoundationErrorDomain) &&
+                    error.code == AVAudioSession.ErrorCode.cannotStartPlaying.rawValue &&
+                    !isLaunching
+                {
+                    // We can only start background audio when the app is being launched,
+                    // and _not_ if it's already suspended in background.
+                    // Since we are currently suspended in background and not launching, we'll just ignore the error.
+                    
+                    shouldPresentAlert = false
+                    
+                    #if DEBUG
+                    let content = UNMutableNotificationContent()
+                    content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
+                    content.body = NSLocalizedString("AltStore is currently suspended in the background.", comment: "")
+                    
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                    #endif
+                }
                 catch
                 {
                     print("Failed to refresh apps in background.", error)
@@ -173,14 +187,8 @@ extension AppDelegate
                 
                 if shouldPresentAlert
                 {
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                    
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-                    UNUserNotificationCenter.current().add(request) { (error) in
-                        if let error = error {
-                            print(error)
-                        }
-                    }
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
                 }
                 
                 switch result
@@ -193,6 +201,14 @@ extension AppDelegate
                 taskCompletionHandler()
             }
             
+            #if DEBUG
+            let content = UNMutableNotificationContent()
+            content.title = NSLocalizedString("Refreshing apps...", comment: "")
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(request)
+            #endif
+            
             if let error = taskResult.error
             {
                 print("Error starting extended background task. Aborting.", error)
@@ -200,7 +216,10 @@ extension AppDelegate
                 return
             }
             
-            DispatchQueue.main.async {
+            // Wait for three seconds to:
+            // a) give us time to discover AltServers
+            // b) give other processes a chance to respond to requestAppState notification
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.app.identifier) ?? false) }
                 print("Filtered Apps to Refresh:", filteredApps.map { $0.app.identifier })
                 
