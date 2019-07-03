@@ -93,6 +93,7 @@
 		BF4713A622976D1E00784A2F /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF76A8E922CC2DAB009ECE71 /* ALTDeviceManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF76A8E722CC2DAA009ECE71 /* ALTDeviceManager.mm */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
 		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
 		BF770E5622BC3C03002A40FE /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5522BC3C02002A40FE /* Server.swift */; };
@@ -111,7 +112,6 @@
 		BF7993FB22CBE01A00694040 /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588542298DC5400BD7491 /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF7993FC22CBE07B00694040 /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF7993FF22CBE22000694040 /* libimobiledevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF45872B2298D31600BD7491 /* libimobiledevice.a */; };
-		BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4586C42298CDB800BD7491 /* ALTDeviceManager.mm */; };
 		BF79940622CBE8A100694040 /* ALTConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF79940522CBE8A100694040 /* ALTConnectionManager.m */; };
 		BF79940922CBFA0E00694040 /* ALTConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF79940822CBFA0E00694040 /* ALTConnection.m */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
@@ -355,6 +355,8 @@
 		BF4588962298DE6E00BD7491 /* libzip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = libzip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4713A422976CFC00784A2F /* openssl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF76A8E722CC2DAA009ECE71 /* ALTDeviceManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ALTDeviceManager.mm; path = AltServer/Devices/ALTDeviceManager.mm; sourceTree = SOURCE_ROOT; };
+		BF76A8E822CC2DAA009ECE71 /* ALTDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALTDeviceManager.h; path = AltServer/Devices/ALTDeviceManager.h; sourceTree = SOURCE_ROOT; };
 		BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
 		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
 		BF770E5522BC3C02002A40FE /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
@@ -715,6 +717,8 @@
 				BF79940522CBE8A100694040 /* ALTConnectionManager.m */,
 				BF79940722CBFA0E00694040 /* ALTConnection.h */,
 				BF79940822CBFA0E00694040 /* ALTConnection.m */,
+				BF76A8E822CC2DAA009ECE71 /* ALTDeviceManager.h */,
+				BF76A8E722CC2DAA009ECE71 /* ALTDeviceManager.mm */,
 				BF7993E922CBDF9700694040 /* Main.storyboard */,
 				BF7993EC22CBDF9800694040 /* Assets.xcassets */,
 				BF7993EE22CBDF9800694040 /* LaunchScreen.storyboard */,
@@ -1317,7 +1321,7 @@
 				BF79940622CBE8A100694040 /* ALTConnectionManager.m in Sources */,
 				BF79940922CBFA0E00694040 /* ALTConnection.m in Sources */,
 				BF7993E522CBDF9700694040 /* AppDelegate.m in Sources */,
-				BF79940022CBE23400694040 /* ALTDeviceManager.mm in Sources */,
+				BF76A8E922CC2DAB009ECE71 /* ALTDeviceManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
