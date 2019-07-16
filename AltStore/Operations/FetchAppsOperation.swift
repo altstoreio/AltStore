@@ -24,7 +24,7 @@ class FetchAppsOperation: ResultOperation<[App]>
     {
         super.main()
         
-        let appsURL = URL(string: "https://www.dropbox.com/s/z5tj1tx8zgeqbms/Apps.json?dl=1")!
+        let appsURL = URL(string: "https://www.dropbox.com/s/6qi1vt6hsi88lv6/Apps-Dev.json?dl=1")!
         
         let dataTask = self.session.dataTask(with: appsURL) { (data, response, error) in
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in

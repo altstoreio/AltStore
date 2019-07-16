@@ -22,6 +22,7 @@ class App: NSManagedObject, Decodable, Fetchable
     /* Properties */
     @NSManaged private(set) var name: String
     @NSManaged private(set) var identifier: String
+    @NSManaged private(set) var subtitle: String?
     
     @NSManaged private(set) var developerName: String
     @NSManaged private(set) var localizedDescription: String
@@ -34,6 +35,7 @@ class App: NSManagedObject, Decodable, Fetchable
     @NSManaged private(set) var versionDescription: String?
     
     @NSManaged private(set) var downloadURL: URL
+    @NSManaged private(set) var tintColor: UIColor?
     
     /* Relationships */
     @NSManaged private(set) var installedApp: InstalledApp?
@@ -55,6 +57,8 @@ class App: NSManagedObject, Decodable, Fetchable
         case iconName
         case screenshotNames
         case downloadURL
+        case tintColor
+        case subtitle
     }
     
     required init(from decoder: Decoder) throws
@@ -69,6 +73,8 @@ class App: NSManagedObject, Decodable, Fetchable
         self.developerName = try container.decode(String.self, forKey: .developerName)
         self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
         
+        self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
+        
         self.version = try container.decode(String.self, forKey: .version)
         self.versionDate = try container.decode(Date.self, forKey: .versionDate)
         self.versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
@@ -77,6 +83,15 @@ class App: NSManagedObject, Decodable, Fetchable
         self.screenshotNames = try container.decodeIfPresent([String].self, forKey: .screenshotNames) ?? []
         
         self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+        
+        if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
+        {
+            guard let tintColor = UIColor(hexString: tintColorHex) else {
+                throw DecodingError.dataCorruptedError(forKey: .tintColor, in: container, debugDescription: "Hex code is invalid.")
+            }
+            
+            self.tintColor = tintColor
+        }
         
         context.insert(self)
     }

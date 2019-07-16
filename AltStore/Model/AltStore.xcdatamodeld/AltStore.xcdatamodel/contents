@@ -21,6 +21,8 @@
         <attribute name="localizedDescription" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="screenshotNames" attributeType="Transformable" syncable="YES"/>
+        <attribute name="subtitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="version" attributeType="String" syncable="YES"/>
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="versionDescription" optional="YES" attributeType="String" syncable="YES"/>
@@ -57,7 +59,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
-        <element name="App" positionX="-63" positionY="-18" width="128" height="210"/>
+        <element name="App" positionX="-63" positionY="-18" width="128" height="240"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
     </elements>

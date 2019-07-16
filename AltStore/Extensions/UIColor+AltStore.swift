@@ -11,4 +11,5 @@ import UIKit
 extension UIColor
 {
     static let altPurple = UIColor(named: "Purple")!
+    static let altGreen = UIColor(named: "Green")!
 }

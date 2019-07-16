@@ -100,9 +100,15 @@
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
+		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
+		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
+		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
+		BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4A22DD137F008935CF /* NavigationBar.swift */; };
+		BF9ABA4D22DD16DE008935CF /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4C22DD16DE008935CF /* ProgressButton.swift */; };
+		BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
-		BFB1169D22932DB100BB457C /* Apps.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps.json */; };
+		BFB1169D22932DB100BB457C /* Apps-Dev.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps-Dev.json */; };
 		BFB116A022933DEB00BB457C /* UpdatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169F22933DEB00BB457C /* UpdatesViewController.swift */; };
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
 		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
@@ -328,10 +334,16 @@
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
+		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
+		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF9ABA4A22DD137F008935CF /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		BF9ABA4C22DD16DE008935CF /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
+		BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
-		BFB1169C22932DB100BB457C /* Apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Apps.json; sourceTree = "<group>"; };
+		BFB1169C22932DB100BB457C /* Apps-Dev.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Apps-Dev.json"; sourceTree = "<group>"; };
 		BFB1169F22933DEB00BB457C /* UpdatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesViewController.swift; sourceTree = "<group>"; };
 		BFBAC8852295C90300587369 /* Result+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Conveniences.swift"; sourceTree = "<group>"; };
 		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
@@ -645,6 +657,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BF9ABA4322DCFF33008935CF /* Browse */ = {
+			isa = PBXGroup;
+			children = (
+				BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */,
+				BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */,
+				BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */,
+			);
+			path = Browse;
+			sourceTree = "<group>";
+		};
 		BFB1169E22933DDC00BB457C /* Updates */ = {
 			isa = PBXGroup;
 			children = (
@@ -701,6 +723,7 @@
 				BFD2476D2284B9A500981D42 /* AppDelegate.swift */,
 				BFD247732284B9A500981D42 /* Main.storyboard */,
 				BFE6325822A83BA800F30809 /* Authentication */,
+				BF9ABA4322DCFF33008935CF /* Browse */,
 				BFD2478A2284C49000981D42 /* Apps */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
 				BFB1169E22933DDC00BB457C /* Updates */,
@@ -750,6 +773,8 @@
 				BFD2478E2284C8F900981D42 /* Button.swift */,
 				BF43002D22A714AF0051E2BC /* Keychain.swift */,
 				BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */,
+				BF9ABA4A22DD137F008935CF /* NavigationBar.swift */,
+				BF9ABA4C22DD16DE008935CF /* ProgressButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -757,7 +782,7 @@
 		BFD247962284D7C100981D42 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BFB1169C22932DB100BB457C /* Apps.json */,
+				BFB1169C22932DB100BB457C /* Apps-Dev.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
@@ -793,6 +818,7 @@
 				BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */,
 				BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */,
 				BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */,
+				BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1052,7 +1078,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFB1169D22932DB100BB457C /* Apps.json in Resources */,
+				BFB1169D22932DB100BB457C /* Apps-Dev.json in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
@@ -1210,6 +1236,7 @@
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
+				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
 				BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
@@ -1224,12 +1251,17 @@
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
+				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
 				BFD247932284D4B700981D42 /* AppTableViewCell.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */,
+				BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
+				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
+				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
+				BF9ABA4D22DD16DE008935CF /* ProgressButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,

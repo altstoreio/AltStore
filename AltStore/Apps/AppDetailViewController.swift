@@ -9,12 +9,6 @@
 import UIKit
 import Roxas
 
-@objc(ScreenshotCollectionViewCell)
-private class ScreenshotCollectionViewCell: UICollectionViewCell
-{
-    @IBOutlet var imageView: UIImageView!
-}
-
 extension AppDetailViewController
 {
     private enum Row: Int
