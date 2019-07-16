@@ -26,6 +26,8 @@ class AppManager
     private let operationQueue = OperationQueue()
     private let processingQueue = DispatchQueue(label: "com.altstore.AppManager.processingQueue")
     
+    private var installationProgress = [App: Progress]()
+    
     private init()
     {
         self.operationQueue.name = "com.altstore.AppManager.operationQueue"
@@ -105,10 +107,17 @@ extension AppManager
 {
     func install(_ app: App, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
+        if let progress = self.installationProgress(for: app)
+        {
+            return progress
+        }
+        
         let group = self.install([app], forceDownload: true, presentingViewController: presentingViewController)
-        group.completionHandler = { (result) in
+        group.completionHandler = { (result) in            
             do
             {
+                self.installationProgress[app] = nil
+                
                 guard let (_, result) = try result.get().first else { throw OperationError.unknown }
                 completionHandler(result)
             }
@@ -117,6 +126,8 @@ extension AppManager
                 completionHandler(.failure(error))
             }
         }
+        
+        self.installationProgress[app] = group.progress
         
         return group.progress
     }
@@ -127,6 +138,12 @@ extension AppManager
 
         let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
         return group
+    }
+    
+    func installationProgress(for app: App) -> Progress?
+    {
+        let progress = self.installationProgress[app]
+        return progress
     }
 }
 
@@ -171,11 +188,8 @@ private extension AppManager
             /* Resign */
             let resignAppOperation = ResignAppOperation(context: context)
             resignAppOperation.resultHandler = { (result) in
-                switch result
-                {
-                case .failure(let error): context.error = error
-                case .success(let fileURL): context.resignedFileURL = fileURL
-                }
+                guard let fileURL = self.process(result, context: context) else { return }
+                context.resignedFileURL = fileURL
             }
             resignAppOperation.addDependency(authenticationOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
@@ -203,11 +217,8 @@ private extension AppManager
                 
                 let downloadOperation = DownloadAppOperation(app: app)
                 downloadOperation.resultHandler = { (result) in
-                    switch result
-                    {
-                    case .failure(let error): context.error = error
-                    case .success(let installedApp): context.installedApp = installedApp
-                    }
+                    guard let installedApp = self.process(result, context: context) else { return }
+                    context.installedApp = installedApp
                 }
                 progress.addChild(downloadOperation.progress, withPendingUnitCount: 40)
                 resignAppOperation.addDependency(downloadOperation)
@@ -218,11 +229,8 @@ private extension AppManager
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
             sendAppOperation.resultHandler = { (result) in
-                switch result
-                {
-                case .failure(let error): context.error = error
-                case .success(let connection): context.connection = connection
-                }
+                guard let connection = self.process(result, context: context) else { return }
+                context.connection = connection
             }
             progress.addChild(sendAppOperation.progress, withPendingUnitCount: 10)
             sendAppOperation.addDependency(resignAppOperation)
@@ -232,12 +240,7 @@ private extension AppManager
             /* Install */
             let installOperation = InstallAppOperation(context: context)
             installOperation.resultHandler = { (result) in
-                switch result
-                {
-                case .failure(let error): context.error = error
-                case .success: break
-                }
-                
+                guard let _ = self.process(result, context: context) else { return }
                 self.finishAppOperation(context)
             }
             progress.addChild(installOperation.progress, withPendingUnitCount: 30)
@@ -256,9 +259,16 @@ private extension AppManager
     @discardableResult func process<T>(_ result: Result<T, Error>, context: AppOperationContext) -> T?
     {
         do
-        {
+        {            
             let value = try result.get()
             return value
+        }
+        catch OperationError.cancelled
+        {
+            context.error = OperationError.cancelled
+            self.finishAppOperation(context)
+            
+            return nil
         }
         catch
         {
@@ -270,6 +280,9 @@ private extension AppManager
     func finishAppOperation(_ context: AppOperationContext)
     {
         self.processingQueue.sync {
+            guard !context.isFinished else { return }
+            context.isFinished = true
+            
             if let error = context.error
             {
                 context.group.results[context.appIdentifier] = .failure(error)

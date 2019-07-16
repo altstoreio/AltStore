@@ -25,6 +25,8 @@ class AppOperationContext
     var resignedFileURL: URL?
     var connection: NWConnection?
     
+    var isFinished = false
+    
     var error: Error? {
         get {
             return _error ?? self.group.error

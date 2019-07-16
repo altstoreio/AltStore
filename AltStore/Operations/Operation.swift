@@ -23,7 +23,14 @@ class ResultOperation<ResultType>: Operation
     {
         guard !self.isFinished else { return }
         
-        self.resultHandler?(result)
+        if self.isCancelled
+        {
+            self.resultHandler?(.failure(OperationError.cancelled))
+        }
+        else
+        {
+            self.resultHandler?(result)
+        }
         
         super.finish()
     }
