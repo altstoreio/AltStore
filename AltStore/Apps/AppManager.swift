@@ -26,7 +26,8 @@ class AppManager
     private let operationQueue = OperationQueue()
     private let processingQueue = DispatchQueue(label: "com.altstore.AppManager.processingQueue")
     
-    private var installationProgress = [App: Progress]()
+    private var installationProgress = [String: Progress]()
+    private var refreshProgress = [String: Progress]()
     
     private init()
     {
@@ -112,11 +113,13 @@ extension AppManager
             return progress
         }
         
+        let appIdentifier = app.identifier
+        
         let group = self.install([app], forceDownload: true, presentingViewController: presentingViewController)
         group.completionHandler = { (result) in            
             do
             {
-                self.installationProgress[app] = nil
+                self.installationProgress[appIdentifier] = nil
                 
                 guard let (_, result) = try result.get().first else { throw OperationError.unknown }
                 completionHandler(result)
@@ -127,22 +130,35 @@ extension AppManager
             }
         }
         
-        self.installationProgress[app] = group.progress
+        self.installationProgress[app.identifier] = group.progress
         
         return group.progress
     }
     
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
-        let apps = installedApps.compactMap { $0.app }
+        let apps = installedApps.compactMap { $0.app }.filter { self.refreshProgress(for: $0) == nil }
 
         let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
+        
+        for app in apps
+        {
+            guard let progress = group.progress(for: app) else { continue }
+            self.refreshProgress[app.identifier] = progress
+        }
+        
         return group
     }
     
     func installationProgress(for app: App) -> Progress?
     {
-        let progress = self.installationProgress[app]
+        let progress = self.installationProgress[app.identifier]
+        return progress
+    }
+    
+    func refreshProgress(for app: App) -> Progress?
+    {
+        let progress = self.refreshProgress[app.identifier]
         return progress
     }
 }
@@ -250,9 +266,8 @@ private extension AppManager
             progress.addChild(installOperation.progress, withPendingUnitCount: 30)
             installOperation.addDependency(sendAppOperation)
             operations.append(installOperation)
-            
-            group.progress.totalUnitCount += 1
-            group.progress.addChild(progress, withPendingUnitCount: 1)
+                        
+            group.set(progress, for: app)
         }
         
         group.addOperations(operations)
@@ -301,6 +316,8 @@ private extension AppManager
                     catch { print("Error saving installed app.", error) }
                 }
             }
+            
+            self.refreshProgress[context.appIdentifier] = nil
             
             print("Finished operation!", context.appIdentifier)
 

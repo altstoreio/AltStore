@@ -25,6 +25,8 @@ class OperationGroup
     
     var results = [String: Result<InstalledApp, Error>]()
     
+    private var progressByApp = [App: Progress]()
+    
     private let operationQueue = OperationQueue()
     private let installOperationQueue = OperationQueue()
     
@@ -59,5 +61,19 @@ class OperationGroup
                 self.operationQueue.addOperation(operation)
             }
         }
+    }
+    
+    func set(_ progress: Progress, for app: App)
+    {
+        self.progressByApp[app] = progress
+        
+        self.progress.totalUnitCount += 1
+        self.progress.addChild(progress, withPendingUnitCount: 1)
+    }
+    
+    func progress(for app: App) -> Progress?
+    {
+        let progress = self.progressByApp[app]
+        return progress
     }
 }
