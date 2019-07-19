@@ -12,4 +12,9 @@ extension UIColor
 {
     static let altPurple = UIColor(named: "Purple")!
     static let altGreen = UIColor(named: "Green")!
+    
+    static let refreshRed = UIColor(named: "RefreshRed")!
+    static let refreshOrange = UIColor(named: "RefreshOrange")!
+    static let refreshYellow = UIColor(named: "RefreshYellow")!
+    static let refreshGreen = UIColor(named: "RefreshGreen")!
 }

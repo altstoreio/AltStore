@@ -24,7 +24,7 @@ import Roxas
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var developerLabel: UILabel!
     @IBOutlet var appIconImageView: UIImageView!
-    @IBOutlet var actionButton: ProgressButton!
+    @IBOutlet var actionButton: PillButton!
     @IBOutlet var subtitleLabel: UILabel!
     
     @IBOutlet private var screenshotsContentView: UIView!

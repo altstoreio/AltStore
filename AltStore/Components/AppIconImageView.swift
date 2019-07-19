@@ -17,6 +17,8 @@ class AppIconImageView: UIImageView
         self.contentMode = .scaleAspectFill
         self.clipsToBounds = true
         
+        self.backgroundColor = .white
+                
         self.layer.borderWidth = 0.5
         self.layer.borderColor = UIColor.lightGray.cgColor
         

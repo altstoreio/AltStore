@@ -1,5 +1,5 @@
 //
-//  ProgressButton.swift
+//  PillButton.swift
 //  AltStore
 //
 //  Created by Riley Testut on 7/15/19.
@@ -8,12 +8,16 @@
 
 import UIKit
 
-class ProgressButton: UIButton
+class PillButton: UIButton
 {
     var progress: Progress? {
-        didSet {
+        didSet {            
             self.progressView.progress = Float(self.progress?.fractionCompleted ?? 0)
             self.progressView.observedProgress = self.progress
+            
+            let isUserInteractionEnabled = self.isUserInteractionEnabled
+            self.isIndicatingActivity = (self.progress != nil)
+            self.isUserInteractionEnabled = isUserInteractionEnabled
         }
     }
     
@@ -26,12 +30,18 @@ class ProgressButton: UIButton
         }
     }
     
+    var isInverted: Bool = false {
+        didSet {
+            self.update()
+        }
+    }
+    
     private let progressView = UIProgressView(progressViewStyle: .default)
     
     override var intrinsicContentSize: CGSize {
         var size = super.intrinsicContentSize
-        size.width += 32
-        size.height += 4
+        size.width += 26
+        size.height += 3
         return size
     }
     
@@ -41,10 +51,15 @@ class ProgressButton: UIButton
         
         self.layer.masksToBounds = true
         
+        self.activityIndicatorView.style = .white
+        self.activityIndicatorView.isUserInteractionEnabled = false
+        
         self.progressView.progress = 0
         self.progressView.trackImage = UIImage()
         self.progressView.isUserInteractionEnabled = false
         self.addSubview(self.progressView)
+        
+        self.update()
     }
     
     override func layoutSubviews()
@@ -59,5 +74,31 @@ class ProgressButton: UIButton
         self.progressView.center = CGPoint(x: self.bounds.midX, y: self.bounds.midY)
         
         self.layer.cornerRadius = self.bounds.midY
+    }
+    
+    override func tintColorDidChange()
+    {
+        super.tintColorDidChange()
+        
+        self.update()
+    }
+}
+
+private extension PillButton
+{
+    func update()
+    {
+        if self.isInverted
+        {
+            self.setTitleColor(.white, for: .normal)
+            self.backgroundColor = self.tintColor
+            self.progressView.progressTintColor = self.tintColor.withAlphaComponent(0.15)
+        }
+        else
+        {
+            self.setTitleColor(self.tintColor, for: .normal)
+            self.backgroundColor = self.tintColor.withAlphaComponent(0.15)
+            self.progressView.progressTintColor = self.tintColor
+        }
     }
 }

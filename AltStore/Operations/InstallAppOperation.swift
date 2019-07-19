@@ -55,6 +55,16 @@ class InstallAppOperation: ResultOperation<Void>
             case .success:
                 
                 self.receive(from: connection, server: server) { (result) in
+                    switch result
+                    {
+                    case .success:
+                        installedApp.managedObjectContext?.performAndWait {
+                            installedApp.refreshedDate = Date()
+                        }
+                        
+                    case .failure: break
+                    }
+                    
                     self.finish(result)
                 }
             }
@@ -75,6 +85,7 @@ class InstallAppOperation: ResultOperation<Void>
                 }
                 else if response.progress == 1.0
                 {
+                    self.progress.completedUnitCount = self.progress.totalUnitCount
                     self.finish(.success(()))
                 }
                 else

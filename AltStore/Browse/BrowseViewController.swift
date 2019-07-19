@@ -49,9 +49,7 @@ private extension BrowseViewController
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
-        dataSource.cellConfigurationHandler = { [weak self] (cell, app, indexPath) in
-            guard let `self` = self else { return }
-            
+        dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
             cell.nameLabel.text = app.name
             cell.developerLabel.text = app.developerName
@@ -59,41 +57,28 @@ private extension BrowseViewController
             cell.imageNames = Array(app.screenshotNames.prefix(3))
             cell.appIconImageView.image = UIImage(named: app.iconName)
             
-            cell.actionButton.tag = indexPath.item
             cell.actionButton.activityIndicatorView.style = .white
             
             // Explicitly set to false to ensure we're starting from a non-activity indicating state.
             // Otherwise, cell reuse can mess up some cached values.
             cell.actionButton.isIndicatingActivity = false
             
-            let tintColor = app.tintColor ?? self.collectionView.tintColor!
+            let tintColor = app.tintColor ?? .altGreen
             cell.tintColor = tintColor
-            cell.actionButton.progressTintColor = tintColor
             
             if app.installedApp == nil
             {
                 cell.actionButton.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-                cell.actionButton.setTitleColor(.altGreen, for: .normal)
-                cell.actionButton.backgroundColor = UIColor.altGreen.withAlphaComponent(0.1)
                 
-                if let progress = AppManager.shared.installationProgress(for: app)
-                {
-                    cell.actionButton.progress = progress
-                    cell.actionButton.isIndicatingActivity = true
-                    cell.actionButton.activityIndicatorView.isUserInteractionEnabled = false
-                    cell.actionButton.isUserInteractionEnabled = true
-                }
-                else
-                {
-                    cell.actionButton.progress = nil
-                    cell.actionButton.isIndicatingActivity = false
-                }
+                let progress = AppManager.shared.installationProgress(for: app)
+                cell.actionButton.progress = progress
+                cell.actionButton.isInverted = false
             }
             else
             {
                 cell.actionButton.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                cell.actionButton.setTitleColor(.white, for: .normal)
-                cell.actionButton.backgroundColor = .altGreen
+                cell.actionButton.progress = nil
+                cell.actionButton.isInverted = true
             }
         }
         
@@ -104,7 +89,7 @@ private extension BrowseViewController
     {
         AppManager.shared.fetchApps() { (result) in
             do
-            {
+            {                
                 let apps = try result.get()
                 try apps.first?.managedObjectContext?.save()
             }
@@ -122,9 +107,11 @@ private extension BrowseViewController
 
 private extension BrowseViewController
 {
-    @IBAction func performAppAction(_ sender: ProgressButton)
+    @IBAction func performAppAction(_ sender: PillButton)
     {
-        let indexPath = IndexPath(item: sender.tag, section: 0)
+        let point = self.collectionView.convert(sender.center, from: sender.superview)
+        guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
+        
         let app = self.dataSource.item(at: indexPath)
         
         if let installedApp = app.installedApp
@@ -155,7 +142,7 @@ private extension BrowseViewController
                     toastView.tintColor = .altGreen
                     toastView.show(in: self.navigationController!.view, duration: 2)
                 
-                case .success(let installedApp): print("Installed app:", installedApp.app.identifier)
+                case .success: print("Installed app:", app.identifier)
                 }
                 
                 self.collectionView.reloadItems(at: [indexPath])
