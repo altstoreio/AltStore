@@ -16,7 +16,7 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
 + (void)load
 {
     [NSError setUserInfoValueProviderForDomain:AltServerErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
-        if ([userInfoKey isEqualToString:NSLocalizedFailureReasonErrorKey])
+        if ([userInfoKey isEqualToString:NSLocalizedDescriptionKey])
         {
             return [error alt_localizedDescription];
         }
@@ -39,7 +39,7 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             return NSLocalizedString(@"Lost connection to AltServer.", @"");
             
         case ALTServerErrorDeviceNotFound:
-            return NSLocalizedString(@"AltServer could not locate this device", @"");
+            return NSLocalizedString(@"AltServer could not locate this device.", @"");
             
         case ALTServerErrorDeviceWriteFailed:
             return NSLocalizedString(@"Failed to write app data to phone.", @"");
