@@ -240,8 +240,12 @@ private extension AppManager
             /* Install */
             let installOperation = InstallAppOperation(context: context)
             installOperation.resultHandler = { (result) in
-                guard let _ = self.process(result, context: context) else { return }
-                self.finishAppOperation(context)
+                if let error = result.error
+                {
+                    context.error = error
+                }
+                
+                self.finishAppOperation(context) // Finish operation no matter what.
             }
             progress.addChild(installOperation.progress, withPendingUnitCount: 30)
             installOperation.addDependency(sendAppOperation)
