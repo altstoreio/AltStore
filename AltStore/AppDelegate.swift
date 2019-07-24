@@ -108,7 +108,7 @@ extension AppDelegate
     private func prepareForBackgroundFetch()
     {
         // "Fetch" every hour, but then refresh only those that need to be refreshed (so we don't drain the battery).
-        UIApplication.shared.setMinimumBackgroundFetchInterval(60 * 60)
+        UIApplication.shared.setMinimumBackgroundFetchInterval(1 * 60 * 60)
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }
@@ -136,6 +136,7 @@ extension AppDelegate
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
     {
         let isLaunching = self.isLaunching
+        let refreshIdentifier = UUID().uuidString
         
         let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: DatabaseManager.shared.viewContext)
         guard !installedApps.isEmpty else {
@@ -166,89 +167,84 @@ extension AppDelegate
             
             func finish(_ result: Result<[String: Result<InstalledApp, Error>], Error>)
             {
+                // If finish is actually called, that means an error occured during installation.
+                
                 ServerManager.shared.stopDiscovering()
                 
-                let content = UNMutableNotificationContent()
-                var shouldPresentAlert = true
-                
-                do
-                {
-                    let results = try result.get()
-                    shouldPresentAlert = !results.isEmpty
-                    
-                    for (_, result) in results
-                    {
-                        guard case let .failure(error) = result else { continue }
-                        throw error
-                    }
-                    
-                    content.title = NSLocalizedString("Refreshed all apps!", comment: "")
-                }
-                catch let error as NSError where
-                    (error.domain == NSOSStatusErrorDomain || error.domain == AVFoundationErrorDomain) &&
-                    error.code == AVAudioSession.ErrorCode.cannotStartPlaying.rawValue &&
-                    !isLaunching
-                {
-                    // We can only start background audio when the app is being launched,
-                    // and _not_ if it's already suspended in background.
-                    // Since we are currently suspended in background and not launching, we'll just ignore the error.
-                    
-                    shouldPresentAlert = false
-                    
-                    #if DEBUG
-                    let content = UNMutableNotificationContent()
-                    content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
-                    content.body = NSLocalizedString("AltStore is currently suspended in the background.", comment: "")
-                    
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
-                    #endif
-                }
-                catch
-                {
-                    print("Failed to refresh apps in background.", error)
-                    
-                    content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
-                    content.body = error.localizedDescription
-                    
-                    shouldPresentAlert = true
-                }
-                
-                if shouldPresentAlert
-                {
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
-                }
-                
-                switch result
-                {
-                case .failure(ConnectionError.serverNotFound): completionHandler(.newData)
-                case .failure: completionHandler(.failed)
-                case .success: completionHandler(.newData)
-                }
+                self.scheduleFinishedRefreshingNotification(for: result, identifier: refreshIdentifier, isLaunching: isLaunching, delay: 0)
                 
                 taskCompletionHandler()
+                
+                DispatchQueue.main.async {
+                    guard UIApplication.shared.applicationState == .background else { return }
+                    
+                    // Exit so that if background fetch occurs again soon we're not suspended.
+                    exit(0)
+                }
             }
-            
-            #if DEBUG
-            let content = UNMutableNotificationContent()
-            content.title = NSLocalizedString("Refreshing apps...", comment: "")
-            
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            UNUserNotificationCenter.current().add(request)
-            #endif
             
             if let error = taskResult.error
             {
                 print("Error starting extended background task. Aborting.", error)
+                completionHandler(.failed)
                 finish(.failure(error))
                 return
+            }
+            
+            var fetchAppsResult: Result<[App], Error>?
+            var serversResult: Result<Void, Error>?
+            
+            let dispatchGroup = DispatchGroup()
+            dispatchGroup.enter()
+            dispatchGroup.enter()
+            
+            AppManager.shared.fetchApps() { (result) in
+                fetchAppsResult = result
+                dispatchGroup.leave()
+                
+                do
+                {
+                    let apps = try result.get()
+                    
+                    guard let context = apps.first?.managedObjectContext else { return }
+                    try context.save()
+                }
+                catch
+                {
+                    print("Error fetching apps:", error)
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                guard let fetchAppsResult = fetchAppsResult, let serversResult = serversResult else {
+                    completionHandler(.failed)
+                    return
+                }
+                
+                // Call completionHandler early to improve chances of refreshing in the background again.
+                switch (fetchAppsResult, serversResult)
+                {
+                case (.success, .success): completionHandler(.newData)
+                case (.success, .failure(ConnectionError.serverNotFound)): completionHandler(.newData)
+                case (.failure, _), (_, .failure): completionHandler(.failed)
+                }
             }
             
             // Wait for three seconds to:
             // a) give us time to discover AltServers
             // b) give other processes a chance to respond to requestAppState notification
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                if ServerManager.shared.discoveredServers.isEmpty
+                {
+                    serversResult = .failure(ConnectionError.serverNotFound)
+                }
+                else
+                {
+                    serversResult = .success(())
+                }
+                
+                dispatchGroup.leave()
+                
                 let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.app.identifier) ?? false) }
                 print("Filtered Apps to Refresh:", filteredApps.map { $0.app.identifier })
                 
@@ -257,19 +253,22 @@ extension AppDelegate
                     guard installedApp.app.identifier == App.altstoreAppID else { return }
                     
                     // We're starting to install AltStore, which means the app is about to quit.
-                    // So, we say we were successful even though we technically don't know 100% yet.
-                    // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
+                    // So, we schedule a "refresh successful" local notification to be displayed after a delay,
+                    // but if the app is still running, we cancel the notification.
+                    // Then, we schedule another notification and repeat the process.
                     
+                    // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
+
                     if let error = group.error
                     {
-                        finish(.failure(error))
+                        self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: refreshIdentifier, isLaunching: isLaunching)
                     }
                     else
                     {
                         var results = group.results
                         results[installedApp.app.identifier] = .success(installedApp)
-                        
-                        finish(.success(results))
+
+                        self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: refreshIdentifier, isLaunching: isLaunching)
                     }
                 }
                 group.completionHandler = { (result) in
@@ -285,5 +284,75 @@ extension AppDelegate
         
         let appID = String(notification.rawValue).replacingOccurrences(of: baseName + ".", with: "")
         self.runningApplications?.insert(appID)
+    }
+    
+    func scheduleFinishedRefreshingNotification(for result: Result<[String: Result<InstalledApp, Error>], Error>, identifier: String, isLaunching: Bool, delay: TimeInterval = 5)
+    {
+        self.cancelFinishedRefreshingNotification(identifier: identifier)
+        
+        let content = UNMutableNotificationContent()
+        
+        var shouldPresentAlert = true
+        
+        do
+        {
+            let results = try result.get()
+            shouldPresentAlert = !results.isEmpty
+            
+            for (_, result) in results
+            {
+                guard case let .failure(error) = result else { continue }
+                throw error
+            }
+            
+            content.title = NSLocalizedString("Refreshed Apps", comment: "")
+            content.body = NSLocalizedString("All apps have been refreshed.", comment: "")
+        }
+        catch let error as NSError where
+            (error.domain == NSOSStatusErrorDomain || error.domain == AVFoundationErrorDomain) &&
+                error.code == AVAudioSession.ErrorCode.cannotStartPlaying.rawValue &&
+                !isLaunching
+        {
+            // We can only start background audio when the app is being launched,
+            // and _not_ if it's already suspended in background.
+            // Since we are currently suspended in background and not launching, we'll just ignore the error.
+
+            shouldPresentAlert = false
+        }
+        catch ConnectionError.serverNotFound
+        {
+            shouldPresentAlert = false
+        }
+        catch
+        {
+            print("Failed to refresh apps in background.", error)
+            
+            content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
+            content.body = error.localizedDescription
+            
+            shouldPresentAlert = true
+        }
+        
+        if shouldPresentAlert
+        {
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+            
+            if delay > 0
+            {
+                DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
+                    // If app is still running at this point, we schedule another notification with same identifier.
+                    // This prevents the currently scheduled notification from displaying, and starts another countdown timer.
+                    self.scheduleFinishedRefreshingNotification(for: result, identifier: identifier, isLaunching: isLaunching)
+                }
+            }
+        }
+    }
+    
+    func cancelFinishedRefreshingNotification(identifier: String)
+    {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
 }
