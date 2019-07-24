@@ -10,6 +10,17 @@ import Roxas
 
 class ToastView: RSTToastView
 {
+    override init(text: String, detailText detailedText: String?)
+    {
+        super.init(text: text, detailText: detailedText)
+        
+        self.layoutMargins = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func layoutSubviews()
     {
         super.layoutSubviews()

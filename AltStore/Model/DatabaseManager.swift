@@ -22,6 +22,7 @@ public class DatabaseManager
     private init()
     {
         self.persistentContainer = RSTPersistentContainer(name: "AltStore")
+        self.persistentContainer.preferredMergePolicy = MergePolicy()
     }
 }
 

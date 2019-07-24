@@ -22,6 +22,12 @@
 		BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
 		BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
+		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
+		BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648C22E79AC800E9056B /* ALTAppPermission.m */; };
+		BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */; };
+		BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */; };
+		BF3D64A222E8031100E9056B /* MergePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D64A122E8031100E9056B /* MergePolicy.swift */; };
+		BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D64AF22E8D4B800E9056B /* AppContentViewControllerCells.swift */; };
 		BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */; };
 		BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002D22A714AF0051E2BC /* Keychain.swift */; };
 		BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */; };
@@ -103,6 +109,8 @@
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
+		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
+		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
 		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
@@ -125,7 +133,6 @@
 		BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
 		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
-		BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */; };
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
 		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
@@ -252,6 +259,13 @@
 		BF1E314922A060F400370A3C /* NSError+ALTServerError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSError+ALTServerError.m"; sourceTree = "<group>"; };
 		BF1E315022A0616100370A3C /* libAltKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAltKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF219A7E22CAC431007676A6 /* AltStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltStore.entitlements; sourceTree = "<group>"; };
+		BF3D648722E79A3700E9056B /* AppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermission.swift; sourceTree = "<group>"; };
+		BF3D648B22E79AC800E9056B /* ALTAppPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPermission.h; sourceTree = "<group>"; };
+		BF3D648C22E79AC800E9056B /* ALTAppPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermission.m; sourceTree = "<group>"; };
+		BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionPopoverViewController.swift; sourceTree = "<group>"; };
+		BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsingTextView.swift; sourceTree = "<group>"; };
+		BF3D64A122E8031100E9056B /* MergePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergePolicy.swift; sourceTree = "<group>"; };
+		BF3D64AF22E8D4B800E9056B /* AppContentViewControllerCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewControllerCells.swift; sourceTree = "<group>"; };
 		BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTDeviceManager+Installation.swift"; sourceTree = "<group>"; };
 		BF43002D22A714AF0051E2BC /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltStore.swift"; sourceTree = "<group>"; };
@@ -338,6 +352,8 @@
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
+		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
+		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -363,7 +379,6 @@
 		BFD247862284BB3B00981D42 /* Roxas.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2478B2284C4C300981D42 /* AppIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageView.swift; sourceTree = "<group>"; };
 		BFD2478E2284C8F900981D42 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
-		BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailViewController.swift; sourceTree = "<group>"; };
 		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 		BFD52BD222A06EFB000B7ED1 /* AltKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltKit.h; sourceTree = "<group>"; };
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
@@ -477,6 +492,26 @@
 				BF1E314922A060F400370A3C /* NSError+ALTServerError.m */,
 			);
 			path = AltKit;
+			sourceTree = "<group>";
+		};
+		BF3D648922E79A7700E9056B /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				BF3D648B22E79AC800E9056B /* ALTAppPermission.h */,
+				BF3D648C22E79AC800E9056B /* ALTAppPermission.m */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		BF3D64A022E7FAD800E9056B /* App Detail */ = {
+			isa = PBXGroup;
+			children = (
+				BF8F69C322E662D300049BA1 /* AppViewController.swift */,
+				BF8F69C122E659F700049BA1 /* AppContentViewController.swift */,
+				BF3D64AF22E8D4B800E9056B /* AppContentViewControllerCells.swift */,
+				BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */,
+			);
+			path = "App Detail";
 			sourceTree = "<group>";
 		};
 		BF45868E229872EA00BD7491 /* AltServer */ = {
@@ -721,13 +756,15 @@
 				BFD247732284B9A500981D42 /* Main.storyboard */,
 				BFE6325822A83BA800F30809 /* Authentication */,
 				BF9ABA4322DCFF33008935CF /* Browse */,
-				BFD2478A2284C49000981D42 /* Apps */,
+				BF3D64A022E7FAD800E9056B /* App Detail */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
 				BFDB69FB22A9A7A6007EA6D6 /* Account */,
+				BFD2478A2284C49000981D42 /* Managing Apps */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BFD247982284D7FC00981D42 /* Model */,
 				BFDB6A0922AAEDA1007EA6D6 /* Operations */,
 				BFD2478D2284C4C700981D42 /* Components */,
+				BF3D648922E79A7700E9056B /* Types */,
 				BFDB6A0622A9B114007EA6D6 /* Protocols */,
 				BFD2479D2284FBBD00981D42 /* Extensions */,
 				BFD247962284D7C100981D42 /* Resources */,
@@ -751,13 +788,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BFD2478A2284C49000981D42 /* Apps */ = {
+		BFD2478A2284C49000981D42 /* Managing Apps */ = {
 			isa = PBXGroup;
 			children = (
-				BFD2479B2284E19A00981D42 /* AppDetailViewController.swift */,
 				BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */,
 			);
-			path = Apps;
+			path = "Managing Apps";
 			sourceTree = "<group>";
 		};
 		BFD2478D2284C4C700981D42 /* Components */ = {
@@ -770,6 +806,7 @@
 				BF9ABA4A22DD137F008935CF /* NavigationBar.swift */,
 				BF9ABA4C22DD16DE008935CF /* PillButton.swift */,
 				BF18B0F022E25DF9005C4CF5 /* ToastView.swift */,
+				BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -799,8 +836,10 @@
 			children = (
 				BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */,
 				BFB11691229322E400BB457C /* DatabaseManager.swift */,
+				BF3D64A122E8031100E9056B /* MergePolicy.swift */,
 				BFE6326722A858F300F30809 /* Account.swift */,
 				BFBBE2DE22931F73002097FA /* App.swift */,
+				BF3D648722E79A3700E9056B /* AppPermission.swift */,
 				BFBBE2E022931F81002097FA /* InstalledApp.swift */,
 				BFE6326522A857C100F30809 /* Team.swift */,
 			);
@@ -1223,6 +1262,7 @@
 				BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */,
 				BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */,
 				BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */,
+				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFDB69FD22A9A7B7007EA6D6 /* AccountViewController.swift in Sources */,
@@ -1235,27 +1275,33 @@
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
 				BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
+				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
 				BFE6326822A858F300F30809 /* Account.swift in Sources */,
 				BFE6326622A857C200F30809 /* Team.swift in Sources */,
-				BFD2479C2284E19A00981D42 /* AppDetailViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
+				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
 				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
+				BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */,
 				BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */,
+				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */,
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
+				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
 				BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
+				BF3D64A222E8031100E9056B /* MergePolicy.swift in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
+				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
@@ -1646,6 +1692,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1671,6 +1718,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

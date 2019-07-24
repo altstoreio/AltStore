@@ -49,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         self.isLaunching = true
         
+        self.setTintColor()
+        
         ServerManager.shared.startDiscovering()
         
         DatabaseManager.shared.start { (error) in
@@ -90,6 +92,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         AppManager.shared.update()
         ServerManager.shared.startDiscovering()
+    }
+}
+
+private extension AppDelegate
+{
+    func setTintColor()
+    {
+        self.window?.tintColor = .altGreen
     }
 }
 

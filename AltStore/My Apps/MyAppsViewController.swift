@@ -79,6 +79,18 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.register(UpdateCollectionViewCell.nib, forCellWithReuseIdentifier: "UpdateCell")
         self.collectionView.register(UpdatesCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader")
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard segue.identifier == "showApp" else { return }
+        
+        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        
+        let appViewController = segue.destination as! AppViewController
+        appViewController.app = installedApp.app
+    }
 }
 
 private extension MyAppsViewController
@@ -122,7 +134,7 @@ private extension MyAppsViewController
                 cell.mode = .collapsed
             }
             
-            cell.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
+            cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
             
             let progress = AppManager.shared.installationProgress(for: app)
             cell.updateButton.progress = progress

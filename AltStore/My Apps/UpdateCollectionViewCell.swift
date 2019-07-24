@@ -30,21 +30,14 @@ extension UpdateCollectionViewCell
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var updateButton: PillButton!
     @IBOutlet var versionDescriptionTitleLabel: UILabel!
-    @IBOutlet var versionDescriptionTextView: UITextView!
-    
-    @IBOutlet var moreButton: UIButton!
-        
+    @IBOutlet var versionDescriptionTextView: CollapsingTextView!
+            
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
         self.contentView.layer.cornerRadius = 20
         self.contentView.layer.masksToBounds = true
-        
-        self.versionDescriptionTextView.textContainerInset = .zero
-        self.versionDescriptionTextView.textContainer.lineFragmentPadding = 0
-        self.versionDescriptionTextView.textContainer.lineBreakMode = .byTruncatingTail
-        self.versionDescriptionTextView.textContainer.heightTracksTextView = true
         
         self.update()
     }
@@ -54,44 +47,6 @@ extension UpdateCollectionViewCell
         super.tintColorDidChange()
         
         self.update()
-    }
-    
-    override func layoutSubviews()
-    {
-        super.layoutSubviews()
-        
-        let textContainer = self.versionDescriptionTextView.textContainer
-        
-        switch self.mode
-        {
-        case .collapsed:
-            // Extra wide to make sure it wraps to next line.
-            let frame = CGRect(x: textContainer.size.width - self.moreButton.bounds.width - 8,
-                               y: textContainer.size.height - 4,
-                               width: textContainer.size.width,
-                               height: textContainer.size.height)
-            
-            textContainer.maximumNumberOfLines = 2
-            textContainer.exclusionPaths = [UIBezierPath(rect: frame)]
-            
-            if let font = self.versionDescriptionTextView.font, self.versionDescriptionTextView.bounds.height > font.lineHeight * 1.5
-            {
-                self.moreButton.isHidden = false
-            }
-            else
-            {
-                // One (or less) lines, so hide more button.
-                self.moreButton.isHidden = true
-            }
-            
-        case .expanded:
-            textContainer.maximumNumberOfLines = 10
-            textContainer.exclusionPaths = []
-            
-            self.moreButton.isHidden = true
-        }
-        
-        self.versionDescriptionTextView.invalidateIntrinsicContentSize()
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes)
@@ -108,6 +63,12 @@ private extension UpdateCollectionViewCell
 {
     func update()
     {
+        switch self.mode
+        {
+        case .collapsed: self.versionDescriptionTextView.isCollapsed = true
+        case .expanded: self.versionDescriptionTextView.isCollapsed = false
+        }
+        
         self.versionDescriptionTitleLabel.textColor = self.tintColor
         self.contentView.backgroundColor = self.tintColor.withAlphaComponent(0.1)
         

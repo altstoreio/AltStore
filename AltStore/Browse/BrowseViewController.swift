@@ -36,6 +36,18 @@ class BrowseViewController: UICollectionViewController
         let collectionViewLayout = self.collectionViewLayout as! UICollectionViewFlowLayout
         collectionViewLayout.itemSize.width = self.view.bounds.width
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard segue.identifier == "showApp" else { return }
+        
+        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return }
+        
+        let app = self.dataSource.item(at: indexPath)
+        
+        let appViewController = segue.destination as! AppViewController
+        appViewController.app = app
+    }
 }
 
 private extension BrowseViewController

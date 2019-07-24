@@ -76,7 +76,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Version Notes" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="rNs-2O-k3V">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Version Notes" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="rNs-2O-k3V" customClass="CollapsingTextView" customModule="AltStore" customModuleProvider="target">
                                                 <rect key="frame" x="75" y="-10" width="265" height="24.5"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -90,22 +90,12 @@
                                     <constraint firstItem="RSR-5W-7tt" firstAttribute="width" secondItem="57X-Ep-rfq" secondAttribute="width" id="d3x-mH-ODQ"/>
                                 </constraints>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QTy-uj-lKA">
-                                <rect key="frame" x="323" y="99" width="32" height="14.5"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="14.5" id="pWr-Y1-ZW8"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
-                                <state key="normal" title="More"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="57X-Ep-rfq" secondAttribute="bottom" constant="20" id="ArC-R2-jtc"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="QTy-uj-lKA" secondAttribute="trailing" id="Otb-0P-uKP"/>
                             <constraint firstItem="57X-Ep-rfq" firstAttribute="leading" secondItem="mdL-JE-wCe" secondAttribute="leading" constant="20" id="PvV-gg-7us"/>
                             <constraint firstItem="57X-Ep-rfq" firstAttribute="top" secondItem="dmf-hv-bwx" secondAttribute="top" constant="20" id="QHM-k8-g0x"/>
-                            <constraint firstItem="QTy-uj-lKA" firstAttribute="bottom" secondItem="rNs-2O-k3V" secondAttribute="bottom" id="mF3-ad-Fl5"/>
                             <constraint firstItem="mdL-JE-wCe" firstAttribute="trailing" secondItem="57X-Ep-rfq" secondAttribute="trailing" constant="15" id="sGL-bx-qIk"/>
                         </constraints>
                         <edgeInsets key="layoutMargins" top="20" left="20" bottom="20" right="20"/>
@@ -124,7 +114,6 @@
             <connections>
                 <outlet property="appIconImageView" destination="jg6-wi-ngb" id="j83-Dl-GT6"/>
                 <outlet property="dateLabel" destination="xaB-Kc-Par" id="mfG-3C-r7j"/>
-                <outlet property="moreButton" destination="QTy-uj-lKA" id="UME-5m-Dqe"/>
                 <outlet property="nameLabel" destination="qmI-m4-Mra" id="LQz-w7-HNb"/>
                 <outlet property="updateButton" destination="OSL-U2-BKa" id="WbI-96-Nel"/>
                 <outlet property="versionDescriptionTextView" destination="rNs-2O-k3V" id="4TC-A3-oxb"/>

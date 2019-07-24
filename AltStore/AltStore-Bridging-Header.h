@@ -3,3 +3,4 @@
 //
 
 #import "NSError+ALTServerError.h"
+#import "ALTAppPermission.h"

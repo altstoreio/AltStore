@@ -39,6 +39,11 @@ class App: NSManagedObject, Decodable, Fetchable
     
     /* Relationships */
     @NSManaged private(set) var installedApp: InstalledApp?
+    @objc(permissions) @NSManaged var _permissions: NSOrderedSet
+    
+    @nonobjc var permissions: [AppPermission] {
+        return self._permissions.array as! [AppPermission]
+    }
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -59,6 +64,7 @@ class App: NSManagedObject, Decodable, Fetchable
         case downloadURL
         case tintColor
         case subtitle
+        case permissions
     }
     
     required init(from decoder: Decoder) throws
@@ -93,7 +99,12 @@ class App: NSManagedObject, Decodable, Fetchable
             self.tintColor = tintColor
         }
         
+        let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
+        
         context.insert(self)
+        
+        // Must assign after we're inserted into context.
+        self._permissions = NSOrderedSet(array: permissions)
     }
 }
 
