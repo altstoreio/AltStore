@@ -108,8 +108,7 @@ private extension BrowseViewController
             catch
             {
                 DispatchQueue.main.async {
-                    let toastView = RSTToastView(text: NSLocalizedString("Failed to Fetch Apps", comment: ""), detailText: error.localizedDescription)
-                    toastView.tintColor = .altGreen
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
                     toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                 }
             }
@@ -150,9 +149,8 @@ private extension BrowseViewController
                 {
                 case .failure(OperationError.cancelled): break // Ignore
                 case .failure(let error):
-                    let toastView = RSTToastView(text: "Failed to install \(app.name)", detailText: error.localizedDescription)
-                    toastView.tintColor = .altGreen
-                    toastView.show(in: self.navigationController!.view, duration: 2)
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
                 
                 case .success: print("Installed app:", app.identifier)
                 }

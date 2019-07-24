@@ -361,7 +361,7 @@ extension AppViewController
             {
                 DispatchQueue.main.async {
                     let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController!.view, duration: 2)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
                 }
             }
             

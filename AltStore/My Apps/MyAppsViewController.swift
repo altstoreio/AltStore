@@ -244,7 +244,6 @@ private extension MyAppsViewController
                     {
                     case .failure(let error):
                         let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.tintColor = .refreshRed
                         toastView.setNeedsLayout()
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                         
@@ -424,9 +423,8 @@ private extension MyAppsViewController
                     self.collectionView.reloadItems(at: [indexPath])
                     
                 case .failure(let error):
-                    let toastView = RSTToastView(text: "Failed to update \(app.name)", detailText: error.localizedDescription)
-                    toastView.tintColor = .altGreen
-                    toastView.show(in: self.navigationController!.view, duration: 2)
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
                     
                     self.collectionView.reloadItems(at: [indexPath])
                     

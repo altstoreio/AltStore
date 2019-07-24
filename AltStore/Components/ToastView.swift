@@ -25,6 +25,6 @@ class ToastView: RSTToastView
     {
         super.layoutSubviews()
         
-        self.layer.cornerRadius = self.bounds.midY
+        self.layer.cornerRadius = 16
     }
 }
