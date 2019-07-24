@@ -613,11 +613,11 @@ World</string>
             </objects>
             <point key="canvasLocation" x="3908" y="-1484"/>
         </scene>
-        <!--Account-->
+        <!--Settings-->
         <scene sceneID="GaO-Ug-BdZ">
             <objects>
                 <navigationController id="MGm-Zy-ffn" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Account" image="second" id="8Ic-ki-txH"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="Settings" id="8Ic-ki-txH"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="rzJ-pZ-611">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -630,7 +630,7 @@ World</string>
             </objects>
             <point key="canvasLocation" x="750" y="515"/>
         </scene>
-        <!--Account-->
+        <!--Settings-->
         <scene sceneID="Xdi-2V-rwM">
             <objects>
                 <tableViewController id="VBC-qD-V1a" customClass="AccountViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
@@ -728,7 +728,7 @@ World</string>
                             <outlet property="delegate" destination="VBC-qD-V1a" id="KEk-wr-hab"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Account" id="Mtw-26-mVI">
+                    <navigationItem key="navigationItem" title="Settings" id="Mtw-26-mVI">
                         <barButtonItem key="rightBarButtonItem" title="Sign Out" id="0wM-zj-gVA">
                             <color key="tintColor" red="1" green="0.14901960780000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
@@ -751,7 +751,7 @@ World</string>
         <scene sceneID="VHa-uP-bFU">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="faz-B4-Sub" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Browse" id="Uwh-Bg-Ymq"/>
+                    <tabBarItem key="tabBarItem" title="Browse" image="Browse" id="Uwh-Bg-Ymq"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="dIv-qd-9L5" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
@@ -771,7 +771,7 @@ World</string>
         <scene sceneID="nhh-BJ-XiT">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Ew-ox-i4n" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Apps" id="4gT-9u-k7y">
+                    <tabBarItem key="tabBarItem" title="My Apps" image="MyApps" id="4gT-9u-k7y">
                         <color key="badgeColor" name="Green"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -913,7 +913,9 @@ World</string>
     </scenes>
     <resources>
         <image name="Back" width="18" height="18"/>
-        <image name="second" width="30" height="30"/>
+        <image name="Browse" width="19.5" height="20.5"/>
+        <image name="MyApps" width="28" height="24"/>
+        <image name="Settings" width="21" height="21"/>
         <namedColor name="Green">
             <color red="0.22352941176470589" green="0.49411764705882355" blue="0.396078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
