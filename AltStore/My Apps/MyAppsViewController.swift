@@ -17,6 +17,7 @@ extension MyAppsViewController
 {
     private enum Section: Int, CaseIterable
     {
+        case noUpdates
         case updates
         case installedApps
     }
@@ -37,6 +38,7 @@ private extension Date
 class MyAppsViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
+    private lazy var noUpdatesDataSource = self.makeNoUpdatesDataSource()
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
     private lazy var installedAppsDataSource = self.makeInstalledAppsDataSource()
     
@@ -69,6 +71,9 @@ class MyAppsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        // Allows us to intercept delegate callbacks.
+        self.updatesDataSource.fetchedResultsController.delegate = self
+        
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
                 
@@ -97,9 +102,24 @@ private extension MyAppsViewController
 {
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
-        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.updatesDataSource, self.installedAppsDataSource])
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.noUpdatesDataSource, self.updatesDataSource, self.installedAppsDataSource])
         dataSource.proxy = self
         return dataSource
+    }
+    
+    func makeNoUpdatesDataSource() -> RSTDynamicCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
+    {
+        let dynamicDataSource = RSTDynamicCollectionViewPrefetchingDataSource<InstalledApp, UIImage>()
+        dynamicDataSource.numberOfSectionsHandler = { 1 }
+        dynamicDataSource.numberOfItemsHandler = { _ in self.updatesDataSource.itemCount == 0 ? 1 : 0 }
+        dynamicDataSource.cellIdentifierHandler = { _ in "NoUpdatesCell" }
+        dynamicDataSource.cellConfigurationHandler = { (cell, _, indexPath) in
+            cell.layer.cornerRadius = 20
+            cell.layer.masksToBounds = true
+            cell.contentView.backgroundColor = UIColor.altGreen.withAlphaComponent(0.15)
+        }
+        
+        return dynamicDataSource
     }
     
     func makeUpdatesDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
@@ -232,6 +252,10 @@ private extension MyAppsViewController
             self.navigationController?.tabBarItem.badgeValue = nil
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        
+        UIView.performWithoutAnimation {
+            self.collectionView.reloadSections(IndexSet(integer: Section.updates.rawValue))
+        }
     }
     
     func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
@@ -282,7 +306,9 @@ private extension MyAppsViewController
             
             self.refreshGroup = group
             
-            self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+            }
         }
         
         if installedApps.contains(where: { $0.app.identifier == App.altstoreAppID })
@@ -382,9 +408,7 @@ private extension MyAppsViewController
         }
         
         self.refresh([installedApp]) { (result) in
-            DispatchQueue.main.async {
-                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
-            }
+            print("Finished refreshing with result:", result.error?.localizedDescription ?? "success")
         }
     }
     
@@ -433,6 +457,8 @@ private extension MyAppsViewController
                     print("Updated app:", app.identifier)
                     // No need to reload, since the the update cell is gone now.
                 }
+                
+                self.update()
             }
         }
         
@@ -468,6 +494,17 @@ extension MyAppsViewController
                 headerView.button.setTitleColor(.altGreen, for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.toggleAppUpdates), for: .primaryActionTriggered)
                 
+                if self.isUpdateSectionCollapsed
+                {
+                    headerView.button.titleLabel?.transform = .identity
+                }
+                else
+                {
+                    headerView.button.titleLabel?.transform = CGAffineTransform.identity.rotated(by: .pi)
+                }
+                
+                headerView.isHidden = (self.updatesDataSource.itemCount <= 2)
+                
                 headerView.button.layoutIfNeeded()
             }
             
@@ -498,9 +535,16 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
+        let padding = 30 as CGFloat
+        let width = collectionView.bounds.width - padding
+        
         let section = Section.allCases[indexPath.section]
         switch section
         {
+        case .noUpdates:
+            let size = CGSize(width: width, height: 44)
+            return size
+            
         case .updates:
             let item = self.dataSource.item(at: indexPath)
             
@@ -508,9 +552,6 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             {
                 return previousHeight
             }
-            
-            let padding = 30 as CGFloat
-            let width = collectionView.bounds.width - padding
             
             let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: width)
             NSLayoutConstraint.activate([widthConstraint])
@@ -532,7 +573,11 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         let section = Section.allCases[section]
         switch section
         {
-        case .updates: return CGSize(width: collectionView.bounds.width, height: 26)
+        case .noUpdates: return .zero
+        case .updates:
+            let height: CGFloat = self.updatesDataSource.itemCount > maximumCollapsedUpdatesCount ? 26 : 0
+            return CGSize(width: collectionView.bounds.width, height: height)
+            
         case .installedApps: return CGSize(width: collectionView.bounds.width, height: 29)
         }
     }
@@ -542,8 +587,54 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         let section = Section.allCases[section]
         switch section
         {
-        case .updates: return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
-        case .installedApps: return UIEdgeInsets(top: 13, left: 0, bottom: 20, right: 0)
+        case .noUpdates:
+            guard self.updatesDataSource.itemCount == 0 else { return .zero }
+            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
+            
+        case .updates:
+            guard self.updatesDataSource.itemCount > 0 else { return .zero }
+            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
+            
+        case .installedApps: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
         }
+    }
+}
+
+extension MyAppsViewController: NSFetchedResultsControllerDelegate
+{
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
+    {
+        self.updatesDataSource.controllerWillChangeContent(controller)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType)
+    {
+        self.updatesDataSource.controller(controller, didChange: sectionInfo, atSectionIndex: UInt(sectionIndex), for: type)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?)
+    {
+        self.updatesDataSource.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
+    {
+        let previousUpdateCount = self.collectionView.numberOfItems(inSection: Section.updates.rawValue)
+        let updateCount = Int(self.updatesDataSource.itemCount)
+        
+        if previousUpdateCount == 0 && updateCount > 0
+        {
+            // Remove "No Updates Available" cell.
+            let change = RSTCellContentChange(type: .delete, currentIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue), destinationIndexPath: nil)
+            self.collectionView.add(change)
+        }
+        else if previousUpdateCount > 0 && updateCount == 0
+        {
+            // Insert "No Updates Available" cell.
+            let change = RSTCellContentChange(type: .insert, currentIndexPath: nil, destinationIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue))
+            self.collectionView.add(change)
+        }
+        
+        self.updatesDataSource.controllerDidChangeContent(controller)
     }
 }

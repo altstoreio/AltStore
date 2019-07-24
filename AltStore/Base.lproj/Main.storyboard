@@ -603,6 +603,7 @@ World</string>
                             <constraint firstItem="xnC-tS-ZdV" firstAttribute="centerY" secondItem="IgU-aM-YrX" secondAttribute="centerY" id="qCU-ye-fSf"/>
                         </constraints>
                         <edgeInsets key="layoutMargins" top="10" left="20" bottom="10" right="20"/>
+                        <viewLayoutGuide key="safeArea" id="wu0-44-ei8"/>
                     </view>
                     <connections>
                         <outlet property="descriptionLabel" destination="ErG-8A-uqY" id="iuN-kE-IEm"/>
@@ -870,6 +871,28 @@ World</string>
                                         <segue key="preview" inheritsFrom="commit" id="GSg-SY-gai"/>
                                     </segue>
                                 </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="NoUpdatesCell" id="h0f-XI-UA5">
+                                <rect key="frame" x="0.0" y="125" width="375" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Updates Available" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z04-yg-x1t">
+                                            <rect key="frame" x="104" y="20" width="167" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                            <color key="textColor" name="Green"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="z04-yg-x1t" firstAttribute="centerY" secondItem="h0f-XI-UA5" secondAttribute="centerY" id="3dw-fe-ACP"/>
+                                    <constraint firstItem="z04-yg-x1t" firstAttribute="centerX" secondItem="h0f-XI-UA5" secondAttribute="centerX" id="AIh-kx-SmK"/>
+                                    <constraint firstItem="z04-yg-x1t" firstAttribute="top" relation="greaterThanOrEqual" secondItem="h0f-XI-UA5" secondAttribute="top" constant="10" id="QwS-y9-ahl"/>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="z04-yg-x1t" secondAttribute="bottom" constant="10" id="uQI-7x-E3b"/>
+                                </constraints>
                             </collectionViewCell>
                         </cells>
                         <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="InstalledAppsHeader" id="Crb-NU-1Ye" customClass="InstalledAppsCollectionHeaderView" customModule="AltStore" customModuleProvider="target">
