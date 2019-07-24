@@ -207,7 +207,34 @@ extension AppDelegate
                     let apps = try result.get()
                     
                     guard let context = apps.first?.managedObjectContext else { return }
+                    
+                    let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                    updatesFetchRequest.includesPendingChanges = true
+                    
+                    let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest()
+                    previousUpdatesFetchRequest.includesPendingChanges = false
+                    
+                    let previousUpdates = try context.fetch(previousUpdatesFetchRequest)
+                    
                     try context.save()
+                    
+                    let updates = try context.fetch(updatesFetchRequest)
+                    
+                    for update in updates
+                    {
+                        guard !previousUpdates.contains(where: { $0.app.identifier == update.app.identifier }) else { continue }
+                        
+                        let content = UNMutableNotificationContent()
+                        content.title = NSLocalizedString("New Update Available", comment: "")
+                        content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.app.name, update.app.version)
+                        
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        UIApplication.shared.applicationIconBadgeNumber = updates.count
+                    }
                 }
                 catch
                 {

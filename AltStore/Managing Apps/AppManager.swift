@@ -311,7 +311,7 @@ private extension AppManager
                 context.group.results[context.appIdentifier] = .success(installedApp)
                 
                 // Save after each installation.
-                installedApp.managedObjectContext?.perform {
+                installedApp.managedObjectContext?.performAndWait {
                     do { try installedApp.managedObjectContext?.save() }
                     catch { print("Error saving installed app.", error) }
                 }

@@ -49,6 +49,13 @@ extension InstalledApp
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
     }
     
+    class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
+    {
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+        fetchRequest.predicate = NSPredicate(format: "%K != %K", #keyPath(InstalledApp.version), #keyPath(InstalledApp.app.version))
+        return fetchRequest
+    }
+    
     class func fetchAltStore(in context: NSManagedObjectContext) -> InstalledApp?
     {
         let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.app.identifier), App.altstoreAppID)

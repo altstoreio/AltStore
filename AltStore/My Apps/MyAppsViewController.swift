@@ -104,8 +104,7 @@ private extension MyAppsViewController
     
     func makeUpdatesDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
-        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K != %K", #keyPath(InstalledApp.version), #keyPath(InstalledApp.app.version))
+        let fetchRequest = InstalledApp.updatesFetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.app?.versionDate, ascending: true),
                                         NSSortDescriptor(keyPath: \InstalledApp.app?.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
@@ -226,10 +225,12 @@ private extension MyAppsViewController
         if self.updatesDataSource.itemCount > 0
         {
             self.navigationController?.tabBarItem.badgeValue = String(describing: self.updatesDataSource.itemCount)
+            UIApplication.shared.applicationIconBadgeNumber = Int(self.updatesDataSource.itemCount)
         }
         else
         {
             self.navigationController?.tabBarItem.badgeValue = nil
+            UIApplication.shared.applicationIconBadgeNumber = 0
         }
     }
     
