@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AltSign
 
 enum OperationError: LocalizedError
 {
@@ -22,6 +23,8 @@ enum OperationError: LocalizedError
     case invalidApp
     case invalidParameters
     
+    case iOSVersionNotSupported(ALTApplication)
+    
     var errorDescription: String? {
         switch self {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
@@ -32,6 +35,17 @@ enum OperationError: LocalizedError
         case .unknownUDID: return NSLocalizedString("Unknown device UDID.", comment: "")
         case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
         case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
+        case .iOSVersionNotSupported(let app):
+            let name = app.name
+            
+            var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
+            if app.minimumiOSVersion.patchVersion > 0
+            {
+                version += ".\(app.minimumiOSVersion.patchVersion)"
+            }
+            
+            let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
+            return localizedDescription
         }
     }
 }

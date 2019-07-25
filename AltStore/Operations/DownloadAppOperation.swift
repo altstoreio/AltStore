@@ -52,24 +52,30 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
                 var isDirectory: ObjCBool = false
                 guard FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory) else { throw OperationError.appNotFound }
                 
+                let temporaryDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+                defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+                
+                let appBundleURL: URL
+                
                 if isDirectory.boolValue
                 {
                     // Directory, so assuming this is .app bundle.
                     guard Bundle(url: fileURL) != nil else { throw OperationError.invalidApp }
                     
-                    try FileManager.default.copyItem(at: fileURL, to: self.destinationURL, shouldReplace: true)
+                    appBundleURL = fileURL
                 }
                 else
                 {
                     // File, so assuming this is a .ipa file.
-                    
-                    let temporaryDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-                    try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
-                    defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
-                    
-                    let bundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
-                    try FileManager.default.copyItem(at: bundleURL, to: self.destinationURL, shouldReplace: true)
+                    appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
                 }
+                
+                guard let application = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
+                
+                guard ProcessInfo.processInfo.isOperatingSystemAtLeast(application.minimumiOSVersion) else { throw OperationError.iOSVersionNotSupported(application) }
+                
+                try FileManager.default.copyItem(at: appBundleURL, to: self.destinationURL, shouldReplace: true)
                 
                 self.context.perform {
                     let app = self.context.object(with: self.app.objectID) as! App
