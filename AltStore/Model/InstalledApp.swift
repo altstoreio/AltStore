@@ -26,6 +26,10 @@ class InstalledApp: NSManagedObject, Fetchable
     /* Relationships */
     @NSManaged var storeApp: App?
     
+    var isSideloaded: Bool {
+        return self.storeApp == nil
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)

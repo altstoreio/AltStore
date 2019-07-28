@@ -927,7 +927,13 @@ World</string>
                             <outlet property="delegate" destination="hv7-Ar-voT" id="1PN-pf-cZK"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="My Apps" id="zLJ-Cg-ijh"/>
+                    <navigationItem key="navigationItem" title="My Apps" id="zLJ-Cg-ijh">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="4MN-JN-Knh">
+                            <connections>
+                                <action selector="sideloadApp:" destination="hv7-Ar-voT" id="Tjv-oi-2H0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kiO-UO-esV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

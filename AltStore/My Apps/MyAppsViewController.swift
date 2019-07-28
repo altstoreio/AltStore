@@ -11,6 +11,8 @@ import UIKit
 import AltKit
 import Roxas
 
+import AltSign
+
 private let maximumCollapsedUpdatesCount = 2
 
 extension MyAppsViewController
@@ -43,12 +45,15 @@ class MyAppsViewController: UICollectionViewController
     private lazy var installedAppsDataSource = self.makeInstalledAppsDataSource()
     
     private var prototypeUpdateCell: UpdateCollectionViewCell!
+    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
+    private var sideloadingProgressView: UIProgressView!
     
     // State
     private var isUpdateSectionCollapsed = true
     private var expandedAppUpdates = Set<String>()
     private var isRefreshingAllApps = false
     private var refreshGroup: OperationGroup?
+    private var sideloadingProgress: Progress?
     
     // Cache
     private var cachedUpdateSizes = [String: CGSize]()
@@ -83,6 +88,23 @@ class MyAppsViewController: UICollectionViewController
         
         self.collectionView.register(UpdateCollectionViewCell.nib, forCellWithReuseIdentifier: "UpdateCell")
         self.collectionView.register(UpdatesCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader")
+        
+        self.sideloadingProgressView = UIProgressView(progressViewStyle: .bar)
+        self.sideloadingProgressView.translatesAutoresizingMaskIntoConstraints = false
+        self.sideloadingProgressView.progressTintColor = .altGreen
+        self.sideloadingProgressView.progress = 0
+        
+        if let navigationBar = self.navigationController?.navigationBar
+        {
+            navigationBar.addSubview(self.sideloadingProgressView)
+            NSLayoutConstraint.activate([self.sideloadingProgressView.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor),
+                                         self.sideloadingProgressView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor),
+                                         self.sideloadingProgressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
+        }
+        
+        // Gestures
+        self.longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(MyAppsViewController.handleLongPressGesture(_:)))
+        self.collectionView.addGestureRecognizer(self.longPressGestureRecognizer)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -95,6 +117,16 @@ class MyAppsViewController: UICollectionViewController
         
         let appViewController = segue.destination as! AppViewController
         appViewController.app = installedApp.storeApp
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
+    {
+        guard identifier == "showApp" else { return true }
+        
+        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return true }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        return !installedApp.isSideloaded
     }
 }
 
@@ -187,13 +219,12 @@ private extension MyAppsViewController
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
         dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
-            guard let app = installedApp.storeApp else { return }
-            
-            let tintColor = app.tintColor ?? .altGreen
+            let tintColor = installedApp.storeApp?.tintColor ?? .altGreen
             
             let cell = cell as! InstalledAppCollectionViewCell
             cell.tintColor = tintColor
-            cell.appIconImageView.image = UIImage(named: app.iconName)
+            cell.appIconImageView.isIndicatingActivity = true
+            
             cell.refreshButton.isIndicatingActivity = false
             cell.refreshButton.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
@@ -210,8 +241,8 @@ private extension MyAppsViewController
                 cell.refreshButton.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
             }
                                     
-            cell.nameLabel.text = app.name
-            cell.developerLabel.text = app.developerName
+            cell.nameLabel.text = installedApp.name
+            cell.developerLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
@@ -224,7 +255,7 @@ private extension MyAppsViewController
             default: cell.refreshButton.tintColor = .refreshRed
             }
             
-            if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: app), progress.fractionCompleted < 1.0
+            if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: installedApp), progress.fractionCompleted < 1.0
             {
                 cell.refreshButton.progress = progress
             }
@@ -232,6 +263,24 @@ private extension MyAppsViewController
             {
                 cell.refreshButton.progress = nil
             }
+        }
+        dataSource.prefetchHandler = { (item, indexPath, completion) in
+            let fileURL = item.fileURL
+            
+            return BlockOperation {
+                guard let application = ALTApplication(fileURL: fileURL) else {
+                    completion(nil, OperationError.invalidApp)
+                    return
+                }
+                
+                let icon = application.icon
+                completion(icon, nil)
+            }
+        }
+        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+            let cell = cell as! InstalledAppCollectionViewCell
+            cell.appIconImageView.image = image
+            cell.appIconImageView.isIndicatingActivity = false
         }
         
         return dataSource
@@ -465,6 +514,35 @@ private extension MyAppsViewController
         self.collectionView.reloadItems(at: [indexPath])
     }
     
+    @IBAction func sideloadApp(_ sender: UIBarButtonItem)
+    {
+        let iOSAppUTI = "com.apple.itunes.ipa" // Declared by the system.
+        
+        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [iOSAppUTI], in: .import)
+        documentPickerViewController.delegate = self
+        self.present(documentPickerViewController, animated: true, completion: nil)
+    }
+    
+    @objc func presentAlert(for installedApp: InstalledApp)
+    {
+        let alertController = UIAlertController(title: nil, message: NSLocalizedString("Removing a sideloaded app only removes it from AltStore. You must also delete it from the home screen to fully uninstall the app.", comment: ""), preferredStyle: .actionSheet)
+        alertController.addAction(.cancel)
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Remove", comment: ""), style: .destructive, handler: { (action) in
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+                context.delete(installedApp)
+                
+                do { try context.save() }
+                catch { print("Failed to remove sideloaded app.", error) }
+            }
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+}
+
+private extension MyAppsViewController
+{
     @objc func didFetchApps(_ notification: Notification)
     {
         DispatchQueue.main.async {
@@ -476,6 +554,23 @@ private extension MyAppsViewController
             
             self.update()
         }
+    }
+    
+    @objc func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer)
+    {
+        guard gestureRecognizer.state == .began else { return }
+        
+        let point = gestureRecognizer.location(in: self.collectionView)
+        
+        guard
+            let indexPath = self.collectionView.indexPathForItem(at: point),
+            indexPath.section == Section.installedApps.rawValue
+        else { return }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        guard installedApp.storeApp == nil else { return }
+        
+        self.presentAlert(for: installedApp)
     }
 }
 
@@ -636,5 +731,60 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
         }
         
         self.updatesDataSource.controllerDidChangeContent(controller)
+    }
+}
+
+extension MyAppsViewController: UIDocumentPickerDelegate
+{
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL])
+    {
+        guard let fileURL = urls.first else { return }
+        
+        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
+        
+        DispatchQueue.global().async {
+            let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+            
+            do
+            {
+                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+                
+                let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
+                
+                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { return }
+                
+                self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                    try? FileManager.default.removeItem(at: temporaryDirectory)
+                    
+                    DispatchQueue.main.async {
+                        if let error = result.error
+                        {
+                            let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        }
+                        else
+                        {
+                            print("Successfully installed app:", application.bundleIdentifier)
+                        }
+                        
+                        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                        self.sideloadingProgressView.observedProgress = nil
+                        self.sideloadingProgressView.setHidden(true, animated: true)
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.sideloadingProgressView.progress = 0
+                    self.sideloadingProgressView.isHidden = false
+                    self.sideloadingProgressView.observedProgress = self.sideloadingProgress
+                }
+            }
+            catch
+            {
+                try? FileManager.default.removeItem(at: temporaryDirectory)
+                
+                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+            }
+        }
     }
 }
