@@ -47,12 +47,12 @@ extension AppManager
         let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
         
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+        fetchRequest.returnsObjectsAsFaults = false
         
         do
         {
             let installedApps = try context.fetch(fetchRequest)
-            for app in installedApps
+            for app in installedApps where app.storeApp != nil
             {
                 if UIApplication.shared.canOpenURL(app.openAppURL)
                 {
@@ -106,20 +106,20 @@ extension AppManager
 
 extension AppManager
 {
-    func install(_ app: App, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func install(_ app: AppProtocol, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         if let progress = self.installationProgress(for: app)
         {
             return progress
         }
         
-        let appIdentifier = app.identifier
+        let bundleIdentifier = app.bundleIdentifier
         
         let group = self.install([app], forceDownload: true, presentingViewController: presentingViewController)
         group.completionHandler = { (result) in            
             do
             {
-                self.installationProgress[appIdentifier] = nil
+                self.installationProgress[bundleIdentifier] = nil
                 
                 guard let (_, result) = try result.get().first else { throw OperationError.unknown }
                 completionHandler(result)
@@ -130,42 +130,42 @@ extension AppManager
             }
         }
         
-        self.installationProgress[app.identifier] = group.progress
+        self.installationProgress[bundleIdentifier] = group.progress
         
         return group.progress
     }
     
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
-        let apps = installedApps.compactMap { $0.app }.filter { self.refreshProgress(for: $0) == nil }
+        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil }
 
         let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
         
         for app in apps
         {
             guard let progress = group.progress(for: app) else { continue }
-            self.refreshProgress[app.identifier] = progress
+            self.refreshProgress[app.bundleIdentifier] = progress
         }
         
         return group
     }
     
-    func installationProgress(for app: App) -> Progress?
+    func installationProgress(for app: AppProtocol) -> Progress?
     {
-        let progress = self.installationProgress[app.identifier]
+        let progress = self.installationProgress[app.bundleIdentifier]
         return progress
     }
     
-    func refreshProgress(for app: App) -> Progress?
+    func refreshProgress(for app: AppProtocol) -> Progress?
     {
-        let progress = self.refreshProgress[app.identifier]
+        let progress = self.refreshProgress[app.bundleIdentifier]
         return progress
     }
 }
 
 private extension AppManager
 {
-    func install(_ apps: [App], forceDownload: Bool, presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
+    func install(_ apps: [AppProtocol], forceDownload: Bool, presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
         // Authenticate -> Download (if necessary) -> Resign -> Send -> Install.
         let group = group ?? OperationGroup()
@@ -197,15 +197,15 @@ private extension AppManager
         
         for app in apps
         {
-            let context = AppOperationContext(appIdentifier: app.identifier, group: group)
+            let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, group: group)
             let progress = Progress.discreteProgress(totalUnitCount: 100)
             
             
             /* Resign */
             let resignAppOperation = ResignAppOperation(context: context)
             resignAppOperation.resultHandler = { (result) in
-                guard let fileURL = self.process(result, context: context) else { return }
-                context.resignedFileURL = fileURL
+                guard let resignedApp = self.process(result, context: context) else { return }
+                context.resignedApp = resignedApp
             }
             resignAppOperation.addDependency(authenticationOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
@@ -214,18 +214,27 @@ private extension AppManager
             
             /* Download */
             let fileURL = InstalledApp.fileURL(for: app)
-            if let installedApp = app.installedApp, FileManager.default.fileExists(atPath: fileURL.path), !forceDownload
+            
+            var localApp: ALTApplication?
+            
+            let managedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+            managedObjectContext.performAndWait {
+                let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), context.bundleIdentifier)
+                
+                if let installedApp = InstalledApp.first(satisfying: predicate, in: managedObjectContext), FileManager.default.fileExists(atPath: fileURL.path), !forceDownload
+                {
+                    localApp = ALTApplication(fileURL: installedApp.fileURL)
+                }
+            }
+        
+            if let localApp = localApp
             {
                 // Already installed, don't need to download.
                 
                 // If we don't need to download the app, reduce the total unit count by 40.
                 progress.totalUnitCount -= 40
                 
-                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-                backgroundContext.performAndWait {
-                    let installedApp = backgroundContext.object(with: installedApp.objectID) as! InstalledApp
-                    context.installedApp = installedApp
-                }
+                context.app = localApp
             }
             else
             {
@@ -233,14 +242,13 @@ private extension AppManager
                 
                 let downloadOperation = DownloadAppOperation(app: app)
                 downloadOperation.resultHandler = { (result) in
-                    guard let installedApp = self.process(result, context: context) else { return }
-                    context.installedApp = installedApp
+                    guard let app = self.process(result, context: context) else { return }
+                    context.app = app
                 }
                 progress.addChild(downloadOperation.progress, withPendingUnitCount: 40)
                 resignAppOperation.addDependency(downloadOperation)
                 operations.append(downloadOperation)
             }
-            
             
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
@@ -259,6 +267,16 @@ private extension AppManager
                 if let error = result.error
                 {
                     context.error = error
+                }
+                
+                if let installedApp = result.value
+                {
+                    if let app = app as? App, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? App
+                    {
+                        installedApp.storeApp = storeApp
+                    }
+                    
+                    context.installedApp = installedApp
                 }
                 
                 self.finishAppOperation(context) // Finish operation no matter what.
@@ -302,13 +320,15 @@ private extension AppManager
             guard !context.isFinished else { return }
             context.isFinished = true
             
+            self.refreshProgress[context.bundleIdentifier] = nil
+            
             if let error = context.error
             {
-                context.group.results[context.appIdentifier] = .failure(error)
+                context.group.results[context.bundleIdentifier] = .failure(error)
             }
             else if let installedApp = context.installedApp
             {
-                context.group.results[context.appIdentifier] = .success(installedApp)
+                context.group.results[context.bundleIdentifier] = .success(installedApp)
                 
                 // Save after each installation.
                 installedApp.managedObjectContext?.performAndWait {
@@ -317,9 +337,10 @@ private extension AppManager
                 }
             }
             
-            self.refreshProgress[context.appIdentifier] = nil
+            do { try FileManager.default.removeItem(at: context.temporaryDirectory) }
+            catch { print("Failed to remove temporary directory.", error) }
             
-            print("Finished operation!", context.appIdentifier)
+            print("Finished operation!", context.bundleIdentifier)
 
             if context.group.results.count == context.group.progress.totalUnitCount
             {

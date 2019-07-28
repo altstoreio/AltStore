@@ -1,7 +1,7 @@
 [
   {
     "name": "AltStore",
-    "identifier": "com.rileytestut.AltStore",
+    "bundleIdentifier": "com.rileytestut.AltStore",
     "developerName": "Riley Testut",
     "version": "0.8",
     "versionDate": "2019-07-16",
@@ -22,7 +22,7 @@
   },
   {
     "name": "Delta",
-    "identifier": "com.rileytestut.Delta",
+    "bundleIdentifier": "com.rileytestut.Delta",
     "developerName": "Riley Testut",
     "subtitle": "Classic games in your pocket.",
     "version": "0.8",
@@ -47,7 +47,7 @@
   },
   {
     "name": "Clipboard Manager",
-    "identifier": "com.rileytestut.ClipboardManager",
+    "bundleIdentifier": "com.rileytestut.ClipboardManager",
     "subtitle": "Manage your clipboard history with ease.",
     "developerName": "Riley Testut",
     "version": "0.8",

@@ -10,20 +10,33 @@ import Foundation
 import CoreData
 import Network
 
+import AltSign
+
 class AppOperationContext
 {
-    var appIdentifier: String
-    var group: OperationGroup
+    lazy var temporaryDirectory: URL = {
+        let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
         
+        do { try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil) }
+        catch { self.error = error }
+        
+        return temporaryDirectory
+    }()
+    
+    var bundleIdentifier: String
+    var group: OperationGroup
+    
+    var app: ALTApplication?
+    var resignedApp: ALTApplication?
+    
+    var connection: NWConnection?
+    
     var installedApp: InstalledApp? {
         didSet {
             self.installedAppContext = self.installedApp?.managedObjectContext
         }
     }
     private var installedAppContext: NSManagedObjectContext?
-    
-    var resignedFileURL: URL?
-    var connection: NWConnection?
     
     var isFinished = false
     
@@ -37,9 +50,9 @@ class AppOperationContext
     }
     private var _error: Error?
     
-    init(appIdentifier: String, group: OperationGroup)
+    init(bundleIdentifier: String, group: OperationGroup)
     {
-        self.appIdentifier = appIdentifier
+        self.bundleIdentifier = bundleIdentifier
         self.group = group
     }
 }

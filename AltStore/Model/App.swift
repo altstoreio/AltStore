@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 import Roxas
+import AltSign
 
 extension App
 {
@@ -21,7 +22,7 @@ class App: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged private(set) var name: String
-    @NSManaged private(set) var identifier: String
+    @NSManaged private(set) var bundleIdentifier: String
     @NSManaged private(set) var subtitle: String?
     
     @NSManaged private(set) var developerName: String
@@ -38,7 +39,7 @@ class App: NSManagedObject, Decodable, Fetchable
     @NSManaged private(set) var tintColor: UIColor?
     
     /* Relationships */
-    @NSManaged private(set) var installedApp: InstalledApp?
+    @NSManaged var installedApp: InstalledApp?
     @objc(permissions) @NSManaged var _permissions: NSOrderedSet
     
     @nonobjc var permissions: [AppPermission] {
@@ -53,7 +54,7 @@ class App: NSManagedObject, Decodable, Fetchable
     private enum CodingKeys: String, CodingKey
     {
         case name
-        case identifier
+        case bundleIdentifier
         case developerName
         case localizedDescription
         case version
@@ -75,7 +76,7 @@ class App: NSManagedObject, Decodable, Fetchable
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decode(String.self, forKey: .name)
-        self.identifier = try container.decode(String.self, forKey: .identifier)
+        self.bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
         self.developerName = try container.decode(String.self, forKey: .developerName)
         self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
         
@@ -119,7 +120,7 @@ extension App
     {
         let app = App(context: context)
         app.name = "AltStore"
-        app.identifier = "com.rileytestut.AltStore"
+        app.bundleIdentifier = App.altstoreAppID
         app.developerName = "Riley Testut"
         app.localizedDescription = "AltStore is an alternative App Store."
         app.iconName = ""

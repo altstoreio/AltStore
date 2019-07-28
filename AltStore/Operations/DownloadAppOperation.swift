@@ -12,24 +12,21 @@ import Roxas
 import AltSign
 
 @objc(DownloadAppOperation)
-class DownloadAppOperation: ResultOperation<InstalledApp>
+class DownloadAppOperation: ResultOperation<ALTApplication>
 {
-    let app: App
+    let app: AppProtocol
     
-    var useCachedAppIfAvailable = false
-    lazy var context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-    
-    private let appIdentifier: String
+    private let bundleIdentifier: String
     private let sourceURL: URL
     private let destinationURL: URL
     
     private let session = URLSession(configuration: .default)
     
-    init(app: App)
+    init(app: AppProtocol)
     {
         self.app = app
-        self.appIdentifier = app.identifier
-        self.sourceURL = app.downloadURL
+        self.bundleIdentifier = app.bundleIdentifier
+        self.sourceURL = app.url
         self.destinationURL = InstalledApp.fileURL(for: app)
         
         super.init()
@@ -41,7 +38,7 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
     {
         super.main()
         
-        print("Downloading App:", self.appIdentifier)
+        print("Downloading App:", self.bundleIdentifier)
         
         func finishOperation(_ result: Result<URL, Error>)
         {
@@ -77,24 +74,8 @@ class DownloadAppOperation: ResultOperation<InstalledApp>
                 
                 try FileManager.default.copyItem(at: appBundleURL, to: self.destinationURL, shouldReplace: true)
                 
-                self.context.perform {
-                    let app = self.context.object(with: self.app.objectID) as! App
-                    
-                    let installedApp: InstalledApp
-                    
-                    if let app = app.installedApp
-                    {
-                        installedApp = app
-                        
-                    }
-                    else
-                    {
-                        installedApp = InstalledApp(app: app, bundleIdentifier: app.identifier, context: self.context)
-                    }
-                    
-                    installedApp.version = app.version
-                    self.finish(.success(installedApp))
-                }
+                guard let copiedApplication = ALTApplication(fileURL: self.destinationURL) else { throw OperationError.invalidApp }
+                self.finish(.success(copiedApplication))
             }
             catch
             {

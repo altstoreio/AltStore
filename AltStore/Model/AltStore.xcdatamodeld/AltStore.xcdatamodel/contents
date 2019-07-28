@@ -14,10 +14,10 @@
         </uniquenessConstraints>
     </entity>
     <entity name="App" representedClassName="App" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="developerName" attributeType="String" syncable="YES"/>
         <attribute name="downloadURL" attributeType="URI" syncable="YES"/>
         <attribute name="iconName" attributeType="String" syncable="YES"/>
-        <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="localizedDescription" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="screenshotNames" attributeType="Transformable" syncable="YES"/>
@@ -26,11 +26,11 @@
         <attribute name="version" attributeType="String" syncable="YES"/>
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="versionDescription" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="app" inverseEntity="InstalledApp" syncable="YES"/>
+        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp" syncable="YES"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
-                <constraint value="identifier"/>
+                <constraint value="bundleIdentifier"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
@@ -42,9 +42,11 @@
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="version" attributeType="String" syncable="YES"/>
-        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="bundleIdentifier"/>
@@ -66,8 +68,8 @@
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
         <element name="App" positionX="-63" positionY="-18" width="128" height="255"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="120"/>
-        <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="150"/>
+        <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
     </elements>
 </model>

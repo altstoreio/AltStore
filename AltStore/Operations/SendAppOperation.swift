@@ -39,7 +39,10 @@ class SendAppOperation: ResultOperation<NWConnection>
             return
         }
         
-        guard let fileURL = self.context.resignedFileURL, let server = self.context.group.server else { return self.finish(.failure(OperationError.invalidParameters)) }
+        guard let app = self.context.app, let server = self.context.group.server else { return self.finish(.failure(OperationError.invalidParameters)) }
+        
+        // self.context.resignedApp.fileURL points to the app bundle, but we want the .ipa.
+        let fileURL = InstalledApp.refreshedIPAURL(for: app)
         
         // Connect to server.
         self.connect(to: server) { (result) in

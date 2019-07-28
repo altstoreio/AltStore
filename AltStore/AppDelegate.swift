@@ -147,7 +147,7 @@ extension AppDelegate
         
         self.runningApplications = []
         
-        let identifiers = installedApps.compactMap { $0.app?.identifier }
+        let identifiers = installedApps.compactMap { $0.bundleIdentifier }
         print("Apps to refresh:", identifiers)
         
         DispatchQueue.global().async {
@@ -222,11 +222,13 @@ extension AppDelegate
                     
                     for update in updates
                     {
-                        guard !previousUpdates.contains(where: { $0.app.identifier == update.app.identifier }) else { continue }
+                        guard !previousUpdates.contains(where: { $0.bundleIdentifier == update.bundleIdentifier }) else { continue }
+                        
+                        guard let storeApp = update.storeApp else { continue }
                         
                         let content = UNMutableNotificationContent()
                         content.title = NSLocalizedString("New Update Available", comment: "")
-                        content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.app.name, update.app.version)
+                        content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
                         
                         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                         UNUserNotificationCenter.current().add(request)
@@ -272,12 +274,12 @@ extension AppDelegate
                 
                 dispatchGroup.leave()
                 
-                let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.app.identifier) ?? false) }
-                print("Filtered Apps to Refresh:", filteredApps.map { $0.app.identifier })
+                let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.bundleIdentifier) ?? false) }
+                print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
                 
                 let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
                 group.beginInstallationHandler = { (installedApp) in
-                    guard installedApp.app.identifier == App.altstoreAppID else { return }
+                    guard installedApp.bundleIdentifier == App.altstoreAppID else { return }
                     
                     // We're starting to install AltStore, which means the app is about to quit.
                     // So, we schedule a "refresh successful" local notification to be displayed after a delay,
@@ -293,7 +295,7 @@ extension AppDelegate
                     else
                     {
                         var results = group.results
-                        results[installedApp.app.identifier] = .success(installedApp)
+                        results[installedApp.bundleIdentifier] = .success(installedApp)
 
                         self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: refreshIdentifier, isLaunching: isLaunching)
                     }

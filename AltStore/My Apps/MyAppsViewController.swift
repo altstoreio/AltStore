@@ -94,7 +94,7 @@ class MyAppsViewController: UICollectionViewController
         let installedApp = self.dataSource.item(at: indexPath)
         
         let appViewController = segue.destination as! AppViewController
-        appViewController.app = installedApp.app
+        appViewController.app = installedApp.storeApp
     }
 }
 
@@ -125,15 +125,15 @@ private extension MyAppsViewController
     func makeUpdatesDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
         let fetchRequest = InstalledApp.updatesFetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.app?.versionDate, ascending: true),
-                                        NSSortDescriptor(keyPath: \InstalledApp.app?.name, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.storeApp?.versionDate, ascending: true),
+                                        NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.liveFetchLimit = maximumCollapsedUpdatesCount
         dataSource.cellIdentifierHandler = { _ in "UpdateCell" }
         dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
-            guard let app = installedApp.app else { return }
+            guard let app = installedApp.storeApp else { return }
             
             let cell = cell as! UpdateCollectionViewCell
             cell.tintColor = app.tintColor ?? .altGreen
@@ -144,7 +144,7 @@ private extension MyAppsViewController
             cell.updateButton.isIndicatingActivity = false
             cell.updateButton.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
             
-            if self.expandedAppUpdates.contains(app.identifier)
+            if self.expandedAppUpdates.contains(app.bundleIdentifier)
             {
                 cell.mode = .expanded
             }
@@ -178,16 +178,16 @@ private extension MyAppsViewController
     func makeInstalledAppsDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
+        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.storeApp)]
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true),
                                         NSSortDescriptor(keyPath: \InstalledApp.refreshedDate, ascending: false),
-                                        NSSortDescriptor(keyPath: \InstalledApp.app?.name, ascending: true)]
+                                        NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
         dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
-            guard let app = installedApp.app else { return }
+            guard let app = installedApp.storeApp else { return }
             
             let tintColor = app.tintColor ?? .altGreen
             
@@ -311,7 +311,7 @@ private extension MyAppsViewController
             }
         }
         
-        if installedApps.contains(where: { $0.app.identifier == App.altstoreAppID })
+        if installedApps.contains(where: { $0.bundleIdentifier == App.altstoreAppID })
         {
             let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
@@ -376,18 +376,18 @@ private extension MyAppsViewController
         
         let cell = self.collectionView.cellForItem(at: indexPath) as? UpdateCollectionViewCell
         
-        if self.expandedAppUpdates.contains(installedApp.app.identifier)
+        if self.expandedAppUpdates.contains(installedApp.bundleIdentifier)
         {
-            self.expandedAppUpdates.remove(installedApp.app.identifier)
+            self.expandedAppUpdates.remove(installedApp.bundleIdentifier)
             cell?.mode = .collapsed
         }
         else
         {
-            self.expandedAppUpdates.insert(installedApp.app.identifier)
+            self.expandedAppUpdates.insert(installedApp.bundleIdentifier)
             cell?.mode = .expanded
         }
         
-        self.cachedUpdateSizes[installedApp.app.identifier] = nil
+        self.cachedUpdateSizes[installedApp.bundleIdentifier] = nil
         
         self.collectionView.performBatchUpdates({
             self.collectionView.collectionViewLayout.invalidateLayout()
@@ -401,7 +401,7 @@ private extension MyAppsViewController
         
         let installedApp = self.dataSource.item(at: indexPath)
         
-        let previousProgress = AppManager.shared.refreshProgress(for: installedApp.app)
+        let previousProgress = AppManager.shared.refreshProgress(for: installedApp)
         guard previousProgress == nil else {
             previousProgress?.cancel()
             return
@@ -432,15 +432,15 @@ private extension MyAppsViewController
         let point = self.collectionView.convert(sender.center, from: sender.superview)
         guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
         
-        let app = self.dataSource.item(at: indexPath).app!
+        guard let storeApp = self.dataSource.item(at: indexPath).storeApp else { return }
         
-        let previousProgress = AppManager.shared.installationProgress(for: app)
+        let previousProgress = AppManager.shared.installationProgress(for: storeApp)
         guard previousProgress == nil else {
             previousProgress?.cancel()
             return
         }
         
-        _ = AppManager.shared.install(app, presentingViewController: self) { (result) in
+        _ = AppManager.shared.install(storeApp, presentingViewController: self) { (result) in
             DispatchQueue.main.async {
                 switch result
                 {
@@ -454,7 +454,7 @@ private extension MyAppsViewController
                     self.collectionView.reloadItems(at: [indexPath])
                     
                 case .success:
-                    print("Updated app:", app.identifier)
+                    print("Updated app:", storeApp.bundleIdentifier)
                     // No need to reload, since the the update cell is gone now.
                 }
                 
@@ -548,7 +548,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         case .updates:
             let item = self.dataSource.item(at: indexPath)
             
-            if let previousHeight = self.cachedUpdateSizes[item.app!.identifier]
+            if let previousHeight = self.cachedUpdateSizes[item.bundleIdentifier]
             {
                 return previousHeight
             }
@@ -560,7 +560,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             self.dataSource.cellConfigurationHandler(self.prototypeUpdateCell, item, indexPath)
             
             let size = self.prototypeUpdateCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-            self.cachedUpdateSizes[item.app!.identifier] = size
+            self.cachedUpdateSizes[item.bundleIdentifier] = size
             return size
 
         case .installedApps:

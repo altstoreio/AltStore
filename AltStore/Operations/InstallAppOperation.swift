@@ -10,10 +10,11 @@ import Foundation
 import Network
 
 import AltKit
+import AltSign
 import Roxas
 
 @objc(InstallAppOperation)
-class InstallAppOperation: ResultOperation<Void>
+class InstallAppOperation: ResultOperation<InstalledApp>
 {
     let context: AppOperationContext
     
@@ -37,35 +38,53 @@ class InstallAppOperation: ResultOperation<Void>
         }
         
         guard
-            let installedApp = self.context.installedApp,
+            let resignedApp = self.context.resignedApp,
             let connection = self.context.connection,
             let server = self.context.group.server
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
-        installedApp.managedObjectContext?.perform {
-            print("Installing app:", installedApp.app.identifier)
-            self.context.group.beginInstallationHandler?(installedApp)
-        }
-        
-        let request = BeginInstallationRequest()
-        server.send(request, via: connection) { (result) in
-            switch result
+        let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        backgroundContext.perform {
+            let installedApp: InstalledApp
+            
+            // Fetch + update rather than insert + resolve merge conflicts to prevent potential context-level conflicts.
+            if let app = InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), self.context.bundleIdentifier), in: backgroundContext)
             {
-            case .failure(let error): self.finish(.failure(error))
-            case .success:
-                
-                self.receive(from: connection, server: server) { (result) in
-                    switch result
-                    {
-                    case .success:
-                        installedApp.managedObjectContext?.performAndWait {
-                            installedApp.refreshedDate = Date()
-                        }
-                        
-                    case .failure: break
-                    }
+                installedApp = app
+            }
+            else
+            {
+                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
+            }
+            
+            if let profile = resignedApp.provisioningProfile
+            {
+                installedApp.refreshedDate = profile.creationDate
+                installedApp.expirationDate = profile.expirationDate
+            }
+            
+            self.context.group.beginInstallationHandler?(installedApp)
+            
+            let request = BeginInstallationRequest()
+            server.send(request, via: connection) { (result) in
+                switch result
+                {
+                case .failure(let error): self.finish(.failure(error))
+                case .success:
                     
-                    self.finish(result)
+                    self.receive(from: connection, server: server) { (result) in
+                        switch result
+                        {
+                        case .success:
+                            backgroundContext.perform {
+                                installedApp.refreshedDate = Date()
+                                self.finish(.success(installedApp))
+                            }
+                            
+                        case .failure(let error):
+                            self.finish(.failure(error))
+                        }
+                    }
                 }
             }
         }
@@ -81,12 +100,12 @@ class InstallAppOperation: ResultOperation<Void>
                 
                 if let error = response.error
                 {
-                    self.finish(.failure(error))
+                    completionHandler(.failure(error))
                 }
                 else if response.progress == 1.0
                 {
                     self.progress.completedUnitCount = self.progress.totalUnitCount
-                    self.finish(.success(()))
+                    completionHandler(.success(()))
                 }
                 else
                 {

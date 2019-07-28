@@ -25,7 +25,7 @@ class OperationGroup
     
     var results = [String: Result<InstalledApp, Error>]()
     
-    private var progressByApp = [App: Progress]()
+    private var progressByBundleIdentifier = [String: Progress]()
     
     private let operationQueue = OperationQueue()
     private let installOperationQueue = OperationQueue()
@@ -63,17 +63,17 @@ class OperationGroup
         }
     }
     
-    func set(_ progress: Progress, for app: App)
+    func set(_ progress: Progress, for app: AppProtocol)
     {
-        self.progressByApp[app] = progress
+        self.progressByBundleIdentifier[app.bundleIdentifier] = progress
         
         self.progress.totalUnitCount += 1
         self.progress.addChild(progress, withPendingUnitCount: 1)
     }
     
-    func progress(for app: App) -> Progress?
+    func progress(for app: AppProtocol) -> Progress?
     {
-        let progress = self.progressByApp[app]
+        let progress = self.progressByBundleIdentifier[app.bundleIdentifier]
         return progress
     }
 }

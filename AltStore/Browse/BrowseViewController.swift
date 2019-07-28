@@ -55,9 +55,8 @@ private extension BrowseViewController
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>
     {
         let fetchRequest = App.fetchRequest() as NSFetchRequest<App>
-        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.app)]
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.name, ascending: false)]
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.identifier), App.altstoreAppID)
+        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.bundleIdentifier), App.altstoreAppID)
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
@@ -152,7 +151,7 @@ private extension BrowseViewController
                     let toastView = ToastView(text: error.localizedDescription, detailText: nil)
                     toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
                 
-                case .success: print("Installed app:", app.identifier)
+                case .success: print("Installed app:", app.bundleIdentifier)
                 }
                 
                 self.collectionView.reloadItems(at: [indexPath])

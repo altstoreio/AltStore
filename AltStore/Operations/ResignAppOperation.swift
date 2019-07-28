@@ -12,11 +12,9 @@ import Roxas
 import AltSign
 
 @objc(ResignAppOperation)
-class ResignAppOperation: ResultOperation<URL>
+class ResignAppOperation: ResultOperation<ALTApplication>
 {
     let context: AppOperationContext
-    
-    private let temporaryDirectory: URL = FileManager.default.uniqueTemporaryURL()
     
     init(context: AppOperationContext)
     {
@@ -31,16 +29,6 @@ class ResignAppOperation: ResultOperation<URL>
     {
         super.main()
         
-        do
-        {
-            try FileManager.default.createDirectory(at: self.temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
-        }
-        catch
-        {
-            self.finish(.failure(error))
-            return
-        }
-        
         if let error = self.context.error
         {
             self.finish(.failure(error))
@@ -48,68 +36,49 @@ class ResignAppOperation: ResultOperation<URL>
         }
         
         guard
-            let installedApp = self.context.installedApp,
-            let appContext = installedApp.managedObjectContext,
+            let app = self.context.app,
             let signer = self.context.group.signer
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
-        appContext.perform {
-            let appIdentifier = installedApp.app.identifier
+        // Register Device
+        self.registerCurrentDevice(for: signer.team) { (result) in
+            guard let _ = self.process(result) else { return }
             
-            // Register Device
-            self.registerCurrentDevice(for: signer.team) { (result) in
-                guard let _ = self.process(result) else { return }
+            // Prepare Provisioning Profiles
+            self.prepareProvisioningProfiles(app.fileURL, team: signer.team) { (result) in
+                guard let profiles = self.process(result) else { return }
                 
-                // Prepare Provisioning Profiles
-                appContext.perform {
-                    self.prepareProvisioningProfiles(installedApp.fileURL, team: signer.team) { (result) in
-                        guard let profiles = self.process(result) else { return }
+                // Prepare app bundle
+                let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
+                self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
+                
+                let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
+                    guard let appBundleURL = self.process(result) else { return }
+                    
+                    print("Resigning App:", self.context.bundleIdentifier)
+                    
+                    // Resign app bundle
+                    let resignProgress = self.resignAppBundle(at: appBundleURL, signer: signer, profiles: Array(profiles.values)) { (result) in
+                        guard let resignedURL = self.process(result) else { return }
                         
-                        // Prepare app bundle
-                        appContext.perform {
-                            let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
-                            self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
+                        // Finish
+                        do
+                        {
+                            let destinationURL = InstalledApp.refreshedIPAURL(for: app)
+                            try FileManager.default.copyItem(at: resignedURL, to: destinationURL, shouldReplace: true)
                             
-                            let prepareAppBundleProgress = self.prepareAppBundle(for: installedApp, profiles: profiles) { (result) in
-                                guard let appBundleURL = self.process(result) else { return }
-                                
-                                print("Resigning App:", appIdentifier)
-                                
-                                // Resign app bundle
-                                let resignProgress = self.resignAppBundle(at: appBundleURL, signer: signer, profiles: Array(profiles.values)) { (result) in
-                                    guard let resignedURL = self.process(result) else { return }
-                                    
-                                    // Finish
-                                    appContext.perform {
-                                        do
-                                        {
-                                            installedApp.refreshedDate = Date()
-                                            
-                                            if let profile = profiles[installedApp.app.identifier]
-                                            {
-                                                installedApp.expirationDate = profile.expirationDate
-                                            }
-                                            else
-                                            {
-                                                installedApp.expirationDate = installedApp.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7)
-                                            }
-                                            
-                                            try FileManager.default.copyItem(at: resignedURL, to: installedApp.refreshedIPAURL, shouldReplace: true)
-                                            
-                                            self.finish(.success(installedApp.refreshedIPAURL))
-                                        }
-                                        catch
-                                        {
-                                            self.finish(.failure(error))
-                                        }
-                                    }
-                                }
-                                prepareAppProgress.addChild(resignProgress, withPendingUnitCount: 1)
-                            }
-                            prepareAppProgress.addChild(prepareAppBundleProgress, withPendingUnitCount: 1)
+                            // Use appBundleURL since we need an app bundle, not .ipa.
+                            guard let resignedApplication = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
+                            self.finish(.success(resignedApplication))
+                        }
+                        catch
+                        {
+                            self.finish(.failure(error))
                         }
                     }
+                    prepareAppProgress.addChild(resignProgress, withPendingUnitCount: 1)
                 }
+                prepareAppProgress.addChild(prepareAppBundleProgress, withPendingUnitCount: 1)
             }
         }
     }
@@ -129,17 +98,6 @@ class ResignAppOperation: ResultOperation<URL>
             }
             
             return value
-        }
-    }
-    
-    override func finish(_ result: Result<URL, Error>)
-    {
-        super.finish(result)
-                
-        if FileManager.default.fileExists(atPath: self.temporaryDirectory.path, isDirectory: nil)
-        {
-            do { try FileManager.default.removeItem(at: self.temporaryDirectory) }
-            catch { print("Failed to remove app bundle.", error) }
         }
     }
 }
@@ -386,15 +344,14 @@ private extension ResignAppOperation
         }
     }
     
-    func prepareAppBundle(for installedApp: InstalledApp, profiles: [String: ALTProvisioningProfile], completionHandler: @escaping (Result<URL, Error>) -> Void) -> Progress
+    func prepareAppBundle(for app: ALTApplication, profiles: [String: ALTProvisioningProfile], completionHandler: @escaping (Result<URL, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 1)
         
-        let bundleIdentifier = installedApp.bundleIdentifier
-        let openURL = installedApp.openAppURL
-        let appIdentifier = installedApp.app.identifier
+        let bundleIdentifier = app.bundleIdentifier
+        let openURL = InstalledApp.openAppURL(for: app)
         
-        let fileURL = installedApp.fileURL
+        let fileURL = app.fileURL
         
         func prepare(_ bundle: Bundle, additionalInfoDictionaryValues: [String: Any] = [:]) throws
         {
@@ -420,7 +377,7 @@ private extension ResignAppOperation
         DispatchQueue.global().async {
             do
             {
-                let appBundleURL = self.temporaryDirectory.appendingPathComponent("App.app")
+                let appBundleURL = self.context.temporaryDirectory.appendingPathComponent("App.app")
                 try FileManager.default.copyItem(at: fileURL, to: appBundleURL)
                 
                 // Become current so we can observe progress from unzipAppBundle().
@@ -438,7 +395,7 @@ private extension ResignAppOperation
                 
                 var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
 
-                if appIdentifier == App.altstoreAppID
+                if self.context.bundleIdentifier == App.altstoreAppID
                 {
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid

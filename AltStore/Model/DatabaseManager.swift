@@ -108,34 +108,47 @@ private extension DatabaseManager
     func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         self.persistentContainer.performBackgroundTask { (context) in
-            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+            guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
             
-            let altStoreApp: App
+            let storeApp: App
             
-            if let app = App.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(App.identifier), App.altstoreAppID), in: context)
+            if let app = App.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(App.bundleIdentifier), App.altstoreAppID), in: context)
             {
-                altStoreApp = app
+                storeApp = app
             }
             else
             {
-                altStoreApp = App.makeAltStoreApp(in: context)
-                altStoreApp.version = version
+                storeApp = App.makeAltStoreApp(in: context)
+                storeApp.version = localApp.version
             }
             
             let installedApp: InstalledApp
             
-            if let app = altStoreApp.installedApp
+            if let app = storeApp.installedApp
             {
                 installedApp = app
             }
             else
             {
-                installedApp = InstalledApp(app: altStoreApp, bundleIdentifier: altStoreApp.identifier, context: context)
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: App.altstoreAppID, context: context)
+                installedApp.storeApp = storeApp
             }
             
-            installedApp.version = version
+            let fileURL = installedApp.fileURL
             
-            if let provisioningProfileURL = Bundle.main.url(forResource: "embedded", withExtension: "mobileprovision"), let provisioningProfile = ALTProvisioningProfile(url: provisioningProfileURL)
+            if !FileManager.default.fileExists(atPath: fileURL.path)
+            {
+                do
+                {
+                    try FileManager.default.copyItem(at: Bundle.main.bundleURL, to: fileURL)
+                }
+                catch
+                {
+                    print("Failed to copy AltStore app bundle to its proper location.", error)
+                }
+            }
+            
+            if let provisioningProfile = localApp.provisioningProfile
             {
                 installedApp.refreshedDate = provisioningProfile.creationDate
                 installedApp.expirationDate = provisioningProfile.expirationDate
