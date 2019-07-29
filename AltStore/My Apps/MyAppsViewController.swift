@@ -25,18 +25,6 @@ extension MyAppsViewController
     }
 }
 
-private extension Date
-{
-    func numberOfCalendarDays(since date: Date) -> Int
-    {
-        let today = Calendar.current.startOfDay(for: self)
-        let previousDay = Calendar.current.startOfDay(for: date)
-        
-        let components = Calendar.current.dateComponents([.day], from: previousDay, to: today)
-        return components.day!
-    }
-}
-
 class MyAppsViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
@@ -190,16 +178,7 @@ private extension MyAppsViewController
             let progress = AppManager.shared.installationProgress(for: app)
             cell.updateButton.progress = progress
             
-            cell.dateLabel.text = self.dateFormatter.string(from: app.versionDate)
-            
-            let numberOfDays = Date().numberOfCalendarDays(since: app.versionDate)
-            switch numberOfDays
-            {
-            case 0: cell.dateLabel.text = NSLocalizedString("Today", comment: "")
-            case 1: cell.dateLabel.text = NSLocalizedString("Yesterday", comment: "")
-            case 2...7: cell.dateLabel.text = String(format: NSLocalizedString("%@ days ago", comment: ""), NSNumber(value: numberOfDays))
-            default: cell.dateLabel.text = self.dateFormatter.string(from: app.versionDate)
-            }
+            cell.dateLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
             
             cell.setNeedsLayout()
         }

@@ -18,6 +18,7 @@ class AppViewController: UIViewController
     private var contentViewControllerShadowView: UIView!
     
     private var blurAnimator: UIViewPropertyAnimator?
+    private var navigationBarAnimator: UIViewPropertyAnimator?
     
     private var contentSizeObservation: NSKeyValueObservation?
     
@@ -38,13 +39,21 @@ class AppViewController: UIViewController
     @IBOutlet private var backgroundAppIconImageView: UIImageView!
     @IBOutlet private var backgroundBlurView: UIVisualEffectView!
     
-    private var _isEnteringForeground = false
+    @IBOutlet private var navigationBarTitleView: UIView!
+    @IBOutlet private var navigationBarDownloadButton: PillButton!
+    @IBOutlet private var navigationBarAppIconImageView: UIImageView!
+    @IBOutlet private var navigationBarAppNameLabel: UILabel!
+    
+    private var _shouldResetLayout = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+                        
+        self.navigationBarTitleView.sizeToFit()
+        self.navigationItem.titleView = self.navigationBarTitleView
         
         self.contentViewControllerShadowView = UIView()
         self.contentViewControllerShadowView.backgroundColor = .white
@@ -75,14 +84,21 @@ class AppViewController: UIViewController
         self.developerLabel.text = self.app.developerName
         self.developerLabel.textColor = self.app.tintColor
         self.appIconImageView.image = UIImage(named: self.app.iconName)
+        self.appIconImageView.tintColor = self.app.tintColor
         self.downloadButton.tintColor = self.app.tintColor
         self.backgroundAppIconImageView.image = UIImage(named: self.app.iconName)
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         
-        self.contentSizeObservation = self.contentViewController.tableView.observe(\.contentSize) { (tableView, change) in
-            self.view.setNeedsLayout()
-            self.view.layoutIfNeeded()
+        self.navigationController?.navigationBar.tintColor = self.app.tintColor
+        self.navigationBarDownloadButton.tintColor = self.app.tintColor
+        self.navigationBarAppNameLabel.text = self.app.name
+        self.navigationBarAppIconImageView.image = UIImage(named: self.app.iconName)
+        self.navigationBarAppIconImageView.tintColor = self.app.tintColor
+        
+        self.contentSizeObservation = self.contentViewController.tableView.observe(\.contentSize) { [weak self] (tableView, change) in
+            self?.view.setNeedsLayout()
+            self?.view.layoutIfNeeded()
         }
         
         self.update()
@@ -113,7 +129,9 @@ class AppViewController: UIViewController
     {
         super.viewDidAppear(animated)
         
-        self.hideNavigationBar()
+        self._shouldResetLayout = true
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
     }
     
     override func viewWillDisappear(_ animated: Bool)
@@ -130,15 +148,21 @@ class AppViewController: UIViewController
         self.transitionCoordinator?.animate(alongsideTransition: { (context) in
             self.showNavigationBar(for: navigationController)
         }, completion: { (context) in
-            if context.isCancelled
-            {
-                self.hideNavigationBar(for: navigationController)
-            }
-            else
+            if !context.isCancelled
             {
                 self.showNavigationBar(for: navigationController)
             }
         })
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        super.viewDidDisappear(animated)
+        
+        if self.navigationController == nil
+        {
+            self.resetNavigationBarAnimation()
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -153,9 +177,9 @@ class AppViewController: UIViewController
     {
         super.viewDidLayoutSubviews()
         
-        if self._isEnteringForeground
+        if self._shouldResetLayout
         {
-            // Returning from background messes up some of our UI, so reset affected components now.
+            // Various events can cause UI to mess up, so reset affected components now.
             
             if self.navigationController?.topViewController == self
             {
@@ -164,16 +188,20 @@ class AppViewController: UIViewController
             
             self.prepareBlur()
             
-            self._isEnteringForeground = false
+            // Reset navigation bar animation, and create a new one later in this method if necessary.
+            self.resetNavigationBarAnimation()
+                        
+            self._shouldResetLayout = false
         }
         
         let statusBarHeight = UIApplication.shared.statusBarFrame.height
+        let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 12 as CGFloat
         let padding = 20 as CGFloat
         
         let backButtonSize = self.backButton.sizeThatFits(CGSize(width: 1000, height: 1000))
-        let backButtonFrame = CGRect(x: inset, y: statusBarHeight,
+        var backButtonFrame = CGRect(x: inset, y: statusBarHeight,
                                      width: backButtonSize.width + 20, height: backButtonSize.height + 20)
         
         var headerFrame = CGRect(x: inset, y: 0, width: self.view.bounds.width - inset * 2, height: self.headerView.bounds.height)
@@ -183,58 +211,80 @@ class AppViewController: UIViewController
         let minimumHeaderY = backButtonFrame.maxY + 8
         
         let minimumContentY = minimumHeaderY + headerFrame.height + padding
-        let maximumContentY = self.view.bounds.width * 0.75
+        let maximumContentY = self.view.bounds.width * 0.667
         
         // A full blur is too much, so we reduce the visible blur by 0.3, resulting in 70% blur.
         let minimumBlurFraction = 0.3 as CGFloat
         
-        let difference = (maximumContentY - minimumContentY)
+        contentFrame.origin.y = maximumContentY - self.scrollView.contentOffset.y
+        headerFrame.origin.y = contentFrame.origin.y - padding - headerFrame.height
         
-        if self.scrollView.contentOffset.y > difference
+        // Stretch the app icon image to fill additional vertical space if necessary.
+        let height = max(contentFrame.origin.y + cornerRadius * 2, backgroundIconFrame.height)
+        backgroundIconFrame.size.height = height
+        
+        let blurThreshold = 0 as CGFloat
+        if self.scrollView.contentOffset.y < blurThreshold
         {
-            // Full screen
+            // Determine how much to lessen blur by.
             
-            headerFrame.origin.y = minimumHeaderY
-            contentFrame.origin.y = minimumContentY
-            backgroundIconFrame.origin.y = 0
+            let range = 75 as CGFloat
+            let difference = -self.scrollView.contentOffset.y
             
-            self.contentViewController.tableView.contentOffset.y = self.scrollView.contentOffset.y - difference
+            let fraction = min(difference, range) / range
+            
+            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
+            self.blurAnimator?.fractionComplete = fractionComplete
         }
         else
         {
-            // Partial screen
+            // Set blur to default.
             
-            contentFrame.origin.y = maximumContentY - self.scrollView.contentOffset.y
-            headerFrame.origin.y = contentFrame.origin.y - padding - headerFrame.height
-            
-            let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
-            
-            // Stretch the app icon image to fill additional vertical space if necessary.
-            let height = max(contentFrame.origin.y + cornerRadius * 2, backgroundIconFrame.height)
-            backgroundIconFrame.size.height = height
-            
-            // Keep content table view's content offset at the top.
-            self.contentViewController.tableView.contentOffset.y = 0
-            
-            if self.scrollView.contentOffset.y < 0
-            {
-                // Determine how much to lessen blur by.
-                
-                let range = 75 as CGFloat
-                
-                let fraction = min(-self.scrollView.contentOffset.y, range) / range
-                
-                let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
-                self.blurAnimator?.fractionComplete = fractionComplete
-            }
-            else
-            {
-                // Set blur to default.
-                
-                self.blurAnimator?.fractionComplete = minimumBlurFraction
-            }
+            self.blurAnimator?.fractionComplete = minimumBlurFraction
         }
         
+        // Animate navigation bar.
+        let showNavigationBarThreshold = (maximumContentY - minimumContentY) + backButtonFrame.origin.y
+        if self.scrollView.contentOffset.y > showNavigationBarThreshold
+        {
+            if self.navigationBarAnimator == nil
+            {
+                self.prepareNavigationBarAnimation()
+            }
+            
+            let difference = self.scrollView.contentOffset.y - showNavigationBarThreshold
+            let range = (headerFrame.height + padding) - (self.navigationController?.navigationBar.bounds.height ?? self.view.safeAreaInsets.top)
+            
+            let fractionComplete = min(difference, range) / range
+            self.navigationBarAnimator?.fractionComplete = fractionComplete
+        }
+        else
+        {
+            self.resetNavigationBarAnimation()
+        }
+        
+        let beginMovingBackButtonThreshold = (maximumContentY - minimumContentY)
+        if self.scrollView.contentOffset.y > beginMovingBackButtonThreshold
+        {
+            let difference = self.scrollView.contentOffset.y - beginMovingBackButtonThreshold
+            backButtonFrame.origin.y -= difference
+        }
+        
+        let pinContentToTopThreshold = maximumContentY
+        if self.scrollView.contentOffset.y > pinContentToTopThreshold
+        {
+            contentFrame.origin.y = 0
+            backgroundIconFrame.origin.y = 0
+            
+            let difference = self.scrollView.contentOffset.y - pinContentToTopThreshold
+            self.contentViewController.tableView.contentOffset.y = difference
+        }
+        else
+        {
+            // Keep content table view's content offset at the top.
+            self.contentViewController.tableView.contentOffset.y = 0
+        }
+
         // Keep background app icon centered in gap between top of content and top of screen.
         backgroundIconFrame.origin.y = (contentFrame.origin.y / 2) - backgroundIconFrame.height / 2
         
@@ -256,7 +306,7 @@ class AppViewController: UIViewController
         let contentOffset = self.scrollView.contentOffset
         
         var contentSize = self.contentViewController.tableView.contentSize
-        contentSize.height += minimumContentY + self.view.safeAreaInsets.bottom + self.contentViewController.tableView.contentInset.bottom
+        contentSize.height += maximumContentY
         
         self.scrollView.contentSize = contentSize
         self.scrollView.contentOffset = contentOffset
@@ -265,6 +315,7 @@ class AppViewController: UIViewController
     deinit
     {
         self.blurAnimator?.stopAnimation(true)
+        self.navigationBarAnimator?.stopAnimation(true)
     }
 }
 
@@ -272,21 +323,29 @@ private extension AppViewController
 {
     func update()
     {
-        self.downloadButton.isIndicatingActivity = false
-        
-        if self.app.installedApp == nil
+        for button in [self.downloadButton!, self.navigationBarDownloadButton!]
         {
-            self.downloadButton.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-            self.downloadButton.isInverted = false
-        }
-        else
-        {
-            self.downloadButton.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-            self.downloadButton.isInverted = true
+            button.tintColor = self.app.tintColor
+            button.isIndicatingActivity = false
+            
+            if self.app.installedApp == nil
+            {
+                button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+                button.isInverted = false
+            }
+            else
+            {
+                button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                button.isInverted = true
+            }
+            
+            let progress = AppManager.shared.installationProgress(for: self.app)
+            button.progress = progress
         }
         
-        let progress = AppManager.shared.installationProgress(for: self.app)
-        self.downloadButton.progress = progress
+        let barButtonItem = self.navigationItem.rightBarButtonItem
+        self.navigationItem.rightBarButtonItem = nil
+        self.navigationItem.rightBarButtonItem = barButtonItem
     }
     
     func showNavigationBar(for navigationController: UINavigationController? = nil)
@@ -294,7 +353,8 @@ private extension AppViewController
         let navigationController = navigationController ?? self.navigationController
         navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.alpha = 1.0
-        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.tintColor = .altGreen
     }
     
     func hideNavigationBar(for navigationController: UINavigationController? = nil)
@@ -302,7 +362,7 @@ private extension AppViewController
         let navigationController = navigationController ?? self.navigationController
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.alpha = 0.0
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.barTintColor = .white
     }
     
     func prepareBlur()
@@ -315,13 +375,40 @@ private extension AppViewController
         self.backgroundBlurView.effect = self._backgroundBlurEffect
         self.backgroundBlurView.contentView.backgroundColor = self._backgroundBlurTintColor
         
-        self.blurAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) {
-            self.backgroundBlurView.effect = nil
-            self.backgroundBlurView.contentView.backgroundColor = .clear
+        self.blurAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) { [weak self] in
+            self?.backgroundBlurView.effect = nil
+            self?.backgroundBlurView.contentView.backgroundColor = .clear
         }
 
         self.blurAnimator?.startAnimation()
         self.blurAnimator?.pauseAnimation()
+    }
+    
+    func prepareNavigationBarAnimation()
+    {
+        self.resetNavigationBarAnimation()
+        
+        self.navigationBarAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) { [weak self] in
+            self?.showNavigationBar()
+            self?.navigationController?.navigationBar.tintColor = self?.app.tintColor
+            self?.navigationController?.navigationBar.barTintColor = nil
+            self?.contentViewController.view.layer.cornerRadius = 0
+        }
+        
+        self.navigationBarAnimator?.startAnimation()
+        self.navigationBarAnimator?.pauseAnimation()
+        
+        self.update()
+    }
+    
+    func resetNavigationBarAnimation()
+    {
+        self.navigationBarAnimator?.stopAnimation(true)
+        self.navigationBarAnimator = nil
+        
+        self.hideNavigationBar()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.contentViewController.view.layer.cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
     }
 }
 
@@ -391,7 +478,7 @@ private extension AppViewController
     {
         guard let navigationController = self.navigationController, navigationController.topViewController == self else { return }
         
-        self._isEnteringForeground = true
+        self._shouldResetLayout = true
         self.view.setNeedsLayout()
     }
 }

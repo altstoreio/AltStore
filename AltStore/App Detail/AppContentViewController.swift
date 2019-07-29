@@ -29,9 +29,24 @@ class AppContentViewController: UITableViewController
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
     private lazy var permissionsDataSource = self.makePermissionsDataSource()
     
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }()
+    
+    private lazy var byteCountFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        return formatter
+    }()
+    
     @IBOutlet private var subtitleLabel: UILabel!
     @IBOutlet private var descriptionTextView: CollapsingTextView!
     @IBOutlet private var versionDescriptionTextView: CollapsingTextView!
+    @IBOutlet private var versionLabel: UILabel!
+    @IBOutlet private var versionDateLabel: UILabel!
+    @IBOutlet private var sizeLabel: UILabel!
     
     @IBOutlet private var screenshotsCollectionView: UICollectionView!
     @IBOutlet private var permissionsCollectionView: UICollectionView!
@@ -63,6 +78,9 @@ class AppContentViewController: UITableViewController
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
         self.versionDescriptionTextView.text = self.app.versionDescription
+        self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), self.app.version)
+        self.versionDateLabel.text = Date().relativeDateString(since: self.app.versionDate, dateFormatter: self.dateFormatter)
+        self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: Int64(self.app.size))
         
         self.descriptionTextView.maximumNumberOfLines = 5
         self.descriptionTextView.moreButton.addTarget(self, action: #selector(AppContentViewController.toggleCollapsingSection(_:)), for: .primaryActionTriggered)
