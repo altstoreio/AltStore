@@ -27,6 +27,7 @@ class App: NSManagedObject, Decodable, Fetchable
     
     @NSManaged private(set) var developerName: String
     @NSManaged private(set) var localizedDescription: String
+    @NSManaged private(set) var size: Int32
     
     @NSManaged private(set) var iconName: String
     @NSManaged private(set) var screenshotNames: [String]
@@ -66,6 +67,7 @@ class App: NSManagedObject, Decodable, Fetchable
         case tintColor
         case subtitle
         case permissions
+        case size
     }
     
     required init(from decoder: Decoder) throws
@@ -99,6 +101,8 @@ class App: NSManagedObject, Decodable, Fetchable
             
             self.tintColor = tintColor
         }
+        
+        self.size = try container.decode(Int32.self, forKey: .size)
         
         let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
         
