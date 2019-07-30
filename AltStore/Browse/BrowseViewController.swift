@@ -14,12 +14,22 @@ class BrowseViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
     
+    private let prototypeCell = BrowseCollectionViewCell.instantiate(with: BrowseCollectionViewCell.nib!)!
+    
+    private var cachedItemSizes = [String: CGSize]()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
+        self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.collectionView.register(BrowseCollectionViewCell.nib, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
+        
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
+        
+        self.registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -27,14 +37,6 @@ class BrowseViewController: UICollectionViewController
         super.viewWillAppear(animated)
         
         self.fetchApps()
-    }
-    
-    override func viewDidLayoutSubviews()
-    {
-        super.viewDidLayoutSubviews()
-        
-        let collectionViewLayout = self.collectionViewLayout as! UICollectionViewFlowLayout
-        collectionViewLayout.itemSize.width = self.view.bounds.width
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -164,5 +166,75 @@ private extension BrowseViewController
     func open(_ installedApp: InstalledApp)
     {
         UIApplication.shared.open(installedApp.openAppURL)
+    }
+}
+
+extension BrowseViewController: UICollectionViewDelegateFlowLayout
+{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    {
+        let item = self.dataSource.item(at: indexPath)
+
+        if let previousSize = self.cachedItemSizes[item.bundleIdentifier]
+        {
+            return previousSize
+        }
+
+        let maxVisibleScreenshots = 2 as CGFloat
+        let aspectRatio: CGFloat = 16.0 / 9.0
+        
+        let layout = collectionViewLayout as! UICollectionViewFlowLayout
+        let padding = (layout.minimumInteritemSpacing * (maxVisibleScreenshots - 1))
+
+        self.dataSource.cellConfigurationHandler(self.prototypeCell, item, indexPath)
+
+        let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
+        widthConstraint.isActive = true
+        defer { widthConstraint.isActive = false }
+
+        self.prototypeCell.layoutIfNeeded()
+        
+        let collectionViewWidth = self.prototypeCell.screenshotsCollectionView.bounds.width
+        let screenshotWidth = ((collectionViewWidth - padding) / maxVisibleScreenshots).rounded(.down)
+        let screenshotHeight = screenshotWidth * aspectRatio
+
+        let heightConstraint = self.prototypeCell.screenshotsCollectionView.heightAnchor.constraint(equalToConstant: screenshotHeight)
+        heightConstraint.isActive = true
+        defer { heightConstraint.isActive = false }
+
+        let itemSize = self.prototypeCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        self.cachedItemSizes[item.bundleIdentifier] = itemSize
+        return itemSize
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let app = self.dataSource.item(at: indexPath)
+        
+        let appViewController = AppViewController.makeAppViewController(app: app)
+        self.navigationController?.pushViewController(appViewController, animated: true)
+    }
+}
+
+extension BrowseViewController: UIViewControllerPreviewingDelegate
+{
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+    {
+        guard
+            let indexPath = self.collectionView.indexPathForItem(at: location),
+            let cell = self.collectionView.cellForItem(at: indexPath)
+        else { return nil }
+        
+        previewingContext.sourceRect = cell.frame
+        
+        let app = self.dataSource.item(at: indexPath)
+        
+        let appViewController = AppViewController.makeAppViewController(app: app)
+        return appViewController
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
+    {
+        self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
     }
 }

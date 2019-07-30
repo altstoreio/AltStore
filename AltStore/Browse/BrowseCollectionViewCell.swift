@@ -18,21 +18,23 @@ import Roxas
         }
     }
     private lazy var dataSource = self.makeDataSource()
-    
-    private lazy var imageSizes = [NSString: CGSize]()
-    
+        
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var developerLabel: UILabel!
     @IBOutlet var appIconImageView: UIImageView!
     @IBOutlet var actionButton: PillButton!
     @IBOutlet var subtitleLabel: UILabel!
     
+    @IBOutlet var screenshotsCollectionView: UICollectionView!
+    
     @IBOutlet private var screenshotsContentView: UIView!
-    @IBOutlet private var screenshotsCollectionView: UICollectionView!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        // Must be registered programmatically, not in BrowseCollectionViewCell.xib, or else it'll throw an exception 🤷‍♂️.
+        self.screenshotsCollectionView.register(ScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         
         self.screenshotsCollectionView.delegate = self
         self.screenshotsCollectionView.dataSource = self.dataSource
@@ -59,6 +61,7 @@ private extension BrowseCollectionViewCell
         let dataSource = RSTArrayCollectionViewPrefetchingDataSource<NSString, UIImage>(items: [])
         dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
             let cell = cell as! ScreenshotCollectionViewCell
+            cell.imageView.image = nil
             cell.imageView.isIndicatingActivity = true
         }
         dataSource.prefetchHandler = { (imageName, indexPath, completion) in
@@ -87,15 +90,13 @@ extension BrowseCollectionViewCell: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        let imageURL = self.dataSource.item(at: indexPath)
-        let dimensions = self.imageSizes[imageURL] ?? UIScreen.main.nativeBounds.size
-        
-        let aspectRatio = dimensions.width / dimensions.height
-        
-        let height = self.screenshotsCollectionView.bounds.height
-        let width = (self.screenshotsCollectionView.bounds.height * aspectRatio).rounded(.down)
-        
-        let size = CGSize(width: width, height: height)
+        // Assuming 9.0 / 16.0 ratio for now.
+        let aspectRatio: CGFloat = 9.0 / 16.0
+
+        let itemHeight = collectionView.bounds.height
+        let itemWidth = itemHeight * aspectRatio
+
+        let size = CGSize(width: itemWidth.rounded(.down), height: itemHeight.rounded(.down))
         return size
     }
 }

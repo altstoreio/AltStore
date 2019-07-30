@@ -319,6 +319,18 @@ class AppViewController: UIViewController
     }
 }
 
+extension AppViewController
+{
+    class func makeAppViewController(app: App) -> AppViewController
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        let appViewController = storyboard.instantiateViewController(withIdentifier: "appViewController") as! AppViewController
+        appViewController.app = app
+        return appViewController
+    }
+}
+
 private extension AppViewController
 {
     func update()
