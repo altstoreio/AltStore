@@ -53,21 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ServerManager.shared.startDiscovering()
         
-        DatabaseManager.shared.start { (error) in
-            if let error = error
-            {
-                print("Failed to start DatabaseManager.", error)
-            }
-            else
-            {
-                print("Started DatabaseManager")
-                
-                DispatchQueue.main.async {
-                    AppManager.shared.update()
-                }
-            }
-        }
-        
         if UserDefaults.standard.firstLaunch == nil
         {
             Keychain.shared.reset()
