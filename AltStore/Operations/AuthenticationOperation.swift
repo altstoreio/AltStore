@@ -242,6 +242,11 @@ private extension AuthenticationOperation
     {
         func selectTeam(from teams: [ALTTeam])
         {
+            if let team = teams.first, teams.count == 1
+            {
+                return completionHandler(.success(team))
+            }
+            
             DispatchQueue.main.async {
                 let selectTeamViewController = self.storyboard.instantiateViewController(withIdentifier: "selectTeamViewController") as! SelectTeamViewController
                 selectTeamViewController.teams = teams
@@ -321,6 +326,22 @@ private extension AuthenticationOperation
         
         func replaceCertificate(from certificates: [ALTCertificate])
         {
+            if let certificate = certificates.first, certificates.count == 1
+            {
+                ALTAppleAPI.shared.revoke(certificate, for: team) { (success, error) in
+                    if let error = error, !success
+                    {
+                        completionHandler(.failure(error))
+                    }
+                    else
+                    {
+                        requestCertificate()
+                    }
+                }
+                
+                return
+            }
+            
             DispatchQueue.main.async {
                 let replaceCertificateViewController = self.storyboard.instantiateViewController(withIdentifier: "replaceCertificateViewController") as! ReplaceCertificateViewController
                 replaceCertificateViewController.team = team
