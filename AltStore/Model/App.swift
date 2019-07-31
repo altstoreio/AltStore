@@ -39,8 +39,11 @@ class App: NSManagedObject, Decodable, Fetchable
     @NSManaged private(set) var downloadURL: URL
     @NSManaged private(set) var tintColor: UIColor?
     
+    @NSManaged var sortIndex: Int32
+    
     /* Relationships */
     @NSManaged var installedApp: InstalledApp?
+    @NSManaged var source: Source?
     @objc(permissions) @NSManaged var _permissions: NSOrderedSet
     
     @nonobjc var permissions: [AppPermission] {

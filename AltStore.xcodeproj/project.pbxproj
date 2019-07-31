@@ -109,7 +109,6 @@
 		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
-		BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
@@ -176,6 +175,8 @@
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
 		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
 		BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */; };
+		BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DC22F0E7F3002E24B9 /* Source.swift */; };
+		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
 		BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */; };
@@ -356,7 +357,6 @@
 		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
-		BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppsOperation.swift; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
@@ -427,6 +427,8 @@
 		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationError.swift; sourceTree = "<group>"; };
 		BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAppOperation.swift; sourceTree = "<group>"; };
+		BFE338DC22F0E7F3002E24B9 /* Source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
+		BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSourceOperation.swift; sourceTree = "<group>"; };
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
@@ -851,6 +853,7 @@
 				BFBBE2DE22931F73002097FA /* App.swift */,
 				BF3D648722E79A3700E9056B /* AppPermission.swift */,
 				BFBBE2E022931F81002097FA /* InstalledApp.swift */,
+				BFE338DC22F0E7F3002E24B9 /* Source.swift */,
 				BFE6326522A857C100F30809 /* Team.swift */,
 			);
 			path = Model;
@@ -905,7 +908,7 @@
 				BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */,
 				BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */,
 				BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */,
-				BF7B9EF222B82B1F0042C873 /* FetchAppsOperation.swift */,
+				BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1274,7 +1277,6 @@
 			files = (
 				BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */,
 				BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */,
-				BF7B9EF322B82B1F0042C873 /* FetchAppsOperation.swift in Sources */,
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
@@ -1283,11 +1285,13 @@
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
+				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
 				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
 				BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
+				BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
 				BFE6326822A858F300F30809 /* Account.swift in Sources */,
 				BFE6326622A857C200F30809 /* Team.swift in Sources */,

@@ -25,6 +25,8 @@ enum OperationError: LocalizedError
     
     case iOSVersionNotSupported(ALTApplication)
     
+    case noSources
+    
     var errorDescription: String? {
         switch self {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
@@ -35,6 +37,7 @@ enum OperationError: LocalizedError
         case .unknownUDID: return NSLocalizedString("Unknown device UDID.", comment: "")
         case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
         case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
+        case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
         case .iOSVersionNotSupported(let app):
             let name = app.name
             

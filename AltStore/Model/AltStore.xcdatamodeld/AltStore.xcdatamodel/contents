@@ -22,6 +22,7 @@
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="screenshotNames" attributeType="Transformable" syncable="YES"/>
         <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="subtitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tintColor" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="version" attributeType="String" syncable="YES"/>
@@ -29,6 +30,7 @@
         <attribute name="versionDescription" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp" syncable="YES"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission" syncable="YES"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="bundleIdentifier"/>
@@ -54,6 +56,17 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="sourceURL" attributeType="URI" syncable="YES"/>
+        <relationship name="apps" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="App" inverseName="source" inverseEntity="App" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="Team" representedClassName="Team" syncable="YES">
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="isActiveTeam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
@@ -68,9 +81,10 @@
     </entity>
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
-        <element name="App" positionX="-63" positionY="-18" width="128" height="270"/>
+        <element name="App" positionX="-63" positionY="-18" width="128" height="300"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="150"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
+        <element name="Source" positionX="-45" positionY="99" width="128" height="105"/>
     </elements>
 </model>

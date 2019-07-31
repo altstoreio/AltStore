@@ -16,7 +16,7 @@ import Roxas
 
 extension AppManager
 {
-    static let didFetchAppsNotification = Notification.Name("com.altstore.AppManager.didFetchApps")
+    static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
 }
 
 class AppManager
@@ -86,21 +86,27 @@ extension AppManager
 
 extension AppManager
 {
-    func fetchApps(completionHandler: @escaping (Result<[App], Error>) -> Void)
+    func fetchSource(completionHandler: @escaping (Result<Source, Error>) -> Void)
     {
-        let fetchAppsOperation = FetchAppsOperation()
-        fetchAppsOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error):
-                completionHandler(.failure(error))
-                
-            case .success(let apps):
-                completionHandler(.success(apps))
-                NotificationCenter.default.post(name: AppManager.didFetchAppsNotification, object: self)
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), Source.altStoreIdentifier), in: context) else {
+                return completionHandler(.failure(OperationError.noSources))
             }
+            
+            let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL)
+            fetchSourceOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error):
+                    completionHandler(.failure(error))
+                    
+                case .success(let source):
+                    completionHandler(.success(source))
+                    NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
+                }
+            }
+            self.operationQueue.addOperation(fetchSourceOperation)
         }
-        self.operationQueue.addOperation(fetchAppsOperation)
     }
 }
 

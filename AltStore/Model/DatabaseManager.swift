@@ -118,8 +118,11 @@ private extension DatabaseManager
             }
             else
             {
+                let source = Source.makeAltStoreSource(in: context)
+                
                 storeApp = App.makeAltStoreApp(in: context)
                 storeApp.version = localApp.version
+                storeApp.source = source
             }
             
             let installedApp: InstalledApp

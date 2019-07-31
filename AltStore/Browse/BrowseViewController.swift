@@ -36,7 +36,7 @@ class BrowseViewController: UICollectionViewController
     {
         super.viewWillAppear(animated)
         
-        self.fetchApps()
+        self.fetchSource()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -57,9 +57,17 @@ private extension BrowseViewController
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>
     {
         let fetchRequest = App.fetchRequest() as NSFetchRequest<App>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.name, ascending: false)]
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.bundleIdentifier), App.altstoreAppID)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.sortIndex, ascending: true), NSSortDescriptor(keyPath: \App.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
+        
+        if let source = Source.fetchAltStoreSource(in: DatabaseManager.shared.viewContext)
+        {
+            fetchRequest.predicate = NSPredicate(format: "%K != %@ AND %K == %@", #keyPath(App.bundleIdentifier), App.altstoreAppID, #keyPath(App.source), source)
+        }
+        else
+        {
+            fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.bundleIdentifier), App.altstoreAppID)
+        }
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
@@ -98,13 +106,13 @@ private extension BrowseViewController
         return dataSource
     }
     
-    func fetchApps()
+    func fetchSource()
     {
-        AppManager.shared.fetchApps() { (result) in
+        AppManager.shared.fetchSource() { (result) in
             do
             {                
-                let apps = try result.get()
-                try apps.first?.managedObjectContext?.save()
+                let source = try result.get()
+                try source.managedObjectContext?.save()
             }
             catch
             {

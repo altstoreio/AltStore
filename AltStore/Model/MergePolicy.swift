@@ -30,6 +30,20 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     permission.managedObjectContext?.delete(permission)
                 }
                 
+            case let databaseObject as Source:
+                guard let conflictedObject = conflict.conflictingObjects.first as? Source else { break }
+
+                let bundleIdentifiers = Set(conflictedObject.apps.map { $0.bundleIdentifier })
+
+                for app in databaseObject.apps
+                {
+                    if !bundleIdentifiers.contains(app.bundleIdentifier)
+                    {
+                        // No longer listed in Source, so remove it from database.
+                        app.managedObjectContext?.delete(app)
+                    }
+                }
+                
             default: break
             }
         }

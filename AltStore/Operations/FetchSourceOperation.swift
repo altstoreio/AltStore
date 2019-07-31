@@ -1,17 +1,19 @@
 //
-//  FetchAppsOperation.swift
+//  FetchSourceOperation.swift
 //  AltStore
 //
-//  Created by Riley Testut on 6/17/19.
+//  Created by Riley Testut on 7/30/19.
 //  Copyright © 2019 Riley Testut. All rights reserved.
 //
 
 import Foundation
 import Roxas
 
-@objc(FetchAppsOperation)
-class FetchAppsOperation: ResultOperation<[App]>
+@objc(FetchSourceOperation)
+class FetchSourceOperation: ResultOperation<Source>
 {
+    let sourceURL: URL
+    
     private let session = URLSession(configuration: .default)
     
     private lazy var dateFormatter: DateFormatter = {
@@ -20,13 +22,16 @@ class FetchAppsOperation: ResultOperation<[App]>
         return dateFormatter
     }()
     
+    init(sourceURL: URL)
+    {
+        self.sourceURL = sourceURL
+    }
+    
     override func main()
     {
         super.main()
         
-        let appsURL = URL(string: "https://www.dropbox.com/s/6qi1vt6hsi88lv6/Apps-Dev.json?dl=1")!
-        
-        let dataTask = self.session.dataTask(with: appsURL) { (data, response, error) in
+        let dataTask = self.session.dataTask(with: self.sourceURL) { (data, response, error) in
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                 do
                 {
@@ -36,8 +41,8 @@ class FetchAppsOperation: ResultOperation<[App]>
                     decoder.dateDecodingStrategy = .formatted(self.dateFormatter)
                     decoder.managedObjectContext = context
                     
-                    let apps = try decoder.decode([App].self, from: data)
-                    self.finish(.success(apps))
+                    let source = try decoder.decode(Source.self, from: data)
+                    self.finish(.success(source))
                 }
                 catch
                 {

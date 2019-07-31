@@ -176,22 +176,22 @@ extension AppDelegate
                 return
             }
             
-            var fetchAppsResult: Result<[App], Error>?
+            var fetchSourceResult: Result<Source, Error>?
             var serversResult: Result<Void, Error>?
             
             let dispatchGroup = DispatchGroup()
             dispatchGroup.enter()
             dispatchGroup.enter()
             
-            AppManager.shared.fetchApps() { (result) in
-                fetchAppsResult = result
+            AppManager.shared.fetchSource() { (result) in
+                fetchSourceResult = result
                 dispatchGroup.leave()
                 
                 do
                 {
-                    let apps = try result.get()
+                    let source = try result.get()
                     
-                    guard let context = apps.first?.managedObjectContext else { return }
+                    guard let context = source.managedObjectContext else { return }
                     
                     let updatesFetchRequest = InstalledApp.updatesFetchRequest()
                     updatesFetchRequest.includesPendingChanges = true
@@ -230,13 +230,13 @@ extension AppDelegate
             }
             
             dispatchGroup.notify(queue: .main) {
-                guard let fetchAppsResult = fetchAppsResult, let serversResult = serversResult else {
+                guard let fetchSourceResult = fetchSourceResult, let serversResult = serversResult else {
                     completionHandler(.failed)
                     return
                 }
                 
                 // Call completionHandler early to improve chances of refreshing in the background again.
-                switch (fetchAppsResult, serversResult)
+                switch (fetchSourceResult, serversResult)
                 {
                 case (.success, .success): completionHandler(.newData)
                 case (.success, .failure(ConnectionError.serverNotFound)): completionHandler(.newData)

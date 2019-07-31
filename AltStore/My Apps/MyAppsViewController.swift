@@ -57,7 +57,7 @@ class MyAppsViewController: UICollectionViewController
     {
         super.init(coder: aDecoder)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.didFetchApps(_:)), name: AppManager.didFetchAppsNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.didFetchSource(_:)), name: AppManager.didFetchSourceNotification, object: nil)
     }
     
     override func viewDidLoad()
@@ -522,7 +522,7 @@ private extension MyAppsViewController
 
 private extension MyAppsViewController
 {
-    @objc func didFetchApps(_ notification: Notification)
+    @objc func didFetchSource(_ notification: Notification)
     {
         DispatchQueue.main.async {
             if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
