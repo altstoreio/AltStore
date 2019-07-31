@@ -483,7 +483,10 @@ private extension AppViewController
 {
     @objc func didChangeApp(_ notification: Notification)
     {
-        self.update()
+        // Async so that AppManager.installationProgress(for:) is nil when we update.
+        DispatchQueue.main.async {
+            self.update()
+        }
     }
     
     @objc func willEnterForeground(_ notification: Notification)
