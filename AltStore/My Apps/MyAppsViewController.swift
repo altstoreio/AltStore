@@ -339,7 +339,7 @@ private extension MyAppsViewController
             }
         }
         
-        if installedApps.contains(where: { $0.bundleIdentifier == App.altstoreAppID })
+        if installedApps.contains(where: { $0.bundleIdentifier == StoreApp.altstoreAppID })
         {
             let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in

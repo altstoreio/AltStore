@@ -294,7 +294,7 @@ private extension AppDelegate
                     
                     let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
                     group.beginInstallationHandler = { (installedApp) in
-                        guard installedApp.bundleIdentifier == App.altstoreAppID else { return }
+                        guard installedApp.bundleIdentifier == StoreApp.altstoreAppID else { return }
                         
                         // We're starting to install AltStore, which means the app is about to quit.
                         // So, we schedule a "refresh successful" local notification to be displayed after a delay,

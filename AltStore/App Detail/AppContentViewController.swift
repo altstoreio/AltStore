@@ -24,7 +24,7 @@ extension AppContentViewController
 
 class AppContentViewController: UITableViewController
 {
-    var app: App!
+    var app: StoreApp!
     
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
     private lazy var permissionsDataSource = self.makePermissionsDataSource()

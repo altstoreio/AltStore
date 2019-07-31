@@ -24,9 +24,9 @@ class Source: NSManagedObject, Fetchable, Decodable
     /* Relationships */
     @objc(apps) @NSManaged private(set) var _apps: NSOrderedSet
     
-    @nonobjc var apps: [App] {
+    @nonobjc var apps: [StoreApp] {
         get {
-            return self._apps.array as! [App]
+            return self._apps.array as! [StoreApp]
         }
         set {
             self._apps = NSOrderedSet(array: newValue)
@@ -57,7 +57,7 @@ class Source: NSManagedObject, Fetchable, Decodable
         self.identifier = try container.decode(String.self, forKey: .identifier)
         self.sourceURL = try container.decode(URL.self, forKey: .sourceURL)
         
-        let apps = try container.decodeIfPresent([App].self, forKey: .apps) ?? []
+        let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
         for (index, app) in apps.enumerated()
         {
             app.sortIndex = Int32(index)

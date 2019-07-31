@@ -23,7 +23,7 @@ extension ALTApplication: AppProtocol
     }
 }
 
-extension App: AppProtocol
+extension StoreApp: AppProtocol
 {
     var url: URL {
         return self.downloadURL

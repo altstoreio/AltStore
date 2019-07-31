@@ -50,7 +50,7 @@ class AppPermission: NSManagedObject, Decodable, Fetchable
     @NSManaged var usageDescription: String
     
     /* Relationships */
-    @NSManaged private(set) var app: App!
+    @NSManaged private(set) var app: StoreApp!
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {

@@ -277,7 +277,7 @@ private extension AppManager
                 
                 if let installedApp = result.value
                 {
-                    if let app = app as? App, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? App
+                    if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
                     {
                         installedApp.storeApp = storeApp
                     }

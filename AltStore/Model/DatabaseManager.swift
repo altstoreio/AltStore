@@ -125,9 +125,9 @@ private extension DatabaseManager
         context.performAndWait {
             guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
             
-            let storeApp: App
+            let storeApp: StoreApp
             
-            if let app = App.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(App.bundleIdentifier), App.altstoreAppID), in: context)
+            if let app = StoreApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID), in: context)
             {
                 storeApp = app
             }
@@ -135,7 +135,7 @@ private extension DatabaseManager
             {
                 let source = Source.makeAltStoreSource(in: context)
                 
-                storeApp = App.makeAltStoreApp(in: context)
+                storeApp = StoreApp.makeAltStoreApp(in: context)
                 storeApp.version = localApp.version
                 storeApp.source = source
             }
@@ -148,7 +148,7 @@ private extension DatabaseManager
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: App.altstoreAppID, context: context)
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, context: context)
                 installedApp.storeApp = storeApp
             }
             

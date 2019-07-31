@@ -24,7 +24,7 @@ class InstalledApp: NSManagedObject, Fetchable
     @NSManaged var expirationDate: Date
     
     /* Relationships */
-    @NSManaged var storeApp: App?
+    @NSManaged var storeApp: StoreApp?
     
     var isSideloaded: Bool {
         return self.storeApp == nil
@@ -74,7 +74,7 @@ extension InstalledApp
     
     class func fetchAltStore(in context: NSManagedObjectContext) -> InstalledApp?
     {
-        let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), App.altstoreAppID)
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         let altStore = InstalledApp.first(satisfying: predicate, in: context)
         return altStore
@@ -82,7 +82,7 @@ extension InstalledApp
     
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        let predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), App.altstoreAppID)
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -103,7 +103,7 @@ extension InstalledApp
         
         let predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
-                                    #keyPath(InstalledApp.bundleIdentifier), App.altstoreAppID)
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],

@@ -54,22 +54,22 @@ class BrowseViewController: UICollectionViewController
 
 private extension BrowseViewController
 {
-    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>
+    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
-        let fetchRequest = App.fetchRequest() as NSFetchRequest<App>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \App.sortIndex, ascending: true), NSSortDescriptor(keyPath: \App.name, ascending: true)]
+        let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: true), NSSortDescriptor(keyPath: \StoreApp.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
         if let source = Source.fetchAltStoreSource(in: DatabaseManager.shared.viewContext)
         {
-            fetchRequest.predicate = NSPredicate(format: "%K != %@ AND %K == %@", #keyPath(App.bundleIdentifier), App.altstoreAppID, #keyPath(App.source), source)
+            fetchRequest.predicate = NSPredicate(format: "%K != %@ AND %K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(StoreApp.source), source)
         }
         else
         {
-            fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(App.bundleIdentifier), App.altstoreAppID)
+            fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
         }
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<App, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
             cell.nameLabel.text = app.name
@@ -145,7 +145,7 @@ private extension BrowseViewController
         }
     }
     
-    func install(_ app: App, at indexPath: IndexPath)
+    func install(_ app: StoreApp, at indexPath: IndexPath)
     {
         let previousProgress = AppManager.shared.installationProgress(for: app)
         guard previousProgress == nil else {

@@ -12,7 +12,7 @@ import Roxas
 
 class AppViewController: UIViewController
 {
-    var app: App!
+    var app: StoreApp!
     
     private var contentViewController: AppContentViewController!
     private var contentViewControllerShadowView: UIView!
@@ -321,7 +321,7 @@ class AppViewController: UIViewController
 
 extension AppViewController
 {
-    class func makeAppViewController(app: App) -> AppViewController
+    class func makeAppViewController(app: StoreApp) -> AppViewController
     {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         

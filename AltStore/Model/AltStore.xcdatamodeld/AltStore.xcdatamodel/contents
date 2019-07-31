@@ -13,7 +13,48 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="App" representedClassName="App" syncable="YES">
+    <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <attribute name="usageDescription" attributeType="String" syncable="YES"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp" syncable="YES"/>
+    </entity>
+    <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
+        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String" syncable="YES"/>
+        <attribute name="version" attributeType="String" syncable="YES"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="installedApp" inverseEntity="StoreApp" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="errorDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="isSuccess" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="sourceURL" attributeType="URI" syncable="YES"/>
+        <relationship name="apps" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="StoreApp" inverseName="source" inverseEntity="StoreApp" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="developerName" attributeType="String" syncable="YES"/>
         <attribute name="downloadURL" attributeType="URI" syncable="YES"/>
@@ -37,47 +78,6 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
-        <attribute name="type" attributeType="String" syncable="YES"/>
-        <attribute name="usageDescription" attributeType="String" syncable="YES"/>
-        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="permissions" inverseEntity="App" syncable="YES"/>
-    </entity>
-    <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
-        <attribute name="bundleIdentifier" attributeType="String" syncable="YES"/>
-        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="resignedBundleIdentifier" attributeType="String" syncable="YES"/>
-        <attribute name="version" attributeType="String" syncable="YES"/>
-        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="App" inverseName="installedApp" inverseEntity="App" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="bundleIdentifier"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
-        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="errorDescription" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="identifier" attributeType="String" syncable="YES"/>
-        <attribute name="isSuccess" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="identifier"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="Source" representedClassName="Source" syncable="YES">
-        <attribute name="identifier" attributeType="String" syncable="YES"/>
-        <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="sourceURL" attributeType="URI" syncable="YES"/>
-        <relationship name="apps" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="App" inverseName="source" inverseEntity="App" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="identifier"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
     <entity name="Team" representedClassName="Team" syncable="YES">
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="isActiveTeam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
@@ -92,7 +92,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
-        <element name="App" positionX="-63" positionY="-18" width="128" height="300"/>
+        <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="300"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="150"/>
         <element name="Source" positionX="-45" positionY="99" width="128" height="105"/>

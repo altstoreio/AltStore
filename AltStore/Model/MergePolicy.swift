@@ -23,7 +23,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
         {
             switch conflict.databaseObject
             {
-            case let databaseObject as App:
+            case let databaseObject as StoreApp:
                 // Delete previous permissions
                 for permission in databaseObject.permissions
                 {

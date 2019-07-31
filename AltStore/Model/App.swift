@@ -1,5 +1,5 @@
 //
-//  App.swift
+//  StoreApp.swift
 //  AltStore
 //
 //  Created by Riley Testut on 5/20/19.
@@ -12,13 +12,13 @@ import CoreData
 import Roxas
 import AltSign
 
-extension App
+extension StoreApp
 {
     static let altstoreAppID = "com.rileytestut.AltStore"
 }
 
-@objc(App)
-class App: NSManagedObject, Decodable, Fetchable
+@objc(StoreApp)
+class StoreApp: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged private(set) var name: String
@@ -77,7 +77,7 @@ class App: NSManagedObject, Decodable, Fetchable
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
-        super.init(entity: App.entity(), insertInto: nil)
+        super.init(entity: StoreApp.entity(), insertInto: nil)
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decode(String.self, forKey: .name)
@@ -116,18 +116,18 @@ class App: NSManagedObject, Decodable, Fetchable
     }
 }
 
-extension App
+extension StoreApp
 {
-    @nonobjc class func fetchRequest() -> NSFetchRequest<App>
+    @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
-        return NSFetchRequest<App>(entityName: "App")
+        return NSFetchRequest<StoreApp>(entityName: "StoreApp")
     }
     
-    class func makeAltStoreApp(in context: NSManagedObjectContext) -> App
+    class func makeAltStoreApp(in context: NSManagedObjectContext) -> StoreApp
     {
-        let app = App(context: context)
+        let app = StoreApp(context: context)
         app.name = "AltStore"
-        app.bundleIdentifier = App.altstoreAppID
+        app.bundleIdentifier = StoreApp.altstoreAppID
         app.developerName = "Riley Testut"
         app.localizedDescription = "AltStore is an alternative App Store."
         app.iconName = ""
