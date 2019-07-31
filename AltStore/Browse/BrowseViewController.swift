@@ -78,6 +78,7 @@ private extension BrowseViewController
             cell.imageNames = Array(app.screenshotNames.prefix(3))
             cell.appIconImageView.image = UIImage(named: app.iconName)
             
+            cell.actionButton.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
             cell.actionButton.activityIndicatorView.style = .white
             
             // Explicitly set to false to ensure we're starting from a non-activity indicating state.
