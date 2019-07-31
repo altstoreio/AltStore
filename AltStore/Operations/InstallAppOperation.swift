@@ -57,6 +57,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
             }
             
+            installedApp.version = resignedApp.version
+            
             if let profile = resignedApp.provisioningProfile
             {
                 installedApp.refreshedDate = profile.creationDate

@@ -152,6 +152,8 @@ private extension DatabaseManager
                 installedApp.storeApp = storeApp
             }
             
+            installedApp.version = localApp.version
+            
             let fileURL = installedApp.fileURL
             
             if !FileManager.default.fileExists(atPath: fileURL.path)
