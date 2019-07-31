@@ -383,9 +383,15 @@ private extension AppDelegate
                 if delay > 0
                 {
                     DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
-                        // If app is still running at this point, we schedule another notification with same identifier.
-                        // This prevents the currently scheduled notification from displaying, and starts another countdown timer.
-                        scheduleFinishedRefreshingNotification()
+                        UNUserNotificationCenter.current().getPendingNotificationRequests() { (requests) in
+                            // If app is still running at this point, we schedule another notification with same identifier.
+                            // This prevents the currently scheduled notification from displaying, and starts another countdown timer.
+                            // First though, make sure there _is_ still a pending request, otherwise it's been cancelled
+                            // and we should stop polling.
+                            guard requests.contains(where: { $0.identifier == identifier }) else { return }
+                            
+                            scheduleFinishedRefreshingNotification()
+                        }
                     }
                 }
             }
