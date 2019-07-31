@@ -10,7 +10,7 @@ import UIKit
 
 import Roxas
 
-class AccountViewController: UITableViewController
+class SettingsViewController: UITableViewController
 {
     private var team: Team?
     
@@ -37,7 +37,7 @@ class AccountViewController: UITableViewController
     }
 }
 
-private extension AccountViewController
+private extension SettingsViewController
 {
     func makePlaceholderView() -> RSTPlaceholderView
     {
@@ -49,7 +49,7 @@ private extension AccountViewController
         let signInButton = UIButton(type: .system)
         signInButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         signInButton.setTitle(NSLocalizedString("Sign In", comment: ""), for: .normal)
-        signInButton.addTarget(self, action: #selector(AccountViewController.signIn(_:)), for: .primaryActionTriggered)
+        signInButton.addTarget(self, action: #selector(SettingsViewController.signIn(_:)), for: .primaryActionTriggered)
         placeholderView.stackView.addArrangedSubview(signInButton)
         
         return placeholderView
@@ -91,7 +91,7 @@ private extension AccountViewController
     }
 }
 
-private extension AccountViewController
+private extension SettingsViewController
 {
     @objc func signIn(_ sender: UIButton)
     {
@@ -136,7 +136,7 @@ private extension AccountViewController
     }
 }
 
-extension AccountViewController
+extension SettingsViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {

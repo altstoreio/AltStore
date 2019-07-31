@@ -169,7 +169,7 @@
 		BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */; };
 		BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */; };
-		BFDB69FD22A9A7B7007EA6D6 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB69FC22A9A7B7007EA6D6 /* AccountViewController.swift */; };
+		BFDB69FD22A9A7B7007EA6D6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */; };
 		BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */; };
 		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
@@ -421,7 +421,7 @@
 		BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsComponents.swift; sourceTree = "<group>"; };
 		BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+RelativeDate.swift"; sourceTree = "<group>"; };
 		BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BrowseCollectionViewCell.xib; sourceTree = "<group>"; };
-		BFDB69FC22A9A7B7007EA6D6 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignAppOperation.swift; sourceTree = "<group>"; };
 		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
@@ -770,7 +770,7 @@
 				BF9ABA4322DCFF33008935CF /* Browse */,
 				BF3D64A022E7FAD800E9056B /* App Detail */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
-				BFDB69FB22A9A7A6007EA6D6 /* Account */,
+				BFDB69FB22A9A7A6007EA6D6 /* Settings */,
 				BFD2478A2284C49000981D42 /* Managing Apps */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BFD247982284D7FC00981D42 /* Model */,
@@ -879,12 +879,12 @@
 			path = Connections;
 			sourceTree = "<group>";
 		};
-		BFDB69FB22A9A7A6007EA6D6 /* Account */ = {
+		BFDB69FB22A9A7A6007EA6D6 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				BFDB69FC22A9A7B7007EA6D6 /* AccountViewController.swift */,
+				BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */,
 			);
-			path = Account;
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		BFDB6A0622A9B114007EA6D6 /* Protocols */ = {
@@ -1280,7 +1280,7 @@
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
-				BFDB69FD22A9A7B7007EA6D6 /* AccountViewController.swift in Sources */,
+				BFDB69FD22A9A7B7007EA6D6 /* SettingsViewController.swift in Sources */,
 				BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
