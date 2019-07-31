@@ -436,6 +436,14 @@ private extension MyAppsViewController
         }
         
         self.refresh([installedApp]) { (result) in
+            // If an error occured, reload the section so the progress bar is no longer visible.
+            if result.error != nil || result.value?.values.contains(where: { $0.error != nil }) == true
+            {
+                DispatchQueue.main.async {
+                    self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+                }
+            }
+            
             print("Finished refreshing with result:", result.error?.localizedDescription ?? "success")
         }
     }
