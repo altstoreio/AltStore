@@ -22,20 +22,28 @@ class RefreshAttempt: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    init<T>(identifier: String, result: Result<T, Error>, context: NSManagedObjectContext)
+    init(identifier: String, result: Result<[String: Result<InstalledApp, Error>], Error>, context: NSManagedObjectContext)
     {
         super.init(entity: RefreshAttempt.entity(), insertInto: context)
         
         self.identifier = identifier
         self.date = Date()
         
-        switch result
+        do
         {
-        case .success:
+            let results = try result.get()
+            
+            for (_, result) in results
+            {
+                guard case let .failure(error) = result else { continue }
+                throw error
+            }
+            
             self.isSuccess = true
             self.errorDescription = nil
-            
-        case .failure(let error):
+        }
+        catch
+        {
             self.isSuccess = false
             self.errorDescription = error.localizedDescription
         }
