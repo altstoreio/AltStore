@@ -56,6 +56,17 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="errorDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="isSuccess" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
@@ -84,7 +95,8 @@
         <element name="App" positionX="-63" positionY="-18" width="128" height="300"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="150"/>
-        <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
         <element name="Source" positionX="-45" positionY="99" width="128" height="105"/>
+        <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
+        <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
     </elements>
 </model>

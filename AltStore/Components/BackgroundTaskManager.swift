@@ -56,7 +56,7 @@ extension BackgroundTaskManager
             self.isPlaying = false
         }
         
-        self.audioEngineQueue.async {
+        self.audioEngineQueue.sync {
             do
             {
                 try AVAudioSession.sharedInstance().setCategory(.playback, options: .mixWithOthers)
