@@ -567,8 +567,12 @@ extension MyAppsViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
-        if indexPath.section == 0
+        let section = Section(rawValue: indexPath.section)!
+        
+        switch section
         {
+        case .noUpdates: return UICollectionReusableView()
+        case .updates:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader", for: indexPath) as! UpdatesCollectionHeaderView
             
             UIView.performWithoutAnimation {
@@ -593,9 +597,8 @@ extension MyAppsViewController
             }
             
             return headerView
-        }
-        else
-        {
+            
+        case .installedApps:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InstalledAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
             
             UIView.performWithoutAnimation {
