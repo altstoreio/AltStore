@@ -688,6 +688,13 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
+        // Responding to NSFetchedResultsController updates before the collection view has
+        // been shown may throw exceptions because the collection view cannot accurately
+        // count the number of items before the update. However, if we manually call
+        // performBatchUpdates _before_ responding to updates, the collection view can get
+        // an accurate pre-update item count.
+        self.collectionView.performBatchUpdates(nil, completion: nil)
+        
         self.updatesDataSource.controllerWillChangeContent(controller)
     }
     
