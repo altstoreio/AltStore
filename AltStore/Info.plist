@@ -35,9 +35,9 @@
 	<string>1</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>altstore-com.rileytestut.altstore</string>
+		<string>altstore-com.rileytestut.AltStore</string>
 		<string>altstore-com.rileytestut.Delta</string>
-		<string>altstore-com.rileytestut.ClipboardManager</string>
+		<string>altstore-com.rileytestut.Clip</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
