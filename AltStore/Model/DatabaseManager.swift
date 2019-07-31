@@ -19,6 +19,8 @@ public class DatabaseManager
     
     public private(set) var isStarted = false
     
+    private var startCompletionHandlers = [(Error?) -> Void]()
+    
     private init()
     {
         self.persistentContainer = RSTPersistentContainer(name: "AltStore")
@@ -30,18 +32,30 @@ public extension DatabaseManager
 {
     func start(completionHandler: @escaping (Error?) -> Void)
     {
-        guard !self.isStarted else { return completionHandler(nil) }
+        self.startCompletionHandlers.append(completionHandler)
+        
+        guard self.startCompletionHandlers.count == 1 else { return }
+        
+        func finish(_ error: Error?)
+        {
+            self.startCompletionHandlers.forEach { $0(error) }
+            self.startCompletionHandlers.removeAll()
+        }
+        
+        guard !self.isStarted else { return finish(nil) }
         
         self.persistentContainer.loadPersistentStores { (description, error) in
-            guard error == nil else { return completionHandler(error!) }
+            guard error == nil else { return finish(error!) }
             
             self.prepareDatabase() { (result) in
                 switch result
                 {
-                case .failure(let error): completionHandler(error)
+                case .failure(let error):
+                    finish(error)
+                    
                 case .success:
                     self.isStarted = true
-                    completionHandler(nil)
+                    finish(nil)
                 }
             }
         }
@@ -107,7 +121,8 @@ private extension DatabaseManager
 {
     func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        self.persistentContainer.performBackgroundTask { (context) in
+        let context = self.persistentContainer.newBackgroundContext()
+        context.performAndWait {
             guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
             
             let storeApp: App
