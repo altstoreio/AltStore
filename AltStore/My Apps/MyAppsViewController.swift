@@ -495,11 +495,21 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        let iOSAppUTI = "com.apple.itunes.ipa" // Declared by the system.
+        func sideloadApp()
+        {
+            let iOSAppUTI = "com.apple.itunes.ipa" // Declared by the system.
+            
+            let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [iOSAppUTI], in: .import)
+            documentPickerViewController.delegate = self
+            self.present(documentPickerViewController, animated: true, completion: nil)
+        }
         
-        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [iOSAppUTI], in: .import)
-        documentPickerViewController.delegate = self
-        self.present(documentPickerViewController, animated: true, completion: nil)
+        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to riley@rileytestut.com.", comment: ""), preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
+            sideloadApp()
+        }))
+        alertController.addAction(.cancel)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     @objc func presentAlert(for installedApp: InstalledApp)
