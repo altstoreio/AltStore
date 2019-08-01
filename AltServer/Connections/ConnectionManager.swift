@@ -83,7 +83,22 @@ private extension ConnectionManager
     func makeListener() -> NWListener
     {
         let listener = try! NWListener(using: .tcp)
-        listener.service = NWListener.Service(type: ALTServerServiceType)
+        
+        let service: NWListener.Service
+        
+        if let serverID = UserDefaults.standard.serverID?.data(using: .utf8)
+        {
+            let txtDictionary = ["serverID": serverID]
+            let txtData = NetService.data(fromTXTRecord: txtDictionary)
+            
+            service = NWListener.Service(name: nil, type: ALTServerServiceType, domain: nil, txtRecord: txtData)
+        }
+        else
+        {
+            service = NWListener.Service(type: ALTServerServiceType)
+        }
+        
+        listener.service = service
         
         listener.serviceRegistrationUpdateHandler = { (serviceChange) in
             switch serviceChange

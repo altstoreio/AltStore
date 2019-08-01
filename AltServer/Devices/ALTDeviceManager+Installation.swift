@@ -352,6 +352,7 @@ extension ALTDeviceManager
                 guard var infoDictionary = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
                 infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
                 infoDictionary[Bundle.Info.deviceID] = device.identifier
+                infoDictionary[Bundle.Info.serverID] = UserDefaults.standard.serverID
                 try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                 
                 let resigner = ALTSigner(team: team, certificate: certificate)
