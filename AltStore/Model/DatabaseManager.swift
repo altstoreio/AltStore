@@ -161,10 +161,19 @@ private extension DatabaseManager
                 do
                 {
                     try FileManager.default.copyItem(at: Bundle.main.bundleURL, to: fileURL)
+                    
+                    let infoPlistURL = fileURL.appendingPathComponent("Info.plist")
+                    
+                    // TODO: Copy to temporary location, modify it, _then_ copy to final destination.
+                    guard var infoDictionary = Bundle.main.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                    infoDictionary[kCFBundleIdentifierKey as String] = StoreApp.altstoreAppID
+                    try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                 }
                 catch
                 {
                     print("Failed to copy AltStore app bundle to its proper location.", error)
+                    
+                    try? FileManager.default.removeItem(at: fileURL)
                 }
             }
             
