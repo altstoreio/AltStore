@@ -10,6 +10,8 @@ import UIKit
 
 import Roxas
 
+import Nuke
+
 extension AppContentViewController
 {
     private enum Row: Int, CaseIterable
@@ -51,12 +53,10 @@ class AppContentViewController: UITableViewController
     @IBOutlet private var screenshotsCollectionView: UICollectionView!
     @IBOutlet private var permissionsCollectionView: UICollectionView!
     
-    var preferredScreenshotSize: CGSize? {
-        guard let image = self.screenshotsDataSource.items.first else { return nil }
-        
+    var preferredScreenshotSize: CGSize? {        
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         
-        let aspectRatio = image.size.height / image.size.width
+        let aspectRatio: CGFloat = 16.0 / 9.0 // Hardcoded for now.
         
         let width = self.screenshotsCollectionView.bounds.width - (layout.minimumInteritemSpacing * 2)
         
@@ -125,14 +125,39 @@ class AppContentViewController: UITableViewController
 
 private extension AppContentViewController
 {
-    func makeScreenshotsDataSource() -> RSTArrayCollectionViewDataSource<UIImage>
+    func makeScreenshotsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>
     {
-        let screenshots = self.app.screenshotNames.compactMap(UIImage.init(named:))
-        
-        let dataSource = RSTArrayCollectionViewDataSource(items: screenshots)
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>(items: self.app.screenshotURLs as [NSURL])
         dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
             let cell = cell as! ScreenshotCollectionViewCell
-            cell.imageView.image = screenshot
+            cell.imageView.image = nil
+            cell.imageView.isIndicatingActivity = true
+        }
+        dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
+            return RSTAsyncBlockOperation() { (operation) in
+                ImagePipeline.shared.loadImage(with: imageURL as URL, progress: nil, completion: { (response, error) in
+                    guard !operation.isCancelled else { return }
+                    
+                    if let image = response?.image
+                    {
+                        completionHandler(image, nil)
+                    }
+                    else
+                    {
+                        completionHandler(nil, error)
+                    }
+                })
+            }
+        }
+        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+            let cell = cell as! ScreenshotCollectionViewCell
+            cell.imageView.isIndicatingActivity = false
+            cell.imageView.image = image
+            
+            if let error = error
+            {
+                print("Error loading image:", error)
+            }
         }
         
         return dataSource

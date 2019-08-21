@@ -13,6 +13,8 @@ import Roxas
 
 import AltSign
 
+import Nuke
+
 private let maximumCollapsedUpdatesCount = 2
 
 extension MyAppsViewController
@@ -159,7 +161,8 @@ private extension MyAppsViewController
             cell.tintColor = app.tintColor ?? .altGreen
             cell.nameLabel.text = app.name
             cell.versionDescriptionTextView.text = app.versionDescription
-            cell.appIconImageView.image = UIImage(named: app.iconName)
+            cell.appIconImageView.image = nil
+            cell.appIconImageView.isIndicatingActivity = true
             
             cell.updateButton.isIndicatingActivity = false
             cell.updateButton.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
@@ -181,6 +184,34 @@ private extension MyAppsViewController
             cell.dateLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
             
             cell.setNeedsLayout()
+        }
+        dataSource.prefetchHandler = { (installedApp, indexPath, completionHandler) in
+            guard let iconURL = installedApp.storeApp?.iconURL else { return nil }
+            
+            return RSTAsyncBlockOperation() { (operation) in
+                ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
+                    guard !operation.isCancelled else { return }
+                    
+                    if let image = response?.image
+                    {
+                        completionHandler(image, nil)
+                    }
+                    else
+                    {
+                        completionHandler(nil, error)
+                    }
+                })
+            }
+        }
+        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+            let cell = cell as! UpdateCollectionViewCell
+            cell.appIconImageView.isIndicatingActivity = false
+            cell.appIconImageView.image = image
+            
+            if let error = error
+            {
+                print("Error loading image:", error)
+            }
         }
         
         return dataSource

@@ -10,6 +10,8 @@ import UIKit
 
 import Roxas
 
+import Nuke
+
 class AppViewController: UIViewController
 {
     var app: StoreApp!
@@ -83,17 +85,15 @@ class AppViewController: UIViewController
         self.nameLabel.text = self.app.name
         self.developerLabel.text = self.app.developerName
         self.developerLabel.textColor = self.app.tintColor
-        self.appIconImageView.image = UIImage(named: self.app.iconName)
+        self.appIconImageView.image = nil
         self.appIconImageView.tintColor = self.app.tintColor
         self.downloadButton.tintColor = self.app.tintColor
-        self.backgroundAppIconImageView.image = UIImage(named: self.app.iconName)
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         
         self.navigationController?.navigationBar.tintColor = self.app.tintColor
         self.navigationBarDownloadButton.tintColor = self.app.tintColor
         self.navigationBarAppNameLabel.text = self.app.name
-        self.navigationBarAppIconImageView.image = UIImage(named: self.app.iconName)
         self.navigationBarAppIconImageView.tintColor = self.app.tintColor
         
         self.contentSizeObservation = self.contentViewController.tableView.observe(\.contentSize) { [weak self] (tableView, change) in
@@ -108,6 +108,19 @@ class AppViewController: UIViewController
         
         self._backgroundBlurEffect = self.backgroundBlurView.effect as? UIBlurEffect
         self._backgroundBlurTintColor = self.backgroundBlurView.contentView.backgroundColor
+        
+        // Load Images
+        for imageView in [self.appIconImageView!, self.backgroundAppIconImageView!, self.navigationBarAppIconImageView!]
+        {
+            imageView.isIndicatingActivity = true
+            
+            Nuke.loadImage(with: self.app.iconURL, options: .shared, into: imageView, progress: nil) { [weak imageView] (response, error) in
+                if response?.image != nil
+                {
+                    imageView?.isIndicatingActivity = false
+                }
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)

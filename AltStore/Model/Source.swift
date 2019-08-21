@@ -79,7 +79,7 @@ extension Source
         let source = Source(context: context)
         source.name = "AltStore"
         source.identifier = Source.altStoreIdentifier
-        source.sourceURL = URL(string: "https://www.dropbox.com/s/6qi1vt6hsi88lv6/Apps-Dev.json?dl=1")!
+        source.sourceURL = URL(string: "https://www.dropbox.com/s/ernal98djzo4pe3/Apps-Staging.json?dl=1")!
         
         return source
     }

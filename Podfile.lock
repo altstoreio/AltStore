@@ -1,16 +1,20 @@
 PODS:
   - KeychainAccess (3.2.0)
+  - Nuke (7.6.2)
 
 DEPENDENCIES:
   - KeychainAccess (~> 3.2.0)
+  - Nuke (~> 7.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - KeychainAccess
+    - Nuke
 
 SPEC CHECKSUMS:
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
+  Nuke: 392eff7cb037adbec6699febe9237849ac5dcc47
 
-PODFILE CHECKSUM: 6a1695fc6ba95ee2a4044665937e8ac08a4c4572
+PODFILE CHECKSUM: 8c674682f3a0a24c842f7c680830b0bb1ebc324d
 
 COCOAPODS: 1.6.1

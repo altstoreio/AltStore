@@ -10,6 +10,8 @@ import UIKit
 
 import Roxas
 
+import Nuke
+
 class BrowseViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
@@ -75,8 +77,9 @@ private extension BrowseViewController
             cell.nameLabel.text = app.name
             cell.developerLabel.text = app.developerName
             cell.subtitleLabel.text = app.subtitle
-            cell.imageNames = Array(app.screenshotNames.prefix(3))
-            cell.appIconImageView.image = UIImage(named: app.iconName)
+            cell.imageURLs = Array(app.screenshotURLs.prefix(2))
+            cell.appIconImageView.image = nil
+            cell.appIconImageView.isIndicatingActivity = true
             
             cell.actionButton.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
             cell.actionButton.activityIndicatorView.style = .white
@@ -101,6 +104,34 @@ private extension BrowseViewController
                 cell.actionButton.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
                 cell.actionButton.progress = nil
                 cell.actionButton.isInverted = true
+            }
+        }
+        dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
+            let iconURL = storeApp.iconURL
+            
+            return RSTAsyncBlockOperation() { (operation) in
+                ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
+                    guard !operation.isCancelled else { return }
+                    
+                    if let image = response?.image
+                    {
+                        completionHandler(image, nil)
+                    }
+                    else
+                    {
+                        completionHandler(nil, error)
+                    }
+                })
+            }
+        }
+        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+            let cell = cell as! BrowseCollectionViewCell
+            cell.appIconImageView.isIndicatingActivity = false
+            cell.appIconImageView.image = image
+            
+            if let error = error
+            {
+                print("Error loading image:", error)
             }
         }
         
