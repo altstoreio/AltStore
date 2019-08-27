@@ -111,7 +111,7 @@ private extension BrowseViewController
             
             return RSTAsyncBlockOperation() { (operation) in
                 ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
-                    guard !operation.isCancelled else { return }
+                    guard !operation.isCancelled else { return operation.finish() }
                     
                     if let image = response?.image
                     {
