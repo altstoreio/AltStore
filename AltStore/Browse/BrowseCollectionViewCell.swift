@@ -28,6 +28,7 @@ import Nuke
     @IBOutlet var subtitleLabel: UILabel!
     
     @IBOutlet var screenshotsCollectionView: UICollectionView!
+    @IBOutlet var betaBadgeView: UIImageView!
     
     @IBOutlet private var screenshotsContentView: UIView!
     

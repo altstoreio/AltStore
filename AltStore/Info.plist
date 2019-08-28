@@ -30,6 +30,16 @@
 				<string>altstore-com.rileytestut.altstore</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>AltStore General</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>altstore</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -38,6 +48,7 @@
 		<string>altstore-com.rileytestut.AltStore</string>
 		<string>altstore-com.rileytestut.Delta</string>
 		<string>altstore-com.rileytestut.Clip</string>
+		<string>altstore-com.rileytestut.AltStore.Beta</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

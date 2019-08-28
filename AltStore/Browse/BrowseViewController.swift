@@ -39,6 +39,7 @@ class BrowseViewController: UICollectionViewController
         super.viewWillAppear(animated)
         
         self.fetchSource()
+        self.updateDataSource()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -80,6 +81,7 @@ private extension BrowseViewController
             cell.imageURLs = Array(app.screenshotURLs.prefix(2))
             cell.appIconImageView.image = nil
             cell.appIconImageView.isIndicatingActivity = true
+            cell.betaBadgeView.isHidden = !app.isBeta
             
             cell.actionButton.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
             cell.actionButton.activityIndicatorView.style = .white
@@ -136,6 +138,18 @@ private extension BrowseViewController
         }
         
         return dataSource
+    }
+    
+    func updateDataSource()
+    {
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron
+        {
+            self.dataSource.predicate = nil
+        }
+        else
+        {
+            self.dataSource.predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isBeta))
+        }
     }
     
     func fetchSource()

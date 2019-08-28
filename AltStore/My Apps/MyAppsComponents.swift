@@ -14,6 +14,7 @@ class InstalledAppCollectionViewCell: UICollectionViewCell
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var developerLabel: UILabel!
     @IBOutlet var refreshButton: PillButton!
+    @IBOutlet var betaBadgeView: UIImageView!
 }
 
 class InstalledAppsCollectionHeaderView: UICollectionReusableView

@@ -133,7 +133,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="LZw-eU-5SO" userLabel="App Info">
-                                                    <rect key="frame" x="0.0" y="0.0" width="273" height="93"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="93"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Ey-6S-HJx" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
@@ -143,17 +143,25 @@
                                                                 <constraint firstAttribute="width" secondItem="3Ey-6S-HJx" secondAttribute="height" multiplier="1:1" id="GCk-a1-dDk"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="bR7-SO-m8f">
-                                                            <rect key="frame" x="90" y="26.5" width="88" height="40.5"/>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="bR7-SO-m8f">
+                                                            <rect key="frame" x="90" y="26.5" width="135" height="40.5"/>
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dNE-IO-y3o">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="88" height="21.5"/>
-                                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
-                                                                    <nil key="textColor"/>
-                                                                    <nil key="highlightedColor"/>
-                                                                </label>
+                                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="9z7-I4-q6g">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="135" height="21.5"/>
+                                                                    <subviews>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dNE-IO-y3o">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="88" height="21.5"/>
+                                                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                                                            <nil key="textColor"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="2XC-Fe-yG4">
+                                                                            <rect key="frame" x="94" y="0.0" width="41" height="21.5"/>
+                                                                        </imageView>
+                                                                    </subviews>
+                                                                </stackView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NKT-el-rRF">
-                                                                    <rect key="frame" x="0.0" y="23.5" width="88" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="23.5" width="66" height="17"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <nil key="highlightedColor"/>
@@ -161,7 +169,7 @@
                                                             </subviews>
                                                         </stackView>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mgB-Gs-bik" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                                            <rect key="frame" x="189" y="31" width="72" height="31"/>
+                                                            <rect key="frame" x="236" y="31" width="72" height="31"/>
                                                             <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="72" id="j44-T1-0dc"/>
@@ -246,6 +254,7 @@
                         <outlet property="backButtonContainerView" destination="tUK-0J-07U" id="POZ-dP-f12"/>
                         <outlet property="backgroundAppIconImageView" destination="CUB-SN-zdM" id="dFx-py-yMm"/>
                         <outlet property="backgroundBlurView" destination="8Tg-wk-r0u" id="B8c-ng-nI5"/>
+                        <outlet property="betaBadgeView" destination="2XC-Fe-yG4" id="FCf-t9-Aab"/>
                         <outlet property="contentView" destination="Qlg-m3-lXg" id="JhH-hh-vBN"/>
                         <outlet property="developerLabel" destination="NKT-el-rRF" id="GUc-jy-kvv"/>
                         <outlet property="downloadButton" destination="mgB-Gs-bik" id="x95-gu-NBy"/>
@@ -693,10 +702,34 @@ World</string>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Patreon" id="XP4-Fa-8aU">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="5YC-85-5D3" style="IBUITableViewCellStyleDefault" id="MUH-Rw-1Bv">
+                                        <rect key="frame" x="0.0" y="299.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MUH-Rw-1Bv" id="aVM-dk-WjN">
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="View Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5YC-85-5D3">
+                                                    <rect key="frame" x="16" y="0.0" width="324" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="Qcm-t0-PIR" kind="show" id="qdd-iP-BIQ"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="Debug" id="K7R-6x-gHl">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="nQj-qq-PmI" style="IBUITableViewCellStyleDefault" id="8M3-mu-gRd">
-                                        <rect key="frame" x="0.0" y="299.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="399.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8M3-mu-gRd" id="6TQ-nF-Rkl">
                                             <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -821,6 +854,60 @@ World</string>
             </objects>
             <point key="canvasLocation" x="2313" y="515"/>
         </scene>
+        <!--Patreon-->
+        <scene sceneID="rWf-MO-Hyc">
+            <objects>
+                <tableViewController id="Qcm-t0-PIR" customClass="PatreonViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4tt-fZ-vas">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="N6C-v5-zxL" style="IBUITableViewCellStyleDefault" id="DuT-r1-9Cy">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DuT-r1-9Cy" id="OvI-oA-W0V">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="N6C-v5-zxL">
+                                            <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Qcm-t0-PIR" id="dtj-fZ-zJz"/>
+                            <outlet property="delegate" destination="Qcm-t0-PIR" id="Qds-j3-bH2"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Patreon" largeTitleDisplayMode="never" id="aiq-EO-aN7">
+                        <barButtonItem key="rightBarButtonItem" title="Sign In" style="done" id="dBD-5X-mrn">
+                            <connections>
+                                <action selector="authenticate:" destination="Qcm-t0-PIR" id="oIV-a5-OLo"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="signInButton" destination="dBD-5X-mrn" id="vo7-1j-hxN"/>
+                        <outlet property="signOutButton" destination="RTm-wb-5aT" id="W0P-5W-L3c"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BAy-cw-HqZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <barButtonItem title="Sign Out" style="done" id="RTm-wb-5aT">
+                    <color key="tintColor" name="RefreshRed"/>
+                    <connections>
+                        <action selector="signOut:" destination="Qcm-t0-PIR" id="B0H-o6-3Cq"/>
+                    </connections>
+                </barButtonItem>
+            </objects>
+            <point key="canvasLocation" x="2313" y="1193"/>
+        </scene>
         <!--Browse-->
         <scene sceneID="VHa-uP-bFU">
             <objects>
@@ -894,17 +981,25 @@ World</string>
                                                         <constraint firstAttribute="width" secondItem="H12-ip-Bbl" secondAttribute="height" multiplier="1:1" id="ZIR-f8-Jc4"/>
                                                     </constraints>
                                                 </imageView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="100" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="7iy-Zp-LEj">
+                                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="100" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="7iy-Zp-LEj">
                                                     <rect key="frame" x="71" y="12" width="203" height="36"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Short" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nhl-6I-9gW">
-                                                            <rect key="frame" x="0.0" y="0.0" width="203" height="18"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="MRz-3W-aTM">
+                                                            <rect key="frame" x="0.0" y="0.0" width="85" height="18"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="Short" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nhl-6I-9gW">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="38" height="18"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="mtL-iA-JnD">
+                                                                    <rect key="frame" x="44" y="0.0" width="41" height="18"/>
+                                                                </imageView>
+                                                            </subviews>
+                                                        </stackView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hp4-uP-55T">
-                                                            <rect key="frame" x="0.0" y="20" width="203" height="16"/>
+                                                            <rect key="frame" x="0.0" y="20" width="62" height="16"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                             <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -936,6 +1031,7 @@ World</string>
                                 </constraints>
                                 <connections>
                                     <outlet property="appIconImageView" destination="H12-ip-Bbl" id="61F-4i-4Q3"/>
+                                    <outlet property="betaBadgeView" destination="mtL-iA-JnD" id="v8W-bc-EB7"/>
                                     <outlet property="developerLabel" destination="Hp4-uP-55T" id="Cqx-3O-knq"/>
                                     <outlet property="nameLabel" destination="Nhl-6I-9gW" id="lzd-pp-PEQ"/>
                                     <outlet property="refreshButton" destination="dh4-fU-DFx" id="KWX-9y-2w8"/>
@@ -1015,11 +1111,15 @@ World</string>
     </scenes>
     <resources>
         <image name="Back" width="18" height="18"/>
+        <image name="BetaBadge" width="41" height="17"/>
         <image name="Browse" width="19.5" height="20.5"/>
         <image name="MyApps" width="28" height="24"/>
         <image name="Settings" width="21" height="21"/>
         <namedColor name="Green">
             <color red="0.22352941176470589" green="0.49411764705882355" blue="0.396078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="RefreshRed">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>

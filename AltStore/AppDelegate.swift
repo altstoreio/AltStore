@@ -82,6 +82,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         AppManager.shared.update()
         ServerManager.shared.startDiscovering()
+        
+        PatreonAPI.shared.refreshPatreonAccount()
     }
 }
 

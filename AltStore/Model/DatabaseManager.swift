@@ -115,6 +115,12 @@ extension DatabaseManager
         let activeTeam = Team.first(satisfying: predicate, in: context)
         return activeTeam
     }
+    
+    func patreonAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> PatreonAccount?
+    {
+        let patronAccount = PatreonAccount.first(in: context)
+        return patronAccount
+    }
 }
 
 private extension DatabaseManager

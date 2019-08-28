@@ -45,6 +45,7 @@ extension LaunchViewController
         super.finishLaunching()
         
         AppManager.shared.update()
+        PatreonAPI.shared.refreshPatreonAccount()
         
         self.performSegue(withIdentifier: "finishLaunching", sender: nil)
     }

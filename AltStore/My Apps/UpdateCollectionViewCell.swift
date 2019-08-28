@@ -31,6 +31,7 @@ extension UpdateCollectionViewCell
     @IBOutlet var updateButton: PillButton!
     @IBOutlet var versionDescriptionTitleLabel: UILabel!
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
+    @IBOutlet var betaBadgeView: UIImageView!
             
     override func awakeFromNib()
     {

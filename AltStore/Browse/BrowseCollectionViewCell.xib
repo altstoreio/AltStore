@@ -29,17 +29,25 @@
                                     <constraint firstAttribute="height" constant="65" id="ufl-3d-nkT"/>
                                 </constraints>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="zkp-KH-OyV">
+                            <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="zkp-KH-OyV">
                                 <rect key="frame" x="76" y="21" width="176" height="37"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xni-8I-ewW">
-                                        <rect key="frame" x="0.0" y="0.0" width="176" height="20.5"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Ykl-yo-ncv">
+                                        <rect key="frame" x="0.0" y="0.0" width="127.5" height="20.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xni-8I-ewW">
+                                                <rect key="frame" x="0.0" y="0.0" width="80.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="5gN-I2-QOB">
+                                                <rect key="frame" x="86.5" y="0.0" width="41" height="20.5"/>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B5S-HI-tWJ">
-                                        <rect key="frame" x="0.0" y="22.5" width="176" height="14.5"/>
+                                        <rect key="frame" x="0.0" y="22.5" width="57.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -108,6 +116,7 @@
             <connections>
                 <outlet property="actionButton" destination="DeC-Y2-fvR" id="VDk-4D-STy"/>
                 <outlet property="appIconImageView" destination="F2j-pX-09A" id="COe-74-adn"/>
+                <outlet property="betaBadgeView" destination="5gN-I2-QOB" id="hu7-Ax-Wbc"/>
                 <outlet property="developerLabel" destination="B5S-HI-tWJ" id="QGh-1g-fFv"/>
                 <outlet property="nameLabel" destination="xni-8I-ewW" id="V56-ZT-vFa"/>
                 <outlet property="screenshotsCollectionView" destination="RFs-qp-Ca4" id="xfi-AN-l17"/>
@@ -116,4 +125,7 @@
             </connections>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="BetaBadge" width="41" height="17"/>
+    </resources>
 </document>

@@ -71,4 +71,24 @@ extension Keychain
             self.keychain["signingCertificateSerialNumber"] = newValue
         }
     }
+    
+    var patreonAccessToken: String? {
+        get {
+            let accessToken = try? self.keychain.get("patreonAccessToken")
+            return accessToken
+        }
+        set {
+            self.keychain["patreonAccessToken"] = newValue
+        }
+    }
+    
+    var patreonRefreshToken: String? {
+        get {
+            let refreshToken = try? self.keychain.get("patreonRefreshToken")
+            return refreshToken
+        }
+        set {
+            self.keychain["patreonRefreshToken"] = newValue
+        }
+    }
 }

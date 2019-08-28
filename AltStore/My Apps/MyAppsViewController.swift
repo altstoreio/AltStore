@@ -97,6 +97,13 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.addGestureRecognizer(self.longPressGestureRecognizer)
     }
     
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        self.updateDataSource()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         guard segue.identifier == "showApp" else { return }
@@ -163,6 +170,7 @@ private extension MyAppsViewController
             cell.versionDescriptionTextView.text = app.versionDescription
             cell.appIconImageView.image = nil
             cell.appIconImageView.isIndicatingActivity = true
+            cell.betaBadgeView.isHidden = !app.isBeta
             
             cell.updateButton.isIndicatingActivity = false
             cell.updateButton.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
@@ -234,6 +242,7 @@ private extension MyAppsViewController
             let cell = cell as! InstalledAppCollectionViewCell
             cell.tintColor = tintColor
             cell.appIconImageView.isIndicatingActivity = true
+            cell.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
             
             cell.refreshButton.isIndicatingActivity = false
             cell.refreshButton.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
@@ -294,6 +303,18 @@ private extension MyAppsViewController
         }
         
         return dataSource
+    }
+    
+    func updateDataSource()
+    {
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron
+        {
+            self.dataSource.predicate = nil
+        }
+        else
+        {
+            self.dataSource.predicate = NSPredicate(format: "%K != nil AND %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
+        }
     }
 }
 

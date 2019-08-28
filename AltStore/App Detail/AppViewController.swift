@@ -37,6 +37,7 @@ class AppViewController: UIViewController
     @IBOutlet private var developerLabel: UILabel!
     @IBOutlet private var downloadButton: PillButton!
     @IBOutlet private var appIconImageView: UIImageView!
+    @IBOutlet private var betaBadgeView: UIImageView!
     
     @IBOutlet private var backgroundAppIconImageView: UIImageView!
     @IBOutlet private var backgroundBlurView: UIVisualEffectView!
@@ -88,6 +89,7 @@ class AppViewController: UIViewController
         self.appIconImageView.image = nil
         self.appIconImageView.tintColor = self.app.tintColor
         self.downloadButton.tintColor = self.app.tintColor
+        self.betaBadgeView.isHidden = !self.app.isBeta
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         

@@ -38,6 +38,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged private(set) var downloadURL: URL
     @NSManaged private(set) var tintColor: UIColor?
+    @NSManaged private(set) var isBeta: Bool
     
     @NSManaged var sortIndex: Int32
     
@@ -71,6 +72,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
         case subtitle
         case permissions
         case size
+        case isBeta = "beta"
     }
     
     required init(from decoder: Decoder) throws
@@ -106,6 +108,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
         }
         
         self.size = try container.decode(Int32.self, forKey: .size)
+        self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
         
         let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
         

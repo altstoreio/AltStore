@@ -82,7 +82,16 @@ extension InstalledApp
     
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        let predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        var predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron
+        {
+            // No additional predicate
+        }
+        else
+        {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, NSPredicate(format: "%K == NO", #keyPath(InstalledApp.storeApp.isBeta))])
+        }
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -102,9 +111,18 @@ extension InstalledApp
         // Date 6 hours before now.
         let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
         
-        let predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
+        var predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
                                     #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron
+        {
+            // No additional predicate
+        }
+        else
+        {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, NSPredicate(format: "%K == NO", #keyPath(InstalledApp.storeApp.isBeta))])
+        }
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],

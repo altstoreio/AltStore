@@ -35,17 +35,25 @@
                                                     <constraint firstAttribute="width" secondItem="jg6-wi-ngb" secondAttribute="height" multiplier="1:1" id="vt3-Qt-m21"/>
                                                 </constraints>
                                             </imageView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="100" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="2Ii-Hu-4ru">
+                                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="100" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="2Ii-Hu-4ru">
                                                 <rect key="frame" x="76" y="14" width="172" height="37"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Short" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmI-m4-Mra">
-                                                        <rect key="frame" x="0.0" y="0.0" width="172" height="20.5"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="9Zk-Mp-JI7">
+                                                        <rect key="frame" x="0.0" y="0.0" width="89.5" height="20.5"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="Short" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmI-m4-Mra">
+                                                                <rect key="frame" x="0.0" y="0.0" width="42.5" height="20.5"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="4LS-dp-4VA">
+                                                                <rect key="frame" x="48.5" y="0.0" width="41" height="20.5"/>
+                                                            </imageView>
+                                                        </subviews>
+                                                    </stackView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xaB-Kc-Par">
-                                                        <rect key="frame" x="0.0" y="22.5" width="172" height="14.5"/>
+                                                        <rect key="frame" x="0.0" y="22.5" width="57.5" height="14.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
@@ -113,6 +121,7 @@
             <viewLayoutGuide key="safeArea" id="C6r-zO-INg"/>
             <connections>
                 <outlet property="appIconImageView" destination="jg6-wi-ngb" id="j83-Dl-GT6"/>
+                <outlet property="betaBadgeView" destination="4LS-dp-4VA" id="Q2Z-AG-Y19"/>
                 <outlet property="dateLabel" destination="xaB-Kc-Par" id="mfG-3C-r7j"/>
                 <outlet property="nameLabel" destination="qmI-m4-Mra" id="LQz-w7-HNb"/>
                 <outlet property="updateButton" destination="OSL-U2-BKa" id="WbI-96-Nel"/>
@@ -122,4 +131,7 @@
             <point key="canvasLocation" x="618.39999999999998" y="96.251874062968525"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="BetaBadge" width="41" height="17"/>
+    </resources>
 </document>

@@ -32,6 +32,17 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="PatreonAccount" representedClassName="PatreonAccount" syncable="YES">
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+        <attribute name="isPatron" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="errorDescription" optional="YES" attributeType="String" syncable="YES"/>
@@ -59,6 +70,7 @@
         <attribute name="developerName" attributeType="String" syncable="YES"/>
         <attribute name="downloadURL" attributeType="URI" syncable="YES"/>
         <attribute name="iconURL" attributeType="URI" syncable="YES"/>
+        <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="localizedDescription" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="screenshotURLs" attributeType="Transformable" syncable="YES"/>
@@ -94,9 +106,10 @@
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="150"/>
+        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
         <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
         <element name="Source" positionX="-45" positionY="99" width="128" height="105"/>
-        <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="300"/>
+        <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="315"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="120"/>
     </elements>
 </model>
