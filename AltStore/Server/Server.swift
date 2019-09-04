@@ -44,7 +44,19 @@ enum ConnectionError: LocalizedError
 
 struct Server: Equatable
 {
+    var identifier: String
     var service: NetService
+    
+    var isPreferred = false
+    
+    init?(service: NetService, txtData: Data)
+    {        
+        let txtDictionary = NetService.dictionary(fromTXTRecord: txtData)
+        guard let identifierData = txtDictionary["serverID"], let identifier = String(data: identifierData, encoding: .utf8) else { return nil }
+        
+        self.identifier = identifier
+        self.service = service
+    }
     
     func send<T: Encodable>(_ payload: T, via connection: NWConnection, prependSize: Bool = true, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {

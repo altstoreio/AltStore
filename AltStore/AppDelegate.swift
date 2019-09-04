@@ -11,6 +11,7 @@ import UserNotifications
 import AVFoundation
 
 import AltSign
+import AltKit
 import Roxas
 
 private enum RefreshError: LocalizedError
@@ -67,6 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Keychain.shared.reset()
             UserDefaults.standard.firstLaunch = Date()
         }
+        
+        UserDefaults.standard.preferredServerID = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.serverID) as? String
         
         self.prepareForBackgroundFetch()
         

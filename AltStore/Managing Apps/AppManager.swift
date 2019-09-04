@@ -175,8 +175,8 @@ private extension AppManager
     {
         // Authenticate -> Download (if necessary) -> Resign -> Send -> Install.
         let group = group ?? OperationGroup()
-        
-        guard let server = ServerManager.shared.discoveredServers.first else {
+                
+        guard let server = ServerManager.shared.discoveredServers.first(where: { $0.isPreferred }) ?? ServerManager.shared.discoveredServers.first else {
             DispatchQueue.main.async {
                 group.completionHandler?(.failure(ConnectionError.serverNotFound))
             }
@@ -330,7 +330,24 @@ private extension AppManager
             
             if let error = context.error
             {
-                context.group.results[context.bundleIdentifier] = .failure(error)
+                switch error
+                {
+                case let error as ALTServerError where error.code == .deviceNotFound || error.code == .lostConnection:
+                    if let server = context.group.server, server.isPreferred
+                    {
+                        // Preferred server, so report errors normally.
+                        context.group.results[context.bundleIdentifier] = .failure(error)
+                    }
+                    else
+                    {
+                        // Not preferred server, so ignore these specific errors and throw serverNotFound instead.
+                        context.group.results[context.bundleIdentifier] = .failure(ConnectionError.serverNotFound)
+                    }
+                    
+                case let error:
+                    context.group.results[context.bundleIdentifier] = .failure(error)
+                }
+                
             }
             else if let installedApp = context.installedApp
             {

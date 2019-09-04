@@ -8,7 +8,11 @@
 
 import Foundation
 
+import Roxas
+
 extension UserDefaults
 {
     @NSManaged var firstLaunch: Date?
+    
+    @NSManaged var preferredServerID: String?
 }
