@@ -115,6 +115,8 @@
 		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
+		BF7FDA2A23203AE500B5D3A4 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF7FDA2923203AE500B5D3A4 /* LaunchAtLogin.framework */; };
+		BF7FDA2B23203AE500B5D3A4 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF7FDA2923203AE500B5D3A4 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
@@ -238,6 +240,7 @@
 			files = (
 				BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */,
 				BF0201BE22C2EFBC000B93E4 /* openssl.framework in Embed Frameworks */,
+				BF7FDA2B23203AE500B5D3A4 /* LaunchAtLogin.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,6 +384,7 @@
 		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
+		BF7FDA2923203AE500B5D3A4 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
@@ -473,6 +477,7 @@
 		BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceCertificateViewController.swift; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
+		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -496,6 +501,7 @@
 			files = (
 				BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
+				BF7FDA2A23203AE500B5D3A4 /* LaunchAtLogin.framework in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
 				BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */,
 				BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */,
@@ -785,6 +791,7 @@
 		BFD247612284B9A500981D42 = {
 			isa = PBXGroup;
 			children = (
+				BF7FDA2923203AE500B5D3A4 /* LaunchAtLogin.framework */,
 				BFD2476C2284B9A500981D42 /* AltStore */,
 				BF45868E229872EA00BD7491 /* AltServer */,
 				BF1E315122A0616100370A3C /* AltKit */,
@@ -845,6 +852,7 @@
 				BF5AB3A72285FE6C00DC914B /* AltSign.framework */,
 				BF4713A422976CFC00784A2F /* openssl.framework */,
 				1039C07E517311FC499A0B64 /* Pods_AltStore.framework */,
+				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1069,6 +1077,7 @@
 				BF45868B229872EA00BD7491 /* Resources */,
 				BF4588462298D4AA00BD7491 /* Frameworks */,
 				BF0201BC22C2EFA3000B93E4 /* Embed Frameworks */,
+				BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */,
 			);
 			buildRules = (
 			);
@@ -1235,6 +1244,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Launcher App";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/Carthage/Build/Mac/LaunchAtLogin.framework/Resources/copy-helper.sh\"\n";
 		};
 		FFB93342C7EB2021A1FFFB6A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1510,6 +1537,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					HAVE_OPENSSL,
@@ -1555,6 +1586,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					HAVE_OPENSSL,

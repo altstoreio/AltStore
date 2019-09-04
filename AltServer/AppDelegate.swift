@@ -11,6 +11,8 @@ import UserNotifications
 
 import AltSign
 
+import LaunchAtLogin
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -22,6 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet private var appMenu: NSMenu!
     @IBOutlet private var connectedDevicesMenu: NSMenu!
+    @IBOutlet private var launchAtLoginMenuItem: NSMenuItem!
     
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
@@ -58,6 +61,9 @@ private extension AppDelegate
         guard let button = self.statusItem?.button, let superview = button.superview, let window = button.window else { return }
         
         self.connectedDevices = ALTDeviceManager.shared.connectedDevices
+        
+        self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
+        self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         
         let x = button.frame.origin.x
         let y = button.frame.origin.y - 5
@@ -137,6 +143,20 @@ private extension AppDelegate
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request)
         }
+    }
+    
+    @objc func toggleLaunchAtLogin(_ item: NSMenuItem)
+    {
+        if item.state == .on
+        {
+            item.state = .off
+        }
+        else
+        {
+            item.state = .on
+        }
+        
+        LaunchAtLogin.isEnabled.toggle()
     }
 }
 

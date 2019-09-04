@@ -61,6 +61,7 @@
                         <outlet property="authenticationAppleIDTextField" destination="zLd-d8-ghZ" id="wW5-0J-zdq"/>
                         <outlet property="authenticationPasswordTextField" destination="9rp-Vx-rvB" id="ZoC-DI-jzQ"/>
                         <outlet property="connectedDevicesMenu" destination="KJ9-WY-pW1" id="Mcv-64-iFU"/>
+                        <outlet property="launchAtLoginMenuItem" destination="IyR-FQ-upe" id="Fxn-EP-hwH"/>
                     </connections>
                 </customObject>
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
@@ -92,6 +93,10 @@
                                                     <outlet property="delegate" destination="Voe-Tx-rLC" id="VYb-BL-Zri"/>
                                                 </connections>
                                             </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="1ZZ-BB-xHy"/>
+                                        <menuItem title="Launch at Login" id="IyR-FQ-upe" userLabel="Launch At Login">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="mVM-Nm-Zi9"/>
                                         <menuItem title="Quit AltServer" keyEquivalent="q" id="4sb-4s-VLi">
