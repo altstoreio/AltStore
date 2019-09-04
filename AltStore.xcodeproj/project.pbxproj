@@ -26,6 +26,8 @@
 		BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF258CE222EBAE2800023032 /* AppProtocol.swift */; };
+		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
+		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
 		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
 		BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648C22E79AC800E9056B /* ALTAppPermission.m */; };
 		BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */; };
@@ -125,6 +127,10 @@
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
 		BFB1169D22932DB100BB457C /* Apps-Staging.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps-Staging.json */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
+		BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21A23186D640022A802 /* NewsItem.swift */; };
+		BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21D231870160022A802 /* NewsViewController.swift */; };
+		BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */; };
+		BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */; };
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
 		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
 		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
@@ -279,6 +285,8 @@
 		BF1E315022A0616100370A3C /* libAltKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAltKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF219A7E22CAC431007676A6 /* AltStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltStore.entitlements; sourceTree = "<group>"; };
 		BF258CE222EBAE2800023032 /* AppProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppProtocol.swift; sourceTree = "<group>"; };
+		BF29012E2318F6B100D88A45 /* AppBannerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppBannerView.xib; sourceTree = "<group>"; };
+		BF2901302318F7A800D88A45 /* AppBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBannerView.swift; sourceTree = "<group>"; };
 		BF3D648722E79A3700E9056B /* AppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermission.swift; sourceTree = "<group>"; };
 		BF3D648B22E79AC800E9056B /* ALTAppPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPermission.h; sourceTree = "<group>"; };
 		BF3D648C22E79AC800E9056B /* ALTAppPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermission.m; sourceTree = "<group>"; };
@@ -386,6 +394,10 @@
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* Apps-Staging.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Apps-Staging.json"; sourceTree = "<group>"; };
 		BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateCollectionViewCell.xib; sourceTree = "<group>"; };
+		BFB6B21A23186D640022A802 /* NewsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItem.swift; sourceTree = "<group>"; };
+		BFB6B21D231870160022A802 /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
+		BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsCollectionViewCell.xib; sourceTree = "<group>"; };
 		BFBAC8852295C90300587369 /* Result+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Conveniences.swift"; sourceTree = "<group>"; };
 		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
 		BFBBE2DE22931F73002097FA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -740,6 +752,16 @@
 			path = Browse;
 			sourceTree = "<group>";
 		};
+		BFB6B21C2318700D0022A802 /* News */ = {
+			isa = PBXGroup;
+			children = (
+				BFB6B21D231870160022A802 /* NewsViewController.swift */,
+				BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */,
+				BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */,
+			);
+			path = News;
+			sourceTree = "<group>";
+		};
 		BFBBE2E2229320A2002097FA /* My Apps */ = {
 			isa = PBXGroup;
 			children = (
@@ -789,9 +811,10 @@
 			children = (
 				BF219A7E22CAC431007676A6 /* AltStore.entitlements */,
 				BFD2476D2284B9A500981D42 /* AppDelegate.swift */,
-				BFE338E722F10E56002E24B9 /* LaunchViewController.swift */,
 				BFD247732284B9A500981D42 /* Main.storyboard */,
+				BFE338E722F10E56002E24B9 /* LaunchViewController.swift */,
 				BFE6325822A83BA800F30809 /* Authentication */,
+				BFB6B21C2318700D0022A802 /* News */,
 				BF9ABA4322DCFF33008935CF /* Browse */,
 				BF3D64A022E7FAD800E9056B /* App Detail */,
 				BFBBE2E2229320A2002097FA /* My Apps */,
@@ -845,6 +868,8 @@
 				BF9ABA4C22DD16DE008935CF /* PillButton.swift */,
 				BF18B0F022E25DF9005C4CF5 /* ToastView.swift */,
 				BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */,
+				BF2901302318F7A800D88A45 /* AppBannerView.swift */,
+				BF29012E2318F6B100D88A45 /* AppBannerView.xib */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -879,6 +904,7 @@
 				BFBBE2DE22931F73002097FA /* App.swift */,
 				BF3D648722E79A3700E9056B /* AppPermission.swift */,
 				BFBBE2E022931F81002097FA /* InstalledApp.swift */,
+				BFB6B21A23186D640022A802 /* NewsItem.swift */,
 				BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */,
 				BF02419322F2156E00129732 /* RefreshAttempt.swift */,
 				BFE338DC22F0E7F3002E24B9 /* Source.swift */,
@@ -1175,8 +1201,10 @@
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
+				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
 				BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */,
+				BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */,
 				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1336,7 +1364,9 @@
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
+				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
+				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
 				BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */,
 				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
@@ -1375,11 +1405,13 @@
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
+				BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */,
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
+				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,

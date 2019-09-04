@@ -34,6 +34,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 guard let conflictedObject = conflict.conflictingObjects.first as? Source else { break }
 
                 let bundleIdentifiers = Set(conflictedObject.apps.map { $0.bundleIdentifier })
+                let newsItemIdentifiers = Set(conflictedObject.newsItems.map { $0.identifier })
 
                 for app in databaseObject.apps
                 {
@@ -41,6 +42,15 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     {
                         // No longer listed in Source, so remove it from database.
                         app.managedObjectContext?.delete(app)
+                    }
+                }
+                
+                for newsItem in databaseObject.newsItems
+                {
+                    if !newsItemIdentifiers.contains(newsItem.identifier)
+                    {
+                        // No longer listed in Source, so remove it from database.
+                        newsItem.managedObjectContext?.delete(newsItem)
                     }
                 }
                 

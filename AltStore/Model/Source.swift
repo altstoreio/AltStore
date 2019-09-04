@@ -23,6 +23,7 @@ class Source: NSManagedObject, Fetchable, Decodable
     
     /* Relationships */
     @objc(apps) @NSManaged private(set) var _apps: NSOrderedSet
+    @objc(newsItems) @NSManaged private(set) var _newsItems: NSOrderedSet
     
     @nonobjc var apps: [StoreApp] {
         get {
@@ -33,12 +34,22 @@ class Source: NSManagedObject, Fetchable, Decodable
         }
     }
     
+    @nonobjc var newsItems: [NewsItem] {
+        get {
+            return self._newsItems.array as! [NewsItem]
+        }
+        set {
+            self._newsItems = NSOrderedSet(array: newValue)
+        }
+    }
+    
     private enum CodingKeys: String, CodingKey
     {
         case name
         case identifier
         case sourceURL
         case apps
+        case news
     }
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
@@ -63,10 +74,31 @@ class Source: NSManagedObject, Fetchable, Decodable
             app.sortIndex = Int32(index)
         }
         
+        let newsItems = try container.decodeIfPresent([NewsItem].self, forKey: .news) ?? []
+        for (index, item) in newsItems.enumerated()
+        {
+            item.sortIndex = Int32(index)
+        }
+        
         context.insert(self)
+        
+        let appsByID = Dictionary(apps.map { ($0.bundleIdentifier, $0) }, uniquingKeysWith: { (a, b) in return a })
+        
+        for newsItem in newsItems
+        {
+            newsItem.source = self
+            
+            guard let appID = newsItem.appID else { continue }
+            
+            if let storeApp = appsByID[appID]
+            {
+                newsItem.storeApp = storeApp
+            }
+        }
         
         // Must assign after we're inserted into context.
         self._apps = NSMutableOrderedSet(array: apps)
+        self._newsItems = NSMutableOrderedSet(array: newsItems)
         
         print("Downloaded Order:", self.apps.map { $0.bundleIdentifier })
     }

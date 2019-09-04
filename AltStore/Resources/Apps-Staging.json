@@ -97,5 +97,46 @@
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png"
       ]
     }
+  ],
+  "news": [
+    {
+      "title": "Welcome to AltStore",
+      "identifier": "welcometoaltstore",
+      "caption": "Check out the FAQ for more information on how to install apps.",
+      "tintColor": "397E65",
+      "url": "http://rileytestut.com",
+      "appID": "com.rileytestut.AltStore",
+      "date": "2019-08-27"
+    }
+  ,
+    {
+      "title": "Why Clip?",
+      "identifier": "whyclip",
+      "caption": "Clip lets you track your clipboard history even when in the background, something App Store apps can't do.",
+      "tintColor": "EC008C",
+      "url": "http://rileytestut.com",
+      "imageURL": "https://user-images.githubusercontent.com/705880/63391948-32f73900-c37a-11e9-976c-275bd8d557f0.png",
+      "appID": "com.rileytestut.Clip",
+      "date": "2019-08-28"
+    },
+    {
+      "title": "Delta Now Available",
+      "identifier": "deltaavailable",
+      "caption": "After almost 5 years in development, Delta is finally finished.",
+      "tintColor": "8A28F7",
+      "imageURL": "https://boygeniusreport.files.wordpress.com/2017/05/delta-emulator-game-boy-color.jpg?quality=98&strip=all&w=782",
+      "appID": "com.rileytestut.Delta",
+      "date": "2019-08-29"
+    },
+    {
+      "title": "Delta Gaining DS Support",
+      "identifier": "deltadspreview",
+      "caption": "Check out the upcoming DS support before everyone else when you become a Patron.",
+      "tintColor": "8A28F7",
+      "imageURL": "https://boygeniusreport.files.wordpress.com/2017/05/delta-emulator-game-boy-color.jpg?quality=98&strip=all&w=782",
+      "appID": "com.rileytestut.Delta",
+      "date": "2019-08-30",
+      "notify": true
+    }
   ]
 }

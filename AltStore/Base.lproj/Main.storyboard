@@ -39,9 +39,10 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="kCE-KJ-sWv"/>
-                        <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="F8I-ea-yTZ"/>
-                        <segue destination="MGm-Zy-ffn" kind="relationship" relationship="viewControllers" id="9m0-Rb-vjU"/>
+                        <segue destination="kjR-gi-fgT" kind="relationship" relationship="viewControllers" id="eWy-uk-nwG"/>
+                        <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="dXz-Tu-hW8"/>
+                        <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
+                        <segue destination="MGm-Zy-ffn" kind="relationship" relationship="viewControllers" id="E9G-TB-973"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -594,7 +595,7 @@ World</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Tu-x9-xBb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3908" y="-1484"/>
+            <point key="canvasLocation" x="4847.1999999999998" y="-1484.7076461769116"/>
         </scene>
         <!--Settings-->
         <scene sceneID="GaO-Ug-BdZ">
@@ -908,6 +909,32 @@ World</string>
             </objects>
             <point key="canvasLocation" x="2313" y="1193"/>
         </scene>
+        <!--News-->
+        <scene sceneID="bqw-wB-hyB">
+            <objects>
+                <collectionViewController id="3sa-FZ-PTg" customClass="NewsViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="736-lq-Aef">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="40" minimumInteritemSpacing="40" id="63d-78-Y24">
+                            <size key="itemSize" width="335" height="300"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="20" minY="40" maxX="20" maxY="13"/>
+                        </collectionViewFlowLayout>
+                        <cells/>
+                        <connections>
+                            <outlet property="dataSource" destination="3sa-FZ-PTg" id="80N-Sr-Foq"/>
+                            <outlet property="delegate" destination="3sa-FZ-PTg" id="9fB-sR-8Xt"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="News" id="ZxL-Ws-lJO"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YS7-2X-joz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1517.5999999999999" y="-1749.1754122938532"/>
+        </scene>
         <!--Browse-->
         <scene sceneID="VHa-uP-bFU">
             <objects>
@@ -1107,6 +1134,25 @@ World</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kiO-UO-esV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1517.5999999999999" y="-279.31034482758622"/>
+        </scene>
+        <!--News-->
+        <scene sceneID="BV8-6J-nIv">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kjR-gi-fgT" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="News" id="fVN-ed-uO1"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="525-jF-uDK" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="3sa-FZ-PTg" kind="relationship" relationship="rootViewController" id="Dcj-St-vt5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iUr-Sd-9ER" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="750" y="-1749"/>
         </scene>
     </scenes>
     <resources>
