@@ -127,21 +127,25 @@ private extension AppDelegate
         
         let device = self.connectedDevices[index]
         ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
-            let content = UNMutableNotificationContent()
-            
             switch result
             {
             case .success:
+                let content = UNMutableNotificationContent()
                 content.title = NSLocalizedString("Installation Succeeded", comment: "")
                 content.body = String(format: NSLocalizedString("AltStore was successfully installed on %@.", comment: ""), device.name)
                 
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(request)
+                
             case .failure(let error):
-                content.title = NSLocalizedString("Installation Failed", comment: "")
-                content.body = error.localizedDescription
-            }            
-            
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            UNUserNotificationCenter.current().add(request)
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("Installation Failed", comment: "")
+                alert.informativeText = error.localizedDescription
+                
+                NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                
+                alert.runModal()
+            }
         }
     }
     
