@@ -309,7 +309,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
                 if (![provisioningProfile.teamIdentifier isEqualToString:installationProvisioningProfile.teamIdentifier])
                 {
-                    NSLog(@"Ignoring: %@", installationProvisioningProfile.teamIdentifier);
+                    NSLog(@"Ignoring: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
                     continue;
                 }
                 
