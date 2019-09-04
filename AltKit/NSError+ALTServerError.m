@@ -39,10 +39,10 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             return NSLocalizedString(@"Lost connection to AltServer.", @"");
             
         case ALTServerErrorDeviceNotFound:
-            return NSLocalizedString(@"AltServer could not locate this device.", @"");
+            return NSLocalizedString(@"AltServer could not find this device.", @"");
             
         case ALTServerErrorDeviceWriteFailed:
-            return NSLocalizedString(@"Failed to write app data to phone.", @"");
+            return NSLocalizedString(@"Failed to write app data to device.", @"");
             
         case ALTServerErrorInvalidRequest:
             return NSLocalizedString(@"AltServer received an invalid request.", @"");
