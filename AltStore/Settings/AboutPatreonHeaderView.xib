@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="AboutHeader" id="xq2-Pl-zaG" customClass="AboutPatreonHeaderView" customModule="AltStore" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="284"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="XiA-Jf-XMp">
+                    <rect key="frame" x="20" y="0.0" width="335" height="254"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bju-6l-3iA">
+                            <rect key="frame" x="0.0" y="0.0" width="335" height="183"/>
+                            <string key="text">Hey y'all!
+
+If you'd like to support my work, you can donate here. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.
+
+Thanks for all of your support 💜
+Riley</string>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yEi-L6-kQ8">
+                            <rect key="frame" x="0.0" y="203" width="335" height="51"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="51" id="l4o-vb-cMy"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                            <state key="normal" title="Support me">
+                                <color key="titleColor" name="Green"/>
+                            </state>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="XiA-Jf-XMp" firstAttribute="leading" secondItem="xq2-Pl-zaG" secondAttribute="leading" constant="20" id="Ac6-gO-UtF"/>
+                <constraint firstAttribute="trailing" secondItem="XiA-Jf-XMp" secondAttribute="trailing" constant="20" id="iAM-Q4-hP4"/>
+                <constraint firstItem="XiA-Jf-XMp" firstAttribute="top" secondItem="xq2-Pl-zaG" secondAttribute="top" id="j8p-JX-Dcz"/>
+                <constraint firstAttribute="bottom" secondItem="XiA-Jf-XMp" secondAttribute="bottom" constant="30" id="qlR-EG-83F"/>
+            </constraints>
+            <connections>
+                <outlet property="supportButton" destination="yEi-L6-kQ8" id="Dzo-vd-SnD"/>
+            </connections>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <namedColor name="Green">
+            <color red="0.22352941176470589" green="0.49411764705882355" blue="0.396078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

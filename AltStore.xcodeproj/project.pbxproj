@@ -180,7 +180,6 @@
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
 		BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E7230CC961007955AB /* PatreonAPI.swift */; };
 		BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */; };
-		BFD5D6EC230CCDA1007955AB /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6EB230CCDA1007955AB /* PatreonViewController.swift */; };
 		BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6ED230D8A86007955AB /* Patron.swift */; };
 		BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F1230DD974007955AB /* Benefit.swift */; };
 		BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F3230DDB0A007955AB /* Campaign.swift */; };
@@ -208,6 +207,9 @@
 		BFE6326822A858F300F30809 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
 		BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
+		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
+		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
+		BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */; };
 		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
 
@@ -456,7 +458,6 @@
 		BFD52C1F22A1A9EC000B7ED1 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
 		BFD5D6E7230CC961007955AB /* PatreonAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonAPI.swift; sourceTree = "<group>"; };
 		BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonAccount.swift; sourceTree = "<group>"; };
-		BFD5D6EB230CCDA1007955AB /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
 		BFD5D6ED230D8A86007955AB /* Patron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patron.swift; sourceTree = "<group>"; };
 		BFD5D6F1230DD974007955AB /* Benefit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Benefit.swift; sourceTree = "<group>"; };
 		BFD5D6F3230DDB0A007955AB /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
@@ -484,6 +485,9 @@
 		BFE6326722A858F300F30809 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		BFE6326922A85DAF00F30809 /* ReplaceCertificateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceCertificateViewController.swift; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
+		BFF0B68D23219520007A79E1 /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
+		BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonComponents.swift; sourceTree = "<group>"; };
+		BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutPatreonHeaderView.xib; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -971,7 +975,9 @@
 				BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */,
 				BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */,
 				BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */,
-				BFD5D6EB230CCDA1007955AB /* PatreonViewController.swift */,
+				BFF0B68D23219520007A79E1 /* PatreonViewController.swift */,
+				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
+				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1223,6 +1229,7 @@
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
+				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
 				BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */,
@@ -1393,7 +1400,6 @@
 				BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */,
 				BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */,
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
-				BFD5D6EC230CCDA1007955AB /* PatreonViewController.swift in Sources */,
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,
@@ -1416,6 +1422,7 @@
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
+				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
 				BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */,
 				BFE6326822A858F300F30809 /* Account.swift in Sources */,
 				BFE6326622A857C200F30809 /* Team.swift in Sources */,
@@ -1458,6 +1465,7 @@
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,
+				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
 			);

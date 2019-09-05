@@ -12,6 +12,8 @@ import Roxas
 
 class NavigationBar: UINavigationBar
 {
+    @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
+    
     private let backgroundColorView = UIView()
     
     override init(frame: CGRect)
@@ -55,11 +57,14 @@ class NavigationBar: UINavigationBar
             self.insertSubview(self.backgroundColorView, at: 1)
         }
         
-        // We can't easily shift just the back button up, so we shift the entire content view slightly.
-        for contentView in self.subviews
+        if self.automaticallyAdjustsItemPositions
         {
-            guard NSStringFromClass(type(of: contentView)).contains("ContentView") else { continue }
-            contentView.center.y -= 2
+            // We can't easily shift just the back button up, so we shift the entire content view slightly.
+            for contentView in self.subviews
+            {
+                guard NSStringFromClass(type(of: contentView)).contains("ContentView") else { continue }
+                contentView.center.y -= 2
+            }
         }
     }
 }
