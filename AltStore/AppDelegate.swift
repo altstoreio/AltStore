@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ServerManager.shared.startDiscovering()
         
+        UserDefaults.standard.registerDefaults()
+        
         if UserDefaults.standard.firstLaunch == nil
         {
             Keychain.shared.reset()
@@ -130,7 +132,10 @@ extension AppDelegate
     
     func application(_ application: UIApplication, performFetchWithCompletionHandler backgroundFetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void)
     {
-        ServerManager.shared.startDiscovering()
+        if UserDefaults.standard.isBackgroundRefreshEnabled
+        {
+            ServerManager.shared.startDiscovering()
+        }
         
         let refreshIdentifier = UUID().uuidString
         
@@ -140,9 +145,11 @@ extension AppDelegate
             {
                 // If finish is actually called, that means an error occured during installation.
                 
-                ServerManager.shared.stopDiscovering()
-                
-                self.scheduleFinishedRefreshingNotification(for: result, identifier: refreshIdentifier, delay: 0)
+                if UserDefaults.standard.isBackgroundRefreshEnabled
+                {
+                    ServerManager.shared.stopDiscovering()
+                    self.scheduleFinishedRefreshingNotification(for: result, identifier: refreshIdentifier, delay: 0)
+                }
                 
                 taskCompletionHandler()
             }
@@ -183,87 +190,162 @@ private extension AppDelegate
                      backgroundFetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void,
                      completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
     {
-        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+        var fetchSourceResult: Result<Source, Error>?
+        var serversResult: Result<Void, Error>?
+        
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        
+        AppManager.shared.fetchSource() { (result) in
+            fetchSourceResult = result
             
-            let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: context)
-            guard !installedApps.isEmpty else {
-                backgroundFetchCompletionHandler(.noData)
-                completionHandler(.failure(RefreshError.noInstalledApps))
-                return
-            }
-            
-            self.runningApplications = []
-            
-            let identifiers = installedApps.compactMap { $0.bundleIdentifier }
-            print("Apps to refresh:", identifiers)
-            
-            DispatchQueue.global().async {
-                let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
+            do
+            {
+                let source = try result.get()
                 
-                for identifier in identifiers
+                guard let context = source.managedObjectContext else { return }
+                
+                let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
+                previousUpdatesFetchRequest.includesPendingChanges = false
+                previousUpdatesFetchRequest.resultType = .dictionaryResultType
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier)]
+                
+                let previousUpdates = try context.fetch(previousUpdatesFetchRequest) as! [[String: String]]
+                
+                try context.save()
+                
+                let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                let updates = try context.fetch(updatesFetchRequest)
+                
+                for update in updates
                 {
-                    let appIsRunningNotification = CFNotificationName.appIsRunning(for: identifier)
-                    CFNotificationCenterAddObserver(notificationCenter, nil, ReceivedApplicationState, appIsRunningNotification.rawValue, nil, .deliverImmediately)
+                    guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
+                    guard let storeApp = update.storeApp else { continue }
                     
-                    let requestAppStateNotification = CFNotificationName.requestAppState(for: identifier)
-                    CFNotificationCenterPostNotification(notificationCenter, requestAppStateNotification, nil, nil, true)
+                    let content = UNMutableNotificationContent()
+                    content.title = NSLocalizedString("New Update Available", comment: "")
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
+                    
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
+
+                DispatchQueue.main.async {
+                    UIApplication.shared.applicationIconBadgeNumber = updates.count
                 }
             }
-            
-            var fetchSourceResult: Result<Source, Error>?
-            var serversResult: Result<Void, Error>?
-            
-            let dispatchGroup = DispatchGroup()
-            dispatchGroup.enter()
-            dispatchGroup.enter()
-            
-            AppManager.shared.fetchSource() { (result) in
-                fetchSourceResult = result
-                dispatchGroup.leave()
+            catch
+            {
+                print("Error fetching apps:", error)
                 
-                do
-                {
-                    let source = try result.get()
+                fetchSourceResult = .failure(error)
+            }
+            
+            dispatchGroup.leave()
+        }
+        
+        if UserDefaults.standard.isBackgroundRefreshEnabled
+        {
+            dispatchGroup.enter()
+            
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                
+                let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: context)
+                guard !installedApps.isEmpty else {
+                    serversResult = .success(())
+                    dispatchGroup.leave()
                     
-                    guard let context = source.managedObjectContext else { return }
+                    completionHandler(.failure(RefreshError.noInstalledApps))
                     
-                    let updatesFetchRequest = InstalledApp.updatesFetchRequest()
-                    updatesFetchRequest.includesPendingChanges = true
+                    return
+                }
+                
+                self.runningApplications = []
+                
+                let identifiers = installedApps.compactMap { $0.bundleIdentifier }
+                print("Apps to refresh:", identifiers)
+                
+                DispatchQueue.global().async {
+                    let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
                     
-                    let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest()
-                    previousUpdatesFetchRequest.includesPendingChanges = false
-                    
-                    let previousUpdates = try context.fetch(previousUpdatesFetchRequest)
-                    
-                    try context.save()
-                    
-                    let updates = try context.fetch(updatesFetchRequest)
-                    
-                    for update in updates
+                    for identifier in identifiers
                     {
-                        guard !previousUpdates.contains(where: { $0.bundleIdentifier == update.bundleIdentifier }) else { continue }
+                        let appIsRunningNotification = CFNotificationName.appIsRunning(for: identifier)
+                        CFNotificationCenterAddObserver(notificationCenter, nil, ReceivedApplicationState, appIsRunningNotification.rawValue, nil, .deliverImmediately)
                         
-                        guard let storeApp = update.storeApp else { continue }
-                        
-                        let content = UNMutableNotificationContent()
-                        content.title = NSLocalizedString("New Update Available", comment: "")
-                        content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
-                        
-                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                        UNUserNotificationCenter.current().add(request)
-                    }
-                    
-                    DispatchQueue.main.async {
-                        UIApplication.shared.applicationIconBadgeNumber = updates.count
+                        let requestAppStateNotification = CFNotificationName.requestAppState(for: identifier)
+                        CFNotificationCenterPostNotification(notificationCenter, requestAppStateNotification, nil, nil, true)
                     }
                 }
-                catch
-                {
-                    print("Error fetching apps:", error)
+                
+                // Wait for three seconds to:
+                // a) give us time to discover AltServers
+                // b) give other processes a chance to respond to requestAppState notification
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    context.perform {
+                        if ServerManager.shared.discoveredServers.isEmpty
+                        {
+                            serversResult = .failure(ConnectionError.serverNotFound)
+                        }
+                        else
+                        {
+                            serversResult = .success(())
+                        }
+                        
+                        dispatchGroup.leave()
+                        
+                        let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.bundleIdentifier) ?? false) }
+                        print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
+                        
+                        let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
+                        group.beginInstallationHandler = { (installedApp) in
+                            guard installedApp.bundleIdentifier == StoreApp.altstoreAppID else { return }
+                            
+                            // We're starting to install AltStore, which means the app is about to quit.
+                            // So, we schedule a "refresh successful" local notification to be displayed after a delay,
+                            // but if the app is still running, we cancel the notification.
+                            // Then, we schedule another notification and repeat the process.
+                            
+                            // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
+                            
+                            if let error = group.error
+                            {
+                                self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: identifier)
+                            }
+                            else
+                            {
+                                var results = group.results
+                                results[installedApp.bundleIdentifier] = .success(installedApp)
+                                
+                                self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: identifier)
+                            }
+                        }
+                        group.completionHandler = { (result) in
+                            completionHandler(result)
+                        }
+                    }
                 }
             }
-            
-            dispatchGroup.notify(queue: .main) {
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            if !UserDefaults.standard.isBackgroundRefreshEnabled
+            {
+                guard let fetchSourceResult = fetchSourceResult else {
+                    backgroundFetchCompletionHandler(.failed)
+                    return
+                }
+                
+                switch fetchSourceResult
+                {
+                case .failure: backgroundFetchCompletionHandler(.failed)
+                case .success: backgroundFetchCompletionHandler(.newData)
+                }
+                
+                completionHandler(.success([:]))
+            }
+            else
+            {
                 guard let fetchSourceResult = fetchSourceResult, let serversResult = serversResult else {
                     backgroundFetchCompletionHandler(.failed)
                     return
@@ -275,54 +357,6 @@ private extension AppDelegate
                 case (.success, .success): backgroundFetchCompletionHandler(.newData)
                 case (.success, .failure(ConnectionError.serverNotFound)): backgroundFetchCompletionHandler(.newData)
                 case (.failure, _), (_, .failure): backgroundFetchCompletionHandler(.failed)
-                }
-            }
-            
-            // Wait for three seconds to:
-            // a) give us time to discover AltServers
-            // b) give other processes a chance to respond to requestAppState notification
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                context.perform {
-                    if ServerManager.shared.discoveredServers.isEmpty
-                    {
-                        serversResult = .failure(ConnectionError.serverNotFound)
-                    }
-                    else
-                    {
-                        serversResult = .success(())
-                    }
-                    
-                    dispatchGroup.leave()
-                    
-                    let filteredApps = installedApps.filter { !(self.runningApplications?.contains($0.bundleIdentifier) ?? false) }
-                    print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
-                    
-                    let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
-                    group.beginInstallationHandler = { (installedApp) in
-                        guard installedApp.bundleIdentifier == StoreApp.altstoreAppID else { return }
-                        
-                        // We're starting to install AltStore, which means the app is about to quit.
-                        // So, we schedule a "refresh successful" local notification to be displayed after a delay,
-                        // but if the app is still running, we cancel the notification.
-                        // Then, we schedule another notification and repeat the process.
-                        
-                        // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
-                        
-                        if let error = group.error
-                        {
-                            self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: identifier)
-                        }
-                        else
-                        {
-                            var results = group.results
-                            results[installedApp.bundleIdentifier] = .success(installedApp)
-                            
-                            self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: identifier)
-                        }
-                    }
-                    group.completionHandler = { (result) in
-                        completionHandler(result)
-                    }
                 }
             }
         }

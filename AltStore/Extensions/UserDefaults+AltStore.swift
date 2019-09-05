@@ -15,4 +15,11 @@ extension UserDefaults
     @NSManaged var firstLaunch: Date?
     
     @NSManaged var preferredServerID: String?
+    
+    @NSManaged var isBackgroundRefreshEnabled: Bool
+    
+    func registerDefaults()
+    {
+        self.register(defaults: [#keyPath(UserDefaults.isBackgroundRefreshEnabled): true])
+    }
 }
