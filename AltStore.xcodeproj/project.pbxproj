@@ -188,7 +188,6 @@
 		BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */; };
 		BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */; };
-		BFDB69FD22A9A7B7007EA6D6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */; };
 		BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */; };
 		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
@@ -197,6 +196,11 @@
 		BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DC22F0E7F3002E24B9 /* Source.swift */; };
 		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
+		BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE60737231ADF49002B0E8E /* Settings.storyboard */; };
+		BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60739231ADF82002B0E8E /* SettingsViewController.swift */; };
+		BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */; };
+		BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */; };
+		BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */; };
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
 		BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */; };
 		BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */; };
@@ -460,7 +464,6 @@
 		BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsComponents.swift; sourceTree = "<group>"; };
 		BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+RelativeDate.swift"; sourceTree = "<group>"; };
 		BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BrowseCollectionViewCell.xib; sourceTree = "<group>"; };
-		BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignAppOperation.swift; sourceTree = "<group>"; };
 		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
@@ -469,6 +472,11 @@
 		BFE338DC22F0E7F3002E24B9 /* Source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
 		BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSourceOperation.swift; sourceTree = "<group>"; };
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
+		BFE60737231ADF49002B0E8E /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		BFE60739231ADF82002B0E8E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeaderFooterView.xib; sourceTree = "<group>"; };
+		BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetGroupTableViewCell.swift; sourceTree = "<group>"; };
+		BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderFooterView.swift; sourceTree = "<group>"; };
 		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		BFE6325B22A83C0100F30809 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		BFE6325D22A8497000F30809 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
@@ -957,7 +965,11 @@
 		BFDB69FB22A9A7A6007EA6D6 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				BFDB69FC22A9A7B7007EA6D6 /* SettingsViewController.swift */,
+				BFE60737231ADF49002B0E8E /* Settings.storyboard */,
+				BFE60739231ADF82002B0E8E /* SettingsViewController.swift */,
+				BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */,
+				BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */,
+				BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */,
 				BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */,
 				BFD5D6EB230CCDA1007955AB /* PatreonViewController.swift */,
 			);
@@ -1207,12 +1219,14 @@
 			files = (
 				BFB1169D22932DB100BB457C /* Apps-Staging.json in Resources */,
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
+				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
 				BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */,
+				BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */,
 				BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */,
 				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
 			);
@@ -1383,15 +1397,16 @@
 				BFE6325E22A8497000F30809 /* SelectTeamViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,
-				BFDB69FD22A9A7B7007EA6D6 /* SettingsViewController.swift in Sources */,
 				BFE6326A22A85DAF00F30809 /* ReplaceCertificateViewController.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
+				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
+				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
 				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
 				BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */,
@@ -1410,6 +1425,7 @@
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */,
+				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFE6325C22A83C0100F30809 /* AuthenticationViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,

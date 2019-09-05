@@ -1,37 +1,45 @@
 //
-//  AccountViewController.swift
+//  SettingsViewController.swift
 //  AltStore
 //
-//  Created by Riley Testut on 6/6/19.
+//  Created by Riley Testut on 8/31/19.
 //  Copyright © 2019 Riley Testut. All rights reserved.
 //
 
 import UIKit
 
-import Roxas
+extension SettingsViewController
+{
+    fileprivate enum Section: Int, CaseIterable
+    {
+        case signIn
+        case account
+        case patreon
+        case backgroundRefresh
+        case debug
+    }
+}
 
 class SettingsViewController: UITableViewController
 {
-    private var team: Team?
+    private var activeTeam: Team?
     
-    private lazy var placeholderView = self.makePlaceholderView()
+    private var prototypeHeaderFooterView: SettingsHeaderFooterView!
     
-    @IBOutlet var accountNameLabel: UILabel!
-    @IBOutlet var accountEmailLabel: UILabel!
+    @IBOutlet private var accountNameLabel: UILabel!
+    @IBOutlet private var accountEmailLabel: UILabel!
+    @IBOutlet private var accountTypeLabel: UILabel!
     
-    @IBOutlet var teamNameLabel: UILabel!
-    @IBOutlet var teamTypeLabel: UILabel!
+    @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        self.update()
-    }
-    
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
+        let nib = UINib(nibName: "SettingsHeaderFooterView", bundle: nil)
+        self.prototypeHeaderFooterView = nib.instantiate(withOwner: nil, options: nil)[0] as? SettingsHeaderFooterView
+        
+        self.tableView.register(nib, forHeaderFooterViewReuseIdentifier: "HeaderFooterView")
         
         self.update()
     }
@@ -39,73 +47,92 @@ class SettingsViewController: UITableViewController
 
 private extension SettingsViewController
 {
-    func makePlaceholderView() -> RSTPlaceholderView
-    {
-        let placeholderView = RSTPlaceholderView()
-        placeholderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        placeholderView.textLabel.text = NSLocalizedString("Not Signed In", comment: "")
-        placeholderView.detailTextLabel.text = NSLocalizedString("Please sign in with your Apple ID to download and refresh apps.", comment: "")
-        
-        let signInButton = UIButton(type: .system)
-        signInButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        signInButton.setTitle(NSLocalizedString("Sign In", comment: ""), for: .normal)
-        signInButton.addTarget(self, action: #selector(SettingsViewController.signIn(_:)), for: .primaryActionTriggered)
-        placeholderView.stackView.addArrangedSubview(signInButton)
-        
-        return placeholderView
-    }
-    
     func update()
     {
         if let team = DatabaseManager.shared.activeTeam()
         {
-            self.tableView.separatorStyle = .singleLine
-            self.tableView.isScrollEnabled = true
-            self.tableView.backgroundView = nil
-            
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-            
-            self.accountNameLabel.text = team.account.localizedName
+            self.accountNameLabel.text = team.name
             self.accountEmailLabel.text = team.account.appleID
+            self.accountTypeLabel.text = team.type.localizedDescription
             
-            self.teamNameLabel.text = team.name
-            self.teamTypeLabel.text = team.type.localizedDescription
-            
-            self.team = team
+            self.activeTeam = team
         }
         else
         {
-            self.tableView.separatorStyle = .none
-            self.tableView.isScrollEnabled = false
-            self.tableView.backgroundView = self.placeholderView
-            
-            self.navigationItem.rightBarButtonItem?.isEnabled = false
-            
-            self.team = nil
+            self.activeTeam = nil
         }
+        
+        self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         
         if self.isViewLoaded
         {
             self.tableView.reloadData()
         }
     }
+    
+    func prepare(_ settingsHeaderFooterView: SettingsHeaderFooterView, for section: Section, isHeader: Bool)
+    {
+        settingsHeaderFooterView.primaryLabel.isHidden = !isHeader
+        settingsHeaderFooterView.secondaryLabel.isHidden = isHeader
+        settingsHeaderFooterView.button.isHidden = true
+        
+        settingsHeaderFooterView.layoutMargins.bottom = isHeader ? 0 : 8
+        
+        switch section
+        {
+        case .signIn:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from AltStore.", comment: "")
+            }
+            
+        case .patreon:
+            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Donate and receive access to beta versions of AltStore, Delta, and more.", comment: "")
+            
+        case .account:
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
+            
+            settingsHeaderFooterView.button.setTitle(NSLocalizedString("SIGN OUT", comment: ""), for: .normal)
+            settingsHeaderFooterView.button.addTarget(self, action: #selector(SettingsViewController.signOut(_:)), for: .primaryActionTriggered)
+            settingsHeaderFooterView.button.isHidden = false
+            
+        case .backgroundRefresh:
+            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
+            
+        case .debug:
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DEBUG", comment: "")
+        }
+    }
+    
+    func preferredHeight(for settingsHeaderFooterView: SettingsHeaderFooterView, in section: Section, isHeader: Bool) -> CGFloat
+    {
+        let widthConstraint = settingsHeaderFooterView.contentView.widthAnchor.constraint(equalToConstant: tableView.bounds.width)
+        NSLayoutConstraint.activate([widthConstraint])
+        defer { NSLayoutConstraint.deactivate([widthConstraint]) }
+        
+        self.prepare(settingsHeaderFooterView, for: section, isHeader: isHeader)
+        
+        let size = settingsHeaderFooterView.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        return size.height
+    }
 }
 
 private extension SettingsViewController
 {
-    @objc func signIn(_ sender: UIButton)
+    func signIn()
     {
-        sender.isIndicatingActivity = true
-        
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
-                sender.isIndicatingActivity = false
                 self.update()
             }
         }
     }
     
-    @IBAction func signOut(_ sender: UIBarButtonItem)
+    @objc func signOut(_ sender: UIBarButtonItem)
     {
         func signOut()
         {
@@ -113,14 +140,7 @@ private extension SettingsViewController
                 DispatchQueue.main.async {
                     if let error = error
                     {
-                        let toastView = RSTToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.tintColor = .red
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
-                    }
-                    else
-                    {
-                        let toastView = RSTToastView(text: NSLocalizedString("Successfully Signed Out!", comment: ""), detailText: nil)
-                        toastView.tintColor = .altPurple
+                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                     }
                     
@@ -134,15 +154,101 @@ private extension SettingsViewController
         alertController.addAction(.cancel)
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    @IBAction func toggleIsBackgroundRefreshEnabled(_ sender: UISwitch)
+    {
+        UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
+    }
 }
 
 extension SettingsViewController
 {
-    override func numberOfSections(in tableView: UITableView) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        let count = (self.team == nil) ? 0 : super.numberOfSections(in: tableView)
-        return count
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .signIn: return (self.activeTeam == nil) ? 1 : 0
+        case .account: return (self.activeTeam == nil) ? 0 : 3
+        default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .signIn where self.activeTeam != nil: return nil
+        case .account where self.activeTeam == nil: return nil
+            
+        case .signIn, .account, .debug:
+            let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
+            self.prepare(headerView, for: section, isHeader: true)
+            return headerView
+            
+        default: return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .signIn where self.activeTeam != nil: return nil
+            
+        case .signIn, .patreon, .backgroundRefresh:
+            let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
+            self.prepare(footerView, for: section, isHeader: false)
+            return footerView
+            
+        default: return nil
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .signIn where self.activeTeam != nil: return 1.0
+        case .account where self.activeTeam == nil: return 1.0
+            
+        case .signIn, .account, .debug:
+            let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
+            return height
+            
+        default: return 0.0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .signIn where self.activeTeam != nil: return 1.0
+        case .account where self.activeTeam == nil: return 1.0
+            
+        case .signIn, .patreon, .backgroundRefresh:
+            let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
+            return height
+            
+        default: return 0.0
+        }
     }
 }
 
-
+extension SettingsViewController
+{
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let section = Section.allCases[indexPath.section]
+        switch section
+        {
+        case .signIn: self.signIn()
+        default: break
+        }
+    }
+}
