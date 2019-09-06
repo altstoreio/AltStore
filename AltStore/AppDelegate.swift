@@ -210,12 +210,21 @@ private extension AppDelegate
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
                 previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier)]
                 
+                let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+                previousNewsItemsFetchRequest.includesPendingChanges = false
+                previousNewsItemsFetchRequest.resultType = .dictionaryResultType
+                previousNewsItemsFetchRequest.propertiesToFetch = [#keyPath(NewsItem.identifier)]
+                
                 let previousUpdates = try context.fetch(previousUpdatesFetchRequest) as! [[String: String]]
+                let previousNewsItems = try context.fetch(previousNewsItemsFetchRequest) as! [[String: String]]
                 
                 try context.save()
                 
                 let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                let newsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
+                
                 let updates = try context.fetch(updatesFetchRequest)
+                let newsItems = try context.fetch(newsItemsFetchRequest)
                 
                 for update in updates
                 {
@@ -225,6 +234,28 @@ private extension AppDelegate
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
                     content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
+                    
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
+                
+                for newsItem in newsItems
+                {
+                    guard !previousNewsItems.contains(where: { $0[#keyPath(NewsItem.identifier)] == newsItem.identifier }) else { continue }
+                    guard !newsItem.isSilent else { continue }
+                    
+                    let content = UNMutableNotificationContent()
+                    
+                    if let app = newsItem.storeApp
+                    {
+                        content.title = String(format: NSLocalizedString("%@ News", comment: ""), app.name)
+                    }
+                    else
+                    {
+                        content.title = NSLocalizedString("AltStore News", comment: "")
+                    }
+                    
+                    content.body = newsItem.title
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                     UNUserNotificationCenter.current().add(request)
