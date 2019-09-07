@@ -34,17 +34,22 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
 {
     private weak var presentingViewController: UIViewController?
     
-    private lazy var navigationController = UINavigationController()
+    private lazy var navigationController: UINavigationController = {
+        let navigationController = self.storyboard.instantiateViewController(withIdentifier: "navigationController") as! UINavigationController
+        return navigationController
+    }()
+    
     private lazy var storyboard = UIStoryboard(name: "Authentication", bundle: nil)
     
     private var appleIDPassword: String?
+    private var shouldShowInstructions = false
     
     init(presentingViewController: UIViewController?)
     {
         self.presentingViewController = presentingViewController
         
         super.init()
-        
+                
         self.progress.totalUnitCount = 3
     }
     
@@ -82,8 +87,10 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
                             case .success(let certificate):
                                 self.progress.completedUnitCount += 1
                                 
-                                let signer = ALTSigner(team: team, certificate: certificate)
-                                self.finish(.success(signer))
+                                self.showInstructionsIfNecessary() { (didShowInstructions) in
+                                    let signer = ALTSigner(team: team, certificate: certificate)
+                                    self.finish(.success(signer))
+                                }                                
                             }
                         }
                     }
@@ -161,7 +168,7 @@ private extension AuthenticationOperation
     {
         guard let presentingViewController = self.presentingViewController else { return false }
         
-        self.navigationController.view.tintColor = .altPurple
+        self.navigationController.view.tintColor = .white
         
         if self.navigationController.viewControllers.isEmpty
         {
@@ -191,8 +198,11 @@ private extension AuthenticationOperation
                 authenticationViewController.authenticationHandler = { (result) in
                     if let (account, password) = result
                     {
-                        self.appleIDPassword = password
+                        // We presented the Auth UI and the user signed in.
+                        // In this case, we'll assume we should show the instructions again.
+                        self.shouldShowInstructions = true
                         
+                        self.appleIDPassword = password
                         completionHandler(.success(account))
                     }
                     else
@@ -242,38 +252,29 @@ private extension AuthenticationOperation
     {
         func selectTeam(from teams: [ALTTeam])
         {
-            if let team = teams.first, teams.count == 1
+            if let team = teams.first(where: { $0.type == .free })
             {
                 return completionHandler(.success(team))
             }
-            
-            DispatchQueue.main.async {
-                let selectTeamViewController = self.storyboard.instantiateViewController(withIdentifier: "selectTeamViewController") as! SelectTeamViewController
-                selectTeamViewController.teams = teams
-                selectTeamViewController.selectionHandler = { (team) in
-                    if let team = team
-                    {
-                        completionHandler(.success(team))
-                    }
-                    else
-                    {
-                        completionHandler(.failure(OperationError.cancelled))
-                    }
-                }
-                
-                if !self.present(selectTeamViewController)
-                {
-                    completionHandler(.failure(AuthenticationError.noTeam))
-                }
+            else if let team = teams.first(where: { $0.type == .individual })
+            {
+                return completionHandler(.success(team))
+            }
+            else if let team = teams.first
+            {
+                return completionHandler(.success(team))
+            }
+            else
+            {
+                return completionHandler(.failure(AuthenticationError.noTeam))
             }
         }
-        
+
         ALTAppleAPI.shared.fetchTeams(for: account) { (teams, error) in
             switch Result(teams, error)
             {
             case .failure(let error): completionHandler(.failure(error))
             case .success(let teams):
-                
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                     if let activeTeam = DatabaseManager.shared.activeTeam(in: context), let altTeam = teams.first(where: { $0.identifier == activeTeam.identifier })
                     {
@@ -326,40 +327,16 @@ private extension AuthenticationOperation
         
         func replaceCertificate(from certificates: [ALTCertificate])
         {
-            if let certificate = certificates.first, certificates.count == 1
-            {
-                ALTAppleAPI.shared.revoke(certificate, for: team) { (success, error) in
-                    if let error = error, !success
-                    {
-                        completionHandler(.failure(error))
-                    }
-                    else
-                    {
-                        requestCertificate()
-                    }
-                }
-                
-                return
-            }
+            guard let certificate = certificates.first else { return completionHandler(.failure(AuthenticationError.noCertificate)) }
             
-            DispatchQueue.main.async {
-                let replaceCertificateViewController = self.storyboard.instantiateViewController(withIdentifier: "replaceCertificateViewController") as! ReplaceCertificateViewController
-                replaceCertificateViewController.team = team
-                replaceCertificateViewController.certificates = certificates
-                replaceCertificateViewController.replacementHandler = { (certificate) in
-                    if certificate != nil
-                    {
-                        requestCertificate()
-                    }
-                    else
-                    {
-                        completionHandler(.failure(OperationError.cancelled))
-                    }
-                }
-                
-                if !self.present(replaceCertificateViewController)
+            ALTAppleAPI.shared.revoke(certificate, for: team) { (success, error) in
+                if let error = error, !success
                 {
-                    completionHandler(.failure(AuthenticationError.noCertificate))
+                    completionHandler(.failure(error))
+                }
+                else
+                {
+                    requestCertificate()
                 }
             }
         }
@@ -393,4 +370,21 @@ private extension AuthenticationOperation
         }
     }
     
+    func showInstructionsIfNecessary(completionHandler: @escaping (Bool) -> Void)
+    {
+        guard self.shouldShowInstructions else { return completionHandler(false) }
+        
+        DispatchQueue.main.async {
+            let instructionsViewController = self.storyboard.instantiateViewController(withIdentifier: "instructionsViewController") as! InstructionsViewController
+            instructionsViewController.showsBottomButton = true
+            instructionsViewController.completionHandler = {
+                completionHandler(true)
+            }
+            
+            if !self.present(instructionsViewController)
+            {
+                completionHandler(false)
+            }
+        }
+    }
 }
