@@ -143,6 +143,11 @@ extension PatreonAPI
         self.send(request, authorizationType: .user) { (result: Result<AccountResponse, Swift.Error>) in
             switch result
             {
+            case .failure(Error.notAuthenticated):
+                self.signOut() { (result) in
+                    completion(.failure(Error.notAuthenticated))
+                }
+                
             case .failure(let error): completion(.failure(error))
             case .success(let response):
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
