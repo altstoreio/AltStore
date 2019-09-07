@@ -173,7 +173,7 @@
                                                             <rect key="frame" x="236" y="31" width="72" height="31"/>
                                                             <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="72" id="j44-T1-0dc"/>
+                                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="j44-T1-0dc"/>
                                                                 <constraint firstAttribute="height" constant="31" id="qY2-Ng-KJy"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
@@ -239,7 +239,7 @@
                                 <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="S2r-fI-PQB"/>
-                                    <constraint firstAttribute="width" constant="72" id="Xtq-UG-h3b"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="Xtq-UG-h3b"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                 <state key="normal" title="FREE"/>
@@ -842,6 +842,7 @@ World</string>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="525-jF-uDK" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <edgeInsets key="layoutMargins" top="8" left="20" bottom="8" right="8"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

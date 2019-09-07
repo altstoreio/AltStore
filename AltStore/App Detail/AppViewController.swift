@@ -370,6 +370,17 @@ private extension AppViewController
             button.progress = progress
         }
         
+        if Date() < self.app.versionDate
+        {
+            self.downloadButton.countdownDate = self.app.versionDate
+            self.navigationBarDownloadButton.countdownDate = self.app.versionDate
+        }
+        else
+        {
+            self.downloadButton.countdownDate = nil
+            self.navigationBarDownloadButton.countdownDate = nil
+        }
+        
         let barButtonItem = self.navigationItem.rightBarButtonItem
         self.navigationItem.rightBarButtonItem = nil
         self.navigationItem.rightBarButtonItem = barButtonItem

@@ -16,9 +16,8 @@ class FetchSourceOperation: ResultOperation<Source>
     
     private let session = URLSession(configuration: .default)
     
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+    private lazy var dateFormatter: ISO8601DateFormatter = {
+        let dateFormatter = ISO8601DateFormatter()
         return dateFormatter
     }()
     
@@ -38,7 +37,27 @@ class FetchSourceOperation: ResultOperation<Source>
                     let (data, _) = try Result((data, response), error).get()
                     
                     let decoder = JSONDecoder()
-                    decoder.dateDecodingStrategy = .formatted(self.dateFormatter)
+                    decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
+                        let container = try decoder.singleValueContainer()
+                        let text = try container.decode(String.self)
+                        
+                        // Full ISO8601 Format.
+                        self.dateFormatter.formatOptions = [.withFullDate, .withFullTime, .withTimeZone]
+                        if let date = self.dateFormatter.date(from: text)
+                        {
+                            return date
+                        }
+                        
+                        // Just date portion of ISO8601.
+                        self.dateFormatter.formatOptions = [.withFullDate]
+                        if let date = self.dateFormatter.date(from: text)
+                        {
+                            return date
+                        }
+                        
+                        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date is in invalid format.")
+                    })
+                    
                     decoder.managedObjectContext = context
                     
                     let source = try decoder.decode(Source.self, from: data)

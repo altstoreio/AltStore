@@ -269,12 +269,22 @@ extension NewsViewController
             let progress = AppManager.shared.installationProgress(for: storeApp)
             footerView.bannerView.button.progress = progress
             footerView.bannerView.button.isInverted = false
+            
+            if Date() < storeApp.versionDate
+            {
+                footerView.bannerView.button.countdownDate = storeApp.versionDate
+            }
+            else
+            {
+                footerView.bannerView.button.countdownDate = nil
+            }
         }
         else
         {
             footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
             footerView.bannerView.button.progress = nil
             footerView.bannerView.button.isInverted = true
+            footerView.bannerView.button.countdownDate = nil
         }
         
         Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView)

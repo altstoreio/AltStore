@@ -88,12 +88,22 @@ private extension BrowseViewController
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.actionButton.progress = progress
                 cell.actionButton.isInverted = false
+                
+                if Date() < app.versionDate
+                {
+                    cell.actionButton.countdownDate = app.versionDate
+                }
+                else
+                {
+                    cell.actionButton.countdownDate = nil
+                }
             }
             else
             {
                 cell.actionButton.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
                 cell.actionButton.progress = nil
                 cell.actionButton.isInverted = true
+                cell.actionButton.countdownDate = nil
             }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in

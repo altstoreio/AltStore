@@ -58,7 +58,7 @@
                                 <rect key="frame" x="263" y="24" width="72" height="31"/>
                                 <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="72" id="X7D-DN-WnD"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="X7D-DN-WnD"/>
                                     <constraint firstAttribute="height" constant="31" id="svo-Sc-wpR"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
