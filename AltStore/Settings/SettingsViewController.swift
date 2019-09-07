@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 extension SettingsViewController
 {
@@ -16,7 +17,16 @@ extension SettingsViewController
         case account
         case patreon
         case backgroundRefresh
+        case instructions
+        case credits
         case debug
+    }
+    
+    fileprivate enum CreditsRow: Int, CaseIterable
+    {
+        case developer
+        case designer
+        case softwareLicenses
     }
 }
 
@@ -40,6 +50,13 @@ class SettingsViewController: UITableViewController
         self.prototypeHeaderFooterView = nib.instantiate(withOwner: nil, options: nil)[0] as? SettingsHeaderFooterView
         
         self.tableView.register(nib, forHeaderFooterViewReuseIdentifier: "HeaderFooterView")
+        
+        self.update()
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
         
         self.update()
     }
@@ -102,6 +119,12 @@ private extension SettingsViewController
             
         case .backgroundRefresh:
             settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
+            
+        case .instructions:
+            break
+            
+        case .credits:
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("CREDITS", comment: "")
             
         case .debug:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DEBUG", comment: "")
@@ -182,12 +205,12 @@ extension SettingsViewController
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
             
-        case .signIn, .account, .debug:
+        case .signIn, .account, .credits, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
             
-        default: return nil
+        case .patreon, .backgroundRefresh, .instructions: return nil
         }
     }
     
@@ -203,7 +226,7 @@ extension SettingsViewController
             self.prepare(footerView, for: section, isHeader: false)
             return footerView
             
-        default: return nil
+        case .account, .credits, .debug, .instructions: return nil
         }
     }
 
@@ -215,11 +238,11 @@ extension SettingsViewController
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
             
-        case .signIn, .account, .debug:
+        case .signIn, .account, .credits, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
-        default: return 0.0
+        case .patreon, .backgroundRefresh, .instructions: return 0.0
         }
     }
     
@@ -235,7 +258,7 @@ extension SettingsViewController
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
             return height
             
-        default: return 0.0
+        case .account, .credits, .debug, .instructions: return 0.0
         }
     }
 }
@@ -248,6 +271,25 @@ extension SettingsViewController
         switch section
         {
         case .signIn: self.signIn()
+        case .instructions: break
+        case .credits:
+            let row = CreditsRow.allCases[indexPath.row]
+            switch row
+            {
+            case .developer:
+                let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/rileytestut")!)
+                safariViewController.preferredControlTintColor = .altRed
+                self.present(safariViewController, animated: true, completion: nil)
+                
+            case .designer:
+                let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/1carolinemoore")!)
+                safariViewController.preferredControlTintColor = .altRed
+                self.present(safariViewController, animated: true, completion: nil)
+                
+            case .softwareLicenses:
+                break
+            }
+            
         default: break
         }
     }

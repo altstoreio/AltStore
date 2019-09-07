@@ -30,9 +30,6 @@ class PatreonViewController: UICollectionViewController
     
     private var patronsResult: Result<[Patron], Error>?
     
-    @IBOutlet private var signInButton: UIBarButtonItem!
-    @IBOutlet private var signOutButton: UIBarButtonItem!
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -97,13 +94,58 @@ private extension PatreonViewController
     
     func update()
     {
-        if PatreonAPI.shared.isAuthenticated && DatabaseManager.shared.patreonAccount() != nil
+        self.collectionView.reloadData()
+    }
+    
+    func prepare(_ headerView: AboutPatreonHeaderView)
+    {
+        headerView.layoutMargins = self.view.layoutMargins
+        
+        headerView.supportButton.addTarget(self, action: #selector(PatreonViewController.openPatreonURL(_:)), for: .primaryActionTriggered)
+        headerView.accountButton.removeTarget(self, action: nil, for: .primaryActionTriggered)
+        
+        if let account = DatabaseManager.shared.patreonAccount(), PatreonAPI.shared.isAuthenticated
         {
-            self.navigationItem.rightBarButtonItem = self.signOutButton
+            headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.signOut(_:)), for: .primaryActionTriggered)
+            
+            headerView.supportButton.setTitle(NSLocalizedString("View Patreon", comment: ""), for: .normal)
+            headerView.accountButton.setTitle(String(format: NSLocalizedString("Unlink %@", comment: ""), account.name), for: .normal)
+            
+            let text = """
+            Hey ,
+            
+            You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of my apps. You can find them all in the Browse tab.
+            
+            Thanks for all of your support. Enjoy!
+            Riley
+            """
+            
+            let font = UIFont.systemFont(ofSize: 16)
+            
+            let attributedText = NSMutableAttributedString(string: text, attributes: [.font: font,
+                                                                                      .foregroundColor: UIColor.white])
+            
+            let boldedName = NSAttributedString(string: account.firstName ?? account.name, attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize),
+                                                                                                        .foregroundColor: UIColor.white])
+            attributedText.insert(boldedName, at: 4)
+            
+            headerView.textView.attributedText = attributedText
         }
         else
         {
-            self.navigationItem.rightBarButtonItem = self.signInButton
+            headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.authenticate(_:)), for: .primaryActionTriggered)
+            
+            headerView.supportButton.setTitle(NSLocalizedString("Become a patron", comment: ""), for: .normal)
+            headerView.accountButton.setTitle(NSLocalizedString("Link Patreon account", comment: ""), for: .normal)
+            
+            headerView.textView.text = """
+            Hey y'all,
+            
+            If you'd like to support my work, you can donate here. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.
+            
+            Thanks for all your support 💜
+            Riley
+            """
         }
     }
 }
@@ -197,8 +239,8 @@ private extension PatreonViewController
             }
         }
         
-        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to sign out?", comment: ""), message: NSLocalizedString("You will no longer have access to beta versions of apps once you sign out.", comment: ""), preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Sign Out", comment: ""), style: .destructive) { _ in signOut() })
+        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to unlink your Patreon account?", comment: ""), message: NSLocalizedString("You will no longer have access to beta versions of apps.", comment: ""), preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Unlink Patreon Account", comment: ""), style: .destructive) { _ in signOut() })
         alertController.addAction(.cancel)
         self.present(alertController, animated: true, completion: nil)
     }
@@ -213,7 +255,7 @@ extension PatreonViewController
         {
         case .about:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AboutHeader", for: indexPath) as! AboutPatreonHeaderView
-            headerView.supportButton.addTarget(self, action: #selector(PatreonViewController.openPatreonURL(_:)), for: .primaryActionTriggered)
+            self.prepare(headerView)
             return headerView
             
         case .patrons:
@@ -254,6 +296,8 @@ extension PatreonViewController: UICollectionViewDelegateFlowLayout
             let widthConstraint = self.prototypeAboutHeader.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
             NSLayoutConstraint.activate([widthConstraint])
             defer { NSLayoutConstraint.deactivate([widthConstraint]) }
+            
+            self.prepare(self.prototypeAboutHeader)
             
             let size = self.prototypeAboutHeader.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
             return size

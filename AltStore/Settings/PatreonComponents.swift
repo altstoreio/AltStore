@@ -56,13 +56,34 @@ class PatronsFooterView: UICollectionReusableView
 class AboutPatreonHeaderView: UICollectionReusableView
 {
     @IBOutlet var supportButton: UIButton!
+    @IBOutlet var accountButton: UIButton!
+    @IBOutlet var textView: UITextView!
+    
+    @IBOutlet private var imageView: UIImageView!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        self.supportButton.clipsToBounds = true
-        self.supportButton.layer.cornerRadius = 16
+        self.imageView.clipsToBounds = true
+        self.imageView.layer.cornerRadius = self.imageView.bounds.midY
+        
+        self.textView.clipsToBounds = true
+        self.textView.layer.cornerRadius = 20
+        self.textView.textContainer.lineFragmentPadding = 0
+        
+        for button in [self.supportButton!, self.accountButton!]
+        {
+            button.clipsToBounds = true
+            button.layer.cornerRadius = 16
+        }
+    }
+    
+    override func layoutMarginsDidChange()
+    {
+        super.layoutMarginsDidChange()
+        
+        self.textView.textContainerInset = UIEdgeInsets(top: self.layoutMargins.left, left: self.layoutMargins.left, bottom: self.layoutMargins.right, right: self.layoutMargins.right)
     }
 }
 
