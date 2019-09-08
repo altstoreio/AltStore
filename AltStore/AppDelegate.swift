@@ -96,7 +96,7 @@ private extension AppDelegate
 {
     func setTintColor()
     {
-        self.window?.tintColor = .altGreen
+        self.window?.tintColor = .altRed
     }
 }
 

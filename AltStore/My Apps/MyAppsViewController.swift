@@ -81,7 +81,7 @@ class MyAppsViewController: UICollectionViewController
         
         self.sideloadingProgressView = UIProgressView(progressViewStyle: .bar)
         self.sideloadingProgressView.translatesAutoresizingMaskIntoConstraints = false
-        self.sideloadingProgressView.progressTintColor = .altGreen
+        self.sideloadingProgressView.progressTintColor = .altRed
         self.sideloadingProgressView.progress = 0
         
         if let navigationBar = self.navigationController?.navigationBar
@@ -145,7 +145,7 @@ private extension MyAppsViewController
         dynamicDataSource.cellConfigurationHandler = { (cell, _, indexPath) in
             cell.layer.cornerRadius = 20
             cell.layer.masksToBounds = true
-            cell.contentView.backgroundColor = UIColor.altGreen.withAlphaComponent(0.15)
+            cell.contentView.backgroundColor = UIColor.altRed.withAlphaComponent(0.15)
         }
         
         return dynamicDataSource
@@ -165,7 +165,7 @@ private extension MyAppsViewController
             guard let app = installedApp.storeApp else { return }
             
             let cell = cell as! UpdateCollectionViewCell
-            cell.tintColor = app.tintColor ?? .altGreen
+            cell.tintColor = app.tintColor ?? .altRed
             cell.nameLabel.text = app.name
             cell.versionDescriptionTextView.text = app.versionDescription
             cell.appIconImageView.image = nil
@@ -237,7 +237,7 @@ private extension MyAppsViewController
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
         dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
-            let tintColor = installedApp.storeApp?.tintColor ?? .altGreen
+            let tintColor = installedApp.storeApp?.tintColor ?? .altRed
             
             let cell = cell as! InstalledAppCollectionViewCell
             cell.tintColor = tintColor
@@ -636,10 +636,10 @@ extension MyAppsViewController
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader", for: indexPath) as! UpdatesCollectionHeaderView
             
             UIView.performWithoutAnimation {
-                headerView.button.backgroundColor = UIColor.altGreen.withAlphaComponent(0.15)
+                headerView.button.backgroundColor = UIColor.altRed.withAlphaComponent(0.15)
                 headerView.button.setTitle("▾", for: .normal)
                 headerView.button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 28)
-                headerView.button.setTitleColor(.altGreen, for: .normal)
+                headerView.button.setTitleColor(.altRed, for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.toggleAppUpdates), for: .primaryActionTriggered)
                 
                 if self.isUpdateSectionCollapsed
@@ -665,7 +665,7 @@ extension MyAppsViewController
                 headerView.textLabel.text = NSLocalizedString("Installed", comment: "")
                 
                 headerView.button.isIndicatingActivity = false
-                headerView.button.activityIndicatorView.color = .altGreen
+                headerView.button.activityIndicatorView.color = .altRed
                 headerView.button.setTitle(NSLocalizedString("Refresh All", comment: ""), for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshAllApps(_:)), for: .primaryActionTriggered)
                 headerView.button.isIndicatingActivity = self.isRefreshingAllApps

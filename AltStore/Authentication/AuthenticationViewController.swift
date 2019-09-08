@@ -104,7 +104,6 @@ private extension AuthenticationViewController
             {
                 DispatchQueue.main.async {
                     let toastView = ToastView(text: NSLocalizedString("Failed to Log In", comment: ""), detailText: error.localizedDescription)
-                    toastView.tintColor = .altGreen
                     toastView.show(in: self.navigationController?.view ?? self.view)
                     self.toastView = toastView
                     

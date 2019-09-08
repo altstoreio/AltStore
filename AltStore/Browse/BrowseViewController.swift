@@ -78,7 +78,7 @@ private extension BrowseViewController
             // Otherwise, cell reuse can mess up some cached values.
             cell.actionButton.isIndicatingActivity = false
             
-            let tintColor = app.tintColor ?? .altGreen
+            let tintColor = app.tintColor ?? .altRed
             cell.tintColor = tintColor
             
             if app.installedApp == nil

@@ -54,7 +54,7 @@ private extension RefreshAttemptsViewController
             if attempt.isSuccess
             {
                 cell.successLabel.text = NSLocalizedString("Success", comment: "")
-                cell.successLabel.textColor = .altGreen
+                cell.successLabel.textColor = .refreshGreen
             }
             else
             {
