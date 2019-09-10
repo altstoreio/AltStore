@@ -399,6 +399,7 @@ private extension ResignAppOperation
                 {
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.preferredServerID
                 }
                 
                 // Prepare app
