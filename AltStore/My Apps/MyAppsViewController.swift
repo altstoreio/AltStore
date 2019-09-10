@@ -313,7 +313,7 @@ private extension MyAppsViewController
         }
         else
         {
-            self.dataSource.predicate = NSPredicate(format: "%K != nil AND %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
+            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
         }
     }
 }

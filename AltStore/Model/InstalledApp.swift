@@ -90,7 +90,8 @@ extension InstalledApp
         }
         else
         {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, NSPredicate(format: "%K == NO", #keyPath(InstalledApp.storeApp.isBeta))])
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
+                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
         }
         
         var installedApps = InstalledApp.all(satisfying: predicate,
@@ -121,7 +122,8 @@ extension InstalledApp
         }
         else
         {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, NSPredicate(format: "%K == NO", #keyPath(InstalledApp.storeApp.isBeta))])
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
+                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
         }
         
         var installedApps = InstalledApp.all(satisfying: predicate,
