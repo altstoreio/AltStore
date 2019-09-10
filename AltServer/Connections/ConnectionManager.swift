@@ -220,20 +220,35 @@ private extension ConnectionManager
     
     func receiveApp(from connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {
+        var temporaryURL: URL?
+        
+        func finish(_ result: Result<Void, ALTServerError>)
+        {
+            if let temporaryURL = temporaryURL
+            {
+                do { try FileManager.default.removeItem(at: temporaryURL) }
+                catch { print("Failed to remove .ipa.", error) }
+            }
+            
+            completionHandler(result)
+        }
+        
         self.receive(PrepareAppRequest.self, from: connection) { (result) in
             print("Received request with result:", result)
             
             switch result
             {
-            case .failure(let error): completionHandler(.failure(error))
+            case .failure(let error): finish(.failure(error))
             case .success(let request):
                 self.receiveApp(for: request, from: connection) { (result) in
                     print("Received app with result:", result)
                     
                     switch result
                     {
-                    case .failure(let error): completionHandler(.failure(error))
+                    case .failure(let error): finish(.failure(error))
                     case .success(let request, let fileURL):
+                        temporaryURL = fileURL
+                        
                         print("Awaiting begin installation request...")
                         
                         self.receive(BeginInstallationRequest.self, from: connection) { (result) in
@@ -241,7 +256,7 @@ private extension ConnectionManager
                             
                             switch result
                             {
-                            case .failure(let error): completionHandler(.failure(error))
+                            case .failure(let error): finish(.failure(error))
                             case .success:
                                 print("Installing to device \(request.udid)...")
                                 
@@ -249,8 +264,8 @@ private extension ConnectionManager
                                     print("Installed to device with result:", result)
                                     switch result
                                     {
-                                    case .failure(let error): completionHandler(.failure(error))
-                                    case .success: completionHandler(.success(()))
+                                    case .failure(let error): finish(.failure(error))
+                                    case .success: finish(.success(()))
                                     }
                                 }
                             }
