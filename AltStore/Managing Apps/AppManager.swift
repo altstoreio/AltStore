@@ -175,17 +175,6 @@ private extension AppManager
     {
         // Authenticate -> Download (if necessary) -> Resign -> Send -> Install.
         let group = group ?? OperationGroup()
-                
-        guard let server = ServerManager.shared.discoveredServers.first(where: { $0.isPreferred }) ?? ServerManager.shared.discoveredServers.first else {
-            DispatchQueue.main.async {
-                group.completionHandler?(.failure(ConnectionError.serverNotFound))
-            }
-            
-            return group
-        }
-        
-        group.server = server
-        
         var operations = [Operation]()
         
         
@@ -200,6 +189,18 @@ private extension AppManager
         }
         operations.append(authenticationOperation)
         
+        /* Find Server */
+        let findServerOperation = FindServerOperation(group: group)
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let server): group.server = server
+            }
+        }
+        findServerOperation.addDependency(authenticationOperation)
+        operations.append(findServerOperation)
+        
         
         for app in apps
         {
@@ -213,7 +214,7 @@ private extension AppManager
                 guard let resignedApp = self.process(result, context: context) else { return }
                 context.resignedApp = resignedApp
             }
-            resignAppOperation.addDependency(authenticationOperation)
+            resignAppOperation.addDependency(findServerOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
             operations.append(resignAppOperation)
             
@@ -246,12 +247,13 @@ private extension AppManager
             {
                 // App is not yet installed (or we're forcing it to download a new version), so download it before resigning it.
                 
-                let downloadOperation = DownloadAppOperation(app: app)
+                let downloadOperation = DownloadAppOperation(app: app, context: context)
                 downloadOperation.resultHandler = { (result) in
                     guard let app = self.process(result, context: context) else { return }
                     context.app = app
                 }
                 progress.addChild(downloadOperation.progress, withPendingUnitCount: 40)
+                downloadOperation.addDependency(findServerOperation)
                 resignAppOperation.addDependency(downloadOperation)
                 operations.append(downloadOperation)
             }

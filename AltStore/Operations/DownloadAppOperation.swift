@@ -15,6 +15,7 @@ import AltSign
 class DownloadAppOperation: ResultOperation<ALTApplication>
 {
     let app: AppProtocol
+    let context: AppOperationContext
     
     private let bundleIdentifier: String
     private let sourceURL: URL
@@ -22,9 +23,11 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     
     private let session = URLSession(configuration: .default)
     
-    init(app: AppProtocol)
+    init(app: AppProtocol, context: AppOperationContext)
     {
         self.app = app
+        self.context = context
+        
         self.bundleIdentifier = app.bundleIdentifier
         self.sourceURL = app.url
         self.destinationURL = InstalledApp.fileURL(for: app)
@@ -37,6 +40,12 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     override func main()
     {
         super.main()
+        
+        if let error = self.context.error
+        {
+            self.finish(.failure(error))
+            return
+        }
         
         print("Downloading App:", self.bundleIdentifier)
         
