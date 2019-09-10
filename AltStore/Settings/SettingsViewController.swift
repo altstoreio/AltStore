@@ -108,7 +108,7 @@ private extension SettingsViewController
             }
             
         case .patreon:
-            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Donate and receive access to beta versions of AltStore, Delta, and more.", comment: "")
+            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Receive access to beta versions of AltStore, Delta, and more by becoming a patron.", comment: "")
             
         case .account:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
