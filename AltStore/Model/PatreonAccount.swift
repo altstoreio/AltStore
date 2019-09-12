@@ -25,7 +25,7 @@ extension PatreonAPI
         }
         
         var data: Data
-        var included: [PatronResponse]
+        var included: [PatronResponse]?
     }
 }
 
@@ -52,7 +52,7 @@ class PatreonAccount: NSManagedObject, Fetchable
         self.name = response.data.attributes.full_name
         self.firstName = response.data.attributes.first_name
         
-        if let patronResponse = response.included.first
+        if let patronResponse = response.included?.first
         {
             let patron = Patron(response: patronResponse)
             self.isPatron = (patron.status == .active)

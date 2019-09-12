@@ -104,48 +104,62 @@ private extension PatreonViewController
         headerView.supportButton.addTarget(self, action: #selector(PatreonViewController.openPatreonURL(_:)), for: .primaryActionTriggered)
         headerView.accountButton.removeTarget(self, action: nil, for: .primaryActionTriggered)
         
+        let defaultSupportButtonTitle = NSLocalizedString("Become a patron", comment: "")
+        let isPatronSupportButtonTitle = NSLocalizedString("View Patreon", comment: "")
+        
+        let defaultText = NSLocalizedString("""
+        Hey y'all,
+        
+        You can support future development of my apps by donating to me on Patreon. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.
+        
+        Thanks for all your support 💜
+        Riley
+        """, comment: "")
+        
+        let isPatronText = NSLocalizedString("""
+        Hey ,
+        
+        You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of my apps. You can find them all in the Browse tab.
+        
+        Thanks for all of your support. Enjoy!
+        Riley
+        """, comment: "")
+        
         if let account = DatabaseManager.shared.patreonAccount(), PatreonAPI.shared.isAuthenticated
         {
             headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.signOut(_:)), for: .primaryActionTriggered)
-            
-            headerView.supportButton.setTitle(NSLocalizedString("View Patreon", comment: ""), for: .normal)
             headerView.accountButton.setTitle(String(format: NSLocalizedString("Unlink %@", comment: ""), account.name), for: .normal)
             
-            let text = """
-            Hey ,
-            
-            You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of my apps. You can find them all in the Browse tab.
-            
-            Thanks for all of your support. Enjoy!
-            Riley
-            """
-            
-            let font = UIFont.systemFont(ofSize: 16)
-            
-            let attributedText = NSMutableAttributedString(string: text, attributes: [.font: font,
-                                                                                      .foregroundColor: UIColor.white])
-            
-            let boldedName = NSAttributedString(string: account.firstName ?? account.name, attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize),
-                                                                                                        .foregroundColor: UIColor.white])
-            attributedText.insert(boldedName, at: 4)
-            
-            headerView.textView.attributedText = attributedText
+            if account.isPatron
+            {
+                headerView.supportButton.setTitle(isPatronSupportButtonTitle, for: .normal)
+                
+                let font = UIFont.systemFont(ofSize: 16)
+                
+                let attributedText = NSMutableAttributedString(string: isPatronText, attributes: [.font: font,
+                                                                                                  .foregroundColor: UIColor.white])
+                
+                let boldedName = NSAttributedString(string: account.firstName ?? account.name,
+                                                    attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize),
+                                                                 .foregroundColor: UIColor.white])
+                attributedText.insert(boldedName, at: 4)
+                
+                headerView.textView.attributedText = attributedText
+            }
+            else
+            {
+                headerView.supportButton.setTitle(defaultSupportButtonTitle, for: .normal)
+                headerView.textView.text = defaultText
+            }
         }
         else
         {
             headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.authenticate(_:)), for: .primaryActionTriggered)
             
-            headerView.supportButton.setTitle(NSLocalizedString("Become a patron", comment: ""), for: .normal)
+            headerView.supportButton.setTitle(defaultSupportButtonTitle, for: .normal)
             headerView.accountButton.setTitle(NSLocalizedString("Link Patreon account", comment: ""), for: .normal)
             
-            headerView.textView.text = """
-            Hey y'all,
-            
-            If you'd like to support my work, you can donate here. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.
-            
-            Thanks for all your support 💜
-            Riley
-            """
+            headerView.textView.text = defaultText
         }
     }
 }
