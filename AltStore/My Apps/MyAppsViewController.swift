@@ -333,9 +333,12 @@ private extension MyAppsViewController
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
         
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadSections(IndexSet(integer: Section.updates.rawValue))
-        }
+        if self.isViewLoaded
+        {
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadSections(IndexSet(integer: Section.updates.rawValue))
+            }
+        }        
     }
     
     func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)

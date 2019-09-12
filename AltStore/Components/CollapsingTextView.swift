@@ -58,30 +58,33 @@ class CollapsingTextView: UITextView
         let buttonFont = UIFont.systemFont(ofSize: font.pointSize, weight: .medium)
         self.moreButton.titleLabel?.font = buttonFont
         
+        let buttonY = (font.lineHeight + self.lineSpacing) * CGFloat(self.maximumNumberOfLines - 1)
         let size = self.moreButton.sizeThatFits(CGSize(width: 1000, height: 1000))
         
         let moreButtonFrame = CGRect(x: self.bounds.width - self.moreButton.bounds.width,
-                                     y: self.bounds.height - self.moreButton.bounds.height - self.lineSpacing,
+                                     y: buttonY,
                                      width: size.width,
                                      height: font.lineHeight)
         self.moreButton.frame = moreButtonFrame
         
         if self.isCollapsed
         {
-            var exclusionFrame = moreButtonFrame
-            exclusionFrame.origin.y += self.moreButton.bounds.midY
-            exclusionFrame.size.width = self.bounds.width // Extra wide to make sure it wraps to next line.
-            
             self.textContainer.maximumNumberOfLines = self.maximumNumberOfLines
-            self.textContainer.exclusionPaths = [UIBezierPath(rect: exclusionFrame)]
             
             let maximumCollapsedHeight = font.lineHeight * CGFloat(self.maximumNumberOfLines)
-            if self.bounds.height > maximumCollapsedHeight
+            if self.intrinsicContentSize.height > maximumCollapsedHeight
             {
+                var exclusionFrame = moreButtonFrame
+                exclusionFrame.origin.y += self.moreButton.bounds.midY
+                exclusionFrame.size.width = self.bounds.width // Extra wide to make sure it wraps to next line.
+                self.textContainer.exclusionPaths = [UIBezierPath(rect: exclusionFrame)]
+                
                 self.moreButton.isHidden = false
             }
             else
             {
+                self.textContainer.exclusionPaths = []
+                
                 self.moreButton.isHidden = true
             }
         }
