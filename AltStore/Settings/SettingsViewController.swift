@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import MessageUI
 
 extension SettingsViewController
 {
@@ -27,6 +28,12 @@ extension SettingsViewController
         case developer
         case designer
         case softwareLicenses
+    }
+    
+    fileprivate enum DebugRow: Int, CaseIterable
+    {
+        case sendFeedback
+        case refreshAttempts
     }
 }
 
@@ -290,7 +297,52 @@ extension SettingsViewController
                 break
             }
             
+        case .debug:
+            let row = DebugRow.allCases[indexPath.row]
+            switch row
+            {
+            case .sendFeedback:
+                if MFMailComposeViewController.canSendMail()
+                {
+                    let mailViewController = MFMailComposeViewController()
+                    mailViewController.mailComposeDelegate = self
+                    mailViewController.setToRecipients(["riley@rileytestut.com"])
+                    
+                    if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+                    {
+                        mailViewController.setSubject("AltStore Beta \(version) Feedback")
+                    }
+                    else
+                    {
+                        mailViewController.setSubject("AltStore Beta Feedback")
+                    }
+                    
+                    self.present(mailViewController, animated: true, completion: nil)
+                }
+                else
+                {
+                    let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                }
+                
+            case .refreshAttempts: break
+            }
+            
         default: break
         }
+    }
+}
+
+extension SettingsViewController: MFMailComposeViewControllerDelegate
+{
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
+    {
+        if let error = error
+        {
+            let toastView = ToastView(text: error.localizedDescription, detailText: "")
+            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+        }
+        
+        controller.dismiss(animated: true, completion: nil)
     }
 }
