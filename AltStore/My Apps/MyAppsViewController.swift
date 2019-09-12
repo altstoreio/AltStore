@@ -99,6 +99,8 @@ class MyAppsViewController: UICollectionViewController
         // Gestures
         self.longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(MyAppsViewController.handleLongPressGesture(_:)))
         self.collectionView.addGestureRecognizer(self.longPressGestureRecognizer)
+        
+        self.registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -110,14 +112,20 @@ class MyAppsViewController: UICollectionViewController
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
-        guard segue.identifier == "showApp" else { return }
+        guard let identifier = segue.identifier else { return }
         
-        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return }
-        
-        let installedApp = self.dataSource.item(at: indexPath)
-        
-        let appViewController = segue.destination as! AppViewController
-        appViewController.app = installedApp.storeApp
+        switch identifier
+        {
+        case "showApp", "showUpdate":
+            guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return }
+            
+            let installedApp = self.dataSource.item(at: indexPath)
+            
+            let appViewController = segue.destination as! AppViewController
+            appViewController.app = installedApp.storeApp
+            
+        default: break
+        }
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
@@ -165,7 +173,8 @@ private extension MyAppsViewController
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.liveFetchLimit = maximumCollapsedUpdatesCount
         dataSource.cellIdentifierHandler = { _ in "UpdateCell" }
-        dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
+        dataSource.cellConfigurationHandler = { [weak self] (cell, installedApp, indexPath) in
+            guard let self = self else { return }
             guard let app = installedApp.storeApp else { return }
             
             let cell = cell as! UpdateCollectionViewCell
@@ -689,6 +698,19 @@ extension MyAppsViewController
             return headerView
         }
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let section = Section.allCases[indexPath.section]
+        switch section
+        {
+        case .updates:
+            guard let cell = collectionView.cellForItem(at: indexPath) else { break }
+            self.performSegue(withIdentifier: "showUpdate", sender: cell)
+            
+        default: break
+        }
+    }
 }
 
 extension MyAppsViewController: UICollectionViewDelegateFlowLayout
@@ -858,5 +880,39 @@ extension MyAppsViewController: UIDocumentPickerDelegate
                 self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
             }
         }
+    }
+}
+
+extension MyAppsViewController: UIViewControllerPreviewingDelegate
+{
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+    {
+        guard
+            let indexPath = self.collectionView.indexPathForItem(at: location),
+            let cell = self.collectionView.cellForItem(at: indexPath)
+        else { return nil }
+        
+        let section = Section.allCases[indexPath.section]
+        switch section
+        {
+        case .updates:
+            previewingContext.sourceRect = cell.frame
+            
+            let app = self.dataSource.item(at: indexPath)
+            guard let storeApp = app.storeApp else { return nil}
+            
+            let appViewController = AppViewController.makeAppViewController(app: storeApp)
+            return appViewController
+            
+        default: return nil
+        }
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
+    {
+        let point = CGPoint(x: previewingContext.sourceRect.midX, y: previewingContext.sourceRect.midY)
+        guard let indexPath = self.collectionView.indexPathForItem(at: point), let cell = self.collectionView.cellForItem(at: indexPath) else { return }
+        
+        self.performSegue(withIdentifier: "showUpdate", sender: cell)
     }
 }

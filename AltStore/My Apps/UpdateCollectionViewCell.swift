@@ -58,6 +58,22 @@ extension UpdateCollectionViewCell
         }
         animator.startAnimation()
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
+        let view = super.hitTest(point, with: event)
+        
+        if view == self.versionDescriptionTextView
+        {
+            // Forward touches on the text view (but not on the nested "more" button)
+            // so cell selection works as expected.
+            return self
+        }
+        else
+        {
+            return view
+        }
+    }
 }
 
 private extension UpdateCollectionViewCell

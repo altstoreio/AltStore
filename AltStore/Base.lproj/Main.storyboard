@@ -828,6 +828,9 @@ World</string>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="0V6-N4-hTO" kind="show" identifier="showUpdate" id="dzt-2e-VM9"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kiO-UO-esV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -865,7 +868,7 @@ World</string>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="cnd-KK-o60"/>
+        <segue reference="dzt-2e-VM9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Red"/>
 </document>
