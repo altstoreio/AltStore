@@ -368,17 +368,20 @@ private extension MyAppsViewController
                         guard !failures.isEmpty else { break }
                         
                         let localizedText: String
+                        let detailText: String?
+                        
                         if let failure = failures.first, failures.count == 1
                         {
                             localizedText = failure.value.localizedDescription
+                            detailText = nil
                         }
                         else
                         {
                             localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
+                            detailText = failures.first?.value.localizedDescription
                         }
                         
-                        let toastView = ToastView(text: localizedText, detailText: nil)
-                        toastView.tintColor = .refreshRed
+                        let toastView = ToastView(text: localizedText, detailText: detailText)
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                     }
                     
