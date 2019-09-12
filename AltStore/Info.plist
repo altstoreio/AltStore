@@ -26,16 +26,6 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>AltStore</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>altstore-com.rileytestut.altstore</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
 			<string>AltStore General</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
@@ -48,9 +38,11 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>altstore-com.rileytestut.AltStore</string>
-		<string>altstore-com.rileytestut.Delta</string>
-		<string>altstore-com.rileytestut.Clip</string>
 		<string>altstore-com.rileytestut.AltStore.Beta</string>
+		<string>altstore-com.rileytestut.Delta</string>
+		<string>altstore-com.rileytestut.Delta.Beta</string>
+		<string>altstore-com.rileytestut.Clip</string>
+		<string>altstore-com.rileytestut.Clip.Beta</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

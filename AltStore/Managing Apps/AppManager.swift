@@ -52,7 +52,7 @@ extension AppManager
         do
         {
             let installedApps = try context.fetch(fetchRequest)
-            for app in installedApps where app.storeApp != nil
+            for app in installedApps where app.storeApp != nil && app.bundleIdentifier != StoreApp.altstoreAppID
             {
                 if UIApplication.shared.canOpenURL(app.openAppURL)
                 {

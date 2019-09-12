@@ -14,7 +14,13 @@ import AltSign
 
 extension StoreApp
 {
+    #if BETA
+    static let altstoreAppID = "com.rileytestut.AltStore.Beta"
+    static let alternativeAltStoreAppID = "com.rileytestut.AltStore"
+    #else
     static let altstoreAppID = "com.rileytestut.AltStore"
+    static let alternativeAltStoreAppID = "com.rileytestut.AltStore.Beta"
+    #endif
 }
 
 @objc(StoreApp)
@@ -138,6 +144,10 @@ extension StoreApp
         app.version = "1.0"
         app.versionDate = Date()
         app.downloadURL = URL(string: "http://rileytestut.com")!
+        
+        #if BETA
+        app.isBeta = true
+        #endif
         
         return app
     }

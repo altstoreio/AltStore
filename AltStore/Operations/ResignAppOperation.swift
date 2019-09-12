@@ -395,7 +395,7 @@ private extension ResignAppOperation
                 
                 var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
 
-                if self.context.bundleIdentifier == StoreApp.altstoreAppID
+                if self.context.bundleIdentifier == StoreApp.altstoreAppID || self.context.bundleIdentifier == StoreApp.alternativeAltStoreAppID
                 {
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid

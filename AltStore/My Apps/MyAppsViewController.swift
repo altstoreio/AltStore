@@ -84,6 +84,10 @@ class MyAppsViewController: UICollectionViewController
         self.sideloadingProgressView.progressTintColor = .altRed
         self.sideloadingProgressView.progress = 0
         
+        #if !BETA
+        self.navigationItem.leftBarButtonItem = nil
+        #endif
+        
         if let navigationBar = self.navigationController?.navigationBar
         {
             navigationBar.addSubview(self.sideloadingProgressView)
@@ -313,7 +317,10 @@ private extension MyAppsViewController
         }
         else
         {
-            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
+            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO OR %K == %@",
+                                                    #keyPath(InstalledApp.storeApp),
+                                                    #keyPath(InstalledApp.storeApp.isBeta),
+                                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         }
     }
 }
