@@ -622,12 +622,12 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
     uint64_t code = 0;
     instproxy_status_get_error(status, &name, &description, &code);
     
-    if ((percent == -1 && progress.completedUnitCount > 0) || code != 0)
+    if ((percent == -1 && progress.completedUnitCount > 0) || code != 0 || name != NULL)
     {
         void (^completionHandler)(NSError *) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
         if (completionHandler != nil)
         {
-            if (code != 0)
+            if (code != 0 || name != NULL)
             {
                 NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name), @(description));
                 
@@ -639,9 +639,16 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
                 }
                 else
                 {
-                    NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description)}];
-                    
-                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
+                    NSString *errorName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+                    if ([errorName isEqualToString:@"DeviceOSVersionTooLow"])
+                    {
+                        error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnsupportediOSVersion userInfo:nil];
+                    }
+                    else
+                    {
+                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description)}];
+                        error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
+                    }
                 }
                 
                 completionHandler(error);

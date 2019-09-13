@@ -137,13 +137,23 @@ private extension AppDelegate
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
                 
-            case .failure(let error):
+            case .failure(let error as NSError):
+                
                 let alert = NSAlert()
+                alert.alertStyle = .critical
                 alert.messageText = NSLocalizedString("Installation Failed", comment: "")
-                alert.informativeText = error.localizedDescription
+                
+                if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? Error
+                {
+                    alert.informativeText = underlyingError.localizedDescription
+                }
+                else
+                {
+                    alert.informativeText = error.localizedDescription
+                }
                 
                 NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-                
+
                 alert.runModal()
             }
         }

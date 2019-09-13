@@ -13,19 +13,20 @@ extern NSErrorDomain const AltServerInstallationErrorDomain;
 
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
-    ALTServerErrorUnknown,
-    ALTServerErrorConnectionFailed,
-    ALTServerErrorLostConnection,
+    ALTServerErrorUnknown = 0,
+    ALTServerErrorConnectionFailed = 1,
+    ALTServerErrorLostConnection = 2,
     
-    ALTServerErrorDeviceNotFound,
-    ALTServerErrorDeviceWriteFailed,
+    ALTServerErrorDeviceNotFound = 3,
+    ALTServerErrorDeviceWriteFailed = 4,
     
-    ALTServerErrorInvalidRequest,
-    ALTServerErrorInvalidResponse,
+    ALTServerErrorInvalidRequest = 5,
+    ALTServerErrorInvalidResponse = 6,
     
-    ALTServerErrorInvalidApp,
-    ALTServerErrorInstallationFailed,
-    ALTServerErrorMaximumFreeAppLimitReached,
+    ALTServerErrorInvalidApp = 7,
+    ALTServerErrorInstallationFailed = 8,
+    ALTServerErrorMaximumFreeAppLimitReached = 9,
+    ALTServerErrorUnsupportediOSVersion = 10,
 };
 
 NS_ASSUME_NONNULL_BEGIN

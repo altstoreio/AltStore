@@ -58,6 +58,9 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             
         case ALTServerErrorMaximumFreeAppLimitReached:
             return NSLocalizedString(@"You have reached the limit of 3 apps per device.", @"");
+            
+        case ALTServerErrorUnsupportediOSVersion:
+            return NSLocalizedString(@"Your device must be running iOS 12.2 or later to install AltStore.", @"");
     }
 }
     
