@@ -84,6 +84,15 @@ extension ALTDeviceManager
                                                 
                                                 let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
                                                 
+                                                do
+                                                {
+                                                    try FileManager.default.removeItem(at: fileURL)
+                                                }
+                                                catch
+                                                {
+                                                    print("Failed to remove downloaded .ipa.", error)
+                                                }
+                                                
                                                 guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
                                                 
                                                 self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team) { (result) in
