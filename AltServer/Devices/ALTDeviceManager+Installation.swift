@@ -188,9 +188,23 @@ extension ALTDeviceManager
             do
             {
                 let teams = try Result(teams, error).get()
-                guard let team = teams.first else { throw InstallError.noTeam }
                 
-                completionHandler(.success(team))
+                if let team = teams.first(where: { $0.type == .free })
+                {
+                    return completionHandler(.success(team))
+                }
+                else if let team = teams.first(where: { $0.type == .individual })
+                {
+                    return completionHandler(.success(team))
+                }
+                else if let team = teams.first
+                {
+                    return completionHandler(.success(team))
+                }
+                else
+                {
+                    throw InstallError.noTeam
+                }
             }
             catch
             {
