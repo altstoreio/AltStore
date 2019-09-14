@@ -9,17 +9,17 @@
 import Cocoa
 import UserNotifications
 
-enum InstallError: Error
+enum InstallError: LocalizedError
 {
-    case invalidCredentials
+    case cancelled
     case noTeam
     case missingPrivateKey
     case missingCertificate
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self
         {
-        case .invalidCredentials: return "The provided Apple ID and password are incorrect."
+        case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
         case .noTeam: return "You are not a member of any developer teams."
         case .missingPrivateKey: return "The developer certificate's private key could not be found."
         case .missingCertificate: return "The developer certificate could not be found."
@@ -54,12 +54,6 @@ extension ALTDeviceManager
             {
                 let account = try result.get()
                 
-                let content = UNMutableNotificationContent()
-                content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
-                
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(request)
-                
                 self.fetchTeam(for: account) { (result) in
                     do
                     {
@@ -74,6 +68,13 @@ extension ALTDeviceManager
                                     do
                                     {
                                         let certificate = try result.get()
+                                        
+                                        let content = UNMutableNotificationContent()
+                                        content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
+                                        content.body = NSLocalizedString("This may take a few seconds.", comment: "")
+                                        
+                                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                        UNUserNotificationCenter.current().add(request)
                                         
                                         self.downloadApp { (result) in
                                             do
@@ -228,6 +229,34 @@ extension ALTDeviceManager
             do
             {
                 let certificates = try Result(certificates, error).get()
+                
+                // Check if there is another AltStore certificate, which means AltStore has been installed with this Apple ID before.
+                if certificates.contains(where: { $0.machineName?.starts(with: "AltStore") == true })
+                {
+                    var isCancelled = false
+                    
+                    DispatchQueue.main.sync {
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("AltStore already installed on another device.", comment: "")
+                        alert.informativeText = NSLocalizedString("Apps installed with AltStore on your other devices will stop working. Are you sure you want to continue?", comment: "")
+                        
+                        alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
+                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                        
+                        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                        
+                        let buttonIndex = alert.runModal()
+                        if buttonIndex == NSApplication.ModalResponse.alertSecondButtonReturn
+                        {
+                            isCancelled = true
+                        }
+                    }
+                    
+                    if isCancelled
+                    {
+                        return completionHandler(.failure(InstallError.cancelled))
+                    }
+                }
                 
                 if let certificate = certificates.first
                 {

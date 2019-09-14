@@ -137,6 +137,10 @@ private extension AppDelegate
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
                 
+            case .failure(InstallError.cancelled):
+                // Ignore
+                break
+                
             case .failure(let error as NSError):
                 
                 let alert = NSAlert()
