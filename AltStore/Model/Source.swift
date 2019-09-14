@@ -11,6 +11,7 @@ import CoreData
 extension Source
 {
     static let altStoreIdentifier = "com.rileytestut.AltStore"
+    static let altStoreSourceURL = URL(string: "https://www.dropbox.com/s/ernal98djzo4pe3/Apps-Staging.json?dl=1")!
 }
 
 @objc(Source)
@@ -111,7 +112,7 @@ extension Source
         let source = Source(context: context)
         source.name = "AltStore"
         source.identifier = Source.altStoreIdentifier
-        source.sourceURL = URL(string: "https://www.dropbox.com/s/ernal98djzo4pe3/Apps-Staging.json?dl=1")!
+        source.sourceURL = Source.altStoreSourceURL
         
         return source
     }

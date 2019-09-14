@@ -17,6 +17,8 @@
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
+		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
+		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF1E312B229F474900370A3C /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* ConnectionManager.swift */; };
 		BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
@@ -135,7 +137,7 @@
 		BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */; };
 		BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */; };
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
-		BFBBE2DF22931F73002097FA /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* App.swift */; };
+		BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* StoreApp.swift */; };
 		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
@@ -286,6 +288,9 @@
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
 		BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
+		BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 2.xcdatamodel"; sourceTree = "<group>"; };
+		BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStoreToAltStore2.xcmappingmodel; sourceTree = "<group>"; };
+		BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreAppPolicy.swift; sourceTree = "<group>"; };
 		BF18B0F022E25DF9005C4CF5 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		BF1E3128229F474900370A3C /* ServerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProtocol.swift; sourceTree = "<group>"; };
 		BF1E3129229F474900370A3C /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
@@ -413,7 +418,7 @@
 		BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsCollectionViewCell.xib; sourceTree = "<group>"; };
 		BFBAC8852295C90300587369 /* Result+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Conveniences.swift"; sourceTree = "<group>"; };
 		BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AltStore.xcdatamodel; sourceTree = "<group>"; };
-		BFBBE2DE22931F73002097FA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		BFBBE2DE22931F73002097FA /* StoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreApp.swift; sourceTree = "<group>"; };
 		BFBBE2E022931F81002097FA /* InstalledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledApp.swift; sourceTree = "<group>"; };
 		BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAppOperation.swift; sourceTree = "<group>"; };
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -546,6 +551,31 @@
 				A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BF100C4E232D7C95006A8926 /* Migrations */ = {
+			isa = PBXGroup;
+			children = (
+				BF100C52232D7D9E006A8926 /* Policies */,
+				BF100C51232D7D91006A8926 /* Mapping Models */,
+			);
+			path = Migrations;
+			sourceTree = "<group>";
+		};
+		BF100C51232D7D91006A8926 /* Mapping Models */ = {
+			isa = PBXGroup;
+			children = (
+				BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */,
+			);
+			path = "Mapping Models";
+			sourceTree = "<group>";
+		};
+		BF100C52232D7D9E006A8926 /* Policies */ = {
+			isa = PBXGroup;
+			children = (
+				BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */,
+			);
+			path = Policies;
 			sourceTree = "<group>";
 		};
 		BF1E315122A0616100370A3C /* AltKit */ = {
@@ -925,14 +955,15 @@
 				BFB11691229322E400BB457C /* DatabaseManager.swift */,
 				BF3D64A122E8031100E9056B /* MergePolicy.swift */,
 				BFE6326722A858F300F30809 /* Account.swift */,
-				BFBBE2DE22931F73002097FA /* App.swift */,
 				BF3D648722E79A3700E9056B /* AppPermission.swift */,
 				BFBBE2E022931F81002097FA /* InstalledApp.swift */,
 				BFB6B21A23186D640022A802 /* NewsItem.swift */,
 				BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */,
 				BF02419322F2156E00129732 /* RefreshAttempt.swift */,
 				BFE338DC22F0E7F3002E24B9 /* Source.swift */,
+				BFBBE2DE22931F73002097FA /* StoreApp.swift */,
 				BFE6326522A857C100F30809 /* Team.swift */,
+				BF100C4E232D7C95006A8926 /* Migrations */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1414,7 +1445,7 @@
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
-				BFBBE2DF22931F73002097FA /* App.swift in Sources */,
+				BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
@@ -1434,6 +1465,8 @@
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
+				BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */,
+				BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */,
@@ -1953,9 +1986,10 @@
 		BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */,
 				BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */,
 			);
-			currentVersion = BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */;
+			currentVersion = BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
