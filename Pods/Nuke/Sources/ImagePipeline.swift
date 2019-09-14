@@ -17,10 +17,9 @@ public /* final */ class ImageTask: Hashable {
 
     fileprivate weak var delegate: ImageTaskDelegate?
 
-    /// The request with which the task was created. The request might change
-    /// during the exetucion of a task. When you update the priority of the task,
-    /// the request's prir also gets updated.
-    public private(set) var request: ImageRequest
+    /// The original request with which the task was created.
+    public let request: ImageRequest
+    fileprivate var priority: ImageRequest.Priority
 
     /// The number of bytes that the task has received.
     public fileprivate(set) var completedUnitCount: Int64 = 0
@@ -50,14 +49,14 @@ public /* final */ class ImageTask: Hashable {
         self.taskId = taskId
         self.request = request
         self.metrics = ImageTaskMetrics(taskId: taskId, startDate: Date())
+        self.priority = request.priority
     }
 
     // MARK: - Priority
 
     /// Update s priority of the task even if the task is already running.
     public func setPriority(_ priority: ImageRequest.Priority) {
-        request.priority = priority
-        delegate?.imageTask(self, didUpdatePrioity: priority)
+        delegate?.imageTask(self, didUpdatePriority: priority)
     }
 
     // MARK: - Cancellation
@@ -93,7 +92,7 @@ public /* final */ class ImageTask: Hashable {
 
 protocol ImageTaskDelegate: class {
     func imageTaskWasCancelled(_ task: ImageTask)
-    func imageTask(_ task: ImageTask, didUpdatePrioity: ImageRequest.Priority)
+    func imageTask(_ task: ImageTask, didUpdatePriority: ImageRequest.Priority)
 }
 
 // MARK: - ImageResponse
@@ -299,9 +298,10 @@ public /* final */ class ImagePipeline: ImageTaskDelegate {
         }
     }
 
-    func imageTask(_ task: ImageTask, didUpdatePrioity: ImageRequest.Priority) {
+    func imageTask(_ task: ImageTask, didUpdatePriority priority: ImageRequest.Priority) {
         queue.async {
             guard let session = task.session else { return }
+            task.priority = priority
             session.updatePriority()
             session.processingSessions[task]?.updatePriority()
         }
@@ -891,7 +891,7 @@ struct ImageContainer {
 
 private extension Property where T == ImageRequest.Priority {
     func update<Tasks: Sequence>(with tasks: Tasks) where Tasks.Element == ImageTask {
-        if let newPriority = tasks.map({ $0.request.priority }).max(), self.value != newPriority {
+        if let newPriority = tasks.map({ $0.priority }).max(), self.value != newPriority {
             self.value = newPriority
         }
     }

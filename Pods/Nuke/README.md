@@ -9,7 +9,7 @@
 <a href="https://travis-ci.org/kean/Nuke"><img src="https://img.shields.io/travis/kean/Nuke/master.svg"></a>
 </p>
 
-A powerful **image loading** and **caching** system. It makes simple tasks like loading images into views extremely simple, while also supporting advanced features for more demanding apps.
+A powerful **image loading** and **caching** system.
 
 - Fast LRU memory cache, native HTTP disk cache, and custom aggressive LRU disk cache
 - Progressive image loading (progressive JPEG and WebP)
