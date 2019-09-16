@@ -129,7 +129,7 @@
 		BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
-		BFB1169D22932DB100BB457C /* Apps-Staging.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps-Staging.json */; };
+		BFB1169D22932DB100BB457C /* Apps.json in Resources */ = {isa = PBXBuildFile; fileRef = BFB1169C22932DB100BB457C /* Apps.json */; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
 		BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21A23186D640022A802 /* NewsItem.swift */; };
@@ -409,7 +409,7 @@
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
-		BFB1169C22932DB100BB457C /* Apps-Staging.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Apps-Staging.json"; sourceTree = "<group>"; };
+		BFB1169C22932DB100BB457C /* Apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Apps.json; sourceTree = "<group>"; };
 		BFB364592325985F00CD0EB1 /* FindServerOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindServerOperation.swift; sourceTree = "<group>"; };
 		BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateCollectionViewCell.xib; sourceTree = "<group>"; };
 		BFB6B21A23186D640022A802 /* NewsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItem.swift; sourceTree = "<group>"; };
@@ -931,7 +931,7 @@
 		BFD247962284D7C100981D42 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BFB1169C22932DB100BB457C /* Apps-Staging.json */,
+				BFB1169C22932DB100BB457C /* Apps.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
@@ -1260,7 +1260,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFB1169D22932DB100BB457C /* Apps-Staging.json in Resources */,
+				BFB1169D22932DB100BB457C /* Apps.json in Resources */,
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
