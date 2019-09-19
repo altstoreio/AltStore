@@ -586,7 +586,7 @@ private extension MyAppsViewController
             self.present(documentPickerViewController, animated: true, completion: nil)
         }
         
-        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to riley@rileytestut.com.", comment: ""), preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
             sideloadApp()
         }))

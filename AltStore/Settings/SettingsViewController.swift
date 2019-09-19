@@ -326,7 +326,7 @@ extension SettingsViewController
                 {
                     let mailViewController = MFMailComposeViewController()
                     mailViewController.mailComposeDelegate = self
-                    mailViewController.setToRecipients(["riley@rileytestut.com"])
+                    mailViewController.setToRecipients(["support@altstore.io"])
                     
                     if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
                     {
