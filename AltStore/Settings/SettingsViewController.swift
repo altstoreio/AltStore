@@ -49,6 +49,13 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     
+    required init?(coder aDecoder: NSCoder)
+    {
+        super.init(coder: aDecoder)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.openPatreonSettings(_:)), name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -188,6 +195,19 @@ private extension SettingsViewController
     @IBAction func toggleIsBackgroundRefreshEnabled(_ sender: UISwitch)
     {
         UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
+    }
+}
+
+private extension SettingsViewController
+{
+    @objc func openPatreonSettings(_ notification: Notification)
+    {
+        guard self.presentedViewController == nil else { return }
+                
+        UIView.performWithoutAnimation {
+            self.navigationController?.popViewController(animated: false)
+            self.performSegue(withIdentifier: "showPatreon", sender: nil)
+        }
     }
 }
 

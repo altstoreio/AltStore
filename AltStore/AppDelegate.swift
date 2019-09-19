@@ -50,6 +50,11 @@ private let ReceivedApplicationState: @convention(c) (CFNotificationCenter?, Uns
     appDelegate.receivedApplicationState(notification: name)
 }
 
+extension AppDelegate
+{
+    static let openPatreonSettingsDeepLinkNotification = Notification.Name("openPatreonSettingsDeepLinkNotification")
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -90,6 +95,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         PatreonAPI.shared.refreshPatreonAccount()
     }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
+    {
+        return self.open(url)
+    }
 }
 
 private extension AppDelegate
@@ -97,6 +107,18 @@ private extension AppDelegate
     func setTintColor()
     {
         self.window?.tintColor = .altPrimary
+    }
+    
+    func open(_ url: URL) -> Bool
+    {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
+        guard let host = components.host, host.lowercased() == "patreon" else { return false }
+        
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+        }
+        
+        return true
     }
 }
 
