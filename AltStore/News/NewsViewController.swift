@@ -34,7 +34,15 @@ private class AppBannerFooterView: UICollectionReusableView
 class NewsViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
+    private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
+    
     private var prototypeCell: NewsCollectionViewCell!
+    
+    private var loadingState: LoadingState = .loading {
+        didSet {
+            self.update()
+        }
+    }
     
     // Cache
     private var cachedCellSizes = [String: CGSize]()
@@ -56,6 +64,8 @@ class NewsViewController: UICollectionViewController
         self.collectionView.register(AppBannerFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AppBanner")
         
         self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        
+        self.update()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -125,24 +135,66 @@ private extension NewsViewController
             }
         }
         
+        dataSource.placeholderView = self.placeholderView
+        
         return dataSource
     }
-    
+
     func fetchSource()
     {
+        self.loadingState = .loading
+        
         AppManager.shared.fetchSource() { (result) in
             do
             {
                 let source = try result.get()
                 try source.managedObjectContext?.save()
+                
+                DispatchQueue.main.async {
+                    self.loadingState = .finished(.success(()))
+                }
             }
             catch
             {
                 DispatchQueue.main.async {
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    if self.dataSource.itemCount > 0
+                    {
+                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    }
+                    
+                    self.loadingState = .finished(.failure(error))
                 }
             }
+        }
+    }
+    
+    func update()
+    {
+        switch self.loadingState
+        {
+        case .loading:
+            self.placeholderView.textLabel.isHidden = true
+            self.placeholderView.detailTextLabel.isHidden = false
+            
+            self.placeholderView.detailTextLabel.text = NSLocalizedString("Loading...", comment: "")
+            
+            self.placeholderView.activityIndicatorView.startAnimating()
+            
+        case .finished(.failure(let error)):
+            self.placeholderView.textLabel.isHidden = false
+            self.placeholderView.detailTextLabel.isHidden = false
+            
+            self.placeholderView.textLabel.text = NSLocalizedString("Unable to Fetch News", comment: "")
+            self.placeholderView.detailTextLabel.text = error.localizedDescription
+            
+            self.placeholderView.activityIndicatorView.stopAnimating()
+            
+        case .finished(.success):
+            self.placeholderView.textLabel.isHidden = true
+            self.placeholderView.detailTextLabel.isHidden = true
+            
+            self.placeholderView.activityIndicatorView.stopAnimating()
         }
     }
 }
