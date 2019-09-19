@@ -14,7 +14,7 @@ class FetchSourceOperation: ResultOperation<Source>
 {
     let sourceURL: URL
     
-    private let session = URLSession(configuration: .default)
+    private let session: URLSession
     
     private lazy var dateFormatter: ISO8601DateFormatter = {
         let dateFormatter = ISO8601DateFormatter()
@@ -24,6 +24,12 @@ class FetchSourceOperation: ResultOperation<Source>
     init(sourceURL: URL)
     {
         self.sourceURL = sourceURL
+        
+        let configuration = URLSessionConfiguration.default
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.urlCache = nil
+        
+        self.session = URLSession(configuration: configuration)
     }
     
     override func main()
