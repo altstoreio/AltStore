@@ -134,7 +134,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="LZw-eU-5SO" userLabel="App Info">
-                                                    <rect key="frame" x="0.0" y="0.0" width="295" height="93"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="93"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Ey-6S-HJx" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
@@ -145,10 +145,10 @@
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="bR7-SO-m8f">
-                                                            <rect key="frame" x="90" y="26.5" width="110" height="40.5"/>
+                                                            <rect key="frame" x="90" y="26.5" width="135" height="40.5"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="9z7-I4-q6g">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="110" height="21.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="135" height="21.5"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dNE-IO-y3o">
                                                                             <rect key="frame" x="0.0" y="0.0" width="88" height="21.5"/>
@@ -157,7 +157,7 @@
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="2XC-Fe-yG4">
-                                                                            <rect key="frame" x="94" y="0.0" width="16" height="21.5"/>
+                                                                            <rect key="frame" x="94" y="0.0" width="41" height="21.5"/>
                                                                         </imageView>
                                                                     </subviews>
                                                                 </stackView>
@@ -170,7 +170,7 @@
                                                             </subviews>
                                                         </stackView>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mgB-Gs-bik" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                                            <rect key="frame" x="211" y="31" width="72" height="31"/>
+                                                            <rect key="frame" x="236" y="31" width="72" height="31"/>
                                                             <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="j44-T1-0dc"/>
@@ -642,7 +642,7 @@ World</string>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="dIv-qd-9L5" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="tintColor" name="Red"/>
+                        <color key="tintColor" name="Primary"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -658,7 +658,7 @@ World</string>
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Ew-ox-i4n" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="My Apps" image="MyApps" id="4gT-9u-k7y">
-                        <color key="badgeColor" name="Red"/>
+                        <color key="badgeColor" name="Primary"/>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="CzO-Kt-BlZ" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
@@ -710,7 +710,7 @@ World</string>
                                                     <rect key="frame" x="71" y="12" width="203" height="36"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="MRz-3W-aTM">
-                                                            <rect key="frame" x="0.0" y="0.0" width="60" height="18"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="85" height="18"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="Short" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nhl-6I-9gW">
                                                                     <rect key="frame" x="0.0" y="0.0" width="38" height="18"/>
@@ -719,7 +719,7 @@ World</string>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="mtL-iA-JnD">
-                                                                    <rect key="frame" x="44" y="0.0" width="16" height="18"/>
+                                                                    <rect key="frame" x="44" y="0.0" width="41" height="18"/>
                                                                 </imageView>
                                                             </subviews>
                                                         </stackView>
@@ -776,7 +776,7 @@ World</string>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Updates Available" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z04-yg-x1t">
                                             <rect key="frame" x="104" y="20" width="167" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                            <color key="textColor" name="Red"/>
+                                            <color key="textColor" name="Primary"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -864,12 +864,12 @@ World</string>
         <image name="MyApps" width="28" height="24"/>
         <image name="News" width="17" height="21"/>
         <image name="Settings" width="21" height="21"/>
-        <namedColor name="Red">
-            <color red="0.92156862745098034" green="0.27450980392156865" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="Primary">
+            <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="dzt-2e-VM9"/>
     </inferredMetricsTieBreakers>
-    <color key="tintColor" name="Red"/>
+    <color key="tintColor" name="Primary"/>
 </document>

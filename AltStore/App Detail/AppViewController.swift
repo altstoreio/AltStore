@@ -392,7 +392,7 @@ private extension AppViewController
         navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.alpha = 1.0
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = .altRed
+        navigationController?.navigationBar.tintColor = .altPrimary
     }
     
     func hideNavigationBar(for navigationController: UINavigationController? = nil)

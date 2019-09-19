@@ -10,7 +10,8 @@ import UIKit
 
 extension UIColor
 {
-    static let altRed = UIColor(named: "Red")!
+    static let altPrimary = UIColor(named: "Primary")!
+    
     static let altPink = UIColor(named: "Pink")!
     
     static let refreshRed = UIColor(named: "RefreshRed")!

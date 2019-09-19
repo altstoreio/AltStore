@@ -285,12 +285,12 @@ extension SettingsViewController
             {
             case .developer:
                 let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/rileytestut")!)
-                safariViewController.preferredControlTintColor = .altRed
+                safariViewController.preferredControlTintColor = .altPrimary
                 self.present(safariViewController, animated: true, completion: nil)
                 
             case .designer:
                 let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/1carolinemoore")!)
-                safariViewController.preferredControlTintColor = .altRed
+                safariViewController.preferredControlTintColor = .altPrimary
                 self.present(safariViewController, animated: true, completion: nil)
                 
             case .softwareLicenses:
