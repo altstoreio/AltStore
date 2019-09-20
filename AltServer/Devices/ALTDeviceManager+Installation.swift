@@ -167,7 +167,7 @@ extension ALTDeviceManager
     
     func downloadApp(completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        let appURL = URL(string: "https://www.dropbox.com/s/w1gn9iztlqvltyp/AltStore.ipa?dl=1")!
+        let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
         
         let downloadTask = URLSession.shared.downloadTask(with: appURL) { (fileURL, response, error) in
             do
