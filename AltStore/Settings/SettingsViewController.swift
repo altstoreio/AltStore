@@ -43,6 +43,9 @@ class SettingsViewController: UITableViewController
     
     private var prototypeHeaderFooterView: SettingsHeaderFooterView!
     
+    private var debugGestureCounter = 0
+    private weak var debugGestureTimer: Timer?
+    
     @IBOutlet private var accountNameLabel: UILabel!
     @IBOutlet private var accountEmailLabel: UILabel!
     @IBOutlet private var accountTypeLabel: UILabel!
@@ -64,6 +67,12 @@ class SettingsViewController: UITableViewController
         self.prototypeHeaderFooterView = nib.instantiate(withOwner: nil, options: nil)[0] as? SettingsHeaderFooterView
         
         self.tableView.register(nib, forHeaderFooterViewReuseIdentifier: "HeaderFooterView")
+        
+        let debugModeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(SettingsViewController.handleDebugModeGesture(_:)))
+        debugModeGestureRecognizer.delegate = self
+        debugModeGestureRecognizer.direction = .up
+        debugModeGestureRecognizer.numberOfTouchesRequired = 3
+        self.tableView.addGestureRecognizer(debugModeGestureRecognizer)
         
         self.update()
     }
@@ -196,6 +205,26 @@ private extension SettingsViewController
     {
         UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
     }
+    
+    @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)
+    {
+        self.debugGestureCounter += 1
+        self.debugGestureTimer?.invalidate()
+        
+        if self.debugGestureCounter >= 3
+        {
+            self.debugGestureCounter = 0
+            
+            UserDefaults.standard.isDebugModeEnabled.toggle()
+            self.tableView.reloadData()
+        }
+        else
+        {
+            self.debugGestureTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { [weak self] (timer) in
+                self?.debugGestureCounter = 0
+            }
+        }
+    }
 }
 
 private extension SettingsViewController
@@ -213,6 +242,18 @@ private extension SettingsViewController
 
 extension SettingsViewController
 {
+    override func numberOfSections(in tableView: UITableView) -> Int
+    {
+        var numberOfSections = super.numberOfSections(in: tableView)
+        
+        if !UserDefaults.standard.isDebugModeEnabled
+        {
+            numberOfSections -= 1
+        }
+        
+        return numberOfSections
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         let section = Section.allCases[section]
@@ -364,5 +405,13 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate
         }
         
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension SettingsViewController: UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        return true
     }
 }

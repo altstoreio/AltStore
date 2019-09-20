@@ -17,6 +17,7 @@ extension UserDefaults
     @NSManaged var preferredServerID: String?
     
     @NSManaged var isBackgroundRefreshEnabled: Bool
+    @NSManaged var isDebugModeEnabled: Bool
     
     func registerDefaults()
     {

@@ -78,6 +78,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UserDefaults.standard.preferredServerID = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.serverID) as? String
         
+        #if DEBUG || BETA
+        UserDefaults.standard.isDebugModeEnabled = true
+        #endif
+        
         self.prepareForBackgroundFetch()
         
         return true
