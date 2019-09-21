@@ -225,6 +225,28 @@ private extension SettingsViewController
             }
         }
     }
+    
+    func openTwitter(username: String)
+    {
+        let twitterAppURL = URL(string: "twitter://user?screen_name=" + username)!
+        UIApplication.shared.open(twitterAppURL, options: [:]) { (success) in
+            if success
+            {
+                if let selectedIndexPath = self.tableView.indexPathForSelectedRow
+                {
+                    self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                }
+            }
+            else
+            {
+                let safariURL = URL(string: "https://twitter.com/" + username)!
+                
+                let safariViewController = SFSafariViewController(url: safariURL)
+                safariViewController.preferredControlTintColor = .altPrimary
+                self.present(safariViewController, animated: true, completion: nil)
+            }
+        }
+    }
 }
 
 private extension SettingsViewController
@@ -344,18 +366,9 @@ extension SettingsViewController
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer:
-                let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/rileytestut")!)
-                safariViewController.preferredControlTintColor = .altPrimary
-                self.present(safariViewController, animated: true, completion: nil)
-                
-            case .designer:
-                let safariViewController = SFSafariViewController(url: URL(string: "https://twitter.com/1carolinemoore")!)
-                safariViewController.preferredControlTintColor = .altPrimary
-                self.present(safariViewController, animated: true, completion: nil)
-                
-            case .softwareLicenses:
-                break
+            case .developer: self.openTwitter(username: "rileytestut")
+            case .designer: self.openTwitter(username: "1carolinemoore")
+            case .softwareLicenses: break
             }
             
         case .debug:
