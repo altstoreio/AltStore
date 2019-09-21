@@ -170,30 +170,31 @@ private extension DatabaseManager
                 installedApp.storeApp = storeApp
             }
             
-            installedApp.version = localApp.version
-            
             let fileURL = installedApp.fileURL
-            
-            if !FileManager.default.fileExists(atPath: fileURL.path)
+            if !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
             {
-                do
-                {
-                    try FileManager.default.copyItem(at: Bundle.main.bundleURL, to: fileURL)
-                    
-                    let infoPlistURL = fileURL.appendingPathComponent("Info.plist")
-                    
-                    // TODO: Copy to temporary location, modify it, _then_ copy to final destination.
-                    guard var infoDictionary = Bundle.main.infoDictionary else { throw ALTError(.missingInfoPlist) }
-                    infoDictionary[kCFBundleIdentifierKey as String] = StoreApp.altstoreAppID
-                    try (infoDictionary as NSDictionary).write(to: infoPlistURL)
-                }
-                catch
-                {
-                    print("Failed to copy AltStore app bundle to its proper location.", error)
-                    
-                    try? FileManager.default.removeItem(at: fileURL)
+                FileManager.default.prepareTemporaryURL() { (temporaryFileURL) in
+                    do
+                    {
+                        try FileManager.default.copyItem(at: Bundle.main.bundleURL, to: temporaryFileURL)
+                        
+                        let infoPlistURL = temporaryFileURL.appendingPathComponent("Info.plist")
+                        
+                        guard var infoDictionary = Bundle.main.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                        infoDictionary[kCFBundleIdentifierKey as String] = StoreApp.altstoreAppID
+                        try (infoDictionary as NSDictionary).write(to: infoPlistURL)
+                        
+                        try FileManager.default.copyItem(at: temporaryFileURL, to: fileURL, shouldReplace: true)
+                    }
+                    catch
+                    {
+                        print("Failed to copy AltStore app bundle to its proper location.", error)
+                    }
                 }
             }
+            
+            // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
+            installedApp.version = localApp.version
             
             if let provisioningProfile = localApp.provisioningProfile
             {
