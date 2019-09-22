@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import UserNotifications
 
 import AltSign
 import AltKit
@@ -17,6 +18,8 @@ import Roxas
 extension AppManager
 {
     static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
+    
+    static let expirationWarningNotificationID = "altstore-expiration-warning"
 }
 
 class AppManager
@@ -52,15 +55,18 @@ extension AppManager
         do
         {
             let installedApps = try context.fetch(fetchRequest)
-            for app in installedApps where app.storeApp != nil && app.bundleIdentifier != StoreApp.altstoreAppID
+            for app in installedApps where app.storeApp != nil
             {
-                if UIApplication.shared.canOpenURL(app.openAppURL)
+                if app.bundleIdentifier == StoreApp.altstoreAppID
                 {
-                    // App is still installed, good!
+                    self.scheduleExpirationWarningLocalNotification(for: app)
                 }
                 else
                 {
-                    context.delete(app)
+                    if !UIApplication.shared.canOpenURL(app.openAppURL)
+                    {
+                        context.delete(app)
+                    }
                 }
             }
             
@@ -269,6 +275,16 @@ private extension AppManager
             operations.append(sendAppOperation)
             
             
+            let beginInstallationHandler = group.beginInstallationHandler
+            group.beginInstallationHandler = { (installedApp) in
+                if installedApp.bundleIdentifier == StoreApp.altstoreAppID
+                {
+                    self.scheduleExpirationWarningLocalNotification(for: installedApp)
+                }
+                
+                beginInstallationHandler?(installedApp)
+            }
+            
             /* Install */
             let installOperation = InstallAppOperation(context: context)
             installOperation.resultHandler = { (result) in
@@ -370,7 +386,34 @@ private extension AppManager
             if context.group.results.count == context.group.progress.totalUnitCount
             {
                 context.group.completionHandler?(.success(context.group.results))
+                
+                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                backgroundContext.performAndWait {
+                    guard let altstore = InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID), in: backgroundContext) else { return }
+                    self.scheduleExpirationWarningLocalNotification(for: altstore)
+                }
             }
         }
+    }
+    
+    func scheduleExpirationWarningLocalNotification(for app: InstalledApp)
+    {
+        let notificationDate = app.expirationDate.addingTimeInterval(-1 * 60 * 60 * 24) // 24 hours before expiration.
+        
+        let timeIntervalUntilNotification = notificationDate.timeIntervalSinceNow
+        guard timeIntervalUntilNotification > 0 else {
+            // Crashes if we pass negative value to UNTimeIntervalNotificationTrigger initializer.
+            return
+        }
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeIntervalUntilNotification, repeats: false)
+        
+        let content = UNMutableNotificationContent()
+        content.title = NSLocalizedString("AltStore Expiring Soon", comment: "")
+        content.body = NSLocalizedString("AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring.", comment: "")
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
     }
 }
