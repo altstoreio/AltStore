@@ -161,6 +161,21 @@ extension AppDelegate
         if UserDefaults.standard.isBackgroundRefreshEnabled
         {
             ServerManager.shared.startDiscovering()
+            
+            if !UserDefaults.standard.presentedLaunchReminderNotification
+            {
+                let threeHours: TimeInterval = 3 * 60 * 60
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: threeHours, repeats: false)
+                
+                let content = UNMutableNotificationContent()
+                content.title = NSLocalizedString("App Refresh Tip", comment: "")
+                content.body = NSLocalizedString("The more you open AltStore, the more chances it's given to refresh apps in the background.", comment: "")
+                
+                let request = UNNotificationRequest(identifier: "background-refresh-reminder5", content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request)
+                
+                UserDefaults.standard.presentedLaunchReminderNotification = true
+            }
         }
         
         let refreshIdentifier = UUID().uuidString

@@ -18,6 +18,7 @@ extension UserDefaults
     
     @NSManaged var isBackgroundRefreshEnabled: Bool
     @NSManaged var isDebugModeEnabled: Bool
+    @NSManaged var presentedLaunchReminderNotification: Bool
     
     func registerDefaults()
     {
