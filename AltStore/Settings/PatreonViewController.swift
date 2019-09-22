@@ -110,7 +110,7 @@ private extension PatreonViewController
         let defaultText = NSLocalizedString("""
         Hey y'all,
         
-        You can support future development of my apps by donating to me on Patreon. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.
+        You can support future development of my apps by donating to me on Patreon. In return, you'll receive access to the beta versions of my apps and be among the first to try the latest features.
         
         Thanks for all your support 💜
         Riley
