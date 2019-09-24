@@ -84,7 +84,11 @@ private extension AppDelegate
         
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
-        alert.informativeText = NSLocalizedString("Your Apple ID and password are not saved and are only sent to Apple for authentication.", comment: "")
+        alert.informativeText = NSLocalizedString("""
+Your Apple ID and password are not saved and are only sent to Apple for authentication.
+
+If you have two-factor authentication enabled, please create an app-specific password for use with AltStore at https://appleid.apple.com.
+""", comment: "")
         
         let textFieldSize = NSSize(width: 300, height: 22)
         
