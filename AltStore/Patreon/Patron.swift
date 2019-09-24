@@ -15,7 +15,7 @@ extension PatreonAPI
         struct Attributes: Decodable
         {
             var full_name: String
-            var patron_status: String
+            var patron_status: String?
         }
         
         struct Relationships: Decodable
@@ -48,6 +48,7 @@ extension Patron
         case active = "active_patron"
         case declined = "declined_patron"
         case former = "former_patron"
+        case unknown = "unknown"
     }
 }
 
@@ -64,6 +65,14 @@ class Patron
     {
         self.name = response.attributes.full_name
         self.identifier = response.id
-        self.status = Status(rawValue: response.attributes.patron_status) ?? .former
+        
+        if let status = response.attributes.patron_status
+        {
+            self.status = Status(rawValue: status) ?? .unknown
+        }
+        else
+        {
+            self.status = .unknown
+        }
     }
 }
