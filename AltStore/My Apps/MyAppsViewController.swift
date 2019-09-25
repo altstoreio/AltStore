@@ -320,7 +320,7 @@ private extension MyAppsViewController
     
     func updateDataSource()
     {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
             self.dataSource.predicate = nil
         }

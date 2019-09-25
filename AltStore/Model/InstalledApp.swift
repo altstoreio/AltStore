@@ -84,7 +84,7 @@ extension InstalledApp
     {
         var predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
             // No additional predicate
         }
@@ -116,7 +116,7 @@ extension InstalledApp
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
                                     #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron
+        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
             // No additional predicate
         }

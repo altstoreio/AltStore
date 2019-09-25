@@ -54,12 +54,12 @@ class PatreonAccount: NSManagedObject, Fetchable
         
         if let patronResponse = response.included?.first
         {
-            _ = Patron(response: patronResponse)
-            self.isPatron = true
+            let patron = Patron(response: patronResponse)
+            self.isPatron = (patron.status == .active)
         }
         else
         {
-            self.isPatron = true
+            self.isPatron = false
         }
     }
 }
