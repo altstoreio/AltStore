@@ -557,6 +557,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		BF055B4A233B528B0086DEA9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		BF100C4E232D7C95006A8926 /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,6 +633,7 @@
 				BF458695229872EA00BD7491 /* Main.storyboard */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
+				BF055B4A233B528B0086DEA9 /* Extensions */,
 				BF703194229F36F6006E110F /* Resources */,
 				BF703196229F370F006E110F /* Supporting Files */,
 			);
@@ -991,7 +1000,6 @@
 			isa = PBXGroup;
 			children = (
 				BF1E3129229F474900370A3C /* ConnectionManager.swift */,
-				BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */,
 			);
 			path = Connections;
 			sourceTree = "<group>";
