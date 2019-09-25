@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "MyAppsTab.png",
+      "filename" : "Group 12.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "MyAppsTab@2x.png",
+      "filename" : "Group 11.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "MyAppsTab@3x.png",
+      "filename" : "Group 10.png",
       "scale" : "3x"
     }
   ],
