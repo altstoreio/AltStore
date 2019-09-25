@@ -19,6 +19,15 @@ extension UserDefaults
         }
     }
     
+    var didPresentInitialNotification: Bool {
+        get {
+            return self.bool(forKey: "didPresentInitialNotification")
+        }
+        set {
+            self.set(newValue, forKey: "didPresentInitialNotification")
+        }
+    }
+    
     func registerDefaults()
     {
         if self.serverID == nil
