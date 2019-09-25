@@ -131,7 +131,14 @@ private extension SettingsViewController
             }
             
         case .patreon:
-            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Receive access to beta versions of AltStore, Delta, and more by becoming a patron.", comment: "")
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("PATREON", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Receive access to beta versions of AltStore, Delta, and more by becoming a patron.", comment: "")
+            }
             
         case .account:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
@@ -295,12 +302,12 @@ extension SettingsViewController
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
             
-        case .signIn, .account, .credits, .debug:
+        case .signIn, .account, .patreon, .credits, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
             
-        case .patreon, .backgroundRefresh, .instructions: return nil
+        case .backgroundRefresh, .instructions: return nil
         }
     }
     
@@ -328,11 +335,11 @@ extension SettingsViewController
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
             
-        case .signIn, .account, .credits, .debug:
+        case .signIn, .account, .patreon, .credits, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
-        case .patreon, .backgroundRefresh, .instructions: return 0.0
+        case .backgroundRefresh, .instructions: return 0.0
         }
     }
     
