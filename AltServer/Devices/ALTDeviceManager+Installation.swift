@@ -194,6 +194,50 @@ extension ALTDeviceManager
     
     func fetchTeam(for account: ALTAccount, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
     {
+        func finish(_ result: Result<ALTTeam, Error>)
+        {
+            switch result
+            {
+            case .failure(let error):
+                completionHandler(.failure(error))
+                
+            case .success(let team):
+                
+                var isCancelled = false
+                
+                if team.type != .free
+                {
+                    DispatchQueue.main.sync {
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Installing AltStore will revoke your iOS development certificate.", comment: "")
+                        alert.informativeText = NSLocalizedString("""
+This will not affect apps you've submitted to the App Store, but may cause apps you've installed to your devices with Xcode to stop working until you reinstall them.
+
+To prevent this from happening, feel free to try again with another Apple ID to install AltStore.
+""", comment: "")
+                        
+                        alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
+                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                        
+                        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                        
+                        let buttonIndex = alert.runModal()
+                        if buttonIndex == NSApplication.ModalResponse.alertSecondButtonReturn
+                        {
+                            isCancelled = true
+                        }
+                    }
+                    
+                    if isCancelled
+                    {
+                        return completionHandler(.failure(InstallError.cancelled))
+                    }
+                }
+                
+                completionHandler(.success(team))
+            }
+        }
+        
         ALTAppleAPI.shared.fetchTeams(for: account) { (teams, error) in
             do
             {
@@ -201,15 +245,15 @@ extension ALTDeviceManager
                 
                 if let team = teams.first(where: { $0.type == .free })
                 {
-                    return completionHandler(.success(team))
+                    return finish(.success(team))
                 }
                 else if let team = teams.first(where: { $0.type == .individual })
                 {
-                    return completionHandler(.success(team))
+                    return finish(.success(team))
                 }
                 else if let team = teams.first
                 {
-                    return completionHandler(.success(team))
+                    return finish(.success(team))
                 }
                 else
                 {
@@ -218,7 +262,7 @@ extension ALTDeviceManager
             }
             catch
             {
-                completionHandler(.failure(error))
+                finish(.failure(error))
             }
         }
     }
