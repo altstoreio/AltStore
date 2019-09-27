@@ -7,14 +7,19 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "0.4",
-      "versionDate": "2019-09-21",
-      "versionDescription": "• Sends notification when AltStore is about to expire.\n• Sends one-time notification reminding you to open AltStore occasionally to keep background refresh working.\n• Displays loading indicators when first loading store.\n• Revises some explanatory text.",
+      "version": "1.0",
+      "versionDate": "2019-09-25",
+      "versionDescription": "Initial version.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore.ipa",
-      "localizedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed enim ut sem viverra aliquet eget sit amet. Viverra mauris in aliquam sem fringilla ut. Egestas erat imperdiet sed euismod nisi porta. Sit amet dictum sit amet justo donec enim diam vulputate. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Elit pellentesque habitant morbi tristique. Ut lectus arcu bibendum at. Ullamcorper a lacus vestibulum sed. Mi tempus imperdiet nulla malesuada pellentesque elit eget gravida. Nec feugiat nisl pretium fusce id velit ut. Amet nulla facilisi morbi tempus. Ut sem nulla pharetra diam sit amet nisl.\n\nTortor at auctor urna nunc id cursus metus. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Faucibus turpis in eu mi bibendum neque egestas. Auctor augue mauris augue neque gravida in fermentum et sollicitudin. Aliquam vestibulum morbi blandit cursus risus at ultrices mi tempus. Placerat in egestas erat imperdiet sed euismod nisi. Aliquam id diam maecenas ultricies mi eget mauris. Nunc faucibus a pellentesque sit amet porttitor eget dolor. Sed faucibus turpis in eu mi. Tortor vitae purus faucibus ornare suspendisse sed nisi lacus sed. Id semper risus in hendrerit gravida rutrum quisque. At lectus urna duis convallis convallis. Egestas maecenas pharetra convallis posuere. Id velit ut tortor pretium viverra. Quam pellentesque nec nam aliquam sem et tortor consequat. Risus pretium quam vulputate dignissim. Urna nec tincidunt praesent semper feugiat nibh sed pulvinar.\n\nTempor orci eu lobortis elementum nibh tellus. Mattis rhoncus urna neque viverra justo nec. Maecenas pharetra convallis posuere morbi leo. Rhoncus mattis rhoncus urna neque viverra justo nec. Gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim. At imperdiet dui accumsan sit amet. Elit sed vulputate mi sit amet mauris commodo. Pellentesque habitant morbi tristique senectus. Tortor id aliquet lectus proin nibh. Magna etiam tempor orci eu lobortis elementum. Est pellentesque elit ullamcorper dignissim. Dapibus ultrices in iaculis nunc. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Diam vel quam elementum pulvinar. Vel turpis nunc eget lorem dolor sed viverra. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae. Euismod nisi porta lorem mollis. Massa id neque aliquam vestibulum morbi blandit.\n\nMassa massa ultricies mi quis hendrerit dolor magna eget est. Augue interdum velit euismod in pellentesque massa. Sed risus ultricies tristique nulla aliquet enim. Risus viverra adipiscing at in tellus. Donec adipiscing tristique risus nec feugiat. Eget sit amet tellus cras adipiscing enim eu turpis. Auctor neque vitae tempus quam pellentesque nec. Sit amet tellus cras adipiscing enim eu turpis egestas. Dui faucibus in ornare quam viverra. Fermentum iaculis eu non diam phasellus vestibulum lorem. Odio ut enim blandit volutpat maecenas. Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Pellentesque diam volutpat commodo sed egestas egestas. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Elit duis tristique sollicitudin nibh sit. Fermentum dui faucibus in ornare quam viverra orci sagittis. Aliquet eget sit amet tellus cras adipiscing.",
+      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. This initial release of AltStore allows you to install Delta, an all-in-one emulator for iOS, and Clip, a simple clipboard manager that can run in the background.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
       "size": 3481256,
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/65605563-2f009d00-df5e-11e9-9b40-1f36135d5c80.PNG",
+        "https://user-images.githubusercontent.com/705880/65605569-30ca6080-df5e-11e9-8dfb-15ebb00e10cb.PNG",
+        "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG"
+      ],
       "permissions": [
         {
           "type": "background-fetch",
@@ -30,15 +35,20 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
-      "version": "0.4b",
-      "versionDate": "2019-09-21",
-      "versionDescription": "• Sends notification when AltStore is about to expire.\n• Sends one-time notification reminding you to open AltStore occasionally to keep background refresh working.\n• Displays loading indicators when first loading store.\n• Revises some explanatory text.",
+      "version": "1.0b",
+      "versionDate": "2019-09-25",
+      "versionDescription": "Includes initial support for sideloading apps from the Files app.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa",
-      "localizedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed enim ut sem viverra aliquet eget sit amet. Viverra mauris in aliquam sem fringilla ut. Egestas erat imperdiet sed euismod nisi porta. Sit amet dictum sit amet justo donec enim diam vulputate. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Elit pellentesque habitant morbi tristique. Ut lectus arcu bibendum at. Ullamcorper a lacus vestibulum sed. Mi tempus imperdiet nulla malesuada pellentesque elit eget gravida. Nec feugiat nisl pretium fusce id velit ut. Amet nulla facilisi morbi tempus. Ut sem nulla pharetra diam sit amet nisl.\n\nTortor at auctor urna nunc id cursus metus. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Faucibus turpis in eu mi bibendum neque egestas. Auctor augue mauris augue neque gravida in fermentum et sollicitudin. Aliquam vestibulum morbi blandit cursus risus at ultrices mi tempus. Placerat in egestas erat imperdiet sed euismod nisi. Aliquam id diam maecenas ultricies mi eget mauris. Nunc faucibus a pellentesque sit amet porttitor eget dolor. Sed faucibus turpis in eu mi. Tortor vitae purus faucibus ornare suspendisse sed nisi lacus sed. Id semper risus in hendrerit gravida rutrum quisque. At lectus urna duis convallis convallis. Egestas maecenas pharetra convallis posuere. Id velit ut tortor pretium viverra. Quam pellentesque nec nam aliquam sem et tortor consequat. Risus pretium quam vulputate dignissim. Urna nec tincidunt praesent semper feugiat nibh sed pulvinar.\n\nTempor orci eu lobortis elementum nibh tellus. Mattis rhoncus urna neque viverra justo nec. Maecenas pharetra convallis posuere morbi leo. Rhoncus mattis rhoncus urna neque viverra justo nec. Gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim. At imperdiet dui accumsan sit amet. Elit sed vulputate mi sit amet mauris commodo. Pellentesque habitant morbi tristique senectus. Tortor id aliquet lectus proin nibh. Magna etiam tempor orci eu lobortis elementum. Est pellentesque elit ullamcorper dignissim. Dapibus ultrices in iaculis nunc. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Diam vel quam elementum pulvinar. Vel turpis nunc eget lorem dolor sed viverra. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae. Euismod nisi porta lorem mollis. Massa id neque aliquam vestibulum morbi blandit.\n\nMassa massa ultricies mi quis hendrerit dolor magna eget est. Augue interdum velit euismod in pellentesque massa. Sed risus ultricies tristique nulla aliquet enim. Risus viverra adipiscing at in tellus. Donec adipiscing tristique risus nec feugiat. Eget sit amet tellus cras adipiscing enim eu turpis. Auctor neque vitae tempus quam pellentesque nec. Sit amet tellus cras adipiscing enim eu turpis egestas. Dui faucibus in ornare quam viverra. Fermentum iaculis eu non diam phasellus vestibulum lorem. Odio ut enim blandit volutpat maecenas. Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Pellentesque diam volutpat commodo sed egestas egestas. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Elit duis tristique sollicitudin nibh sit. Fermentum dui faucibus in ornare quam viverra orci sagittis. Aliquet eget sit amet tellus cras adipiscing.",
+      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. This beta release of AltStore allows you to install Delta, an all-in-one emulator for iOS, and Clip, a simple clipboard manager that can run in the background. However, you also can sideload apps (.ipas) directly from the Files app, allowing you to install any app you desire.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
       "size": 3481256,
       "beta": true,
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/65605563-2f009d00-df5e-11e9-9b40-1f36135d5c80.PNG",
+        "https://user-images.githubusercontent.com/705880/65605569-30ca6080-df5e-11e9-8dfb-15ebb00e10cb.PNG",
+        "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG"
+      ],
       "permissions": [
         {
           "type": "background-fetch",
@@ -55,11 +65,11 @@
       "bundleIdentifier": "com.rileytestut.Delta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "0.9",
-      "versionDate": "2019-09-15",
-      "versionDescription": "- Adds ability to copy + open deep links for games\n- Adds custom NES controller skin\n- Renames \"Sustain Button\" to \"Hold Button\"\n- Fixes N64 controller skin obscured by notch\n- Misc. UI improvements",
+      "version": "1.0",
+      "versionDate": "2019-09-28T14:30:00-07:00",
+      "versionDescription": "Initial version.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta.ipa",
-      "localizedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed enim ut sem viverra aliquet eget sit amet. Viverra mauris in aliquam sem fringilla ut. Egestas erat imperdiet sed euismod nisi porta. Sit amet dictum sit amet justo donec enim diam vulputate. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Elit pellentesque habitant morbi tristique. Ut lectus arcu bibendum at. Ullamcorper a lacus vestibulum sed. Mi tempus imperdiet nulla malesuada pellentesque elit eget gravida. Nec feugiat nisl pretium fusce id velit ut. Amet nulla facilisi morbi tempus. Ut sem nulla pharetra diam sit amet nisl.\n\nTortor at auctor urna nunc id cursus metus. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Faucibus turpis in eu mi bibendum neque egestas. Auctor augue mauris augue neque gravida in fermentum et sollicitudin. Aliquam vestibulum morbi blandit cursus risus at ultrices mi tempus. Placerat in egestas erat imperdiet sed euismod nisi. Aliquam id diam maecenas ultricies mi eget mauris. Nunc faucibus a pellentesque sit amet porttitor eget dolor. Sed faucibus turpis in eu mi. Tortor vitae purus faucibus ornare suspendisse sed nisi lacus sed. Id semper risus in hendrerit gravida rutrum quisque. At lectus urna duis convallis convallis. Egestas maecenas pharetra convallis posuere. Id velit ut tortor pretium viverra. Quam pellentesque nec nam aliquam sem et tortor consequat. Risus pretium quam vulputate dignissim. Urna nec tincidunt praesent semper feugiat nibh sed pulvinar.\n\nTempor orci eu lobortis elementum nibh tellus. Mattis rhoncus urna neque viverra justo nec. Maecenas pharetra convallis posuere morbi leo. Rhoncus mattis rhoncus urna neque viverra justo nec. Gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim. At imperdiet dui accumsan sit amet. Elit sed vulputate mi sit amet mauris commodo. Pellentesque habitant morbi tristique senectus. Tortor id aliquet lectus proin nibh. Magna etiam tempor orci eu lobortis elementum. Est pellentesque elit ullamcorper dignissim. Dapibus ultrices in iaculis nunc. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Diam vel quam elementum pulvinar. Vel turpis nunc eget lorem dolor sed viverra. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae. Euismod nisi porta lorem mollis. Massa id neque aliquam vestibulum morbi blandit.\n\nMassa massa ultricies mi quis hendrerit dolor magna eget est. Augue interdum velit euismod in pellentesque massa. Sed risus ultricies tristique nulla aliquet enim. Risus viverra adipiscing at in tellus. Donec adipiscing tristique risus nec feugiat. Eget sit amet tellus cras adipiscing enim eu turpis. Auctor neque vitae tempus quam pellentesque nec. Sit amet tellus cras adipiscing enim eu turpis egestas. Dui faucibus in ornare quam viverra. Fermentum iaculis eu non diam phasellus vestibulum lorem. Odio ut enim blandit volutpat maecenas. Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Pellentesque diam volutpat commodo sed egestas egestas. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Elit duis tristique sollicitudin nibh sit. Fermentum dui faucibus in ornare quam viverra orci sagittis. Aliquet eget sit amet tellus cras adipiscing.",
+      "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• And plenty more to come!\n\nController Support\n• Supports PS4, Xbox One S, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support for WarioWare: Twisted!\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
       "size": 30806622,
@@ -70,9 +80,9 @@
         }
       ],
       "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391859-c714d080-c379-11e9-8d2f-967b6820485d.png",
-        "https://user-images.githubusercontent.com/705880/63391863-c8de9400-c379-11e9-9b3f-39da2dff4a8a.png",
-        "https://user-images.githubusercontent.com/705880/63391865-c9772a80-c379-11e9-848b-d7d62cda06fd.png"
+        "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
+        "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG",
+        "https://user-images.githubusercontent.com/705880/65601125-5b182000-df56-11e9-9e7e-261480e893c0.PNG"
       ]
     },
     {
@@ -80,11 +90,11 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "0.9b",
-      "versionDate": "2019-09-15",
+      "version": "1.0b",
+      "versionDate": "2019-09-28T02:30:00-07:00",
       "versionDescription": "Includes initial support for DS games.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-beta.ipa",
-      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games.\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)",
+      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
       "size": 30806622,
@@ -96,24 +106,25 @@
         }
       ],
       "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391859-c714d080-c379-11e9-8d2f-967b6820485d.png",
-        "https://user-images.githubusercontent.com/705880/63391863-c8de9400-c379-11e9-9b3f-39da2dff4a8a.png",
-        "https://user-images.githubusercontent.com/705880/63391865-c9772a80-c379-11e9-848b-d7d62cda06fd.png"
+        "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
+        "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG"
+      ,
+        "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG"
       ]
     },
     {
       "name": "Delta Lite",
       "bundleIdentifier": "com.rileytestut.Delta.Lite",
       "developerName": "Riley Testut",
-      "subtitle": "Classic games in your pocket.",
-      "version": "0.9",
-      "versionDate": "2019-09-15",
+      "subtitle": "The 80s in your pocket.",
+      "version": "1.0",
+      "versionDate": "2019-09-25",
       "versionDescription": "Initial version.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-lite.ipa",
       "localizedDescription": "Delta Lite brings NES games to iOS.",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 30806622,
+      "size": 15256861,
       "permissions": [
         {
           "type": "photos",
@@ -121,24 +132,23 @@
         }
       ],
       "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391859-c714d080-c379-11e9-8d2f-967b6820485d.png",
-        "https://user-images.githubusercontent.com/705880/63391863-c8de9400-c379-11e9-9b3f-39da2dff4a8a.png",
-        "https://user-images.githubusercontent.com/705880/63391865-c9772a80-c379-11e9-848b-d7d62cda06fd.png"
+        "https://user-images.githubusercontent.com/705880/65599574-07580780-df53-11e9-97a3-b27141c8cae8.PNG",
+        "https://user-images.githubusercontent.com/705880/65599570-04f5ad80-df53-11e9-914a-8c42ac4805b0.PNG"
       ]
     },
     {
       "name": "Delta Lite",
       "bundleIdentifier": "com.rileytestut.Delta.Lite.Beta",
       "developerName": "Riley Testut",
-      "subtitle": "Classic games in your pocket.",
-      "version": "0.9b",
-      "versionDate": "2019-09-15",
+      "subtitle": "The 80s (and 90s) in your pocket.",
+      "version": "1.0b",
+      "versionDate": "2019-09-25",
       "versionDescription": "Adds support for GBC games in addition to NES.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-lite-beta.ipa",
       "localizedDescription": "Delta Lite brings NES and GBC games to iOS.",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 30806622,
+      "size": 16509767,
       "beta": true,
       "permissions": [
         {
@@ -147,9 +157,8 @@
         }
       ],
       "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391859-c714d080-c379-11e9-8d2f-967b6820485d.png",
-        "https://user-images.githubusercontent.com/705880/63391863-c8de9400-c379-11e9-9b3f-39da2dff4a8a.png",
-        "https://user-images.githubusercontent.com/705880/63391865-c9772a80-c379-11e9-848b-d7d62cda06fd.png"
+        "https://user-images.githubusercontent.com/705880/65599562-fe673600-df52-11e9-9cfb-b60a11568baf.PNG",
+        "https://user-images.githubusercontent.com/705880/65599567-01fabd00-df53-11e9-8654-f075c0f32c59.PNG"
       ]
     },
     {
@@ -157,11 +166,11 @@
       "bundleIdentifier": "com.rileytestut.Clip",
       "subtitle": "Manage your clipboard history with ease.",
       "developerName": "Riley Testut",
-      "version": "0.3",
-      "versionDate": "2019-09-19",
-      "versionDescription": "- Updates Settings UI.\n- Displays thumbnail in notification when copying images.\n- Improves reliability.",
+      "version": "1.0",
+      "versionDate": "2019-09-28T02:30:00-07:00",
+      "versionDescription": "Initial version.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip.ipa",
-      "localizedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed enim ut sem viverra aliquet eget sit amet. Viverra mauris in aliquam sem fringilla ut. Egestas erat imperdiet sed euismod nisi porta. Sit amet dictum sit amet justo donec enim diam vulputate. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Elit pellentesque habitant morbi tristique. Ut lectus arcu bibendum at. Ullamcorper a lacus vestibulum sed. Mi tempus imperdiet nulla malesuada pellentesque elit eget gravida. Nec feugiat nisl pretium fusce id velit ut. Amet nulla facilisi morbi tempus. Ut sem nulla pharetra diam sit amet nisl.\n\nTortor at auctor urna nunc id cursus metus. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Faucibus turpis in eu mi bibendum neque egestas. Auctor augue mauris augue neque gravida in fermentum et sollicitudin. Aliquam vestibulum morbi blandit cursus risus at ultrices mi tempus. Placerat in egestas erat imperdiet sed euismod nisi. Aliquam id diam maecenas ultricies mi eget mauris. Nunc faucibus a pellentesque sit amet porttitor eget dolor. Sed faucibus turpis in eu mi. Tortor vitae purus faucibus ornare suspendisse sed nisi lacus sed. Id semper risus in hendrerit gravida rutrum quisque. At lectus urna duis convallis convallis. Egestas maecenas pharetra convallis posuere. Id velit ut tortor pretium viverra. Quam pellentesque nec nam aliquam sem et tortor consequat. Risus pretium quam vulputate dignissim. Urna nec tincidunt praesent semper feugiat nibh sed pulvinar.\n\nTempor orci eu lobortis elementum nibh tellus. Mattis rhoncus urna neque viverra justo nec. Maecenas pharetra convallis posuere morbi leo. Rhoncus mattis rhoncus urna neque viverra justo nec. Gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim. At imperdiet dui accumsan sit amet. Elit sed vulputate mi sit amet mauris commodo. Pellentesque habitant morbi tristique senectus. Tortor id aliquet lectus proin nibh. Magna etiam tempor orci eu lobortis elementum. Est pellentesque elit ullamcorper dignissim. Dapibus ultrices in iaculis nunc. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Diam vel quam elementum pulvinar. Vel turpis nunc eget lorem dolor sed viverra. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae. Euismod nisi porta lorem mollis. Massa id neque aliquam vestibulum morbi blandit.\n\nMassa massa ultricies mi quis hendrerit dolor magna eget est. Augue interdum velit euismod in pellentesque massa. Sed risus ultricies tristique nulla aliquet enim. Risus viverra adipiscing at in tellus. Donec adipiscing tristique risus nec feugiat. Eget sit amet tellus cras adipiscing enim eu turpis. Auctor neque vitae tempus quam pellentesque nec. Sit amet tellus cras adipiscing enim eu turpis egestas. Dui faucibus in ornare quam viverra. Fermentum iaculis eu non diam phasellus vestibulum lorem. Odio ut enim blandit volutpat maecenas. Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Pellentesque diam volutpat commodo sed egestas egestas. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Elit duis tristique sollicitudin nibh sit. Fermentum dui faucibus in ornare quam viverra orci sagittis. Aliquet eget sit amet tellus cras adipiscing.",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Automatically track text, URLs, and images copied to the clipboard.\n• Shows notification upon saving a new item to the clipboard with a preview of the copied text, URL, or image.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
       "tintColor": "EC008C",
       "size": 438855,
@@ -172,51 +181,40 @@
         }
       ],
       "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391948-32f73900-c37a-11e9-976c-275bd8d557f0.png",
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png"
       ]
     }
   ],
   "news": [
     {
-      "title": "Delta Now Available",
-      "identifier": "deltaavailable",
-      "caption": "After almost 5 years in development, Delta is finally finished.",
+      "title": "Delta Gaining DS Support",
+      "identifier": "delta-ds-support",
+      "caption": "Available this Saturday for patrons, coming soon for everyone else.",
       "tintColor": "8A28F7",
-      "imageURL": "https://boygeniusreport.files.wordpress.com/2017/05/delta-emulator-game-boy-color.jpg?quality=98&strip=all&w=782",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65603159-0676a400-df5a-11e9-882e-dc5566f4d50a.png",
       "appID": "com.rileytestut.Delta",
-      "date": "2019-08-29",
+      "date": "2019-09-25",
+      "notify": false
+    },
+    {
+      "title": "Introducing: Clip",
+      "identifier": "introducing-clip",
+      "caption": "Clip is a clipboard manager that can run in the background - something only possible with AltStore.",
+      "tintColor": "EC008C",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
+      "appID": "com.rileytestut.Clip",
+      "date": "2019-09-25",
       "notify": true
     },
     {
-      "title": "Why Clip?",
-      "identifier": "whyclip",
-      "caption": "Clip lets you track your clipboard history even when in the background, something App Store apps can't do.",
-      "tintColor": "EC008C",
-      "url": "http://rileytestut.com",
-      "imageURL": "https://user-images.githubusercontent.com/705880/63391948-32f73900-c37a-11e9-976c-275bd8d557f0.png",
-      "appID": "com.rileytestut.Clip",
-      "date": "2019-08-28",
-      "notify": false
-    },
-    {
-      "title": "Delta Gaining DS Support",
-      "identifier": "deltadspreview",
-      "caption": "Check out the upcoming DS support before everyone else when you become a Patron.",
+      "title": "Delta Lite Now Available",
+      "identifier": "delta-lite-now-available",
+      "caption": "Play some NES games while you wait for Saturday.",
       "tintColor": "8A28F7",
-      "imageURL": "https://boygeniusreport.files.wordpress.com/2017/05/delta-emulator-game-boy-color.jpg?quality=98&strip=all&w=782",
-      "appID": "com.rileytestut.Delta",
-      "date": "2019-08-30",
-      "notify": false
-    },
-    {
-      "title": "Welcome to AltStore",
-      "identifier": "welcometoaltstore",
-      "caption": "Check out the FAQ for more information on how to install apps.",
-      "tintColor": "018084",
-      "url": "http://rileytestut.com",
-      "date": "2019-08-27",
-      "notify": false
+      "imageURL": "https://user-images.githubusercontent.com/705880/65604130-c1ec0800-df5b-11e9-8150-7657c474e3c3.png",
+      "appID": "com.rileytestut.Delta.Lite",
+      "date": "2019-09-25",
+      "notify": true
     }
   ]
 }
