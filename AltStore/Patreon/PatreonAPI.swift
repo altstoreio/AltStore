@@ -11,7 +11,7 @@ import AuthenticationServices
 
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
-private let creatorAccessToken = "mBh0yyK40Ibjzwb_cYeKIuzq8nNFBdEIlNPfgAQlhcU"
+private let creatorAccessToken = "NSX1ts9Rf9IzKRCu8GjbwsZ6wll8bDtoJxNbPbp2eZo"
 
 private let campaignID = "2863968"
 
