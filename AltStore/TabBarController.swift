@@ -8,6 +8,17 @@
 
 import UIKit
 
+extension TabBarController
+{
+    private enum Tab: Int, CaseIterable
+    {
+        case news
+        case browse
+        case myApps
+        case settings
+    }
+}
+
 class TabBarController: UITabBarController
 {
     required init?(coder aDecoder: NSCoder)
@@ -15,6 +26,7 @@ class TabBarController: UITabBarController
         super.init(coder: aDecoder)
         
         NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.openPatreonSettings(_:)), name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
     }
 }
 
@@ -22,7 +34,11 @@ private extension TabBarController
 {
     @objc func openPatreonSettings(_ notification: Notification)
     {
-        guard let items = self.tabBar.items else { return }
-        self.selectedIndex = items.count - 1
+        self.selectedIndex = Tab.settings.rawValue
+    }
+    
+    @objc func importApp(_ notification: Notification)
+    {
+        self.selectedIndex = Tab.myApps.rawValue
     }
 }

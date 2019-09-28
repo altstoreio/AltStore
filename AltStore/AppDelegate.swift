@@ -52,7 +52,10 @@ private let ReceivedApplicationState: @convention(c) (CFNotificationCenter?, Uns
 
 extension AppDelegate
 {
-    static let openPatreonSettingsDeepLinkNotification = Notification.Name("openPatreonSettingsDeepLinkNotification")
+    static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
+    static let importAppDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.ImportAppDeepLinkNotification")
+    
+    static let importAppDeepLinkURLKey = "fileURL"
 }
 
 @UIApplicationMain
@@ -115,14 +118,27 @@ private extension AppDelegate
     
     func open(_ url: URL) -> Bool
     {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
-        guard let host = components.host, host.lowercased() == "patreon" else { return false }
-        
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+        if url.isFileURL
+        {
+            guard url.pathExtension.lowercased() == "ipa" else { return false }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: url])
+            }
+            
+            return true
         }
-        
-        return true
+        else
+        {
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
+            guard let host = components.host, host.lowercased() == "patreon" else { return false }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+            }
+            
+            return true
+        }
     }
 }
 

@@ -60,6 +60,7 @@ class MyAppsViewController: UICollectionViewController
         super.init(coder: aDecoder)
         
         NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.didFetchSource(_:)), name: AppManager.didFetchSourceNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
     }
     
     override func viewDidLoad()
@@ -577,21 +578,81 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        func sideloadApp()
-        {
+        self.presentSideloadingAlert { (shouldContinue) in
+            guard shouldContinue else { return }
+            
             let iOSAppUTI = "com.apple.itunes.ipa" // Declared by the system.
             
             let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [iOSAppUTI], in: .import)
             documentPickerViewController.delegate = self
             self.present(documentPickerViewController, animated: true, completion: nil)
         }
-        
+    }
+    
+    func presentSideloadingAlert(completion: @escaping (Bool) -> Void)
+    {
         let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
-            sideloadApp()
+            completion(true)
         }))
-        alertController.addAction(.cancel)
+        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style, handler: { (action) in
+            completion(false)
+        }))
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func installApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
+        
+        DispatchQueue.global().async {
+            let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+            
+            do
+            {
+                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+                
+                let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
+                
+                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { return }
+                
+                self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                    try? FileManager.default.removeItem(at: temporaryDirectory)
+                    
+                    DispatchQueue.main.async {
+                        if let error = result.error
+                        {
+                            let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                            toastView.show(in: self.view, duration: 2.0)
+                        }
+                        else
+                        {
+                            print("Successfully installed app:", application.bundleIdentifier)
+                        }
+                        
+                        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                        self.sideloadingProgressView.observedProgress = nil
+                        self.sideloadingProgressView.setHidden(true, animated: true)
+                        
+                        completion(.success(()))
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.sideloadingProgressView.progress = 0
+                    self.sideloadingProgressView.isHidden = false
+                    self.sideloadingProgressView.observedProgress = self.sideloadingProgress
+                }
+            }
+            catch
+            {
+                try? FileManager.default.removeItem(at: temporaryDirectory)
+                
+                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                
+                completion(.failure(error))
+            }
+        }
     }
     
     @objc func presentAlert(for installedApp: InstalledApp)
@@ -642,6 +703,41 @@ private extension MyAppsViewController
         guard installedApp.storeApp == nil else { return }
         
         self.presentAlert(for: installedApp)
+    }
+    
+    @objc func importApp(_ notification: Notification)
+    {
+        #if BETA
+        
+        guard let fileURL = notification.userInfo?[AppDelegate.importAppDeepLinkURLKey] as? URL else { return }
+        guard self.presentedViewController == nil else { return }
+        
+        func finish()
+        {
+            do
+            {
+                try FileManager.default.removeItem(at: fileURL)
+            }
+            catch
+            {
+                print("Unable to remove imported .ipa.", error)
+            }
+        }
+        
+        self.presentSideloadingAlert { (shouldContinue) in
+            if shouldContinue
+            {
+                self.installApp(at: fileURL) { (result) in
+                    finish()
+                }
+            }
+            else
+            {
+                finish()
+            }
+        }
+        
+        #endif
     }
 }
 
@@ -834,51 +930,8 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
-        
-        DispatchQueue.global().async {
-            let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
-            
-            do
-            {
-                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
-                
-                let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
-                
-                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { return }
-                
-                self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
-                    try? FileManager.default.removeItem(at: temporaryDirectory)
-                    
-                    DispatchQueue.main.async {
-                        if let error = result.error
-                        {
-                            let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
-                        }
-                        else
-                        {
-                            print("Successfully installed app:", application.bundleIdentifier)
-                        }
-                        
-                        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
-                        self.sideloadingProgressView.observedProgress = nil
-                        self.sideloadingProgressView.setHidden(true, animated: true)
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.sideloadingProgressView.progress = 0
-                    self.sideloadingProgressView.isHidden = false
-                    self.sideloadingProgressView.observedProgress = self.sideloadingProgress
-                }
-            }
-            catch
-            {
-                try? FileManager.default.removeItem(at: temporaryDirectory)
-                
-                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
-            }
+        self.installApp(at: fileURL) { (result) in
+            print("Sideloaded app at \(fileURL) with result:", result)
         }
     }
 }
