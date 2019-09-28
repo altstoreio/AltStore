@@ -21,12 +21,14 @@ extension PatreonAPI
     {
         case unknown
         case notAuthenticated
+        case invalidAccessToken
         
         var errorDescription: String? {
             switch self
             {
             case .unknown: return NSLocalizedString("An unknown error occurred.", comment: "")
             case .notAuthenticated: return NSLocalizedString("No connected Patreon account.", comment: "")
+            case .invalidAccessToken: return NSLocalizedString("Invalid access token.", comment: "")
             }
         }
     }
@@ -365,7 +367,7 @@ private extension PatreonAPI
                     }
                     else
                     {
-                        completion(.failure(Error.notAuthenticated))
+                        completion(.failure(Error.invalidAccessToken))
                     }
 
                     return
