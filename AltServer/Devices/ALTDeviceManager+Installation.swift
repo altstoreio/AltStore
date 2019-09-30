@@ -387,7 +387,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
     func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
-            guard let feature = ALTFeature(entitlement) else { return nil }
+            guard let feature = ALTFeature(entitlement: entitlement) else { return nil }
             return (feature, value)
         }
         
