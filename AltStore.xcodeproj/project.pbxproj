@@ -559,6 +559,7 @@
 		BFF0B695232242D3007A79E1 /* LicensesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensesViewController.swift; sourceTree = "<group>"; };
 		BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsViewController.swift; sourceTree = "<group>"; };
 		BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+CompactHeight.swift"; sourceTree = "<group>"; };
+		D7220EBA23436669000CAE4C /* licenses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = licenses.json; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1048,6 +1049,7 @@
 			isa = PBXGroup;
 			children = (
 				BFB1169C22932DB100BB457C /* apps.json */,
+				D7220EBA23436669000CAE4C /* licenses.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
@@ -1424,6 +1426,7 @@
 			files = (
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
+				D7220EBB23436669000CAE4C /* licenses.json in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
