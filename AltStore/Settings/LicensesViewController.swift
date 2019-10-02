@@ -8,46 +8,69 @@
 
 import UIKit
 
-class LicensesViewController: UIViewController
+class LicensesViewController: UITableViewController
 {
-    private var _didAppear = false
-    
-    @IBOutlet private var textView: UITextView!
+    private var licenses: [[String: String]] = []
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-    override func viewWillAppear(_ animated: Bool)
+
+    override func viewDidLoad()
     {
-        super.viewWillAppear(animated)
-        
-        self.view.setNeedsLayout()
-        self.view.layoutIfNeeded()
-        
-        // Fix incorrect initial offset on iPhone SE.
-        self.textView.contentOffset.y = 0
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        
-        _didAppear = true
+        super.viewDidLoad()
+        loadLicenses()
     }
 
-    override func viewDidLayoutSubviews()
+    private func loadLicenses()
     {
-        super.viewDidLayoutSubviews()
-        
-        self.textView.textContainerInset.left = self.view.layoutMargins.left
-        self.textView.textContainerInset.right = self.view.layoutMargins.right
-        self.textView.textContainer.lineFragmentPadding = 0
-        
-        if !_didAppear
-        {
-            // Fix incorrect initial offset on iPhone SE.
-            self.textView.contentOffset.y = 0
+        guard let path = Bundle.main.path(forResource: "licenses", ofType: "json") else {
+            dismiss(animated: true)
+            return
         }
+
+        let url = URL(fileURLWithPath: path)
+
+        guard let data = try? Data(contentsOf: url), let json = try? JSONSerialization.jsonObject(with: data) as? [[String: String]] else {
+            dismiss(animated: true)
+            return
+        }
+
+        licenses = json
+    }
+}
+
+extension LicensesViewController
+{
+    override func numberOfSections(in tableView: UITableView) -> Int
+    {
+        return licenses.count
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return 1
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "licenseListCell", for: indexPath) as! LicenseTableViewCell
+        let license = licenses[indexPath.section]
+
+//        switch indexPath.row {
+//        case 0:
+//            cell.style = .top
+//            break
+//        case licenses.count - 1:
+//            cell.style = .bottom
+//            break
+//        default:
+//            cell.style = .middle
+//        }
+
+        cell.productLabel.text = license["product"]
+        cell.authorLabel.text = license["author"]
+
+        return cell
     }
 }
