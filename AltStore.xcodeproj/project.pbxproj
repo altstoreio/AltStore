@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -215,6 +215,7 @@
 		BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B695232242D3007A79E1 /* LicensesViewController.swift */; };
 		BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */; };
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
+		D703E93423448AFD00D793A1 /* LicenseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */; };
 		D7220EBB23436669000CAE4C /* licenses.json in Resources */ = {isa = PBXBuildFile; fileRef = D7220EBA23436669000CAE4C /* licenses.json */; };
 		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
@@ -501,6 +502,7 @@
 		BFF0B695232242D3007A79E1 /* LicensesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensesViewController.swift; sourceTree = "<group>"; };
 		BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsViewController.swift; sourceTree = "<group>"; };
 		BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+CompactHeight.swift"; sourceTree = "<group>"; };
+		D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseTableViewCell.swift; sourceTree = "<group>"; };
 		D7220EBA23436669000CAE4C /* licenses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = licenses.json; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1031,6 +1033,7 @@
 				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
+				D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1527,6 +1530,7 @@
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
+				D703E93423448AFD00D793A1 /* LicenseTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
