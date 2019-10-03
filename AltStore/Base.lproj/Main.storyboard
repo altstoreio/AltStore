@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -123,15 +124,16 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qlg-m3-lXg">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mgO-eN-SxQ">
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="mgO-eN-SxQ">
                                         <rect key="frame" x="38" y="287" width="300" height="93"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="yIo-bR-OBC">
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="yIo-bR-OBC">
                                             <rect key="frame" x="0.0" y="0.0" width="300" height="93"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="LZw-eU-5SO" userLabel="App Info">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="93"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacingType="standard" id="LZw-eU-5SO" userLabel="App Info">
+                                                    <rect key="frame" x="0.0" y="0.0" width="300" height="93"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Ey-6S-HJx" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
                                                             <rect key="frame" x="14" y="14" width="65" height="65"/>
@@ -141,19 +143,19 @@
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="bR7-SO-m8f">
-                                                            <rect key="frame" x="90" y="26.5" width="135" height="40.5"/>
+                                                            <rect key="frame" x="87" y="26.5" width="121" height="40.5"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="9z7-I4-q6g">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="135" height="21.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="121" height="21.5"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dNE-IO-y3o">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="88" height="21.5"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="74" height="21.5"/>
                                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
                                                                             <nil key="textColor"/>
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="2XC-Fe-yG4">
-                                                                            <rect key="frame" x="94" y="0.0" width="41" height="21.5"/>
+                                                                            <rect key="frame" x="80" y="0.0" width="41" height="21.5"/>
                                                                         </imageView>
                                                                     </subviews>
                                                                 </stackView>
@@ -166,7 +168,7 @@
                                                             </subviews>
                                                         </stackView>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mgB-Gs-bik" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                                            <rect key="frame" x="236" y="31" width="72" height="31"/>
+                                                            <rect key="frame" x="216" y="31" width="72" height="31"/>
                                                             <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="j44-T1-0dc"/>
@@ -267,7 +269,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C9o-C3-sMK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2526" y="-17"/>
+            <point key="canvasLocation" x="2525.5999999999999" y="-17.541229385307346"/>
         </scene>
         <!--App-->
         <scene sceneID="CgX-7h-sRI">
