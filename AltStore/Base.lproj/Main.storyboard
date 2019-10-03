@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -32,7 +30,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
-                <tabBarController id="49e-Tb-3d3" customClass="TabBarController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController modalPresentationStyle="fullScreen" id="49e-Tb-3d3" customClass="TabBarController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -85,7 +83,6 @@
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Bql-t3-Ndi">
                                 <rect key="frame" x="47" y="238" width="85" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="j1W-Jn-HFI" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
@@ -135,7 +132,6 @@
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="LZw-eU-5SO" userLabel="App Info">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="93"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Ey-6S-HJx" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
                                                             <rect key="frame" x="14" y="14" width="65" height="65"/>
@@ -285,7 +281,7 @@
                             <tableViewSection id="rfR-32-T0h">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="57" id="xef-ko-Qp1">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="57"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="57"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="xef-ko-Qp1" id="8PX-jQ-nHd">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="57"/>
@@ -308,7 +304,7 @@
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="nI6-wC-H2d">
-                                        <rect key="frame" x="0.0" y="57" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="85" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nI6-wC-H2d" id="Z4y-vb-Z4Q">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -345,7 +341,7 @@
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="EL5-UC-RIw" customClass="AppContentTableViewCell" customModule="AltStore" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="101" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="129" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EL5-UC-RIw" id="D1G-nK-G0Z">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -368,7 +364,7 @@
                                         <inset key="separatorInset" minX="1000" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="47M-El-a4G" customClass="AppContentTableViewCell" customModule="AltStore" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="145" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="173" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="47M-El-a4G" id="f9D-OR-oGE">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -436,7 +432,7 @@
                                         <inset key="separatorInset" minX="1000" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="149" id="nM7-vJ-W8b">
-                                        <rect key="frame" x="0.0" y="189" width="375" height="149"/>
+                                        <rect key="frame" x="0.0" y="217" width="375" height="149"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nM7-vJ-W8b" id="cQ2-Jd-pRK">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="149"/>
@@ -640,7 +636,7 @@ World</string>
                     <tabBarItem key="tabBarItem" title="Browse" image="Browse" id="Uwh-Bg-Ymq"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="dIv-qd-9L5" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" name="Primary"/>
                     </navigationBar>
@@ -662,7 +658,7 @@ World</string>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="CzO-Kt-BlZ" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -794,7 +790,7 @@ World</string>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Installed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BDU-hM-rro">
-                                    <rect key="frame" x="20" y="21" width="97" height="29"/>
+                                    <rect key="frame" x="20" y="21" width="96.5" height="29"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -843,7 +839,7 @@ World</string>
                     <tabBarItem key="tabBarItem" title="News" image="News" id="fVN-ed-uO1"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="525-jF-uDK" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <edgeInsets key="layoutMargins" top="8" left="20" bottom="8" right="8"/>
                     </navigationBar>
@@ -860,10 +856,10 @@ World</string>
     <resources>
         <image name="Back" width="18" height="18"/>
         <image name="BetaBadge" width="41" height="17"/>
-        <image name="Browse" width="19.5" height="20.5"/>
-        <image name="MyApps" width="28" height="24"/>
-        <image name="News" width="17" height="21"/>
-        <image name="Settings" width="21" height="21"/>
+        <image name="Browse" width="20" height="20"/>
+        <image name="MyApps" width="20" height="20"/>
+        <image name="News" width="19" height="20"/>
+        <image name="Settings" width="20" height="20"/>
         <namedColor name="Primary">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
