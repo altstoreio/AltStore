@@ -7,11 +7,11 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.0",
-      "versionDate": "2019-09-25",
-      "versionDescription": "Initial version.",
+      "version": "1.0.1",
+      "versionDate": "2019-09-28T03:00:00-07:00",
+      "versionDescription": "Fixes Patreon bugs.",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore.ipa",
-      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. This initial release of AltStore allows you to install Delta, an all-in-one emulator for iOS, and Clip, a simple clipboard manager that can run in the background.",
+      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis initial release of AltStore allows you to install Delta, an all-in-one emulator for iOS, with support for installing 3rd party apps coming soon.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
       "size": 3481256,
@@ -35,11 +35,11 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
-      "version": "1.0b",
-      "versionDate": "2019-09-25",
-      "versionDescription": "Includes initial support for sideloading apps from the Files app.",
+      "version": "1.0.1b",
+      "versionDate": "2019-09-28T03:00:00-07:00",
+      "versionDescription": "- Adds support for sideloading apps via \"Open In...\"\n- Fixes Patreon bugs",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa",
-      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. This beta release of AltStore allows you to install Delta, an all-in-one emulator for iOS, and Clip, a simple clipboard manager that can run in the background. However, you also can sideload apps (.ipas) directly from the Files app, allowing you to install any app you desire.",
+      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore allows you to install Delta as well as any app (.ipa) directly from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
       "size": 3481256,
@@ -72,7 +72,7 @@
       "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• And plenty more to come!\n\nController Support\n• Supports PS4, Xbox One S, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support for WarioWare: Twisted!\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 30806622,
+      "size": 23075523,
       "permissions": [
         {
           "type": "photos",
@@ -81,6 +81,7 @@
       ],
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
+        "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
         "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG",
         "https://user-images.githubusercontent.com/705880/65601125-5b182000-df56-11e9-9e7e-261480e893c0.PNG"
       ]
@@ -97,7 +98,7 @@
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 30806622,
+      "size": 23075071,
       "beta": true,
       "permissions": [
         {
@@ -109,6 +110,7 @@
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
         "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG"
       ,
+        "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
         "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG"
       ]
     },
@@ -160,29 +162,6 @@
         "https://user-images.githubusercontent.com/705880/65599562-fe673600-df52-11e9-9cfb-b60a11568baf.PNG",
         "https://user-images.githubusercontent.com/705880/65599567-01fabd00-df53-11e9-8654-f075c0f32c59.PNG"
       ]
-    },
-    {
-      "name": "Clip",
-      "bundleIdentifier": "com.rileytestut.Clip",
-      "subtitle": "Manage your clipboard history with ease.",
-      "developerName": "Riley Testut",
-      "version": "1.0",
-      "versionDate": "2019-09-28T12:00:00-07:00",
-      "versionDescription": "Initial version.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip.ipa",
-      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Automatically track text, URLs, and images copied to the clipboard.\n• Shows notification upon saving a new item to the clipboard with a preview of the copied text, URL, or image.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
-      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
-      "tintColor": "EC008C",
-      "size": 438855,
-      "permissions": [
-        {
-          "type": "background-audio",
-          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
-        }
-      ],
-      "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png"
-      ]
     }
   ],
   "news": [
@@ -192,29 +171,27 @@
       "caption": "Available this Saturday for patrons, coming soon for everyone else.",
       "tintColor": "8A28F7",
       "imageURL": "https://user-images.githubusercontent.com/705880/65603159-0676a400-df5a-11e9-882e-dc5566f4d50a.png",
-      "appID": "com.rileytestut.Delta",
       "date": "2019-09-25",
       "notify": false
     },
     {
-      "title": "Introducing: Clip",
-      "identifier": "introducing-clip",
-      "caption": "Clip is a clipboard manager that can run in the background - something only possible with AltStore.",
-      "tintColor": "EC008C",
-      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
-      "appID": "com.rileytestut.Clip",
-      "date": "2019-09-25",
+      "title": "Delta Now Available",
+      "identifier": "delta-now-available",
+      "caption": "Finally, relive your favorite NES, SNES, GB(C), GBA, and N64 games.",
+      "tintColor": "8A28F7",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65604130-c1ec0800-df5b-11e9-8150-7657c474e3c3.png",
+      "appID": "com.rileytestut.Delta",
+      "date": "2019-09-28",
       "notify": true
     },
     {
-      "title": "Delta Lite Now Available",
-      "identifier": "delta-lite-now-available",
-      "caption": "Play some NES games while you wait for Saturday.",
-      "tintColor": "8A28F7",
-      "imageURL": "https://user-images.githubusercontent.com/705880/65604130-c1ec0800-df5b-11e9-8150-7657c474e3c3.png",
-      "appID": "com.rileytestut.Delta.Lite",
-      "date": "2019-09-25",
-      "notify": true
+      "title": "Welcome to AltStore",
+      "identifier": "welcome-to-altstore",
+      "caption": "Please read the FAQ for help with installing apps.",
+      "tintColor": "018084",
+      "url": "https://altstore.io/faq/",
+      "date": "2019-09-28",
+      "notify": false
     }
   ]
 }
