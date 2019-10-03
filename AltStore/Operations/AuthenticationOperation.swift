@@ -36,6 +36,7 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
     
     private lazy var navigationController: UINavigationController = {
         let navigationController = self.storyboard.instantiateViewController(withIdentifier: "navigationController") as! UINavigationController
+        navigationController.presentationController?.delegate = self
         return navigationController
     }()
     
@@ -43,6 +44,8 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
     
     private var appleIDPassword: String?
     private var shouldShowInstructions = false
+    
+    private var signer: ALTSigner?
     
     init(presentingViewController: UIViewController?)
     {
@@ -87,8 +90,10 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
                             case .success(let certificate):
                                 self.progress.completedUnitCount += 1
                                 
+                                let signer = ALTSigner(team: team, certificate: certificate)
+                                self.signer = signer
+                                
                                 self.showInstructionsIfNecessary() { (didShowInstructions) in
-                                    let signer = ALTSigner(team: team, certificate: certificate)
                                     self.finish(.success(signer))
                                 }                                
                             }
@@ -385,6 +390,21 @@ private extension AuthenticationOperation
             {
                 completionHandler(false)
             }
+        }
+    }
+}
+
+extension AuthenticationOperation: UIAdaptivePresentationControllerDelegate
+{
+    func presentationControllerWillDismiss(_ presentationController: UIPresentationController)
+    {
+        if let signer = self.signer
+        {
+            self.finish(.success(signer))
+        }
+        else
+        {
+            self.finish(.failure(OperationError.cancelled))
         }
     }
 }
