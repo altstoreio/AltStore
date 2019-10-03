@@ -355,8 +355,11 @@ private extension PatreonAPI
                 
                 if let response = response as? HTTPURLResponse, response.statusCode == 401
                 {
-                    if authorizationType == .user
+                    switch authorizationType
                     {
+                    case .creator: completion(.failure(Error.invalidAccessToken))
+                    case .none: completion(.failure(Error.notAuthenticated))
+                    case .user:
                         self.refreshAccessToken() { (result) in
                             switch result
                             {
@@ -365,11 +368,7 @@ private extension PatreonAPI
                             }
                         }
                     }
-                    else
-                    {
-                        completion(.failure(Error.invalidAccessToken))
-                    }
-
+                    
                     return
                 }
                 
