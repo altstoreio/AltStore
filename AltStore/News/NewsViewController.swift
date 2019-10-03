@@ -55,8 +55,6 @@ class NewsViewController: UICollectionViewController
         self.prototypeCell.translatesAutoresizingMaskIntoConstraints = false
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.collectionView.contentInset.bottom = 20
-        
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
         
@@ -73,6 +71,18 @@ class NewsViewController: UICollectionViewController
         super.viewWillAppear(animated)
         
         self.fetchSource()
+    }
+    
+    override func viewWillLayoutSubviews()
+    {
+        super.viewWillLayoutSubviews()
+        
+        if self.collectionView.contentInset.bottom != 20
+        {
+            // Triggers collection view update in iOS 13, which crashes if we do it in viewDidLoad()
+            // since the database might not be loaded yet.
+            self.collectionView.contentInset.bottom = 20
+        }
     }
 }
 
