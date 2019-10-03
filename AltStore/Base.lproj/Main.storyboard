@@ -557,34 +557,32 @@ World</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="xnC-tS-ZdV">
-                                <rect key="frame" x="169" y="90" width="37.5" height="37"/>
+                                <rect key="frame" x="20" y="10" width="335" height="197"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4fh-lO-rAn">
-                                        <rect key="frame" x="0.0" y="0.0" width="37.5" height="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="500" insetsLayoutMarginsFromSafeArea="NO" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4fh-lO-rAn">
+                                        <rect key="frame" x="0.0" y="0.0" width="335" height="17"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="300" translatesAutoresizingMaskIntoConstraints="NO" id="ErG-8A-uqY">
-                                        <rect key="frame" x="0.0" y="21" width="37.5" height="16"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="500" insetsLayoutMarginsFromSafeArea="NO" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="300" translatesAutoresizingMaskIntoConstraints="NO" id="ErG-8A-uqY">
+                                        <rect key="frame" x="0.0" y="21" width="335" height="176"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IgU-aM-YrX" secondAttribute="leadingMargin" id="LO8-Au-SYF"/>
-                            <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="xnC-tS-ZdV" secondAttribute="bottom" id="NZ9-iG-E10"/>
-                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="centerX" secondItem="IgU-aM-YrX" secondAttribute="centerX" id="QAB-qN-HdL"/>
-                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="xnC-tS-ZdV" secondAttribute="trailing" id="ZkD-tb-mBf"/>
-                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="IgU-aM-YrX" secondAttribute="topMargin" id="oKq-9e-DtW"/>
-                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="centerY" secondItem="IgU-aM-YrX" secondAttribute="centerY" id="qCU-ye-fSf"/>
+                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="leading" secondItem="c7x-ee-3HH" secondAttribute="leading" constant="20" id="LO8-Au-SYF"/>
+                            <constraint firstItem="c7x-ee-3HH" firstAttribute="bottom" secondItem="xnC-tS-ZdV" secondAttribute="bottom" constant="10" id="NZ9-iG-E10"/>
+                            <constraint firstItem="c7x-ee-3HH" firstAttribute="trailing" secondItem="xnC-tS-ZdV" secondAttribute="trailing" constant="20" id="ZkD-tb-mBf"/>
+                            <constraint firstItem="xnC-tS-ZdV" firstAttribute="top" secondItem="c7x-ee-3HH" secondAttribute="top" constant="10" id="oKq-9e-DtW"/>
                         </constraints>
-                        <edgeInsets key="layoutMargins" top="10" left="20" bottom="10" right="20"/>
-                        <viewLayoutGuide key="safeArea" id="wu0-44-ei8"/>
+                        <viewLayoutGuide key="safeArea" id="c7x-ee-3HH"/>
                     </view>
                     <connections>
                         <outlet property="descriptionLabel" destination="ErG-8A-uqY" id="iuN-kE-IEm"/>
