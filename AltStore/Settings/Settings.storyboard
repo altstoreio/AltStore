@@ -603,7 +603,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="3zn-6k-Hsn">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -652,6 +652,7 @@
                                 <connections>
                                     <outlet property="authorLabel" destination="4NM-tW-92O" id="FAE-QY-5Lm"/>
                                     <outlet property="productLabel" destination="tXW-Sy-fjL" id="tjJ-S4-gEU"/>
+                                    <segue destination="TQD-4V-zuo" kind="show" identifier="showLicenseDetail" id="bs8-ha-7tN"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -665,6 +666,103 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F0Q-Bf-RMk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1697" y="266"/>
+        </scene>
+        <!--Product-->
+        <scene sceneID="eHm-EL-Nip">
+            <objects>
+                <tableViewController id="TQD-4V-zuo" customClass="LicenseDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="static" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="WrE-S7-Ltt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
+                        <color key="separatorColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="sectionIndexBackgroundColor" name="SettingsBackground"/>
+                        <sections>
+                            <tableViewSection id="dgY-7A-BhS">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="7IQ-RR-zKu" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="18" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7IQ-RR-zKu" id="Yzu-Vo-fXR">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RSS-Lw-Nwa">
+                                                    <rect key="frame" x="16" y="15" width="343" height="14"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="RSS-Lw-Nwa" secondAttribute="bottom" constant="4" id="4Tq-CT-vnq"/>
+                                                <constraint firstItem="RSS-Lw-Nwa" firstAttribute="leading" secondItem="Yzu-Vo-fXR" secondAttribute="leadingMargin" id="8SY-TB-JF4"/>
+                                                <constraint firstItem="RSS-Lw-Nwa" firstAttribute="top" secondItem="Yzu-Vo-fXR" secondAttribute="topMargin" constant="4" id="El5-9f-4W9"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="RSS-Lw-Nwa" secondAttribute="trailing" id="GIK-rR-efs"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection id="apP-Nx-FC8">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="dW7-e9-Qf9" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="98" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dW7-e9-Qf9" id="ftt-3E-WSY">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="i2b-qq-hrb">
+                                                    <rect key="frame" x="30" y="8" width="315" height="28"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <string key="text">License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text License text </string>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                                                </textView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="i2b-qq-hrb" secondAttribute="bottom" constant="8" id="Emx-5l-k3E"/>
+                                                <constraint firstAttribute="trailing" secondItem="i2b-qq-hrb" secondAttribute="trailing" constant="30" id="KhN-5z-y8J"/>
+                                                <constraint firstItem="i2b-qq-hrb" firstAttribute="top" secondItem="ftt-3E-WSY" secondAttribute="top" constant="8" id="gpX-YA-js3"/>
+                                                <constraint firstItem="i2b-qq-hrb" firstAttribute="leading" secondItem="ftt-3E-WSY" secondAttribute="leading" constant="30" id="qT9-rK-UhE"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="TQD-4V-zuo" id="MUC-lZ-pdV"/>
+                            <outlet property="delegate" destination="TQD-4V-zuo" id="2o7-Do-asl"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Product" largeTitleDisplayMode="never" id="xRP-8B-H9o"/>
+                    <connections>
+                        <outlet property="copyrightLabel" destination="RSS-Lw-Nwa" id="jHs-Hu-gsq"/>
+                        <outlet property="licenseTextView" destination="i2b-qq-hrb" id="NVp-4M-0Yg"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3R9-D6-u3u" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2822" y="266"/>
         </scene>
         <!--Patreon-->
         <scene sceneID="Lnh-9P-HnL">

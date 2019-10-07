@@ -44,33 +44,49 @@ extension LicensesViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return licenses.count
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return 1
+        return licenses.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "licenseListCell", for: indexPath) as! LicenseTableViewCell
-        let license = licenses[indexPath.section]
+        let license = licenses[indexPath.row]
 
-//        switch indexPath.row {
-//        case 0:
-//            cell.style = .top
-//            break
-//        case licenses.count - 1:
-//            cell.style = .bottom
-//            break
-//        default:
-//            cell.style = .middle
-//        }
+        switch indexPath.row {
+        case 0:
+            cell.style = .top
+            break
+        case licenses.count - 1:
+            cell.style = .bottom
+            break
+        default:
+            cell.style = .middle
+        }
 
         cell.productLabel.text = license["product"]
         cell.authorLabel.text = license["author"]
 
         return cell
+    }
+
+}
+
+extension LicensesViewController
+{
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "showLicenseDetail",
+            let destination = segue.destination as? LicenseDetailViewController,
+            let cell = sender as? LicenseTableViewCell,
+            let row = tableView.indexPath(for: cell)?.row else
+        {
+            return
+        }
+
+        destination.license = licenses[row]
     }
 }
