@@ -217,6 +217,7 @@
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
 		D703E93423448AFD00D793A1 /* LicenseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */; };
 		D7220EBB23436669000CAE4C /* licenses.json in Resources */ = {isa = PBXBuildFile; fileRef = D7220EBA23436669000CAE4C /* licenses.json */; };
+		D7C1BD83234B51FA0054F711 /* LicenseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */; };
 		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
 
@@ -504,6 +505,7 @@
 		BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+CompactHeight.swift"; sourceTree = "<group>"; };
 		D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseTableViewCell.swift; sourceTree = "<group>"; };
 		D7220EBA23436669000CAE4C /* licenses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = licenses.json; sourceTree = "<group>"; };
+		D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseDetailViewController.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1034,6 +1036,7 @@
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
 				D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */,
+				D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1519,6 +1522,7 @@
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
+				D7C1BD83234B51FA0054F711 /* LicenseDetailViewController.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
