@@ -192,6 +192,14 @@
       "url": "https://altstore.io/faq/",
       "date": "2019-09-28",
       "notify": false
+    },
+    {
+      "title": "Prevent AltStore Expiring",
+      "identifier": "altstore-expiring-bug-fix",
+      "caption": "Refresh AltStore at least once in “My Apps” to prevent it from expiring early. An update is coming soon to fix this bug.",
+      "tintColor": "fd423a",
+      "date": "2019-10-09",
+      "notify": false
     }
   ]
 }
