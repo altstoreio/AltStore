@@ -27,7 +27,7 @@ Why iOS 12.2+ and macOS 10.14.4+? Doing so allows me to distribute all AltStore 
 ## Project Overview
 
 ### AltStore
-AltStore is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of AltStore's functionality, including all the logic for downloading and updating apps through AltStore. AltStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with, such as:
+AltStore is just a regular, sandboxed iOS application. The AltStore app target contains the vast majority of AltStore's functionality, including all the logic for downloading and updating apps through AltStore. AltStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with, such as:
 * Core Data
 * Storyboards/Nibs
 * Auto Layout
