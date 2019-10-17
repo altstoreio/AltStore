@@ -133,6 +133,7 @@ extension PatreonAPI
         if #available(iOS 13.0, *)
         {
             self.authenticationSession?.presentationContextProvider = self
+            self.authenticationSession?.prefersEphemeralWebBrowserSession = true
         }
         
         self.authenticationSession?.start()
