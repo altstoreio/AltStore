@@ -71,7 +71,7 @@ extension PatreonAPI
     }
 }
 
-class PatreonAPI
+class PatreonAPI: NSObject
 {
     static let shared = PatreonAPI()
     
@@ -84,8 +84,9 @@ class PatreonAPI
     private let session = URLSession(configuration: .ephemeral)
     private let baseURL = URL(string: "https://www.patreon.com/")!
     
-    private init()
+    private override init()
     {
+        super.init()
     }
 }
 
@@ -127,6 +128,11 @@ extension PatreonAPI
             {
                 completion(.failure(error))
             }
+        }
+        
+        if #available(iOS 13.0, *)
+        {
+            self.authenticationSession?.presentationContextProvider = self
         }
         
         self.authenticationSession?.start()
@@ -382,5 +388,14 @@ private extension PatreonAPI
         }
         
         task.resume()
+    }
+}
+
+@available(iOS 13.0, *)
+extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
+{
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
+    {
+        return UIApplication.shared.keyWindow ?? UIWindow()
     }
 }
