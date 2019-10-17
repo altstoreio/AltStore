@@ -396,7 +396,7 @@ private extension AuthenticationOperation
 
 extension AuthenticationOperation: UIAdaptivePresentationControllerDelegate
 {
-    func presentationControllerWillDismiss(_ presentationController: UIPresentationController)
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController)
     {
         if let signer = self.signer
         {
