@@ -15,7 +15,11 @@ class AppBannerView: RSTNibView
     @IBOutlet var subtitleLabel: UILabel!
     @IBOutlet var iconImageView: AppIconImageView!
     @IBOutlet var button: PillButton!
+    @IBOutlet var buttonLabel: UILabel!
     @IBOutlet var betaBadgeView: UIView!
+    
+    @IBOutlet var backgroundEffectView: UIVisualEffectView!
+    @IBOutlet private var vibrancyView: UIVisualEffectView!
     
     override func tintColorDidChange()
     {
@@ -35,6 +39,6 @@ private extension AppBannerView
         self.subtitleLabel.textColor = self.tintColor
         self.button.tintColor = self.tintColor
         
-        self.backgroundColor = self.tintColor.withAlphaComponent(0.1)
+        self.backgroundEffectView.backgroundColor = self.tintColor
     }
 }

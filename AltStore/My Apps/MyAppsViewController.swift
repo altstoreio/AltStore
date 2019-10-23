@@ -74,7 +74,6 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.prefetchDataSource = self.dataSource
                 
         self.prototypeUpdateCell = UpdateCollectionViewCell.instantiate(with: UpdateCollectionViewCell.nib!)
-        self.prototypeUpdateCell.translatesAutoresizingMaskIntoConstraints = false
         self.prototypeUpdateCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
         self.collectionView.register(UpdateCollectionViewCell.nib, forCellWithReuseIdentifier: "UpdateCell")
@@ -156,9 +155,13 @@ private extension MyAppsViewController
         dynamicDataSource.numberOfItemsHandler = { _ in self.updatesDataSource.itemCount == 0 ? 1 : 0 }
         dynamicDataSource.cellIdentifierHandler = { _ in "NoUpdatesCell" }
         dynamicDataSource.cellConfigurationHandler = { (cell, _, indexPath) in
-            cell.layer.cornerRadius = 20
-            cell.layer.masksToBounds = true
-            cell.contentView.backgroundColor = UIColor.altPrimary.withAlphaComponent(0.15)
+            let cell = cell as! NoUpdatesCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
+            
+            cell.blurView.layer.cornerRadius = 20
+            cell.blurView.layer.masksToBounds = true
+            cell.blurView.backgroundColor = .altPrimary
         }
         
         return dynamicDataSource
@@ -179,15 +182,19 @@ private extension MyAppsViewController
             guard let app = installedApp.storeApp else { return }
             
             let cell = cell as! UpdateCollectionViewCell
-            cell.tintColor = app.tintColor ?? .altPrimary
-            cell.nameLabel.text = app.name
-            cell.versionDescriptionTextView.text = app.versionDescription
-            cell.appIconImageView.image = nil
-            cell.appIconImageView.isIndicatingActivity = true
-            cell.betaBadgeView.isHidden = !app.isBeta
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
             
-            cell.updateButton.isIndicatingActivity = false
-            cell.updateButton.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
+            cell.tintColor = app.tintColor ?? .altPrimary
+            cell.versionDescriptionTextView.text = app.versionDescription
+            
+            cell.bannerView.titleLabel.text = app.name
+            cell.bannerView.iconImageView.image = nil
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.betaBadgeView.isHidden = !app.isBeta
+            
+            cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
             
             if self.expandedAppUpdates.contains(app.bundleIdentifier)
             {
@@ -201,9 +208,9 @@ private extension MyAppsViewController
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
             
             let progress = AppManager.shared.installationProgress(for: app)
-            cell.updateButton.progress = progress
+            cell.bannerView.button.progress = progress
             
-            cell.dateLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
+            cell.bannerView.subtitleLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
             
             cell.setNeedsLayout()
         }
@@ -227,8 +234,8 @@ private extension MyAppsViewController
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! UpdateCollectionViewCell
-            cell.appIconImageView.isIndicatingActivity = false
-            cell.appIconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
+            cell.bannerView.iconImageView.image = image
             
             if let error = error
             {
@@ -254,12 +261,16 @@ private extension MyAppsViewController
             let tintColor = installedApp.storeApp?.tintColor ?? .altPrimary
             
             let cell = cell as! InstalledAppCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
-            cell.appIconImageView.isIndicatingActivity = true
-            cell.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
             
-            cell.refreshButton.isIndicatingActivity = false
-            cell.refreshButton.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
+            
+            cell.bannerView.button.isInverted = true
+            cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
             let currentDate = Date()
             
@@ -267,34 +278,34 @@ private extension MyAppsViewController
             
             if numberOfDays == 1
             {
-                cell.refreshButton.setTitle(NSLocalizedString("1 DAY", comment: ""), for: .normal)
+                cell.bannerView.button.setTitle(NSLocalizedString("1 DAY", comment: ""), for: .normal)
             }
             else
             {
-                cell.refreshButton.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
+                cell.bannerView.button.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
             }
                                     
-            cell.nameLabel.text = installedApp.name
-            cell.developerLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
+            cell.bannerView.titleLabel.text = installedApp.name
+            cell.bannerView.subtitleLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
             
             switch numberOfDays
             {
-            case 2...3: cell.refreshButton.tintColor = .refreshOrange
-            case 4...5: cell.refreshButton.tintColor = .refreshYellow
-            case 6...: cell.refreshButton.tintColor = .refreshGreen
-            default: cell.refreshButton.tintColor = .refreshRed
+            case 2...3: cell.bannerView.button.tintColor = .refreshOrange
+            case 4...5: cell.bannerView.button.tintColor = .refreshYellow
+            case 6...: cell.bannerView.button.tintColor = .refreshGreen
+            default: cell.bannerView.button.tintColor = .refreshRed
             }
             
             if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: installedApp), progress.fractionCompleted < 1.0
             {
-                cell.refreshButton.progress = progress
+                cell.bannerView.button.progress = progress
             }
             else
             {
-                cell.refreshButton.progress = nil
+                cell.bannerView.button.progress = nil
             }
         }
         dataSource.prefetchHandler = { (item, indexPath, completion) in
@@ -312,8 +323,8 @@ private extension MyAppsViewController
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! InstalledAppCollectionViewCell
-            cell.appIconImageView.image = image
-            cell.appIconImageView.isIndicatingActivity = false
+            cell.bannerView.iconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
         }
         
         return dataSource
@@ -813,14 +824,11 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        let padding = 30 as CGFloat
-        let width = collectionView.bounds.width - padding
-        
         let section = Section.allCases[indexPath.section]
         switch section
         {
         case .noUpdates:
-            let size = CGSize(width: width, height: 44)
+            let size = CGSize(width: collectionView.bounds.width, height: 44)
             return size
             
         case .updates:
@@ -831,7 +839,10 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
                 return previousHeight
             }
             
-            let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: width)
+            // Manually change cell's width to prevent conflicting with UIView-Encapsulated-Layout-Width constraints.
+            self.prototypeUpdateCell.frame.size.width = collectionView.bounds.width
+                        
+            let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
             NSLayoutConstraint.activate([widthConstraint])
             defer { NSLayoutConstraint.deactivate([widthConstraint]) }
             
@@ -842,7 +853,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             return size
 
         case .installedApps:
-            return CGSize(width: collectionView.bounds.width, height: 60)
+            return CGSize(width: collectionView.bounds.width, height: 88)
         }
     }
     
@@ -860,20 +871,14 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
+    func collectionView(_ myCV: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         let section = Section.allCases[section]
         switch section
         {
-        case .noUpdates:
-            guard self.updatesDataSource.itemCount == 0 else { return .zero }
-            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
-            
-        case .updates:
-            guard self.updatesDataSource.itemCount > 0 else { return .zero }
-            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
-            
-        case .installedApps: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
+        case .noUpdates where self.updatesDataSource.itemCount != 0: return .zero
+        case .updates where self.updatesDataSource.itemCount == 0: return .zero
+        default: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
         }
     }
 }
