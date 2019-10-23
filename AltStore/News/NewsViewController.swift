@@ -344,7 +344,6 @@ extension NewsViewController
             
             let progress = AppManager.shared.installationProgress(for: storeApp)
             footerView.bannerView.button.progress = progress
-            footerView.bannerView.button.isInverted = false
             
             if Date() < storeApp.versionDate
             {
@@ -359,7 +358,6 @@ extension NewsViewController
         {
             footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
             footerView.bannerView.button.progress = nil
-            footerView.bannerView.button.isInverted = true
             footerView.bannerView.button.countdownDate = nil
         }
         

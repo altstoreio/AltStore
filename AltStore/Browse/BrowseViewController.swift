@@ -100,7 +100,6 @@ private extension BrowseViewController
                 
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
-                cell.bannerView.button.isInverted = false
                 
                 if Date() < app.versionDate
                 {
@@ -115,7 +114,6 @@ private extension BrowseViewController
             {
                 cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
                 cell.bannerView.button.progress = nil
-                cell.bannerView.button.isInverted = true
                 cell.bannerView.button.countdownDate = nil
             }
         }

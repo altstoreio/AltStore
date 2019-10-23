@@ -94,7 +94,6 @@ private extension UpdateCollectionViewCell
         self.versionDescriptionTitleLabel.textColor = self.tintColor
         self.blurView.backgroundColor = self.tintColor
         
-        self.bannerView.button.isInverted = true
         self.bannerView.button.tintColor = self.tintColor
         self.bannerView.button.progressTintColor = self.tintColor
         

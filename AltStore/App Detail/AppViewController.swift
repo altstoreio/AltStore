@@ -347,12 +347,10 @@ private extension AppViewController
             if self.app.installedApp == nil
             {
                 button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-                button.isInverted = false
             }
             else
             {
                 button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                button.isInverted = true
             }
             
             let progress = AppManager.shared.installationProgress(for: self.app)

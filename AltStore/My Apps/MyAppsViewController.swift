@@ -268,7 +268,6 @@ private extension MyAppsViewController
             cell.bannerView.iconImageView.isIndicatingActivity = true
             cell.bannerView.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
             
-            cell.bannerView.button.isInverted = true
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
