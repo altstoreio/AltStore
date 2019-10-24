@@ -44,6 +44,12 @@ class AppViewController: UIViewController
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
     
+    private var _preferredStatusBarStyle: UIStatusBarStyle = .default
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return _preferredStatusBarStyle
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -122,6 +128,10 @@ class AppViewController: UIViewController
         super.viewWillAppear(animated)
 
         self.prepareBlur()
+        
+        // Update blur immediately.
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
 
         self.transitionCoordinator?.animate(alongsideTransition: { (context) in
             self.hideNavigationBar()
@@ -316,6 +326,12 @@ class AppViewController: UIViewController
         self.bannerView.backgroundEffectView.backgroundColor = .clear
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?)
+    {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self._shouldResetLayout = true
+    }
+    
     deinit
     {
         self.blurAnimator?.stopAnimation(true)
@@ -376,18 +392,29 @@ private extension AppViewController
     func showNavigationBar(for navigationController: UINavigationController? = nil)
     {
         let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.alpha = 1.0
-        navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = .altPrimary
+        navigationController?.navigationBar.setNeedsLayout()
+        
+        if self.traitCollection.userInterfaceStyle == .dark
+        {
+            self._preferredStatusBarStyle = .lightContent
+        }
+        else
+        {
+            self._preferredStatusBarStyle = .default
+        }
+        
+        navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
     func hideNavigationBar(for navigationController: UINavigationController? = nil)
     {
         let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.alpha = 0.0
-        navigationController?.navigationBar.barTintColor = .white
+        
+        self._preferredStatusBarStyle = .lightContent
+        navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
     func prepareBlur()
@@ -432,7 +459,7 @@ private extension AppViewController
         self.navigationBarAnimator = nil
         
         self.hideNavigationBar()
-        self.navigationController?.navigationBar.barTintColor = .white
+        
         self.contentViewController.view.layer.cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
     }
 }

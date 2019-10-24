@@ -54,7 +54,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="CaT-1q-qnx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Background"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="50" minimumInteritemSpacing="10" id="e0H-IH-rng">
                             <size key="itemSize" width="375" height="400"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -109,10 +109,9 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="oNk-OQ-r4M">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </view>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <blurEffect style="light"/>
+                                <blurEffect style="regular"/>
                             </visualEffectView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" contentInsetAdjustmentBehavior="never" translatesAutoresizingMaskIntoConstraints="NO" id="Ci9-Iw-aR2">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
@@ -141,22 +140,35 @@
                                             <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mkD-3C-WMV">
+                                                <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JP7-6F-CoG">
                                                     <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <state key="normal" image="Back"/>
-                                                    <connections>
-                                                        <action selector="popViewController:" destination="0V6-N4-hTO" eventType="primaryActionTriggered" id="F6Z-xz-qCk"/>
-                                                    </connections>
-                                                </button>
+                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="UJ5-ia-PVA">
+                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mkD-3C-WMV">
+                                                                <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <state key="normal" image="Back"/>
+                                                                <connections>
+                                                                    <action selector="popViewController:" destination="0V6-N4-hTO" eventType="primaryActionTriggered" id="F6Z-xz-qCk"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                    </view>
+                                                    <vibrancyEffect style="fill">
+                                                        <blurEffect style="prominent"/>
+                                                    </vibrancyEffect>
+                                                </visualEffectView>
                                             </subviews>
                                         </view>
-                                        <blurEffect style="extraLight"/>
+                                        <blurEffect style="prominent"/>
                                     </visualEffectView>
                                 </subviews>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstItem="Ci9-Iw-aR2" firstAttribute="top" secondItem="0cR-li-tCB" secondAttribute="top" id="015-fz-v3B"/>
                             <constraint firstAttribute="top" secondItem="Qlg-m3-lXg" secondAttribute="top" id="8tb-sY-MOu"/>
@@ -212,7 +224,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="static" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" id="w5c-Q3-FcU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Background"/>
                         <sections>
                             <tableViewSection id="rfR-32-T0h">
                                 <cells>
@@ -237,6 +249,7 @@
                                                 <constraint firstItem="BsL-O2-UjD" firstAttribute="top" secondItem="8PX-jQ-nHd" secondAttribute="top" constant="20" id="dRc-WY-Jbk"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" name="Background"/>
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="nI6-wC-H2d">
@@ -248,7 +261,7 @@
                                             <subviews>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ppk-lL-at8">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="backgroundColor" name="Background"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="15" id="ace-Ns-Jd2">
                                                         <size key="itemSize" width="189" height="406"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -274,6 +287,7 @@
                                                 <constraint firstItem="ppk-lL-at8" firstAttribute="top" secondItem="Z4y-vb-Z4Q" secondAttribute="top" id="xY5-w8-roA"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" name="Background"/>
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="EL5-UC-RIw" customClass="AppContentTableViewCell" customModule="AltStore" customModuleProvider="target">
@@ -285,7 +299,7 @@
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Hello Me" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Pyt-8D-BZA" customClass="CollapsingTextView" customModule="AltStore" customModuleProvider="target">
                                                     <rect key="frame" x="20" y="20" width="335" height="34"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="backgroundColor" name="Background"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
@@ -297,6 +311,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="Pyt-8D-BZA" secondAttribute="trailing" constant="20" id="Wq4-Ql-wvN"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" name="Background"/>
                                         <inset key="separatorInset" minX="1000" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="47M-El-a4G" customClass="AppContentTableViewCell" customModule="AltStore" customModuleProvider="target">
@@ -350,7 +365,7 @@
                                                         </stackView>
                                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="wQF-WY-Gdz" customClass="CollapsingTextView" customModule="AltStore" customModuleProvider="target">
                                                             <rect key="frame" x="20" y="16" width="335" height="0.0"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" name="Background"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                         </textView>
@@ -365,6 +380,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="n9R-39-Glq" secondAttribute="bottom" priority="999" id="Zol-57-Lbq"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" name="Background"/>
                                         <inset key="separatorInset" minX="1000" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="149" id="nM7-vJ-W8b">
@@ -385,7 +401,7 @@
                                                         </label>
                                                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="r8T-dj-wQX">
                                                             <rect key="frame" x="0.0" y="41" width="375" height="88"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" name="Background"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="88" id="6Lk-OO-MsA"/>
                                                             </constraints>
@@ -455,6 +471,7 @@ World</string>
                                                 <constraint firstItem="Jvb-r8-XrY" firstAttribute="top" secondItem="cQ2-Jd-pRK" secondAttribute="top" id="Urh-Qr-vrS"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" name="Background"/>
                                         <inset key="separatorInset" minX="1000" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
                                 </cells>
@@ -509,7 +526,7 @@ World</string>
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="xnC-tS-ZdV" firstAttribute="leading" secondItem="c7x-ee-3HH" secondAttribute="leading" constant="20" id="LO8-Au-SYF"/>
                             <constraint firstItem="c7x-ee-3HH" firstAttribute="bottom" secondItem="xnC-tS-ZdV" secondAttribute="bottom" constant="10" id="NZ9-iG-E10"/>
@@ -544,7 +561,7 @@ World</string>
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="736-lq-Aef">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Background"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="40" minimumInteritemSpacing="40" id="63d-78-Y24">
                             <size key="itemSize" width="375" height="300"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -566,7 +583,7 @@ World</string>
         <!--Browse-->
         <scene sceneID="VHa-uP-bFU">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="faz-B4-Sub" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="faz-B4-Sub" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Browse" image="Browse" id="Uwh-Bg-Ymq"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="dIv-qd-9L5" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
@@ -586,7 +603,7 @@ World</string>
         <!--My Apps-->
         <scene sceneID="nhh-BJ-XiT">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Ew-ox-i4n" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Ew-ox-i4n" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="My Apps" image="MyApps" id="4gT-9u-k7y">
                         <color key="badgeColor" name="Primary"/>
                     </tabBarItem>
@@ -611,7 +628,7 @@ World</string>
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="Jrp-gi-4Df">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Background"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="SB5-U0-jyy">
                             <size key="itemSize" width="375" height="60"/>
                             <size key="headerReferenceSize" width="50" height="50"/>
@@ -759,7 +776,7 @@ World</string>
         <!--News-->
         <scene sceneID="BV8-6J-nIv">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kjR-gi-fgT" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kjR-gi-fgT" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="News" image="News" id="fVN-ed-uO1"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="525-jF-uDK" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
@@ -783,8 +800,11 @@ World</string>
         <image name="MyApps" width="20" height="20"/>
         <image name="News" width="19" height="20"/>
         <image name="Settings" width="20" height="20"/>
+        <namedColor name="Background">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="Primary">
-            <color red="0.039215686274509803" green="0.50980392156862742" blue="0.54117647058823526" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>

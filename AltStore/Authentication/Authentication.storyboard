@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="barTintColor" name="Primary"/>
+                        <color key="barTintColor" name="SettingsBackground"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </textAttributes>
@@ -65,7 +65,7 @@
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign in with your Apple ID to get started." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="SNU-tv-8Au">
                                                                 <rect key="frame" x="0.0" y="47" width="308.5" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <color key="textColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                         </subviews>
@@ -174,13 +174,13 @@
                                                             </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2N5-zd-fUj">
                                                                 <rect key="frame" x="0.0" y="228.5" width="343" height="51"/>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <color key="backgroundColor" name="SettingsHighlighted"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="51" id="4BK-Un-5pl"/>
                                                                 </constraints>
-                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                                                 <state key="normal" title="Sign in">
-                                                                    <color key="titleColor" name="Pink"/>
+                                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 </state>
                                                                 <connections>
                                                                     <action selector="authenticate" destination="yO1-iT-7NP" eventType="primaryActionTriggered" id="LER-a2-CbC"/>
@@ -222,7 +222,7 @@
                                 </constraints>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" name="Primary"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="WXx-hX-AXv" secondAttribute="bottom" id="0jL-Ky-ju6"/>
                             <constraint firstAttribute="leadingMargin" secondItem="YmX-7v-pxh" secondAttribute="leading" id="2PO-lG-dmB"/>
@@ -407,20 +407,20 @@
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZ9-AR-2zK">
                                 <rect key="frame" x="16" y="608" width="343" height="51"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="SettingsHighlighted"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="LQz-qG-ZJK"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                 <state key="normal" title="Got it">
-                                    <color key="titleColor" name="Pink"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
                                     <action selector="dismiss" destination="aFi-fb-W0B" eventType="primaryActionTriggered" id="sBq-zj-Mln"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" name="Primary"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
                         <constraints>
                             <constraint firstItem="qZ9-AR-2zK" firstAttribute="top" secondItem="bp6-55-IG2" secondAttribute="bottom" id="3yt-cr-swd"/>
                             <constraint firstItem="bp6-55-IG2" firstAttribute="top" secondItem="Zek-aC-HOO" secondAttribute="top" id="42S-q2-YZn"/>
@@ -445,11 +445,11 @@
         </scene>
     </scenes>
     <resources>
-        <namedColor name="Pink">
-            <color red="0.92549019607843142" green="0.25490196078431371" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="Primary">
+        <namedColor name="SettingsBackground">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="SettingsHighlighted">
+            <color red="0.0078431372549019607" green="0.32156862745098042" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <color key="tintColor" name="Primary"/>

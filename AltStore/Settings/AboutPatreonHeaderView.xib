@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -74,24 +72,24 @@ Riley</string>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yEi-L6-kQ8">
                                     <rect key="frame" x="0.0" y="0.0" width="343" height="51"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="backgroundColor" name="SettingsHighlighted"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="51" id="l4o-vb-cMy"/>
                                     </constraints>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                     <state key="normal" title="Become a patron">
-                                        <color key="titleColor" name="Pink"/>
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g2O-Ve-hrS">
                                     <rect key="frame" x="0.0" y="64" width="343" height="51"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="backgroundColor" name="SettingsHighlighted"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="51" id="5FZ-Wk-C86"/>
                                     </constraints>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                     <state key="normal" title="Link Patreon account">
-                                        <color key="titleColor" name="Pink"/>
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </state>
                                 </button>
                             </subviews>
@@ -111,12 +109,13 @@ Riley</string>
                 <outlet property="supportButton" destination="yEi-L6-kQ8" id="Dzo-vd-SnD"/>
                 <outlet property="textView" destination="FeG-e5-LJl" id="K0M-lF-I6u"/>
             </connections>
+            <point key="canvasLocation" x="138" y="138"/>
         </collectionReusableView>
     </objects>
     <resources>
-        <image name="Riley" width="400" height="400"/>
-        <namedColor name="Pink">
-            <color red="0.92549019607843142" green="0.25490196078431371" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <image name="Riley" width="1138" height="1138"/>
+        <namedColor name="SettingsHighlighted">
+            <color red="0.0078431372549019607" green="0.32156862745098042" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

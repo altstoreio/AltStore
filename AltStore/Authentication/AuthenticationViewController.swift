@@ -30,6 +30,8 @@ class AuthenticationViewController: UIViewController
     {
         super.viewDidLoad()
         
+        self.signInButton.activityIndicatorView.style = .white
+        
         for view in [self.appleIDBackgroundView!, self.passwordBackgroundView!, self.signInButton!]
         {
             view.clipsToBounds = true
