@@ -449,7 +449,16 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
                 infoDictionary[Bundle.Info.deviceID] = device.identifier
                 infoDictionary[Bundle.Info.serverID] = UserDefaults.standard.serverID
+                infoDictionary[Bundle.Info.certificateID] = certificate.serialNumber
                 try (infoDictionary as NSDictionary).write(to: infoPlistURL)
+                                
+                if
+                    let machineIdentifier = certificate.machineIdentifier,
+                    let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
+                {
+                    let certificateURL = application.fileURL.appendingPathComponent("ALTCertificate.p12")
+                    try encryptedData.write(to: certificateURL, options: .atomic)
+                }
                 
                 let resigner = ALTSigner(team: team, certificate: certificate)
                 resigner.signApp(at: application.fileURL, provisioningProfiles: [profile]) { (success, error) in
