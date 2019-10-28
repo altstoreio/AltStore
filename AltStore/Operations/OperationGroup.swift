@@ -73,7 +73,12 @@ class OperationGroup
     
     func progress(for app: AppProtocol) -> Progress?
     {
-        let progress = self.progressByBundleIdentifier[app.bundleIdentifier]
+        return self.progress(forAppWithBundleIdentifier: app.bundleIdentifier)
+    }
+    
+    func progress(forAppWithBundleIdentifier bundleIdentifier: String) -> Progress?
+    {
+        let progress = self.progressByBundleIdentifier[bundleIdentifier]
         return progress
     }
 }

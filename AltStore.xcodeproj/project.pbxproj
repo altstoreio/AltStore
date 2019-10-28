@@ -115,6 +115,7 @@
 		BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
 		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
 		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
@@ -396,6 +397,7 @@
 		BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAltStoreViewController.swift; sourceTree = "<group>"; };
 		BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardingNavigationController.swift; sourceTree = "<group>"; };
 		BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
 		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
@@ -1068,6 +1070,7 @@
 				BFE6325922A83BEB00F30809 /* Authentication.storyboard */,
 				BFF0B6932321CB85007A79E1 /* AuthenticationViewController.swift */,
 				BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */,
+				BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -1487,6 +1490,7 @@
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */,
+				BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */,
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,

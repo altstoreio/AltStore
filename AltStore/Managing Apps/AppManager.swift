@@ -149,7 +149,7 @@ extension AppManager
     
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
-        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil }
+        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil || self.refreshProgress(for: $0)?.isCancelled == true }
 
         let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
         
@@ -183,18 +183,6 @@ private extension AppManager
         let group = group ?? OperationGroup()
         var operations = [Operation]()
         
-        
-        /* Authenticate */
-        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
-        authenticationOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success(let signer): group.signer = signer
-            }
-        }
-        operations.append(authenticationOperation)
-        
         /* Find Server */
         let findServerOperation = FindServerOperation(group: group)
         findServerOperation.resultHandler = { (result) in
@@ -204,9 +192,23 @@ private extension AppManager
             case .success(let server): group.server = server
             }
         }
-        findServerOperation.addDependency(authenticationOperation)
         operations.append(findServerOperation)
         
+        if group.signer == nil
+        {
+            /* Authenticate */
+            let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
+            authenticationOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): group.error = error
+                case .success(let signer): group.signer = signer
+                }
+            }
+            operations.append(authenticationOperation)
+            
+            findServerOperation.addDependency(authenticationOperation)
+        }        
         
         for app in apps
         {
@@ -344,7 +346,11 @@ private extension AppManager
             guard !context.isFinished else { return }
             context.isFinished = true
             
-            self.refreshProgress[context.bundleIdentifier] = nil
+            if let progress = self.refreshProgress[context.bundleIdentifier], progress == context.group.progress(forAppWithBundleIdentifier: context.bundleIdentifier)
+            {
+                // Only remove progress if it hasn't been replaced by another one.
+                self.refreshProgress[context.bundleIdentifier] = nil
+            }
             
             if let error = context.error
             {

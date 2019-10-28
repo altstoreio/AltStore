@@ -400,6 +400,21 @@ private extension ResignAppOperation
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid
                     additionalValues[Bundle.Info.serverID] = UserDefaults.standard.preferredServerID
+                    
+                    if
+                        let data = Keychain.shared.signingCertificate,
+                        let signingCertificate = ALTCertificate(p12Data: data, password: nil),
+                        let encryptingPassword = Keychain.shared.signingCertificatePassword
+                    {
+                        additionalValues[Bundle.Info.certificateID] = signingCertificate.serialNumber
+                        
+                        let encryptedData = signingCertificate.encryptedP12Data(withPassword: encryptingPassword)
+                        try encryptedData?.write(to: appBundle.certificateURL, options: .atomic)
+                    }
+                    else
+                    {
+                        // The embedded certificate + certificate identifier are already in app bundle, no need to update them.
+                    }
                 }
                 
                 // Prepare app

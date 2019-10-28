@@ -36,7 +36,10 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
     
     private lazy var navigationController: UINavigationController = {
         let navigationController = self.storyboard.instantiateViewController(withIdentifier: "navigationController") as! UINavigationController
-        navigationController.presentationController?.delegate = self
+        if #available(iOS 13.0, *)
+        {
+            navigationController.isModalInPresentation = true
+        }
         return navigationController
     }()
     
@@ -150,18 +153,25 @@ class AuthenticationOperation: ResultOperation<ALTSigner>
                 Keychain.shared.appleIDEmailAddress = altAccount.appleID // "account" may have nil appleID since we just saved.
                 Keychain.shared.appleIDPassword = self.appleIDPassword
                 
-                Keychain.shared.signingCertificateSerialNumber = signer.certificate.serialNumber
-                Keychain.shared.signingCertificatePrivateKey = signer.certificate.privateKey
+                Keychain.shared.signingCertificate = signer.certificate.p12Data()
+                Keychain.shared.signingCertificatePassword = signer.certificate.machineIdentifier
                 
-                super.finish(.success(signer))
+                // Refresh screen must go last since a successful refresh will cause the app to quit.
+                self.showRefreshScreenIfNecessary() { (didShowRefreshAlert) in
+                    super.finish(.success(signer))
+                    
+                    DispatchQueue.main.async {
+                        self.navigationController.dismiss(animated: true, completion: nil)
+                    }
+                }
             }
             catch
             {
                 super.finish(.failure(error))
-            }
-            
-            DispatchQueue.main.async {
-                self.navigationController.dismiss(animated: true, completion: nil)
+                
+                DispatchQueue.main.async {
+                    self.navigationController.dismiss(animated: true, completion: nil)
+                }
             }
         }
     }
@@ -352,19 +362,45 @@ private extension AuthenticationOperation
                 let certificates = try Result(certificates, error).get()
                 
                 if
+                    let data = Keychain.shared.signingCertificate,
+                    let localCertificate = ALTCertificate(p12Data: data, password: nil),
+                    let certificate = certificates.first(where: { $0.serialNumber == localCertificate.serialNumber })
+                {
+                    // We have a certificate stored in the keychain and it hasn't been revoked.
+                    localCertificate.machineIdentifier = certificate.machineIdentifier
+                    completionHandler(.success(localCertificate))
+                }
+                else if
                     let serialNumber = Keychain.shared.signingCertificateSerialNumber,
                     let privateKey = Keychain.shared.signingCertificatePrivateKey,
                     let certificate = certificates.first(where: { $0.serialNumber == serialNumber })
                 {
+                    // LEGACY
+                    // We have the private key for one of the certificates, so add it to certificate and use it.
                     certificate.privateKey = privateKey
                     completionHandler(.success(certificate))
                 }
+                else if
+                    let serialNumber = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.certificateID) as? String,
+                    let certificate = certificates.first(where: { $0.serialNumber == serialNumber }),
+                    let machineIdentifier = certificate.machineIdentifier,
+                    FileManager.default.fileExists(atPath: Bundle.main.certificateURL.path),
+                    let data = try? Data(contentsOf: Bundle.main.certificateURL),
+                    let localCertificate = ALTCertificate(p12Data: data, password: machineIdentifier)
+                {
+                    // We have an embedded certificate that hasn't been revoked.
+                    localCertificate.machineIdentifier = machineIdentifier
+                    completionHandler(.success(localCertificate))
+                }
                 else if certificates.isEmpty
                 {
+                    // No certificates, so request a new one.
                     requestCertificate()
                 }
                 else
                 {
+                    // We don't have private keys for any of the certificates,
+                    // so we need to revoke one and create a new one.
                     replaceCertificate(from: certificates)
                 }
             }
@@ -392,19 +428,26 @@ private extension AuthenticationOperation
             }
         }
     }
-}
-
-extension AuthenticationOperation: UIAdaptivePresentationControllerDelegate
-{
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController)
+    
+    func showRefreshScreenIfNecessary(completionHandler: @escaping (Bool) -> Void)
     {
-        if let signer = self.signer
-        {
-            self.finish(.success(signer))
-        }
-        else
-        {
-            self.finish(.failure(OperationError.cancelled))
+        guard let signer = self.signer else { return completionHandler(false) }
+        guard let application = ALTApplication(fileURL: Bundle.main.bundleURL), let provisioningProfile = application.provisioningProfile else { return completionHandler(false) }
+        
+        // If we're not using the same certificate used to install AltStore, warn user that they need to refresh.
+        guard !provisioningProfile.certificates.contains(signer.certificate) else { return completionHandler(false) }
+        
+        DispatchQueue.main.async {
+            let refreshViewController = self.storyboard.instantiateViewController(withIdentifier: "refreshAltStoreViewController") as! RefreshAltStoreViewController
+            refreshViewController.signer = signer
+            refreshViewController.completionHandler = { _ in
+                completionHandler(true)
+            }
+            
+            if !self.present(refreshViewController)
+            {
+                completionHandler(false)
+            }
         }
     }
 }
