@@ -703,7 +703,7 @@ World</string>
                                                         </vibrancyEffect>
                                                     </visualEffectView>
                                                 </subviews>
-                                                <color key="backgroundColor" white="1" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="backgroundColor" name="BlurTint"/>
                                                 <constraints>
                                                     <constraint firstItem="zAy-K2-jA4" firstAttribute="top" secondItem="d2X-wj-EhR" secondAttribute="top" id="3GP-KH-ao8"/>
                                                     <constraint firstAttribute="trailing" secondItem="zAy-K2-jA4" secondAttribute="trailing" id="H29-aK-27e"/>
@@ -802,6 +802,9 @@ World</string>
         <image name="Settings" width="20" height="20"/>
         <namedColor name="Background">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="BlurTint">
+            <color red="1" green="1" blue="1" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Primary">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
