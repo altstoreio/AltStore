@@ -22,8 +22,17 @@ private class AppBannerFooterView: UICollectionReusableView
     {
         super.init(frame: frame)
         
-        self.addSubview(self.bannerView, pinningEdgesWith: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20))
         self.addGestureRecognizer(self.tapGestureRecognizer)
+        
+        self.bannerView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(self.bannerView)
+        
+        NSLayoutConstraint.activate([
+            self.bannerView.topAnchor.constraint(equalTo: self.topAnchor),
+            self.bannerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.bannerView.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor),
+            self.bannerView.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
+        ])
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,7 +61,6 @@ class NewsViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
-        self.prototypeCell.translatesAutoresizingMaskIntoConstraints = false
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
         self.collectionView.dataSource = self.dataSource
@@ -93,15 +101,18 @@ private extension NewsViewController
         let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: false)]
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.date), cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.sortIndex), cacheName: nil)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
         dataSource.cellConfigurationHandler = { (cell, newsItem, indexPath) in
             let cell = cell as! NewsCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
+            
             cell.titleLabel.text = newsItem.title
             cell.captionLabel.text = newsItem.caption
-            cell.contentView.backgroundColor = newsItem.tintColor
+            cell.contentBackgroundView.backgroundColor = newsItem.tintColor
             
             cell.imageView.image = nil
             
@@ -315,6 +326,9 @@ extension NewsViewController
         let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AppBanner", for: indexPath) as! AppBannerFooterView
         guard let storeApp = item.storeApp else { return footerView }
         
+        footerView.layoutMargins.left = self.view.layoutMargins.left
+        footerView.layoutMargins.right = self.view.layoutMargins.right
+        
         footerView.bannerView.titleLabel.text = storeApp.name
         footerView.bannerView.subtitleLabel.text = storeApp.developerName
         footerView.bannerView.tintColor = storeApp.tintColor
@@ -330,7 +344,6 @@ extension NewsViewController
             
             let progress = AppManager.shared.installationProgress(for: storeApp)
             footerView.bannerView.button.progress = progress
-            footerView.bannerView.button.isInverted = false
             
             if Date() < storeApp.versionDate
             {
@@ -345,7 +358,6 @@ extension NewsViewController
         {
             footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
             footerView.bannerView.button.progress = nil
-            footerView.bannerView.button.isInverted = true
             footerView.bannerView.button.countdownDate = nil
         }
         
@@ -358,10 +370,7 @@ extension NewsViewController
 extension NewsViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        let padding = 40 as CGFloat
-        let width = collectionView.bounds.width - padding
-        
+    {        
         let item = self.dataSource.item(at: indexPath)
         
         if let previousSize = self.cachedCellSizes[item.identifier]
@@ -369,7 +378,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
             return previousSize
         }
         
-        let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: width)
+        let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
         NSLayoutConstraint.activate([widthConstraint])
         defer { NSLayoutConstraint.deactivate([widthConstraint]) }
         
@@ -396,7 +405,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
-        var insets = UIEdgeInsets(top: 30, left: 20, bottom: 13, right: 20)
+        var insets = UIEdgeInsets(top: 30, left: 0, bottom: 13, right: 0)
         
         if section == 0
         {

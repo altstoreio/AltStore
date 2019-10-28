@@ -20,21 +20,17 @@ import Nuke
         }
     }
     private lazy var dataSource = self.makeDataSource()
-        
-    @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var developerLabel: UILabel!
-    @IBOutlet var appIconImageView: UIImageView!
-    @IBOutlet var actionButton: PillButton!
+    
+    @IBOutlet var bannerView: AppBannerView!
     @IBOutlet var subtitleLabel: UILabel!
     
-    @IBOutlet var screenshotsCollectionView: UICollectionView!
-    @IBOutlet var betaBadgeView: UIImageView!
-    
-    @IBOutlet private var screenshotsContentView: UIView!
+    @IBOutlet private(set) var screenshotsCollectionView: UICollectionView!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        self.contentView.preservesSuperviewLayoutMargins = true
         
         // Must be registered programmatically, not in BrowseCollectionViewCell.xib, or else it'll throw an exception 🤷‍♂️.
         self.screenshotsCollectionView.register(ScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
@@ -42,18 +38,6 @@ import Nuke
         self.screenshotsCollectionView.delegate = self
         self.screenshotsCollectionView.dataSource = self.dataSource
         self.screenshotsCollectionView.prefetchDataSource = self.dataSource
-        
-        self.screenshotsContentView.layer.cornerRadius = 20
-        self.screenshotsContentView.layer.masksToBounds = true
-        
-        self.update()
-    }
-    
-    override func tintColorDidChange()
-    {
-        super.tintColorDidChange()
-        
-        self.update()
     }
 }
 
@@ -95,12 +79,6 @@ private extension BrowseCollectionViewCell
         }
         
         return dataSource
-    }
-    
-    private func update()
-    {
-        self.subtitleLabel.textColor = self.tintColor
-        self.screenshotsContentView.backgroundColor = self.tintColor.withAlphaComponent(0.1)
     }
 }
 

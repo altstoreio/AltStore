@@ -115,6 +115,7 @@
 		BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
 		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
 		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
 		BF770E5622BC3C03002A40FE /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5522BC3C02002A40FE /* Server.swift */; };
@@ -395,6 +396,7 @@
 		BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardingNavigationController.swift; sourceTree = "<group>"; };
 		BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
 		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
 		BF770E5522BC3C02002A40FE /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
@@ -929,6 +931,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD2478B2284C4C300981D42 /* AppIconImageView.swift */,
+				BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */,
 				BFD2478E2284C8F900981D42 /* Button.swift */,
 				BF43002D22A714AF0051E2BC /* Keychain.swift */,
 				BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */,
@@ -1448,6 +1451,7 @@
 			files = (
 				BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */,
 				BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */,
+				BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */,
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,

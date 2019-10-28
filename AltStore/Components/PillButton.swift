@@ -11,13 +11,15 @@ import UIKit
 class PillButton: UIButton
 {
     var progress: Progress? {
-        didSet {            
+        didSet {
             self.progressView.progress = Float(self.progress?.fractionCompleted ?? 0)
             self.progressView.observedProgress = self.progress
             
             let isUserInteractionEnabled = self.isUserInteractionEnabled
             self.isIndicatingActivity = (self.progress != nil)
             self.isUserInteractionEnabled = isUserInteractionEnabled
+            
+            self.update()
         }
     }
     
@@ -27,12 +29,6 @@ class PillButton: UIButton
         }
         set {
             self.progressView.progressTintColor = newValue
-        }
-    }
-    
-    var isInverted: Bool = false {
-        didSet {
-            self.update()
         }
     }
     
@@ -120,18 +116,18 @@ private extension PillButton
 {
     func update()
     {
-        if self.isInverted
+        if self.progress == nil
         {
             self.setTitleColor(.white, for: .normal)
             self.backgroundColor = self.tintColor
-            self.progressView.progressTintColor = self.tintColor.withAlphaComponent(0.15)
         }
         else
         {
             self.setTitleColor(self.tintColor, for: .normal)
             self.backgroundColor = self.tintColor.withAlphaComponent(0.15)
-            self.progressView.progressTintColor = self.tintColor
         }
+        
+        self.progressView.progressTintColor = self.tintColor
     }
     
     @objc func updateCountdown()

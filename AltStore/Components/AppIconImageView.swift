@@ -19,13 +19,16 @@ class AppIconImageView: UIImageView
         
         self.backgroundColor = .white
                 
-        self.layer.borderWidth = 0.5
-        self.layer.borderColor = self.tintColor.cgColor
-        
-        // Allows us to match system look for app icons.
-        if self.layer.responds(to: Selector(("continuousCorners")))
+        if #available(iOS 13, *)
         {
-            self.layer.setValue(true, forKey: "continuousCorners")
+            self.layer.cornerCurve = .continuous
+        }
+        else
+        {
+            if self.layer.responds(to: Selector(("continuousCorners")))
+            {
+                self.layer.setValue(true, forKey: "continuousCorners")
+            }
         }
     }
     
@@ -36,12 +39,5 @@ class AppIconImageView: UIImageView
         // Based off of 60pt icon having 12pt radius.
         let radius = self.bounds.height / 5
         self.layer.cornerRadius = radius
-    }
-    
-    override func tintColorDidChange()
-    {
-        super.tintColorDidChange()
-        
-        self.layer.borderColor = self.tintColor.cgColor
     }
 }

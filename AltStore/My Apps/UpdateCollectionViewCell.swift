@@ -25,20 +25,25 @@ extension UpdateCollectionViewCell
         }
     }
     
-    @IBOutlet var appIconImageView: UIImageView!
-    @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var dateLabel: UILabel!
-    @IBOutlet var updateButton: PillButton!
+    @IBOutlet var bannerView: AppBannerView!
     @IBOutlet var versionDescriptionTitleLabel: UILabel!
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
-    @IBOutlet var betaBadgeView: UIImageView!
+    
+    @IBOutlet private var blurView: UIVisualEffectView!
             
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        self.contentView.layer.cornerRadius = 20
-        self.contentView.layer.masksToBounds = true
+        // Prevent temporary unsatisfiable constraint errors due to UIView-Encapsulated-Layout constraints.
+        self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.contentView.preservesSuperviewLayoutMargins = true
+        
+        self.bannerView.backgroundEffectView.isHidden = true
+        self.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
+                
+        self.blurView.layer.cornerRadius = 20
+        self.blurView.layer.masksToBounds = true
         
         self.update()
     }
@@ -87,11 +92,10 @@ private extension UpdateCollectionViewCell
         }
         
         self.versionDescriptionTitleLabel.textColor = self.tintColor
-        self.contentView.backgroundColor = self.tintColor.withAlphaComponent(0.1)
+        self.blurView.backgroundColor = self.tintColor
         
-        self.updateButton.setTitleColor(self.tintColor, for: .normal)
-        self.updateButton.backgroundColor = self.tintColor.withAlphaComponent(0.15)
-        self.updateButton.progressTintColor = self.tintColor        
+        self.bannerView.button.tintColor = self.tintColor
+        self.bannerView.button.progressTintColor = self.tintColor
         
         self.setNeedsLayout()
         self.layoutIfNeeded()
