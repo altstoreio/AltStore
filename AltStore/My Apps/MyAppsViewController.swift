@@ -67,6 +67,11 @@ class MyAppsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        if #available(iOS 13.0, *)
+        {
+            self.navigationItem.leftBarButtonItem?.activityIndicatorView.style = .medium
+        }
+        
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
         
