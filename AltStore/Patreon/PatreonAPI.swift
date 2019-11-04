@@ -170,7 +170,8 @@ extension PatreonAPI
         var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(campaignID)/members")!
         components.queryItems = [URLQueryItem(name: "include", value: "currently_entitled_tiers,currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[tier]", value: "title"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status"),
+                                 URLQueryItem(name: "page[size]", value: "1000")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         
