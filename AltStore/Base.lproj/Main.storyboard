@@ -19,9 +19,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="sZd-sc-Bvn"/>
                     </view>
-                    <connections>
-                        <segue destination="49e-Tb-3d3" kind="presentation" identifier="finishLaunching" modalTransitionStyle="crossDissolve" id="6Ov-Kc-Van"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vOq-mm-rY5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -30,7 +27,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
-                <tabBarController modalPresentationStyle="fullScreen" id="49e-Tb-3d3" customClass="TabBarController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="tabBarController" modalPresentationStyle="fullScreen" id="49e-Tb-3d3" customClass="TabBarController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
