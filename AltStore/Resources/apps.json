@@ -202,5 +202,8 @@
       "date": "2019-10-09",
       "notify": false
     }
-  ]
+  ],
+  "userInfo": {
+    "patreonAccessToken": "lb2Sq14mVCejEtITnlGfszbYXDhXmrdpiOMCEZjlfFk"
+  }
 }

@@ -68,6 +68,11 @@ class FetchSourceOperation: ResultOperation<Source>
                     
                     let source = try decoder.decode(Source.self, from: data)
                     
+                    if let patreonAccessToken = source.userInfo?[.patreonAccessToken]
+                    {
+                        Keychain.shared.patreonCreatorAccessToken = patreonAccessToken
+                    }
+                    
                     #if STAGING
                     source.sourceURL = self.sourceURL
                     #endif

@@ -11,7 +11,6 @@ import AuthenticationServices
 
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
-private let creatorAccessToken = "NSX1ts9Rf9IzKRCu8GjbwsZ6wll8bDtoJxNbPbp2eZo"
 
 private let campaignID = "2863968"
 
@@ -348,7 +347,9 @@ private extension PatreonAPI
         {
         case .none: break
         case .creator:
+            guard let creatorAccessToken = Keychain.shared.patreonCreatorAccessToken else { return completion(.failure(Error.invalidAccessToken)) }
             request.setValue("Bearer " + creatorAccessToken, forHTTPHeaderField: "Authorization")
+            
         case .user:
             guard let accessToken = Keychain.shared.patreonAccessToken else { return completion(.failure(Error.notAuthenticated)) }
             request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")

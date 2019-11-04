@@ -27,6 +27,9 @@ class Source: NSManagedObject, Fetchable, Decodable
     @NSManaged var identifier: String
     @NSManaged var sourceURL: URL
     
+    /* Non-Core Data Properties */
+    var userInfo: [ALTSourceUserInfoKey: String]?
+    
     /* Relationships */
     @objc(apps) @NSManaged private(set) var _apps: NSOrderedSet
     @objc(newsItems) @NSManaged private(set) var _newsItems: NSOrderedSet
@@ -54,6 +57,7 @@ class Source: NSManagedObject, Fetchable, Decodable
         case name
         case identifier
         case sourceURL
+        case userInfo
         case apps
         case news
     }
@@ -73,6 +77,9 @@ class Source: NSManagedObject, Fetchable, Decodable
         self.name = try container.decode(String.self, forKey: .name)
         self.identifier = try container.decode(String.self, forKey: .identifier)
         self.sourceURL = try container.decode(URL.self, forKey: .sourceURL)
+        
+        let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
+        self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
         
         let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
         for (index, app) in apps.enumerated()

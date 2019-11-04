@@ -28,6 +28,7 @@
 		BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF258CE222EBAE2800023032 /* AppProtocol.swift */; };
+		BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
 		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
@@ -304,6 +305,8 @@
 		BF1E315022A0616100370A3C /* libAltKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAltKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF219A7E22CAC431007676A6 /* AltStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltStore.entitlements; sourceTree = "<group>"; };
 		BF258CE222EBAE2800023032 /* AppProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppProtocol.swift; sourceTree = "<group>"; };
+		BF26A0DF2370C5D400F53F9F /* ALTSourceUserInfoKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTSourceUserInfoKey.h; sourceTree = "<group>"; };
+		BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF29012E2318F6B100D88A45 /* AppBannerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppBannerView.xib; sourceTree = "<group>"; };
 		BF2901302318F7A800D88A45 /* AppBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBannerView.swift; sourceTree = "<group>"; };
 		BF3D648722E79A3700E9056B /* AppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermission.swift; sourceTree = "<group>"; };
@@ -613,6 +616,8 @@
 				BF3D648C22E79AC800E9056B /* ALTAppPermission.m */,
 				BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */,
 				BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */,
+				BF26A0DF2370C5D400F53F9F /* ALTSourceUserInfoKey.h */,
+				BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */,
 				BF41B807233433C100C593A3 /* LoadingState.swift */,
 			);
 			path = Types;
@@ -1459,6 +1464,7 @@
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
 				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
+				BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
