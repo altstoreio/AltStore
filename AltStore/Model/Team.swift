@@ -17,7 +17,7 @@ extension ALTTeamType
         switch self
         {
         case .free: return NSLocalizedString("Free Developer Account", comment: "")
-        case .individual: return NSLocalizedString("Individual", comment: "")
+        case .individual: return NSLocalizedString("Developer", comment: "")
         case .organization: return NSLocalizedString("Organization", comment: "")
         case .unknown: fallthrough
         @unknown default: return NSLocalizedString("Unknown", comment: "")
