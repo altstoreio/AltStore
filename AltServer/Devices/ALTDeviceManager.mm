@@ -307,7 +307,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 NSData *data = [NSData dataWithBytes:(const void *)bytes length:length];
                 ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithData:data];
 
-                if (![provisioningProfile.teamIdentifier isEqualToString:installationProvisioningProfile.teamIdentifier])
+                if (![provisioningProfile isFreeProvisioningProfile])
                 {
                     NSLog(@"Ignoring: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
                     continue;
@@ -338,12 +338,12 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
 
                 if (misagent_remove(mis, provisioningProfile.UUID.UUIDString.lowercaseString.UTF8String) == MISAGENT_E_SUCCESS)
                 {
-                    NSLog(@"Removed provisioning profile: %@", provisioningProfile.UUID);
+                    NSLog(@"Removed provisioning profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
                 }
                 else
                 {
                     int code = misagent_get_status_code(mis);
-                    NSLog(@"Failed to remove provisioning profile %@. Error Code: %@", provisioningProfile.UUID, @(code));
+                    NSLog(@"Failed to remove provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(code));
                 }
             }
 
