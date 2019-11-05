@@ -629,7 +629,7 @@ private extension MyAppsViewController
                 
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
                 
-                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { return }
+                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
                 
                 self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
                     try? FileManager.default.removeItem(at: temporaryDirectory)
@@ -638,7 +638,7 @@ private extension MyAppsViewController
                         if let error = result.error
                         {
                             let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                            toastView.show(in: self.view, duration: 2.0)
+                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                         }
                         else
                         {
@@ -663,7 +663,12 @@ private extension MyAppsViewController
             {
                 try? FileManager.default.removeItem(at: temporaryDirectory)
                 
-                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                DispatchQueue.main.async {
+                    self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                    
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                }
                 
                 completion(.failure(error))
             }
