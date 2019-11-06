@@ -30,6 +30,8 @@ extension UpdateCollectionViewCell
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
     
     @IBOutlet private var blurView: UIVisualEffectView!
+    
+    private var originalTintColor: UIColor?
             
     override func awakeFromNib()
     {
@@ -51,6 +53,11 @@ extension UpdateCollectionViewCell
     override func tintColorDidChange()
     {
         super.tintColorDidChange()
+        
+        if self.tintAdjustmentMode != .dimmed
+        {
+            self.originalTintColor = self.tintColor
+        }
         
         self.update()
     }
@@ -91,11 +98,9 @@ private extension UpdateCollectionViewCell
         case .expanded: self.versionDescriptionTextView.isCollapsed = false
         }
         
-        self.versionDescriptionTitleLabel.textColor = self.tintColor
-        self.blurView.backgroundColor = self.tintColor
-        
-        self.bannerView.button.tintColor = self.tintColor
-        self.bannerView.button.progressTintColor = self.tintColor
+        self.versionDescriptionTitleLabel.textColor = self.originalTintColor ?? self.tintColor
+        self.blurView.backgroundColor = self.originalTintColor ?? self.tintColor
+        self.bannerView.button.progressTintColor = self.originalTintColor ?? self.tintColor
         
         self.setNeedsLayout()
         self.layoutIfNeeded()
