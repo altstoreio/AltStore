@@ -292,7 +292,10 @@ private extension ConnectionManager
         self.send(response, to: connection) { (result) in
             print("Sent response to \(connection.endpoint) with result:", result)
             
-            self.disconnect(connection)
+            // Add short delay to prevent us from dropping connection too quickly.
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
+                self.disconnect(connection)
+            }
         }
     }
     
