@@ -89,6 +89,8 @@ class AppViewController: UIViewController
         self.bannerView.betaBadgeView.isHidden = !self.app.isBeta
         self.bannerView.tintColor = self.app.tintColor
         
+        self.bannerView.button.addTarget(self, action: #selector(AppViewController.performAppAction(_:)), for: .primaryActionTriggered)
+        
         self.backButtonContainerView.tintColor = self.app.tintColor
         
         self.navigationController?.navigationBar.tintColor = self.app.tintColor
