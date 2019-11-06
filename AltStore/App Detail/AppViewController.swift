@@ -107,6 +107,7 @@ class AppViewController: UIViewController
         
         NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.didChangeApp(_:)), name: .NSManagedObjectContextObjectsDidChange, object: DatabaseManager.shared.viewContext)
         NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         self._backgroundBlurEffect = self.backgroundBlurView.effect as? UIBlurEffect
         self._backgroundBlurTintColor = self.backgroundBlurView.contentView.backgroundColor
@@ -537,6 +538,15 @@ private extension AppViewController
     {
         guard let navigationController = self.navigationController, navigationController.topViewController == self else { return }
         
+        self._shouldResetLayout = true
+        self.view.setNeedsLayout()
+    }
+    
+    @objc func didBecomeActive(_ notification: Notification)
+    {
+        guard let navigationController = self.navigationController, navigationController.topViewController == self else { return }
+        
+        // Fixes Navigation Bar appearing after app becomes inactive -> active again.
         self._shouldResetLayout = true
         self.view.setNeedsLayout()
     }
