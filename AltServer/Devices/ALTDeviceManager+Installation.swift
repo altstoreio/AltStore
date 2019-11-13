@@ -9,6 +9,12 @@
 import Cocoa
 import UserNotifications
 
+#if STAGING
+private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
+#else
+private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
+#endif
+
 enum InstallError: LocalizedError
 {
     case cancelled
@@ -167,8 +173,6 @@ extension ALTDeviceManager
     
     func downloadApp(completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
-        
         let downloadTask = URLSession.shared.downloadTask(with: appURL) { (fileURL, response, error) in
             do
             {
