@@ -18,5 +18,6 @@ target 'AltServer' do
 
   # Pods for AltServer
   pod 'STPrivilegedTask'
+  pod 'Sparkle'
 
 end

@@ -30,5 +30,7 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUFeedURL</key>
+	<string>https://altstore.io/altserver/sparkle-macos.xml</string>
 </dict>
 </plist>

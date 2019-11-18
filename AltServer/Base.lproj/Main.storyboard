@@ -66,6 +66,7 @@
                         <outlet property="launchAtLoginMenuItem" destination="IyR-FQ-upe" id="Fxn-EP-hwH"/>
                     </connections>
                 </customObject>
+                <customObject id="Arf-IC-5eb" customClass="SUUpdater"/>
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
@@ -104,6 +105,13 @@
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="mVM-Nm-Zi9"/>
+                                        <menuItem title="Check for Updates..." id="Tnq-gD-Eic" userLabel="Check for Updates">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="checkForUpdates:" target="Arf-IC-5eb" id="7JG-du-nr4"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="hmG-xg-qgm"/>
                                         <menuItem title="Quit AltServer" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
