@@ -184,6 +184,19 @@ private extension SettingsViewController
     {
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(OperationError.cancelled):
+                    // Ignore
+                    break
+                    
+                case .failure(let error):
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    
+                case .success: break
+                }
+                
                 self.update()
             }
         }

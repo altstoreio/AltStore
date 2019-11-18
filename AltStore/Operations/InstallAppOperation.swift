@@ -94,25 +94,31 @@ class InstallAppOperation: ResultOperation<InstalledApp>
     
     func receive(from connection: NWConnection, server: Server, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        server.receive(ServerResponse.self, from: connection) { (result) in
+        server.receiveResponse(from: connection) { (result) in
             do
             {
                 let response = try result.get()
                 print(response)
                 
-                if let error = response.error
+                switch response
                 {
-                    completionHandler(.failure(error))
-                }
-                else if response.progress == 1.0
-                {
-                    self.progress.completedUnitCount = self.progress.totalUnitCount
-                    completionHandler(.success(()))
-                }
-                else
-                {
-                    self.progress.completedUnitCount = Int64(response.progress * 100)
-                    self.receive(from: connection, server: server, completionHandler: completionHandler)
+                case .installationProgress(let response):
+                    if response.progress == 1.0
+                    {
+                        self.progress.completedUnitCount = self.progress.totalUnitCount
+                        completionHandler(.success(()))
+                    }
+                    else
+                    {
+                        self.progress.completedUnitCount = Int64(response.progress * 100)
+                        self.receive(from: connection, server: server, completionHandler: completionHandler)
+                    }
+                    
+                case .error(let response):
+                    completionHandler(.failure(response.error))
+                    
+                default:
+                    completionHandler(.failure(ALTServerError(.unknownRequest)))
                 }
             }
             catch

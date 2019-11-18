@@ -18,6 +18,8 @@ class OperationGroup
     var completionHandler: ((Result<[String: Result<InstalledApp, Error>], Error>) -> Void)?
     var beginInstallationHandler: ((InstalledApp) -> Void)?
     
+    var session: ALTAppleAPISession?
+    
     var server: Server?
     var signer: ALTSigner?
     

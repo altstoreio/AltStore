@@ -116,7 +116,7 @@ struct Server: Equatable
         }
     }
     
-    func receive<T: Decodable>(_ type: T.Type, from connection: NWConnection, completionHandler: @escaping (Result<T, Error>) -> Void)
+    func receiveResponse(from connection: NWConnection, completionHandler: @escaping (Result<ServerResponse, Error>) -> Void)
     {
         let size = MemoryLayout<Int32>.size
         
@@ -131,7 +131,7 @@ struct Server: Equatable
                     {
                         let data = try self.process(data: data, error: error, from: connection)
                         
-                        let response = try JSONDecoder().decode(T.self, from: data)
+                        let response = try JSONDecoder().decode(ServerResponse.self, from: data)
                         completionHandler(.success(response))
                     }
                     catch

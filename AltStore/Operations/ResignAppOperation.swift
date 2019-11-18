@@ -37,15 +37,16 @@ class ResignAppOperation: ResultOperation<ALTApplication>
         
         guard
             let app = self.context.app,
-            let signer = self.context.group.signer
+            let signer = self.context.group.signer,
+            let session = self.context.group.session
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         // Register Device
-        self.registerCurrentDevice(for: signer.team) { (result) in
+        self.registerCurrentDevice(for: signer.team, session: session) { (result) in
             guard let _ = self.process(result) else { return }
             
             // Prepare Provisioning Profiles
-            self.prepareProvisioningProfiles(app.fileURL, team: signer.team) { (result) in
+            self.prepareProvisioningProfiles(app.fileURL, team: signer.team, session: session) { (result) in
                 guard let profiles = self.process(result) else { return }
                 
                 // Prepare app bundle
@@ -104,13 +105,13 @@ class ResignAppOperation: ResultOperation<ALTApplication>
 
 private extension ResignAppOperation
 {
-    func registerCurrentDevice(for team: ALTTeam, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
+    func registerCurrentDevice(for team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
         guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else {
             return completionHandler(.failure(OperationError.unknownUDID))
         }
         
-        ALTAppleAPI.shared.fetchDevices(for: team) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -121,7 +122,7 @@ private extension ResignAppOperation
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, team: team) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }
@@ -133,7 +134,7 @@ private extension ResignAppOperation
         }
     }
     
-    func prepareProvisioningProfiles(_ fileURL: URL, team: ALTTeam, completionHandler: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
+    func prepareProvisioningProfiles(_ fileURL: URL, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
     {
         guard let bundle = Bundle(url: fileURL), let app = ALTApplication(fileURL: fileURL) else { return completionHandler(.failure(OperationError.invalidApp)) }
         
@@ -144,7 +145,7 @@ private extension ResignAppOperation
         
         dispatchGroup.enter()
         
-        self.prepareProvisioningProfile(for: app, team: team) { (result) in
+        self.prepareProvisioningProfile(for: app, team: team, session: session) { (result) in
             switch result
             {
             case .failure(let e): error = e
@@ -162,7 +163,7 @@ private extension ResignAppOperation
                 
                 dispatchGroup.enter()
                 
-                self.prepareProvisioningProfile(for: appExtension, team: team) { (result) in
+                self.prepareProvisioningProfile(for: appExtension, team: team, session: session) { (result) in
                     switch result
                     {
                     case .failure(let e): error = e
@@ -186,31 +187,31 @@ private extension ResignAppOperation
         }
     }
     
-    func prepareProvisioningProfile(for app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func prepareProvisioningProfile(for app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
         // Register
-        self.register(app, team: team) { (result) in
+        self.register(app, team: team, session: session) { (result) in
             switch result
             {
             case .failure(let error): completionHandler(.failure(error))
             case .success(let appID):
                 
                 // Update features
-                self.updateFeatures(for: appID, app: app, team: team) { (result) in
+                self.updateFeatures(for: appID, app: app, team: team, session: session) { (result) in
                     switch result
                     {
                     case .failure(let error): completionHandler(.failure(error))
                     case .success(let appID):
                         
                         // Update app groups
-                        self.updateAppGroups(for: appID, app: app, team: team) { (result) in
+                        self.updateAppGroups(for: appID, app: app, team: team, session: session) { (result) in
                             switch result
                             {
                             case .failure(let error): completionHandler(.failure(error))
                             case .success(let appID):
                                 
                                 // Fetch Provisioning Profile
-                                self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
                                     completionHandler(result)
                                 }
                             }
@@ -221,12 +222,12 @@ private extension ResignAppOperation
         }
     }
     
-    func register(_ app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func register(_ app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let appName = app.name
         let bundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
         
-        ALTAppleAPI.shared.fetchAppIDs(for: team) { (appIDs, error) in
+        ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
             do
             {
                 let appIDs = try Result(appIDs, error).get()
@@ -237,7 +238,7 @@ private extension ResignAppOperation
                 }
                 else
                 {
-                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleID, team: team) { (appID, error) in
+                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleID, team: team, session: session) { (appID, error) in
                         completionHandler(Result(appID, error))
                     }
                 }
@@ -249,7 +250,7 @@ private extension ResignAppOperation
         }
     }
     
-    func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
             guard let feature = ALTFeature(entitlement: entitlement) else { return nil }
@@ -266,12 +267,12 @@ private extension ResignAppOperation
         let appID = appID.copy() as! ALTAppID
         appID.features = features
         
-        ALTAppleAPI.shared.update(appID, team: team) { (appID, error) in
+        ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
             completionHandler(Result(appID, error))
         }
     }
     
-    func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         // TODO: Handle apps belonging to more than one app group.
         guard let applicationGroups = app.entitlements[.appGroups] as? [String], let groupIdentifier = applicationGroups.first else {
@@ -287,7 +288,7 @@ private extension ResignAppOperation
                 // Assign App Group
                 // TODO: Determine whether app already belongs to app group.
                 
-                ALTAppleAPI.shared.add(appID, to: group, team: team) { (success, error) in
+                ALTAppleAPI.shared.add(appID, to: group, team: team, session: session) { (success, error) in
                     let result = result.map { _ in appID }
                     completionHandler(result)
                 }
@@ -296,7 +297,7 @@ private extension ResignAppOperation
         
         let adjustedGroupIdentifier = "group.\(team.identifier)." + groupIdentifier
         
-        ALTAppleAPI.shared.fetchAppGroups(for: team) { (groups, error) in
+        ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
             switch Result(groups, error)
             {
             case .failure(let error): completionHandler(.failure(error))
@@ -311,7 +312,7 @@ private extension ResignAppOperation
                     // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
                     let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
                     
-                    ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team) { (group, error) in
+                    ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
                         finish(Result(group, error))
                     }
                 }
@@ -319,23 +320,23 @@ private extension ResignAppOperation
         }
     }
     
-    func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
             switch Result(profile, error)
             {
             case .failure(let error): completionHandler(.failure(error))
             case .success(let profile):
                 
                 // Delete existing profile
-                ALTAppleAPI.shared.delete(profile, for: team) { (success, error) in
+                ALTAppleAPI.shared.delete(profile, for: team, session: session) { (success, error) in
                     switch Result(success, error)
                     {
                     case .failure(let error): completionHandler(.failure(error))
                     case .success:
                         
                         // Fetch new provisiong profile
-                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team) { (profile, error) in
+                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
                             completionHandler(Result(profile, error))
                         }
                     }

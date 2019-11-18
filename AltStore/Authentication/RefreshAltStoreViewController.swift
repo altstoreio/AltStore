@@ -14,6 +14,7 @@ import Roxas
 class RefreshAltStoreViewController: UIViewController
 {
     var signer: ALTSigner!
+    var session: ALTAppleAPISession!
     
     var completionHandler: ((Result<Void, Error>) -> Void)?
     
@@ -49,6 +50,7 @@ private extension RefreshAltStoreViewController
             
             let group = OperationGroup()
             group.signer = self.signer // Prevent us from trying to authenticate a second time.
+            group.session = self.session // ^
             group.completionHandler = { (result) in
                 if let error = result.error ?? result.value?.values.compactMap({ $0.error }).first
                 {

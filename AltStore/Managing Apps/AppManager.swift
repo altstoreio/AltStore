@@ -80,12 +80,26 @@ extension AppManager
         #endif
     }
     
-    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<ALTSigner, Error>) -> Void)
+    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void)
     {
-        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
+        let group = OperationGroup()
+        
+        let findServerOperation = FindServerOperation(group: group)
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let server): group.server = server
+            }
+        }
+        
+        let authenticationOperation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
+        authenticationOperation.addDependency(findServerOperation)
         authenticationOperation.resultHandler = { (result) in
             completionHandler(result)
         }
+        
+        self.operationQueue.addOperation(findServerOperation)
         self.operationQueue.addOperation(authenticationOperation)
     }
 }
@@ -194,21 +208,30 @@ private extension AppManager
         }
         operations.append(findServerOperation)
         
-        if group.signer == nil
+        let authenticationOperation: AuthenticationOperation?
+        
+        if group.signer == nil || group.session == nil
         {
             /* Authenticate */
-            let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
-            authenticationOperation.resultHandler = { (result) in
+            let operation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
+            operation.resultHandler = { (result) in
                 switch result
                 {
                 case .failure(let error): group.error = error
-                case .success(let signer): group.signer = signer
+                case .success(let signer, let session):
+                    group.signer = signer
+                    group.session = session
                 }
             }
-            operations.append(authenticationOperation)
+            operations.append(operation)
+            operation.addDependency(findServerOperation)
             
-            findServerOperation.addDependency(authenticationOperation)
-        }        
+            authenticationOperation = operation
+        }
+        else
+        {
+            authenticationOperation = nil
+        }
         
         for app in apps
         {
@@ -222,7 +245,7 @@ private extension AppManager
                 guard let resignedApp = self.process(result, context: context) else { return }
                 context.resignedApp = resignedApp
             }
-            resignAppOperation.addDependency(findServerOperation)
+            resignAppOperation.addDependency(authenticationOperation ?? findServerOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
             operations.append(resignAppOperation)
             

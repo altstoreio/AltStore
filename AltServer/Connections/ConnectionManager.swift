@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import AppKit
 
 import AltKit
 
@@ -188,7 +189,6 @@ private extension ConnectionManager
         guard !self.connections.contains(where: { $0 === connection }) else { return }
         self.connections.append(connection)
         
-        
         connection.stateUpdateHandler = { [weak self] (state) in
             switch state
             {
@@ -196,10 +196,7 @@ private extension ConnectionManager
                 
             case .ready:
                 print("Connected to client:", connection.endpoint)
-                
-                self?.receiveApp(from: connection) { (result) in
-                    self?.finish(connection: connection, error: result.error)
-                }
+                self?.handleRequest(for: connection)
                 
             case .waiting:
                 print("Waiting for connection...")
@@ -218,7 +215,55 @@ private extension ConnectionManager
         connection.start(queue: self.dispatchQueue)
     }
     
-    func receiveApp(from connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func handleRequest(for connection: NWConnection)
+    {
+        self.receiveRequest(from: connection) { (result) in
+            print("Received initial request with result:", result)
+            
+            switch result
+            {
+            case .failure(let error):
+                let response = ErrorResponse(error: ALTServerError(error))
+                self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent error response with result:", result)
+                }
+                
+            case .success(.anisetteData(let request)):
+                self.handleAnisetteDataRequest(request, for: connection)
+                
+            case .success(.prepareApp(let request)):
+                self.handlePrepareAppRequest(request, for: connection)
+                
+            case .success:
+                let response = ErrorResponse(error: ALTServerError(.unknownRequest))
+                self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent unknown request response with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handleAnisetteDataRequest(_ request: AnisetteDataRequest, for connection: NWConnection)
+    {
+        AnisetteDataManager.shared.requestAnisetteData { (result) in
+            switch result
+            {
+            case .failure(let error):
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                self.send(errorResponse, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent anisette data error response with result:", result)
+                }
+                
+            case .success(let anisetteData):
+                let response = AnisetteDataResponse(anisetteData: anisetteData)
+                self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent anisette data response with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handlePrepareAppRequest(_ request: PrepareAppRequest, for connection: NWConnection)
     {
         var temporaryURL: URL?
         
@@ -230,45 +275,59 @@ private extension ConnectionManager
                 catch { print("Failed to remove .ipa.", error) }
             }
             
-            completionHandler(result)
+            switch result
+            {
+            case .failure(let error):
+                print("Failed to process request from \(connection.endpoint).", error)
+                
+                let response = ErrorResponse(error: ALTServerError(error))
+                self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent install app error response to \(connection.endpoint) with result:", result)
+                }
+                
+            case .success:
+                print("Processed request from \(connection.endpoint).")
+                
+                let response = InstallationProgressResponse(progress: 1.0)
+                self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                    print("Sent install app response to \(connection.endpoint) with result:", result)
+                }
+            }
         }
         
-        self.receive(PrepareAppRequest.self, from: connection) { (result) in
-            print("Received request with result:", result)
+        self.receiveApp(for: request, from: connection) { (result) in
+            print("Received app with result:", result)
             
             switch result
             {
             case .failure(let error): finish(.failure(error))
-            case .success(let request):
-                self.receiveApp(for: request, from: connection) { (result) in
-                    print("Received app with result:", result)
+            case .success(let fileURL):
+                temporaryURL = fileURL
+                
+                print("Awaiting begin installation request...")
+                
+                self.receiveRequest(from: connection) { (result) in
+                    print("Received begin installation request with result:", result)
                     
                     switch result
                     {
                     case .failure(let error): finish(.failure(error))
-                    case .success(let request, let fileURL):
-                        temporaryURL = fileURL
+                    case .success(.beginInstallation):
+                        print("Installing to device \(request.udid)...")
                         
-                        print("Awaiting begin installation request...")
-                        
-                        self.receive(BeginInstallationRequest.self, from: connection) { (result) in
-                            print("Received begin installation request with result:", result)
-                            
+                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
+                            print("Installed to device with result:", result)
                             switch result
                             {
                             case .failure(let error): finish(.failure(error))
-                            case .success:
-                                print("Installing to device \(request.udid)...")
-                                
-                                self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
-                                    print("Installed to device with result:", result)
-                                    switch result
-                                    {
-                                    case .failure(let error): finish(.failure(error))
-                                    case .success: finish(.success(()))
-                                    }
-                                }
+                            case .success: finish(.success(()))
                             }
+                        }
+                        
+                    case .success:
+                        let response = ErrorResponse(error: ALTServerError(.unknownRequest))
+                        self.send(response, to: connection, shouldDisconnect: true) { (result) in
+                            print("Sent unknown request error response to \(connection.endpoint) with result:", result)
                         }
                     }
                 }
@@ -276,30 +335,7 @@ private extension ConnectionManager
         }
     }
     
-    func finish(connection: NWConnection, error: ALTServerError?)
-    {
-        if let error = error
-        {
-            print("Failed to process request from \(connection.endpoint).", error)
-        }
-        else
-        {
-            print("Processed request from \(connection.endpoint).")
-        }
-        
-        let response = ServerResponse(progress: 1.0, error: error)
-        
-        self.send(response, to: connection) { (result) in
-            print("Sent response to \(connection.endpoint) with result:", result)
-            
-            // Add short delay to prevent us from dropping connection too quickly.
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
-                self.disconnect(connection)
-            }
-        }
-    }
-    
-    func receiveApp(for request: PrepareAppRequest, from connection: NWConnection, completionHandler: @escaping (Result<(PrepareAppRequest, URL), ALTServerError>) -> Void)
+    func receiveApp(for request: PrepareAppRequest, from connection: NWConnection, completionHandler: @escaping (Result<URL, ALTServerError>) -> Void)
     {
         connection.receive(minimumIncompleteLength: request.contentSize, maximumLength: request.contentSize) { (data, _, _, error) in
             do
@@ -319,7 +355,7 @@ private extension ConnectionManager
                 
                 print("Wrote app to URL:", temporaryURL)
                 
-                completionHandler(.success((request, temporaryURL)))
+                completionHandler(.success(temporaryURL))
             }
             catch
             {
@@ -359,7 +395,7 @@ private extension ConnectionManager
                 isSending = true
                 
                 print("Progress:", progress.fractionCompleted)
-                let response = ServerResponse(progress: progress.fractionCompleted, error: nil)
+                let response = InstallationProgressResponse(progress: progress.fractionCompleted)
                 
                 self.send(response, to: connection) { (result) in                    
                     serialQueue.async {
@@ -370,8 +406,21 @@ private extension ConnectionManager
         })
     }
 
-    func send<T: Encodable>(_ response: T, to connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func send<T: Encodable>(_ response: T, to connection: NWConnection, shouldDisconnect: Bool = false, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {
+        func finish(_ result: Result<Void, ALTServerError>)
+        {
+            completionHandler(result)
+            
+            if shouldDisconnect
+            {
+                // Add short delay to prevent us from dropping connection too quickly.
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
+                    self.disconnect(connection)
+                }
+            }
+        }
+        
         do
         {            
             let data = try JSONEncoder().encode(response)
@@ -388,27 +437,27 @@ private extension ConnectionManager
                     connection.send(content: data, completion: .contentProcessed { (error) in
                         if error != nil
                         {
-                            completionHandler(.failure(.init(.lostConnection)))
+                            finish(.failure(.init(.lostConnection)))
                         }
                         else
                         {
-                            completionHandler(.success(()))
+                            finish(.success(()))
                         }
                     })
                 }
                 catch
                 {
-                    completionHandler(.failure(.init(.lostConnection)))
+                    finish(.failure(.init(.lostConnection)))
                 }
             })
         }
         catch
         {
-            completionHandler(.failure(.init(.invalidResponse)))
+            finish(.failure(.init(.invalidResponse)))
         }
     }
     
-    func receive<T: Decodable>(_ responseType: T.Type, from connection: NWConnection, completionHandler: @escaping (Result<T, ALTServerError>) -> Void)
+    func receiveRequest(from connection: NWConnection, completionHandler: @escaping (Result<ServerRequest, ALTServerError>) -> Void)
     {
         let size = MemoryLayout<Int32>.size
         
@@ -426,7 +475,7 @@ private extension ConnectionManager
                     {
                         let data = try self.process(data: data, error: error, from: connection)
                         
-                        let request = try JSONDecoder().decode(T.self, from: data)
+                        let request = try JSONDecoder().decode(ServerRequest.self, from: data)
                         
                         print("Received installation request:", request)
                         

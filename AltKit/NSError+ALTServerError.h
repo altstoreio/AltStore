@@ -27,6 +27,12 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorInstallationFailed = 8,
     ALTServerErrorMaximumFreeAppLimitReached = 9,
     ALTServerErrorUnsupportediOSVersion = 10,
+    
+    ALTServerErrorUnknownRequest = 11,
+    ALTServerErrorUnknownResponse = 12,
+    
+    ALTServerErrorInvalidAnisetteData = 13,
+    ALTServerErrorPluginNotFound = 14
 };
 
 NS_ASSUME_NONNULL_BEGIN

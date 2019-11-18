@@ -28,10 +28,12 @@ class AnisetteDataManager: NSObject
         let requestUUID = UUID().uuidString
         self.anisetteDataCompletionHandlers[requestUUID] = completion
         
-        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
+        let timer = Timer(timeInterval: 1.0, repeats: false) { (timer) in
             self.finishRequest(forUUID: requestUUID, result: .failure(ALTServerError(.pluginNotFound)))
         }
         self.anisetteDataTimers[requestUUID] = timer
+        
+        RunLoop.main.add(timer, forMode: .default)
         
         DistributedNotificationCenter.default().postNotificationName(Notification.Name("com.rileytestut.AltServer.FetchAnisetteData"), object: nil, userInfo: ["requestUUID": requestUUID], options: .deliverImmediately)
     }
