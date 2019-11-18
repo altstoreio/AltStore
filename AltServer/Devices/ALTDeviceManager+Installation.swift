@@ -8,6 +8,7 @@
 
 import Cocoa
 import UserNotifications
+import ObjectiveC
 
 #if STAGING
 private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
@@ -55,118 +56,129 @@ extension ALTDeviceManager
             try? FileManager.default.removeItem(at: destinationDirectoryURL)
         }
         
-        self.authenticate(appleID: appleID, password: password) { (result) in
+        AnisetteDataManager.shared.requestAnisetteData { (result) in
             do
             {
-                let account = try result.get()
+                let anisetteData = try result.get()
                 
-                self.fetchTeam(for: account) { (result) in
+                self.authenticate(appleID: appleID, password: password, anisetteData: anisetteData) { (result) in
                     do
                     {
-                        let team = try result.get()
+                        let (account, session) = try result.get()
                         
-                        self.register(device, team: team) { (result) in
+                        self.fetchTeam(for: account, session: session) { (result) in
                             do
                             {
-                                let device = try result.get()
+                                let team = try result.get()
                                 
-                                self.fetchCertificate(for: team) { (result) in
+                                self.register(device, team: team, session: session) { (result) in
                                     do
                                     {
-                                        let certificate = try result.get()
+                                        let device = try result.get()
                                         
-                                        let content = UNMutableNotificationContent()
-                                        content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
-                                        content.body = NSLocalizedString("This may take a few seconds.", comment: "")
-                                        
-                                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                                        UNUserNotificationCenter.current().add(request)
-                                        
-                                        self.downloadApp { (result) in
+                                        self.fetchCertificate(for: team, session: session) { (result) in
                                             do
                                             {
-                                                let fileURL = try result.get()
+                                                let certificate = try result.get()
                                                 
-                                                try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                                                let content = UNMutableNotificationContent()
+                                                content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
+                                                content.body = NSLocalizedString("This may take a few seconds.", comment: "")
                                                 
-                                                let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
+                                                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                                UNUserNotificationCenter.current().add(request)
                                                 
-                                                do
-                                                {
-                                                    try FileManager.default.removeItem(at: fileURL)
-                                                }
-                                                catch
-                                                {
-                                                    print("Failed to remove downloaded .ipa.", error)
-                                                }
-                                                
-                                                guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
-                                                
-                                                self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team) { (result) in
+                                                self.downloadApp { (result) in
                                                     do
                                                     {
-                                                        let appID = try result.get()
+                                                        let fileURL = try result.get()
                                                         
-                                                        self.updateFeatures(for: appID, app: application, team: team) { (result) in
+                                                        try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                                                        
+                                                        let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
+                                                        
+                                                        do
+                                                        {
+                                                            try FileManager.default.removeItem(at: fileURL)
+                                                        }
+                                                        catch
+                                                        {
+                                                            print("Failed to remove downloaded .ipa.", error)
+                                                        }
+                                                        
+                                                        guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+                                                        
+                                                        self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team, session: session) { (result) in
                                                             do
                                                             {
                                                                 let appID = try result.get()
                                                                 
-                                                                self.fetchProvisioningProfile(for: appID, team: team) { (result) in
+                                                                self.updateFeatures(for: appID, app: application, team: team, session: session) { (result) in
                                                                     do
                                                                     {
-                                                                        let provisioningProfile = try result.get()
+                                                                        let appID = try result.get()
                                                                         
-                                                                        self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
-                                                                            finish(result.error, title: "Failed to Install AltStore")
+                                                                        self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                                                            do
+                                                                            {
+                                                                                let provisioningProfile = try result.get()
+                                                                                
+                                                                                self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
+                                                                                    finish(result.error, title: "Failed to Install AltStore")
+                                                                                }
+                                                                            }
+                                                                            catch
+                                                                            {
+                                                                                finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                            }
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                        finish(error, title: "Failed to Update App ID")
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(error, title: "Failed to Update App ID")
+                                                                finish(error, title: "Failed to Register App")
                                                             }
                                                         }
                                                     }
                                                     catch
                                                     {
-                                                        finish(error, title: "Failed to Register App")
+                                                        finish(error, title: "Failed to Download AltStore")
+                                                        return
                                                     }
                                                 }
                                             }
                                             catch
                                             {
-                                                finish(error, title: "Failed to Download AltStore")
-                                                return
+                                                finish(error, title: "Failed to Fetch Certificate")
                                             }
                                         }
                                     }
                                     catch
                                     {
-                                        finish(error, title: "Failed to Fetch Certificate")
+                                        finish(error, title: "Failed to Register Device")
                                     }
                                 }
                             }
                             catch
                             {
-                                finish(error, title: "Failed to Register Device")
+                                finish(error, title: "Failed to Fetch Team")
                             }
                         }
                     }
                     catch
                     {
-                        finish(error, title: "Failed to Fetch Team")
+                        finish(error, title: "Failed to Authenticate")
                     }
                 }
             }
             catch
             {
-                finish(error, title: "Failed to Authenticate")
+                finish(error, title: "Failed to Fetch Anisette Data")
             }
         }
     }
@@ -188,15 +200,57 @@ extension ALTDeviceManager
         downloadTask.resume()
     }
     
-    func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<ALTAccount, Error>) -> Void)
+    func authenticate(appleID: String, password: String, anisetteData: ALTAnisetteData, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Error>) -> Void)
     {
-        ALTAppleAPI.shared.authenticate(appleID: appleID, password: password) { (account, error) in
-            let result = Result(account, error)
-            completionHandler(result)
+        func handleVerificationCode(_ completionHandler: @escaping (String?) -> Void)
+        {
+            DispatchQueue.main.async {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("Two-Factor Authentication Enabled", comment: "")
+                alert.informativeText = NSLocalizedString("Please enter the 6-digit verification code that was sent to your Apple devices.", comment: "")
+                
+                let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 22))
+                textField.delegate = self
+                textField.translatesAutoresizingMaskIntoConstraints = false
+                textField.placeholderString = NSLocalizedString("123456", comment: "")
+                alert.accessoryView = textField
+                alert.window.initialFirstResponder = textField
+                
+                alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
+                alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                
+                self.securityCodeAlert = alert
+                self.securityCodeTextField = textField
+                self.validate()
+                
+                NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                
+                let response = alert.runModal()
+                if response == .alertFirstButtonReturn
+                {
+                    let code = textField.stringValue
+                    completionHandler(code)
+                }
+                else
+                {
+                    completionHandler(nil)
+                }
+            }
+        }
+        
+        ALTAppleAPI.shared.authenticate(appleID: appleID, password: password, anisetteData: anisetteData, verificationHandler: handleVerificationCode) { (account, session, error) in
+            if let account = account, let session = session
+            {
+                completionHandler(.success((account, session)))
+            }
+            else
+            {
+                completionHandler(.failure(error ?? ALTAppleAPIError(.unknown)))
+            }
         }
     }
     
-    func fetchTeam(for account: ALTAccount, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
+    func fetchTeam(for account: ALTAccount, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
     {
         func finish(_ result: Result<ALTTeam, Error>)
         {
@@ -242,7 +296,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
             }
         }
         
-        ALTAppleAPI.shared.fetchTeams(for: account) { (teams, error) in
+        ALTAppleAPI.shared.fetchTeams(for: account, session: session) { (teams, error) in
             do
             {
                 let teams = try Result(teams, error).get()
@@ -271,9 +325,9 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func fetchCertificate(for team: ALTTeam, completionHandler: @escaping (Result<ALTCertificate, Error>) -> Void)
+    func fetchCertificate(for team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTCertificate, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchCertificates(for: team) { (certificates, error) in
+        ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
             do
             {
                 let certificates = try Result(certificates, error).get()
@@ -308,11 +362,11 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 
                 if let certificate = certificates.first
                 {
-                    ALTAppleAPI.shared.revoke(certificate, for: team) { (success, error) in
+                    ALTAppleAPI.shared.revoke(certificate, for: team, session: session) { (success, error) in
                         do
                         {
                             try Result(success, error).get()
-                            self.fetchCertificate(for: team, completionHandler: completionHandler)
+                            self.fetchCertificate(for: team, session: session, completionHandler: completionHandler)
                         }
                         catch
                         {
@@ -322,13 +376,13 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 }
                 else
                 {
-                    ALTAppleAPI.shared.addCertificate(machineName: "AltStore", to: team) { (certificate, error) in
+                    ALTAppleAPI.shared.addCertificate(machineName: "AltStore", to: team, session: session) { (certificate, error) in
                         do
                         {
                             let certificate = try Result(certificate, error).get()
                             guard let privateKey = certificate.privateKey else { throw InstallError.missingPrivateKey }
                             
-                            ALTAppleAPI.shared.fetchCertificates(for: team) { (certificates, error) in
+                            ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
                                 do
                                 {
                                     let certificates = try Result(certificates, error).get()
@@ -361,11 +415,11 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func registerAppID(name appName: String, identifier: String, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func registerAppID(name appName: String, identifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let bundleID = "com.\(team.identifier).\(identifier)"
         
-        ALTAppleAPI.shared.fetchAppIDs(for: team) { (appIDs, error) in
+        ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
             do
             {
                 let appIDs = try Result(appIDs, error).get()
@@ -376,7 +430,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 }
                 else
                 {
-                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleID, team: team) { (appID, error) in
+                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleID, team: team, session: session) { (appID, error) in
                         completionHandler(Result(appID, error))
                     }
                 }
@@ -388,7 +442,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
             guard let feature = ALTFeature(entitlement: entitlement) else { return nil }
@@ -405,14 +459,14 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         let appID = appID.copy() as! ALTAppID
         appID.features = features
         
-        ALTAppleAPI.shared.update(appID, team: team) { (appID, error) in
+        ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
             completionHandler(Result(appID, error))
         }
     }
     
-    func register(_ device: ALTDevice, team: ALTTeam, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
+    func register(_ device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchDevices(for: team) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -423,7 +477,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, team: team) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }
@@ -435,9 +489,9 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
             completionHandler(Result(profile, error))
         }
     }
@@ -487,5 +541,47 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 completionHandler(.failure(error))
             }
         }
+    }
+}
+
+private var securityCodeAlertKey = 0
+private var securityCodeTextFieldKey = 0
+
+extension ALTDeviceManager: NSTextFieldDelegate
+{
+    var securityCodeAlert: NSAlert? {
+        get { return objc_getAssociatedObject(self, &securityCodeAlertKey) as? NSAlert }
+        set { objc_setAssociatedObject(self, &securityCodeAlertKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+    
+    var securityCodeTextField: NSTextField? {
+        get { return objc_getAssociatedObject(self, &securityCodeTextFieldKey) as? NSTextField }
+        set { objc_setAssociatedObject(self, &securityCodeTextFieldKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+    
+    public func controlTextDidChange(_ obj: Notification)
+    {
+        self.validate()
+    }
+    
+    public func controlTextDidEndEditing(_ obj: Notification)
+    {
+        self.validate()
+    }
+    
+    private func validate()
+    {
+        guard let code = self.securityCodeTextField?.stringValue.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+        
+        if code.count == 6
+        {
+            self.securityCodeAlert?.buttons.first?.isEnabled = true
+        }
+        else
+        {
+            self.securityCodeAlert?.buttons.first?.isEnabled = false
+        }
+        
+        self.securityCodeAlert?.layout()
     }
 }

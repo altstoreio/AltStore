@@ -100,11 +100,7 @@ private extension AppDelegate
         
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
-        alert.informativeText = NSLocalizedString("""
-Your Apple ID and password are not saved and are only sent to Apple for authentication.
-
-If you have two-factor authentication enabled, please create an app-specific password for use with AltStore at https://appleid.apple.com.
-""", comment: "")
+        alert.informativeText = NSLocalizedString("Your Apple ID and password are not saved and are only sent to Apple for authentication.", comment: "")
         
         let textFieldSize = NSSize(width: 300, height: 22)
         
@@ -157,7 +153,7 @@ If you have two-factor authentication enabled, please create an app-specific pas
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
                 
-            case .failure(InstallError.cancelled):
+            case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
                 // Ignore
                 break
                 
