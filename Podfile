@@ -10,3 +10,13 @@ target 'AltStore' do
   pod 'Nuke', '~> 7.0'
 
 end
+
+target 'AltServer' do
+  platform :macos, '10.14'
+
+  use_frameworks!
+
+  # Pods for AltServer
+  pod 'STPrivilegedTask'
+
+end

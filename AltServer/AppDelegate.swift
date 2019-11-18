@@ -12,6 +12,25 @@ import UserNotifications
 import AltSign
 
 import LaunchAtLogin
+import STPrivilegedTask
+
+enum PluginError: LocalizedError
+{
+    case installationScriptNotFound
+    case failedToRun(Int)
+    case scriptError(String)
+    
+    var errorDescription: String? {
+        switch self
+        {
+        case .installationScriptNotFound: return NSLocalizedString("The installation script could not be found.", comment: "")
+        case .failedToRun(let errorCode): return String(format: NSLocalizedString("The installation script could not be run. (%@)", comment: ""), NSNumber(value: errorCode))
+        case .scriptError(let output): return output
+        }
+    }
+}
+
+private let pluginURL = URL(fileURLWithPath: "/Library/Mail/Bundles/AltPlugin.mailbundle")
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -25,10 +44,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet private var appMenu: NSMenu!
     @IBOutlet private var connectedDevicesMenu: NSMenu!
     @IBOutlet private var launchAtLoginMenuItem: NSMenuItem!
+    @IBOutlet private var installMailPluginMenuItem: NSMenuItem!
     
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
-
+    
+    private var isMailPluginInstalled: Bool {
+        let isMailPluginInstalled = FileManager.default.fileExists(atPath: pluginURL.path)
+        return isMailPluginInstalled
+    }
+    
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         UserDefaults.standard.registerDefaults()
@@ -81,6 +106,18 @@ private extension AppDelegate
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         
+        if FileManager.default.fileExists(atPath: pluginURL.path)
+        {
+            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
+        }
+        else
+        {
+            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in", comment: "")
+        }
+
+        self.installMailPluginMenuItem.target = self
+        self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
+                
         let x = button.frame.origin.x
         let y = button.frame.origin.y - 5
         
@@ -142,6 +179,13 @@ private extension AppDelegate
         let password = passwordTextField.stringValue
         
         let device = self.connectedDevices[index]
+        
+        if !self.isMailPluginInstalled
+        {
+            let result = self.installMailPlugin()
+            guard result else { return }
+        }
+        
         ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
             switch result
             {
@@ -191,6 +235,74 @@ private extension AppDelegate
         }
         
         LaunchAtLogin.isEnabled.toggle()
+    }
+    
+    @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
+    {
+        installMailPlugin()
+    }
+    
+    @discardableResult
+    func installMailPlugin() -> Bool
+    {
+        do
+        {
+            let previouslyInstalled = self.isMailPluginInstalled
+            
+            if !previouslyInstalled
+            {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("Install Mail Plug-in", comment: "")
+                alert.informativeText = NSLocalizedString("AltServer requires a Mail plug-in in order to retrieve necessary information about your Apple ID. Would you like to install it now?", comment: "")
+                
+                alert.addButton(withTitle: NSLocalizedString("Install Plug-in", comment: ""))
+                alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                
+                NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                        
+                let response = alert.runModal()
+                guard response == .alertFirstButtonReturn else { return false }
+            }
+            
+            guard let scriptURL = Bundle.main.url(forResource: self.isMailPluginInstalled ? "UninstallPlugin" : "InstallPlugin", withExtension: "sh") else { throw PluginError.installationScriptNotFound }
+            
+            try FileManager.default.setAttributes([.posixPermissions: 0o777], ofItemAtPath: scriptURL.path)
+
+            let task = STPrivilegedTask()
+            task.setLaunchPath(scriptURL.path)
+            task.setCurrentDirectoryPath(scriptURL.deletingLastPathComponent().path)
+            
+            let errorCode = task.launch()
+            guard errorCode == 0 else { throw PluginError.failedToRun(Int(errorCode)) }
+            
+            task.waitUntilExit()
+            
+            if
+                let outputData = task.outputFileHandle()?.readDataToEndOfFile(),
+                let outputString = String(data: outputData, encoding: .utf8), !outputString.isEmpty
+            {
+                throw PluginError.scriptError(outputString)
+            }
+            
+            if !previouslyInstalled && self.isMailPluginInstalled
+            {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
+                alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
+                alert.runModal()
+            }
+            
+            return true
+        }
+        catch
+        {
+            let alert = NSAlert()
+            alert.messageText = self.isMailPluginInstalled ? NSLocalizedString("Failed to Uninstall Mail Plug-in", comment: "") : NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
+            alert.informativeText = error.localizedDescription
+            alert.runModal()
+            
+            return false
+        }
     }
 }
 

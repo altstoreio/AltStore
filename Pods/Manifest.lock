@@ -1,20 +1,24 @@
 PODS:
   - KeychainAccess (3.2.0)
   - Nuke (7.6.3)
+  - STPrivilegedTask (1.0.1)
 
 DEPENDENCIES:
   - KeychainAccess (~> 3.2.0)
   - Nuke (~> 7.0)
+  - STPrivilegedTask
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - KeychainAccess
     - Nuke
+    - STPrivilegedTask
 
 SPEC CHECKSUMS:
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
+  STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
 
-PODFILE CHECKSUM: 4ad739b1f5db7e51cf8ffbc410963811f20b9b17
+PODFILE CHECKSUM: 53094cc13ea2b40dac4885cca874406388e86f5b
 
 COCOAPODS: 1.6.1
