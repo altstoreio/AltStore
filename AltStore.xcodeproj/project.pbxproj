@@ -130,6 +130,7 @@
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
+		BF914C262383703800E713BA /* AltPlugin.mailbundle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
 		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
@@ -148,7 +149,6 @@
 		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
 		BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* StoreApp.swift */; };
 		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
-		BFBFFB252380C71600993A4A /* AltPlugin.mailbundle in Resources */ = {isa = PBXBuildFile; fileRef = BF5C5FC5237DF5AE00EDD0C6 /* AltPlugin.mailbundle */; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
 		BFD247752284B9A500981D42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247732284B9A500981D42 /* Main.storyboard */; };
@@ -441,6 +441,7 @@
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
+		BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = AltPlugin.mailbundle.zip; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -850,6 +851,7 @@
 			isa = PBXGroup;
 			children = (
 				BF458693229872EA00BD7491 /* Assets.xcassets */,
+				BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */,
 				BF4C7F26238086EB00B2556E /* InstallPlugin.sh */,
 				BFD80D562380C0F700B9C227 /* UninstallPlugin.sh */,
 			);
@@ -1222,6 +1224,7 @@
 				BF0201BC22C2EFA3000B93E4 /* Embed Frameworks */,
 				BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */,
 				98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */,
+				BF914C242383659400E713BA /* Sign Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1364,7 +1367,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFBFFB252380C71600993A4A /* AltPlugin.mailbundle in Resources */,
+				BF914C262383703800E713BA /* AltPlugin.mailbundle.zip in Resources */,
 				BFD80D572380C0F700B9C227 /* UninstallPlugin.sh in Resources */,
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
@@ -1468,6 +1471,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/Carthage/Build/Mac/LaunchAtLogin.framework/Resources/copy-helper.sh\"\n";
+		};
+		BF914C242383659400E713BA /* Sign Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Sign Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\nIDENTITY=${EXPANDED_CODE_SIGN_IDENTITY_NAME}\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n";
 		};
 		FACBF95CCAAAB7121E1D92C8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
