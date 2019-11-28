@@ -49,6 +49,14 @@ private extension AnisetteDataManager
             let archivedAnisetteData = userInfo["anisetteData"] as? Data,
             let anisetteData = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ALTAnisetteData.self, from: archivedAnisetteData)
         {
+            if let range = anisetteData.deviceDescription.lowercased().range(of: "(com.apple.mail")
+            {
+                var adjustedDescription = anisetteData.deviceDescription[..<range.lowerBound]
+                adjustedDescription += "(com.apple.dt.Xcode/3594.4.19)>"
+                
+                anisetteData.deviceDescription = String(adjustedDescription)
+            }
+            
             self.finishRequest(forUUID: requestUUID, result: .success(anisetteData))
         }
         else
