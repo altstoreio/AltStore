@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15703"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -50,7 +51,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="YmX-7v-pxh">
-                                                <rect key="frame" x="16" y="6" width="343" height="397"/>
+                                                <rect key="frame" x="16" y="6" width="343" height="359.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Yfu-hI-0B7" userLabel="Welcome">
                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="67.5"/>
@@ -70,10 +71,10 @@
                                                         </subviews>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="Aqh-MD-HFf">
-                                                        <rect key="frame" x="0.0" y="117.5" width="343" height="279.5"/>
+                                                        <rect key="frame" x="0.0" y="117.5" width="343" height="242"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Oy6-xr-cZ7">
-                                                                <rect key="frame" x="0.0" y="0.0" width="343" height="196.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="343" height="159"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="H95-7V-Kk8" userLabel="Apple ID">
                                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="72"/>
@@ -117,7 +118,7 @@
                                                                         </subviews>
                                                                     </stackView>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="hd5-yc-rcq" userLabel="Password">
-                                                                        <rect key="frame" x="0.0" y="87" width="343" height="109.5"/>
+                                                                        <rect key="frame" x="0.0" y="87" width="343" height="72"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lvX-im-C95">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="17"/>
@@ -155,24 +156,12 @@
                                                                                 </constraints>
                                                                                 <edgeInsets key="layoutMargins" top="0.0" left="14" bottom="0.0" right="14"/>
                                                                             </view>
-                                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Glz-dw-2Eg">
-                                                                                <rect key="frame" x="0.0" y="76" width="343" height="33.5"/>
-                                                                                <subviews>
-                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="If you used an app-specific password to install AltStore, please use that same password again." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.25" translatesAutoresizingMaskIntoConstraints="NO" id="a51-OQ-f3j">
-                                                                                        <rect key="frame" x="14" y="0.0" width="315" height="33.5"/>
-                                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                                        <color key="textColor" white="1" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                                        <nil key="highlightedColor"/>
-                                                                                    </label>
-                                                                                </subviews>
-                                                                                <edgeInsets key="layoutMargins" top="0.0" left="14" bottom="0.0" right="14"/>
-                                                                            </stackView>
                                                                         </subviews>
                                                                     </stackView>
                                                                 </subviews>
                                                             </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2N5-zd-fUj">
-                                                                <rect key="frame" x="0.0" y="228.5" width="343" height="51"/>
+                                                                <rect key="frame" x="0.0" y="191" width="343" height="51"/>
                                                                 <color key="backgroundColor" name="SettingsHighlighted"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="51" id="4BK-Un-5pl"/>
