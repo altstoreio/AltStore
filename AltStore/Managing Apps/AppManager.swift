@@ -405,10 +405,7 @@ private extension AppManager
                     do { try installedApp.managedObjectContext?.save() }
                     catch { print("Error saving installed app.", error) }
                 }
-            }
-            
-            do { try FileManager.default.removeItem(at: context.temporaryDirectory) }
-            catch { print("Failed to remove temporary directory.", error) }
+            }            
             
             print("Finished operation!", context.bundleIdentifier)
 

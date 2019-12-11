@@ -18,6 +18,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>
 {
     let context: AppOperationContext
     
+    private var didCleanUp = false
+    
     init(context: AppOperationContext)
     {
         self.context = context
@@ -65,6 +67,9 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 installedApp.expirationDate = profile.expirationDate
             }
             
+            // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
+            self.cleanUp()
+            
             self.context.group.beginInstallationHandler?(installedApp)
             
             let request = BeginInstallationRequest()
@@ -92,6 +97,16 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         }
     }
     
+    override func finish(_ result: Result<InstalledApp, Error>)
+    {
+        self.cleanUp()
+        
+        super.finish(result)
+    }
+}
+
+private extension InstallAppOperation
+{
     func receive(from connection: NWConnection, server: Server, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         server.receiveResponse(from: connection) { (result) in
@@ -125,6 +140,27 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             {
                 completionHandler(.failure(ALTServerError(error)))
             }
+        }
+    }
+    
+    func cleanUp()
+    {
+        guard !self.didCleanUp else { return }
+        self.didCleanUp = true
+        
+        do
+        {
+            try FileManager.default.removeItem(at: self.context.temporaryDirectory)
+            
+            if let app = self.context.app
+            {
+                let fileURL = InstalledApp.refreshedIPAURL(for: app)
+                try FileManager.default.removeItem(at: fileURL)
+            }
+        }
+        catch
+        {
+            print("Failed to remove temporary directory.", error)
         }
     }
 }
