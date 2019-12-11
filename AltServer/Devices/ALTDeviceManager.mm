@@ -279,13 +279,23 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 return finish(error);
             }
 
-            plist_t profiles = NULL;
+            plist_t rawProfiles = NULL;
             
-            if (misagent_copy_all(mis, &profiles) != MISAGENT_E_SUCCESS)
+            if (misagent_copy_all(mis, &rawProfiles) != MISAGENT_E_SUCCESS)
             {
                 return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
             }
-
+            
+            // For some reason, libplist now fails to parse `rawProfiles` correctly.
+            // Specifically, it no longer recognizes the nodes in the plist array as "data" nodes.
+            // However, if we encode it as XML then decode it again, it'll work ¯\_(ツ)_/¯
+            char *plistXML = nullptr;
+            uint32_t plistLength = 0;
+            plist_to_xml(rawProfiles, &plistXML, &plistLength);
+            
+            plist_t profiles = NULL;
+            plist_from_xml(plistXML, plistLength, &profiles);
+                
             uint32_t profileCount = plist_array_get_size(profiles);
             for (int i = 0; i < profileCount; i++)
             {
@@ -294,7 +304,7 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                 {
                     continue;
                 }
-                
+
                 char *bytes = NULL;
                 uint64_t length = 0;
 
@@ -346,6 +356,9 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
                     NSLog(@"Failed to remove provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(code));
                 }
             }
+            
+            plist_free(rawProfiles);
+            plist_free(profiles);
 
             lockdownd_client_free(client);
             client = NULL;
