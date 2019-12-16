@@ -140,6 +140,31 @@
       ]
     },
     {
+      "name": "Clip",
+      "bundleIdentifier": "com.rileytestut.Clip.Beta",
+      "subtitle": "Manage your clipboard history with ease.",
+      "developerName": "Riley Testut",
+      "version": "0.4b",
+      "versionDate": "2019-12-13T12:00:00-08:00",
+      "versionDescription": "Initial version.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip-beta.ipa",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
+      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
+      "tintColor": "EC008C",
+      "size": 462565,
+      "beta": true,
+      "permissions": [
+        {
+          "type": "background-audio",
+          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
+        }
+      ],
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+      ]
+    },
+    {
       "name": "Delta Lite",
       "bundleIdentifier": "com.rileytestut.Delta.Lite.Beta",
       "developerName": "Riley Testut",
@@ -192,6 +217,16 @@
       "tintColor": "018084",
       "url": "https://altstore.io/faq/",
       "date": "2019-09-28",
+      "notify": false
+    },
+    {
+      "title": "Coming Soon: Clip",
+      "identifier": "clip-coming-soon",
+      "caption": "A clipboard manager that can run in the background. Beta available now for all Patrons.",
+      "tintColor": "EC008C",
+      "url": "https://twitter.com/altstoreio/status/1205597959699582977",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
+      "date": "2019-12-16",
       "notify": false
     }
   ],
