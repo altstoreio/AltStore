@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import UserNotifications
+import MobileCoreServices
 
 import AltSign
 import AltKit
@@ -55,16 +56,19 @@ extension AppManager
         do
         {
             let installedApps = try context.fetch(fetchRequest)
-            for app in installedApps where app.storeApp != nil
+            for app in installedApps
             {
+                let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                
                 if app.bundleIdentifier == StoreApp.altstoreAppID
                 {
                     self.scheduleExpirationWarningLocalNotification(for: app)
                 }
                 else
                 {
-                    if !UIApplication.shared.canOpenURL(app.openAppURL)
+                    if uti == nil
                     {
+                        // This UTI is not declared by any apps, which means this app has been deleted by the user.
                         context.delete(app)
                     }
                 }

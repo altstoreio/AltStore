@@ -372,6 +372,17 @@ private extension ResignAppOperation
                 infoDictionary[Bundle.Info.appGroups] = appGroups
             }
             
+            // Add app-specific exported UTI so we can check later if this app (extension) is installed or not.
+            let installedAppUTI = ["UTTypeConformsTo": [],
+                                   "UTTypeDescription": "AltStore Installed App",
+                                   "UTTypeIconFiles": [],
+                                   "UTTypeIdentifier": InstalledApp.installedAppUTI(forBundleIdentifier: profile.bundleIdentifier),
+                                   "UTTypeTagSpecification": [:]] as [String : Any]
+            
+            var exportedUTIs = infoDictionary[Bundle.Info.exportedUTIs] as? [[String: Any]] ?? []
+            exportedUTIs.append(installedAppUTI)
+            infoDictionary[Bundle.Info.exportedUTIs] = exportedUTIs
+            
             try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
         }
         

@@ -187,6 +187,12 @@ extension InstalledApp
         return directoryURL
     }
     
+    class func installedAppUTI(forBundleIdentifier bundleIdentifier: String) -> String
+    {
+        let installedAppUTI = "io.altstore.Installed." + bundleIdentifier
+        return installedAppUTI
+    }
+    
     var directoryURL: URL {
         return InstalledApp.directoryURL(for: self)
     }
@@ -197,5 +203,9 @@ extension InstalledApp
     
     var refreshedIPAURL: URL {
         return InstalledApp.refreshedIPAURL(for: self)
+    }
+    
+    var installedAppUTI: String {
+        return InstalledApp.installedAppUTI(forBundleIdentifier: self.resignedBundleIdentifier)
     }
 }

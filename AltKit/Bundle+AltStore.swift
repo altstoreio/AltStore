@@ -18,6 +18,7 @@ public extension Bundle
         public static let appGroups = "ALTAppGroups"
         
         public static let urlTypes = "CFBundleURLTypes"
+        public static let exportedUTIs = "UTExportedTypeDeclarations"
     }
 }
 
