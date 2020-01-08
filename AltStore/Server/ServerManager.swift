@@ -22,6 +22,8 @@ class ServerManager: NSObject
     
     private var services = Set<NetService>()
     
+    private let dispatchQueue = DispatchQueue(label: "io.altstore.ServerManager")
+    
     private override init()
     {
         super.init()
@@ -49,6 +51,34 @@ extension ServerManager
         self.discoveredServers.removeAll()
         self.services.removeAll()
         self.serviceBrowser.stop()
+    }
+    
+    func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
+    {
+        let connection = NWConnection(to: .service(name: server.service.name, type: server.service.type, domain: server.service.domain, interface: nil), using: .tcp)
+        
+        connection.stateUpdateHandler = { [unowned connection] (state) in
+            switch state
+            {
+            case .failed(let error):
+                print("Failed to connect to service \(server.service.name).", error)
+                completion(.failure(ConnectionError.connectionFailed))
+                
+            case .cancelled:
+                completion(.failure(OperationError.cancelled))
+                
+            case .ready:
+                let connection = ServerConnection(server: server, connection: connection)
+                completion(.success(connection))
+                
+            case .waiting: break
+            case .setup: break
+            case .preparing: break
+            @unknown default: break
+            }
+        }
+        
+        connection.start(queue: self.dispatchQueue)
     }
 }
 

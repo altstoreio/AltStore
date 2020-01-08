@@ -96,14 +96,13 @@ extension AppManager
             case .success(let server): group.server = server
             }
         }
+        self.operationQueue.addOperation(findServerOperation)
         
         let authenticationOperation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
-        authenticationOperation.addDependency(findServerOperation)
         authenticationOperation.resultHandler = { (result) in
             completionHandler(result)
         }
-        
-        self.operationQueue.addOperation(findServerOperation)
+        authenticationOperation.addDependency(findServerOperation)
         self.operationQueue.addOperation(authenticationOperation)
     }
 }
@@ -237,6 +236,17 @@ private extension AppManager
             authenticationOperation = nil
         }
         
+        let refreshAnisetteDataOperation = FetchAnisetteDataOperation(group: group)
+        refreshAnisetteDataOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let anisetteData): group.session?.anisetteData = anisetteData
+            }
+        }
+        refreshAnisetteDataOperation.addDependency(authenticationOperation ?? findServerOperation)
+        operations.append(refreshAnisetteDataOperation)
+        
         for app in apps
         {
             let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, group: group)
@@ -249,7 +259,7 @@ private extension AppManager
                 guard let resignedApp = self.process(result, context: context) else { return }
                 context.resignedApp = resignedApp
             }
-            resignAppOperation.addDependency(authenticationOperation ?? findServerOperation)
+            resignAppOperation.addDependency(refreshAnisetteDataOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
             operations.append(resignAppOperation)
             
@@ -296,8 +306,8 @@ private extension AppManager
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
             sendAppOperation.resultHandler = { (result) in
-                guard let connection = self.process(result, context: context) else { return }
-                context.connection = connection
+                guard let installationConnection = self.process(result, context: context) else { return }
+                context.installationConnection = installationConnection
             }
             progress.addChild(sendAppOperation.progress, withPendingUnitCount: 10)
             sendAppOperation.addDependency(resignAppOperation)
@@ -339,6 +349,12 @@ private extension AppManager
             operations.append(installOperation)
                         
             group.set(progress, for: app)
+        }
+        
+        // Refresh anisette data after downloading all apps to prevent session from expiring.
+        for case let downloadOperation as DownloadAppOperation in operations
+        {
+            refreshAnisetteDataOperation.addDependency(downloadOperation)
         }
         
         group.addOperations(operations)

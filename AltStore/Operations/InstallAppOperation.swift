@@ -41,8 +41,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         
         guard
             let resignedApp = self.context.resignedApp,
-            let connection = self.context.connection,
-            let server = self.context.group.server
+            let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
@@ -73,13 +72,13 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             self.context.group.beginInstallationHandler?(installedApp)
             
             let request = BeginInstallationRequest()
-            server.send(request, via: connection) { (result) in
+            connection.send(request) { (result) in
                 switch result
                 {
                 case .failure(let error): self.finish(.failure(error))
                 case .success:
                     
-                    self.receive(from: connection, server: server) { (result) in
+                    self.receive(from: connection) { (result) in
                         switch result
                         {
                         case .success:
@@ -107,9 +106,9 @@ class InstallAppOperation: ResultOperation<InstalledApp>
 
 private extension InstallAppOperation
 {
-    func receive(from connection: NWConnection, server: Server, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    func receive(from connection: ServerConnection, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        server.receiveResponse(from: connection) { (result) in
+        connection.receiveResponse() { (result) in
             do
             {
                 let response = try result.get()
@@ -126,7 +125,7 @@ private extension InstallAppOperation
                     else
                     {
                         self.progress.completedUnitCount = Int64(response.progress * 100)
-                        self.receive(from: connection, server: server, completionHandler: completionHandler)
+                        self.receive(from: connection, completionHandler: completionHandler)
                     }
                     
                 case .error(let response):

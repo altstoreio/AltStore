@@ -55,7 +55,7 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
     private var signer: ALTSigner?
     private var session: ALTAppleAPISession?
     
-    private let dispatchQueue = DispatchQueue(label: "com.altstore.AuthenticationOperation")
+    private let operationQueue = OperationQueue()
     
     private var submitCodeAction: UIAlertAction?
     
@@ -66,6 +66,7 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
         
         super.init()
                 
+        self.operationQueue.name = "com.altstore.AuthenticationOperation"
         self.progress.totalUnitCount = 3
     }
     
@@ -221,33 +222,6 @@ private extension AuthenticationOperation
 
 private extension AuthenticationOperation
 {
-    func connect(to server: Server, completionHandler: @escaping (Result<NWConnection, Error>) -> Void)
-    {
-        let connection = NWConnection(to: .service(name: server.service.name, type: server.service.type, domain: server.service.domain, interface: nil), using: .tcp)
-        
-        connection.stateUpdateHandler = { [unowned connection] (state) in
-            switch state
-            {
-            case .failed(let error):
-                print("Failed to connect to service \(server.service.name).", error)
-                completionHandler(.failure(ConnectionError.connectionFailed))
-                
-            case .cancelled:
-                completionHandler(.failure(OperationError.cancelled))
-                
-            case .ready:
-                completionHandler(.success(connection))
-                
-            case .waiting: break
-            case .setup: break
-            case .preparing: break
-            @unknown default: break
-            }
-        }
-        
-        connection.start(queue: self.dispatchQueue)
-    }
-    
     func signIn(completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Swift.Error>) -> Void)
     {
         func authenticate()
@@ -307,98 +281,73 @@ private extension AuthenticationOperation
     
     func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Swift.Error>) -> Void)
     {
-        guard let server = self.group.server else { return completionHandler(.failure(OperationError.invalidParameters)) }
-        
-        self.connect(to: server) { (result) in
+        let fetchAnisetteDataOperation = FetchAnisetteDataOperation(group: self.group)
+        fetchAnisetteDataOperation.resultHandler = { (result) in
             switch result
             {
             case .failure(let error): completionHandler(.failure(error))
-            case .success(let connection):
+            case .success(let anisetteData):
+                let verificationHandler: ((@escaping (String?) -> Void) -> Void)?
                 
-                let request = AnisetteDataRequest()
-                server.send(request, via: connection) { (result) in
-                    switch result
-                    {
-                    case .failure(let error): completionHandler(.failure(error))
-                    case .success:
-                        
-                        server.receiveResponse(from: connection) { (result) in
-                            switch result
+                if let presentingViewController = self.presentingViewController
+                {
+                    verificationHandler = { (completionHandler) in
+                        DispatchQueue.main.async {
+                            let alertController = UIAlertController(title: NSLocalizedString("Please enter the 6-digit verification code that was sent to your Apple devices.", comment: ""), message: nil, preferredStyle: .alert)
+                            alertController.addTextField { (textField) in
+                                textField.autocorrectionType = .no
+                                textField.autocapitalizationType = .none
+                                textField.keyboardType = .numberPad
+                                
+                                NotificationCenter.default.addObserver(self, selector: #selector(AuthenticationOperation.textFieldTextDidChange(_:)), name: UITextField.textDidChangeNotification, object: textField)
+                            }
+                            
+                            let submitAction = UIAlertAction(title: NSLocalizedString("Continue", comment: ""), style: .default) { (action) in
+                                let textField = alertController.textFields?.first
+                                
+                                let code = textField?.text ?? ""
+                                completionHandler(code)
+                            }
+                            submitAction.isEnabled = false
+                            alertController.addAction(submitAction)
+                            self.submitCodeAction = submitAction
+                            
+                            alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
+                                completionHandler(nil)
+                            })
+                            
+                            if self.navigationController.presentingViewController != nil
                             {
-                            case .failure(let error):
-                                completionHandler(.failure(error))
-                                
-                            case .success(.error(let response)):
-                                completionHandler(.failure(response.error))
-                                
-                            case .success(.anisetteData(let response)):
-                                let verificationHandler: ((@escaping (String?) -> Void) -> Void)?
-                                
-                                if let presentingViewController = self.presentingViewController
-                                {
-                                    verificationHandler = { (completionHandler) in
-                                        DispatchQueue.main.async {
-                                            let alertController = UIAlertController(title: NSLocalizedString("Please enter the 6-digit verification code that was sent to your Apple devices.", comment: ""),
-                                                                                    message: nil, preferredStyle: .alert)
-                                            alertController.addTextField { (textField) in
-                                                textField.autocorrectionType = .no
-                                                textField.autocapitalizationType = .none
-                                                textField.keyboardType = .numberPad
-                                                
-                                                NotificationCenter.default.addObserver(self, selector: #selector(AuthenticationOperation.textFieldTextDidChange(_:)), name: UITextField.textDidChangeNotification, object: textField)
-                                            }
-                                            
-                                            let submitAction = UIAlertAction(title: NSLocalizedString("Continue", comment: ""), style: .default) { (action) in
-                                                let textField = alertController.textFields?.first
-                                                
-                                                let code = textField?.text ?? ""
-                                                completionHandler(code)
-                                            }
-                                            submitAction.isEnabled = false
-                                            alertController.addAction(submitAction)
-                                            self.submitCodeAction = submitAction
-                                            
-                                            alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
-                                                completionHandler(nil)
-                                            })
-                                            
-                                            if self.navigationController.presentingViewController != nil
-                                            {
-                                                self.navigationController.present(alertController, animated: true, completion: nil)
-                                            }
-                                            else
-                                            {
-                                                presentingViewController.present(alertController, animated: true, completion: nil)
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // No view controller to present security code alert, so don't provide verificationHandler.
-                                    verificationHandler = nil
-                                }
-                                    
-                                ALTAppleAPI.shared.authenticate(appleID: appleID, password: password, anisetteData: response.anisetteData,
-                                                                verificationHandler: verificationHandler) { (account, session, error) in
-                                    if let account = account, let session = session
-                                    {
-                                        completionHandler(.success((account, session)))
-                                    }
-                                    else
-                                    {
-                                        completionHandler(.failure(error ?? OperationError.unknown))
-                                    }
-                                }
-                                
-                            case .success:
-                                completionHandler(.failure(ALTServerError(.unknownRequest)))
+                                self.navigationController.present(alertController, animated: true, completion: nil)
+                            }
+                            else
+                            {
+                                presentingViewController.present(alertController, animated: true, completion: nil)
                             }
                         }
                     }
                 }
+                else
+                {
+                    // No view controller to present security code alert, so don't provide verificationHandler.
+                    verificationHandler = nil
+                }
+                    
+                ALTAppleAPI.shared.authenticate(appleID: appleID, password: password, anisetteData: anisetteData,
+                                                verificationHandler: verificationHandler) { (account, session, error) in
+                    if let account = account, let session = session
+                    {
+                        completionHandler(.success((account, session)))
+                    }
+                    else
+                    {
+                        completionHandler(.failure(error ?? OperationError.unknown))
+                    }
+                }
             }
         }
+        
+        self.operationQueue.addOperation(fetchAnisetteDataOperation)
     }
     
     func fetchTeam(for account: ALTAccount, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTTeam, Swift.Error>) -> Void)
