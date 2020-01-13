@@ -52,6 +52,8 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     
+    @IBOutlet private var versionLabel: UILabel!
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -77,6 +79,15 @@ class SettingsViewController: UITableViewController
         debugModeGestureRecognizer.direction = .up
         debugModeGestureRecognizer.numberOfTouchesRequired = 3
         self.tableView.addGestureRecognizer(debugModeGestureRecognizer)
+        
+        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        {
+            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
+        }
+        else
+        {
+            self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
+        }
         
         self.update()
     }
