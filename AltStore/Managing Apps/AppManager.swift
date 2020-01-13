@@ -56,6 +56,18 @@ extension AppManager
         do
         {
             let installedApps = try context.fetch(fetchRequest)
+            
+            if UserDefaults.standard.legacySideloadedApps == nil
+            {
+                // First time updating apps since updating AltStore to use custom UTIs,
+                // so cache all existing apps temporarily to prevent us from accidentally
+                // deleting them due to their custom UTI not existing (yet).
+                let apps = installedApps.map { $0.bundleIdentifier }
+                UserDefaults.standard.legacySideloadedApps = apps
+            }
+            
+            let legacySideloadedApps = Set(UserDefaults.standard.legacySideloadedApps ?? [])
+            
             for app in installedApps
             {
                 let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
@@ -66,12 +78,10 @@ extension AppManager
                 }
                 else
                 {
-                    if uti == nil && !UIApplication.shared.canOpenURL(app.openAppURL)
+                    if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
                     {
                         // This UTI is not declared by any apps, which means this app has been deleted by the user.
-                        // We also check canOpenURL as a fallback for apps installed before we switched to using custom UTIs.
-                        // canOpenURL always returns NO for apps not declared in our Info.plist,
-                        // so it should not affect UTI-based installation checks.
+                        // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
                         context.delete(app)
                     }
                 }
@@ -427,6 +437,12 @@ private extension AppManager
                 installedApp.managedObjectContext?.performAndWait {
                     do { try installedApp.managedObjectContext?.save() }
                     catch { print("Error saving installed app.", error) }
+                }
+                
+                if let index = UserDefaults.standard.legacySideloadedApps?.firstIndex(of: installedApp.bundleIdentifier)
+                {
+                    // No longer a legacy sideloaded app, so remove it from cached list.
+                    UserDefaults.standard.legacySideloadedApps?.remove(at: index)
                 }
             }            
             
