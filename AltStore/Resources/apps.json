@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.1.2b",
-      "versionDate": "2019-12-16T12:30:00-08:00",
-      "versionDescription": "NEW:\n• Fixes crash for some users when signing-in.\n\nPREVIOUS:\n• Fixes “Your Apple ID or password is incorrect” error\n• Fixes app size increasing when refreshing apps\n• Fixes sideloading apps with diacritic marks\n",
+      "version": "1.2b",
+      "versionDate": "2020-01-13T11:30:00-08:00",
+      "versionDescription": "This update adds support for installing and refreshing apps completely over USB. To try it out, download the AltServer beta from https://altstore.io/altserver/beta\n\nAdditionally, this update also:\n• Automatically removes sideloaded apps from \"My Apps\" when deleted from home screen\n• Fixes \"session expired\" error when installing apps on slow connection\n",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore allows you to install Delta as well as any app (.ipa) directly from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 3776456,
+      "size": 3782635,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65605563-2f009d00-df5e-11e9-9b40-1f36135d5c80.PNG",
@@ -231,6 +231,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "8qogBQU2DiWLYujF-75RcIUI2IfebE-6s0Z4Qu_vVdg"
+    "patreonAccessToken": "n_1qHTp_O-AiUfrG8AylUCHdGhF38lrn9ffIQ8zlnrA"
   }
 }
