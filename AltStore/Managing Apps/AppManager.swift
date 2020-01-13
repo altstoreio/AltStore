@@ -66,9 +66,12 @@ extension AppManager
                 }
                 else
                 {
-                    if uti == nil
+                    if uti == nil && !UIApplication.shared.canOpenURL(app.openAppURL)
                     {
                         // This UTI is not declared by any apps, which means this app has been deleted by the user.
+                        // We also check canOpenURL as a fallback for apps installed before we switched to using custom UTIs.
+                        // canOpenURL always returns NO for apps not declared in our Info.plist,
+                        // so it should not affect UTI-based installation checks.
                         context.delete(app)
                     }
                 }
