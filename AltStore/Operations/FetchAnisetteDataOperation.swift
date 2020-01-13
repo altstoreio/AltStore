@@ -40,15 +40,23 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
         ServerManager.shared.connect(to: server) { (result) in
             switch result
             {
-            case .failure(let error): self.finish(.failure(error))
+            case .failure(let error):
+                self.finish(.failure(error))
             case .success(let connection):
+                print("Sending anisette data request...")
+                
                 let request = AnisetteDataRequest()
                 connection.send(request) { (result) in
+                    print("Sent anisette data request!")
+                    
                     switch result
                     {
                     case .failure(let error): self.finish(.failure(error))
                     case .success:
+                        print("Waiting for anisette data...")
                         connection.receiveResponse() { (result) in
+                            print("Receiving anisette data:", result)
+                            
                             switch result
                             {
                             case .failure(let error): self.finish(.failure(error))

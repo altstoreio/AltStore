@@ -7,7 +7,10 @@
 //
 
 #import "ALTDeviceManager.h"
-#import "NSError+ALTServerError.h"
+
+#import "AltKit.h"
+#import "ALTWiredConnection+Private.h"
+#import "ALTNotificationConnection+Private.h"
 
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
@@ -17,14 +20,18 @@
 #include <libimobiledevice/misagent.h>
 
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
+void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user_data);
 
-NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
+NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification = @"ALTDeviceManagerDeviceDidConnectNotification";
+NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALTDeviceManagerDeviceDidDisconnectNotification";
 
 @interface ALTDeviceManager ()
 
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *installationCompletionHandlers;
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
 @property (nonatomic, readonly) dispatch_queue_t installationQueue;
+
+@property (nonatomic, readonly) NSMutableSet<ALTDevice *> *cachedDevices;
 
 @end
 
@@ -50,10 +57,19 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
         _installationProgress = [NSMutableDictionary dictionary];
         
         _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
+        
+        _cachedDevices = [NSMutableSet set];
     }
     
     return self;
 }
+
+- (void)start
+{
+    idevice_event_subscribe(ALTDeviceDidChangeConnectionStatus, nil);
+}
+
+#pragma mark - App Installation -
 
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
 {
@@ -527,6 +543,89 @@ NSErrorDomain const ALTDeviceErrorDomain = @"com.rileytestut.ALTDeviceError";
     return success;
 }
 
+#pragma mark - Connections -
+
+- (void)startWiredConnectionToDevice:(ALTDevice *)altDevice completionHandler:(void (^)(ALTWiredConnection * _Nullable, NSError * _Nullable))completionHandler
+{
+    void (^finish)(ALTWiredConnection *connection, NSError *error) = ^(ALTWiredConnection *connection, NSError *error) {
+        if (error != nil)
+        {
+            NSLog(@"Wired Connection Error: %@", error);
+        }
+        
+        completionHandler(connection, error);
+    };
+    
+    idevice_t device = NULL;
+    idevice_connection_t connection = NULL;
+    
+    /* Find Device */
+    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+    }
+    
+    /* Connect to Listening Socket */
+    if (idevice_connect(device, ALTDeviceListeningSocket, &connection) != IDEVICE_E_SUCCESS)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    idevice_free(device);
+    
+    ALTWiredConnection *wiredConnection = [[ALTWiredConnection alloc] initWithDevice:altDevice connection:connection];
+    finish(wiredConnection, nil);
+}
+
+- (void)startNotificationConnectionToDevice:(ALTDevice *)altDevice completionHandler:(void (^)(ALTNotificationConnection * _Nullable, NSError * _Nullable))completionHandler
+{
+    void (^finish)(ALTNotificationConnection *, NSError *) = ^(ALTNotificationConnection *connection, NSError *error) {
+        if (error != nil)
+        {
+            NSLog(@"Notification Connection Error: %@", error);
+        }
+        
+        completionHandler(connection, error);
+    };
+    
+    idevice_t device = NULL;
+    lockdownd_client_t lockdownClient = NULL;
+    lockdownd_service_descriptor_t service = NULL;
+    
+    np_client_t client = NULL;
+    
+    /* Find Device */
+    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+    }
+    
+    /* Connect to Device */
+    if (lockdownd_client_new_with_handshake(device, &lockdownClient, "altserver") != LOCKDOWN_E_SUCCESS)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+
+    /* Connect to Notification Proxy */
+    if ((lockdownd_start_service(lockdownClient, "com.apple.mobile.notification_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    /* Connect to Client */
+    if (np_client_new(device, service, &client) != NP_E_SUCCESS)
+    {
+        return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    lockdownd_service_descriptor_free(service);
+    lockdownd_client_free(lockdownClient);
+    idevice_free(device);
+    
+    ALTNotificationConnection *notificationConnection = [[ALTNotificationConnection alloc] initWithDevice:altDevice client:client];
+    completionHandler(notificationConnection, nil);
+}
+
 #pragma mark - Getters -
 
 - (NSArray<ALTDevice *> *)connectedDevices
@@ -681,5 +780,51 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         progress.completedUnitCount = percent;
         
         NSLog(@"Installation Progress: %@", @(percent));
+    }
+}
+
+void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user_data)
+{
+    ALTDevice * (^deviceForUDID)(NSString *, NSArray<ALTDevice *> *) = ^ALTDevice *(NSString *udid, NSArray<ALTDevice *> *devices) {
+        for (ALTDevice *device in devices)
+        {
+            if ([device.identifier isEqualToString:udid])
+            {
+                return device;
+            }
+        }
+        
+        return nil;
+    };
+    
+    switch (event->event)
+    {
+        case IDEVICE_DEVICE_ADD:
+        {
+            ALTDevice *device = deviceForUDID(@(event->udid), ALTDeviceManager.sharedManager.connectedDevices);
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALTDeviceManagerDeviceDidConnectNotification object:device];
+            
+            if (device)
+            {
+                [ALTDeviceManager.sharedManager.cachedDevices addObject:device];
+            }
+            
+            break;
+        }
+            
+        case IDEVICE_DEVICE_REMOVE:
+        {
+            ALTDevice *device = deviceForUDID(@(event->udid), ALTDeviceManager.sharedManager.cachedDevices.allObjects);
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALTDeviceManagerDeviceDidDisconnectNotification object:device];
+            
+            if (device)
+            {
+                 [ALTDeviceManager.sharedManager.cachedDevices removeObject:device];
+            }
+
+            break;
+        }
+            
+        default: break;
     }
 }

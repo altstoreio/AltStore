@@ -59,7 +59,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.registerDefaults()
         
         UNUserNotificationCenter.current().delegate = self
+        
         ConnectionManager.shared.start()
+        ALTDeviceManager.shared.start()
         
         let item = NSStatusBar.system.statusItem(withLength: -1)
         guard let button = item.button else { return }

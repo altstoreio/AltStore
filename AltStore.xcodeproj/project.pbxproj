@@ -121,6 +121,10 @@
 		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
+		BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
+		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
+		BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */; };
+		BF718BD823C93DB700A89F2D /* AltKit.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD723C93DB700A89F2D /* AltKit.m */; };
 		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
 		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
@@ -131,6 +135,7 @@
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF914C262383703800E713BA /* AltPlugin.mailbundle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */; };
+		BF9A03C623C7DD0D000D08DB /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
 		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
@@ -434,6 +439,15 @@
 		BF5C5FCD237DF69100EDD0C6 /* ALTPluginService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPluginService.h; sourceTree = "<group>"; };
 		BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPluginService.m; sourceTree = "<group>"; };
 		BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAltStoreViewController.swift; sourceTree = "<group>"; };
+		BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFNotificationName+AltStore.h"; sourceTree = "<group>"; };
+		BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CFNotificationName+AltStore.m"; sourceTree = "<group>"; };
+		BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWiredConnection.h; sourceTree = "<group>"; };
+		BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWiredConnection.m; sourceTree = "<group>"; };
+		BF718BD223C91C7000A89F2D /* ALTWiredConnection+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ALTWiredConnection+Private.h"; sourceTree = "<group>"; };
+		BF718BD323C928A300A89F2D /* ALTNotificationConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTNotificationConnection.h; sourceTree = "<group>"; };
+		BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTNotificationConnection.m; sourceTree = "<group>"; };
+		BF718BD623C92B3700A89F2D /* ALTNotificationConnection+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ALTNotificationConnection+Private.h"; sourceTree = "<group>"; };
+		BF718BD723C93DB700A89F2D /* AltKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AltKit.m; sourceTree = "<group>"; };
 		BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardingNavigationController.swift; sourceTree = "<group>"; };
 		BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
 		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
@@ -444,6 +458,7 @@
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = AltPlugin.mailbundle.zip; sourceTree = "<group>"; };
+		BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -651,11 +666,14 @@
 			isa = PBXGroup;
 			children = (
 				BFD52BD222A06EFB000B7ED1 /* AltKit.h */,
+				BF718BD723C93DB700A89F2D /* AltKit.m */,
 				BFBAC8852295C90300587369 /* Result+Conveniences.swift */,
 				BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */,
 				BF1E3128229F474900370A3C /* ServerProtocol.swift */,
 				BF1E314822A060F400370A3C /* NSError+ALTServerError.h */,
 				BF1E314922A060F400370A3C /* NSError+ALTServerError.m */,
+				BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */,
+				BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */,
 			);
 			path = AltKit;
 			sourceTree = "<group>";
@@ -1079,6 +1097,13 @@
 			isa = PBXGroup;
 			children = (
 				BF1E3129229F474900370A3C /* ConnectionManager.swift */,
+				BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */,
+				BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */,
+				BF718BD223C91C7000A89F2D /* ALTWiredConnection+Private.h */,
+				BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */,
+				BF718BD323C928A300A89F2D /* ALTNotificationConnection.h */,
+				BF718BD623C92B3700A89F2D /* ALTNotificationConnection+Private.h */,
+				BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */,
 			);
 			path = Connections;
 			sourceTree = "<group>";
@@ -1547,9 +1572,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF718BD823C93DB700A89F2D /* AltKit.m in Sources */,
 				BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */,
 				BF1E315922A061FB00370A3C /* Bundle+AltStore.swift in Sources */,
 				BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */,
+				BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */,
 				BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1559,7 +1586,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
+				BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */,
 				BF1E312B229F474900370A3C /* ConnectionManager.swift in Sources */,
+				BF9A03C623C7DD0D000D08DB /* ClientConnection.swift in Sources */,
+				BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */,
 				BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */,
 				BF4586C52298CDB800BD7491 /* ALTDeviceManager.mm in Sources */,
 				BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */,

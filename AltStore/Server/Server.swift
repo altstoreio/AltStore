@@ -44,17 +44,22 @@ enum ConnectionError: LocalizedError
 
 struct Server: Equatable
 {
-    var identifier: String
-    var service: NetService
+    var identifier: String? = nil
+    var service: NetService? = nil
     
     var isPreferred = false
-    
+    var isWiredConnection = false
+}
+
+extension Server
+{
+    // Defined in extension so we can still use the automatically synthesized initializer.
     init?(service: NetService, txtData: Data)
-    {        
+    {
         let txtDictionary = NetService.dictionary(fromTXTRecord: txtData)
         guard let identifierData = txtDictionary["serverID"], let identifier = String(data: identifierData, encoding: .utf8) else { return nil }
         
-        self.identifier = identifier
         self.service = service
+        self.identifier = identifier
     }
 }

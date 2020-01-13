@@ -3,3 +3,6 @@
 //
 
 #import "ALTDeviceManager.h"
+#import "ALTWiredConnection.h"
+#import "ALTNotificationConnection.h"
+#import "AltKit.h"

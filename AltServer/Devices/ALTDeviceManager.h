@@ -9,7 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <AltSign/AltSign.h>
 
+@class ALTWiredConnection;
+@class ALTNotificationConnection;
+
 NS_ASSUME_NONNULL_BEGIN
+
+extern NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification NS_SWIFT_NAME(deviceManagerDeviceDidConnect);
+extern NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification NS_SWIFT_NAME(deviceManagerDeviceDidDisconnect);
 
 @interface ALTDeviceManager : NSObject
 
@@ -18,7 +24,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSArray<ALTDevice *> *connectedDevices;
 @property (nonatomic, readonly) NSArray<ALTDevice *> *availableDevices;
 
+- (void)start;
+
+/* App Installation */
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
+
+/* Connections */
+- (void)startWiredConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTWiredConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
+- (void)startNotificationConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTNotificationConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
 
 @end
 
