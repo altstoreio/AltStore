@@ -264,11 +264,37 @@ private extension ResignAppOperation
             features[.appGroups] = true
         }
         
-        let appID = appID.copy() as! ALTAppID
-        appID.features = features
+        var updateFeatures = false
         
-        ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
-            completionHandler(Result(appID, error))
+        // Determine whether the required features are already enabled for the AppID.
+        for (feature, value) in features
+        {
+            if let appIDValue = appID.features[feature] as AnyObject?, (value as AnyObject).isEqual(appIDValue)
+            {
+                // AppID already has this feature enabled and the values are the same.
+                continue
+            }
+            else
+            {
+                // AppID either doesn't have this feature enabled or the value has changed,
+                // so we need to update it to reflect new values.
+                updateFeatures = true
+                break
+            }
+        }
+        
+        if updateFeatures
+        {
+            let appID = appID.copy() as! ALTAppID
+            appID.features = features
+            
+            ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
+                completionHandler(Result(appID, error))
+            }
+        }
+        else
+        {
+            completionHandler(.success(appID))
         }
     }
     
