@@ -125,6 +125,8 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                         int code = misagent_get_status_code(mis);
                         NSLog(@"Failed to reinstall provisioning profile %@. (%@)", provisioningProfile.UUID, @(code));
                     }
+                    
+                    plist_free(pdata);
                 }
                 
                 [[NSFileManager defaultManager] removeItemAtURL:removedProfilesDirectoryURL error:nil];
@@ -311,6 +313,8 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             
             plist_t profiles = NULL;
             plist_from_xml(plistXML, plistLength, &profiles);
+            
+            free(plistXML);
                 
             uint32_t profileCount = plist_array_get_size(profiles);
             for (int i = 0; i < profileCount; i++)
@@ -330,7 +334,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                     continue;
                 }
 
-                NSData *data = [NSData dataWithBytes:(const void *)bytes length:length];
+                NSData *data = [NSData dataWithBytesNoCopy:bytes length:length freeWhenDone:YES];
                 ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithData:data];
 
                 if (![provisioningProfile isFreeProvisioningProfile])
