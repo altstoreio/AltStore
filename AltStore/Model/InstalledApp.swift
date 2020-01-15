@@ -25,6 +25,7 @@ class InstalledApp: NSManagedObject, Fetchable
     
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
+    @NSManaged var team: Team?
     
     var isSideloaded: Bool {
         return self.storeApp == nil

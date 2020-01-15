@@ -66,6 +66,11 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 installedApp.expirationDate = profile.expirationDate
             }
             
+            if let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.isActiveTeam), NSNumber(value: true)), in: backgroundContext)
+            {
+                installedApp.team = team
+            }
+            
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
             

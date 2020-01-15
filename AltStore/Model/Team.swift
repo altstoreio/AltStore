@@ -37,6 +37,7 @@ class Team: NSManagedObject, Fetchable
     
     /* Relationships */
     @NSManaged private(set) var account: Account!
+    @NSManaged var installedApps: Set<InstalledApp>
     
     var altTeam: ALTTeam?
     
