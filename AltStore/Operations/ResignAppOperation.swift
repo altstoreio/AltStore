@@ -145,7 +145,7 @@ private extension ResignAppOperation
         
         dispatchGroup.enter()
         
-        self.prepareProvisioningProfile(for: app, team: team, session: session) { (result) in
+        self.prepareProvisioningProfile(for: app, parentApp: nil, team: team, session: session) { (result) in
             switch result
             {
             case .failure(let e): error = e
@@ -163,7 +163,7 @@ private extension ResignAppOperation
                 
                 dispatchGroup.enter()
                 
-                self.prepareProvisioningProfile(for: appExtension, team: team, session: session) { (result) in
+                self.prepareProvisioningProfile(for: appExtension, parentApp: app, team: team, session: session) { (result) in
                     switch result
                     {
                     case .failure(let e): error = e
@@ -187,32 +187,59 @@ private extension ResignAppOperation
         }
     }
     
-    func prepareProvisioningProfile(for app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func prepareProvisioningProfile(for app: ALTApplication, parentApp: ALTApplication?, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        // Register
-        self.register(app, team: team, session: session) { (result) in
-            switch result
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            
+            let preferredBundleID: String
+            
+            // Check if we have already installed this app with this team before.
+            let predicate = NSPredicate(format: "%K == %@ AND %K == %@",
+                                        #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier,
+                                        #keyPath(InstalledApp.team.identifier), team.identifier)
+            if let installedApp = InstalledApp.first(satisfying: predicate, in: context)
             {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let appID):
+                // This app is already installed, so use the same resigned bundle identifier as before.
+                // This way, if we change the identifier format (again), AltStore will continue to use
+                // the old bundle identifier to prevent it from installing as a new app.
+                preferredBundleID = installedApp.resignedBundleIdentifier
+            }
+            else
+            {
+                // This app isn't already installed, so create the resigned bundle identifier ourselves.
+                // Or, if the app _is_ installed but with a different team, we need to create a new
+                // bundle identifier anyway to prevent collisions with the previous team.
+                let parentBundleID = parentApp?.bundleIdentifier ?? app.bundleIdentifier
+                let updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
                 
-                // Update features
-                self.updateFeatures(for: appID, app: app, team: team, session: session) { (result) in
-                    switch result
-                    {
-                    case .failure(let error): completionHandler(.failure(error))
-                    case .success(let appID):
-                        
-                        // Update app groups
-                        self.updateAppGroups(for: appID, app: app, team: team, session: session) { (result) in
-                            switch result
-                            {
-                            case .failure(let error): completionHandler(.failure(error))
-                            case .success(let appID):
-                                
-                                // Fetch Provisioning Profile
-                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
-                                    completionHandler(result)
+                preferredBundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+            }
+            
+            // Register
+            self.register(app, bundleIdentifier: preferredBundleID, team: team, session: session) { (result) in
+                switch result
+                {
+                case .failure(let error): completionHandler(.failure(error))
+                case .success(let appID):
+                    
+                    // Update features
+                    self.updateFeatures(for: appID, app: app, team: team, session: session) { (result) in
+                        switch result
+                        {
+                        case .failure(let error): completionHandler(.failure(error))
+                        case .success(let appID):
+                            
+                            // Update app groups
+                            self.updateAppGroups(for: appID, app: app, team: team, session: session) { (result) in
+                                switch result
+                                {
+                                case .failure(let error): completionHandler(.failure(error))
+                                case .success(let appID):
+                                    
+                                    // Fetch Provisioning Profile
+                                    self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                        completionHandler(result)
+                                    }
                                 }
                             }
                         }
@@ -222,23 +249,22 @@ private extension ResignAppOperation
         }
     }
     
-    func register(_ app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func register(_ app: ALTApplication, bundleIdentifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let appName = app.name
-        let bundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
         
         ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
             do
             {
                 let appIDs = try Result(appIDs, error).get()
                 
-                if let appID = appIDs.first(where: { $0.bundleIdentifier == bundleID })
+                if let appID = appIDs.first(where: { $0.bundleIdentifier == bundleIdentifier })
                 {
                     completionHandler(.success(appID))
                 }
                 else
                 {
-                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleID, team: team, session: session) { (appID, error) in
+                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleIdentifier, team: team, session: session) { (appID, error) in
                         completionHandler(Result(appID, error))
                     }
                 }
