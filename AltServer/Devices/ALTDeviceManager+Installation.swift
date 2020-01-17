@@ -108,47 +108,59 @@ extension ALTDeviceManager
                                                         
                                                         guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
                                                         
-                                                        self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team, session: session) { (result) in
+                                                        // Refresh anisette data to prevent session timeouts.
+                                                        AnisetteDataManager.shared.requestAnisetteData { (result) in
                                                             do
                                                             {
-                                                                let appID = try result.get()
+                                                                let anisetteData = try result.get()
+                                                                session.anisetteData = anisetteData
                                                                 
-                                                                self.updateFeatures(for: appID, app: application, team: team, session: session) { (result) in
+                                                                self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team, session: session) { (result) in
                                                                     do
                                                                     {
                                                                         let appID = try result.get()
                                                                         
-                                                                        self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                                                        self.updateFeatures(for: appID, app: application, team: team, session: session) { (result) in
                                                                             do
                                                                             {
-                                                                                let provisioningProfile = try result.get()
+                                                                                let appID = try result.get()
                                                                                 
-                                                                                self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
-                                                                                    finish(result.error, title: "Failed to Install AltStore")
+                                                                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                                                                    do
+                                                                                    {
+                                                                                        let provisioningProfile = try result.get()
+                                                                                        
+                                                                                        self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
+                                                                                            finish(result.error, title: "Failed to Install AltStore")
+                                                                                        }
+                                                                                    }
+                                                                                    catch
+                                                                                    {
+                                                                                        finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                                    }
                                                                                 }
                                                                             }
                                                                             catch
                                                                             {
-                                                                                finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                                finish(error, title: "Failed to Update App ID")
                                                                             }
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(error, title: "Failed to Update App ID")
+                                                                        finish(error, title: "Failed to Register App")
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(error, title: "Failed to Register App")
+                                                                finish(error, title: "Failed to Refresh Anisette Data")
                                                             }
                                                         }
                                                     }
                                                     catch
                                                     {
                                                         finish(error, title: "Failed to Download AltStore")
-                                                        return
                                                     }
                                                 }
                                             }
