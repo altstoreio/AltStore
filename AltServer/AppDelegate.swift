@@ -103,7 +103,7 @@ private extension AppDelegate
     {
         guard let button = self.statusItem?.button, let superview = button.superview, let window = button.window else { return }
         
-        self.connectedDevices = ALTDeviceManager.shared.connectedDevices
+        self.connectedDevices = ALTDeviceManager.shared.availableDevices
         
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
