@@ -144,6 +144,7 @@
 		BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */; };
 		BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172823C56042001B5953 /* ServerConnection.swift */; };
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
+		BFA8172F23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
@@ -468,6 +469,7 @@
 		BF9B63C5229DD44D002F0A62 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA8172823C56042001B5953 /* ServerConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConnection.swift; sourceTree = "<group>"; };
 		BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnisetteDataOperation.swift; sourceTree = "<group>"; };
+		BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareDeveloperAccountOperation.swift; sourceTree = "<group>"; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
@@ -1155,6 +1157,7 @@
 				BF770E5322BC044E002A40FE /* AppOperationContext.swift */,
 				BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */,
 				BFB364592325985F00CD0EB1 /* FindServerOperation.swift */,
+				BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */,
 				BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */,
 				BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */,
 				BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */,
@@ -1722,6 +1725,7 @@
 				BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */,
 				BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
+				BFA8172F23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
 				BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */,

@@ -41,46 +41,41 @@ class ResignAppOperation: ResultOperation<ALTApplication>
             let session = self.context.group.session
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
-        // Register Device
-        self.registerCurrentDevice(for: signer.team, session: session) { (result) in
-            guard let _ = self.process(result) else { return }
+        // Prepare Provisioning Profiles
+        self.prepareProvisioningProfiles(app.fileURL, team: signer.team, session: session) { (result) in
+            guard let profiles = self.process(result) else { return }
             
-            // Prepare Provisioning Profiles
-            self.prepareProvisioningProfiles(app.fileURL, team: signer.team, session: session) { (result) in
-                guard let profiles = self.process(result) else { return }
+            // Prepare app bundle
+            let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
+            self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
+            
+            let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
+                guard let appBundleURL = self.process(result) else { return }
                 
-                // Prepare app bundle
-                let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
-                self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
+                print("Resigning App:", self.context.bundleIdentifier)
                 
-                let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
-                    guard let appBundleURL = self.process(result) else { return }
+                // Resign app bundle
+                let resignProgress = self.resignAppBundle(at: appBundleURL, signer: signer, profiles: Array(profiles.values)) { (result) in
+                    guard let resignedURL = self.process(result) else { return }
                     
-                    print("Resigning App:", self.context.bundleIdentifier)
-                    
-                    // Resign app bundle
-                    let resignProgress = self.resignAppBundle(at: appBundleURL, signer: signer, profiles: Array(profiles.values)) { (result) in
-                        guard let resignedURL = self.process(result) else { return }
+                    // Finish
+                    do
+                    {
+                        let destinationURL = InstalledApp.refreshedIPAURL(for: app)
+                        try FileManager.default.copyItem(at: resignedURL, to: destinationURL, shouldReplace: true)
                         
-                        // Finish
-                        do
-                        {
-                            let destinationURL = InstalledApp.refreshedIPAURL(for: app)
-                            try FileManager.default.copyItem(at: resignedURL, to: destinationURL, shouldReplace: true)
-                            
-                            // Use appBundleURL since we need an app bundle, not .ipa.
-                            guard let resignedApplication = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
-                            self.finish(.success(resignedApplication))
-                        }
-                        catch
-                        {
-                            self.finish(.failure(error))
-                        }
+                        // Use appBundleURL since we need an app bundle, not .ipa.
+                        guard let resignedApplication = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
+                        self.finish(.success(resignedApplication))
                     }
-                    prepareAppProgress.addChild(resignProgress, withPendingUnitCount: 1)
+                    catch
+                    {
+                        self.finish(.failure(error))
+                    }
                 }
-                prepareAppProgress.addChild(prepareAppBundleProgress, withPendingUnitCount: 1)
+                prepareAppProgress.addChild(resignProgress, withPendingUnitCount: 1)
             }
+            prepareAppProgress.addChild(prepareAppBundleProgress, withPendingUnitCount: 1)
         }
     }
     
@@ -105,35 +100,6 @@ class ResignAppOperation: ResultOperation<ALTApplication>
 
 private extension ResignAppOperation
 {
-    func registerCurrentDevice(for team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
-    {
-        guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else {
-            return completionHandler(.failure(OperationError.unknownUDID))
-        }
-        
-        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
-            do
-            {
-                let devices = try Result(devices, error).get()
-                
-                if let device = devices.first(where: { $0.identifier == udid })
-                {
-                    completionHandler(.success(device))
-                }
-                else
-                {
-                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, team: team, session: session) { (device, error) in
-                        completionHandler(Result(device, error))
-                    }
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
     func prepareProvisioningProfiles(_ fileURL: URL, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
     {
         guard let bundle = Bundle(url: fileURL), let app = ALTApplication(fileURL: fileURL) else { return completionHandler(.failure(OperationError.invalidApp)) }

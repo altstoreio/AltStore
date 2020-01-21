@@ -260,6 +260,18 @@ private extension AppManager
         refreshAnisetteDataOperation.addDependency(authenticationOperation ?? findServerOperation)
         operations.append(refreshAnisetteDataOperation)
         
+        /* Prepare Developer Account */
+        let prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(group: group)
+        prepareDeveloperAccountOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success: break
+            }
+        }
+        prepareDeveloperAccountOperation.addDependency(refreshAnisetteDataOperation)
+        operations.append(prepareDeveloperAccountOperation)
+        
         for app in apps
         {
             let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, group: group)
@@ -272,7 +284,7 @@ private extension AppManager
                 guard let resignedApp = self.process(result, context: context) else { return }
                 context.resignedApp = resignedApp
             }
-            resignAppOperation.addDependency(refreshAnisetteDataOperation)
+            resignAppOperation.addDependency(prepareDeveloperAccountOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
             operations.append(resignAppOperation)
             
