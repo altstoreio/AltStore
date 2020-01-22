@@ -524,6 +524,9 @@ private extension AuthenticationOperation
         // If we're not using the same certificate used to install AltStore, warn user that they need to refresh.
         guard !provisioningProfile.certificates.contains(signer.certificate) else { return completionHandler(false) }
         
+#if DEBUG
+        completionHandler(false)
+#else
         DispatchQueue.main.async {
             let refreshViewController = self.storyboard.instantiateViewController(withIdentifier: "refreshAltStoreViewController") as! RefreshAltStoreViewController
             refreshViewController.signer = signer
@@ -537,6 +540,7 @@ private extension AuthenticationOperation
                 completionHandler(false)
             }
         }
+#endif
     }
 }
 
