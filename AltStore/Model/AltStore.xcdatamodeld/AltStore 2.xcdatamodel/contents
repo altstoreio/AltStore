@@ -26,6 +26,7 @@
         <attribute name="resignedBundleIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="version" attributeType="String" syncable="YES"/>
         <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="installedApp" inverseEntity="StoreApp" syncable="YES"/>
+        <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="installedApps" inverseEntity="Team"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

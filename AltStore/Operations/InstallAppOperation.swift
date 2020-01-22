@@ -56,6 +56,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             else
             {
                 installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
+                installedApp.installedDate = Date()
             }
             
             installedApp.version = resignedApp.version

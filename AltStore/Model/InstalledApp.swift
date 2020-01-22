@@ -22,6 +22,7 @@ class InstalledApp: NSManagedObject, Fetchable
     
     @NSManaged var refreshedDate: Date
     @NSManaged var expirationDate: Date
+    @NSManaged var installedDate: Date
     
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
@@ -55,7 +56,9 @@ class InstalledApp: NSManagedObject, Fetchable
         {
             self.refreshedDate = Date()
             self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
-        }        
+        }
+        
+        self.installedDate = Date()
     }
 }
 

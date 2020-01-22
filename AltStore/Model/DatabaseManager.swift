@@ -168,6 +168,7 @@ private extension DatabaseManager
             {
                 installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, context: context)
                 installedApp.storeApp = storeApp
+                installedApp.installedDate = Date()
             }
             
             let fileURL = installedApp.fileURL
