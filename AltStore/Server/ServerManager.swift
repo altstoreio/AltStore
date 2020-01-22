@@ -23,9 +23,9 @@ class ServerManager: NSObject
     
     private let dispatchQueue = DispatchQueue(label: "io.altstore.ServerManager")
     
-    private lazy var connectionListener = self.makeListener()
-    private var incomingConnections = [NWConnection]()
-    private let incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
+    private var connectionListener: NWListener?
+    private var incomingConnections: [NWConnection]?
+    private var incomingConnectionsSemaphore: DispatchSemaphore?
     
     private override init()
     {
@@ -45,7 +45,7 @@ extension ServerManager
         
         self.serviceBrowser.searchForServices(ofType: ALTServerServiceType, inDomain: "")
         
-        self.connectionListener.start(queue: self.dispatchQueue)
+        self.startListeningForWiredConnections()
     }
     
     func stopDiscovering()
@@ -56,6 +56,8 @@ extension ServerManager
         self.discoveredServers.removeAll()
         self.services.removeAll()
         self.serviceBrowser.stop()
+        
+        self.stopListeningForWiredConnection()
     }
     
     func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
@@ -92,16 +94,16 @@ extension ServerManager
                 connection.start(queue: self.dispatchQueue)
             }
             
-            if server.isWiredConnection
+            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.isWiredConnection
             {
                 print("Waiting for new wired connection...")
                 
                 let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
                 CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
                 
-                _ = self.incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
+                _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
                 
-                if let connection = self.incomingConnections.popLast()
+                if let connection = self.incomingConnections?.popLast()
                 {
                     start(connection)
                 }
@@ -135,8 +137,8 @@ private extension ServerManager
     {
         let listener = try! NWListener(using: .tcp, on: NWEndpoint.Port(rawValue: ALTDeviceListeningSocket)!)
         listener.newConnectionHandler = { [weak self] (connection) in
-            self?.incomingConnections.append(connection)
-            self?.incomingConnectionsSemaphore.signal()
+            self?.incomingConnections?.append(connection)
+            self?.incomingConnectionsSemaphore?.signal()
         }
         listener.stateUpdateHandler = { (state) in
             switch state
@@ -150,6 +152,24 @@ private extension ServerManager
         }
         
         return listener
+    }
+    
+    func startListeningForWiredConnections()
+    {
+        self.incomingConnections = []
+        self.incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
+        
+        self.connectionListener = self.makeListener()
+        self.connectionListener?.start(queue: self.dispatchQueue)
+    }
+    
+    func stopListeningForWiredConnection()
+    {
+        self.connectionListener?.cancel()
+        self.connectionListener = nil
+        
+        self.incomingConnections = nil
+        self.incomingConnectionsSemaphore = nil
     }
 }
 
