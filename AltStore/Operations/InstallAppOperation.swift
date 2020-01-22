@@ -59,6 +59,36 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 installedApp.installedDate = Date()
             }
             
+            var installedExtensions = Set<InstalledExtension>()
+            
+            if
+                let bundle = Bundle(url: resignedApp.fileURL),
+                let directory = bundle.builtInPlugInsURL,
+                let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
+            {
+                for case let fileURL as URL in enumerator
+                {
+                    guard let appExtensionBundle = Bundle(url: fileURL) else { continue }
+                    guard let appExtension = ALTApplication(fileURL: appExtensionBundle.bundleURL) else { continue }
+                    
+                    let installedExtension: InstalledExtension
+                    
+                    if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == appExtension.bundleIdentifier })
+                    {
+                        installedExtension = appExtension
+                    }
+                    else
+                    {
+                        installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: appExtension.bundleIdentifier, context: backgroundContext)
+                        installedExtension.installedDate = Date()
+                    }
+                    
+                    installedExtensions.insert(installedExtension)
+                }
+            }
+            
+            installedApp.appExtensions = installedExtensions
+            
             installedApp.version = resignedApp.version
             
             if let profile = resignedApp.provisioningProfile

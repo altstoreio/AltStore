@@ -11,8 +11,20 @@ import CoreData
 
 import AltSign
 
+protocol InstalledAppProtocol: Fetchable
+{
+    var name: String { get }
+    var bundleIdentifier: String { get }
+    var resignedBundleIdentifier: String { get }
+    var version: String { get }
+    
+    var refreshedDate: Date { get }
+    var expirationDate: Date { get }
+    var installedDate: Date { get }
+}
+
 @objc(InstalledApp)
-class InstalledApp: NSManagedObject, Fetchable
+class InstalledApp: NSManagedObject, InstalledAppProtocol
 {
     /* Properties */
     @NSManaged var name: String
@@ -27,6 +39,7 @@ class InstalledApp: NSManagedObject, Fetchable
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
     @NSManaged var team: Team?
+    @NSManaged var appExtensions: Set<InstalledExtension>
     
     var isSideloaded: Bool {
         return self.storeApp == nil
