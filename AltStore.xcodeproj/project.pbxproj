@@ -132,6 +132,8 @@
 		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
+		BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */; };
+		BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF914C262383703800E713BA /* AltPlugin.mailbundle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */; };
@@ -457,6 +459,9 @@
 		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
+		BF7C627023DBB33300515A2D /* AltStore 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 3.xcdatamodel"; sourceTree = "<group>"; };
+		BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore2ToAltStore3.xcmappingmodel; sourceTree = "<group>"; };
+		BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppPolicy.swift; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF914C252383703800E713BA /* AltPlugin.mailbundle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = AltPlugin.mailbundle.zip; sourceTree = "<group>"; };
@@ -654,6 +659,7 @@
 			isa = PBXGroup;
 			children = (
 				BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */,
+				BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */,
 			);
 			path = "Mapping Models";
 			sourceTree = "<group>";
@@ -662,6 +668,7 @@
 			isa = PBXGroup;
 			children = (
 				BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */,
+				BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */,
 			);
 			path = Policies;
 			sourceTree = "<group>";
@@ -1729,6 +1736,7 @@
 				BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */,
 				BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
+				BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */,
 				BFA8172F23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
 				BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */,
@@ -1742,6 +1750,7 @@
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				BF3D64A222E8031100E9056B /* MergePolicy.swift in Sources */,
+				BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
@@ -2321,10 +2330,11 @@
 		BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				BF7C627023DBB33300515A2D /* AltStore 3.xcdatamodel */,
 				BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */,
 				BFBBE2DC22931B20002097FA /* AltStore.xcdatamodel */,
 			);
-			currentVersion = BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */;
+			currentVersion = BF7C627023DBB33300515A2D /* AltStore 3.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
