@@ -742,9 +742,16 @@ private extension MyAppsViewController
         else { return }
         
         let installedApp = self.dataSource.item(at: indexPath)
-        guard installedApp.storeApp == nil else { return }
         
+        #if DEBUG
         self.presentAlert(for: installedApp)
+        #else
+        if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
+        {
+            // Only display alert for legacy sideloaded apps.
+            self.presentAlert(for: installedApp)
+        }
+        #endif
     }
     
     @objc func importApp(_ notification: Notification)
