@@ -46,6 +46,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         backgroundContext.perform {
+            
+            /* App */
             let installedApp: InstalledApp
             
             // Fetch + update rather than insert + resolve merge conflicts to prevent potential context-level conflicts.
@@ -56,9 +58,16 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             else
             {
                 installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
-                installedApp.installedDate = Date()
             }
             
+            installedApp.update(resignedApp: resignedApp)
+
+            if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
+            {
+                installedApp.team = team
+            }
+            
+            /* App Extensions */
             var installedExtensions = Set<InstalledExtension>()
             
             if
@@ -71,36 +80,30 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                     guard let appExtensionBundle = Bundle(url: fileURL) else { continue }
                     guard let appExtension = ALTApplication(fileURL: appExtensionBundle.bundleURL) else { continue }
                     
+                    let parentBundleID = self.context.bundleIdentifier
+                    let resignedParentBundleID = resignedApp.bundleIdentifier
+                    
+                    let resignedBundleID = appExtension.bundleIdentifier
+                    let originalBundleID = resignedBundleID.replacingOccurrences(of: resignedParentBundleID, with: parentBundleID)
+                    
                     let installedExtension: InstalledExtension
                     
-                    if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == appExtension.bundleIdentifier })
+                    if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == originalBundleID })
                     {
                         installedExtension = appExtension
                     }
                     else
                     {
-                        installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: appExtension.bundleIdentifier, context: backgroundContext)
-                        installedExtension.installedDate = Date()
+                        installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: originalBundleID, context: backgroundContext)
                     }
+                    
+                    installedExtension.update(resignedAppExtension: appExtension)
                     
                     installedExtensions.insert(installedExtension)
                 }
             }
             
             installedApp.appExtensions = installedExtensions
-            
-            installedApp.version = resignedApp.version
-            
-            if let profile = resignedApp.provisioningProfile
-            {
-                installedApp.refreshedDate = profile.creationDate
-                installedApp.expirationDate = profile.expirationDate
-            }
-            
-            if let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.isActiveTeam), NSNumber(value: true)), in: backgroundContext)
-            {
-                installedApp.team = team
-            }
             
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()

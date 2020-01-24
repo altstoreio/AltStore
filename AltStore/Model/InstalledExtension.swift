@@ -36,10 +36,21 @@ class InstalledExtension: NSManagedObject, InstalledAppProtocol
     {
         super.init(entity: InstalledExtension.entity(), insertInto: context)
         
-        self.name = resignedAppExtension.name
         self.bundleIdentifier = originalBundleIdentifier
-        self.resignedBundleIdentifier = resignedAppExtension.bundleIdentifier
         
+        self.refreshedDate = Date()
+        self.installedDate = Date()
+        
+        self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
+        
+        self.update(resignedAppExtension: resignedAppExtension)
+    }
+    
+    func update(resignedAppExtension: ALTApplication)
+    {
+        self.name = resignedAppExtension.name
+        
+        self.resignedBundleIdentifier = resignedAppExtension.bundleIdentifier
         self.version = resignedAppExtension.version
 
         if let provisioningProfile = resignedAppExtension.provisioningProfile
@@ -47,13 +58,6 @@ class InstalledExtension: NSManagedObject, InstalledAppProtocol
             self.refreshedDate = provisioningProfile.creationDate
             self.expirationDate = provisioningProfile.expirationDate
         }
-        else
-        {
-            self.refreshedDate = Date()
-            self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
-        }
-        
-        self.installedDate = Date()
     }
 }
 
