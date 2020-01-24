@@ -383,9 +383,8 @@ private extension MyAppsViewController
                     switch result
                     {
                     case .failure(let error):
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.setNeedsLayout()
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                         
                     case .success(let results):
                         let failures = results.compactMapValues { (result) -> Error? in
@@ -399,22 +398,32 @@ private extension MyAppsViewController
                         
                         guard !failures.isEmpty else { break }
                         
-                        let localizedText: String
-                        let detailText: String?
+                        let toastView: ToastView
                         
-                        if let failure = failures.first, failures.count == 1
+                        if let failure = failures.first, results.count == 1
                         {
-                            localizedText = failure.value.localizedDescription
-                            detailText = nil
+                            toastView = ToastView(error: failure.value)
                         }
                         else
                         {
-                            localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
-                            detailText = failures.first?.value.localizedDescription
+                            let localizedText: String
+                            
+                            if failures.count == 1
+                            {
+                                localizedText = NSLocalizedString("Failed to refresh 1 app.", comment: "")
+                            }
+                            else
+                            {
+                                localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
+                            }
+                            
+                            let detailText = failures.first?.value.localizedDescription
+                            
+                            toastView = ToastView(text: localizedText, detailText: detailText)
+                            toastView.preferredDuration = 2.0
                         }
                         
-                        let toastView = ToastView(text: localizedText, detailText: detailText)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        toastView.show(in: self)
                     }
                     
                     self.refreshGroup = nil
@@ -574,8 +583,8 @@ private extension MyAppsViewController
                     self.collectionView.reloadItems(at: [indexPath])
                     
                 case .failure(let error):
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                     
                     self.collectionView.reloadItems(at: [indexPath])
                     
@@ -637,8 +646,8 @@ private extension MyAppsViewController
                     DispatchQueue.main.async {
                         if let error = result.error
                         {
-                            let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                            let toastView = ToastView(error: error)
+                            toastView.show(in: self)
                         }
                         else
                         {
@@ -666,8 +675,8 @@ private extension MyAppsViewController
                 DispatchQueue.main.async {
                     self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
                     
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                 }
                 
                 completion(.failure(error))

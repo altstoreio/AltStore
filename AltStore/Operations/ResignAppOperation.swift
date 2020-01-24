@@ -231,7 +231,31 @@ private extension ResignAppOperation
                 else
                 {
                     ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleIdentifier, team: team, session: session) { (appID, error) in
-                        completionHandler(Result(appID, error))
+                        do
+                        {
+                            do
+                            {
+                                let appID = try Result(appID, error).get()
+                                completionHandler(.success(appID))
+                            }
+                            catch ALTAppleAPIError.maximumAppIDLimitReached
+                            {
+                                let sortedExpirationDates = appIDs.compactMap { $0.expirationDate }.sorted(by: { $0 < $1 })
+                                
+                                if let expirationDate = sortedExpirationDates.first
+                                {
+                                    throw OperationError.maximumAppIDLimitReached(expirationDate)
+                                }
+                                else
+                                {
+                                    throw ALTAppleAPIError(.maximumAppIDLimitReached)
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            completionHandler(.failure(error))
+                        }
                     }
                 }
             }
