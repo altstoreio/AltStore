@@ -89,6 +89,8 @@ class SettingsViewController: UITableViewController
             self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
         }
         
+        self.tableView.contentInset.bottom = 20
+        
         self.update()
     }
     
