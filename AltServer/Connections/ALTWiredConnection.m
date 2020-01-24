@@ -85,7 +85,7 @@
             uint32_t size = MIN(4096, (uint32_t)expectedSize - (uint32_t)receivedData.length);
             
             uint32_t receivedBytes = 0;
-            if (idevice_connection_receive(self.connection, bytes, size, &receivedBytes) != IDEVICE_E_SUCCESS)
+            if (idevice_connection_receive_timeout(self.connection, bytes, size, &receivedBytes, 0) != IDEVICE_E_SUCCESS)
             {
                 return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorLostConnection userInfo:nil]);
             }
