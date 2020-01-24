@@ -615,7 +615,7 @@ private extension MyAppsViewController
     
     func presentSideloadingAlert(completion: @escaping (Bool) -> Void)
     {
-        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("If you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
             completion(true)
         }))
@@ -698,6 +698,19 @@ private extension MyAppsViewController
             }
         }))
         
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    @IBAction func presentAppIDHelpAlert(_ sender: UIButton)
+    {
+        let message = NSLocalizedString("""
+Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits free developer accounts to 10 App IDs at a time.
+
+App IDs expire after one week, but AltStore will automatically renew them for all installed apps. Once an App ID expires, it no longer counts toward your total.
+""", comment: "")
+        
+        let alertController = UIAlertController(title: NSLocalizedString("What are App IDs?", comment: ""), message: message, preferredStyle: .alert)
+        alertController.addAction(.ok)
         self.present(alertController, animated: true, completion: nil)
     }
 }
@@ -805,7 +818,7 @@ extension MyAppsViewController
             
             return headerView
             
-        case .installedApps:
+        case .installedApps where kind == UICollectionView.elementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InstalledAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
             
             UIView.performWithoutAnimation {
@@ -821,6 +834,29 @@ extension MyAppsViewController
             }
             
             return headerView
+            
+        case .installedApps:
+            let installedApps = self.installedAppsDataSource.fetchedResultsController.fetchedObjects ?? []
+            let registeredAppIDs = installedApps.filter { $0.team?.isActiveTeam ?? false }.reduce(0) { (sum, installedApp) in
+                // Each InstallApp has it's own app ID, plus one for each app extension.
+                return sum + 1 + installedApp.appExtensions.count
+            }
+            
+            let maximumAppIDCount = 10
+            let remainingAppIDs = max(maximumAppIDCount - registeredAppIDs, 0)
+            
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "InstalledAppsFooter", for: indexPath) as! InstalledAppsCollectionFooterView
+            
+            if remainingAppIDs == 1
+            {
+                footerView.textLabel.text = String(format: NSLocalizedString("1 App ID Remaining", comment: ""))
+            }
+            else
+            {
+                footerView.textLabel.text = String(format: NSLocalizedString("%@ App IDs Remaining", comment: ""), NSNumber(value: remainingAppIDs))
+            }
+            
+            return footerView
         }
     }
     
@@ -886,6 +922,29 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             return CGSize(width: collectionView.bounds.width, height: height)
             
         case .installedApps: return CGSize(width: collectionView.bounds.width, height: 29)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .noUpdates: return .zero
+        case .updates: return .zero
+        case .installedApps:
+            #if BETA
+            if let team = DatabaseManager.shared.activeTeam(), team.type == .free
+            {
+                return CGSize(width: collectionView.bounds.width, height: 44)
+            }
+            else
+            {
+                return .zero
+            }
+            #else
+            return .zero
+            #endif
         }
     }
     

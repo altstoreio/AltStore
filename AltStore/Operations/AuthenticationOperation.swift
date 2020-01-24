@@ -164,6 +164,12 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
                     team.isActiveTeam = false
                 }
                 
+                if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.team == nil
+                {
+                    // No team assigned to AltStore app yet, so assume this team was used to originally install it.
+                    altStoreApp.team = team
+                }
+                
                 // Save
                 try context.save()
                 

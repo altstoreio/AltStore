@@ -30,6 +30,12 @@ class InstalledAppsCollectionHeaderView: UICollectionReusableView
     @IBOutlet var button: UIButton!
 }
 
+class InstalledAppsCollectionFooterView: UICollectionReusableView
+{
+    @IBOutlet var textLabel: UILabel!
+    @IBOutlet var button: UIButton!
+}
+
 class NoUpdatesCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var blurView: UIVisualEffectView!

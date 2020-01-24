@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -629,7 +629,7 @@ World</string>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="SB5-U0-jyy">
                             <size key="itemSize" width="375" height="60"/>
                             <size key="headerReferenceSize" width="50" height="50"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="50" height="50"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
@@ -750,6 +750,39 @@ World</string>
                                 <outlet property="textLabel" destination="BDU-hM-rro" id="CQM-8K-bcH"/>
                             </connections>
                         </collectionReusableView>
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="InstalledAppsFooter" id="HYs-co-nJZ" customClass="InstalledAppsCollectionFooterView" customModule="AltStore" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="185" width="375" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5/10 App IDs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LLv-8I-6Of">
+                                    <rect key="frame" x="138.5" y="0.0" width="98" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHb-0F-cHZ">
+                                    <rect key="frame" x="241.5" y="-0.5" width="22" height="22"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="22" id="K1V-bV-Mjg"/>
+                                        <constraint firstAttribute="height" constant="22" id="vW1-aN-slG"/>
+                                    </constraints>
+                                    <state key="normal" image="questionmark.circle" catalog="system"/>
+                                    <connections>
+                                        <action selector="presentAppIDHelpAlert:" destination="hv7-Ar-voT" eventType="touchUpInside" id="m2N-Lx-adY"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="NHb-0F-cHZ" firstAttribute="leading" secondItem="LLv-8I-6Of" secondAttribute="trailing" constant="5" id="Fpk-zD-6AK"/>
+                                <constraint firstItem="LLv-8I-6Of" firstAttribute="top" secondItem="HYs-co-nJZ" secondAttribute="top" id="UVG-MJ-SPb"/>
+                                <constraint firstItem="LLv-8I-6Of" firstAttribute="centerX" secondItem="HYs-co-nJZ" secondAttribute="centerX" id="Wc0-ul-McA"/>
+                                <constraint firstItem="NHb-0F-cHZ" firstAttribute="centerY" secondItem="LLv-8I-6Of" secondAttribute="centerY" id="wSf-Lv-NC0"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="button" destination="NHb-0F-cHZ" id="wOh-Ee-jhN"/>
+                                <outlet property="textLabel" destination="LLv-8I-6Of" id="t2D-f1-5pC"/>
+                            </connections>
+                        </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="hv7-Ar-voT" id="YOx-f4-chF"/>
                             <outlet property="delegate" destination="hv7-Ar-voT" id="1PN-pf-cZK"/>
@@ -797,6 +830,7 @@ World</string>
         <image name="MyApps" width="20" height="20"/>
         <image name="News" width="19" height="20"/>
         <image name="Settings" width="20" height="20"/>
+        <image name="questionmark.circle" catalog="system" width="64" height="60"/>
         <namedColor name="Background">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
