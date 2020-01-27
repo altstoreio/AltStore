@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.2b",
-      "versionDate": "2020-01-13T11:30:00-08:00",
-      "versionDescription": "This update adds support for installing and refreshing apps completely over USB. To try it out, download the AltServer beta from https://altstore.io/altserver/beta\n\nAdditionally, this update also:\n• Automatically removes sideloaded apps from \"My Apps\" when deleted from home screen\n• Fixes \"session expired\" error when installing apps on slow connection\n",
+      "version": "1.2b2",
+      "versionDate": "2020-01-24T16:20:00-08:00",
+      "versionDescription": "This is the second beta with support for installing and refreshing apps completely over USB. To try it out, download the AltServer beta from https://altstore.io/altserver/beta\n\nAdditionally, this beta also:\n• Displays remaining number of App IDs before weekly limit is reached\n• Fixes broken Cercube sign-in (Must delete Cercube first then reinstall)\n• Fixes issue causing App ID limit to never reset\n• Fixes \"Device Already Registered\" error\n\nPrevious beta:\n• Automatically removes sideloaded apps from \"My Apps\" when deleted from home screen\n• Fixes \"session expired\" error when installing apps on slow connection\n",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore allows you to install Delta as well as any app (.ipa) directly from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 3782635,
+      "size": 3830165,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65605563-2f009d00-df5e-11e9-9b40-1f36135d5c80.PNG",
@@ -116,6 +116,31 @@
       ]
     },
     {
+      "name": "Clip",
+      "bundleIdentifier": "com.rileytestut.Clip.Beta",
+      "subtitle": "Manage your clipboard history with ease.",
+      "developerName": "Riley Testut",
+      "version": "1.0b",
+      "versionDate": "2019-01-24T18:20:00-08:00",
+      "versionDescription": "• Disables notification vibration when sound is disabled for notifications.\n\nAssuming all goes well, this should be the final beta before the public launch! Please report any last minute bugs you find to support@altstore.io.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip-beta.ipa",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
+      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
+      "tintColor": "EC008C",
+      "size": 462771,
+      "beta": true,
+      "permissions": [
+        {
+          "type": "background-audio",
+          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
+        }
+      ],
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+      ]
+    },
+    {
       "name": "Delta Lite",
       "bundleIdentifier": "com.rileytestut.Delta.Lite",
       "developerName": "Riley Testut",
@@ -137,31 +162,6 @@
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65599574-07580780-df53-11e9-97a3-b27141c8cae8.PNG",
         "https://user-images.githubusercontent.com/705880/65599570-04f5ad80-df53-11e9-914a-8c42ac4805b0.PNG"
-      ]
-    },
-    {
-      "name": "Clip",
-      "bundleIdentifier": "com.rileytestut.Clip.Beta",
-      "subtitle": "Manage your clipboard history with ease.",
-      "developerName": "Riley Testut",
-      "version": "0.4b",
-      "versionDate": "2019-12-13T12:00:00-08:00",
-      "versionDescription": "Initial version.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip-beta.ipa",
-      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
-      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
-      "tintColor": "EC008C",
-      "size": 462565,
-      "beta": true,
-      "permissions": [
-        {
-          "type": "background-audio",
-          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
-        }
-      ],
-      "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
-        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
       ]
     },
     {
@@ -231,6 +231,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "n_1qHTp_O-AiUfrG8AylUCHdGhF38lrn9ffIQ8zlnrA"
+    "patreonAccessToken": "JLh5bpOQsPg-HIRe6FHnRAktoeeU4JT5-Xk-y7njQrM"
   }
 }
