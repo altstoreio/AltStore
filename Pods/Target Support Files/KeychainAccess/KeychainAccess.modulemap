@@ -1,4 +1,4 @@
-framework module KeychainAccess {
+module KeychainAccess {
   umbrella header "KeychainAccess-umbrella.h"
 
   export *
