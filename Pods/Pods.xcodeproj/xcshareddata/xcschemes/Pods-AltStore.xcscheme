@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2DB6F1AF8C5EF6674B24A1A79C312CC2"
-               BuildableName = "Pods_AltStore.framework"
+               BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
+               BuildableName = "libPods-AltStore.a"
                BlueprintName = "Pods-AltStore"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
@@ -29,8 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -45,14 +43,12 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DB6F1AF8C5EF6674B24A1A79C312CC2"
-            BuildableName = "Pods_AltStore.framework"
+            BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
+            BuildableName = "libPods-AltStore.a"
             BlueprintName = "Pods-AltStore"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -63,8 +59,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DB6F1AF8C5EF6674B24A1A79C312CC2"
-            BuildableName = "Pods_AltStore.framework"
+            BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
+            BuildableName = "libPods-AltStore.a"
             BlueprintName = "Pods-AltStore"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>

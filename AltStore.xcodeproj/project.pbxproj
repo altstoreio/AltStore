@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -112,13 +113,9 @@
 		BF45884A2298D55000BD7491 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588482298D55000BD7491 /* thread.c */; };
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
-		BF4713A522976D1E00784A2F /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; };
-		BF4713A622976D1E00784A2F /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BF4C7F27238086EB00B2556E /* InstallPlugin.sh in Resources */ = {isa = PBXBuildFile; fileRef = BF4C7F26238086EB00B2556E /* InstallPlugin.sh */; };
 		BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
-		BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
-		BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
 		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
@@ -154,8 +151,6 @@
 		BFD247752284B9A500981D42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247732284B9A500981D42 /* Main.storyboard */; };
 		BFD247772284B9A700981D42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFD247762284B9A700981D42 /* Assets.xcassets */; };
 		BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247782284B9A700981D42 /* LaunchScreen.storyboard */; };
-		BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
-		BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
 		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
@@ -226,7 +221,6 @@
 		BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B695232242D3007A79E1 /* LicensesViewController.swift */; };
 		BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */; };
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
-		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -292,23 +286,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BFD247842284BB2C00981D42 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BF4713A622976D1E00784A2F /* openssl.framework in Embed Frameworks */,
-				BFD247882284BB4200981D42 /* Roxas.framework in Embed Frameworks */,
-				BF5AB3A92285FE7500DC914B /* AltSign.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1039C07E517311FC499A0B64 /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
 		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
@@ -589,10 +570,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */,
-				BF4713A522976D1E00784A2F /* openssl.framework in Frameworks */,
-				BFD247872284BB4200981D42 /* Roxas.framework in Frameworks */,
-				BF5AB3A82285FE7500DC914B /* AltSign.framework in Frameworks */,
-				DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */,
+				01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -985,8 +963,8 @@
 				BFD247862284BB3B00981D42 /* Roxas.framework */,
 				BF5AB3A72285FE6C00DC914B /* AltSign.framework */,
 				BF4713A422976CFC00784A2F /* openssl.framework */,
-				1039C07E517311FC499A0B64 /* Pods_AltStore.framework */,
 				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
+				0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1281,8 +1259,7 @@
 				BFD247662284B9A500981D42 /* Sources */,
 				BFD247672284B9A500981D42 /* Frameworks */,
 				BFD247682284B9A500981D42 /* Resources */,
-				BFD247842284BB2C00981D42 /* Embed Frameworks */,
-				B8F37E08B55D2C9C4E2B1B4E /* [CP] Embed Pods Frameworks */,
+				8C9013C41DD92A1476195C0E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1404,54 +1381,38 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8C9013C41DD92A1476195C0E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
-				"${PODS_ROOT}/Sparkle/Sparkle.framework",
-				"${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM",
+				"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework",
-				"${DWARF_DSYM_FOLDER_PATH}/Sparkle.framework.dSYM",
+				"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B8F37E08B55D2C9C4E2B1B4E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
-				"${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nuke.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */ = {
