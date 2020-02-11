@@ -97,7 +97,8 @@ extension AppManager
         #endif
     }
     
-    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void)
+    @discardableResult
+    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void) -> OperationGroup
     {
         let group = OperationGroup()
         
@@ -113,10 +114,20 @@ extension AppManager
         
         let authenticationOperation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
         authenticationOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let signer, let session):
+                group.signer = signer
+                group.session = session
+            }
+            
             completionHandler(result)
         }
         authenticationOperation.addDependency(findServerOperation)
         self.operationQueue.addOperation(authenticationOperation)
+        
+        return group
     }
 }
 
@@ -142,6 +153,23 @@ extension AppManager
                 }
             }
             self.operationQueue.addOperation(fetchSourceOperation)
+        }
+    }
+    
+    func fetchAppIDs(completionHandler: @escaping (Result<([AppID], NSManagedObjectContext), Error>) -> Void)
+    {
+        var group: OperationGroup!
+        group = self.authenticate(presentingViewController: nil) { (result) in
+            switch result
+            {
+            case .failure(let error):
+                completionHandler(.failure(error))
+                
+            case .success:
+                let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+                fetchAppIDsOperation.resultHandler = completionHandler
+                self.operationQueue.addOperation(fetchAppIDsOperation)
+            }
         }
     }
 }
@@ -381,6 +409,22 @@ private extension AppManager
         {
             refreshAnisetteDataOperation.addDependency(downloadOperation)
         }
+        
+        /* Cache App IDs */
+        let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+        fetchAppIDsOperation.resultHandler = { (result) in
+            do
+            {
+                let (_, context) = try result.get()
+                try context.save()
+            }
+            catch
+            {
+                print("Failed to fetch App IDs.", error)
+            }
+        }
+        operations.forEach { fetchAppIDsOperation.addDependency($0) }
+        operations.append(fetchAppIDsOperation)
         
         group.addOperations(operations)
         

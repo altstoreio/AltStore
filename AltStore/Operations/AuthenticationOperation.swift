@@ -52,9 +52,6 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
     private var appleIDPassword: String?
     private var shouldShowInstructions = false
     
-    private var signer: ALTSigner?
-    private var session: ALTAppleAPISession?
-    
     private let operationQueue = OperationQueue()
     
     private var submitCodeAction: UIAlertAction?
@@ -88,7 +85,6 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
             {
             case .failure(let error): self.finish(.failure(error))
             case .success(let account, let session):
-                self.session = session
                 self.progress.completedUnitCount += 1
                 
                 // Fetch Team
@@ -110,17 +106,69 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
                             case .failure(let error): self.finish(.failure(error))
                             case .success(let certificate):
                                 self.progress.completedUnitCount += 1
-                                
-                                let signer = ALTSigner(team: team, certificate: certificate)
-                                self.signer = signer
-                                
-                                self.showInstructionsIfNecessary() { (didShowInstructions) in
-                                    self.finish(.success((signer, session)))
+                                       
+                                // Save account/team to disk.
+                                self.save(team) { (result) in
+                                    guard !self.isCancelled else { return self.finish(.failure(OperationError.cancelled)) }
+                                    
+                                    switch result
+                                    {
+                                    case .failure(let error): self.finish(.failure(error))
+                                    case .success:
+                                        let signer = ALTSigner(team: team, certificate: certificate)
+                                        
+                                        // Must cache App IDs _after_ saving account/team to disk.
+                                        self.cacheAppIDs(signer: signer, session: session) { (result) in
+                                            let result = result.map { _ in (signer, session) }
+                                            self.finish(result)
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    func save(_ altTeam: ALTTeam, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        context.performAndWait {
+            do
+            {
+                let account: Account
+                let team: Team
+                
+                if let tempAccount = Account.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Account.identifier), altTeam.account.identifier), in: context)
+                {
+                    account = tempAccount
+                }
+                else
+                {
+                    account = Account(altTeam.account, context: context)
+                }
+                
+                if let tempTeam = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.identifier), altTeam.identifier), in: context)
+                {
+                    team = tempTeam
+                }
+                else
+                {
+                    team = Team(altTeam, account: account, context: context)
+                }
+                
+                account.update(account: altTeam.account)
+                team.update(team: altTeam)
+                                
+                try context.save()
+                
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
             }
         }
     }
@@ -132,14 +180,17 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
         print("Finished authenticating with result:", result)
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-        context.performAndWait {
+        context.perform {
             do
             {
                 let (signer, session) = try result.get()
-                let altAccount = signer.team.account
+                
+                guard
+                    let account = Account.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Account.identifier), signer.team.account.identifier), in: context),
+                    let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.identifier), signer.team.identifier), in: context)
+                else { throw AuthenticationError.noTeam }
                 
                 // Account
-                let account = Account(altAccount, context: context)
                 account.isActiveAccount = true
                 
                 let otherAccountsFetchRequest = Account.fetchRequest() as NSFetchRequest<Account>
@@ -152,7 +203,6 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
                 }
                 
                 // Team
-                let team = Team(signer.team, account: account, context: context)
                 team.isActiveTeam = true
                 
                 let otherTeamsFetchRequest = Team.fetchRequest() as NSFetchRequest<Team>
@@ -174,24 +224,27 @@ class AuthenticationOperation: ResultOperation<(ALTSigner, ALTAppleAPISession)>
                 try context.save()
                 
                 // Update keychain
-                Keychain.shared.appleIDEmailAddress = altAccount.appleID // "account" may have nil appleID since we just saved.
+                Keychain.shared.appleIDEmailAddress = signer.team.account.appleID
                 Keychain.shared.appleIDPassword = self.appleIDPassword
                 
                 Keychain.shared.signingCertificate = signer.certificate.p12Data()
                 Keychain.shared.signingCertificatePassword = signer.certificate.machineIdentifier
                 
-                // Refresh screen must go last since a successful refresh will cause the app to quit.
-                self.showRefreshScreenIfNecessary() { (didShowRefreshAlert) in
-                    super.finish(.success((signer, session)))
+                self.showInstructionsIfNecessary() { (didShowInstructions) in
                     
-                    DispatchQueue.main.async {
-                        self.navigationController.dismiss(animated: true, completion: nil)
+                    // Refresh screen must go last since a successful refresh will cause the app to quit.
+                    self.showRefreshScreenIfNecessary(signer: signer, session: session) { (didShowRefreshAlert) in
+                        super.finish(result)
+                        
+                        DispatchQueue.main.async {
+                            self.navigationController.dismiss(animated: true, completion: nil)
+                        }
                     }
                 }
             }
             catch
             {
-                super.finish(.failure(error))
+                super.finish(result)
                 
                 DispatchQueue.main.async {
                     self.navigationController.dismiss(animated: true, completion: nil)
@@ -504,6 +557,30 @@ private extension AuthenticationOperation
         }
     }
     
+    func cacheAppIDs(signer: ALTSigner, session: ALTAppleAPISession, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let group = OperationGroup()
+        group.signer = signer
+        group.session = session
+        
+        let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+        fetchAppIDsOperation.resultHandler = { (result) in
+            do
+            {
+                let (_, context) = try result.get()
+                try context.save()
+                
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        self.operationQueue.addOperation(fetchAppIDsOperation)
+    }
+    
     func showInstructionsIfNecessary(completionHandler: @escaping (Bool) -> Void)
     {
         guard self.shouldShowInstructions else { return completionHandler(false) }
@@ -522,9 +599,8 @@ private extension AuthenticationOperation
         }
     }
     
-    func showRefreshScreenIfNecessary(completionHandler: @escaping (Bool) -> Void)
+    func showRefreshScreenIfNecessary(signer: ALTSigner, session: ALTAppleAPISession, completionHandler: @escaping (Bool) -> Void)
     {
-        guard let signer = self.signer, let session = self.session else { return completionHandler(false) }
         guard let application = ALTApplication(fileURL: Bundle.main.bundleURL), let provisioningProfile = application.provisioningProfile else { return completionHandler(false) }
         
         // If we're not using the same certificate used to install AltStore, warn user that they need to refresh.

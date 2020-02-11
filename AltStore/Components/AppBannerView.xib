@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -45,7 +45,7 @@
                             </constraints>
                         </imageView>
                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="caL-vN-Svn">
-                            <rect key="frame" x="85" y="18" width="195" height="52"/>
+                            <rect key="frame" x="85" y="18" width="190" height="52"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
                                     <rect key="frame" x="0.0" y="0.0" width="167" height="34"/>
@@ -67,13 +67,13 @@
                                     </subviews>
                                 </stackView>
                                 <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC4-1V-iMn">
-                                    <rect key="frame" x="0.0" y="36" width="195" height="16"/>
+                                    <rect key="frame" x="0.0" y="36" width="190" height="16"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LQh-pN-ePC">
-                                        <rect key="frame" x="0.0" y="0.0" width="195" height="16"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="190" height="16"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oN5-vu-Dnw">
-                                                <rect key="frame" x="0.0" y="0.0" width="195" height="16"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="190" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" label="Developer"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -94,20 +94,20 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3ox-Q2-Rnd" userLabel="Button Stack View">
-                            <rect key="frame" x="291" y="28.5" width="72" height="31"/>
+                            <rect key="frame" x="286" y="28.5" width="77" height="31"/>
                             <subviews>
                                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yd9-jw-faD">
-                                    <rect key="frame" x="0.0" y="0.0" width="72" height="0.0"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="77" height="0.0"/>
                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
                                     <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tVx-3G-dcu" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="72" height="31"/>
+                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="900" horizontalCompressionResistancePriority="900" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tVx-3G-dcu" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="77" height="31"/>
                                     <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="31" id="Zwh-yQ-GTu"/>
-                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="eGc-Dk-QbL"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="77" id="eGc-Dk-QbL"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                     <state key="normal" title="FREE"/>
@@ -135,7 +135,7 @@
     <resources>
         <image name="BetaBadge" width="41" height="17"/>
         <namedColor name="BlurTint">
-            <color red="1" green="1" blue="1" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
