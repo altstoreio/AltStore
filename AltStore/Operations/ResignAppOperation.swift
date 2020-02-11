@@ -102,53 +102,43 @@ private extension ResignAppOperation
 {
     func prepareProvisioningProfiles(_ fileURL: URL, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
     {
-        guard let bundle = Bundle(url: fileURL), let app = ALTApplication(fileURL: fileURL) else { return completionHandler(.failure(OperationError.invalidApp)) }
-        
-        let dispatchGroup = DispatchGroup()
-        
-        var profiles = [String: ALTProvisioningProfile]()
-        var error: Error?
-        
-        dispatchGroup.enter()
+        guard let app = ALTApplication(fileURL: fileURL) else { return completionHandler(.failure(OperationError.invalidApp)) }
         
         self.prepareProvisioningProfile(for: app, parentApp: nil, team: team, session: session) { (result) in
             switch result
             {
-            case .failure(let e): error = e
+            case .failure(let error): completionHandler(.failure(error))
             case .success(let profile):
-                profiles[app.bundleIdentifier] = profile
-            }
-            dispatchGroup.leave()
-        }
-        
-        if let directory = bundle.builtInPlugInsURL, let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
-        {
-            for case let fileURL as URL in enumerator where fileURL.pathExtension.lowercased() == "appex"
-            {
-                guard let appExtension = ALTApplication(fileURL: fileURL) else { continue }
+                var profiles = [app.bundleIdentifier: profile]
+                var error: Error?
                 
-                dispatchGroup.enter()
+                let dispatchGroup = DispatchGroup()
                 
-                self.prepareProvisioningProfile(for: appExtension, parentApp: app, team: team, session: session) { (result) in
-                    switch result
-                    {
-                    case .failure(let e): error = e
-                    case .success(let profile):
-                        profiles[appExtension.bundleIdentifier] = profile
+                for appExtension in app.appExtensions
+                {
+                    dispatchGroup.enter()
+                    
+                    self.prepareProvisioningProfile(for: appExtension, parentApp: app, team: team, session: session) { (result) in
+                        switch result
+                        {
+                        case .failure(let e): error = e
+                        case .success(let profile): profiles[appExtension.bundleIdentifier] = profile
+                        }
+                        
+                        dispatchGroup.leave()
                     }
-                    dispatchGroup.leave()
                 }
-            }
-        }
-        
-        dispatchGroup.notify(queue: .global()) {
-            if let error = error
-            {
-                completionHandler(.failure(error))
-            }
-            else
-            {
-                completionHandler(.success(profiles))
+                
+                dispatchGroup.notify(queue: .global()) {
+                    if let error = error
+                    {
+                        completionHandler(.failure(error))
+                    }
+                    else
+                    {
+                        completionHandler(.success(profiles))
+                    }
+                }
             }
         }
     }
@@ -181,8 +171,19 @@ private extension ResignAppOperation
                 preferredBundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
             }
             
+            let preferredName: String
+            
+            if let parentApp = parentApp
+            {
+                preferredName = "\(parentApp.name) - \(app.name)"
+            }
+            else
+            {
+                preferredName = app.name
+            }
+            
             // Register
-            self.register(app, bundleIdentifier: preferredBundleID, team: team, session: session) { (result) in
+            self.registerAppID(for: app, name: preferredName, bundleIdentifier: preferredBundleID, team: team, session: session) { (result) in
                 switch result
                 {
                 case .failure(let error): completionHandler(.failure(error))
@@ -215,10 +216,8 @@ private extension ResignAppOperation
         }
     }
     
-    func register(_ app: ALTApplication, bundleIdentifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func registerAppID(for application: ALTApplication, name: String, bundleIdentifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        let appName = app.name
-        
         ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
             do
             {
@@ -230,7 +229,27 @@ private extension ResignAppOperation
                 }
                 else
                 {
-                    ALTAppleAPI.shared.addAppID(withName: appName, bundleIdentifier: bundleIdentifier, team: team, session: session) { (appID, error) in
+                    let requiredAppIDs = 1 + application.appExtensions.count
+                    let availableAppIDs = max(0, Team.maximumFreeAppIDs - appIDs.count)
+                    
+                    let sortedExpirationDates = appIDs.compactMap { $0.expirationDate }.sorted(by: { $0 < $1 })
+                    
+                    if team.type == .free
+                    {
+                        if requiredAppIDs > availableAppIDs
+                        {
+                            if let expirationDate = sortedExpirationDates.first
+                            {
+                                throw OperationError.maximumAppIDLimitReached(application: application, requiredAppIDs: requiredAppIDs, availableAppIDs: availableAppIDs, nextExpirationDate: expirationDate)
+                            }
+                            else
+                            {
+                                throw ALTAppleAPIError(.maximumAppIDLimitReached)
+                            }
+                        }
+                    }
+                    
+                    ALTAppleAPI.shared.addAppID(withName: name, bundleIdentifier: bundleIdentifier, team: team, session: session) { (appID, error) in
                         do
                         {
                             do
@@ -240,11 +259,9 @@ private extension ResignAppOperation
                             }
                             catch ALTAppleAPIError.maximumAppIDLimitReached
                             {
-                                let sortedExpirationDates = appIDs.compactMap { $0.expirationDate }.sorted(by: { $0 < $1 })
-                                
                                 if let expirationDate = sortedExpirationDates.first
                                 {
-                                    throw OperationError.maximumAppIDLimitReached(expirationDate)
+                                    throw OperationError.maximumAppIDLimitReached(application: application, requiredAppIDs: requiredAppIDs, availableAppIDs: availableAppIDs, nextExpirationDate: expirationDate)
                                 }
                                 else
                                 {

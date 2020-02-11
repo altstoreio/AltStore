@@ -25,6 +25,11 @@ extension ALTTeamType
     }
 }
 
+extension Team
+{
+    static let maximumFreeAppIDs = 10
+}
+
 @objc(Team)
 class Team: NSManagedObject, Fetchable
 {

@@ -24,7 +24,7 @@ enum OperationError: LocalizedError
     case invalidParameters
     
     case iOSVersionNotSupported(ALTApplication)
-    case maximumAppIDLimitReached(Date)
+    case maximumAppIDLimitReached(application: ALTApplication, requiredAppIDs: Int, availableAppIDs: Int, nextExpirationDate: Date)
     
     case noSources
     
@@ -58,26 +58,38 @@ enum OperationError: LocalizedError
     var recoverySuggestion: String? {
         switch self
         {
-        case .maximumAppIDLimitReached(let date):
-            let remainingTime: String
+        case .maximumAppIDLimitReached(let application, let requiredAppIDs, let availableAppIDs, let date):
+            let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")
+            let message: String
             
-            let numberOfDays = date.numberOfCalendarDays(since: Date())
-            switch numberOfDays {
-            case 0:
-                let components = Calendar.current.dateComponents([.hour], from: Date(), to: date)
-                let numberOfHours = components.hour!
+            if requiredAppIDs > 1
+            {
+                let availableText: String
                 
-                switch numberOfHours
+                switch availableAppIDs
                 {
-                case 1: remainingTime = NSLocalizedString("1 hour", comment: "")
-                default: remainingTime = String(format: NSLocalizedString("%@ hours", comment: ""), NSNumber(value: numberOfHours))
+                case 0: availableText = NSLocalizedString("none are available", comment: "")
+                case 1: availableText = NSLocalizedString("only 1 is available", comment: "")
+                default: availableText = String(format: NSLocalizedString("only %@ are available", comment: ""), NSNumber(value: availableAppIDs))
                 }
                 
-            case 1: remainingTime = NSLocalizedString("1 day", comment: "")
-            default: remainingTime = String(format: NSLocalizedString("%@ days", comment: ""), NSNumber(value: numberOfDays))
+                let prefixMessage = String(format: NSLocalizedString("%@ requires %@ App IDs, but %@.", comment: ""), application.name, NSNumber(value: requiredAppIDs), availableText)
+                message = prefixMessage + " " + baseMessage
+            }
+            else
+            {
+                let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute], from: Date(), to: date)
+                
+                let dateComponentsFormatter = DateComponentsFormatter()
+                dateComponentsFormatter.maximumUnitCount = 1
+                dateComponentsFormatter.unitsStyle = .full
+                
+                let remainingTime = dateComponentsFormatter.string(from: dateComponents)!
+                
+                let remainingTimeMessage = String(format: NSLocalizedString("You can register another App ID in %@.", comment: ""), remainingTime)
+                message = baseMessage + " " + remainingTimeMessage
             }
             
-            let message = String(format: NSLocalizedString("Delete sideloaded apps to free up App ID slots. You can register another App ID in %@.", comment: ""), remainingTime)
             return message
             
         default: return nil
