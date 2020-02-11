@@ -67,6 +67,12 @@ class MyAppsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        #if !BETA
+        // Set leftBarButtonItem to invisible UIBarButtonItem so we can still use it
+        // to show an activity indicator while sideloading whitelisted apps.
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        #endif
+        
         if #available(iOS 13.0, *)
         {
             self.navigationItem.leftBarButtonItem?.activityIndicatorView.style = .medium
@@ -88,10 +94,6 @@ class MyAppsViewController: UICollectionViewController
         self.sideloadingProgressView.translatesAutoresizingMaskIntoConstraints = false
         self.sideloadingProgressView.progressTintColor = .altPrimary
         self.sideloadingProgressView.progress = 0
-        
-        #if !BETA
-        self.navigationItem.leftBarButtonItem = nil
-        #endif
         
         if let navigationBar = self.navigationController?.navigationBar
         {
@@ -646,7 +648,7 @@ private extension MyAppsViewController
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func installApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
+    func sideloadApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
     {
         self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
         
@@ -660,6 +662,10 @@ private extension MyAppsViewController
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
                 
                 guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
+                
+                #if !BETA
+                guard AppManager.whitelistedSideloadingBundleIDs.contains(application.bundleIdentifier) else { throw OperationError.sideloadingAppNotSupported(application) }
+                #endif
                 
                 self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
                     try? FileManager.default.removeItem(at: temporaryDirectory)
@@ -696,8 +702,27 @@ private extension MyAppsViewController
                 DispatchQueue.main.async {
                     self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
                     
-                    let toastView = ToastView(error: error)
-                    toastView.show(in: self)
+                    if let localizedError = error as? OperationError, case OperationError.sideloadingAppNotSupported = localizedError
+                    {
+                        let message = NSLocalizedString("""
+                        Sideloading apps is in beta, and is currently limited to a small number of apps. This restriction is temporary, and you will be able to sideload any app once the feature is finished.
+
+                        In the meantime, you can help us beta test sideloading apps by becoming a Patron.
+                        """, comment: "")
+                        
+                        let alertController = UIAlertController(title: localizedError.localizedDescription, message: message, preferredStyle: .alert)
+                        alertController.addAction(.cancel)
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Become a Patron", comment: ""), style: .default, handler: { (action) in
+                            NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                        }))
+                        
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                    else
+                    {
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
+                    }
                 }
                 
                 completion(.failure(error))
@@ -764,7 +789,8 @@ private extension MyAppsViewController
     
     @objc func importApp(_ notification: Notification)
     {
-        #if BETA
+        // Make sure left UIBarButtonItem has been set.
+        self.loadViewIfNeeded()
         
         guard let fileURL = notification.userInfo?[AppDelegate.importAppDeepLinkURLKey] as? URL else { return }
         guard self.presentedViewController == nil else { return }
@@ -781,10 +807,12 @@ private extension MyAppsViewController
             }
         }
         
+        #if BETA
+        
         self.presentSideloadingAlert { (shouldContinue) in
             if shouldContinue
             {
-                self.installApp(at: fileURL) { (result) in
+                self.sideloadApp(at: fileURL) { (result) in
                     finish()
                 }
             }
@@ -792,6 +820,12 @@ private extension MyAppsViewController
             {
                 finish()
             }
+        }
+        
+        #else
+        
+        self.sideloadApp(at: fileURL) { (result) in
+            finish()
         }
         
         #endif
@@ -1034,7 +1068,7 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        self.installApp(at: fileURL) { (result) in
+        self.sideloadApp(at: fileURL) { (result) in
             print("Sideloaded app at \(fileURL) with result:", result)
         }
     }

@@ -21,6 +21,8 @@ extension AppManager
     static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
+    
+    static let whitelistedSideloadingBundleIDs: Set<String> = ["science.xnu.undecimus"]
 }
 
 class AppManager
