@@ -116,7 +116,9 @@ class MyAppsViewController: UICollectionViewController
         
         self.updateDataSource()
         
+        #if BETA
         self.fetchAppIDs()
+        #endif
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
