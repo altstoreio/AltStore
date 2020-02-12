@@ -20,6 +20,8 @@ extension UserDefaults
     @NSManaged var isDebugModeEnabled: Bool
     @NSManaged var presentedLaunchReminderNotification: Bool
     
+    @NSManaged var legacySideloadedApps: [String]?
+    
     func registerDefaults()
     {
         self.register(defaults: [#keyPath(UserDefaults.isBackgroundRefreshEnabled): true])

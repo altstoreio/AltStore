@@ -30,6 +30,10 @@ class PatreonViewController: UICollectionViewController
     
     private var patronsResult: Result<[Patron], Error>?
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()

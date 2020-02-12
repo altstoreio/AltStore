@@ -12,13 +12,13 @@ import Network
 import AltKit
 
 @objc(SendAppOperation)
-class SendAppOperation: ResultOperation<NWConnection>
+class SendAppOperation: ResultOperation<ServerConnection>
 {
     let context: AppOperationContext
     
     private let dispatchQueue = DispatchQueue(label: "com.altstore.SendAppOperation")
     
-    private var connection: NWConnection?
+    private var serverConnection: ServerConnection?
     
     init(context: AppOperationContext)
     {
@@ -45,21 +45,21 @@ class SendAppOperation: ResultOperation<NWConnection>
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
         
         // Connect to server.
-        self.connect(to: server) { (result) in
+        ServerManager.shared.connect(to: server) { (result) in
             switch result
             {
             case .failure(let error): self.finish(.failure(error))
-            case .success(let connection):
-                self.connection = connection
+            case .success(let serverConnection):
+                self.serverConnection = serverConnection
                 
                 // Send app to server.
-                self.sendApp(at: fileURL, via: connection, server: server) { (result) in
+                self.sendApp(at: fileURL, via: serverConnection) { (result) in
                     switch result
                     {
                     case .failure(let error): self.finish(.failure(error))
                     case .success:
                         self.progress.completedUnitCount += 1
-                        self.finish(.success(connection))
+                        self.finish(.success(serverConnection))
                     }
                 }
             }
@@ -69,34 +69,7 @@ class SendAppOperation: ResultOperation<NWConnection>
 
 private extension SendAppOperation
 {
-    func connect(to server: Server, completionHandler: @escaping (Result<NWConnection, Error>) -> Void)
-    {
-        let connection = NWConnection(to: .service(name: server.service.name, type: server.service.type, domain: server.service.domain, interface: nil), using: .tcp)
-        
-        connection.stateUpdateHandler = { [unowned connection] (state) in
-            switch state
-            {
-            case .failed(let error):
-                print("Failed to connect to service \(server.service.name).", error)
-                completionHandler(.failure(ConnectionError.connectionFailed))
-               
-            case .cancelled:
-                completionHandler(.failure(OperationError.cancelled))
-                
-            case .ready:
-                completionHandler(.success(connection))
-            
-            case .waiting: break
-            case .setup: break
-            case .preparing: break
-            @unknown default: break
-            }
-        }
-        
-        connection.start(queue: self.dispatchQueue)
-    }
-    
-    func sendApp(at fileURL: URL, via connection: NWConnection, server: Server, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    func sendApp(at fileURL: URL, via connection: ServerConnection, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         do
         {
@@ -106,14 +79,14 @@ private extension SendAppOperation
             let request = PrepareAppRequest(udid: udid, contentSize: appData.count)
             
             print("Sending request \(request)")
-            server.send(request, via: connection) { (result) in
+            connection.send(request) { (result) in
                 switch result
                 {
                 case .failure(let error): completionHandler(.failure(error))
                 case .success:
                     
                     print("Sending app data (\(appData.count) bytes)")
-                    server.send(appData, via: connection, prependSize: false) { (result) in
+                    connection.send(appData, prependSize: false) { (result) in
                         switch result
                         {
                         case .failure(let error): completionHandler(.failure(error))

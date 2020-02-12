@@ -19,8 +19,13 @@ class ServerManager: NSObject
     private(set) var discoveredServers = [Server]()
     
     private let serviceBrowser = NetServiceBrowser()
-    
     private var services = Set<NetService>()
+    
+    private let dispatchQueue = DispatchQueue(label: "io.altstore.ServerManager")
+    
+    private var connectionListener: NWListener?
+    private var incomingConnections: [NWConnection]?
+    private var incomingConnectionsSemaphore: DispatchSemaphore?
     
     private override init()
     {
@@ -39,6 +44,8 @@ extension ServerManager
         self.isDiscovering = true
         
         self.serviceBrowser.searchForServices(ofType: ALTServerServiceType, inDomain: "")
+        
+        self.startListeningForWiredConnections()
     }
     
     func stopDiscovering()
@@ -49,6 +56,68 @@ extension ServerManager
         self.discoveredServers.removeAll()
         self.services.removeAll()
         self.serviceBrowser.stop()
+        
+        self.stopListeningForWiredConnection()
+    }
+    
+    func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
+    {
+        DispatchQueue.global().async {
+            func finish(_ result: Result<ServerConnection, Error>)
+            {
+                completion(result)
+            }
+            
+            func start(_ connection: NWConnection)
+            {
+                connection.stateUpdateHandler = { [unowned connection] (state) in
+                    switch state
+                    {
+                    case .failed(let error):
+                        print("Failed to connect to service \(server.service?.name ?? "").", error)
+                        finish(.failure(ConnectionError.connectionFailed))
+                        
+                    case .cancelled:
+                        finish(.failure(OperationError.cancelled))
+                        
+                    case .ready:
+                        let connection = ServerConnection(server: server, connection: connection)
+                        finish(.success(connection))
+                        
+                    case .waiting: break
+                    case .setup: break
+                    case .preparing: break
+                    @unknown default: break
+                    }
+                }
+                
+                connection.start(queue: self.dispatchQueue)
+            }
+            
+            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.isWiredConnection
+            {
+                print("Waiting for new wired connection...")
+                
+                let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
+                CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
+                
+                _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
+                
+                if let connection = self.incomingConnections?.popLast()
+                {
+                    start(connection)
+                }
+                else
+                {
+                    finish(.failure(ALTServerError(.connectionFailed)))
+                }
+            }
+            else if let service = server.service
+            {
+                let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: .tcp)
+                start(connection)
+            }
+        }
     }
 }
 
@@ -62,6 +131,45 @@ private extension ServerManager
         guard !self.discoveredServers.contains(server) else { return }
         
         self.discoveredServers.append(server)
+    }
+    
+    func makeListener() -> NWListener
+    {
+        let listener = try! NWListener(using: .tcp, on: NWEndpoint.Port(rawValue: ALTDeviceListeningSocket)!)
+        listener.newConnectionHandler = { [weak self] (connection) in
+            self?.incomingConnections?.append(connection)
+            self?.incomingConnectionsSemaphore?.signal()
+        }
+        listener.stateUpdateHandler = { (state) in
+            switch state
+            {
+            case .ready: break
+            case .waiting, .setup: print("Listener socket waiting...")
+            case .cancelled: print("Listener socket cancelled.")
+            case .failed(let error): print("Listener socket failed:", error)
+            @unknown default: break
+            }
+        }
+        
+        return listener
+    }
+    
+    func startListeningForWiredConnections()
+    {
+        self.incomingConnections = []
+        self.incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
+        
+        self.connectionListener = self.makeListener()
+        self.connectionListener?.start(queue: self.dispatchQueue)
+    }
+    
+    func stopListeningForWiredConnection()
+    {
+        self.connectionListener?.cancel()
+        self.connectionListener = nil
+        
+        self.incomingConnections = nil
+        self.incomingConnectionsSemaphore = nil
     }
 }
 

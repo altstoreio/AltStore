@@ -12,7 +12,8 @@ import AltSign
 
 class AuthenticationViewController: UIViewController
 {
-    var authenticationHandler: (((ALTAccount, String)?) -> Void)?
+    var authenticationHandler: ((String, String, @escaping (Result<(ALTAccount, ALTAppleAPISession), Error>) -> Void) -> Void)?
+    var completionHandler: (((ALTAccount, ALTAppleAPISession, String)?) -> Void)?
     
     private weak var toastView: ToastView?
     
@@ -29,6 +30,8 @@ class AuthenticationViewController: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        self.signInButton.activityIndicatorView.style = .white
         
         for view in [self.appleIDBackgroundView!, self.passwordBackgroundView!, self.signInButton!]
         {
@@ -94,14 +97,16 @@ private extension AuthenticationViewController
         
         self.signInButton.isIndicatingActivity = true
         
-        ALTAppleAPI.shared.authenticate(appleID: emailAddress, password: password) { (account, error) in
-            do
+        self.authenticationHandler?(emailAddress, password) { (result) in
+            switch result
             {
-                let account = try Result(account, error).get()
-                self.authenticationHandler?((account, password))
-            }
-            catch
-            {
+            case .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
+                // Ignore
+                DispatchQueue.main.async {
+                    self.signInButton.isIndicatingActivity = false
+                }
+                
+            case .failure(let error):
                 DispatchQueue.main.async {
                     let toastView = ToastView(text: NSLocalizedString("Failed to Log In", comment: ""), detailText: error.localizedDescription)
                     toastView.textLabel.textColor = .altPink
@@ -111,6 +116,9 @@ private extension AuthenticationViewController
                     
                     self.signInButton.isIndicatingActivity = false
                 }
+                
+            case .success(let account, let session):
+                self.completionHandler?((account, session, password))
             }
             
             DispatchQueue.main.async {
@@ -121,7 +129,7 @@ private extension AuthenticationViewController
     
     @IBAction func cancel(_ sender: UIBarButtonItem)
     {
-        self.authenticationHandler?(nil)
+        self.completionHandler?(nil)
     }
 }
 

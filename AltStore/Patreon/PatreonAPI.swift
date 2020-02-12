@@ -11,7 +11,6 @@ import AuthenticationServices
 
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
-private let creatorAccessToken = "NSX1ts9Rf9IzKRCu8GjbwsZ6wll8bDtoJxNbPbp2eZo"
 
 private let campaignID = "2863968"
 
@@ -71,7 +70,7 @@ extension PatreonAPI
     }
 }
 
-class PatreonAPI
+class PatreonAPI: NSObject
 {
     static let shared = PatreonAPI()
     
@@ -84,8 +83,9 @@ class PatreonAPI
     private let session = URLSession(configuration: .ephemeral)
     private let baseURL = URL(string: "https://www.patreon.com/")!
     
-    private init()
+    private override init()
     {
+        super.init()
     }
 }
 
@@ -129,6 +129,11 @@ extension PatreonAPI
             }
         }
         
+        if #available(iOS 13.0, *)
+        {
+            self.authenticationSession?.presentationContextProvider = self
+        }
+        
         self.authenticationSession?.start()
     }
     
@@ -165,7 +170,8 @@ extension PatreonAPI
         var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(campaignID)/members")!
         components.queryItems = [URLQueryItem(name: "include", value: "currently_entitled_tiers,currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[tier]", value: "title"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status"),
+                                 URLQueryItem(name: "page[size]", value: "1000")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         
@@ -342,7 +348,9 @@ private extension PatreonAPI
         {
         case .none: break
         case .creator:
+            guard let creatorAccessToken = Keychain.shared.patreonCreatorAccessToken else { return completion(.failure(Error.invalidAccessToken)) }
             request.setValue("Bearer " + creatorAccessToken, forHTTPHeaderField: "Authorization")
+            
         case .user:
             guard let accessToken = Keychain.shared.patreonAccessToken else { return completion(.failure(Error.notAuthenticated)) }
             request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
@@ -382,5 +390,14 @@ private extension PatreonAPI
         }
         
         task.resume()
+    }
+}
+
+@available(iOS 13.0, *)
+extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
+{
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
+    {
+        return UIApplication.shared.keyWindow ?? UIWindow()
     }
 }

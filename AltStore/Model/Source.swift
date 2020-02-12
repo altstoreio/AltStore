@@ -11,7 +11,12 @@ import CoreData
 extension Source
 {
     static let altStoreIdentifier = "com.rileytestut.AltStore"
+    
+    #if STAGING
+    static let altStoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/apps-staging.json")!
+    #else
     static let altStoreSourceURL = URL(string: "https://cdn.altstore.io/file/altstore/apps.json")!
+    #endif
 }
 
 @objc(Source)
@@ -21,6 +26,9 @@ class Source: NSManagedObject, Fetchable, Decodable
     @NSManaged var name: String
     @NSManaged var identifier: String
     @NSManaged var sourceURL: URL
+    
+    /* Non-Core Data Properties */
+    var userInfo: [ALTSourceUserInfoKey: String]?
     
     /* Relationships */
     @objc(apps) @NSManaged private(set) var _apps: NSOrderedSet
@@ -49,6 +57,7 @@ class Source: NSManagedObject, Fetchable, Decodable
         case name
         case identifier
         case sourceURL
+        case userInfo
         case apps
         case news
     }
@@ -68,6 +77,9 @@ class Source: NSManagedObject, Fetchable, Decodable
         self.name = try container.decode(String.self, forKey: .name)
         self.identifier = try container.decode(String.self, forKey: .identifier)
         self.sourceURL = try container.decode(URL.self, forKey: .sourceURL)
+        
+        let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
+        self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
         
         let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
         for (index, app) in apps.enumerated()

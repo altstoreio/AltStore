@@ -72,47 +72,49 @@ private extension BrowseViewController
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
-            cell.nameLabel.text = app.name
-            cell.developerLabel.text = app.developerName
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
+            
             cell.subtitleLabel.text = app.subtitle
             cell.imageURLs = Array(app.screenshotURLs.prefix(2))
-            cell.appIconImageView.image = nil
-            cell.appIconImageView.isIndicatingActivity = true
-            cell.betaBadgeView.isHidden = !app.isBeta
+            cell.bannerView.titleLabel.text = app.name
+            cell.bannerView.subtitleLabel.text = app.developerName
+            cell.bannerView.betaBadgeView.isHidden = !app.isBeta
             
-            cell.actionButton.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
-            cell.actionButton.activityIndicatorView.style = .white
+            cell.bannerView.iconImageView.image = nil
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            
+            cell.bannerView.button.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
+            cell.bannerView.button.activityIndicatorView.style = .white
             
             // Explicitly set to false to ensure we're starting from a non-activity indicating state.
             // Otherwise, cell reuse can mess up some cached values.
-            cell.actionButton.isIndicatingActivity = false
+            cell.bannerView.button.isIndicatingActivity = false
             
             let tintColor = app.tintColor ?? .altPrimary
             cell.tintColor = tintColor
             
             if app.installedApp == nil
             {
-                cell.actionButton.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+                cell.bannerView.button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
                 
                 let progress = AppManager.shared.installationProgress(for: app)
-                cell.actionButton.progress = progress
-                cell.actionButton.isInverted = false
+                cell.bannerView.button.progress = progress
                 
                 if Date() < app.versionDate
                 {
-                    cell.actionButton.countdownDate = app.versionDate
+                    cell.bannerView.button.countdownDate = app.versionDate
                 }
                 else
                 {
-                    cell.actionButton.countdownDate = nil
+                    cell.bannerView.button.countdownDate = nil
                 }
             }
             else
             {
-                cell.actionButton.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                cell.actionButton.progress = nil
-                cell.actionButton.isInverted = true
-                cell.actionButton.countdownDate = nil
+                cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                cell.bannerView.button.progress = nil
+                cell.bannerView.button.countdownDate = nil
             }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
@@ -135,8 +137,8 @@ private extension BrowseViewController
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! BrowseCollectionViewCell
-            cell.appIconImageView.isIndicatingActivity = false
-            cell.appIconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
+            cell.bannerView.iconImageView.image = image
             
             if let error = error
             {
@@ -253,8 +255,8 @@ private extension BrowseViewController
                 {
                 case .failure(OperationError.cancelled): break // Ignore
                 case .failure(let error):
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                 
                 case .success: print("Installed app:", app.bundleIdentifier)
                 }
@@ -286,8 +288,8 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
         let maxVisibleScreenshots = 2 as CGFloat
         let aspectRatio: CGFloat = 16.0 / 9.0
         
-        let layout = collectionViewLayout as! UICollectionViewFlowLayout
-        let padding = (layout.minimumInteritemSpacing * (maxVisibleScreenshots - 1))
+        let layout = self.prototypeCell.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        let padding = (layout.minimumInteritemSpacing * (maxVisibleScreenshots - 1)) + layout.sectionInset.left + layout.sectionInset.right
 
         self.dataSource.cellConfigurationHandler(self.prototypeCell, item, indexPath)
 
@@ -295,6 +297,8 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
         widthConstraint.isActive = true
         defer { widthConstraint.isActive = false }
 
+        // Manually update cell width & layout so we can accurately calculate screenshot sizes.
+        self.prototypeCell.frame.size.width = widthConstraint.constant
         self.prototypeCell.layoutIfNeeded()
         
         let collectionViewWidth = self.prototypeCell.screenshotsCollectionView.bounds.width
@@ -302,6 +306,7 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
         let screenshotHeight = screenshotWidth * aspectRatio
 
         let heightConstraint = self.prototypeCell.screenshotsCollectionView.heightAnchor.constraint(equalToConstant: screenshotHeight)
+        heightConstraint.priority = .defaultHigh // Prevent temporary unsatisfiable constraints error.
         heightConstraint.isActive = true
         defer { heightConstraint.isActive = false }
 

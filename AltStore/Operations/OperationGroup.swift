@@ -18,6 +18,8 @@ class OperationGroup
     var completionHandler: ((Result<[String: Result<InstalledApp, Error>], Error>) -> Void)?
     var beginInstallationHandler: ((InstalledApp) -> Void)?
     
+    var session: ALTAppleAPISession?
+    
     var server: Server?
     var signer: ALTSigner?
     
@@ -73,7 +75,12 @@ class OperationGroup
     
     func progress(for app: AppProtocol) -> Progress?
     {
-        let progress = self.progressByBundleIdentifier[app.bundleIdentifier]
+        return self.progress(forAppWithBundleIdentifier: app.bundleIdentifier)
+    }
+    
+    func progress(forAppWithBundleIdentifier bundleIdentifier: String) -> Progress?
+    {
+        let progress = self.progressByBundleIdentifier[bundleIdentifier]
         return progress
     }
 }

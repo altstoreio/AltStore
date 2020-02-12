@@ -194,13 +194,7 @@ private extension DatabaseManager
             }
             
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.version = localApp.version
-            
-            if let provisioningProfile = localApp.provisioningProfile
-            {
-                installedApp.refreshedDate = provisioningProfile.creationDate
-                installedApp.expirationDate = provisioningProfile.expirationDate
-            }
+            installedApp.update(resignedApp: localApp)
             
             do
             {

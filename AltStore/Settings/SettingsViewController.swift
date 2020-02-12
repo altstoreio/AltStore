@@ -52,6 +52,12 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     
+    @IBOutlet private var versionLabel: UILabel!
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
@@ -73,6 +79,17 @@ class SettingsViewController: UITableViewController
         debugModeGestureRecognizer.direction = .up
         debugModeGestureRecognizer.numberOfTouchesRequired = 3
         self.tableView.addGestureRecognizer(debugModeGestureRecognizer)
+        
+        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        {
+            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
+        }
+        else
+        {
+            self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
+        }
+        
+        self.tableView.contentInset.bottom = 20
         
         self.update()
     }
@@ -180,6 +197,19 @@ private extension SettingsViewController
     {
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(OperationError.cancelled):
+                    // Ignore
+                    break
+                    
+                case .failure(let error):
+                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    
+                case .success: break
+                }
+                
                 self.update()
             }
         }

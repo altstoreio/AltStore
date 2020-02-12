@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ALTDeviceID</key>
-	<string>1c3416b7b0ab68773e6e7eb7f0d110f7c9353acc</string>
+	<string>00008030-001948590202802E</string>
 	<key>ALTServerID</key>
 	<string>1AAAB6FD-E8CE-4B70-8F26-4073215C03B0</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -36,7 +36,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -120,7 +120,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 </dict>
 </plist>

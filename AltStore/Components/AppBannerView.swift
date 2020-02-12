@@ -11,15 +11,26 @@ import Roxas
 
 class AppBannerView: RSTNibView
 {
+    private var originalTintColor: UIColor?
+    
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var subtitleLabel: UILabel!
     @IBOutlet var iconImageView: AppIconImageView!
     @IBOutlet var button: PillButton!
+    @IBOutlet var buttonLabel: UILabel!
     @IBOutlet var betaBadgeView: UIView!
+    
+    @IBOutlet var backgroundEffectView: UIVisualEffectView!
+    @IBOutlet private var vibrancyView: UIVisualEffectView!
     
     override func tintColorDidChange()
     {
         super.tintColorDidChange()
+        
+        if self.tintAdjustmentMode != .dimmed
+        {
+            self.originalTintColor = self.tintColor
+        }
         
         self.update()
     }
@@ -32,9 +43,7 @@ private extension AppBannerView
         self.clipsToBounds = true
         self.layer.cornerRadius = 22
         
-        self.subtitleLabel.textColor = self.tintColor
-        self.button.tintColor = self.tintColor
-        
-        self.backgroundColor = self.tintColor.withAlphaComponent(0.1)
+        self.subtitleLabel.textColor = self.originalTintColor ?? self.tintColor        
+        self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
     }
 }

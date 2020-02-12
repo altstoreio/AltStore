@@ -44,6 +44,11 @@ class Account: NSManagedObject, Fetchable
     {
         super.init(entity: Account.entity(), insertInto: context)
         
+        self.update(account: account)
+    }
+    
+    func update(account: ALTAccount)
+    {
         self.appleID = account.appleID
         self.identifier = account.identifier
         

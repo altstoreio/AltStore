@@ -17,12 +17,17 @@ extension ALTTeamType
         switch self
         {
         case .free: return NSLocalizedString("Free Developer Account", comment: "")
-        case .individual: return NSLocalizedString("Individual", comment: "")
+        case .individual: return NSLocalizedString("Developer", comment: "")
         case .organization: return NSLocalizedString("Organization", comment: "")
         case .unknown: fallthrough
         @unknown default: return NSLocalizedString("Unknown", comment: "")
         }
     }
+}
+
+extension Team
+{
+    static let maximumFreeAppIDs = 10
 }
 
 @objc(Team)
@@ -37,6 +42,8 @@ class Team: NSManagedObject, Fetchable
     
     /* Relationships */
     @NSManaged private(set) var account: Account!
+    @NSManaged var installedApps: Set<InstalledApp>
+    @NSManaged private(set) var appIDs: Set<AppID>
     
     var altTeam: ALTTeam?
     
@@ -49,13 +56,18 @@ class Team: NSManagedObject, Fetchable
     {
         super.init(entity: Team.entity(), insertInto: context)
         
+        self.account = account
+        
+        self.update(team: team)
+    }
+    
+    func update(team: ALTTeam)
+    {
         self.altTeam = team
         
         self.name = team.name
         self.identifier = team.identifier
         self.type = team.type
-        
-        self.account = account
     }
 }
 

@@ -27,17 +27,10 @@ class AppViewController: UIViewController
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var contentView: UIView!
     
-    @IBOutlet private var headerView: UIView!
-    @IBOutlet private var headerContentView: UIView!
+    @IBOutlet private var bannerView: AppBannerView!
     
     @IBOutlet private var backButton: UIButton!
     @IBOutlet private var backButtonContainerView: UIVisualEffectView!
-    
-    @IBOutlet private var nameLabel: UILabel!
-    @IBOutlet private var developerLabel: UILabel!
-    @IBOutlet private var downloadButton: PillButton!
-    @IBOutlet private var appIconImageView: UIImageView!
-    @IBOutlet private var betaBadgeView: UIImageView!
     
     @IBOutlet private var backgroundAppIconImageView: UIImageView!
     @IBOutlet private var backgroundBlurView: UIVisualEffectView!
@@ -50,6 +43,12 @@ class AppViewController: UIViewController
     private var _shouldResetLayout = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
+    
+    private var _preferredStatusBarStyle: UIStatusBarStyle = .default
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return _preferredStatusBarStyle
+    }
     
     override func viewDidLoad()
     {
@@ -75,21 +74,22 @@ class AppViewController: UIViewController
         self.contentViewController.tableView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
         self.contentViewController.tableView.showsVerticalScrollIndicator = false
         
-        self.headerView.frame = CGRect(x: 0, y: 0, width: 300, height: 93)
-        self.headerView.layer.cornerRadius = 24
-        self.headerView.layer.masksToBounds = true
-        
         // Bring to front so the scroll indicators are visible.
         self.view.bringSubviewToFront(self.scrollView)
         self.scrollView.isUserInteractionEnabled = false
         
-        self.nameLabel.text = self.app.name
-        self.developerLabel.text = self.app.developerName
-        self.developerLabel.textColor = self.app.tintColor
-        self.appIconImageView.image = nil
-        self.appIconImageView.tintColor = self.app.tintColor
-        self.downloadButton.tintColor = self.app.tintColor
-        self.betaBadgeView.isHidden = !self.app.isBeta
+        self.bannerView.frame = CGRect(x: 0, y: 0, width: 300, height: 93)
+        self.bannerView.backgroundEffectView.effect = UIBlurEffect(style: .regular)
+        self.bannerView.backgroundEffectView.backgroundColor = .clear
+        self.bannerView.titleLabel.text = self.app.name
+        self.bannerView.subtitleLabel.text = self.app.developerName
+        self.bannerView.iconImageView.image = nil
+        self.bannerView.iconImageView.tintColor = self.app.tintColor
+        self.bannerView.button.tintColor = self.app.tintColor
+        self.bannerView.betaBadgeView.isHidden = !self.app.isBeta
+        self.bannerView.tintColor = self.app.tintColor
+        
+        self.bannerView.button.addTarget(self, action: #selector(AppViewController.performAppAction(_:)), for: .primaryActionTriggered)
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         
@@ -107,12 +107,13 @@ class AppViewController: UIViewController
         
         NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.didChangeApp(_:)), name: .NSManagedObjectContextObjectsDidChange, object: DatabaseManager.shared.viewContext)
         NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppViewController.didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         self._backgroundBlurEffect = self.backgroundBlurView.effect as? UIBlurEffect
         self._backgroundBlurTintColor = self.backgroundBlurView.contentView.backgroundColor
         
         // Load Images
-        for imageView in [self.appIconImageView!, self.backgroundAppIconImageView!, self.navigationBarAppIconImageView!]
+        for imageView in [self.bannerView.iconImageView!, self.backgroundAppIconImageView!, self.navigationBarAppIconImageView!]
         {
             imageView.isIndicatingActivity = true
             
@@ -219,7 +220,7 @@ class AppViewController: UIViewController
         var backButtonFrame = CGRect(x: inset, y: statusBarHeight,
                                      width: backButtonSize.width + 20, height: backButtonSize.height + 20)
         
-        var headerFrame = CGRect(x: inset, y: 0, width: self.view.bounds.width - inset * 2, height: self.headerView.bounds.height)
+        var headerFrame = CGRect(x: inset, y: 0, width: self.view.bounds.width - inset * 2, height: self.bannerView.bounds.height)
         var contentFrame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         var backgroundIconFrame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.width)
         
@@ -305,12 +306,11 @@ class AppViewController: UIViewController
         
         // Set frames.
         self.contentViewController.view.superview?.frame = contentFrame
-        self.headerView.frame = headerFrame
+        self.bannerView.frame = headerFrame
         self.backgroundAppIconImageView.frame = backgroundIconFrame
         self.backgroundBlurView.frame = backgroundIconFrame
         self.backButtonContainerView.frame = backButtonFrame
         
-        self.headerContentView.frame = CGRect(x: 0, y: 0, width: self.headerView.bounds.width, height: self.headerView.bounds.height)
         self.contentViewControllerShadowView.frame = self.contentViewController.view.frame
         
         self.backButtonContainerView.layer.cornerRadius = self.backButtonContainerView.bounds.midY
@@ -325,6 +325,14 @@ class AppViewController: UIViewController
         
         self.scrollView.contentSize = contentSize
         self.scrollView.contentOffset = contentOffset
+        
+        self.bannerView.backgroundEffectView.backgroundColor = .clear
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?)
+    {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self._shouldResetLayout = true
     }
     
     deinit
@@ -350,7 +358,7 @@ private extension AppViewController
 {
     func update()
     {
-        for button in [self.downloadButton!, self.navigationBarDownloadButton!]
+        for button in [self.bannerView.button!, self.navigationBarDownloadButton!]
         {
             button.tintColor = self.app.tintColor
             button.isIndicatingActivity = false
@@ -358,12 +366,10 @@ private extension AppViewController
             if self.app.installedApp == nil
             {
                 button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-                button.isInverted = false
             }
             else
             {
                 button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                button.isInverted = true
             }
             
             let progress = AppManager.shared.installationProgress(for: self.app)
@@ -372,12 +378,12 @@ private extension AppViewController
         
         if Date() < self.app.versionDate
         {
-            self.downloadButton.countdownDate = self.app.versionDate
+            self.bannerView.button.countdownDate = self.app.versionDate
             self.navigationBarDownloadButton.countdownDate = self.app.versionDate
         }
         else
         {
-            self.downloadButton.countdownDate = nil
+            self.bannerView.button.countdownDate = nil
             self.navigationBarDownloadButton.countdownDate = nil
         }
         
@@ -389,18 +395,29 @@ private extension AppViewController
     func showNavigationBar(for navigationController: UINavigationController? = nil)
     {
         let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.alpha = 1.0
-        navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = .altPrimary
+        navigationController?.navigationBar.setNeedsLayout()
+        
+        if self.traitCollection.userInterfaceStyle == .dark
+        {
+            self._preferredStatusBarStyle = .lightContent
+        }
+        else
+        {
+            self._preferredStatusBarStyle = .default
+        }
+        
+        navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
     func hideNavigationBar(for navigationController: UINavigationController? = nil)
     {
         let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.alpha = 0.0
-        navigationController?.navigationBar.barTintColor = .white
+        
+        self._preferredStatusBarStyle = .lightContent
+        navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
     func prepareBlur()
@@ -445,7 +462,7 @@ private extension AppViewController
         self.navigationBarAnimator = nil
         
         self.hideNavigationBar()
-        self.navigationController?.navigationBar.barTintColor = .white
+        
         self.contentViewController.view.layer.cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
     }
 }
@@ -485,18 +502,20 @@ extension AppViewController
             catch
             {
                 DispatchQueue.main.async {
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                 }
             }
             
             DispatchQueue.main.async {
-                self.downloadButton.progress = nil
+                self.bannerView.button.progress = nil
+                self.navigationBarDownloadButton.progress = nil
                 self.update()
             }
         }
         
-        self.downloadButton.progress = progress
+        self.bannerView.button.progress = progress
+        self.navigationBarDownloadButton.progress = progress
     }
     
     func open(_ installedApp: InstalledApp)
@@ -519,6 +538,15 @@ private extension AppViewController
     {
         guard let navigationController = self.navigationController, navigationController.topViewController == self else { return }
         
+        self._shouldResetLayout = true
+        self.view.setNeedsLayout()
+    }
+    
+    @objc func didBecomeActive(_ notification: Notification)
+    {
+        guard let navigationController = self.navigationController, navigationController.topViewController == self else { return }
+        
+        // Fixes Navigation Bar appearing after app becomes inactive -> active again.
         self._shouldResetLayout = true
         self.view.setNeedsLayout()
     }

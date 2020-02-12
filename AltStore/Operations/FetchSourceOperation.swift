@@ -67,6 +67,16 @@ class FetchSourceOperation: ResultOperation<Source>
                     decoder.managedObjectContext = context
                     
                     let source = try decoder.decode(Source.self, from: data)
+                    
+                    if let patreonAccessToken = source.userInfo?[.patreonAccessToken]
+                    {
+                        Keychain.shared.patreonCreatorAccessToken = patreonAccessToken
+                    }
+                    
+                    #if STAGING
+                    source.sourceURL = self.sourceURL
+                    #endif
+                    
                     self.finish(.success(source))
                 }
                 catch

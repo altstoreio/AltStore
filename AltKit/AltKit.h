@@ -7,3 +7,6 @@
 //
 
 #import "NSError+ALTServerError.h"
+#import "CFNotificationName+AltStore.h"
+
+extern uint16_t ALTDeviceListeningSocket;

@@ -25,20 +25,27 @@ extension UpdateCollectionViewCell
         }
     }
     
-    @IBOutlet var appIconImageView: UIImageView!
-    @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var dateLabel: UILabel!
-    @IBOutlet var updateButton: PillButton!
+    @IBOutlet var bannerView: AppBannerView!
     @IBOutlet var versionDescriptionTitleLabel: UILabel!
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
-    @IBOutlet var betaBadgeView: UIImageView!
+    
+    @IBOutlet private var blurView: UIVisualEffectView!
+    
+    private var originalTintColor: UIColor?
             
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        self.contentView.layer.cornerRadius = 20
-        self.contentView.layer.masksToBounds = true
+        // Prevent temporary unsatisfiable constraint errors due to UIView-Encapsulated-Layout constraints.
+        self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.contentView.preservesSuperviewLayoutMargins = true
+        
+        self.bannerView.backgroundEffectView.isHidden = true
+        self.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
+                
+        self.blurView.layer.cornerRadius = 20
+        self.blurView.layer.masksToBounds = true
         
         self.update()
     }
@@ -46,6 +53,11 @@ extension UpdateCollectionViewCell
     override func tintColorDidChange()
     {
         super.tintColorDidChange()
+        
+        if self.tintAdjustmentMode != .dimmed
+        {
+            self.originalTintColor = self.tintColor
+        }
         
         self.update()
     }
@@ -86,12 +98,9 @@ private extension UpdateCollectionViewCell
         case .expanded: self.versionDescriptionTextView.isCollapsed = false
         }
         
-        self.versionDescriptionTitleLabel.textColor = self.tintColor
-        self.contentView.backgroundColor = self.tintColor.withAlphaComponent(0.1)
-        
-        self.updateButton.setTitleColor(self.tintColor, for: .normal)
-        self.updateButton.backgroundColor = self.tintColor.withAlphaComponent(0.15)
-        self.updateButton.progressTintColor = self.tintColor        
+        self.versionDescriptionTitleLabel.textColor = self.originalTintColor ?? self.tintColor
+        self.blurView.backgroundColor = self.originalTintColor ?? self.tintColor
+        self.bannerView.button.progressTintColor = self.originalTintColor ?? self.tintColor
         
         self.setNeedsLayout()
         self.layoutIfNeeded()

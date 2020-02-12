@@ -24,6 +24,8 @@ enum OperationError: LocalizedError
     case invalidParameters
     
     case iOSVersionNotSupported(ALTApplication)
+    case sideloadingAppNotSupported(ALTApplication)
+    case maximumAppIDLimitReached(application: ALTApplication, requiredAppIDs: Int, availableAppIDs: Int, nextExpirationDate: Date)
     
     case noSources
     
@@ -49,6 +51,53 @@ enum OperationError: LocalizedError
             
             let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
             return localizedDescription
+            
+        case .sideloadingAppNotSupported(let app):
+            let localizedDescription = String(format: NSLocalizedString("Sideloading “%@” Not Supported", comment: ""), app.name)
+            return localizedDescription
+            
+        case .maximumAppIDLimitReached: return NSLocalizedString("Cannot register more than 10 App IDs.", comment: "")
+        }
+    }
+    
+    var recoverySuggestion: String? {
+        switch self
+        {
+        case .maximumAppIDLimitReached(let application, let requiredAppIDs, let availableAppIDs, let date):
+            let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")
+            let message: String
+            
+            if requiredAppIDs > 1
+            {
+                let availableText: String
+                
+                switch availableAppIDs
+                {
+                case 0: availableText = NSLocalizedString("none are available", comment: "")
+                case 1: availableText = NSLocalizedString("only 1 is available", comment: "")
+                default: availableText = String(format: NSLocalizedString("only %@ are available", comment: ""), NSNumber(value: availableAppIDs))
+                }
+                
+                let prefixMessage = String(format: NSLocalizedString("%@ requires %@ App IDs, but %@.", comment: ""), application.name, NSNumber(value: requiredAppIDs), availableText)
+                message = prefixMessage + " " + baseMessage
+            }
+            else
+            {
+                let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute], from: Date(), to: date)
+                
+                let dateComponentsFormatter = DateComponentsFormatter()
+                dateComponentsFormatter.maximumUnitCount = 1
+                dateComponentsFormatter.unitsStyle = .full
+                
+                let remainingTime = dateComponentsFormatter.string(from: dateComponents)!
+                
+                let remainingTimeMessage = String(format: NSLocalizedString("You can register another App ID in %@.", comment: ""), remainingTime)
+                message = baseMessage + " " + remainingTimeMessage
+            }
+            
+            return message
+            
+        default: return nil
         }
     }
 }

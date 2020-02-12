@@ -61,6 +61,18 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             
         case ALTServerErrorUnsupportediOSVersion:
             return NSLocalizedString(@"Your device must be running iOS 12.2 or later to install AltStore.", @"");
+            
+        case ALTServerErrorUnknownRequest:
+            return NSLocalizedString(@"AltServer does not support this request.", @"");
+            
+        case ALTServerErrorUnknownResponse:
+            return NSLocalizedString(@"Received an unknown response from AltServer.", @"");
+            
+        case ALTServerErrorInvalidAnisetteData:
+            return NSLocalizedString(@"Invalid anisette data.", @"");
+            
+        case ALTServerErrorPluginNotFound:
+            return NSLocalizedString(@"Could not connect to Mail plug-in. Please make sure the plug-in is installed and Mail is running, then try again.", @"");
     }
 }
     

@@ -11,8 +11,20 @@ import CoreData
 
 import AltSign
 
+protocol InstalledAppProtocol: Fetchable
+{
+    var name: String { get }
+    var bundleIdentifier: String { get }
+    var resignedBundleIdentifier: String { get }
+    var version: String { get }
+    
+    var refreshedDate: Date { get }
+    var expirationDate: Date { get }
+    var installedDate: Date { get }
+}
+
 @objc(InstalledApp)
-class InstalledApp: NSManagedObject, Fetchable
+class InstalledApp: NSManagedObject, InstalledAppProtocol
 {
     /* Properties */
     @NSManaged var name: String
@@ -22,9 +34,12 @@ class InstalledApp: NSManagedObject, Fetchable
     
     @NSManaged var refreshedDate: Date
     @NSManaged var expirationDate: Date
+    @NSManaged var installedDate: Date
     
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
+    @NSManaged var team: Team?
+    @NSManaged var appExtensions: Set<InstalledExtension>
     
     var isSideloaded: Bool {
         return self.storeApp == nil
@@ -39,10 +54,21 @@ class InstalledApp: NSManagedObject, Fetchable
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
-        self.name = resignedApp.name
         self.bundleIdentifier = originalBundleIdentifier
-        self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         
+        self.refreshedDate = Date()
+        self.installedDate = Date()
+        
+        self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
+        
+        self.update(resignedApp: resignedApp)
+    }
+    
+    func update(resignedApp: ALTApplication)
+    {
+        self.name = resignedApp.name
+        
+        self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
 
         if let provisioningProfile = resignedApp.provisioningProfile
@@ -50,11 +76,6 @@ class InstalledApp: NSManagedObject, Fetchable
             self.refreshedDate = provisioningProfile.creationDate
             self.expirationDate = provisioningProfile.expirationDate
         }
-        else
-        {
-            self.refreshedDate = Date()
-            self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
-        }        
     }
 }
 
@@ -187,6 +208,12 @@ extension InstalledApp
         return directoryURL
     }
     
+    class func installedAppUTI(forBundleIdentifier bundleIdentifier: String) -> String
+    {
+        let installedAppUTI = "io.altstore.Installed." + bundleIdentifier
+        return installedAppUTI
+    }
+    
     var directoryURL: URL {
         return InstalledApp.directoryURL(for: self)
     }
@@ -197,5 +224,9 @@ extension InstalledApp
     
     var refreshedIPAURL: URL {
         return InstalledApp.refreshedIPAURL(for: self)
+    }
+    
+    var installedAppUTI: String {
+        return InstalledApp.installedAppUTI(forBundleIdentifier: self.resignedBundleIdentifier)
     }
 }

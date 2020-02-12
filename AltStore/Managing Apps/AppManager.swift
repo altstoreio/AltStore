@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import UserNotifications
+import MobileCoreServices
 
 import AltSign
 import AltKit
@@ -20,6 +21,8 @@ extension AppManager
     static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
+    
+    static let whitelistedSideloadingBundleIDs: Set<String> = ["science.xnu.undecimus"]
 }
 
 class AppManager
@@ -55,16 +58,32 @@ extension AppManager
         do
         {
             let installedApps = try context.fetch(fetchRequest)
-            for app in installedApps where app.storeApp != nil
+            
+            if UserDefaults.standard.legacySideloadedApps == nil
             {
+                // First time updating apps since updating AltStore to use custom UTIs,
+                // so cache all existing apps temporarily to prevent us from accidentally
+                // deleting them due to their custom UTI not existing (yet).
+                let apps = installedApps.map { $0.bundleIdentifier }
+                UserDefaults.standard.legacySideloadedApps = apps
+            }
+            
+            let legacySideloadedApps = Set(UserDefaults.standard.legacySideloadedApps ?? [])
+            
+            for app in installedApps
+            {
+                let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                
                 if app.bundleIdentifier == StoreApp.altstoreAppID
                 {
                     self.scheduleExpirationWarningLocalNotification(for: app)
                 }
                 else
                 {
-                    if !UIApplication.shared.canOpenURL(app.openAppURL)
+                    if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
                     {
+                        // This UTI is not declared by any apps, which means this app has been deleted by the user.
+                        // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
                         context.delete(app)
                     }
                 }
@@ -80,13 +99,37 @@ extension AppManager
         #endif
     }
     
-    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<ALTSigner, Error>) -> Void)
+    @discardableResult
+    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void) -> OperationGroup
     {
-        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
+        let group = OperationGroup()
+        
+        let findServerOperation = FindServerOperation(group: group)
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let server): group.server = server
+            }
+        }
+        self.operationQueue.addOperation(findServerOperation)
+        
+        let authenticationOperation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
         authenticationOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let signer, let session):
+                group.signer = signer
+                group.session = session
+            }
+            
             completionHandler(result)
         }
+        authenticationOperation.addDependency(findServerOperation)
         self.operationQueue.addOperation(authenticationOperation)
+        
+        return group
     }
 }
 
@@ -112,6 +155,23 @@ extension AppManager
                 }
             }
             self.operationQueue.addOperation(fetchSourceOperation)
+        }
+    }
+    
+    func fetchAppIDs(completionHandler: @escaping (Result<([AppID], NSManagedObjectContext), Error>) -> Void)
+    {
+        var group: OperationGroup!
+        group = self.authenticate(presentingViewController: nil) { (result) in
+            switch result
+            {
+            case .failure(let error):
+                completionHandler(.failure(error))
+                
+            case .success:
+                let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+                fetchAppIDsOperation.resultHandler = completionHandler
+                self.operationQueue.addOperation(fetchAppIDsOperation)
+            }
         }
     }
 }
@@ -149,7 +209,7 @@ extension AppManager
     
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
     {
-        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil }
+        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil || self.refreshProgress(for: $0)?.isCancelled == true }
 
         let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
         
@@ -183,18 +243,6 @@ private extension AppManager
         let group = group ?? OperationGroup()
         var operations = [Operation]()
         
-        
-        /* Authenticate */
-        let authenticationOperation = AuthenticationOperation(presentingViewController: presentingViewController)
-        authenticationOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success(let signer): group.signer = signer
-            }
-        }
-        operations.append(authenticationOperation)
-        
         /* Find Server */
         let findServerOperation = FindServerOperation(group: group)
         findServerOperation.resultHandler = { (result) in
@@ -204,9 +252,55 @@ private extension AppManager
             case .success(let server): group.server = server
             }
         }
-        findServerOperation.addDependency(authenticationOperation)
         operations.append(findServerOperation)
         
+        let authenticationOperation: AuthenticationOperation?
+        
+        if group.signer == nil || group.session == nil
+        {
+            /* Authenticate */
+            let operation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
+            operation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): group.error = error
+                case .success(let signer, let session):
+                    group.signer = signer
+                    group.session = session
+                }
+            }
+            operations.append(operation)
+            operation.addDependency(findServerOperation)
+            
+            authenticationOperation = operation
+        }
+        else
+        {
+            authenticationOperation = nil
+        }
+        
+        let refreshAnisetteDataOperation = FetchAnisetteDataOperation(group: group)
+        refreshAnisetteDataOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let anisetteData): group.session?.anisetteData = anisetteData
+            }
+        }
+        refreshAnisetteDataOperation.addDependency(authenticationOperation ?? findServerOperation)
+        operations.append(refreshAnisetteDataOperation)
+        
+        /* Prepare Developer Account */
+        let prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(group: group)
+        prepareDeveloperAccountOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success: break
+            }
+        }
+        prepareDeveloperAccountOperation.addDependency(refreshAnisetteDataOperation)
+        operations.append(prepareDeveloperAccountOperation)
         
         for app in apps
         {
@@ -220,7 +314,7 @@ private extension AppManager
                 guard let resignedApp = self.process(result, context: context) else { return }
                 context.resignedApp = resignedApp
             }
-            resignAppOperation.addDependency(findServerOperation)
+            resignAppOperation.addDependency(prepareDeveloperAccountOperation)
             progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
             operations.append(resignAppOperation)
             
@@ -267,8 +361,8 @@ private extension AppManager
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
             sendAppOperation.resultHandler = { (result) in
-                guard let connection = self.process(result, context: context) else { return }
-                context.connection = connection
+                guard let installationConnection = self.process(result, context: context) else { return }
+                context.installationConnection = installationConnection
             }
             progress.addChild(sendAppOperation.progress, withPendingUnitCount: 10)
             sendAppOperation.addDependency(resignAppOperation)
@@ -312,6 +406,28 @@ private extension AppManager
             group.set(progress, for: app)
         }
         
+        // Refresh anisette data after downloading all apps to prevent session from expiring.
+        for case let downloadOperation as DownloadAppOperation in operations
+        {
+            refreshAnisetteDataOperation.addDependency(downloadOperation)
+        }
+        
+        /* Cache App IDs */
+        let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+        fetchAppIDsOperation.resultHandler = { (result) in
+            do
+            {
+                let (_, context) = try result.get()
+                try context.save()
+            }
+            catch
+            {
+                print("Failed to fetch App IDs.", error)
+            }
+        }
+        operations.forEach { fetchAppIDsOperation.addDependency($0) }
+        operations.append(fetchAppIDsOperation)
+        
         group.addOperations(operations)
         
         return group
@@ -344,7 +460,11 @@ private extension AppManager
             guard !context.isFinished else { return }
             context.isFinished = true
             
-            self.refreshProgress[context.bundleIdentifier] = nil
+            if let progress = self.refreshProgress[context.bundleIdentifier], progress == context.group.progress(forAppWithBundleIdentifier: context.bundleIdentifier)
+            {
+                // Only remove progress if it hasn't been replaced by another one.
+                self.refreshProgress[context.bundleIdentifier] = nil
+            }
             
             if let error = context.error
             {
@@ -376,10 +496,13 @@ private extension AppManager
                     do { try installedApp.managedObjectContext?.save() }
                     catch { print("Error saving installed app.", error) }
                 }
-            }
-            
-            do { try FileManager.default.removeItem(at: context.temporaryDirectory) }
-            catch { print("Failed to remove temporary directory.", error) }
+                
+                if let index = UserDefaults.standard.legacySideloadedApps?.firstIndex(of: installedApp.bundleIdentifier)
+                {
+                    // No longer a legacy sideloaded app, so remove it from cached list.
+                    UserDefaults.standard.legacySideloadedApps?.remove(at: index)
+                }
+            }            
             
             print("Finished operation!", context.bundleIdentifier)
 

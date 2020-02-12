@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import AppKit
 
 import AltKit
 
@@ -53,10 +54,13 @@ class ConnectionManager
     private lazy var listener = self.makeListener()
     private let dispatchQueue = DispatchQueue(label: "com.rileytestut.AltServer.connections", qos: .utility)
     
-    private var connections = [NWConnection]()
+    private var connections = [ClientConnection]()
+    private var notificationConnections = [ALTDevice: NotificationConnection]()
     
     private init()
     {
+        NotificationCenter.default.addObserver(self, selector: #selector(ConnectionManager.deviceDidConnect(_:)), name: .deviceManagerDeviceDidConnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ConnectionManager.deviceDidDisconnect(_:)), name: .deviceManagerDeviceDidDisconnect, object: nil)
     }
     
     func start()
@@ -74,6 +78,16 @@ class ConnectionManager
         {
         case .running: self.listener.cancel()
         default: break
+        }
+    }
+    
+    func disconnect(_ connection: ClientConnection)
+    {
+        connection.disconnect()
+        
+        if let index = self.connections.firstIndex(where: { $0 === connection })
+        {
+            self.connections.remove(at: index)
         }
     }
 }
@@ -126,68 +140,18 @@ private extension ConnectionManager
         }
         
         listener.newConnectionHandler = { [weak self] (connection) in
-            self?.awaitRequest(from: connection)
+            self?.prepare(connection)
         }
         
         return listener
     }
     
-    func disconnect(_ connection: NWConnection)
+    func prepare(_ connection: NWConnection)
     {
-        switch connection.state
-        {
-        case .cancelled, .failed:
-            print("Disconnecting from \(connection.endpoint)...")
-            
-            if let index = self.connections.firstIndex(where: { $0 === connection })
-            {
-                self.connections.remove(at: index)
-            }
-            
-        default:
-            // State update handler will call this method again.
-            connection.cancel()
-        }
-    }
-    
-    func process(data: Data?, error: NWError?, from connection: NWConnection) throws -> Data
-    {
-        do
-        {
-            do
-            {
-                guard let data = data else { throw error ?? ALTServerError(.unknown) }
-                return data
-            }
-            catch let error as NWError
-            {
-                print("Error receiving data from connection \(connection)", error)
-                
-                throw ALTServerError(.lostConnection)
-            }
-            catch
-            {
-                throw error
-            }
-        }
-        catch let error as ALTServerError
-        {
-            throw error
-        }
-        catch
-        {
-            preconditionFailure("A non-ALTServerError should never be thrown from this method.")
-        }
-    }
-}
-
-private extension ConnectionManager
-{
-    func awaitRequest(from connection: NWConnection)
-    {
-        guard !self.connections.contains(where: { $0 === connection }) else { return }
-        self.connections.append(connection)
+        let clientConnection = ClientConnection(connection: .wireless(connection))
         
+        guard !self.connections.contains(where: { $0 === clientConnection }) else { return }
+        self.connections.append(clientConnection)
         
         connection.stateUpdateHandler = { [weak self] (state) in
             switch state
@@ -196,20 +160,17 @@ private extension ConnectionManager
                 
             case .ready:
                 print("Connected to client:", connection.endpoint)
-                
-                self?.receiveApp(from: connection) { (result) in
-                    self?.finish(connection: connection, error: result.error)
-                }
+                self?.handleRequest(for: clientConnection)
                 
             case .waiting:
                 print("Waiting for connection...")
                 
             case .failed(let error):
                 print("Failed to connect to service \(connection.endpoint).", error)
-                self?.disconnect(connection)
+                self?.disconnect(clientConnection)
                 
             case .cancelled:
-                self?.disconnect(connection)
+                self?.disconnect(clientConnection)
                 
             @unknown default: break
             }
@@ -217,8 +178,124 @@ private extension ConnectionManager
         
         connection.start(queue: self.dispatchQueue)
     }
+}
+
+private extension ConnectionManager
+{
+    func startNotificationConnection(to device: ALTDevice)
+    {
+        ALTDeviceManager.shared.startNotificationConnection(to: device) { (connection, error) in
+            guard let connection = connection else { return }
+            
+            let notifications: [CFNotificationName] = [.wiredServerConnectionAvailableRequest, .wiredServerConnectionStartRequest]
+            connection.startListening(forNotifications: notifications.map { String($0.rawValue) }) { (success, error) in
+                guard success else { return }
+                
+                connection.receivedNotificationHandler = { [weak self, weak connection] (notification) in
+                    guard let self = self, let connection = connection else { return }
+                    self.handle(notification, for: connection)
+                }
+                
+                self.notificationConnections[device] = connection
+            }
+        }
+    }
     
-    func receiveApp(from connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func stopNotificationConnection(to device: ALTDevice)
+    {
+        guard let connection = self.notificationConnections[device] else { return }
+        connection.disconnect()
+        
+        self.notificationConnections[device] = nil
+    }
+    
+    func handle(_ notification: CFNotificationName, for connection: NotificationConnection)
+    {
+        switch notification
+        {
+        case .wiredServerConnectionAvailableRequest:
+            connection.sendNotification(.wiredServerConnectionAvailableResponse) { (success, error) in
+                if let error = error, !success
+                {
+                    print("Error sending wired server connection response.", error)
+                }
+                else
+                {
+                    print("Sent wired server connection available response!")
+                }
+            }
+            
+        case .wiredServerConnectionStartRequest:
+            ALTDeviceManager.shared.startWiredConnection(to: connection.device) { (wiredConnection, error) in
+                if let wiredConnection = wiredConnection
+                {
+                    print("Started wired server connection!")
+                    
+                    let clientConnection = ClientConnection(connection: .wired(wiredConnection))
+                    self.handleRequest(for: clientConnection)
+                }
+                else if let error = error
+                {
+                    print("Error starting wired server connection.", error)
+                }
+            }
+            
+        default: break
+        }
+    }
+}
+
+private extension ConnectionManager
+{
+    func handleRequest(for connection: ClientConnection)
+    {
+        connection.receiveRequest() { (result) in
+            print("Received initial request with result:", result)
+            
+            switch result
+            {
+            case .failure(let error):
+                let response = ErrorResponse(error: ALTServerError(error))
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent error response with result:", result)
+                }
+                
+            case .success(.anisetteData(let request)):
+                self.handleAnisetteDataRequest(request, for: connection)
+                
+            case .success(.prepareApp(let request)):
+                self.handlePrepareAppRequest(request, for: connection)
+                
+            case .success:
+                let response = ErrorResponse(error: ALTServerError(.unknownRequest))
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent unknown request response with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handleAnisetteDataRequest(_ request: AnisetteDataRequest, for connection: ClientConnection)
+    {
+        AnisetteDataManager.shared.requestAnisetteData { (result) in
+            switch result
+            {
+            case .failure(let error):
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                connection.send(errorResponse, shouldDisconnect: true) { (result) in
+                    print("Sent anisette data error response with result:", result)
+                }
+                
+            case .success(let anisetteData):
+                let response = AnisetteDataResponse(anisetteData: anisetteData)
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent anisette data response with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handlePrepareAppRequest(_ request: PrepareAppRequest, for connection: ClientConnection)
     {
         var temporaryURL: URL?
         
@@ -230,45 +307,59 @@ private extension ConnectionManager
                 catch { print("Failed to remove .ipa.", error) }
             }
             
-            completionHandler(result)
+            switch result
+            {
+            case .failure(let error):
+                print("Failed to process request from \(connection).", error)
+                
+                let response = ErrorResponse(error: ALTServerError(error))
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent install app error response to \(connection) with result:", result)
+                }
+                
+            case .success:
+                print("Processed request from \(connection).")
+                
+                let response = InstallationProgressResponse(progress: 1.0)
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent install app response to \(connection) with result:", result)
+                }
+            }
         }
         
-        self.receive(PrepareAppRequest.self, from: connection) { (result) in
-            print("Received request with result:", result)
+        self.receiveApp(for: request, from: connection) { (result) in
+            print("Received app with result:", result)
             
             switch result
             {
             case .failure(let error): finish(.failure(error))
-            case .success(let request):
-                self.receiveApp(for: request, from: connection) { (result) in
-                    print("Received app with result:", result)
+            case .success(let fileURL):
+                temporaryURL = fileURL
+                
+                print("Awaiting begin installation request...")
+                
+                connection.receiveRequest() { (result) in
+                    print("Received begin installation request with result:", result)
                     
                     switch result
                     {
                     case .failure(let error): finish(.failure(error))
-                    case .success(let request, let fileURL):
-                        temporaryURL = fileURL
+                    case .success(.beginInstallation):
+                        print("Installing to device \(request.udid)...")
                         
-                        print("Awaiting begin installation request...")
-                        
-                        self.receive(BeginInstallationRequest.self, from: connection) { (result) in
-                            print("Received begin installation request with result:", result)
-                            
+                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
+                            print("Installed to device with result:", result)
                             switch result
                             {
                             case .failure(let error): finish(.failure(error))
-                            case .success:
-                                print("Installing to device \(request.udid)...")
-                                
-                                self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
-                                    print("Installed to device with result:", result)
-                                    switch result
-                                    {
-                                    case .failure(let error): finish(.failure(error))
-                                    case .success: finish(.success(()))
-                                    }
-                                }
+                            case .success: finish(.success(()))
                             }
+                        }
+                        
+                    case .success:
+                        let response = ErrorResponse(error: ALTServerError(.unknownRequest))
+                        connection.send(response, shouldDisconnect: true) { (result) in
+                            print("Sent unknown request error response to \(connection) with result:", result)
                         }
                     }
                 }
@@ -276,37 +367,15 @@ private extension ConnectionManager
         }
     }
     
-    func finish(connection: NWConnection, error: ALTServerError?)
+    func receiveApp(for request: PrepareAppRequest, from connection: ClientConnection, completionHandler: @escaping (Result<URL, ALTServerError>) -> Void)
     {
-        if let error = error
-        {
-            print("Failed to process request from \(connection.endpoint).", error)
-        }
-        else
-        {
-            print("Processed request from \(connection.endpoint).")
-        }
-        
-        let response = ServerResponse(progress: 1.0, error: error)
-        
-        self.send(response, to: connection) { (result) in
-            print("Sent response to \(connection.endpoint) with result:", result)
-            
-            self.disconnect(connection)
-        }
-    }
-    
-    func receiveApp(for request: PrepareAppRequest, from connection: NWConnection, completionHandler: @escaping (Result<(PrepareAppRequest, URL), ALTServerError>) -> Void)
-    {
-        connection.receive(minimumIncompleteLength: request.contentSize, maximumLength: request.contentSize) { (data, _, _, error) in
+        connection.receiveData(expectedBytes: request.contentSize) { (result) in
             do
             {
                 print("Received app data!")
                 
-                let data = try self.process(data: data, error: error, from: connection)
-                
-                print("Processed app data!")
-                
+                let data = try result.get()
+                                
                 guard ALTDeviceManager.shared.availableDevices.contains(where: { $0.identifier == request.udid }) else { throw ALTServerError(.deviceNotFound) }
                 
                 print("Writing app data...")
@@ -316,7 +385,7 @@ private extension ConnectionManager
                 
                 print("Wrote app to URL:", temporaryURL)
                 
-                completionHandler(.success((request, temporaryURL)))
+                completionHandler(.success(temporaryURL))
             }
             catch
             {
@@ -327,7 +396,7 @@ private extension ConnectionManager
         }
     }
     
-    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, connection: ClientConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {
         let serialQueue = DispatchQueue(label: "com.altstore.ConnectionManager.installQueue", qos: .default)
         var isSending = false
@@ -356,9 +425,9 @@ private extension ConnectionManager
                 isSending = true
                 
                 print("Progress:", progress.fractionCompleted)
-                let response = ServerResponse(progress: progress.fractionCompleted, error: nil)
+                let response = InstallationProgressResponse(progress: progress.fractionCompleted)
                 
-                self.send(response, to: connection) { (result) in                    
+                connection.send(response) { (result) in                    
                     serialQueue.async {
                         isSending = false
                     }
@@ -366,79 +435,19 @@ private extension ConnectionManager
             }
         })
     }
+}
 
-    func send<T: Encodable>(_ response: T, to connection: NWConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+private extension ConnectionManager
+{
+    @objc func deviceDidConnect(_ notification: Notification)
     {
-        do
-        {            
-            let data = try JSONEncoder().encode(response)
-            let responseSize = withUnsafeBytes(of: Int32(data.count)) { Data($0) }
-
-            connection.send(content: responseSize, completion: .contentProcessed { (error) in
-                do
-                {
-                    if let error = error
-                    {
-                        throw error
-                    }
-
-                    connection.send(content: data, completion: .contentProcessed { (error) in
-                        if error != nil
-                        {
-                            completionHandler(.failure(.init(.lostConnection)))
-                        }
-                        else
-                        {
-                            completionHandler(.success(()))
-                        }
-                    })
-                }
-                catch
-                {
-                    completionHandler(.failure(.init(.lostConnection)))
-                }
-            })
-        }
-        catch
-        {
-            completionHandler(.failure(.init(.invalidResponse)))
-        }
+        guard let device = notification.object as? ALTDevice else { return }
+        self.startNotificationConnection(to: device)
     }
     
-    func receive<T: Decodable>(_ responseType: T.Type, from connection: NWConnection, completionHandler: @escaping (Result<T, ALTServerError>) -> Void)
+    @objc func deviceDidDisconnect(_ notification: Notification)
     {
-        let size = MemoryLayout<Int32>.size
-        
-        print("Receiving request size")
-        connection.receive(minimumIncompleteLength: size, maximumLength: size) { (data, _, _, error) in
-            do
-            {
-                let data = try self.process(data: data, error: error, from: connection)
-                
-                print("Receiving request...")
-                
-                let expectedBytes = Int(data.withUnsafeBytes { $0.load(as: Int32.self) })
-                connection.receive(minimumIncompleteLength: expectedBytes, maximumLength: expectedBytes) { (data, _, _, error) in
-                    do
-                    {
-                        let data = try self.process(data: data, error: error, from: connection)
-                        
-                        let request = try JSONDecoder().decode(T.self, from: data)
-                        
-                        print("Received installation request:", request)
-                        
-                        completionHandler(.success(request))
-                    }
-                    catch
-                    {
-                        completionHandler(.failure(ALTServerError(error)))
-                    }
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(ALTServerError(error)))
-            }
-        }
+        guard let device = notification.object as? ALTDevice else { return }
+        self.stopNotificationConnection(to: device)
     }
 }

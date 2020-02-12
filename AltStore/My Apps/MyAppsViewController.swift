@@ -67,6 +67,17 @@ class MyAppsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        #if !BETA
+        // Set leftBarButtonItem to invisible UIBarButtonItem so we can still use it
+        // to show an activity indicator while sideloading whitelisted apps.
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        #endif
+        
+        if #available(iOS 13.0, *)
+        {
+            self.navigationItem.leftBarButtonItem?.activityIndicatorView.style = .medium
+        }
+        
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
         
@@ -74,7 +85,6 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.prefetchDataSource = self.dataSource
                 
         self.prototypeUpdateCell = UpdateCollectionViewCell.instantiate(with: UpdateCollectionViewCell.nib!)
-        self.prototypeUpdateCell.translatesAutoresizingMaskIntoConstraints = false
         self.prototypeUpdateCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
         self.collectionView.register(UpdateCollectionViewCell.nib, forCellWithReuseIdentifier: "UpdateCell")
@@ -84,10 +94,6 @@ class MyAppsViewController: UICollectionViewController
         self.sideloadingProgressView.translatesAutoresizingMaskIntoConstraints = false
         self.sideloadingProgressView.progressTintColor = .altPrimary
         self.sideloadingProgressView.progress = 0
-        
-        #if !BETA
-        self.navigationItem.leftBarButtonItem = nil
-        #endif
         
         if let navigationBar = self.navigationController?.navigationBar
         {
@@ -109,6 +115,10 @@ class MyAppsViewController: UICollectionViewController
         super.viewWillAppear(animated)
         
         self.updateDataSource()
+        
+        #if BETA
+        self.fetchAppIDs()
+        #endif
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -138,6 +148,10 @@ class MyAppsViewController: UICollectionViewController
         let installedApp = self.dataSource.item(at: indexPath)
         return !installedApp.isSideloaded
     }
+    
+    @IBAction func unwindToMyAppsViewController(_ segue: UIStoryboardSegue)
+    {
+    }
 }
 
 private extension MyAppsViewController
@@ -156,9 +170,13 @@ private extension MyAppsViewController
         dynamicDataSource.numberOfItemsHandler = { _ in self.updatesDataSource.itemCount == 0 ? 1 : 0 }
         dynamicDataSource.cellIdentifierHandler = { _ in "NoUpdatesCell" }
         dynamicDataSource.cellConfigurationHandler = { (cell, _, indexPath) in
-            cell.layer.cornerRadius = 20
-            cell.layer.masksToBounds = true
-            cell.contentView.backgroundColor = UIColor.altPrimary.withAlphaComponent(0.15)
+            let cell = cell as! NoUpdatesCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
+            
+            cell.blurView.layer.cornerRadius = 20
+            cell.blurView.layer.masksToBounds = true
+            cell.blurView.backgroundColor = .altPrimary
         }
         
         return dynamicDataSource
@@ -179,15 +197,19 @@ private extension MyAppsViewController
             guard let app = installedApp.storeApp else { return }
             
             let cell = cell as! UpdateCollectionViewCell
-            cell.tintColor = app.tintColor ?? .altPrimary
-            cell.nameLabel.text = app.name
-            cell.versionDescriptionTextView.text = app.versionDescription
-            cell.appIconImageView.image = nil
-            cell.appIconImageView.isIndicatingActivity = true
-            cell.betaBadgeView.isHidden = !app.isBeta
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
             
-            cell.updateButton.isIndicatingActivity = false
-            cell.updateButton.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
+            cell.tintColor = app.tintColor ?? .altPrimary
+            cell.versionDescriptionTextView.text = app.versionDescription
+            
+            cell.bannerView.titleLabel.text = app.name
+            cell.bannerView.iconImageView.image = nil
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.betaBadgeView.isHidden = !app.isBeta
+            
+            cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
             
             if self.expandedAppUpdates.contains(app.bundleIdentifier)
             {
@@ -201,9 +223,9 @@ private extension MyAppsViewController
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
             
             let progress = AppManager.shared.installationProgress(for: app)
-            cell.updateButton.progress = progress
+            cell.bannerView.button.progress = progress
             
-            cell.dateLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
+            cell.bannerView.subtitleLabel.text = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
             
             cell.setNeedsLayout()
         }
@@ -227,8 +249,8 @@ private extension MyAppsViewController
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! UpdateCollectionViewCell
-            cell.appIconImageView.isIndicatingActivity = false
-            cell.appIconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
+            cell.bannerView.iconImageView.image = image
             
             if let error = error
             {
@@ -254,12 +276,15 @@ private extension MyAppsViewController
             let tintColor = installedApp.storeApp?.tintColor ?? .altPrimary
             
             let cell = cell as! InstalledAppCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
-            cell.appIconImageView.isIndicatingActivity = true
-            cell.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
             
-            cell.refreshButton.isIndicatingActivity = false
-            cell.refreshButton.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
+            
+            cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
             let currentDate = Date()
             
@@ -267,34 +292,34 @@ private extension MyAppsViewController
             
             if numberOfDays == 1
             {
-                cell.refreshButton.setTitle(NSLocalizedString("1 DAY", comment: ""), for: .normal)
+                cell.bannerView.button.setTitle(NSLocalizedString("1 DAY", comment: ""), for: .normal)
             }
             else
             {
-                cell.refreshButton.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
+                cell.bannerView.button.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
             }
                                     
-            cell.nameLabel.text = installedApp.name
-            cell.developerLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
+            cell.bannerView.titleLabel.text = installedApp.name
+            cell.bannerView.subtitleLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
             
             switch numberOfDays
             {
-            case 2...3: cell.refreshButton.tintColor = .refreshOrange
-            case 4...5: cell.refreshButton.tintColor = .refreshYellow
-            case 6...: cell.refreshButton.tintColor = .refreshGreen
-            default: cell.refreshButton.tintColor = .refreshRed
+            case 2...3: cell.bannerView.button.tintColor = .refreshOrange
+            case 4...5: cell.bannerView.button.tintColor = .refreshYellow
+            case 6...: cell.bannerView.button.tintColor = .refreshGreen
+            default: cell.bannerView.button.tintColor = .refreshRed
             }
             
             if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: installedApp), progress.fractionCompleted < 1.0
             {
-                cell.refreshButton.progress = progress
+                cell.bannerView.button.progress = progress
             }
             else
             {
-                cell.refreshButton.progress = nil
+                cell.bannerView.button.progress = nil
             }
         }
         dataSource.prefetchHandler = { (item, indexPath, completion) in
@@ -312,8 +337,8 @@ private extension MyAppsViewController
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! InstalledAppCollectionViewCell
-            cell.appIconImageView.image = image
-            cell.appIconImageView.isIndicatingActivity = false
+            cell.bannerView.iconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
         }
         
         return dataSource
@@ -358,6 +383,21 @@ private extension MyAppsViewController
         }        
     }
     
+    func fetchAppIDs()
+    {
+        AppManager.shared.fetchAppIDs { (result) in
+            do
+            {
+                let (_, context) = try result.get()
+                try context.save()
+            }
+            catch
+            {
+                print("Failed to fetch App IDs.", error)
+            }
+        }
+    }
+    
     func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
     {
         func refresh()
@@ -368,9 +408,8 @@ private extension MyAppsViewController
                     switch result
                     {
                     case .failure(let error):
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.setNeedsLayout()
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                         
                     case .success(let results):
                         let failures = results.compactMapValues { (result) -> Error? in
@@ -384,22 +423,32 @@ private extension MyAppsViewController
                         
                         guard !failures.isEmpty else { break }
                         
-                        let localizedText: String
-                        let detailText: String?
+                        let toastView: ToastView
                         
-                        if let failure = failures.first, failures.count == 1
+                        if let failure = failures.first, results.count == 1
                         {
-                            localizedText = failure.value.localizedDescription
-                            detailText = nil
+                            toastView = ToastView(error: failure.value)
                         }
                         else
                         {
-                            localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
-                            detailText = failures.first?.value.localizedDescription
+                            let localizedText: String
+                            
+                            if failures.count == 1
+                            {
+                                localizedText = NSLocalizedString("Failed to refresh 1 app.", comment: "")
+                            }
+                            else
+                            {
+                                localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
+                            }
+                            
+                            let detailText = failures.first?.value.localizedDescription
+                            
+                            toastView = ToastView(text: localizedText, detailText: detailText)
+                            toastView.preferredDuration = 2.0
                         }
                         
-                        let toastView = ToastView(text: localizedText, detailText: detailText)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        toastView.show(in: self)
                     }
                     
                     self.refreshGroup = nil
@@ -559,8 +608,8 @@ private extension MyAppsViewController
                     self.collectionView.reloadItems(at: [indexPath])
                     
                 case .failure(let error):
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                     
                     self.collectionView.reloadItems(at: [indexPath])
                     
@@ -591,7 +640,7 @@ private extension MyAppsViewController
     
     func presentSideloadingAlert(completion: @escaping (Bool) -> Void)
     {
-        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("You may only install 10 apps + app extensions per week due to Apple's restrictions.\n\nIf you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("If you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
             completion(true)
         }))
@@ -601,7 +650,7 @@ private extension MyAppsViewController
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func installApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
+    func sideloadApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
     {
         self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
         
@@ -614,7 +663,11 @@ private extension MyAppsViewController
                 
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
                 
-                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { return }
+                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
+                
+                #if !BETA
+                guard AppManager.whitelistedSideloadingBundleIDs.contains(application.bundleIdentifier) else { throw OperationError.sideloadingAppNotSupported(application) }
+                #endif
                 
                 self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
                     try? FileManager.default.removeItem(at: temporaryDirectory)
@@ -622,8 +675,8 @@ private extension MyAppsViewController
                     DispatchQueue.main.async {
                         if let error = result.error
                         {
-                            let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                            toastView.show(in: self.view, duration: 2.0)
+                            let toastView = ToastView(error: error)
+                            toastView.show(in: self)
                         }
                         else
                         {
@@ -648,7 +701,31 @@ private extension MyAppsViewController
             {
                 try? FileManager.default.removeItem(at: temporaryDirectory)
                 
-                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                DispatchQueue.main.async {
+                    self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                    
+                    if let localizedError = error as? OperationError, case OperationError.sideloadingAppNotSupported = localizedError
+                    {
+                        let message = NSLocalizedString("""
+                        Sideloading apps is in beta, and is currently limited to a small number of apps. This restriction is temporary, and you will be able to sideload any app once the feature is finished.
+
+                        In the meantime, you can help us beta test sideloading apps by becoming a Patron.
+                        """, comment: "")
+                        
+                        let alertController = UIAlertController(title: localizedError.localizedDescription, message: message, preferredStyle: .alert)
+                        alertController.addAction(.cancel)
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Become a Patron", comment: ""), style: .default, handler: { (action) in
+                            NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                        }))
+                        
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                    else
+                    {
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
+                    }
+                }
                 
                 completion(.failure(error))
             }
@@ -700,14 +777,22 @@ private extension MyAppsViewController
         else { return }
         
         let installedApp = self.dataSource.item(at: indexPath)
-        guard installedApp.storeApp == nil else { return }
         
+        #if DEBUG
         self.presentAlert(for: installedApp)
+        #else
+        if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
+        {
+            // Only display alert for legacy sideloaded apps.
+            self.presentAlert(for: installedApp)
+        }
+        #endif
     }
     
     @objc func importApp(_ notification: Notification)
     {
-        #if BETA
+        // Make sure left UIBarButtonItem has been set.
+        self.loadViewIfNeeded()
         
         guard let fileURL = notification.userInfo?[AppDelegate.importAppDeepLinkURLKey] as? URL else { return }
         guard self.presentedViewController == nil else { return }
@@ -724,10 +809,12 @@ private extension MyAppsViewController
             }
         }
         
+        #if BETA
+        
         self.presentSideloadingAlert { (shouldContinue) in
             if shouldContinue
             {
-                self.installApp(at: fileURL) { (result) in
+                self.sideloadApp(at: fileURL) { (result) in
                     finish()
                 }
             }
@@ -735,6 +822,12 @@ private extension MyAppsViewController
             {
                 finish()
             }
+        }
+        
+        #else
+        
+        self.sideloadApp(at: fileURL) { (result) in
+            finish()
         }
         
         #endif
@@ -776,7 +869,7 @@ extension MyAppsViewController
             
             return headerView
             
-        case .installedApps:
+        case .installedApps where kind == UICollectionView.elementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InstalledAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
             
             UIView.performWithoutAnimation {
@@ -792,6 +885,35 @@ extension MyAppsViewController
             }
             
             return headerView
+            
+        case .installedApps:
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "InstalledAppsFooter", for: indexPath) as! InstalledAppsCollectionFooterView
+            
+            guard let team = DatabaseManager.shared.activeTeam() else { return footerView }
+            switch team.type
+            {
+            case .free:
+                let registeredAppIDs = team.appIDs.count
+                
+                let maximumAppIDCount = 10
+                let remainingAppIDs = max(maximumAppIDCount - registeredAppIDs, 0)
+                
+                if remainingAppIDs == 1
+                {
+                    footerView.textLabel.text = String(format: NSLocalizedString("1 App ID Remaining", comment: ""))
+                }
+                else
+                {
+                    footerView.textLabel.text = String(format: NSLocalizedString("%@ App IDs Remaining", comment: ""), NSNumber(value: remainingAppIDs))
+                }
+                
+                footerView.textLabel.isHidden = false
+                
+            case .individual, .organization, .unknown: footerView.textLabel.isHidden = true
+            @unknown default: break
+            }
+            
+            return footerView
         }
     }
     
@@ -813,14 +935,11 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        let padding = 30 as CGFloat
-        let width = collectionView.bounds.width - padding
-        
         let section = Section.allCases[indexPath.section]
         switch section
         {
         case .noUpdates:
-            let size = CGSize(width: width, height: 44)
+            let size = CGSize(width: collectionView.bounds.width, height: 44)
             return size
             
         case .updates:
@@ -831,7 +950,10 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
                 return previousHeight
             }
             
-            let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: width)
+            // Manually change cell's width to prevent conflicting with UIView-Encapsulated-Layout-Width constraints.
+            self.prototypeUpdateCell.frame.size.width = collectionView.bounds.width
+                        
+            let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
             NSLayoutConstraint.activate([widthConstraint])
             defer { NSLayoutConstraint.deactivate([widthConstraint]) }
             
@@ -842,7 +964,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             return size
 
         case .installedApps:
-            return CGSize(width: collectionView.bounds.width, height: 60)
+            return CGSize(width: collectionView.bounds.width, height: 88)
         }
     }
     
@@ -860,20 +982,38 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
     {
         let section = Section.allCases[section]
         switch section
         {
-        case .noUpdates:
-            guard self.updatesDataSource.itemCount == 0 else { return .zero }
-            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
+        case .noUpdates: return .zero
+        case .updates: return .zero
+        case .installedApps:
+            #if BETA
+            guard let _ = DatabaseManager.shared.activeTeam() else { return .zero }
             
-        case .updates:
-            guard self.updatesDataSource.itemCount > 0 else { return .zero }
-            return UIEdgeInsets(top: 12, left: 15, bottom: 20, right: 15)
-            
-        case .installedApps: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
+            let indexPath = IndexPath(row: 0, section: section.rawValue)
+            let footerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionFooter, at: indexPath) as! InstalledAppsCollectionFooterView
+                        
+            let size = footerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingExpandedSize.height),
+                                                          withHorizontalFittingPriority: .required,
+                                                          verticalFittingPriority: .fittingSizeLevel)
+            return size
+            #else
+            return .zero
+            #endif
+        }
+    }
+    
+    func collectionView(_ myCV: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
+    {
+        let section = Section.allCases[section]
+        switch section
+        {
+        case .noUpdates where self.updatesDataSource.itemCount != 0: return .zero
+        case .updates where self.updatesDataSource.itemCount == 0: return .zero
+        default: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
         }
     }
 }
@@ -930,7 +1070,7 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        self.installApp(at: fileURL) { (result) in
+        self.sideloadApp(at: fileURL) { (result) in
             print("Sideloaded app at \(fileURL) with result:", result)
         }
     }

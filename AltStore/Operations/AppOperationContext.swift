@@ -29,7 +29,7 @@ class AppOperationContext
     var app: ALTApplication?
     var resignedApp: ALTApplication?
     
-    var connection: NWConnection?
+    var installationConnection: ServerConnection?
     
     var installedApp: InstalledApp? {
         didSet {

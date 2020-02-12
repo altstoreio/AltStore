@@ -1,20 +1,50 @@
 PODS:
+  - AltSign (0.1):
+    - AltSign/CoreCrypto (= 0.1)
+    - AltSign/ldid (= 0.1)
+    - AltSign/minizip (= 0.1)
+    - AltSign/OpenSSL (= 0.1)
+    - AltSign/plist (= 0.1)
+  - AltSign/CoreCrypto (0.1)
+  - AltSign/ldid (0.1)
+  - AltSign/minizip (0.1)
+  - AltSign/OpenSSL (0.1)
+  - AltSign/plist (0.1)
   - KeychainAccess (3.2.0)
   - Nuke (7.6.3)
+  - Roxas (0.1)
+  - Sparkle (1.21.3)
+  - STPrivilegedTask (1.0.1)
 
 DEPENDENCIES:
+  - AltSign (from `Dependencies/AltSign`)
   - KeychainAccess (~> 3.2.0)
   - Nuke (~> 7.0)
+  - Roxas (from `Dependencies/Roxas`)
+  - Sparkle
+  - STPrivilegedTask
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - KeychainAccess
     - Nuke
+    - Sparkle
+    - STPrivilegedTask
+
+EXTERNAL SOURCES:
+  AltSign:
+    :path: Dependencies/AltSign
+  Roxas:
+    :path: Dependencies/Roxas
 
 SPEC CHECKSUMS:
+  AltSign: c3693fa5a4b6d0ec6bedb74a5d768fe58bd67b87
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
+  Roxas: 1990039f843f5dc284918dc82375feb80020ef62
+  Sparkle: 3f75576db8b0265adef36c43249d747f22d0b708
+  STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
 
-PODFILE CHECKSUM: 4ad739b1f5db7e51cf8ffbc410963811f20b9b17
+PODFILE CHECKSUM: 467b50b42949f001543841f547fa6b427e29dc53
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.4
