@@ -72,7 +72,7 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             return NSLocalizedString(@"Invalid anisette data.", @"");
             
         case ALTServerErrorPluginNotFound:
-            return NSLocalizedString(@"Could not connect to Mail plug-in. Please make sure the plug-in is installed and Mail is running, then try again.", @"");
+            return NSLocalizedString(@"Could not connect to Mail plug-in. Please make sure Mail is running and that you've enabled the plug-in in Mail's preferences, then try again.", @"");
     }
 }
     

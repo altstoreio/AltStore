@@ -19,7 +19,7 @@ target 'AltServer' do
   use_frameworks!
 
   # Pods for AltServer
-  pod 'STPrivilegedTask'
+  pod 'STPrivilegedTask', :git => 'https://github.com/rileytestut/STPrivilegedTask.git'
   pod 'Sparkle'
 
 end

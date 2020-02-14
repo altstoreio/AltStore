@@ -14,23 +14,26 @@ import AltSign
 import LaunchAtLogin
 import STPrivilegedTask
 
+private let pluginDirectoryURL = URL(fileURLWithPath: "/Library/Mail/Bundles", isDirectory: true)
+private let pluginURL = pluginDirectoryURL.appendingPathComponent("AltPlugin.mailbundle")
+
 enum PluginError: LocalizedError
 {
-    case installationScriptNotFound
-    case failedToRun(Int)
-    case scriptError(String)
+    case cancelled
+    case unknown
+    case taskError(String)
+    case taskErrorCode(Int)
     
     var errorDescription: String? {
         switch self
         {
-        case .installationScriptNotFound: return NSLocalizedString("The installation script could not be found.", comment: "")
-        case .failedToRun(let errorCode): return String(format: NSLocalizedString("The installation script could not be run. (%@)", comment: ""), NSNumber(value: errorCode))
-        case .scriptError(let output): return output
+        case .cancelled: return NSLocalizedString("Mail plug-in installation was cancelled.", comment: "")
+        case .unknown: return NSLocalizedString("Failed to install Mail plug-in.", comment: "")
+        case .taskError(let output): return output
+        case .taskErrorCode(let errorCode): return String(format: NSLocalizedString("There was an error installing the Mail plug-in. (Error Code: %@)", comment: ""), NSNumber(value: errorCode))
         }
     }
 }
-
-private let pluginURL = URL(fileURLWithPath: "/Library/Mail/Bundles/AltPlugin.mailbundle")
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -108,7 +111,7 @@ private extension AppDelegate
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         
-        if FileManager.default.fileExists(atPath: pluginURL.path)
+        if self.isMailPluginInstalled
         {
             self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
         }
@@ -182,46 +185,72 @@ private extension AppDelegate
         
         let device = self.connectedDevices[index]
         
-        if !self.isMailPluginInstalled
+        func install()
         {
-            let result = self.installMailPlugin()
-            guard result else { return }
+            ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
+                switch result
+                {
+                case .success:
+                    let content = UNMutableNotificationContent()
+                    content.title = NSLocalizedString("Installation Succeeded", comment: "")
+                    content.body = String(format: NSLocalizedString("AltStore was successfully installed on %@.", comment: ""), device.name)
+                    
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                    
+                case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
+                    // Ignore
+                    break
+                    
+                case .failure(let error as NSError):
+                    
+                    let alert = NSAlert()
+                    alert.alertStyle = .critical
+                    alert.messageText = NSLocalizedString("Installation Failed", comment: "")
+                    
+                    if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? Error
+                    {
+                        alert.informativeText = underlyingError.localizedDescription
+                    }
+                    else
+                    {
+                        alert.informativeText = error.localizedDescription
+                    }
+                    
+                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+
+                    alert.runModal()
+                }
+            }
         }
         
-        ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
-            switch result
-            {
-            case .success:
-                let content = UNMutableNotificationContent()
-                content.title = NSLocalizedString("Installation Succeeded", comment: "")
-                content.body = String(format: NSLocalizedString("AltStore was successfully installed on %@.", comment: ""), device.name)
-                
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(request)
-                
-            case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
-                // Ignore
-                break
-                
-            case .failure(let error as NSError):
-                
-                let alert = NSAlert()
-                alert.alertStyle = .critical
-                alert.messageText = NSLocalizedString("Installation Failed", comment: "")
-                
-                if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? Error
-                {
-                    alert.informativeText = underlyingError.localizedDescription
+        if !self.isMailPluginInstalled
+        {
+            self.installMailPlugin { (result) in
+                DispatchQueue.main.async {
+                    switch result
+                    {
+                    case .failure(PluginError.cancelled): break
+                    case .failure(let error):
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
+                        alert.informativeText = error.localizedDescription
+                        alert.runModal()
+                        
+                    case .success:
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
+                        alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
+                        alert.runModal()
+                        
+                        install()
+                    }
                 }
-                else
-                {
-                    alert.informativeText = error.localizedDescription
-                }
-                
-                NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-
-                alert.runModal()
             }
+        }
+        else
+        {
+            install()
         }
     }
     
@@ -241,70 +270,204 @@ private extension AppDelegate
     
     @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
     {
-        installMailPlugin()
+        if self.isMailPluginInstalled
+        {
+            self.uninstallMailPlugin { (result) in
+                DispatchQueue.main.async {
+                    switch result
+                    {
+                    case .failure(PluginError.cancelled): break
+                    case .failure(let error):
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Failed to Uninstall Mail Plug-in", comment: "")
+                        alert.informativeText = error.localizedDescription
+                        alert.runModal()
+                        
+                    case .success:
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Mail Plug-in Uninstalled", comment: "")
+                        alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect. You will not be able to use AltServer until the plug-in is reinstalled.", comment: "")
+                        alert.runModal()
+                    }
+                }
+            }
+        }
+        else
+        {
+            self.installMailPlugin { (result) in
+                DispatchQueue.main.async {
+                    switch result
+                    {
+                    case .failure(PluginError.cancelled): break
+                    case .failure(let error):
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
+                        alert.informativeText = error.localizedDescription
+                        alert.runModal()
+                        
+                    case .success:
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
+                        alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
+                        alert.runModal()
+                    }
+                }
+            }
+        }
     }
     
-    @discardableResult
-    func installMailPlugin() -> Bool
+    func installMailPlugin(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         do
         {
-            let previouslyInstalled = self.isMailPluginInstalled
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("Install Mail Plug-in", comment: "")
+            alert.informativeText = NSLocalizedString("AltServer requires a Mail plug-in in order to retrieve necessary information about your Apple ID. Would you like to install it now?", comment: "")
             
-            if !previouslyInstalled
-            {
-                let alert = NSAlert()
-                alert.messageText = NSLocalizedString("Install Mail Plug-in", comment: "")
-                alert.informativeText = NSLocalizedString("AltServer requires a Mail plug-in in order to retrieve necessary information about your Apple ID. Would you like to install it now?", comment: "")
-                
-                alert.addButton(withTitle: NSLocalizedString("Install Plug-in", comment: ""))
-                alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-                
-                NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-                        
-                let response = alert.runModal()
-                guard response == .alertFirstButtonReturn else { return false }
+            alert.addButton(withTitle: NSLocalizedString("Install Plug-in", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+            
+            NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+            
+            let response = alert.runModal()
+            guard response == .alertFirstButtonReturn else { throw PluginError.cancelled }
+            
+            self.downloadPlugin { (result) in
+                do
+                {
+                    let fileURL = try result.get()
+                    defer { try? FileManager.default.removeItem(at: fileURL) }
+                    
+                    // Unzip AltPlugin to plug-ins directory.
+                    let authorization = try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", pluginDirectoryURL.path])
+                    guard self.isMailPluginInstalled else { throw PluginError.unknown }
+                    
+                    // Enable Mail plug-in preferences.
+                    try self.run("defaults", arguments: ["write", "/Library/Preferences/com.apple.mail", "EnableBundles", "-bool", "YES"], authorization: authorization)
+                    
+                    print("Finished installing Mail plug-in!")
+                    
+                    completionHandler(.success(()))
+                }
+                catch
+                {
+                    completionHandler(.failure(error))
+                }
             }
-            
-            guard let scriptURL = Bundle.main.url(forResource: self.isMailPluginInstalled ? "UninstallPlugin" : "InstallPlugin", withExtension: "sh") else { throw PluginError.installationScriptNotFound }
-            
-            try FileManager.default.setAttributes([.posixPermissions: 0o777], ofItemAtPath: scriptURL.path)
-
-            let task = STPrivilegedTask()
-            task.setLaunchPath(scriptURL.path)
-            task.setCurrentDirectoryPath(scriptURL.deletingLastPathComponent().path)
-            
-            let errorCode = task.launch()
-            guard errorCode == 0 else { throw PluginError.failedToRun(Int(errorCode)) }
-            
-            task.waitUntilExit()
-            
-            if
-                let outputData = task.outputFileHandle()?.readDataToEndOfFile(),
-                let outputString = String(data: outputData, encoding: .utf8), !outputString.isEmpty
-            {
-                throw PluginError.scriptError(outputString)
-            }
-            
-            if !previouslyInstalled && self.isMailPluginInstalled
-            {
-                let alert = NSAlert()
-                alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
-                alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
-                alert.runModal()
-            }
-            
-            return true
         }
         catch
         {
-            let alert = NSAlert()
-            alert.messageText = self.isMailPluginInstalled ? NSLocalizedString("Failed to Uninstall Mail Plug-in", comment: "") : NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
-            alert.informativeText = error.localizedDescription
-            alert.runModal()
-            
-            return false
+            completionHandler(.failure(PluginError.cancelled))
         }
+    }
+    
+    func downloadPlugin(completionHandler: @escaping (Result<URL, Error>) -> Void)
+    {
+        let pluginURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altserver/altplugin/1_0.zip")!
+        
+        let downloadTask = URLSession.shared.downloadTask(with: pluginURL) { (fileURL, response, error) in
+            if let fileURL = fileURL
+            {
+                print("Downloaded plugin to URL:", fileURL)
+                completionHandler(.success(fileURL))
+            }
+            else
+            {
+                completionHandler(.failure(error ?? PluginError.unknown))
+            }
+        }
+        
+        downloadTask.resume()
+    }
+    
+    func uninstallMailPlugin(completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
+        alert.informativeText = NSLocalizedString("Are you sure you want to uninstall the AltServer Mail plug-in? You will no longer be able to install or refresh apps with AltStore.", comment: "")
+        
+        alert.addButton(withTitle: NSLocalizedString("Uninstall Plug-in", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+        
+        let response = alert.runModal()
+        guard response == .alertFirstButtonReturn else { return completionHandler(.failure(PluginError.cancelled)) }
+        
+        DispatchQueue.global().async {
+            do
+            {
+                if FileManager.default.fileExists(atPath: pluginURL.path)
+                {
+                    // Delete Mail plug-in from privileged directory.
+                    try self.run("rm", arguments: ["-rf", pluginURL.path])
+                }
+                
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+}
+
+private extension AppDelegate
+{
+    func run(_ program: String, arguments: [String], authorization: AuthorizationRef? = nil) throws
+    {
+        _ = try self._run(program, arguments: arguments, authorization: authorization, freeAuthorization: true)
+    }
+    
+    func runAndKeepAuthorization(_ program: String, arguments: [String], authorization: AuthorizationRef? = nil) throws -> AuthorizationRef
+    {
+        return try self._run(program, arguments: arguments, authorization: authorization, freeAuthorization: false)
+    }
+    
+    func _run(_ program: String, arguments: [String], authorization: AuthorizationRef? = nil, freeAuthorization: Bool) throws -> AuthorizationRef
+    {
+        var launchPath = "/usr/bin/" + program
+        if !FileManager.default.fileExists(atPath: launchPath)
+        {
+            launchPath = "/bin/" + program
+        }
+        
+        print("Running program:", launchPath)
+        
+        let task = STPrivilegedTask()
+        task.launchPath = launchPath
+        task.arguments = arguments
+        task.freeAuthorizationWhenDone = freeAuthorization
+        
+        let errorCode: OSStatus
+        
+        if let authorization = authorization
+        {
+            errorCode = task.launch(withAuthorization: authorization)
+        }
+        else
+        {
+            errorCode = task.launch()
+        }
+        
+        guard errorCode == 0 else { throw PluginError.taskErrorCode(Int(errorCode)) }
+        
+        task.waitUntilExit()
+        
+        guard task.terminationStatus == 0 else {
+            let outputData = task.outputFileHandle.readDataToEndOfFile()
+            
+            if let outputString = String(data: outputData, encoding: .utf8), !outputString.isEmpty
+            {
+                throw PluginError.taskError(outputString)
+            }
+            
+            throw PluginError.taskErrorCode(Int(task.terminationStatus))
+        }
+        
+        guard let authorization = task.authorization else { throw PluginError.unknown }
+        return authorization
     }
 }
 
