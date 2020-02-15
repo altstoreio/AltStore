@@ -338,8 +338,11 @@ private extension AppDelegate
                     let fileURL = try result.get()
                     defer { try? FileManager.default.removeItem(at: fileURL) }
                     
+                    // Ensure plug-in directory exists.
+                    let authorization = try self.runAndKeepAuthorization("mkdir", arguments: ["-p", pluginDirectoryURL.path])
+                    
                     // Unzip AltPlugin to plug-ins directory.
-                    let authorization = try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", pluginDirectoryURL.path])
+                    try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", pluginDirectoryURL.path], authorization: authorization)
                     guard self.isMailPluginInstalled else { throw PluginError.unknown }
                     
                     // Enable Mail plug-in preferences.
@@ -420,6 +423,7 @@ private extension AppDelegate
         _ = try self._run(program, arguments: arguments, authorization: authorization, freeAuthorization: true)
     }
     
+    @discardableResult
     func runAndKeepAuthorization(_ program: String, arguments: [String], authorization: AuthorizationRef? = nil) throws -> AuthorizationRef
     {
         return try self._run(program, arguments: arguments, authorization: authorization, freeAuthorization: false)
@@ -454,6 +458,8 @@ private extension AppDelegate
         guard errorCode == 0 else { throw PluginError.taskErrorCode(Int(errorCode)) }
         
         task.waitUntilExit()
+        
+        print("Exit code:", task.terminationStatus)
         
         guard task.terminationStatus == 0 else {
             let outputData = task.outputFileHandle.readDataToEndOfFile()
