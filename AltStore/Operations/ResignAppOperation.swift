@@ -354,7 +354,7 @@ private extension ResignAppOperation
             }
         }
         
-        let adjustedGroupIdentifier = "group.\(team.identifier)." + groupIdentifier
+        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
         
         ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
             switch Result(groups, error)
