@@ -574,17 +574,21 @@ private extension MyAppsViewController
     
     @IBAction func refreshAllApps(_ sender: UIBarButtonItem)
     {
-        self.isRefreshingAllApps = true
-        self.collectionView.collectionViewLayout.invalidateLayout()
-
-        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
-        
-        self.refresh(installedApps) { (result) in
-            DispatchQueue.main.async {
-                self.isRefreshingAllApps = false
-                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
-            }
+        AppManager.shared.activateApps() { (result) in
+            print("Fiinished activcating apps:", result)
         }
+        
+//        self.isRefreshingAllApps = true
+//        self.collectionView.collectionViewLayout.invalidateLayout()
+//
+//        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
+//
+//        self.refresh(installedApps) { (result) in
+//            DispatchQueue.main.async {
+//                self.isRefreshingAllApps = false
+//                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+//            }
+//        }
     }
     
     @IBAction func updateApp(_ sender: UIButton)

@@ -109,6 +109,11 @@ private extension ResignAppOperation
             {
             case .failure(let error): completionHandler(.failure(error))
             case .success(let profile):
+                if let bundle = Bundle(url: fileURL)
+                {
+                    try? profile.data.write(to: bundle.provisioningProfileURL)
+                }
+                
                 var profiles = [app.bundleIdentifier: profile]
                 var error: Error?
                 
@@ -122,7 +127,13 @@ private extension ResignAppOperation
                         switch result
                         {
                         case .failure(let e): error = e
-                        case .success(let profile): profiles[appExtension.bundleIdentifier] = profile
+                        case .success(let profile):
+                            if let bundle = Bundle(url: appExtension.fileURL)
+                            {
+                                try? profile.data.write(to: bundle.provisioningProfileURL)
+                            }
+                            
+                            profiles[appExtension.bundleIdentifier] = profile
                         }
                         
                         dispatchGroup.leave()
@@ -154,7 +165,7 @@ private extension ResignAppOperation
                                         #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier,
                                         #keyPath(InstalledApp.team.identifier), team.identifier)
             if let installedApp = InstalledApp.first(satisfying: predicate, in: context)
-            {
+            {                
                 // This app is already installed, so use the same resigned bundle identifier as before.
                 // This way, if we change the identifier format (again), AltStore will continue to use
                 // the old bundle identifier to prevent it from installing as a new app.

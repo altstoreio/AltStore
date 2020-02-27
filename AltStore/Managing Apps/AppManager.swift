@@ -99,6 +99,28 @@ extension AppManager
         #endif
     }
     
+    func activateApps(completionHandler: @escaping (Result<[ALTProvisioningProfile: Error], Error>) -> Void)
+    {
+        let group = OperationGroup()
+        
+        let findServerOperation = FindServerOperation(group: group)
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): group.error = error
+            case .success(let server): group.server = server
+            }
+        }
+        self.operationQueue.addOperation(findServerOperation)
+        
+        let activateAppsOperation = ActivateAppsOperation(group: group)
+        activateAppsOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        activateAppsOperation.addDependency(findServerOperation)
+        self.operationQueue.addOperation(activateAppsOperation)
+    }
+    
     @discardableResult
     func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void) -> OperationGroup
     {

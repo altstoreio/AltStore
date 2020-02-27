@@ -266,6 +266,9 @@ private extension ConnectionManager
             case .success(.prepareApp(let request)):
                 self.handlePrepareAppRequest(request, for: connection)
                 
+            case .success(.replaceProvisioningProfiles(let request)):
+                self.handleActivateAppsRequest(request, for: connection)
+                
             case .success:
                 let response = ErrorResponse(error: ALTServerError(.unknownRequest))
                 connection.send(response, shouldDisconnect: true) { (result) in
@@ -434,6 +437,31 @@ private extension ConnectionManager
                 }
             }
         })
+    }
+    
+    func handleActivateAppsRequest(_ request: ReplaceProvisioningProfilesRequest, for connection: ClientConnection)
+    {
+        ALTDeviceManager.shared.replaceProvisioningProfiles(with: request.provisioningProfiles, onDeviceWithUDID: request.udid) { (errors) in
+            if let error = errors.values.first
+            {
+                print("Failed to install profiles:", errors.keys.map { $0.bundleIdentifier })
+                
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                connection.send(errorResponse, shouldDisconnect: true) { (result) in
+                    print("Sent activate apps error response with result:", result)
+                }
+            }
+            else
+            {
+                print("Installed profiles:", request.provisioningProfiles.map { $0.bundleIdentifier })
+                
+                let errors = errors.mapValues { ALTServerError($0) }
+                let response = ReplaceProvisioningProfilesResponse(errors: errors)
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent activate apps response to \(connection) with result:", result)
+                }
+            }
+        }
     }
 }
 
