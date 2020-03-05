@@ -13,8 +13,7 @@ import Roxas
 
 class RefreshAltStoreViewController: UIViewController
 {
-    var signer: ALTSigner!
-    var session: ALTAppleAPISession!
+    var context: AuthenticatedOperationContext!
     
     var completionHandler: ((Result<Void, Error>) -> Void)?
     
@@ -47,13 +46,13 @@ private extension RefreshAltStoreViewController
                 // Cancel pending AltStore refresh so we can start a new one.
                 progress.cancel()
             }
-            
-            let group = OperationGroup()
-            group.signer = self.signer // Prevent us from trying to authenticate a second time.
-            group.session = self.session // ^
-            group.completionHandler = { (result) in
-                if let error = result.error ?? result.value?.values.compactMap({ $0.error }).first
+                        
+            // Install, _not_ refresh, to ensure we are installing with a non-revoked certificate.
+            let progress = AppManager.shared.install(altStore, presentingViewController: self, context: self.context) { (result) in
+                switch result
                 {
+                case .success: self.completionHandler?(.success(()))
+                case .failure(let error):
                     DispatchQueue.main.async {
                         sender.progress = nil
                         sender.isIndicatingActivity = false
@@ -69,14 +68,9 @@ private extension RefreshAltStoreViewController
                         self.present(alertController, animated: true, completion: nil)
                     }
                 }
-                else
-                {
-                    self.completionHandler?(.success(()))
-                }
             }
             
-            _ = AppManager.shared.refresh([altStore], presentingViewController: self, group: group)
-            sender.progress = group.progress
+            sender.progress = progress
         }
         
         refresh()

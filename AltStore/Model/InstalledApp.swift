@@ -23,6 +23,16 @@ protocol InstalledAppProtocol: Fetchable
     var installedDate: Date { get }
 }
 
+extension InstalledApp
+{
+    @objc enum ActiveState: Int16
+    {
+        case inactive
+        case active
+        case activating
+    }
+}
+
 @objc(InstalledApp)
 class InstalledApp: NSManagedObject, InstalledAppProtocol
 {
@@ -35,6 +45,12 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged var refreshedDate: Date
     @NSManaged var expirationDate: Date
     @NSManaged var installedDate: Date
+    
+    @NSManaged var isActive: Bool
+    @NSManaged var isActivating: Bool
+    @NSManaged var isDeactivating: Bool
+    
+    @NSManaged var certificateSerialNumber: String?
     
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
@@ -50,7 +66,7 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         super.init(entity: entity, insertInto: context)
     }
     
-    init(resignedApp: ALTApplication, originalBundleIdentifier: String, context: NSManagedObjectContext)
+    init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -61,21 +77,28 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
         
-        self.update(resignedApp: resignedApp)
+        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
     }
     
-    func update(resignedApp: ALTApplication)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        
+        self.certificateSerialNumber = certificateSerialNumber
 
         if let provisioningProfile = resignedApp.provisioningProfile
         {
-            self.refreshedDate = provisioningProfile.creationDate
-            self.expirationDate = provisioningProfile.expirationDate
+            self.update(provisioningProfile: provisioningProfile)
         }
+    }
+    
+    func update(provisioningProfile: ALTProvisioningProfile)
+    {
+        self.refreshedDate = provisioningProfile.creationDate
+        self.expirationDate = provisioningProfile.expirationDate
     }
 }
 
@@ -192,6 +215,12 @@ extension InstalledApp
         return appURL
     }
     
+//    class func ipaURL(for app: AppProtocol) -> URL
+//    {
+//        let ipaURL = self.directoryURL(for: app).appendingPathComponent("App.ipa")
+//        return ipaURL
+//    }
+//
     class func refreshedIPAURL(for app: AppProtocol) -> URL
     {
         let ipaURL = self.directoryURL(for: app).appendingPathComponent("Refreshed.ipa")
@@ -221,6 +250,10 @@ extension InstalledApp
     var fileURL: URL {
         return InstalledApp.fileURL(for: self)
     }
+    
+//    var ipaURL: URL {
+//        return InstalledApp.ipaURL(for: self)
+//    }
     
     var refreshedIPAURL: URL {
         return InstalledApp.refreshedIPAURL(for: self)

@@ -23,7 +23,8 @@ extension MyAppsViewController
     {
         case noUpdates
         case updates
-        case installedApps
+        case activeApps
+        case inactiveApps
     }
 }
 
@@ -33,6 +34,7 @@ class MyAppsViewController: UICollectionViewController
     private lazy var noUpdatesDataSource = self.makeNoUpdatesDataSource()
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
     private lazy var installedAppsDataSource = self.makeInstalledAppsDataSource()
+    private lazy var inactiveAppsDataSource = self.makeInactiveAppsDataSource()
     
     private var prototypeUpdateCell: UpdateCollectionViewCell!
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
@@ -42,7 +44,7 @@ class MyAppsViewController: UICollectionViewController
     private var isUpdateSectionCollapsed = true
     private var expandedAppUpdates = Set<String>()
     private var isRefreshingAllApps = false
-    private var refreshGroup: OperationGroup?
+    private var refreshGroup: RefreshGroup?
     private var sideloadingProgress: Progress?
     
     // Cache
@@ -158,7 +160,7 @@ private extension MyAppsViewController
 {
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
-        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.noUpdatesDataSource, self.updatesDataSource, self.installedAppsDataSource])
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.noUpdatesDataSource, self.updatesDataSource, self.installedAppsDataSource, self.inactiveAppsDataSource])
         dataSource.proxy = self
         return dataSource
     }
@@ -265,6 +267,7 @@ private extension MyAppsViewController
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.storeApp)]
+        fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(InstalledApp.isActive))
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true),
                                         NSSortDescriptor(keyPath: \InstalledApp.refreshedDate, ascending: false),
                                         NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
@@ -284,6 +287,8 @@ private extension MyAppsViewController
             cell.bannerView.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
             
             cell.bannerView.button.isIndicatingActivity = false
+            
+            cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
             let currentDate = Date()
@@ -298,12 +303,6 @@ private extension MyAppsViewController
             {
                 cell.bannerView.button.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
             }
-                                    
-            cell.bannerView.titleLabel.text = installedApp.name
-            cell.bannerView.subtitleLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
-            
-            // Make sure refresh button is correct size.
-            cell.layoutIfNeeded()
             
             switch numberOfDays
             {
@@ -313,7 +312,81 @@ private extension MyAppsViewController
             default: cell.bannerView.button.tintColor = .refreshRed
             }
             
-            if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: installedApp), progress.fractionCompleted < 1.0
+            cell.bannerView.titleLabel.text = installedApp.name
+            cell.bannerView.subtitleLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
+            
+            // Make sure refresh button is correct size.
+            cell.layoutIfNeeded()
+
+            if let progress = AppManager.shared.refreshProgress(for: installedApp), progress.fractionCompleted < 1.0
+            {
+                cell.bannerView.button.progress = progress
+            }
+            else
+            {
+                cell.bannerView.button.progress = nil
+            }
+        }
+        dataSource.prefetchHandler = { (item, indexPath, completion) in
+            let fileURL = item.fileURL
+            
+            return BlockOperation {
+                guard let application = ALTApplication(fileURL: fileURL) else {
+                    completion(nil, OperationError.invalidApp)
+                    return
+                }
+                
+                let icon = application.icon
+                completion(icon, nil)
+            }
+        }
+        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+            let cell = cell as! InstalledAppCollectionViewCell
+            cell.bannerView.iconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
+        }
+        
+        return dataSource
+    }
+    
+    func makeInactiveAppsDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
+    {
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+        fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.storeApp)]
+        fetchRequest.predicate = NSPredicate(format: "%K == NO",
+                                             #keyPath(InstalledApp.isActive))
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true),
+                                        NSSortDescriptor(keyPath: \InstalledApp.refreshedDate, ascending: false),
+                                        NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        dataSource.cellIdentifierHandler = { _ in "AppCell" }
+        dataSource.cellConfigurationHandler = { (cell, installedApp, indexPath) in
+            let tintColor = installedApp.storeApp?.tintColor ?? .altPrimary
+            
+            let cell = cell as! InstalledAppCollectionViewCell
+            cell.layoutMargins.left = self.view.layoutMargins.left
+            cell.layoutMargins.right = self.view.layoutMargins.right
+            cell.tintColor = UIColor.gray
+            
+            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.betaBadgeView.isHidden = !(installedApp.storeApp?.isBeta ?? false)
+            
+            cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.setTitle(NSLocalizedString("ACTIVATE", comment: ""), for: .normal)
+            cell.bannerView.button.tintColor = tintColor
+            
+            cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
+            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.activateApp(_:)), for: .primaryActionTriggered)
+                                    
+            cell.bannerView.titleLabel.text = installedApp.name
+            cell.bannerView.subtitleLabel.text = installedApp.storeApp?.developerName ?? NSLocalizedString("Sideloaded", comment: "")
+            
+            // Make sure refresh button is correct size.
+            cell.layoutIfNeeded()
+            
+            if let progress = AppManager.shared.refreshProgress(for: installedApp), progress.fractionCompleted < 1.0
             {
                 cell.bannerView.button.progress = progress
             }
@@ -459,25 +532,27 @@ private extension MyAppsViewController
             self.refreshGroup = group
             
             UIView.performWithoutAnimation {
-                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+                self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
             }
         }
         
-        if installedApps.contains(where: { $0.bundleIdentifier == StoreApp.altstoreAppID })
-        {
-            let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
-                completionHandler(.failure(OperationError.cancelled))
-            })
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Refresh", comment: ""), style: .default) { (action) in
-                refresh()
-            })
-            self.present(alertController, animated: true, completion: nil)
-        }
-        else
-        {
-            refresh()
-        }
+//        if installedApps.contains(where: { $0.bundleIdentifier == StoreApp.altstoreAppID +  })
+//        {
+//            let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
+//            alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
+//                completionHandler(.failure(OperationError.cancelled))
+//            })
+//            alertController.addAction(UIAlertAction(title: NSLocalizedString("Refresh", comment: ""), style: .default) { (action) in
+//                refresh()
+//            })
+//            self.present(alertController, animated: true, completion: nil)
+//        }
+//        else
+//        {
+//            refresh()
+//        }
+        
+        refresh()
     }
 }
 
@@ -564,7 +639,7 @@ private extension MyAppsViewController
             if result.error != nil || result.value?.values.contains(where: { $0.error != nil }) == true
             {
                 DispatchQueue.main.async {
-                    self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
+                    self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
                 }
             }
             
@@ -574,21 +649,17 @@ private extension MyAppsViewController
     
     @IBAction func refreshAllApps(_ sender: UIBarButtonItem)
     {
-        AppManager.shared.activateApps() { (result) in
-            print("Fiinished activcating apps:", result)
+        self.isRefreshingAllApps = true
+        self.collectionView.collectionViewLayout.invalidateLayout()
+
+        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
+
+        self.refresh(installedApps) { (result) in
+            DispatchQueue.main.async {
+                self.isRefreshingAllApps = false
+                self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
+            }
         }
-        
-//        self.isRefreshingAllApps = true
-//        self.collectionView.collectionViewLayout.invalidateLayout()
-//
-//        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
-//
-//        self.refresh(installedApps) { (result) in
-//            DispatchQueue.main.async {
-//                self.isRefreshingAllApps = false
-//                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
-//            }
-//        }
     }
     
     @IBAction func updateApp(_ sender: UIButton)
@@ -741,17 +812,221 @@ private extension MyAppsViewController
         let alertController = UIAlertController(title: nil, message: NSLocalizedString("Removing a sideloaded app only removes it from AltStore. You must also delete it from the home screen to fully uninstall the app.", comment: ""), preferredStyle: .actionSheet)
         alertController.addAction(.cancel)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Remove", comment: ""), style: .destructive, handler: { (action) in
-            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
-                context.delete(installedApp)
-                
-                do { try context.save() }
-                catch { print("Failed to remove sideloaded app.", error) }
-            }
+//            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+//                context.delete(installedApp)
+//
+//                do { try context.save() }
+//                catch { print("Failed to remove sideloaded app.", error) }
+//            }
+            
+            self.deactivate(installedApp)
         }))
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    @IBAction func activateApp(_ sender: UIButton)
+    {
+        let point = self.collectionView.convert(sender.center, from: sender.superview)
+        guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        
+        guard !installedApp.isActivating else { return }
+        installedApp.isActivating = true
+        
+        let bundleID = installedApp.bundleIdentifier
+        
+        let group = AppManager.shared.refresh([installedApp], presentingViewController: self)
+        group.completionHandler = { (result) in
+            do
+            {
+                let results = try result.get()
+                guard let result = results[bundleID] else { throw OperationError.unknown }
+                                
+                let app = try result.get()
+                app.managedObjectContext?.perform {
+                    app.isActive = true
+                    try? app.managedObjectContext?.save()
+                }
+            }
+            catch
+            {
+                print("Failed to activate app:", error)
+                
+                DispatchQueue.main.async {
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                installedApp.isActivating = false
+            }
+        }
+    }
+    
+    @IBAction func deactivateApp(_ sender: UIButton)
+    {
+        let point = self.collectionView.convert(sender.center, from: sender.superview)
+        guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
+        
+        let installedApp = self.dataSource.item(at: indexPath)
+        self.deactivate(installedApp)
+    }
+    
+    func deactivate(_ installedApp: InstalledApp)
+    {
+        guard !installedApp.isDeactivating else { return }
+        installedApp.isDeactivating = true
+        
+        AppManager.shared.deactivate(installedApp) { (result) in
+            do
+            {
+                let app = try result.get()
+                try? app.managedObjectContext?.save()
+                
+                print("Finished deactivating app:", app.bundleIdentifier)
+            }
+            catch
+            {
+                print("Failed to activate app:", error)
+                
+                DispatchQueue.main.async {
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                installedApp.isDeactivating = false
+            }
+        }
+    }
+    
+//    func activateActiveApps()
+//    {
+//        func finish(_ result: Result<[InstalledApp: [Error]], Error>)
+//        {
+//            DispatchQueue.main.async {
+//                switch result
+//                {
+//                case .failure(let error):
+//                    let toastView = ToastView(error: error)
+//                    toastView.show(in: self)
+//
+//                case .success(let failures):
+//                    guard !failures.isEmpty else { break }
+//
+//                    let toastView: ToastView
+//
+//                    if let errors = failures.first?.value, let error = errors.first, failures.count == 1
+//                    {
+//                        toastView = ToastView(error: error)
+//                    }
+//                    else
+//                    {
+//                        let localizedText: String
+//
+//                        if failures.count == 1
+//                        {
+//                            localizedText = NSLocalizedString("Failed to activate 1 app.", comment: "")
+//                        }
+//                        else
+//                        {
+//                            localizedText = String(format: NSLocalizedString("Failed to activate %@ apps.", comment: ""), NSNumber(value: failures.count))
+//                        }
+//
+//                        let detailText = failures.first?.value.first?.localizedDescription
+//
+//                        toastView = ToastView(text: localizedText, detailText: detailText)
+//                        toastView.preferredDuration = 2.0
+//                    }
+//
+//                    toastView.show(in: self)
+//                }
+//            }
+//        }
+//
+//        AppManager.shared.activateApps { (result) in
+//            switch result
+//            {
+//            case .failure(let error): finish(.failure(error))
+//            case .success(let errors):
+//                DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//                    let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.activeState), NSNumber(value: InstalledApp.ActiveState.activating.rawValue))
+//                    let activatingApps = InstalledApp.all(satisfying: predicate, in: context)
+//
+//                    var failures = [InstalledApp: [Error]]()
+//
+//                    for installedApp in activatingApps
+//                    {
+//                        var profiles = Set<ALTProvisioningProfile>()
+//
+//                        guard let app = ALTApplication(fileURL: installedApp.fileURL) else { continue }
+//                        guard let provisioningProfile = app.provisioningProfile else { continue }
+//
+//                        profiles.insert(provisioningProfile)
+//
+//                        for appExtension in app.appExtensions
+//                        {
+//                            guard let provisioningProfile = appExtension.provisioningProfile else { continue }
+//                            profiles.insert(provisioningProfile)
+//                        }
+//
+//                        for profile in profiles
+//                        {
+//                            guard let error = errors[profile] else { continue }
+//                            failures[installedApp, default: []].append(error)
+//
+//                            installedApp.activeState = .inactive
+//                        }
+//                    }
+//
+//                    do
+//                    {
+//                        if context.hasChanges
+//                        {
+//                            try context.save()
+//                        }
+//
+//                        finish(.success(failures))
+//                    }
+//                    catch
+//                    {
+//                        finish(.failure(error))
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    func activateActiveApps()
+//    {
+//        AppManager.shared.activateApps() { (result) in
+//
+//            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//                let activatingApps = InstalledApp.all(satisfying: NSPredicate(, sortedBy: <#T##[NSSortDescriptor]?#>, in: <#T##NSManagedObjectContext#>)
+//            }
+//
+//            switch result
+//            {
+//            case .failure(let error):
+//                let toastView = ToastView(error: error)
+//                toastView.show(in: self)
+//
+//            case .success(let errors):
+//
+//            }
+//
+//            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//
+//            }
+//
+//            print("Fiinished activcating apps:", result)
+//        }
+//    }
 }
 
 private extension MyAppsViewController
@@ -777,7 +1052,7 @@ private extension MyAppsViewController
         
         guard
             let indexPath = self.collectionView.indexPathForItem(at: point),
-            indexPath.section == Section.installedApps.rawValue
+            indexPath.section == Section.activeApps.rawValue || indexPath.section == Section.inactiveApps.rawValue
         else { return }
         
         let installedApp = self.dataSource.item(at: indexPath)
@@ -873,7 +1148,7 @@ extension MyAppsViewController
             
             return headerView
             
-        case .installedApps where kind == UICollectionView.elementKindSectionHeader:
+        case .activeApps:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InstalledAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
             
             UIView.performWithoutAnimation {
@@ -890,7 +1165,21 @@ extension MyAppsViewController
             
             return headerView
             
-        case .installedApps:
+        case .inactiveApps where kind == UICollectionView.elementKindSectionHeader:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InstalledAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
+            
+            UIView.performWithoutAnimation {
+                headerView.textLabel.text = NSLocalizedString("Inactive", comment: "")
+                if #available(iOS 13.0, *) {
+//                    headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
+                    headerView.button.setTitle(nil, for: .normal)
+                }
+                headerView.button.layoutIfNeeded()
+            }
+            
+            return headerView
+            
+        case .inactiveApps:
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "InstalledAppsFooter", for: indexPath) as! InstalledAppsCollectionFooterView
             
             guard let team = DatabaseManager.shared.activeTeam() else { return footerView }
@@ -967,7 +1256,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             self.cachedUpdateSizes[item.bundleIdentifier] = size
             return size
 
-        case .installedApps:
+        case .activeApps, .inactiveApps:
             return CGSize(width: collectionView.bounds.width, height: 88)
         }
     }
@@ -982,7 +1271,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             let height: CGFloat = self.updatesDataSource.itemCount > maximumCollapsedUpdatesCount ? 26 : 0
             return CGSize(width: collectionView.bounds.width, height: height)
             
-        case .installedApps: return CGSize(width: collectionView.bounds.width, height: 29)
+        case .activeApps, .inactiveApps: return CGSize(width: collectionView.bounds.width, height: 29)
         }
     }
     
@@ -993,7 +1282,8 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         {
         case .noUpdates: return .zero
         case .updates: return .zero
-        case .installedApps:
+        case .activeApps: return .zero
+        case .inactiveApps:
             #if BETA
             guard let _ = DatabaseManager.shared.activeTeam() else { return .zero }
             

@@ -68,6 +68,8 @@ public enum ServerRequest: Decodable
     case anisetteData(AnisetteDataRequest)
     case prepareApp(PrepareAppRequest)
     case beginInstallation(BeginInstallationRequest)
+    case installProvisioningProfiles(InstallProvisioningProfilesRequest)
+    case removeProvisioningProfiles(RemoveProvisioningProfilesRequest)
     case replaceProvisioningProfiles(ReplaceProvisioningProfilesRequest)
     case unknown(identifier: String, version: Int)
     
@@ -77,6 +79,8 @@ public enum ServerRequest: Decodable
         case .anisetteData(let request): return request.identifier
         case .prepareApp(let request): return request.identifier
         case .beginInstallation(let request): return request.identifier
+        case .installProvisioningProfiles(let request): return request.identifier
+        case .removeProvisioningProfiles(let request): return request.identifier
         case .replaceProvisioningProfiles(let request): return request.identifier
         case .unknown(let identifier, _): return identifier
         }
@@ -88,6 +92,8 @@ public enum ServerRequest: Decodable
         case .anisetteData(let request): return request.version
         case .prepareApp(let request): return request.version
         case .beginInstallation(let request): return request.version
+        case .installProvisioningProfiles(let request): return request.version
+        case .removeProvisioningProfiles(let request): return request.version
         case .replaceProvisioningProfiles(let request): return request.version
         case .unknown(_, let version): return version
         }
@@ -119,6 +125,14 @@ public enum ServerRequest: Decodable
         case "BeginInstallationRequest":
             let request = try BeginInstallationRequest(from: decoder)
             self = .beginInstallation(request)
+          
+        case "InstallProvisioningProfilesRequest":
+            let request = try InstallProvisioningProfilesRequest(from: decoder)
+            self = .installProvisioningProfiles(request)
+            
+        case "RemoveProvisioningProfilesRequest":
+            let request = try RemoveProvisioningProfilesRequest(from: decoder)
+            self = .removeProvisioningProfiles(request)
             
         case "ReplaceProvisioningProfilesRequest":
             let request = try ReplaceProvisioningProfilesRequest(from: decoder)
@@ -134,6 +148,8 @@ public enum ServerResponse: Decodable
 {
     case anisetteData(AnisetteDataResponse)
     case installationProgress(InstallationProgressResponse)
+    case installProvisioningProfiles(InstallProvisioningProfilesResponse)
+    case removeProvisioningProfiles(RemoveProvisioningProfilesResponse)
     case replaceProvisioningProfiles(ReplaceProvisioningProfilesResponse)
     case error(ErrorResponse)
     case unknown(identifier: String, version: Int)
@@ -143,6 +159,8 @@ public enum ServerResponse: Decodable
         {
         case .anisetteData(let response): return response.identifier
         case .installationProgress(let response): return response.identifier
+        case .installProvisioningProfiles(let response): return response.identifier
+        case .removeProvisioningProfiles(let response): return response.identifier
         case .replaceProvisioningProfiles(let response): return response.identifier
         case .error(let response): return response.identifier
         case .unknown(let identifier, _): return identifier
@@ -154,6 +172,8 @@ public enum ServerResponse: Decodable
         {
         case .anisetteData(let response): return response.version
         case .installationProgress(let response): return response.version
+        case .installProvisioningProfiles(let response): return response.version
+        case .removeProvisioningProfiles(let response): return response.version
         case .replaceProvisioningProfiles(let response): return response.version
         case .error(let response): return response.version
         case .unknown(_, let version): return version
@@ -182,6 +202,14 @@ public enum ServerResponse: Decodable
         case "InstallationProgressResponse":
             let response = try InstallationProgressResponse(from: decoder)
             self = .installationProgress(response)
+           
+        case "InstallProvisioningProfilesResponse":
+            let response = try InstallProvisioningProfilesResponse(from: decoder)
+            self = .installProvisioningProfiles(response)
+            
+        case "RemoveProvisioningProfilesResponse":
+            let response = try RemoveProvisioningProfilesResponse(from: decoder)
+            self = .removeProvisioningProfiles(response)
             
         case "ReplaceProvisioningProfilesResponse":
             let response = try ReplaceProvisioningProfilesResponse(from: decoder)
@@ -280,6 +308,99 @@ public struct BeginInstallationRequest: ServerMessageProtocol
     }
 }
 
+public struct InstallProvisioningProfilesRequest: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "InstallProvisioningProfilesRequest"
+    
+    public var udid: String
+    public var provisioningProfiles: Set<ALTProvisioningProfile>
+    
+    public var activeProvisioningProfiles: Set<String>?
+    
+    private enum CodingKeys: String, CodingKey
+    {
+        case identifier
+        case version
+        case udid
+        case provisioningProfile
+        case activeProvisioningProfiles
+    }
+    
+    public init(udid: String, provisioningProfiles: Set<ALTProvisioningProfile>, activeProvisioningProfiles: Set<String>?)
+    {
+        self.udid = udid
+        self.provisioningProfiles = provisioningProfiles
+        self.activeProvisioningProfiles = activeProvisioningProfiles
+    }
+    
+    public init(from decoder: Decoder) throws
+    {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.version = try container.decode(Int.self, forKey: .version)
+        self.identifier = try container.decode(String.self, forKey: .identifier)
+        self.udid = try container.decode(String.self, forKey: .udid)
+        
+        let rawProvisioningProfiles = try container.decode([Data].self, forKey: .provisioningProfile)
+        let provisioningProfiles = try rawProvisioningProfiles.map { (data) -> ALTProvisioningProfile in
+            guard let profile = ALTProvisioningProfile(data: data) else {
+                throw DecodingError.dataCorruptedError(forKey: CodingKeys.provisioningProfile, in: container, debugDescription: "Could not parse provisioning profile from data.")
+            }
+            return profile
+        }
+        
+        self.provisioningProfiles = Set(provisioningProfiles)
+        
+        self.activeProvisioningProfiles = try container.decodeIfPresent(Set<String>.self, forKey: .activeProvisioningProfiles)
+    }
+    
+    public func encode(to encoder: Encoder) throws
+    {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.version, forKey: .version)
+        try container.encode(self.identifier, forKey: .identifier)
+        try container.encode(self.udid, forKey: .udid)
+        
+        try container.encode(self.provisioningProfiles.map { $0.data }, forKey: .provisioningProfile)
+        try container.encodeIfPresent(self.activeProvisioningProfiles, forKey: .activeProvisioningProfiles)
+    }
+}
+
+public struct InstallProvisioningProfilesResponse: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "InstallProvisioningProfilesResponse"
+    
+    public init()
+    {
+    }
+}
+
+public struct RemoveProvisioningProfilesRequest: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "RemoveProvisioningProfilesRequest"
+    
+    public var udid: String
+    public var bundleIdentifiers: Set<String>
+
+    public init(udid: String, bundleIdentifiers: Set<String>)
+    {
+        self.udid = udid
+        self.bundleIdentifiers = bundleIdentifiers
+    }
+}
+
+public struct RemoveProvisioningProfilesResponse: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "RemoveProvisioningProfilesResponse"
+    
+    public init()
+    {
+    }
+}
+
 public struct ReplaceProvisioningProfilesRequest: ServerMessageProtocol
 {
     public var version = 1
@@ -331,7 +452,7 @@ public struct ReplaceProvisioningProfilesResponse: ServerMessageProtocol
     public var version = 1
     public var identifier = "ReplaceProvisioningProfilesResponse"
     
-    public var errors: [ALTProvisioningProfile: ALTServerError]
+    public var errors: [String: ALTServerError]
         
     private enum CodingKeys: String, CodingKey
     {
@@ -340,7 +461,7 @@ public struct ReplaceProvisioningProfilesResponse: ServerMessageProtocol
         case errors
     }
     
-    public init(errors: [ALTProvisioningProfile: ALTServerError])
+    public init(errors: [String: ALTServerError])
     {
         self.errors = errors
     }
@@ -351,9 +472,8 @@ public struct ReplaceProvisioningProfilesResponse: ServerMessageProtocol
         self.version = try container.decode(Int.self, forKey: .version)
         self.identifier = try container.decode(String.self, forKey: .identifier)
         
-        let rawErrors = try container.decode([Data: CodableServerError].self, forKey: .errors)
-        let errors = Dictionary(rawErrors.compactMap { (data, error) in ALTProvisioningProfile(data: data).map { ($0, error.error) } },
-                                uniquingKeysWith: { (a, b) in a })
+        let rawErrors = try container.decode([String: CodableServerError].self, forKey: .errors)
+        let errors = rawErrors.mapValues { $0.error }
         self.errors = errors
     }
     
@@ -363,7 +483,7 @@ public struct ReplaceProvisioningProfilesResponse: ServerMessageProtocol
         try container.encode(self.version, forKey: .version)
         try container.encode(self.identifier, forKey: .identifier)
         
-        let rawErrors = Dictionary(self.errors.compactMap { ($0.data, CodableServerError(error: $1)) }, uniquingKeysWith: { (a, b) in a })
+        let rawErrors = Dictionary(self.errors.compactMap { ($0, CodableServerError(error: $1)) }, uniquingKeysWith: { (a, b) in a })
         try container.encode(rawErrors, forKey: .errors)
     }
 }

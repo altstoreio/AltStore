@@ -23,26 +23,11 @@ private let ReceivedWiredServerConnectionResponse: @convention(c) (CFNotificatio
 @objc(FindServerOperation)
 class FindServerOperation: ResultOperation<Server>
 {
-    let group: OperationGroup
-    
     private var isWiredServerConnectionAvailable = false
         
-    init(group: OperationGroup)
-    {
-        self.group = group
-        
-        super.init()
-    }
-    
     override func main()
     {
         super.main()
-        
-        if let error = self.group.error
-        {
-            self.finish(.failure(error))
-            return
-        }
         
         let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
         

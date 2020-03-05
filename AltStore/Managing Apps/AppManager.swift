@@ -30,6 +30,7 @@ class AppManager
     static let shared = AppManager()
     
     private let operationQueue = OperationQueue()
+    private let serialOperationQueue = OperationQueue()
     private let processingQueue = DispatchQueue(label: "com.altstore.AppManager.processingQueue")
     
     private var installationProgress = [String: Progress]()
@@ -38,6 +39,9 @@ class AppManager
     private init()
     {
         self.operationQueue.name = "com.altstore.AppManager.operationQueue"
+        
+        self.serialOperationQueue.name = "com.altstore.AppManager.serialOperationQueue"
+        self.serialOperationQueue.maxConcurrentOperationCount = 1
     }
 }
 
@@ -99,59 +103,94 @@ extension AppManager
         #endif
     }
     
-    func activateApps(completionHandler: @escaping (Result<[ALTProvisioningProfile: Error], Error>) -> Void)
-    {
-        let group = OperationGroup()
-        
-        let findServerOperation = FindServerOperation(group: group)
-        findServerOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success(let server): group.server = server
-            }
-        }
-        self.operationQueue.addOperation(findServerOperation)
-        
-        let activateAppsOperation = ActivateAppsOperation(group: group)
-        activateAppsOperation.resultHandler = { (result) in
-            completionHandler(result)
-        }
-        activateAppsOperation.addDependency(findServerOperation)
-        self.operationQueue.addOperation(activateAppsOperation)
-    }
+//    func activateApps(completionHandler: @escaping (Result<[ALTProvisioningProfile: Error], Error>) -> Void)
+//    {
+//        let context = OperationContext()
+//                
+//        let findServerOperation = FindServerOperation()
+//        findServerOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let server): context.server = server
+//            }
+//        }
+//        
+//        let activateAppsOperation = ActivateAppsOperation(context: context)
+//        activateAppsOperation.resultHandler = { (result) in
+//            completionHandler(result)
+//        }
+//        activateAppsOperation.addDependency(findServerOperation)
+//        
+//        self.run([findServerOperation, activateAppsOperation])
+//    }
     
     @discardableResult
-    func authenticate(presentingViewController: UIViewController?, completionHandler: @escaping (Result<(ALTSigner, ALTAppleAPISession), Error>) -> Void) -> OperationGroup
+    func authenticate(presentingViewController: UIViewController?, context: AuthenticatedOperationContext? = nil, completionHandler: @escaping (Result<(ALTTeam, ALTCertificate, ALTAppleAPISession), Error>) -> Void) -> AuthenticatedOperationContext
     {
-        let group = OperationGroup()
+        let context = context ?? AuthenticatedOperationContext()
         
-        let findServerOperation = FindServerOperation(group: group)
+        let findServerOperation = FindServerOperation()
         findServerOperation.resultHandler = { (result) in
             switch result
             {
-            case .failure(let error): group.error = error
-            case .success(let server): group.server = server
+            case .failure(let error): context.error = error
+            case .success(let server): context.server = server
             }
         }
-        self.operationQueue.addOperation(findServerOperation)
         
-        let authenticationOperation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
+        let authenticationOperation = AuthenticationOperation(context: context, presentingViewController: presentingViewController)
         authenticationOperation.resultHandler = { (result) in
             switch result
             {
-            case .failure(let error): group.error = error
-            case .success(let signer, let session):
-                group.signer = signer
-                group.session = session
+            case .failure(let error): context.error = error
+            case .success(let team, let certificate, let session):
+                context.session = session
+                context.team = team
+                context.certificate = certificate
             }
             
             completionHandler(result)
         }
         authenticationOperation.addDependency(findServerOperation)
-        self.operationQueue.addOperation(authenticationOperation)
         
-        return group
+        self.run([findServerOperation, authenticationOperation])
+        
+        return context
+    }
+    
+    @discardableResult
+    func rst_authenticate(presentingViewController: UIViewController?, context: AuthenticatedOperationContext? = nil, completionHandler: @escaping (Result<(ALTTeam, ALTCertificate, ALTAppleAPISession), Error>) -> Void) -> AuthenticationOperation
+    {
+        let context = context ?? AuthenticatedOperationContext()
+        
+        let findServerOperation = FindServerOperation()
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let server): context.server = server
+            }
+        }
+        
+        let authenticationOperation = AuthenticationOperation(context: context, presentingViewController: presentingViewController)
+        authenticationOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success((let team, let certificate, let session)):
+                context.session = session
+                context.team = team
+                context.certificate = certificate
+            }
+            
+            completionHandler(result)
+        }
+        authenticationOperation.addDependency(findServerOperation)
+        
+        self.run([findServerOperation, authenticationOperation])
+        
+        return authenticationOperation
     }
 }
 
@@ -176,74 +215,52 @@ extension AppManager
                     NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
                 }
             }
-            self.operationQueue.addOperation(fetchSourceOperation)
+            self.run([fetchSourceOperation])
         }
     }
     
     func fetchAppIDs(completionHandler: @escaping (Result<([AppID], NSManagedObjectContext), Error>) -> Void)
     {
-        var group: OperationGroup!
-        group = self.authenticate(presentingViewController: nil) { (result) in
+        var context: AuthenticatedOperationContext!
+        context = self.authenticate(presentingViewController: nil) { (result) in
             switch result
             {
             case .failure(let error):
                 completionHandler(.failure(error))
                 
             case .success:
-                let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
+                let fetchAppIDsOperation = FetchAppIDsOperation(context: context)
                 fetchAppIDsOperation.resultHandler = completionHandler
-                self.operationQueue.addOperation(fetchAppIDsOperation)
+                self.run([fetchAppIDsOperation])
             }
         }
+    }
+    
+    func deactivate(_ installedApp: InstalledApp, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let context = OperationContext()
+        
+        let findServerOperation = FindServerOperation()
+        findServerOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let server): context.server = server
+            }
+        }
+        
+        let deactivateAppOperation = DeactivateAppOperation(app: installedApp, context: context)
+        deactivateAppOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        deactivateAppOperation.addDependency(findServerOperation)
+        
+        self.run([findServerOperation, deactivateAppOperation])
     }
 }
 
 extension AppManager
 {
-    func install(_ app: AppProtocol, presentingViewController: UIViewController, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
-    {
-        if let progress = self.installationProgress(for: app)
-        {
-            return progress
-        }
-        
-        let bundleIdentifier = app.bundleIdentifier
-        
-        let group = self.install([app], forceDownload: true, presentingViewController: presentingViewController)
-        group.completionHandler = { (result) in            
-            do
-            {
-                self.installationProgress[bundleIdentifier] = nil
-                
-                guard let (_, result) = try result.get().first else { throw OperationError.unknown }
-                completionHandler(result)
-            }
-            catch
-            {
-                completionHandler(.failure(error))
-            }
-        }
-        
-        self.installationProgress[bundleIdentifier] = group.progress
-        
-        return group.progress
-    }
-    
-    func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
-    {
-        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil || self.refreshProgress(for: $0)?.isCancelled == true }
-
-        let group = self.install(apps, forceDownload: false, presentingViewController: presentingViewController, group: group)
-        
-        for app in apps
-        {
-            guard let progress = group.progress(for: app) else { continue }
-            self.refreshProgress[app.bundleIdentifier] = progress
-        }
-        
-        return group
-    }
-    
     func installationProgress(for app: AppProtocol) -> Progress?
     {
         let progress = self.installationProgress[app.bundleIdentifier]
@@ -257,266 +274,668 @@ extension AppManager
     }
 }
 
-private extension AppManager
+extension AppManager
 {
-    func install(_ apps: [AppProtocol], forceDownload: Bool, presentingViewController: UIViewController?, group: OperationGroup? = nil) -> OperationGroup
+//    func install<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext? = nil,  completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+//    {
+//        // Authenticate -> Download -> Fetch Provisioning Profile -> Resign App -> Send -> Install
+//
+//        if let progress = self.installationProgress(for: app)
+//        {
+//            return progress
+//        }
+//
+//        let progress = Progress.discreteProgress(totalUnitCount: 100)
+//        let bundleIdentifier = app.bundleIdentifier
+//
+//        let managedObjectContext: NSManagedObjectContext?
+//        if let app = app as? NSManagedObject & AppProtocol, let context = app.managedObjectContext
+//        {
+//            managedObjectContext = context
+//        }
+//        else
+//        {
+//            managedObjectContext = nil
+//        }
+//
+//        var operations = [Operation]()
+//        var authenticatedContext: AuthenticatedOperationContext = context ?? AuthenticatedOperationContext()
+//
+//        func finish(_ result: Result<InstalledApp, Error>)
+//        {
+//            self.installationProgress[bundleIdentifier] = nil
+//
+//            do
+//            {
+//                let installedApp = try self.process(result, server: authenticatedContext.server)
+//                installedApp.managedObjectContext?.performAndWait {
+//                    do { try installedApp.managedObjectContext?.save() }
+//                    catch { print("Error saving installed app.", error) }
+//
+//                    if let index = UserDefaults.standard.legacySideloadedApps?.firstIndex(of: installedApp.bundleIdentifier)
+//                    {
+//                        // No longer a legacy sideloaded app, so remove it from cached list.
+//                        UserDefaults.standard.legacySideloadedApps?.remove(at: index)
+//                    }
+//
+//                    completionHandler(.success(installedApp))
+//                }
+//            }
+//            catch
+//            {
+//                completionHandler(.failure(error))
+//            }
+//        }
+//
+//        /* Authenticate */
+//        authenticatedContext = self.authenticate(presentingViewController: presentingViewController, context: authenticatedContext) { (result) in
+//            switch result
+//            {
+//            case .failure(let error):
+//                finish(.failure(error))
+//
+//            case .success:
+//                let context = InstallAppOperationContext(bundleIdentifier: bundleIdentifier, authenticatedContext: authenticatedContext)
+//
+//                /* Prepare Developer Account */
+//                let prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(context: authenticatedContext)
+//                prepareDeveloperAccountOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success: break
+//                    }
+//                }
+//                operations.append(prepareDeveloperAccountOperation)
+//
+//
+//                /* Download */
+//                var downloadOperation: DownloadAppOperation!
+//
+//                if let managedObjectContext = managedObjectContext
+//                {
+//                    managedObjectContext.performAndWait {
+//                        downloadOperation = DownloadAppOperation(app: app, context: context)
+//                    }
+//                }
+//                else
+//                {
+//                    downloadOperation = DownloadAppOperation(app: app, context: context)
+//                }
+//
+//                downloadOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let app): context.app = app
+//                    }
+//                }
+//                progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
+//                operations.append(downloadOperation)
+//
+//
+//                /* Refresh Anisette Data */
+//                let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: authenticatedContext)
+//                refreshAnisetteDataOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let anisetteData): authenticatedContext.session?.anisetteData = anisetteData
+//                    }
+//                }
+//                refreshAnisetteDataOperation.addDependency(downloadOperation)
+//                operations.append(refreshAnisetteDataOperation)
+//
+//
+//                /* Fetch Provisioning Profiles */
+//                let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+//                fetchProvisioningProfilesOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+//                    }
+//                }
+//                fetchProvisioningProfilesOperation.addDependency(prepareDeveloperAccountOperation)
+//                fetchProvisioningProfilesOperation.addDependency(refreshAnisetteDataOperation)
+//                progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 5)
+//                operations.append(fetchProvisioningProfilesOperation)
+//
+//
+//                /* Resign */
+//                let resignAppOperation = ResignAppOperation(context: context)
+//                resignAppOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let resignedApp): context.resignedApp = resignedApp
+//                    }
+//                }
+//                resignAppOperation.addDependency(fetchProvisioningProfilesOperation)
+//                progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
+//                operations.append(resignAppOperation)
+//
+//
+//                /* Send */
+//                let sendAppOperation = SendAppOperation(context: context)
+//                sendAppOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let installationConnection): context.installationConnection = installationConnection
+//                    }
+//                }
+//                progress.addChild(sendAppOperation.progress, withPendingUnitCount: 20)
+//                sendAppOperation.addDependency(resignAppOperation)
+//                operations.append(sendAppOperation)
+//
+//
+//                /* Install */
+//                let installOperation = InstallAppOperation(context: context)
+//                installOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): finish(.failure(error))
+//                    case .success(let installedApp):
+//                        if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
+//                        {
+//                            installedApp.storeApp = storeApp
+//                        }
+//
+//                        finish(.success(installedApp))
+//                    }
+//                }
+//                progress.addChild(installOperation.progress, withPendingUnitCount: 30)
+//                installOperation.addDependency(sendAppOperation)
+//                operations.append(installOperation)
+//
+//                self.run(operations)
+//            }
+//        }
+//
+//        self.installationProgress[app.bundleIdentifier] = progress
+//        return progress
+//    }
+//
+//    @discardableResult
+//    func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: RefreshGroup? = nil) -> RefreshGroup
+//    {
+//        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil || self.refreshProgress(for: $0)?.isCancelled == true }
+//        let appBundleIDs = apps.map { $0.bundleIdentifier }
+//
+//        let group = group ?? RefreshGroup()
+//
+//        for app in apps
+//        {
+//            let progress = Progress.discreteProgress(totalUnitCount: 100)
+//            group.set(progress, for: app)
+//
+//            // Make sure this is set before function returns so calling method can use it immediately.
+//            self.refreshProgress[app.bundleIdentifier] = progress
+//        }
+//
+//        var token: NSKeyValueObservation!
+//        token = group.observe(\.isFinished) { (group, change) in
+//            guard group.isFinished else { return }
+//
+//            for bundleID in appBundleIDs
+//            {
+//                if let progress = self.refreshProgress[bundleID], progress == group.progress(forAppWithBundleIdentifier: bundleID)
+//                {
+//                    // Only remove progress if it hasn't been replaced by another one.
+//                    self.refreshProgress[bundleID] = nil
+//                }
+//            }
+//
+//            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//                guard let altstore = InstalledApp.fetchAltStore(in: context) else { return }
+//                self.scheduleExpirationWarningLocalNotification(for: altstore)
+//            }
+//
+//            // Explicitly reference token in closure to ensure it is strongly captured.
+//            token.invalidate()
+//        }
+//
+//        return self._refresh(apps, presentingViewController: presentingViewController, group: group)
+//    }
+//
+//    @discardableResult
+//    private func _refresh(_ apps: [InstalledApp], presentingViewController: UIViewController?, group: RefreshGroup) -> RefreshGroup
+//    {
+//        func finish(_ result: Result<InstalledApp, Error>, context: AppOperationContext)
+//        {
+//            do
+//            {
+//                let installedApp = try self.process(result, server: group.context.server)
+//                group.set(.success(installedApp), forAppWithBundleIdentifier: context.bundleIdentifier)
+//
+//                installedApp.managedObjectContext?.performAndWait {
+//
+//                    // Must remove before saving installedApp.
+//                    if let progress = self.refreshProgress[installedApp.bundleIdentifier], progress == group.progress(forAppWithBundleIdentifier: installedApp.bundleIdentifier)
+//                    {
+//                        // Only remove progress if it hasn't been replaced by another one.
+//                        self.refreshProgress[installedApp.bundleIdentifier] = nil
+//                    }
+//
+//                    do { try installedApp.managedObjectContext?.save() }
+//                    catch { print("Error saving installed app.", error) }
+//                }
+//            }
+//            catch
+//            {
+//                group.set(.failure(error), forAppWithBundleIdentifier: context.bundleIdentifier)
+//            }
+//        }
+//
+//        func refresh()
+//        {
+//            /* Authenticate (if necessary) */
+//            guard group.context.session != nil else {
+//                self.authenticate(presentingViewController: presentingViewController, context: group.context) { (result) in
+//                    switch result
+//                    {
+//                    case .failure: group.finish()
+//                    case .success: self._refresh(apps, presentingViewController: presentingViewController, group: group)
+//                    }
+//                }
+//
+//                return
+//            }
+//
+//            /* Prepare Developer Account (if necessary) */
+//            guard group.didPrepareDeveloperAccount else {
+//                let prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(context: group.context)
+//                prepareDeveloperAccountOperation.resultHandler = { (result) in
+//                    do
+//                    {
+//                        try self.process(result, server: group.context.server)
+//                        group.didPrepareDeveloperAccount = true
+//
+//                        self._refresh(apps, presentingViewController: presentingViewController, group: group)
+//                    }
+//                    catch
+//                    {
+//                        group.context.error = error
+//                        group.finish()
+//                    }
+//                }
+//
+//                self.run([prepareDeveloperAccountOperation])
+//
+//                return
+//            }
+//
+//            var operations = [Foundation.Operation]()
+//
+//            for app in apps
+//            {
+//                let progress = self.refreshProgress[app.bundleIdentifier]
+//                let managedObjectContext = app.managedObjectContext
+//
+//                let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+//                context.app = ALTApplication(fileURL: app.fileURL)
+//
+//                guard group.context.certificate?.serialNumber == app.certificateSerialNumber else {
+//                    let installOperation = RSTAsyncBlockOperation { (operation) in
+//                        print("Certificate revoked! Re-signing app:", context.bundleIdentifier)
+//
+//                        managedObjectContext?.perform {
+//                            let installProgress = self.install(app, presentingViewController: presentingViewController, context: group.context) { (result) in
+//                                finish(result, context: context)
+//                                operation.finish()
+//                            }
+//
+//                            progress?.addChild(installProgress, withPendingUnitCount: 100)
+//                        }
+//                    }
+//
+//                    operations.append(installOperation)
+//                    continue
+//                }
+//
+//                progress?.completedUnitCount += 30
+//
+//                /* Fetch Provisioning Profiles */
+//                let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+//                fetchProvisioningProfilesOperation.resultHandler = { (result) in
+//                    switch result
+//                    {
+//                    case .failure(let error): context.error = error
+//                    case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+//                    }
+//                }
+//                progress?.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 40)
+//                operations.append(fetchProvisioningProfilesOperation)
+//
+//
+//                /* Refresh */
+//                let refreshAppOperation = RefreshAppOperation(context: context)
+//                refreshAppOperation.resultHandler = { (result) in
+//                    finish(result, context: context)
+//                }
+//                progress?.addChild(refreshAppOperation.progress, withPendingUnitCount: 30)
+//                refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)
+//                operations.append(refreshAppOperation)
+//            }
+//
+//            group.runOperations(operations)
+//        }
+//
+//        if let managedObjectContext = apps.first(where: { $0.managedObjectContext != nil})?.managedObjectContext
+//        {
+//            managedObjectContext.perform {
+//                refresh()
+//            }
+//        }
+//        else
+//        {
+//            refresh()
+//        }
+//
+//        return group
+//    }
+    
+//    @discardableResult
+//    private func rst_install(_ apps: [AppProtocol], presentingViewController: UIViewController?, refreshGroup: RefreshGroup? = nil) -> RefreshGroup
+//    {
+//        let apps = apps.filter { self.installationProgress(for: $0) == nil || self.installationProgress(for: $0)?.isCancelled == true }
+//    }
+    
+    enum AppOperation
     {
-        // Authenticate -> Download (if necessary) -> Resign -> Send -> Install.
-        let group = group ?? OperationGroup()
-        var operations = [Operation]()
+        case install(AppProtocol)
+        case refresh(AppProtocol)
         
-        /* Find Server */
-        let findServerOperation = FindServerOperation(group: group)
-        findServerOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success(let server): group.server = server
-            }
-        }
-        operations.append(findServerOperation)
-        
-        let authenticationOperation: AuthenticationOperation?
-        
-        if group.signer == nil || group.session == nil
-        {
-            /* Authenticate */
-            let operation = AuthenticationOperation(group: group, presentingViewController: presentingViewController)
-            operation.resultHandler = { (result) in
-                switch result
+        var app: AppProtocol {
+            get {
+                switch self
                 {
-                case .failure(let error): group.error = error
-                case .success(let signer, let session):
-                    group.signer = signer
-                    group.session = session
+                case .install(let app), .refresh(let app): return app
                 }
             }
-            operations.append(operation)
-            operation.addDependency(findServerOperation)
-            
-            authenticationOperation = operation
+            set {
+                switch self
+                {
+                case .install: self = .install(newValue)
+                case .refresh: self = .refresh(newValue)
+                }
+            }
+        }
+    }
+    
+    func progress(for operation: AppOperation) -> Progress?
+    {
+        func _progress() -> Progress?
+        {
+            switch operation
+            {
+            case .install(let app): return self.installationProgress[app.bundleIdentifier]
+            case .refresh(let app): return self.refreshProgress[app.bundleIdentifier]
+            }
+        }
+        
+        if let context = (operation.app as? NSManagedObject)?.managedObjectContext
+        {
+            var progress: Progress?
+            context.performAndWait { progress = _progress() }
+            return progress
         }
         else
         {
-            authenticationOperation = nil
+            return _progress()
         }
-        
-        let refreshAnisetteDataOperation = FetchAnisetteDataOperation(group: group)
-        refreshAnisetteDataOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success(let anisetteData): group.session?.anisetteData = anisetteData
-            }
-        }
-        refreshAnisetteDataOperation.addDependency(authenticationOperation ?? findServerOperation)
-        operations.append(refreshAnisetteDataOperation)
-        
-        /* Prepare Developer Account */
-        let prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(group: group)
-        prepareDeveloperAccountOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): group.error = error
-            case .success: break
-            }
-        }
-        prepareDeveloperAccountOperation.addDependency(refreshAnisetteDataOperation)
-        operations.append(prepareDeveloperAccountOperation)
-        
-        for app in apps
+    }
+    
+    func set(_ progress: Progress?, for operation: AppOperation)
+    {
+        func _setProgress()
         {
-            let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, group: group)
-            let progress = Progress.discreteProgress(totalUnitCount: 100)
-            
-            
-            /* Resign */
-            let resignAppOperation = ResignAppOperation(context: context)
-            resignAppOperation.resultHandler = { (result) in
-                guard let resignedApp = self.process(result, context: context) else { return }
-                context.resignedApp = resignedApp
-            }
-            resignAppOperation.addDependency(prepareDeveloperAccountOperation)
-            progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
-            operations.append(resignAppOperation)
-            
-            
-            /* Download */
-            let fileURL = InstalledApp.fileURL(for: app)
-            
-            var localApp: ALTApplication?
-            
-            let managedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-            managedObjectContext.performAndWait {
-                let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), context.bundleIdentifier)
-                
-                if let installedApp = InstalledApp.first(satisfying: predicate, in: managedObjectContext), FileManager.default.fileExists(atPath: fileURL.path), !forceDownload
-                {
-                    localApp = ALTApplication(fileURL: installedApp.fileURL)
-                }
-            }
-        
-            if let localApp = localApp
+            switch operation
             {
-                // Already installed, don't need to download.
-                
-                // If we don't need to download the app, reduce the total unit count by 40.
-                progress.totalUnitCount -= 40
-                
-                context.app = localApp
+            case .install(let app): self.installationProgress[app.bundleIdentifier] = progress
+            case .refresh(let app): self.refreshProgress[app.bundleIdentifier] = progress
             }
-            else
-            {
-                // App is not yet installed (or we're forcing it to download a new version), so download it before resigning it.
-                
-                let downloadOperation = DownloadAppOperation(app: app, context: context)
-                downloadOperation.resultHandler = { (result) in
-                    guard let app = self.process(result, context: context) else { return }
-                    context.app = app
-                }
-                progress.addChild(downloadOperation.progress, withPendingUnitCount: 40)
-                downloadOperation.addDependency(findServerOperation)
-                resignAppOperation.addDependency(downloadOperation)
-                operations.append(downloadOperation)
-            }
-            
-            /* Send */
-            let sendAppOperation = SendAppOperation(context: context)
-            sendAppOperation.resultHandler = { (result) in
-                guard let installationConnection = self.process(result, context: context) else { return }
-                context.installationConnection = installationConnection
-            }
-            progress.addChild(sendAppOperation.progress, withPendingUnitCount: 10)
-            sendAppOperation.addDependency(resignAppOperation)
-            operations.append(sendAppOperation)
-            
-            
-            let beginInstallationHandler = group.beginInstallationHandler
-            group.beginInstallationHandler = { (installedApp) in
-                if installedApp.bundleIdentifier == StoreApp.altstoreAppID
-                {
-                    self.scheduleExpirationWarningLocalNotification(for: installedApp)
-                }
-                
-                beginInstallationHandler?(installedApp)
-            }
-            
-            /* Install */
-            let installOperation = InstallAppOperation(context: context)
-            installOperation.resultHandler = { (result) in
-                if let error = result.error
-                {
-                    context.error = error
-                }
-                
-                if let installedApp = result.value
-                {
-                    if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
-                    {
-                        installedApp.storeApp = storeApp
-                    }
-                    
-                    context.installedApp = installedApp
-                }
-                
-                self.finishAppOperation(context) // Finish operation no matter what.
-            }
-            progress.addChild(installOperation.progress, withPendingUnitCount: 30)
-            installOperation.addDependency(sendAppOperation)
-            operations.append(installOperation)
-                        
-            group.set(progress, for: app)
         }
         
-        // Refresh anisette data after downloading all apps to prevent session from expiring.
-        for case let downloadOperation as DownloadAppOperation in operations
+        if let context = (operation.app as? NSManagedObject)?.managedObjectContext
         {
-            refreshAnisetteDataOperation.addDependency(downloadOperation)
+            context.performAndWait { _setProgress() }
         }
-        
-        /* Cache App IDs */
-        let fetchAppIDsOperation = FetchAppIDsOperation(group: group)
-        fetchAppIDsOperation.resultHandler = { (result) in
+        else
+        {
+            _setProgress()
+        }
+    }
+    
+    @discardableResult
+    func install<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let group = RefreshGroup(context: context)
+        group.completionHandler = { (result) in
             do
             {
-                let (_, context) = try result.get()
-                try context.save()
+                guard let (_, result) = try result.get().first else { throw OperationError.unknown }
+                completionHandler(result)
             }
             catch
             {
-                print("Failed to fetch App IDs.", error)
+                completionHandler(.failure(error))
             }
         }
-        operations.forEach { fetchAppIDsOperation.addDependency($0) }
-        operations.append(fetchAppIDsOperation)
         
-        group.addOperations(operations)
+        let operation = AppOperation.install(app)
+        self.rst_perform([operation], presentingViewController: presentingViewController, group: group)
+        
+        return group.progress
+    }
+    
+    @discardableResult
+    func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: RefreshGroup? = nil) -> RefreshGroup
+    {
+        let group = group ?? RefreshGroup()
+        
+        let operations = installedApps.map { AppOperation.refresh($0) }
+        return self.rst_perform(operations, presentingViewController: presentingViewController, group: group)
+    }
+    
+    @discardableResult
+    private func rst_perform(_ operations: [AppOperation], presentingViewController: UIViewController?, group: RefreshGroup) -> RefreshGroup
+    {
+        let operations = operations.filter { self.progress(for: $0) == nil || self.progress(for: $0)?.isCancelled == true }
+        
+        for operation in operations
+        {
+            let progress = Progress.discreteProgress(totalUnitCount: 100)
+            self.set(progress, for: operation)
+        }
+        
+        /* Authenticate (if necessary) */
+        var authenticationOperation: AuthenticationOperation?
+        if group.context.session == nil
+        {
+            authenticationOperation = self.rst_authenticate(presentingViewController: presentingViewController, context: group.context) { (result) in
+                switch result
+                {
+                case .failure(let error): group.context.error = error
+                case .success: break
+                }
+            }
+        }
+        
+        func performAppOperations()
+        {
+            for operation in operations
+            {
+                let bundleIdentifier = operation.app.bundleIdentifier
+                let progress = self.progress(for: operation)
+                
+                if let progress = progress
+                {
+                    group.progress.totalUnitCount += 1
+                    group.progress.addChild(progress, withPendingUnitCount: 1)
+                    
+                    if group.context.session != nil
+                    {
+                        // Finished authenticating, so increase completed unit count.
+                        progress.completedUnitCount += 20
+                    }
+                }
+                
+                func finish(_ result: Result<InstalledApp, Error>)
+                {
+                    print("Assigning results for \(bundleIdentifier)...")
+                    
+                    // Must remove before saving installedApp.
+                    if let currentProgress = self.progress(for: operation), currentProgress == progress
+                    {
+                        // Only remove progress if it hasn't been replaced by another one.
+                        self.set(nil, for: operation)
+                    }
+                    
+                    do
+                    {
+                        let installedApp = try self.process(result, server: group.context.server)
+                        group.set(.success(installedApp), forAppWithBundleIdentifier: installedApp.bundleIdentifier)
+                        
+                        if installedApp.bundleIdentifier == StoreApp.altstoreAppID
+                        {
+                            self.scheduleExpirationWarningLocalNotification(for: installedApp)
+                        }
+                        
+                        do { try installedApp.managedObjectContext?.save() }
+                        catch { print("Error saving installed app.", error) }
+                    }
+                    catch
+                    {
+                        group.set(.failure(error), forAppWithBundleIdentifier: bundleIdentifier)
+                    }
+                }
+                
+                switch operation
+                {
+                case .refresh(let installedApp as InstalledApp) where installedApp.certificateSerialNumber == group.context.certificate?.serialNumber:
+                    // Refreshing apps, but using same certificate as last time, so we can just refresh provisioning profiles.
+                                        
+                    let refreshProgress = self.__rst_refresh(installedApp, group: group) { (result) in
+                        finish(result)
+                    }
+                    progress?.addChild(refreshProgress, withPendingUnitCount: 80)
+                    
+                case .refresh(let app), .install(let app):
+                    
+                    let installProgress = self.__rst_install(app, group: group) { (result) in
+                        finish(result)
+                    }
+                    progress?.addChild(installProgress, withPendingUnitCount: 80)
+                }
+            }
+        }
+        
+        if let authenticationOperation = authenticationOperation
+        {
+            let awaitAuthenticationOperation = BlockOperation {
+                print("Finished authenticated! Starting app operations...")
+                
+                if let managedObjectContext = operations.lazy.compactMap({ ($0.app as? NSManagedObject)?.managedObjectContext }).first
+                {
+                    managedObjectContext.perform { performAppOperations() }
+                }
+                else
+                {
+                    performAppOperations()
+                }
+            }
+            awaitAuthenticationOperation.addDependency(authenticationOperation)
+            self.run([awaitAuthenticationOperation])
+        }
+        else
+        {
+            performAppOperations()
+        }
         
         return group
     }
     
-    @discardableResult func process<T>(_ result: Result<T, Error>, context: AppOperationContext) -> T?
-    {
-        do
-        {            
-            let value = try result.get()
-            return value
-        }
-        catch OperationError.cancelled
-        {
-            context.error = OperationError.cancelled
-            self.finishAppOperation(context)
-            
-            return nil
-        }
-        catch
-        {
-            context.error = error
-            return nil
-        }
-    }
     
-    func finishAppOperation(_ context: AppOperationContext)
+    private func __rst_install(_ app: AppProtocol, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        self.processingQueue.sync {
-            guard !context.isFinished else { return }
-            context.isFinished = true
-            
-            if let progress = self.refreshProgress[context.bundleIdentifier], progress == context.group.progress(forAppWithBundleIdentifier: context.bundleIdentifier)
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        let context = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        
+        /* Download */
+        let downloadOperation = DownloadAppOperation(app: app, context: context)
+        downloadOperation.resultHandler = { (result) in
+            switch result
             {
-                // Only remove progress if it hasn't been replaced by another one.
-                self.refreshProgress[context.bundleIdentifier] = nil
+            case .failure(let error): context.error = error
+            case .success(let app): context.app = app
             }
-            
-            if let error = context.error
+        }
+        progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
+        
+        
+        /* Refresh Anisette Data */
+        let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: group.context)
+        refreshAnisetteDataOperation.resultHandler = { (result) in
+            switch result
             {
-                switch error
+            case .failure(let error): context.error = error
+            case .success(let anisetteData): group.context.session?.anisetteData = anisetteData
+            }
+        }
+        refreshAnisetteDataOperation.addDependency(downloadOperation)
+        
+        
+        /* Fetch Provisioning Profiles */
+        let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+        fetchProvisioningProfilesOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+            }
+        }
+        fetchProvisioningProfilesOperation.addDependency(refreshAnisetteDataOperation)
+        progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 5)
+        
+        
+        /* Resign */
+        let resignAppOperation = ResignAppOperation(context: context)
+        resignAppOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let resignedApp): context.resignedApp = resignedApp
+            }
+        }
+        resignAppOperation.addDependency(fetchProvisioningProfilesOperation)
+        progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
+        
+        
+        /* Send */
+        let sendAppOperation = SendAppOperation(context: context)
+        sendAppOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let installationConnection): context.installationConnection = installationConnection
+            }
+        }
+        sendAppOperation.addDependency(resignAppOperation)
+        progress.addChild(sendAppOperation.progress, withPendingUnitCount: 20)
+        
+        
+        /* Install */
+        let installOperation = InstallAppOperation(context: context)
+        installOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): completionHandler(.failure(error))
+            case .success(let installedApp):
+                if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
                 {
-                case let error as ALTServerError where error.code == .deviceNotFound || error.code == .lostConnection:
-                    if let server = context.group.server, server.isPreferred
-                    {
-                        // Preferred server, so report errors normally.
-                        context.group.results[context.bundleIdentifier] = .failure(error)
-                    }
-                    else
-                    {
-                        // Not preferred server, so ignore these specific errors and throw serverNotFound instead.
-                        context.group.results[context.bundleIdentifier] = .failure(ConnectionError.serverNotFound)
-                    }
-                    
-                case let error:
-                    context.group.results[context.bundleIdentifier] = .failure(error)
-                }
-                
-            }
-            else if let installedApp = context.installedApp
-            {
-                context.group.results[context.bundleIdentifier] = .success(installedApp)
-                
-                // Save after each installation.
-                installedApp.managedObjectContext?.performAndWait {
-                    do { try installedApp.managedObjectContext?.save() }
-                    catch { print("Error saving installed app.", error) }
+                    installedApp.storeApp = storeApp
                 }
                 
                 if let index = UserDefaults.standard.legacySideloadedApps?.firstIndex(of: installedApp.bundleIdentifier)
@@ -524,20 +943,332 @@ private extension AppManager
                     // No longer a legacy sideloaded app, so remove it from cached list.
                     UserDefaults.standard.legacySideloadedApps?.remove(at: index)
                 }
-            }            
-            
-            print("Finished operation!", context.bundleIdentifier)
-
-            if context.group.results.count == context.group.progress.totalUnitCount
-            {
-                context.group.completionHandler?(.success(context.group.results))
                 
-                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-                backgroundContext.performAndWait {
-                    guard let altstore = InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID), in: backgroundContext) else { return }
-                    self.scheduleExpirationWarningLocalNotification(for: altstore)
-                }
+                completionHandler(.success(installedApp))
             }
+        }
+        progress.addChild(installOperation.progress, withPendingUnitCount: 30)
+        installOperation.addDependency(sendAppOperation)
+        
+        let operations = [downloadOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        group.add(operations)
+        self.run(operations)
+        
+        return progress
+    }
+    
+    
+    private func __rst_refresh(_ app: InstalledApp, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        
+        let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        context.app = ALTApplication(fileURL: app.url)
+           
+        /* Fetch Provisioning Profiles */
+        let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+        fetchProvisioningProfilesOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+            }
+        }
+        progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 60)
+                
+        /* Refresh */
+        let refreshAppOperation = RefreshAppOperation(context: context)
+        refreshAppOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        progress.addChild(refreshAppOperation.progress, withPendingUnitCount: 40)
+        refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)
+        
+        let operations = [fetchProvisioningProfilesOperation, refreshAppOperation]
+        group.add(operations)
+        self.run(operations)
+        
+        return progress
+    }
+    
+    
+//    @discardableResult
+//    private func rst_refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, refreshGroup: RefreshGroup? = nil) -> RefreshGroup
+//    {
+//        let apps = installedApps.filter { self.refreshProgress(for: $0) == nil || self.refreshProgress(for: $0)?.isCancelled == true }
+//        let appBundleIDs = apps.map { $0.bundleIdentifier }
+//
+//        let group = refreshGroup ?? RefreshGroup()
+//
+//        var cleanUpToken: NSKeyValueObservation!
+//        cleanUpToken = group.observe(\.isFinished) { (group, change) in
+//            guard group.isFinished else { return }
+//
+//            // This will be called potentially multiple times, once per each call to refresh().
+//            // As a result, make sure to _only_ clean up what we did in this specific call to refresh().
+//
+//            for bundleID in appBundleIDs
+//            {
+//                if let progress = self.refreshProgress[bundleID], progress == group.progress(forAppWithBundleIdentifier: bundleID)
+//                {
+//                    // Only remove progress if it hasn't been replaced by another one.
+//                    self.refreshProgress[bundleID] = nil
+//                }
+//            }
+//
+//            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+//                guard let altstore = InstalledApp.fetchAltStore(in: context) else { return }
+//                self.scheduleExpirationWarningLocalNotification(for: altstore)
+//            }
+//
+//            // Explicitly reference token in closure to ensure it is strongly captured.
+//            cleanUpToken.invalidate()
+//        }
+//
+//        return self._prepare(apps, presentingViewController: presentingViewController, forceAppInstallation: false, group: group)
+//    }
+//
+//    @discardableResult
+//    private func _prepare(_ apps: [AppProtocol], presentingViewController: UIViewController?, forceAppInstallation: Bool, group: RefreshGroup) -> RefreshGroup
+//    {
+//        /* Authenticate (if necessary) */
+//        var authenticationOperation: AuthenticationOperation?
+//        if group.context.session == nil
+//        {
+//            authenticationOperation = self.rst_authenticate(presentingViewController: presentingViewController, context: group.context) { (result) in
+//                switch result
+//                {
+//                case .failure(let error): group.context.error = error
+//                case .success: break
+//                }
+//            }
+//        }
+//
+//        /* Prepare Developer Account (if necessary) */
+//        var prepareDeveloperAccountOperation: PrepareDeveloperAccountOperation?
+//        if !group.didPrepareDeveloperAccount
+//        {
+//            prepareDeveloperAccountOperation = PrepareDeveloperAccountOperation(context: group.context)
+//            prepareDeveloperAccountOperation?.resultHandler = { (result) in
+//                switch result
+//                {
+//                case .failure(let error): group.context.error = error
+//                case .success: group.didPrepareDeveloperAccount = true
+//                }
+//            }
+//            authenticationOperation.map { prepareDeveloperAccountOperation?.addDependency($0) }
+//        }
+//
+//        for app in apps
+//        {
+//            var context: AppOperationContext!
+//
+//            func finish(_ result: Result<InstalledApp, Error>)
+//            {
+//                do
+//                {
+//                    let installedApp = try self.process(result, server: group.context.server)
+//                    installedApp.managedObjectContext?.performAndWait {
+//                        group.set(.success(installedApp), forAppWithBundleIdentifier: installedApp.bundleIdentifier)
+//
+//                        // Must remove before saving installedApp.
+//                        if let progress = self.refreshProgress[installedApp.bundleIdentifier], progress == group.progress(forAppWithBundleIdentifier: installedApp.bundleIdentifier)
+//                        {
+//                            // Only remove progress if it hasn't been replaced by another one.
+//                            self.refreshProgress[installedApp.bundleIdentifier] = nil
+//                        }
+//
+//                        do { try installedApp.managedObjectContext?.save() }
+//                        catch { print("Error saving installed app.", error) }
+//                    }
+//                }
+//                catch
+//                {
+//                    group.set(.failure(error), forAppWithBundleIdentifier: context.bundleIdentifier)
+//                }
+//            }
+//
+//            var shouldInstall = forceAppInstallation
+//            if let installedApp = app as? InstalledApp, installedApp.certificateSerialNumber != group.context.certificate?.serialNumber
+//            {
+//                shouldInstall = true
+//            }
+//
+//            if shouldInstall
+//            {
+//                context = self.__install(app, authenticatedContext: group.context) { (result) in
+//                    finish(result)
+//                }
+//            }
+//            else
+//            {
+//                context = self.__refresh(app, authenticatedContext: group.context) { (result) in
+//                    finish(result)
+//                }
+//            }
+//        }
+//
+//        return group
+//    }
+//
+//    private func __install(_ app: AppProtocol, authenticatedContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> InstallAppOperationContext
+//    {
+//        let context = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: authenticatedContext)
+//
+//        let progress = Progress(totalUnitCount: 100)
+//        self.installationProgress[app.bundleIdentifier] = progress
+//
+//        func finish(_ result: Result<InstalledApp, Error>)
+//        {
+//            if let installationProgress = self.installationProgress[app.bundleIdentifier], installationProgress == progress
+//            {
+//                // Only remove progress if it hasn't been replaced by another one.
+//                self.installationProgress[app.bundleIdentifier] = nil
+//            }
+//
+//            completionHandler(result)
+//        }
+//
+//        /* Download */
+//        let downloadOperation = DownloadAppOperation(app: app, context: context)
+//        downloadOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let app): context.app = app
+//            }
+//        }
+//        progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
+//
+//
+//        /* Refresh Anisette Data */
+//        let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: authenticatedContext)
+//        refreshAnisetteDataOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let anisetteData): authenticatedContext.session?.anisetteData = anisetteData
+//            }
+//        }
+//        refreshAnisetteDataOperation.addDependency(downloadOperation)
+//
+//
+//        /* Fetch Provisioning Profiles */
+//        let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+//        fetchProvisioningProfilesOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+//            }
+//        }
+//        fetchProvisioningProfilesOperation.addDependency(refreshAnisetteDataOperation)
+//        progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 5)
+//
+//
+//        /* Resign */
+//        let resignAppOperation = ResignAppOperation(context: context)
+//        resignAppOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let resignedApp): context.resignedApp = resignedApp
+//            }
+//        }
+//        resignAppOperation.addDependency(fetchProvisioningProfilesOperation)
+//        progress.addChild(resignAppOperation.progress, withPendingUnitCount: 20)
+//
+//
+//        /* Send */
+//        let sendAppOperation = SendAppOperation(context: context)
+//        sendAppOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let installationConnection): context.installationConnection = installationConnection
+//            }
+//        }
+//        sendAppOperation.addDependency(resignAppOperation)
+//        progress.addChild(sendAppOperation.progress, withPendingUnitCount: 20)
+//
+//
+//        /* Install */
+//        let installOperation = InstallAppOperation(context: context)
+//        installOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): finish(.failure(error))
+//            case .success(let installedApp):
+//                if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
+//                {
+//                    installedApp.storeApp = storeApp
+//                }
+//
+//                finish(.success(installedApp))
+//            }
+//        }
+//        progress.addChild(installOperation.progress, withPendingUnitCount: 30)
+//        installOperation.addDependency(sendAppOperation)
+//
+//        self.run([downloadOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation])
+//        return context
+//    }
+//
+//    private func __refresh(_ app: AppProtocol, authenticatedContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> AppOperationContext
+//    {
+//        let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: authenticatedContext)
+//        context.app = ALTApplication(fileURL: app.url)
+//
+//        let progress = self.refreshProgress[app.bundleIdentifier]
+//        progress?.completedUnitCount += 30
+//
+//        /* Fetch Provisioning Profiles */
+//        let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+//        fetchProvisioningProfilesOperation.resultHandler = { (result) in
+//            switch result
+//            {
+//            case .failure(let error): context.error = error
+//            case .success(let provisioningProfiles): context.provisioningProfiles = provisioningProfiles
+//            }
+//        }
+//        progress?.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 40)
+//
+//
+//        /* Refresh */
+//        let refreshAppOperation = RefreshAppOperation(context: context)
+//        refreshAppOperation.resultHandler = { (result) in
+//            completionHandler(result)
+//        }
+//        progress?.addChild(refreshAppOperation.progress, withPendingUnitCount: 30)
+//        refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)
+//
+//        self.run([fetchProvisioningProfilesOperation, refreshAppOperation])
+//        return context
+//    }
+    
+    @discardableResult func process<T>(_ result: Result<T, Error>, server: Server?) throws -> T
+    {
+        do
+        {
+            let value = try result.get()
+            return value
+        }
+        catch let error as ALTServerError where error.code == .deviceNotFound || error.code == .lostConnection
+        {
+            if let server = server, server.isPreferred || server.isWiredConnection
+            {
+                // Preferred server (or wired connection), so report errors normally.
+                throw error
+            }
+            else
+            {
+                // Not preferred server, so ignore these specific errors and throw serverNotFound instead.
+                throw ConnectionError.serverNotFound
+            }
+        }
+        catch
+        {
+            throw error
         }
     }
     
@@ -560,5 +1291,26 @@ private extension AppManager
         
         let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
+    }
+    
+    func run(_ operations: [Foundation.Operation])
+    {
+        for operation in operations
+        {
+            switch operation
+            {
+            case is InstallAppOperation, is RefreshAppOperation:
+                if let previousOperation = self.serialOperationQueue.operations.last
+                {
+                    // Ensure operations execute in the order they're added, since they may become ready at different points.
+                    operation.addDependency(previousOperation)
+                }
+                
+                self.serialOperationQueue.addOperation(operation)
+                
+            default:
+                self.operationQueue.addOperation(operation)
+            }
+        }
     }
 }

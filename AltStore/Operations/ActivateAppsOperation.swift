@@ -14,13 +14,13 @@ import AltKit
 import Roxas
 
 @objc(ActivateAppsOperation)
-class ActivateAppsOperation: ResultOperation<[ALTProvisioningProfile: Error]>
+class ActivateAppsOperation: ResultOperation<[String: Result<[ALTProvisioningProfile: Error], Error>]>
 {
-    let group: OperationGroup
+    let context: OperationContext
     
-    init(group: OperationGroup)
+    init(context: OperationContext)
     {
-        self.group = group
+        self.context = context
         
         super.init()
     }
@@ -29,27 +29,27 @@ class ActivateAppsOperation: ResultOperation<[ALTProvisioningProfile: Error]>
     {
         super.main()
         
-        if let error = self.group.error
+        if let error = self.context.error
         {
             self.finish(.failure(error))
             return
         }
         
-        guard let server = self.group.server else { return self.finish(.failure(OperationError.invalidParameters)) }
+        guard let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
         guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { return self.finish(.failure(OperationError.unknownUDID)) }
         
         ServerManager.shared.connect(to: server) { (result) in
             switch result
             {
-            case .failure(let error):
-                self.finish(.failure(error))
+            case .failure(let error): self.finish(.failure(error))
             case .success(let connection):
                 print("Sending activate apps request...")
                 
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                     var profiles = Set<ALTProvisioningProfile>()
                     
-                    for installedApp in InstalledApp.all(in: context)
+                    let installedApps = InstalledApp.all(satisfying: NSPredicate(format: "%K == YES", #keyPath(InstalledApp.isActive)), in: context)
+                    for installedApp in installedApps
                     {
                         guard let app = ALTApplication(fileURL: installedApp.fileURL) else { continue }
                         guard let provisioningProfile = app.provisioningProfile else { continue }
@@ -81,7 +81,7 @@ class ActivateAppsOperation: ResultOperation<[ALTProvisioningProfile: Error]>
                                 {
                                 case .failure(let error): self.finish(.failure(error))
                                 case .success(.error(let response)): self.finish(.failure(response.error))
-                                case .success(.replaceProvisioningProfiles(let response)): self.finish(.success(response.errors))
+//                                case .success(.replaceProvisioningProfiles(let response)): self.finish(.success(response.errors))
                                 case .success: self.finish(.failure(ALTServerError(.unknownRequest)))
                                 }
                             }

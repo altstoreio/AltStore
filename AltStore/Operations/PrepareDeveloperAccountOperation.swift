@@ -14,11 +14,11 @@ import AltSign
 @objc(PrepareDeveloperAccountOperation)
 class PrepareDeveloperAccountOperation: ResultOperation<Void>
 {
-    let group: OperationGroup
+    let context: AuthenticatedOperationContext
     
-    init(group: OperationGroup)
+    init(context: AuthenticatedOperationContext)
     {
-        self.group = group
+        self.context = context
         
         super.init()
         
@@ -29,19 +29,19 @@ class PrepareDeveloperAccountOperation: ResultOperation<Void>
     {
         super.main()
         
-        if let error = self.group.error
+        if let error = self.context.error
         {
             self.finish(.failure(error))
             return
         }
         
         guard
-            let signer = self.group.signer,
-            let session = self.group.session
+            let team = self.context.team,
+            let session = self.context.session
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         // Register Device
-        self.registerCurrentDevice(for: signer.team, session: session) { (result) in
+        self.registerCurrentDevice(for: team, session: session) { (result) in
             let result = result.map { _ in () }
             self.finish(result)
         }

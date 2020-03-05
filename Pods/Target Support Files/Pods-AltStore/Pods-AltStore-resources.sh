@@ -97,12 +97,10 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/../Dependencies/AltSign/AltSign/Resources/apple.pem"
   install_resource "${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTCollectionViewCell.xib"
   install_resource "${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTPlaceholderView.xib"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/../Dependencies/AltSign/AltSign/Resources/apple.pem"
   install_resource "${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTCollectionViewCell.xib"
   install_resource "${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTPlaceholderView.xib"
 fi

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16117.1" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -33,8 +33,12 @@
     </entity>
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isActivating" transient="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isDeactivating" transient="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="resignedBundleIdentifier" attributeType="String"/>
@@ -153,8 +157,9 @@
     </entity>
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
+        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="193"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="253"/>
         <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
         <element name="NewsItem" positionX="-45" positionY="126" width="128" height="225"/>
         <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
@@ -162,6 +167,5 @@
         <element name="Source" positionX="-45" positionY="99" width="128" height="120"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="330"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
-        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
     </elements>
 </model>

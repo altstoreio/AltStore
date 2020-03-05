@@ -388,28 +388,6 @@ private extension AppDelegate
                         print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
                         
                         let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
-                        group.beginInstallationHandler = { (installedApp) in
-                            guard installedApp.bundleIdentifier == StoreApp.altstoreAppID else { return }
-                            
-                            // We're starting to install AltStore, which means the app is about to quit.
-                            // So, we schedule a "refresh successful" local notification to be displayed after a delay,
-                            // but if the app is still running, we cancel the notification.
-                            // Then, we schedule another notification and repeat the process.
-                            
-                            // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
-                            
-                            if let error = group.error
-                            {
-                                self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: identifier)
-                            }
-                            else
-                            {
-                                var results = group.results
-                                results[installedApp.bundleIdentifier] = .success(installedApp)
-                                
-                                self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: identifier)
-                            }
-                        }
                         group.completionHandler = { (result) in
                             completionHandler(result)
                         }
