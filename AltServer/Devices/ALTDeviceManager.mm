@@ -114,19 +114,11 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                         continue;
                     }
                     
-                    plist_t pdata = plist_new_data((const char *)provisioningProfile.data.bytes, provisioningProfile.data.length);
-                    
-                    if (misagent_install(mis, pdata) == MISAGENT_E_SUCCESS)
+                    NSError *installError = nil;
+                    if (![self installProvisioningProfile:preferredProfile misagent:mis error:&installError])
                     {
-                        NSLog(@"Reinstalled profile: %@", provisioningProfile.UUID);
+                        error = installError;
                     }
-                    else
-                    {
-                        int code = misagent_get_status_code(mis);
-                        NSLog(@"Failed to reinstall provisioning profile %@. (%@)", provisioningProfile.UUID, @(code));
-                    }
-                    
-                    plist_free(pdata);
                 }
                 
                 [[NSFileManager defaultManager] removeItemAtURL:removedProfilesDirectoryURL error:nil];
@@ -296,50 +288,17 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             {
                 return finish(error);
             }
-
-            plist_t rawProfiles = NULL;
             
-            if (misagent_copy_all(mis, &rawProfiles) != MISAGENT_E_SUCCESS)
+            NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
+            if (provisioningProfiles == nil)
             {
-                return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+                return finish(error);
             }
-            
-            // For some reason, libplist now fails to parse `rawProfiles` correctly.
-            // Specifically, it no longer recognizes the nodes in the plist array as "data" nodes.
-            // However, if we encode it as XML then decode it again, it'll work ¯\_(ツ)_/¯
-            char *plistXML = nullptr;
-            uint32_t plistLength = 0;
-            plist_to_xml(rawProfiles, &plistXML, &plistLength);
-            
-            plist_t profiles = NULL;
-            plist_from_xml(plistXML, plistLength, &profiles);
-            
-            free(plistXML);
-                
-            uint32_t profileCount = plist_array_get_size(profiles);
-            for (int i = 0; i < profileCount; i++)
+
+            for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
             {
-                plist_t profile = plist_array_get_item(profiles, i);
-                if (plist_get_node_type(profile) != PLIST_DATA)
-                {
-                    continue;
-                }
-
-                char *bytes = NULL;
-                uint64_t length = 0;
-
-                plist_get_data_val(profile, &bytes, &length);
-                if (bytes == NULL)
-                {
-                    continue;
-                }
-
-                NSData *data = [NSData dataWithBytesNoCopy:bytes length:length freeWhenDone:YES];
-                ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithData:data];
-
                 if (![provisioningProfile isFreeProvisioningProfile])
                 {
-                    NSLog(@"Ignoring: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
                     continue;
                 }
                 
@@ -365,20 +324,12 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                     NSLog(@"Failed to copy profile to temporary URL. %@", copyError);
                     continue;
                 }
-
-                if (misagent_remove(mis, provisioningProfile.UUID.UUIDString.lowercaseString.UTF8String) == MISAGENT_E_SUCCESS)
+                
+                if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
                 {
-                    NSLog(@"Removed provisioning profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
-                }
-                else
-                {
-                    int code = misagent_get_status_code(mis);
-                    NSLog(@"Failed to remove provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(code));
+                    return finish(error);
                 }
             }
-            
-            plist_free(rawProfiles);
-            plist_free(profiles);
 
             lockdownd_client_free(client);
             client = NULL;
@@ -545,6 +496,313 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     afc_file_close(afc, af);
     
     return success;
+}
+
+#pragma mark - Provisioning Profiles -
+
+- (void)installProvisioningProfiles:(NSSet<ALTProvisioningProfile *> *)provisioningProfiles toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(NSSet<NSString *> *)activeProvisioningProfiles removeInactiveProvisioningProfiles:(BOOL)removeInactiveProvisioningProfiles completionHandler:(void (^)(NSDictionary<ALTProvisioningProfile *, NSError *> *errors))completionHandler;
+{
+    dispatch_async(self.installationQueue, ^{
+        __block idevice_t device = NULL;
+        __block lockdownd_client_t client = NULL;
+        __block afc_client_t afc = NULL;
+        __block misagent_client_t mis = NULL;
+        __block lockdownd_service_descriptor_t service = NULL;
+        
+        void (^finish)(NSDictionary<ALTProvisioningProfile *, NSError *> *, NSError *) = ^(NSDictionary *installationErrors, NSError *error) {
+            lockdownd_service_descriptor_free(service);
+            misagent_client_free(mis);
+            afc_client_free(afc);
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            if (installationErrors)
+            {
+                completionHandler(installationErrors);
+            }
+            else
+            {
+                NSMutableDictionary *installationErrors = [NSMutableDictionary dictionary];
+                for (ALTProvisioningProfile *profile in provisioningProfiles)
+                {
+                    installationErrors[profile] = error;
+                }
+                
+                completionHandler(installationErrors);
+            }
+        };
+        
+        /* Find Device */
+        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        /* Connect to Misagent */
+        if (lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS || service == NULL)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        NSError *error = nil;
+        NSArray<ALTProvisioningProfile *> *installedProvisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
+        if (provisioningProfiles == nil)
+        {
+            return finish(nil, error);
+        }
+        
+        for (ALTProvisioningProfile *provisioningProfile in installedProvisioningProfiles)
+        {
+            if (![provisioningProfile isFreeProvisioningProfile])
+            {
+                continue;
+            }
+            
+            BOOL removeProfile = NO;
+            
+            for (ALTProvisioningProfile *profile in provisioningProfiles)
+            {
+                if ([profile.bundleIdentifier isEqualToString:provisioningProfile.bundleIdentifier])
+                {
+                    // Remove previous provisioning profile before installing new one.
+                    removeProfile = YES;
+                    break;
+                }
+            }
+            
+            if (removeInactiveProvisioningProfiles && ![activeProvisioningProfiles containsObject:provisioningProfile.bundleIdentifier])
+            {
+                // Remove all non-active provisioning profiles to remain under 3 app limit for free developer accounts.
+                removeProfile = YES;
+            }
+            
+            if (removeProfile)
+            {
+                if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
+                {
+                    return finish(nil, error);
+                }
+            }            
+        }
+        
+        NSMutableDictionary<ALTProvisioningProfile *, NSError *> *profileErrors = [NSMutableDictionary dictionary];
+        
+        for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
+        {
+            NSError *error = nil;
+            if (![self installProvisioningProfile:provisioningProfile misagent:mis error:&error])
+            {
+                profileErrors[provisioningProfile] = error;
+            }
+        }
+        
+        finish(profileErrors, nil);
+    });
+}
+
+- (void)removeProvisioningProfilesForBundleIdentifiers:(NSSet<NSString *> *)bundleIdentifiers fromDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(NSDictionary<NSString *, NSError *> *errors))completionHandler
+{
+    dispatch_async(self.installationQueue, ^{
+        __block idevice_t device = NULL;
+        __block lockdownd_client_t client = NULL;
+        __block afc_client_t afc = NULL;
+        __block misagent_client_t mis = NULL;
+        __block lockdownd_service_descriptor_t service = NULL;
+        
+        void (^finish)(NSDictionary<NSString *, NSError *> *, NSError *) = ^(NSDictionary *installationErrors, NSError *error) {
+            lockdownd_service_descriptor_free(service);
+            misagent_client_free(mis);
+            afc_client_free(afc);
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            if (installationErrors)
+            {
+                completionHandler(installationErrors);
+            }
+            else
+            {
+                NSMutableDictionary *installationErrors = [NSMutableDictionary dictionary];
+                for (NSString *bundleID in bundleIdentifiers)
+                {
+                    installationErrors[bundleID] = error;
+                }
+                
+                completionHandler(installationErrors);
+            }
+        };
+        
+        /* Find Device */
+        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        /* Connect to Misagent */
+        if (lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS || service == NULL)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        NSError *error = nil;
+        NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
+        if (provisioningProfiles == nil)
+        {
+            return finish(nil, error);
+        }
+        
+        NSMutableDictionary<NSString *, NSError *> *profileErrors = [NSMutableDictionary dictionary];
+        
+        /* Remove provisioning profiles */
+        for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
+        {
+            if (![bundleIdentifiers containsObject:provisioningProfile.bundleIdentifier])
+            {
+                continue;
+            }
+            
+            if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
+            {
+                profileErrors[provisioningProfile.bundleIdentifier] = error;
+            }
+        }
+        
+        finish(profileErrors, nil);
+    });
+}
+
+- (BOOL)installProvisioningProfile:(ALTProvisioningProfile *)provisioningProfile misagent:(misagent_client_t)mis error:(NSError **)error
+{
+    plist_t pdata = plist_new_data((const char *)provisioningProfile.data.bytes, provisioningProfile.data.length);
+    
+    misagent_error_t result = misagent_install(mis, pdata);
+    plist_free(pdata);
+    
+    if (result == MISAGENT_E_SUCCESS)
+    {
+        NSLog(@"Installed profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
+        return YES;
+    }
+    else
+    {
+        NSLog(@"Failed to install provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(result));
+        
+        if (error)
+        {
+            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileInstallFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description], ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier}];
+        }
+        
+        return NO;
+    }
+    
+    return NO;
+}
+
+- (BOOL)removeProvisioningProfile:(ALTProvisioningProfile *)provisioningProfile misagent:(misagent_client_t)mis error:(NSError **)error
+{
+    misagent_error_t result = misagent_remove(mis, provisioningProfile.UUID.UUIDString.lowercaseString.UTF8String);
+    if (result == MISAGENT_E_SUCCESS)
+    {
+        NSLog(@"Removed provisioning profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
+        return YES;
+    }
+    else
+    {
+        NSLog(@"Failed to remove provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(result));
+        
+        if (error)
+        {
+            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileRemoveFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description], ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier}];
+        }
+        
+        return NO;
+    }
+}
+
+- (nullable NSArray<ALTProvisioningProfile *> *)copyProvisioningProfilesWithClient:(misagent_client_t)mis error:(NSError **)error
+{
+    plist_t rawProfiles = NULL;
+    misagent_error_t result = misagent_copy_all(mis, &rawProfiles);
+    if (result != MISAGENT_E_SUCCESS)
+    {
+        if (error)
+        {
+            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileCopyFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description]}];
+        }
+        
+        return nil;
+    }
+    
+    /* Copy all provisioning profiles */
+    
+    // For some reason, libplist now fails to parse `rawProfiles` correctly.
+    // Specifically, it no longer recognizes the nodes in the plist array as "data" nodes.
+    // However, if we encode it as XML then decode it again, it'll work ¯\_(ツ)_/¯
+    char *plistXML = nullptr;
+    uint32_t plistLength = 0;
+    plist_to_xml(rawProfiles, &plistXML, &plistLength);
+    
+    plist_t profiles = NULL;
+    plist_from_xml(plistXML, plistLength, &profiles);
+    
+    free(plistXML);
+    
+    NSMutableArray<ALTProvisioningProfile *> *provisioningProfiles = [NSMutableArray array];
+        
+    uint32_t profileCount = plist_array_get_size(profiles);
+    for (int i = 0; i < profileCount; i++)
+    {
+        plist_t profile = plist_array_get_item(profiles, i);
+        if (plist_get_node_type(profile) != PLIST_DATA)
+        {
+            continue;
+        }
+
+        char *bytes = NULL;
+        uint64_t length = 0;
+
+        plist_get_data_val(profile, &bytes, &length);
+        if (bytes == NULL)
+        {
+            continue;
+        }
+
+        NSData *data = [NSData dataWithBytesNoCopy:bytes length:length freeWhenDone:YES];
+        ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithData:data];
+        if (provisioningProfile == nil)
+        {
+            continue;
+        }
+        
+        [provisioningProfiles addObject:provisioningProfile];
+    }
+    
+    plist_free(rawProfiles);
+    plist_free(profiles);
+    
+    return provisioningProfiles;
 }
 
 #pragma mark - Connections -

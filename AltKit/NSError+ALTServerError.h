@@ -11,6 +11,9 @@
 extern NSErrorDomain const AltServerErrorDomain;
 extern NSErrorDomain const AltServerInstallationErrorDomain;
 
+extern NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey;
+extern NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey;
+
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
     ALTServerErrorUnknown = 0,
@@ -32,7 +35,11 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorUnknownResponse = 12,
     
     ALTServerErrorInvalidAnisetteData = 13,
-    ALTServerErrorPluginNotFound = 14
+    ALTServerErrorPluginNotFound = 14,
+    
+    ALTServerErrorProfileInstallFailed = 15,
+    ALTServerErrorProfileCopyFailed = 16,
+    ALTServerErrorProfileRemoveFailed = 17,
 };
 
 NS_ASSUME_NONNULL_BEGIN

@@ -11,6 +11,9 @@
 NSErrorDomain const AltServerErrorDomain = @"com.rileytestut.AltServer";
 NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServer.Installation";
 
+NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey = @"underlyingErrorCode";
+NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdentifier";
+
 @implementation NSError (ALTServerError)
 
 + (void)load
@@ -73,7 +76,41 @@ NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServ
             
         case ALTServerErrorPluginNotFound:
             return NSLocalizedString(@"Could not connect to Mail plug-in. Please make sure Mail is running and that you've enabled the plug-in in Mail's preferences, then try again.", @"");
+            
+        case ALTServerErrorProfileInstallFailed:
+            return [self underlyingProfileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not install profile", "")];
+            
+        case ALTServerErrorProfileCopyFailed:
+            return [self underlyingProfileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not copy provisioning profiles", "")];
+        
+        case ALTServerErrorProfileRemoveFailed:
+            return [self underlyingProfileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not remove profile", "")];
     }
+}
+
+- (NSString *)underlyingProfileErrorLocalizedDescriptionWithBaseDescription:(NSString *)baseDescription
+{
+    NSMutableString *localizedDescription = [NSMutableString string];
+    
+    NSString *bundleID = self.userInfo[ALTProvisioningProfileBundleIDErrorKey];
+    if (bundleID)
+    {
+        [localizedDescription appendFormat:NSLocalizedString(@"%@ “%@”", @""), baseDescription, bundleID];
+    }
+    else
+    {
+        [localizedDescription appendString:baseDescription];
+    }
+    
+    NSString *underlyingErrorCode = self.userInfo[ALTUnderlyingErrorCodeErrorKey];
+    if (underlyingErrorCode)
+    {
+        [localizedDescription appendFormat:@" (%@)", underlyingErrorCode];
+    }
+    
+    [localizedDescription appendString:@"."];
+    
+    return localizedDescription;
 }
     
 @end

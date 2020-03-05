@@ -167,6 +167,7 @@
 		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
 		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
 		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
+		BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
 		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
 		BFD52C0222A1A9CB000B7ED1 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE622A1A9CA000B7ED1 /* base64.c */; };
@@ -490,6 +491,7 @@
 		BFD2478B2284C4C300981D42 /* AppIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageView.swift; sourceTree = "<group>"; };
 		BFD2478E2284C8F900981D42 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
+		BFD44605241188C300EAB90A /* CodableServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableServerError.swift; sourceTree = "<group>"; };
 		BFD52BD222A06EFB000B7ED1 /* AltKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltKit.h; sourceTree = "<group>"; };
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
 		BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
@@ -667,6 +669,7 @@
 				BFBAC8852295C90300587369 /* Result+Conveniences.swift */,
 				BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */,
 				BF1E3128229F474900370A3C /* ServerProtocol.swift */,
+				BFD44605241188C300EAB90A /* CodableServerError.swift */,
 				BF1E314822A060F400370A3C /* NSError+ALTServerError.h */,
 				BF1E314922A060F400370A3C /* NSError+ALTServerError.m */,
 				BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */,
@@ -1566,6 +1569,7 @@
 				BF1E315922A061FB00370A3C /* Bundle+AltStore.swift in Sources */,
 				BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */,
 				BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */,
+				BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */,
 				BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

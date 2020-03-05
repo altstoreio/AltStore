@@ -29,6 +29,9 @@ extern NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification 
 /* App Installation */
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
 
+- (void)installProvisioningProfiles:(NSSet<ALTProvisioningProfile *> *)provisioningProfiles toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(nullable NSSet<NSString *> *)activeProvisioningProfiles removeInactiveProvisioningProfiles:(BOOL)removeInactiveProvisioningProfiles completionHandler:(void (^)(NSDictionary<ALTProvisioningProfile *, NSError *> *errors))completionHandler;
+- (void)removeProvisioningProfilesForBundleIdentifiers:(NSSet<NSString *> *)bundleIdentifiers fromDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(NSDictionary<NSString *, NSError *> *errors))completionHandler;
+
 /* Connections */
 - (void)startWiredConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTWiredConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
 - (void)startNotificationConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTNotificationConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
