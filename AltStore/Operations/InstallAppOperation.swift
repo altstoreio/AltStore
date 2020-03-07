@@ -16,11 +16,11 @@ import Roxas
 @objc(InstallAppOperation)
 class InstallAppOperation: ResultOperation<InstalledApp>
 {
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     
     private var didCleanUp = false
     
-    init(context: AppOperationContext)
+    init(context: InstallAppOperationContext)
     {
         self.context = context
         
@@ -40,6 +40,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         }
         
         guard
+            let certificate = self.context.certificate,
             let resignedApp = self.context.resignedApp,
             let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
@@ -57,10 +58,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
+                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, certificateSerialNumber: certificate.serialNumber, context: backgroundContext)
             }
             
-            installedApp.update(resignedApp: resignedApp)
+            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)
 
             if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
             {
@@ -108,7 +109,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
             
-            self.context.group.beginInstallationHandler?(installedApp)
+            self.context.beginInstallationHandler?(installedApp)
             
             let request = BeginInstallationRequest()
             connection.send(request) { (result) in

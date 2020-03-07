@@ -64,6 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     private var runningApplications: Set<String>?
+    private var backgroundRefreshContext: NSManagedObjectContext? // Keep context alive until finished refreshing.
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
@@ -209,6 +210,8 @@ extension AppDelegate
                 }
                 
                 taskCompletionHandler()
+                
+                self.backgroundRefreshContext = nil
             }
             
             if let error = taskResult.error
@@ -339,7 +342,6 @@ private extension AppDelegate
             dispatchGroup.enter()
             
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                
                 let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: context)
                 guard !installedApps.isEmpty else {
                     serversResult = .success(())
@@ -351,6 +353,7 @@ private extension AppDelegate
                 }
                 
                 self.runningApplications = []
+                self.backgroundRefreshContext = context
                 
                 let identifiers = installedApps.compactMap { $0.bundleIdentifier }
                 print("Apps to refresh:", identifiers)
@@ -398,7 +401,7 @@ private extension AppDelegate
                             
                             // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
                             
-                            if let error = group.error
+                            if let error = group.context.error
                             {
                                 self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: identifier)
                             }
@@ -410,8 +413,8 @@ private extension AppDelegate
                                 self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: identifier)
                             }
                         }
-                        group.completionHandler = { (result) in
-                            completionHandler(result)
+                        group.completionHandler = { (results) in
+                            completionHandler(.success(results))
                         }
                     }
                 }

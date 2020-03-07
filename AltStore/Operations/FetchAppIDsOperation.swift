@@ -16,13 +16,13 @@ import Roxas
 @objc(FetchAppIDsOperation)
 class FetchAppIDsOperation: ResultOperation<([AppID], NSManagedObjectContext)>
 {
-    let group: OperationGroup
-    let context: NSManagedObjectContext
+    let context: AuthenticatedOperationContext
+    let managedObjectContext: NSManagedObjectContext
     
-    init(group: OperationGroup, context: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    init(context: AuthenticatedOperationContext, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
     {
-        self.group = group
         self.context = context
+        self.managedObjectContext = managedObjectContext
         
         super.init()
     }
@@ -31,24 +31,24 @@ class FetchAppIDsOperation: ResultOperation<([AppID], NSManagedObjectContext)>
     {
         super.main()
         
-        if let error = self.group.error
+        if let error = self.context.error
         {
             self.finish(.failure(error))
             return
         }
         
         guard
-            let team = self.group.signer?.team,
-            let session = self.group.session
+            let team = self.context.team,
+            let session = self.context.session
         else { return self.finish(.failure(OperationError.invalidParameters)) }
                 
         ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
-            self.context.perform {
+            self.managedObjectContext.perform {
                 do
                 {
                     let fetchedAppIDs = try Result(appIDs, error).get()
                     
-                    guard let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.identifier), team.identifier), in: self.context) else { throw OperationError.notAuthenticated }
+                    guard let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.identifier), team.identifier), in: self.managedObjectContext) else { throw OperationError.notAuthenticated }
                     
                     let fetchedIdentifiers = fetchedAppIDs.map { $0.identifier }
                     
@@ -57,11 +57,11 @@ class FetchAppIDsOperation: ResultOperation<([AppID], NSManagedObjectContext)>
                                                                  #keyPath(AppID.team), team,
                                                                  #keyPath(AppID.identifier), fetchedIdentifiers)
                     
-                    let deletedAppIDs = try self.context.fetch(deletedAppIDsRequest)
-                    deletedAppIDs.forEach { self.context.delete($0) }
+                    let deletedAppIDs = try self.managedObjectContext.fetch(deletedAppIDsRequest)
+                    deletedAppIDs.forEach { self.managedObjectContext.delete($0) }
                     
-                    let appIDs = fetchedAppIDs.map { AppID($0, team: team, context: self.context) }
-                    self.finish(.success((appIDs, self.context)))
+                    let appIDs = fetchedAppIDs.map { AppID($0, team: team, context: self.managedObjectContext) }
+                    self.finish(.success((appIDs, self.managedObjectContext)))
                 }
                 catch
                 {

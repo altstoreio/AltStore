@@ -36,6 +36,8 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged var expirationDate: Date
     @NSManaged var installedDate: Date
     
+    @NSManaged var certificateSerialNumber: String?
+    
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
     @NSManaged var team: Team?
@@ -50,7 +52,7 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         super.init(entity: entity, insertInto: context)
     }
     
-    init(resignedApp: ALTApplication, originalBundleIdentifier: String, context: NSManagedObjectContext)
+    init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -61,21 +63,28 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
         
-        self.update(resignedApp: resignedApp)
+        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
     }
     
-    func update(resignedApp: ALTApplication)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        
+        self.certificateSerialNumber = certificateSerialNumber
 
         if let provisioningProfile = resignedApp.provisioningProfile
         {
-            self.refreshedDate = provisioningProfile.creationDate
-            self.expirationDate = provisioningProfile.expirationDate
+            self.update(provisioningProfile: provisioningProfile)
         }
+    }
+    
+    func update(provisioningProfile: ALTProvisioningProfile)
+    {
+        self.refreshedDate = provisioningProfile.creationDate
+        self.expirationDate = provisioningProfile.expirationDate
     }
 }
 
@@ -153,7 +162,7 @@ extension InstalledApp
         
         if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
         {
-            // Refresh AltStore last since it causes app to quit.
+            // Refresh AltStore last since it may cause app to quit.
             installedApps.append(altStoreApp)
         }
         

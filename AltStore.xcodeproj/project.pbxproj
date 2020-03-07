@@ -34,6 +34,8 @@
 		BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
+		BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */; };
+		BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */; };
 		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
 		BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648C22E79AC800E9056B /* ALTAppPermission.m */; };
 		BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */; };
@@ -127,9 +129,9 @@
 		BF718BD823C93DB700A89F2D /* AltKit.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD723C93DB700A89F2D /* AltKit.m */; };
 		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
-		BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* AppOperationContext.swift */; };
+		BF770E5422BC044E002A40FE /* OperationContexts.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* OperationContexts.swift */; };
 		BF770E5622BC3C03002A40FE /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5522BC3C02002A40FE /* Server.swift */; };
-		BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* OperationGroup.swift */; };
+		BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* RefreshGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */; };
@@ -146,7 +148,6 @@
 		BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172823C56042001B5953 /* ServerConnection.swift */; };
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
 		BFA8172D23C5823E001B5953 /* InstalledExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172C23C5823E001B5953 /* InstalledExtension.swift */; };
-		BFA8172F23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
 		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
@@ -227,7 +228,6 @@
 		BFE6326622A857C200F30809 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326522A857C100F30809 /* Team.swift */; };
 		BFE6326822A858F300F30809 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
-		BFEE943F23F21BD800CDA07D /* ALTApplication+AppExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE943E23F21BD800CDA07D /* ALTApplication+AppExtensions.swift */; };
 		BFEE944123F22AA100CDA07D /* AppIDComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE944023F22AA100CDA07D /* AppIDComponents.swift */; };
 		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
 		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
@@ -332,6 +332,8 @@
 		BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF29012E2318F6B100D88A45 /* AppBannerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppBannerView.xib; sourceTree = "<group>"; };
 		BF2901302318F7A800D88A45 /* AppBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBannerView.swift; sourceTree = "<group>"; };
+		BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchProvisioningProfilesOperation.swift; sourceTree = "<group>"; };
+		BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAppOperation.swift; sourceTree = "<group>"; };
 		BF3D648722E79A3700E9056B /* AppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermission.swift; sourceTree = "<group>"; };
 		BF3D648B22E79AC800E9056B /* ALTAppPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPermission.h; sourceTree = "<group>"; };
 		BF3D648C22E79AC800E9056B /* ALTAppPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermission.m; sourceTree = "<group>"; };
@@ -443,9 +445,9 @@
 		BF718BD723C93DB700A89F2D /* AltKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AltKit.m; sourceTree = "<group>"; };
 		BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardingNavigationController.swift; sourceTree = "<group>"; };
 		BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppOperation.swift; sourceTree = "<group>"; };
-		BF770E5322BC044E002A40FE /* AppOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOperationContext.swift; sourceTree = "<group>"; };
+		BF770E5322BC044E002A40FE /* OperationContexts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationContexts.swift; sourceTree = "<group>"; };
 		BF770E5522BC3C02002A40FE /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
-		BF770E5722BC3D0F002A40FE /* OperationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationGroup.swift; sourceTree = "<group>"; };
+		BF770E5722BC3D0F002A40FE /* RefreshGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshGroup.swift; sourceTree = "<group>"; };
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF7C627023DBB33300515A2D /* AltStore 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 3.xcdatamodel"; sourceTree = "<group>"; };
@@ -464,7 +466,6 @@
 		BFA8172823C56042001B5953 /* ServerConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConnection.swift; sourceTree = "<group>"; };
 		BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnisetteDataOperation.swift; sourceTree = "<group>"; };
 		BFA8172C23C5823E001B5953 /* InstalledExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledExtension.swift; sourceTree = "<group>"; };
-		BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareDeveloperAccountOperation.swift; sourceTree = "<group>"; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
@@ -552,7 +553,6 @@
 		BFE6326522A857C100F30809 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		BFE6326722A858F300F30809 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
-		BFEE943E23F21BD800CDA07D /* ALTApplication+AppExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTApplication+AppExtensions.swift"; sourceTree = "<group>"; };
 		BFEE944023F22AA100CDA07D /* AppIDComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIDComponents.swift; sourceTree = "<group>"; };
 		BFF0B68D23219520007A79E1 /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
 		BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonComponents.swift; sourceTree = "<group>"; };
@@ -1098,7 +1098,6 @@
 				BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */,
 				BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */,
 				BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */,
-				BFEE943E23F21BD800CDA07D /* ALTApplication+AppExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1161,13 +1160,14 @@
 			children = (
 				BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */,
 				BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */,
-				BF770E5722BC3D0F002A40FE /* OperationGroup.swift */,
-				BF770E5322BC044E002A40FE /* AppOperationContext.swift */,
+				BF770E5722BC3D0F002A40FE /* RefreshGroup.swift */,
+				BF770E5322BC044E002A40FE /* OperationContexts.swift */,
 				BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */,
 				BFB364592325985F00CD0EB1 /* FindServerOperation.swift */,
-				BFA8172E23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift */,
 				BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */,
 				BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */,
+				BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */,
+				BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */,
 				BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */,
 				BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */,
 				BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */,
@@ -1681,6 +1681,7 @@
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
+				BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
 				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
@@ -1689,7 +1690,7 @@
 				BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */,
 				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
 				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
-				BF770E5422BC044E002A40FE /* AppOperationContext.swift in Sources */,
+				BF770E5422BC044E002A40FE /* OperationContexts.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
@@ -1697,7 +1698,6 @@
 				BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */,
 				BFE6326822A858F300F30809 /* Account.swift in Sources */,
 				BFE6326622A857C200F30809 /* Team.swift in Sources */,
-				BFEE943F23F21BD800CDA07D /* ALTApplication+AppExtensions.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
@@ -1721,10 +1721,9 @@
 				BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
 				BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */,
-				BFA8172F23C5831A001B5953 /* PrepareDeveloperAccountOperation.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
 				BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */,
-				BF770E5822BC3D0F002A40FE /* OperationGroup.swift in Sources */,
+				BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */,
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
 				BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
@@ -1751,6 +1750,7 @@
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,
+				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,

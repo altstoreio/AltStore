@@ -158,6 +158,7 @@ private extension DatabaseManager
                 storeApp.source = altStoreSource
             }
                         
+            let serialNumber = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.certificateID) as? String
             let installedApp: InstalledApp
             
             if let app = storeApp.installedApp
@@ -166,7 +167,7 @@ private extension DatabaseManager
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, context: context)
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, context: context)
                 installedApp.storeApp = storeApp
             }
             
@@ -194,7 +195,7 @@ private extension DatabaseManager
             }
             
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.update(resignedApp: localApp)
+            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
             
             do
             {

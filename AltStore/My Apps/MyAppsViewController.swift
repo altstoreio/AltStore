@@ -42,7 +42,7 @@ class MyAppsViewController: UICollectionViewController
     private var isUpdateSectionCollapsed = true
     private var expandedAppUpdates = Set<String>()
     private var isRefreshingAllApps = false
-    private var refreshGroup: OperationGroup?
+    private var refreshGroup: RefreshGroup?
     private var sideloadingProgress: Progress?
     
     // Cache
@@ -313,7 +313,7 @@ private extension MyAppsViewController
             default: cell.bannerView.button.tintColor = .refreshRed
             }
             
-            if let refreshGroup = self.refreshGroup, let progress = refreshGroup.progress(for: installedApp), progress.fractionCompleted < 1.0
+            if let progress = AppManager.shared.refreshProgress(for: installedApp), progress.fractionCompleted < 1.0
             {
                 cell.bannerView.button.progress = progress
             }
@@ -398,85 +398,58 @@ private extension MyAppsViewController
         }
     }
     
-    func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String : Result<InstalledApp, Error>], Error>) -> Void)
+    func refresh(_ installedApps: [InstalledApp], completionHandler: @escaping ([String : Result<InstalledApp, Error>]) -> Void)
     {
-        func refresh()
-        {
-            let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.refreshGroup)
-            group.completionHandler = { (result) in
-                DispatchQueue.main.async {
+        let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.refreshGroup)
+        group.completionHandler = { (results) in
+            DispatchQueue.main.async {
+                let failures = results.compactMapValues { (result) -> Error? in
                     switch result
                     {
-                    case .failure(let error):
-                        let toastView = ToastView(error: error)
-                        toastView.show(in: self)
-                        
-                    case .success(let results):
-                        let failures = results.compactMapValues { (result) -> Error? in
-                            switch result
-                            {
-                            case .failure(OperationError.cancelled): return nil
-                            case .failure(let error): return error
-                            case .success: return nil
-                            }
-                        }
-                        
-                        guard !failures.isEmpty else { break }
-                        
-                        let toastView: ToastView
-                        
-                        if let failure = failures.first, results.count == 1
-                        {
-                            toastView = ToastView(error: failure.value)
-                        }
-                        else
-                        {
-                            let localizedText: String
-                            
-                            if failures.count == 1
-                            {
-                                localizedText = NSLocalizedString("Failed to refresh 1 app.", comment: "")
-                            }
-                            else
-                            {
-                                localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
-                            }
-                            
-                            let detailText = failures.first?.value.localizedDescription
-                            
-                            toastView = ToastView(text: localizedText, detailText: detailText)
-                            toastView.preferredDuration = 2.0
-                        }
-                        
-                        toastView.show(in: self)
+                    case .failure(OperationError.cancelled): return nil
+                    case .failure(let error): return error
+                    case .success: return nil
+                    }
+                }
+                
+                guard !failures.isEmpty else { return }
+                
+                let toastView: ToastView
+                
+                if let failure = failures.first, results.count == 1
+                {
+                    toastView = ToastView(error: failure.value)
+                }
+                else
+                {
+                    let localizedText: String
+                    
+                    if failures.count == 1
+                    {
+                        localizedText = NSLocalizedString("Failed to refresh 1 app.", comment: "")
+                    }
+                    else
+                    {
+                        localizedText = String(format: NSLocalizedString("Failed to refresh %@ apps.", comment: ""), NSNumber(value: failures.count))
                     }
                     
-                    self.refreshGroup = nil
-                    completionHandler(result)
+                    let detailText = failures.first?.value.localizedDescription
+                    
+                    toastView = ToastView(text: localizedText, detailText: detailText)
+                    toastView.preferredDuration = 2.0
                 }
+                
+                toastView.show(in: self)
             }
             
-            self.refreshGroup = group
-            
-            UIView.performWithoutAnimation {
-                self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
-            }
+            self.refreshGroup = nil
+            completionHandler(results)
         }
         
-        if installedApps.contains(where: { $0.bundleIdentifier == StoreApp.altstoreAppID })
-        {
-            let alertController = UIAlertController(title: NSLocalizedString("Refresh AltStore?", comment: ""), message: NSLocalizedString("AltStore will quit when it is finished refreshing.", comment: ""), preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("Cancel"), style: .cancel) { (action) in
-                completionHandler(.failure(OperationError.cancelled))
-            })
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Refresh", comment: ""), style: .default) { (action) in
-                refresh()
-            })
-            self.present(alertController, animated: true, completion: nil)
-        }
-        else
-        {
-            refresh()
+        self.refreshGroup = group
+        
+        UIView.performWithoutAnimation {
+            self.collectionView.reloadSections([Section.installedApps.rawValue])
         }
     }
 }
@@ -559,16 +532,16 @@ private extension MyAppsViewController
             return
         }
         
-        self.refresh([installedApp]) { (result) in
+        self.refresh([installedApp]) { (results) in
             // If an error occured, reload the section so the progress bar is no longer visible.
-            if result.error != nil || result.value?.values.contains(where: { $0.error != nil }) == true
+            if results.values.contains(where: { $0.error != nil })
             {
                 DispatchQueue.main.async {
                     self.collectionView.reloadSections(IndexSet(integer: Section.installedApps.rawValue))
                 }
             }
             
-            print("Finished refreshing with result:", result.error?.localizedDescription ?? "success")
+            print("Finished refreshing with results:", results.map { ($0, $1.error?.localizedDescription ?? "success") })
         }
     }
     

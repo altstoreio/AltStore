@@ -23,24 +23,28 @@ private let ReceivedWiredServerConnectionResponse: @convention(c) (CFNotificatio
 @objc(FindServerOperation)
 class FindServerOperation: ResultOperation<Server>
 {
-    let group: OperationGroup
+    let context: OperationContext
     
     private var isWiredServerConnectionAvailable = false
-        
-    init(group: OperationGroup)
-    {
-        self.group = group
-        
-        super.init()
-    }
     
+    init(context: OperationContext = OperationContext())
+    {
+        self.context = context
+    }
+        
     override func main()
     {
         super.main()
         
-        if let error = self.group.error
+        if let error = self.context.error
         {
             self.finish(.failure(error))
+            return
+        }
+        
+        if let server = self.context.server
+        {
+            self.finish(.success(server))
             return
         }
         
