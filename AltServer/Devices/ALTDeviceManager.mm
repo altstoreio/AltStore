@@ -702,22 +702,35 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     
     if (result == MISAGENT_E_SUCCESS)
     {
-        NSLog(@"Installed profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
+        NSLog(@"Installed profile: %@ (%@)", provisioningProfile.bundleIdentifier, provisioningProfile.UUID);
         return YES;
     }
     else
     {
-        NSLog(@"Failed to install provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(result));
+        int statusCode = misagent_get_status_code(mis);
+        NSLog(@"Failed to install provisioning profile %@ (%@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.UUID, @(statusCode));
         
         if (error)
         {
-            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileInstallFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description], ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier}];
+            switch (statusCode)
+            {
+                case -402620383:
+                    *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:nil];
+                    break;
+                    
+                default:
+                    NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"Could not install profile “%@”", @""), provisioningProfile.bundleIdentifier];
+                    
+                    *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnderlyingError userInfo:@{
+                        NSLocalizedFailureErrorKey: localizedFailure,
+                        ALTUnderlyingErrorCodeErrorKey: [@(statusCode) description],
+                        ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier
+                    }];
+            }
         }
         
         return NO;
     }
-    
-    return NO;
 }
 
 - (BOOL)removeProvisioningProfile:(ALTProvisioningProfile *)provisioningProfile misagent:(misagent_client_t)mis error:(NSError **)error
@@ -725,16 +738,33 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     misagent_error_t result = misagent_remove(mis, provisioningProfile.UUID.UUIDString.lowercaseString.UTF8String);
     if (result == MISAGENT_E_SUCCESS)
     {
-        NSLog(@"Removed provisioning profile: %@ (Team: %@)", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier);
+        NSLog(@"Removed provisioning profile: %@ (%@)", provisioningProfile.bundleIdentifier, provisioningProfile.UUID);
         return YES;
     }
     else
     {
-        NSLog(@"Failed to remove provisioning profile %@ (Team: %@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.teamIdentifier, @(result));
+        int statusCode = misagent_get_status_code(mis);
+        NSLog(@"Failed to remove provisioning profile %@ (%@). Error Code: %@", provisioningProfile.bundleIdentifier, provisioningProfile.UUID, @(statusCode));
         
         if (error)
         {
-            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileRemoveFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description], ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier}];
+            switch (statusCode)
+            {
+                case -402620405:
+                    *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileNotFound userInfo:nil];
+                    break;
+                    
+                default:
+                {
+                    NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"Could not remove profile “%@”", @""), provisioningProfile.bundleIdentifier];
+                    
+                    *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnderlyingError userInfo:@{
+                        NSLocalizedFailureErrorKey: localizedFailure,
+                        ALTUnderlyingErrorCodeErrorKey: [@(statusCode) description],
+                        ALTProvisioningProfileBundleIDErrorKey: provisioningProfile.bundleIdentifier
+                    }];
+                }
+            }
         }
         
         return NO;
@@ -747,9 +777,14 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     misagent_error_t result = misagent_copy_all(mis, &rawProfiles);
     if (result != MISAGENT_E_SUCCESS)
     {
+        int statusCode = misagent_get_status_code(mis);
+        
         if (error)
         {
-            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorProfileCopyFailed userInfo:@{ALTUnderlyingErrorCodeErrorKey: [@(result) description]}];
+            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnderlyingError userInfo:@{
+                NSLocalizedFailureErrorKey: NSLocalizedString(@"Could not copy provisioning profiles.", @""),
+                ALTUnderlyingErrorCodeErrorKey: [@(statusCode) description]
+            }];
         }
         
         return nil;

@@ -16,7 +16,7 @@ class ToastView: RSTToastView
     {
         if detailedText == nil
         {
-            self.preferredDuration = 2.0
+            self.preferredDuration = 4.0
         }
         else
         {
@@ -25,20 +25,41 @@ class ToastView: RSTToastView
         
         super.init(text: text, detailText: detailedText)
         
-        self.layoutMargins = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        self.layoutMargins = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
         self.setNeedsLayout()
+        
+        if let stackView = self.textLabel.superview as? UIStackView
+        {
+            // RSTToastView does not expose stack view containing labels,
+            // so we access it indirectly as the labels' superview.
+            stackView.spacing = 4.0
+        }
     }
     
     convenience init(error: Error)
     {
-        if let error = error as? LocalizedError
+        let error = error as NSError
+        
+        let text: String
+        let detailText: String?
+        
+        if let failure = error.localizedFailure
         {
-            self.init(text: error.localizedDescription, detailText: error.recoverySuggestion ?? error.failureReason)
+            text = failure
+            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion
+        }
+        else if let reason = error.localizedFailureReason
+        {
+            text = reason
+            detailText = error.localizedRecoverySuggestion
         }
         else
         {
-            self.init(text: error.localizedDescription, detailText: nil)
+            text = error.localizedDescription
+            detailText = nil
         }
+        
+        self.init(text: text, detailText: detailText)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -49,7 +70,9 @@ class ToastView: RSTToastView
     {
         super.layoutSubviews()
         
-        self.layer.cornerRadius = 16
+        // Rough calculation to determine height of ToastView with one-line textLabel.
+        let minimumHeight = self.textLabel.font.lineHeight.rounded() + 20
+        self.layer.cornerRadius = minimumHeight/2
     }
     
     func show(in viewController: UIViewController)
