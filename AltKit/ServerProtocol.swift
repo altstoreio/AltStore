@@ -262,11 +262,15 @@ public struct PrepareAppRequest: ServerMessageProtocol
 
 public struct BeginInstallationRequest: ServerMessageProtocol
 {
-    public var version = 1
+    public var version = 2
     public var identifier = "BeginInstallationRequest"
     
-    public init()
+    // If activeProfiles is non-nil, then AltServer should remove all profiles except active ones.
+    public var activeProfiles: Set<String>?
+    
+    public init(activeProfiles: Set<String>?)
     {
+        self.activeProfiles = activeProfiles
     }
 }
 

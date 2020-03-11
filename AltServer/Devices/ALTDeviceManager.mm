@@ -71,7 +71,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 
 #pragma mark - App Installation -
 
-- (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
+- (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(nullable NSSet<NSString *> *)activeProvisioningProfiles completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
 {
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:4];
     
@@ -88,41 +88,42 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         __block misagent_client_t mis = NULL;
         __block lockdownd_service_descriptor_t service = NULL;
         
-        NSURL *removedProfilesDirectoryURL = [[[NSFileManager defaultManager] temporaryDirectory] URLByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
-        NSMutableDictionary<NSString *, ALTProvisioningProfile *> *preferredProfiles = [NSMutableDictionary dictionary];
+        NSMutableDictionary<NSString *, ALTProvisioningProfile *> *cachedProfiles = [NSMutableDictionary dictionary];
+        NSMutableSet<ALTProvisioningProfile *> *installedProfiles = [NSMutableSet set];
         
-        void (^finish)(NSError *error) = ^(NSError *error) {
+        void (^finish)(NSError *error) = ^(NSError *e) {
+            __block NSError *error = e;
             
-            if ([[NSFileManager defaultManager] fileExistsAtPath:removedProfilesDirectoryURL.path isDirectory:nil])
+            if (activeProvisioningProfiles != nil)
             {
-                // Reinstall all provisioning profiles we removed before installation.
+                // Remove installed provisioning profiles if they're not active.
                 
-                NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:removedProfilesDirectoryURL.path error:nil];
-                for (NSString *filename in contents)
+                for (ALTProvisioningProfile *installedProfile in installedProfiles)
                 {
-                    NSURL *fileURL = [removedProfilesDirectoryURL URLByAppendingPathComponent:filename];
-                    
-                    ALTProvisioningProfile *provisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:fileURL];
-                    if (provisioningProfile == nil)
+                    if (![activeProvisioningProfiles containsObject:installedProfile.bundleIdentifier])
                     {
-                        continue;
+                        NSError *removeError = nil;
+                        if (![self removeProvisioningProfile:installedProfile misagent:mis error:&removeError])
+                        {
+                            if (error == nil)
+                            {
+                                error = removeError;
+                            }
+                        }
                     }
-                    
-                    ALTProvisioningProfile *preferredProfile = preferredProfiles[provisioningProfile.bundleIdentifier];
-                    if (![preferredProfile isEqual:provisioningProfile])
-                    {
-                        continue;
-                    }
-                    
-                    NSError *installError = nil;
-                    if (![self installProvisioningProfile:preferredProfile misagent:mis error:&installError])
+                }
+            }
+            
+            [cachedProfiles enumerateKeysAndObjectsUsingBlock:^(NSString *bundleID, ALTProvisioningProfile *profile, BOOL * _Nonnull stop) {
+                NSError *installError = nil;
+                if (![self installProvisioningProfile:profile misagent:mis error:&installError])
+                {
+                    if (error == nil)
                     {
                         error = installError;
                     }
                 }
-                
-                [[NSFileManager defaultManager] removeItemAtURL:removedProfilesDirectoryURL error:nil];
-            }
+            }];
             
             instproxy_client_free(ipc);
             afc_client_free(afc);
@@ -278,17 +279,24 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             service = NULL;
         }
         
+        ALTApplication *application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
+        if (application.provisioningProfile)
+        {
+            [installedProfiles addObject:application.provisioningProfile];
+        }
+        
+        for (ALTApplication *appExtension in application.appExtensions)
+        {
+            if (appExtension.provisioningProfile)
+            {
+                [installedProfiles addObject:appExtension.provisioningProfile];
+            }
+        }
+        
         /* Provisioning Profiles */
-        NSURL *provisioningProfileURL = [appBundleURL URLByAppendingPathComponent:@"embedded.mobileprovision"];
-        ALTProvisioningProfile *installationProvisioningProfile = [[ALTProvisioningProfile alloc] initWithURL:provisioningProfileURL];
-        if (installationProvisioningProfile != nil)
+        if (activeProvisioningProfiles != nil)
         {
             NSError *error = nil;
-            if (![[NSFileManager defaultManager] createDirectoryAtURL:removedProfilesDirectoryURL withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                return finish(error);
-            }
-            
             NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
             if (provisioningProfiles == nil)
             {
@@ -302,27 +310,33 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                     continue;
                 }
                 
-                ALTProvisioningProfile *preferredProfile = preferredProfiles[provisioningProfile.bundleIdentifier];
-                if (preferredProfile != nil)
+                BOOL installingProfile = NO;
+                for (ALTProvisioningProfile *installedProfile in installedProfiles)
                 {
-                    if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
+                    if ([installedProfile.bundleIdentifier isEqualToString:provisioningProfile.bundleIdentifier])
                     {
-                        preferredProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+                        installingProfile = YES;
+                        break;
                     }
                 }
-                else
+                
+                if ([activeProvisioningProfiles containsObject:provisioningProfile.bundleIdentifier] && !installingProfile)
                 {
-                    preferredProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
-                }
-
-                NSString *filename = [NSString stringWithFormat:@"%@.mobileprovision", [[NSUUID UUID] UUIDString]];
-                NSURL *fileURL = [removedProfilesDirectoryURL URLByAppendingPathComponent:filename];
-
-                NSError *copyError = nil;
-                if (![provisioningProfile.data writeToURL:fileURL options:NSDataWritingAtomic error:&copyError])
-                {
-                    NSLog(@"Failed to copy profile to temporary URL. %@", copyError);
-                    continue;
+                    // We're not installing this provisioning profile, but it is active,
+                    // so we'll cache it to install it again after installing this app.
+                    
+                    ALTProvisioningProfile *preferredProfile = cachedProfiles[provisioningProfile.bundleIdentifier];
+                    if (preferredProfile != nil)
+                    {
+                        if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
+                        {
+                            cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+                        }
+                    }
+                    else
+                    {
+                        cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+                    }
                 }
                 
                 if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])

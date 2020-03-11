@@ -351,10 +351,10 @@ private extension ConnectionManager
                     switch result
                     {
                     case .failure(let error): finish(.failure(error))
-                    case .success(.beginInstallation):
+                    case .success(.beginInstallation(let installRequest)):
                         print("Installing to device \(request.udid)...")
                         
-                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
+                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, activeProvisioningProfiles: installRequest.activeProfiles, connection: connection) { (result) in
                             print("Installed to device with result:", result)
                             switch result
                             {
@@ -403,14 +403,14 @@ private extension ConnectionManager
         }
     }
     
-    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, connection: ClientConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, activeProvisioningProfiles: Set<String>?, connection: ClientConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {
         let serialQueue = DispatchQueue(label: "com.altstore.ConnectionManager.installQueue", qos: .default)
         var isSending = false
         
         var observation: NSKeyValueObservation?
         
-        let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid) { (success, error) in
+        let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid, activeProvisioningProfiles: activeProvisioningProfiles) { (success, error) in
             print("Installed app with result:", error == nil ? "Success" : error!.localizedDescription)
             
             if let error = error.map({ $0 as? ALTServerError ?? ALTServerError(.unknown) })
