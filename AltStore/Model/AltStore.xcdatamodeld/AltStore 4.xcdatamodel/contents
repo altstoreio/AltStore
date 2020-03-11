@@ -36,6 +36,7 @@
         <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="resignedBundleIdentifier" attributeType="String"/>
@@ -154,8 +155,9 @@
     </entity>
     <elements>
         <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
+        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
         <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="193"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="223"/>
         <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
         <element name="NewsItem" positionX="-45" positionY="126" width="128" height="225"/>
         <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
@@ -163,6 +165,5 @@
         <element name="Source" positionX="-45" positionY="99" width="128" height="120"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="330"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
-        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
     </elements>
 </model>

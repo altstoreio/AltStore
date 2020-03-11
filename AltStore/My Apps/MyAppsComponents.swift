@@ -18,16 +18,7 @@ class InstalledAppCollectionViewCell: UICollectionViewCell
         
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.preservesSuperviewLayoutMargins = true
-        
-        self.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
-        self.bannerView.buttonLabel.isHidden = false
     }
-}
-
-class InstalledAppsCollectionHeaderView: UICollectionReusableView
-{
-    @IBOutlet var textLabel: UILabel!
-    @IBOutlet var button: UIButton!
 }
 
 class InstalledAppsCollectionFooterView: UICollectionReusableView

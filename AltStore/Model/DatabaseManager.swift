@@ -194,8 +194,21 @@ private extension DatabaseManager
                 }
             }
             
+            let cachedRefreshedDate = installedApp.refreshedDate
+            let cachedExpirationDate = installedApp.expirationDate
+                        
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
             installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
+            
+            if installedApp.refreshedDate < cachedRefreshedDate
+            {
+                // Embedded provisioning profile has a creation date older than our refreshed date.
+                // This most likely means we've refreshed the app since then, and profile is now outdated,
+                // so use cached dates instead (i.e. not the dates updated from provisioning profile).
+                
+                installedApp.refreshedDate = cachedRefreshedDate
+                installedApp.expirationDate = cachedExpirationDate
+            }
             
             do
             {

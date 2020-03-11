@@ -228,6 +228,17 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                     team.isActiveTeam = false
                 }
                 
+                let activeAppsMinimumVersion = OperatingSystemVersion(majorVersion: 13, minorVersion: 3, patchVersion: 1)
+                if team.type == .free, ProcessInfo.processInfo.isOperatingSystemAtLeast(activeAppsMinimumVersion)
+                {
+                    // Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
+                    UserDefaults.standard.activeAppsLimit = 3
+                }
+                else
+                {
+                    UserDefaults.standard.activeAppsLimit = nil
+                }
+                
                 // Save
                 try context.save()
                 

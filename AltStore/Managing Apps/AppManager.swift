@@ -58,6 +58,8 @@ extension AppManager
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         fetchRequest.returnsObjectsAsFaults = false
         
+        var activeAppsCount = 0
+        
         do
         {
             let installedApps = try context.fetch(fetchRequest)
@@ -75,19 +77,29 @@ extension AppManager
             
             for app in installedApps
             {
-                let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                
-                if app.bundleIdentifier == StoreApp.altstoreAppID
-                {
+                guard app.bundleIdentifier != StoreApp.altstoreAppID else {
                     self.scheduleExpirationWarningLocalNotification(for: app)
+                    continue
                 }
-                else
+                
+                let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                guard uti != nil || legacySideloadedApps.contains(app.bundleIdentifier) else {
+                    // This UTI is not declared by any apps, which means this app has been deleted by the user.
+                    // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
+                    context.delete(app)
+                    continue
+                }
+                
+                if app.isActive
                 {
-                    if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
+                    if let activeAppsLimit = UserDefaults.standard.activeAppsLimit, activeAppsCount >= activeAppsLimit - 1
                     {
-                        // This UTI is not declared by any apps, which means this app has been deleted by the user.
-                        // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
-                        context.delete(app)
+                        // We have reached active apps limit (excluding AltStore itself), so mark additional active apps as inactive.
+                        app.isActive = false
+                    }
+                    else
+                    {
+                        activeAppsCount += 1
                     }
                 }
             }
@@ -213,6 +225,42 @@ extension AppManager
         
         let operations = installedApps.map { AppOperation.refresh($0) }
         return self.perform(operations, presentingViewController: presentingViewController, group: group)
+    }
+    
+    func activate(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let group = self.refresh([installedApp], presentingViewController: presentingViewController)
+        group.completionHandler = { (results) in
+            do
+            {
+                guard let result = results.values.first else { throw OperationError.unknown }
+                
+                let installedApp = try result.get()
+                installedApp.managedObjectContext?.perform {
+                    installedApp.isActive = true
+                    completionHandler(.success(installedApp))
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func deactivate(_ installedApp: InstalledApp, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let context = OperationContext()
+        
+        let findServerOperation = self.findServer(context: context) { _ in }
+        
+        let deactivateAppOperation = DeactivateAppOperation(app: installedApp, context: context)
+        deactivateAppOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        deactivateAppOperation.addDependency(findServerOperation)
+        
+        self.run([deactivateAppOperation], requiresSerialQueue: true)
     }
     
     func installationProgress(for app: AppProtocol) -> Progress?
@@ -468,7 +516,23 @@ private extension AppManager
         /* Refresh */
         let refreshAppOperation = RefreshAppOperation(context: context)
         refreshAppOperation.resultHandler = { (result) in
-            completionHandler(result)
+            switch result
+            {
+            case .success(let installedApp):
+                completionHandler(.success(installedApp))
+                
+            case .failure(ALTServerError.unknownRequest):
+                // Fall back to installation if AltServer doesn't support newer provisioning profile requests.
+                app.managedObjectContext?.perform {
+                    let installProgress = self._install(app, group: group) { (result) in
+                        completionHandler(result)
+                    }
+                    progress.addChild(installProgress, withPendingUnitCount: 40)
+                }
+                
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
         }
         progress.addChild(refreshAppOperation.progress, withPendingUnitCount: 40)
         refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)

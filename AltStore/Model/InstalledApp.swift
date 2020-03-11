@@ -36,6 +36,8 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged var expirationDate: Date
     @NSManaged var installedDate: Date
     
+    @NSManaged var isActive: Bool
+    
     @NSManaged var certificateSerialNumber: String?
     
     /* Relationships */
@@ -98,7 +100,15 @@ extension InstalledApp
     class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K != nil AND %K != %K", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+        return fetchRequest
+    }
+    
+    class func activeAppsFetchRequest() -> NSFetchRequest<InstalledApp>
+    {
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+        fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(InstalledApp.isActive))
         return fetchRequest
     }
     
@@ -110,9 +120,15 @@ extension InstalledApp
         return altStore
     }
     
+    class func fetchActiveApps(in context: NSManagedObjectContext) -> [InstalledApp]
+    {
+        let activeApps = InstalledApp.fetch(InstalledApp.activeAppsFetchRequest(), in: context)
+        return activeApps
+    }
+    
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        var predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        var predicate = NSPredicate(format: "%K == YES AND %K != %@", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
@@ -142,7 +158,8 @@ extension InstalledApp
         // Date 6 hours before now.
         let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
         
-        var predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
+        var predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@)",
+                                    #keyPath(InstalledApp.isActive),
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
                                     #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         

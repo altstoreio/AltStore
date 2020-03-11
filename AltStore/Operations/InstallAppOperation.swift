@@ -111,7 +111,40 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             
             self.context.beginInstallationHandler?(installedApp)
             
-            let request = BeginInstallationRequest()
+            var activeProfiles: Set<String>?
+            if let sideloadedAppsLimit = UserDefaults.standard.activeAppsLimit
+            {
+                // When installing these new profiles, AltServer will remove all non-active profiles to ensure we remain under limit.
+                
+                let fetchRequest = InstalledApp.activeAppsFetchRequest()
+                fetchRequest.includesPendingChanges = false
+                
+                var activeApps = InstalledApp.fetch(fetchRequest, in: backgroundContext)
+                if !activeApps.contains(installedApp)
+                {
+                    let availableActiveApps = max(sideloadedAppsLimit - activeApps.count, 0)
+                    let requiredActiveAppSlots = 1 + installedExtensions.count // As of iOS 13.3.1, app extensions count as "apps"
+                    
+                    if requiredActiveAppSlots <= availableActiveApps
+                    {
+                        // This app has not been explicitly activated, but there are enough slots available,
+                        // so implicitly activate it.
+                        installedApp.isActive = true
+                        activeApps.append(installedApp)
+                    }
+                    else
+                    {
+                        installedApp.isActive = false
+                    }
+                }
+
+                activeProfiles = Set(activeApps.flatMap { (installedApp) -> [String] in
+                    let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
+                    return [installedApp.resignedBundleIdentifier] + appExtensionProfiles
+                })
+            }
+            
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles)
             connection.send(request) { (result) in
                 switch result
                 {

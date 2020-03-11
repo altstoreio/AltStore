@@ -26,6 +26,20 @@ extension Fetchable
         return managedObjects
     }
     
+    static func fetch(_ fetchRequest: NSFetchRequest<Self>, in context: NSManagedObjectContext) -> [Self]
+    {
+        do
+        {
+            let managedObjects = try context.fetch(fetchRequest)
+            return managedObjects
+        }
+        catch
+        {
+            print("Failed to fetch managed objects. Fetch Request: \(fetchRequest). Error: \(error).")
+            return []
+        }
+    }
+    
     private static func all(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext, returnFirstResult: Bool) -> [Self]
     {
         let registeredObjects = context.registeredObjects.lazy.compactMap({ $0 as? Self }).filter({ predicate?.evaluate(with: $0) != false })
@@ -39,23 +53,15 @@ extension Fetchable
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = sortDescriptors
         
-        do
+        let fetchedObjects = self.fetch(fetchRequest, in: context)
+        
+        if let fetchedObject = fetchedObjects.first, returnFirstResult
         {
-            let managedObjects = try context.fetch(fetchRequest)
-            
-            if let managedObject = managedObjects.first, returnFirstResult
-            {
-                return [managedObject]
-            }
-            else
-            {
-                return managedObjects
-            }
+            return [fetchedObject]
         }
-        catch
+        else
         {
-            print("Failed to fetch managed objects.", error)
-            return []
+            return fetchedObjects
         }
     }
 }

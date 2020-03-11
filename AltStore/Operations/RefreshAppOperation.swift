@@ -58,10 +58,10 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                         print("Sending refresh app request...")
                         
                         var activeProfiles: Set<String>?
-                        
-                        if team.type == .free
+                        if UserDefaults.standard.activeAppsLimit != nil
                         {
-                            let activeApps = InstalledApp.all(in: context)
+                            // When installing these new profiles, AltServer will remove all non-active profiles to ensure we remain under limit.
+                            let activeApps = InstalledApp.fetchActiveApps(in: context)
                             activeProfiles = Set(activeApps.flatMap { (installedApp) -> [String] in
                                 let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
                                 return [installedApp.resignedBundleIdentifier] + appExtensionProfiles
