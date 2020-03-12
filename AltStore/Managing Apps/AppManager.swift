@@ -57,9 +57,7 @@ extension AppManager
         
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         fetchRequest.returnsObjectsAsFaults = false
-        
-        var activeAppsCount = 0
-        
+                
         do
         {
             let installedApps = try context.fetch(fetchRequest)
@@ -83,24 +81,11 @@ extension AppManager
                 }
                 
                 let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                guard uti != nil || legacySideloadedApps.contains(app.bundleIdentifier) else {
+                if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
+                {
                     // This UTI is not declared by any apps, which means this app has been deleted by the user.
                     // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
                     context.delete(app)
-                    continue
-                }
-                
-                if app.isActive
-                {
-                    if let activeAppsLimit = UserDefaults.standard.activeAppsLimit, activeAppsCount >= activeAppsLimit - 1
-                    {
-                        // We have reached active apps limit (excluding AltStore itself), so mark additional active apps as inactive.
-                        app.isActive = false
-                    }
-                    else
-                    {
-                        activeAppsCount += 1
-                    }
                 }
             }
             

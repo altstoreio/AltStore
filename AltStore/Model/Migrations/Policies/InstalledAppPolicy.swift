@@ -27,4 +27,11 @@ class InstalledAppToInstalledAppMigrationPolicy: NSEntityMigrationPolicy
         // Cannot use NSManagedObject subclasses during migration, so fallback to using KVC instead.
         dInstance.setValue(teams.first, forKey: #keyPath(InstalledApp.team))
     }
+    
+    @objc(defaultIsActiveForBundleID:)
+    func defaultIsActive(for bundleID: String) -> NSNumber
+    {
+        let isActive = (bundleID == StoreApp.altstoreAppID)
+        return NSNumber(value: isActive)
+    }
 }
