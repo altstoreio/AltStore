@@ -176,6 +176,20 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             return finish([NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSURLErrorKey: fileURL}]);
         }
         
+        ALTApplication *application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
+        if (application.provisioningProfile)
+        {
+            [installedProfiles addObject:application.provisioningProfile];
+        }
+        
+        for (ALTApplication *appExtension in application.appExtensions)
+        {
+            if (appExtension.provisioningProfile)
+            {
+                [installedProfiles addObject:appExtension.provisioningProfile];
+            }
+        }
+        
         /* Find Device */
         if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
         {
@@ -279,75 +293,38 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             service = NULL;
         }
         
-        ALTApplication *application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
-        if (application.provisioningProfile)
+        BOOL shouldManageProfiles = (activeProvisioningProfiles != nil || [application.provisioningProfile isFreeProvisioningProfile]);
+        if (shouldManageProfiles)
         {
-            [installedProfiles addObject:application.provisioningProfile];
-        }
-        
-        for (ALTApplication *appExtension in application.appExtensions)
-        {
-            if (appExtension.provisioningProfile)
-            {
-                [installedProfiles addObject:appExtension.provisioningProfile];
-            }
-        }
-        
-        /* Provisioning Profiles */
-        if (activeProvisioningProfiles != nil)
-        {
+            // Free developer account was used to sign this app, so we need to remove all
+            // provisioning profiles in order to remain under sideloaded app limit.
+            
             NSError *error = nil;
-            NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
-            if (provisioningProfiles == nil)
+            NSDictionary<NSString *, ALTProvisioningProfile *> *removedProfiles = [self removeAllFreeProfilesExcludingBundleIdentifiers:nil misagent:mis error:&error];
+            if (removedProfiles == nil)
             {
                 return finish(error);
             }
-
-            for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
-            {
-                if (![provisioningProfile isFreeProvisioningProfile])
+            
+            [removedProfiles enumerateKeysAndObjectsUsingBlock:^(NSString *bundleID, ALTProvisioningProfile *profile, BOOL * _Nonnull stop) {
+                if (activeProvisioningProfiles != nil)
                 {
-                    continue;
-                }
-                
-                BOOL installingProfile = NO;
-                for (ALTProvisioningProfile *installedProfile in installedProfiles)
-                {
-                    if ([installedProfile.bundleIdentifier isEqualToString:provisioningProfile.bundleIdentifier])
+                    if ([activeProvisioningProfiles containsObject:bundleID])
                     {
-                        installingProfile = YES;
-                        break;
+                        // Only cache active profiles to reinstall afterwards.
+                        cachedProfiles[bundleID] = profile;
                     }
                 }
-                
-                if ([activeProvisioningProfiles containsObject:provisioningProfile.bundleIdentifier] && !installingProfile)
+                else
                 {
-                    // We're not installing this provisioning profile, but it is active,
-                    // so we'll cache it to install it again after installing this app.
-                    
-                    ALTProvisioningProfile *preferredProfile = cachedProfiles[provisioningProfile.bundleIdentifier];
-                    if (preferredProfile != nil)
-                    {
-                        if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
-                        {
-                            cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
-                        }
-                    }
-                    else
-                    {
-                        cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
-                    }
+                    // Cache all profiles to reinstall afterwards if we didn't provide activeProvisioningProfiles.
+                    cachedProfiles[bundleID] = profile;
                 }
-                
-                if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
-                {
-                    return finish(error);
-                }
-            }
-
-            lockdownd_client_free(client);
-            client = NULL;
+            }];
         }
+        
+        lockdownd_client_free(client);
+        client = NULL;
         
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
@@ -514,7 +491,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 
 #pragma mark - Provisioning Profiles -
 
-- (void)installProvisioningProfiles:(NSSet<ALTProvisioningProfile *> *)provisioningProfiles toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(NSSet<NSString *> *)activeProvisioningProfiles removeInactiveProvisioningProfiles:(BOOL)removeInactiveProvisioningProfiles completionHandler:(void (^)(NSDictionary<ALTProvisioningProfile *, NSError *> *errors))completionHandler;
+- (void)installProvisioningProfiles:(NSSet<ALTProvisioningProfile *> *)provisioningProfiles toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(nullable NSSet<NSString *> *)activeProvisioningProfiles completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     dispatch_async(self.installationQueue, ^{
         __block idevice_t device = NULL;
@@ -523,109 +500,86 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         __block misagent_client_t mis = NULL;
         __block lockdownd_service_descriptor_t service = NULL;
         
-        void (^finish)(NSDictionary<ALTProvisioningProfile *, NSError *> *, NSError *) = ^(NSDictionary *installationErrors, NSError *error) {
+        void (^finish)(NSError *_Nullable) = ^(NSError *error) {
             lockdownd_service_descriptor_free(service);
             misagent_client_free(mis);
             afc_client_free(afc);
             lockdownd_client_free(client);
             idevice_free(device);
             
-            if (installationErrors)
-            {
-                completionHandler(installationErrors);
-            }
-            else
-            {
-                NSMutableDictionary *installationErrors = [NSMutableDictionary dictionary];
-                for (ALTProvisioningProfile *profile in provisioningProfiles)
-                {
-                    installationErrors[profile] = error;
-                }
-                
-                completionHandler(installationErrors);
-            }
+            completionHandler(error == nil, error);
         };
         
         /* Find Device */
         if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
         
         /* Connect to Device */
         if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         /* Connect to Misagent */
         if (lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS || service == NULL)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         NSError *error = nil;
-        NSArray<ALTProvisioningProfile *> *installedProvisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
-        if (provisioningProfiles == nil)
+        
+        if (activeProvisioningProfiles != nil)
         {
-            return finish(nil, error);
+            // Remove all non-active free provisioning profiles.
+            
+            NSMutableSet *excludedBundleIdentifiers = [activeProvisioningProfiles mutableCopy];
+            for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
+            {
+                // Ensure we DO remove old versions of profiles we're about to install, even if they are active.
+                [excludedBundleIdentifiers removeObject:provisioningProfile.bundleIdentifier];
+            }
+            
+            if (![self removeAllFreeProfilesExcludingBundleIdentifiers:excludedBundleIdentifiers misagent:mis error:&error])
+            {
+                return finish(error);
+            }
         }
-        
-        for (ALTProvisioningProfile *provisioningProfile in installedProvisioningProfiles)
+        else
         {
-            if (![provisioningProfile isFreeProvisioningProfile])
+            // Remove only older versions of provisioning profiles we're about to install.
+            
+            NSMutableSet *bundleIdentifiers = [NSMutableSet set];
+            for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
             {
-                continue;
+                [bundleIdentifiers addObject:provisioningProfile.bundleIdentifier];
             }
             
-            BOOL removeProfile = NO;
-            
-            for (ALTProvisioningProfile *profile in provisioningProfiles)
+            if (![self removeProvisioningProfilesForBundleIdentifiers:bundleIdentifiers misagent:mis error:&error])
             {
-                if ([profile.bundleIdentifier isEqualToString:provisioningProfile.bundleIdentifier])
-                {
-                    // Remove previous provisioning profile before installing new one.
-                    removeProfile = YES;
-                    break;
-                }
+                return finish(error);
             }
-            
-            if (removeInactiveProvisioningProfiles && ![activeProvisioningProfiles containsObject:provisioningProfile.bundleIdentifier])
-            {
-                // Remove all non-active provisioning profiles to remain under 3 app limit for free developer accounts.
-                removeProfile = YES;
-            }
-            
-            if (removeProfile)
-            {
-                if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
-                {
-                    return finish(nil, error);
-                }
-            }            
         }
-        
-        NSMutableDictionary<ALTProvisioningProfile *, NSError *> *profileErrors = [NSMutableDictionary dictionary];
-        
+                
         for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
         {
-            NSError *error = nil;
             if (![self installProvisioningProfile:provisioningProfile misagent:mis error:&error])
             {
-                profileErrors[provisioningProfile] = error;
+                return finish(error);
             }
         }
         
-        finish(profileErrors, nil);
+        finish(nil);
     });
 }
 
-- (void)removeProvisioningProfilesForBundleIdentifiers:(NSSet<NSString *> *)bundleIdentifiers fromDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(NSDictionary<NSString *, NSError *> *errors))completionHandler
+- (void)removeProvisioningProfilesForBundleIdentifiers:(NSSet<NSString *> *)bundleIdentifiers fromDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     dispatch_async(self.installationQueue, ^{
         __block idevice_t device = NULL;
@@ -634,77 +588,110 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         __block misagent_client_t mis = NULL;
         __block lockdownd_service_descriptor_t service = NULL;
         
-        void (^finish)(NSDictionary<NSString *, NSError *> *, NSError *) = ^(NSDictionary *installationErrors, NSError *error) {
+        void (^finish)(NSError *_Nullable) = ^(NSError *error) {
             lockdownd_service_descriptor_free(service);
             misagent_client_free(mis);
             afc_client_free(afc);
             lockdownd_client_free(client);
             idevice_free(device);
             
-            if (installationErrors)
-            {
-                completionHandler(installationErrors);
-            }
-            else
-            {
-                NSMutableDictionary *installationErrors = [NSMutableDictionary dictionary];
-                for (NSString *bundleID in bundleIdentifiers)
-                {
-                    installationErrors[bundleID] = error;
-                }
-                
-                completionHandler(installationErrors);
-            }
+            completionHandler(error == nil, error);
         };
         
         /* Find Device */
         if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
         
         /* Connect to Device */
         if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         /* Connect to Misagent */
         if (lockdownd_start_service(client, "com.apple.misagent", &service) != LOCKDOWN_E_SUCCESS || service == NULL)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         if (misagent_client_new(device, service, &mis) != MISAGENT_E_SUCCESS)
         {
-            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
         }
         
         NSError *error = nil;
-        NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:&error];
-        if (provisioningProfiles == nil)
+        if (![self removeProvisioningProfilesForBundleIdentifiers:bundleIdentifiers misagent:mis error:&error])
         {
-            return finish(nil, error);
+            return finish(error);
         }
         
-        NSMutableDictionary<NSString *, NSError *> *profileErrors = [NSMutableDictionary dictionary];
-        
-        /* Remove provisioning profiles */
-        for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
-        {
-            if (![bundleIdentifiers containsObject:provisioningProfile.bundleIdentifier])
-            {
-                continue;
-            }
-            
-            if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:&error])
-            {
-                profileErrors[provisioningProfile.bundleIdentifier] = error;
-            }
-        }
-        
-        finish(profileErrors, nil);
+        finish(nil);
     });
+}
+
+- (NSDictionary<NSString *, ALTProvisioningProfile *> *)removeProvisioningProfilesForBundleIdentifiers:(NSSet<NSString *> *)bundleIdentifiers misagent:(misagent_client_t)mis error:(NSError **)error
+{
+    return [self removeAllProfilesForBundleIdentifiers:bundleIdentifiers excludingBundleIdentifiers:nil limitedToFreeProfiles:NO misagent:mis error:error];
+}
+
+- (NSDictionary<NSString *, ALTProvisioningProfile *> *)removeAllFreeProfilesExcludingBundleIdentifiers:(nullable NSSet<NSString *> *)bundleIdentifiers misagent:(misagent_client_t)mis error:(NSError **)error
+{
+    return [self removeAllProfilesForBundleIdentifiers:nil excludingBundleIdentifiers:bundleIdentifiers limitedToFreeProfiles:YES misagent:mis error:error];
+}
+
+- (NSDictionary<NSString *, ALTProvisioningProfile *> *)removeAllProfilesForBundleIdentifiers:(nullable NSSet<NSString *> *)includedBundleIdentifiers
+                                                                   excludingBundleIdentifiers:(nullable NSSet<NSString *> *)excludedBundleIdentifiers
+                                                                        limitedToFreeProfiles:(BOOL)limitedToFreeProfiles
+                                                                                     misagent:(misagent_client_t)mis
+                                                                                        error:(NSError **)error
+{
+    NSMutableDictionary<NSString *, ALTProvisioningProfile *> *cachedProfiles = [NSMutableDictionary dictionary];
+    
+    NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:error];
+    if (provisioningProfiles == nil)
+    {
+        return nil;
+    }
+    
+    for (ALTProvisioningProfile *provisioningProfile in provisioningProfiles)
+    {
+        if (limitedToFreeProfiles && ![provisioningProfile isFreeProvisioningProfile])
+        {
+            continue;
+        }
+        
+        if (includedBundleIdentifiers != nil && ![includedBundleIdentifiers containsObject:provisioningProfile.bundleIdentifier])
+        {
+            continue;
+        }
+        
+        if (excludedBundleIdentifiers != nil && [excludedBundleIdentifiers containsObject:provisioningProfile.bundleIdentifier])
+        {
+            continue;
+        }
+        
+        ALTProvisioningProfile *preferredProfile = cachedProfiles[provisioningProfile.bundleIdentifier];
+        if (preferredProfile != nil)
+        {
+            if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
+            {
+                cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+            }
+        }
+        else
+        {
+            cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+        }
+        
+        if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:error])
+        {
+            return nil;
+        }
+    }
+    
+    return cachedProfiles;
 }
 
 - (BOOL)installProvisioningProfile:(ALTProvisioningProfile *)provisioningProfile misagent:(misagent_client_t)mis error:(NSError **)error

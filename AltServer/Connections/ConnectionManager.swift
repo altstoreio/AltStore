@@ -445,12 +445,10 @@ private extension ConnectionManager
     
     func handleInstallProvisioningProfilesRequest(_ request: InstallProvisioningProfilesRequest, for connection: ClientConnection)
     {
-        let removeInactiveProfiles = (request.activeProfiles != nil)
-        ALTDeviceManager.shared.installProvisioningProfiles(request.provisioningProfiles, toDeviceWithUDID: request.udid, activeProvisioningProfiles: request.activeProfiles, removeInactiveProvisioningProfiles: removeInactiveProfiles) { (errors) in
-            
-            if let error = errors.values.first
+        ALTDeviceManager.shared.installProvisioningProfiles(request.provisioningProfiles, toDeviceWithUDID: request.udid, activeProvisioningProfiles: request.activeProfiles) { (success, error) in
+            if let error = error, !success
             {
-                print("Failed to install profiles \(request.provisioningProfiles.map { $0.bundleIdentifier }):", errors)
+                print("Failed to install profiles \(request.provisioningProfiles.map { $0.bundleIdentifier }):", error)
                 
                 let errorResponse = ErrorResponse(error: ALTServerError(error))
                 connection.send(errorResponse, shouldDisconnect: true) { (result) in
@@ -471,10 +469,10 @@ private extension ConnectionManager
     
     func handleRemoveProvisioningProfilesRequest(_ request: RemoveProvisioningProfilesRequest, for connection: ClientConnection)
     {
-        ALTDeviceManager.shared.removeProvisioningProfiles(forBundleIdentifiers: request.bundleIdentifiers, fromDeviceWithUDID: request.udid) { (errors) in
-            if let error = errors.values.first
+        ALTDeviceManager.shared.removeProvisioningProfiles(forBundleIdentifiers: request.bundleIdentifiers, fromDeviceWithUDID: request.udid) { (success, error) in
+            if let error = error, !success
             {
-                print("Failed to remove profiles \(request.bundleIdentifiers):", errors)
+                print("Failed to remove profiles \(request.bundleIdentifiers):", error)
                 
                 let errorResponse = ErrorResponse(error: ALTServerError(error))
                 connection.send(errorResponse, shouldDisconnect: true) { (result) in
