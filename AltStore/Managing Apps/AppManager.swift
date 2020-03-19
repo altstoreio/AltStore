@@ -508,7 +508,7 @@ private extension AppManager
                 
             case .failure(ALTServerError.unknownRequest):
                 // Fall back to installation if AltServer doesn't support newer provisioning profile requests.
-                app.managedObjectContext?.perform {
+                app.managedObjectContext?.performAndWait { // Must performAndWait to ensure we add operations before we return.
                     let installProgress = self._install(app, group: group) { (result) in
                         completionHandler(result)
                     }
