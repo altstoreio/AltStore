@@ -16,6 +16,8 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
 {
     let context: AppOperationContext
     
+    private let appGroupsLock = NSLock()
+    
     init(context: AppOperationContext)
     {
         self.context = context
@@ -346,25 +348,36 @@ extension FetchProvisioningProfilesOperation
             }
         }
         
-        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
-        
-        ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
-            switch Result(groups, error)
-            {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let groups):
-                
-                if let group = groups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+        // Dispatch onto global queue to prevent appGroupsLock deadlock.
+        DispatchQueue.global().async {
+            let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
+            
+            // Ensure we're not concurrently fetching and updating app groups,
+            // which can lead to race conditions such as adding an app group twice.
+            self.appGroupsLock.lock()
+            
+            ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
+                switch Result(groups, error)
                 {
-                    finish(.success(group))
-                }
-                else
-                {
-                    // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
-                    let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                case .failure(let error):
+                    self.appGroupsLock.unlock()
+                    completionHandler(.failure(error))
                     
-                    ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
-                        finish(Result(group, error))
+                case .success(let groups):
+                    if let group = groups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                    {
+                        self.appGroupsLock.unlock()
+                        finish(.success(group))
+                    }
+                    else
+                    {
+                        // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
+                        let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                        
+                        ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
+                            self.appGroupsLock.unlock()
+                            finish(Result(group, error))
+                        }
                     }
                 }
             }
