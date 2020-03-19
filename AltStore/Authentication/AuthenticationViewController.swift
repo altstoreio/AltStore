@@ -117,7 +117,7 @@ private extension AuthenticationViewController
                     self.signInButton.isIndicatingActivity = false
                 }
                 
-            case .success(let account, let session):
+            case .success((let account, let session)):
                 self.completionHandler?((account, session, password))
             }
             

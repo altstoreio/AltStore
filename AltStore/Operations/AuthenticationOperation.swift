@@ -85,7 +85,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
             switch result
             {
             case .failure(let error): self.finish(.failure(error))
-            case .success(let account, let session):
+            case .success((let account, let session)):
                 self.context.session = session
                 self.progress.completedUnitCount += 1
                 
@@ -340,7 +340,7 @@ private extension AuthenticationOperation
             self.authenticate(appleID: appleID, password: password) { (result) in
                 switch result
                 {
-                case .success(let account, let session):
+                case .success((let account, let session)):
                     self.appleIDPassword = password
                     completionHandler(.success((account, session)))
                     

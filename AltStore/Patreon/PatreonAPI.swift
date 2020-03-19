@@ -115,7 +115,7 @@ extension PatreonAPI
                     switch result
                     {
                     case .failure(let error): completion(.failure(error))
-                    case .success(let accessToken, let refreshToken):
+                    case .success((let accessToken, let refreshToken)):
                         Keychain.shared.patreonAccessToken = accessToken
                         Keychain.shared.patreonRefreshToken = refreshToken
                         
