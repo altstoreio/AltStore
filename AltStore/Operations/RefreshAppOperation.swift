@@ -43,7 +43,6 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
             guard
                 let server = self.context.server,
                 let app = self.context.app,
-                let team = self.context.team,
                 let profiles = self.context.provisioningProfiles
             else { throw OperationError.invalidParameters }
             
