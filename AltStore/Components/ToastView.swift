@@ -25,14 +25,14 @@ class ToastView: RSTToastView
         
         super.init(text: text, detailText: detailedText)
         
-        self.layoutMargins = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        self.layoutMargins = UIEdgeInsets(top: 8, left: 16, bottom: 10, right: 16)
         self.setNeedsLayout()
         
         if let stackView = self.textLabel.superview as? UIStackView
         {
             // RSTToastView does not expose stack view containing labels,
             // so we access it indirectly as the labels' superview.
-            stackView.spacing = 4.0
+            stackView.spacing = (detailedText != nil) ? 4.0 : 0.0
         }
     }
     
@@ -46,7 +46,7 @@ class ToastView: RSTToastView
         if let failure = error.localizedFailure
         {
             text = failure
-            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion
+            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.localizedDescription
         }
         else if let reason = error.localizedFailureReason
         {
@@ -71,7 +71,7 @@ class ToastView: RSTToastView
         super.layoutSubviews()
         
         // Rough calculation to determine height of ToastView with one-line textLabel.
-        let minimumHeight = self.textLabel.font.lineHeight.rounded() + 20
+        let minimumHeight = self.textLabel.font.lineHeight.rounded() + 18
         self.layer.cornerRadius = minimumHeight/2
     }
     

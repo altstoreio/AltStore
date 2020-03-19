@@ -490,7 +490,7 @@ private extension MyAppsViewController
                     }
                     
                     let error = failures.first?.value as NSError?
-                    let detailText = error?.localizedFailureReason ?? error?.localizedDescription
+                    let detailText = error?.localizedFailure ?? error?.localizedFailureReason ?? error?.localizedDescription
                     
                     toastView = ToastView(text: localizedText, detailText: detailText)
                     toastView.preferredDuration = 4.0
