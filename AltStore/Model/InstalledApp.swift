@@ -49,6 +49,10 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         return self.storeApp == nil
     }
     
+    var appIDCount: Int {
+        return 1 + self.appExtensions.count
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
