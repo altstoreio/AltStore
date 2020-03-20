@@ -286,6 +286,7 @@ private extension MyAppsViewController
             cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
             
             cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
             
             let currentDate = Date()
@@ -374,6 +375,7 @@ private extension MyAppsViewController
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.tintColor = tintColor
             cell.bannerView.button.setTitle(NSLocalizedString("ACTIVATE", comment: ""), for: .normal)
+            cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.activateApp(_:)), for: .primaryActionTriggered)
                                     
             cell.bannerView.titleLabel.text = installedApp.name
