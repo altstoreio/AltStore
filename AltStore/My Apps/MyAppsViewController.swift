@@ -100,6 +100,12 @@ class MyAppsViewController: UICollectionViewController
                                          self.sideloadingProgressView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor),
                                          self.sideloadingProgressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
         }
+        
+        if #available(iOS 13, *) {}
+        else
+        {
+            self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)
