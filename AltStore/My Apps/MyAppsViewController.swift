@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 import AltKit
 import Roxas
@@ -649,9 +650,18 @@ private extension MyAppsViewController
         self.presentSideloadingAlert { (shouldContinue) in
             guard shouldContinue else { return }
             
-            let iOSAppUTI = "com.apple.itunes.ipa" // Declared by the system.
+            let supportedTypes: [String]
             
-            let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [iOSAppUTI], in: .import)
+            if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
+            {
+                supportedTypes = (types as NSArray).map { $0 as! String }
+            }
+            else
+            {
+                supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
+            }
+            
+            let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
             documentPickerViewController.delegate = self
             self.present(documentPickerViewController, animated: true, completion: nil)
         }
