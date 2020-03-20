@@ -683,58 +683,28 @@ private extension MyAppsViewController
     
     func sideloadApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
     {
+        let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+        
         self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
         
-        DispatchQueue.global().async {
-            let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+        func finish(_ result: Result<ALTApplication, Error>)
+        {
+            try? FileManager.default.removeItem(at: temporaryDirectory)
             
-            do
-            {
-                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+            DispatchQueue.main.async {
+                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                self.sideloadingProgressView.observedProgress = nil
+                self.sideloadingProgressView.setHidden(true, animated: true)
                 
-                let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
-                
-                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
-                
-                #if !BETA
-                guard AppManager.whitelistedSideloadingBundleIDs.contains(application.bundleIdentifier) else { throw OperationError.sideloadingAppNotSupported(application) }
-                #endif
-                
-                self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
-                    try? FileManager.default.removeItem(at: temporaryDirectory)
+                switch result
+                {
+                case .success(let app):
+                    print("Successfully installed app:", app.bundleIdentifier)
+                    completion(.success(()))
                     
-                    DispatchQueue.main.async {
-                        if let error = result.error
-                        {
-                            let toastView = ToastView(error: error)
-                            toastView.show(in: self)
-                        }
-                        else
-                        {
-                            print("Successfully installed app:", application.bundleIdentifier)
-                        }
-                        
-                        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
-                        self.sideloadingProgressView.observedProgress = nil
-                        self.sideloadingProgressView.setHidden(true, animated: true)
-                        
-                        completion(.success(()))
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.sideloadingProgressView.progress = 0
-                    self.sideloadingProgressView.isHidden = false
-                    self.sideloadingProgressView.observedProgress = self.sideloadingProgress
-                }
-            }
-            catch
-            {
-                try? FileManager.default.removeItem(at: temporaryDirectory)
-                
-                DispatchQueue.main.async {
-                    self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+                case .failure(OperationError.cancelled): break
                     
+                case .failure(let error):
                     if let localizedError = error as? OperationError, case OperationError.sideloadingAppNotSupported = localizedError
                     {
                         let message = NSLocalizedString("""
@@ -756,9 +726,75 @@ private extension MyAppsViewController
                         let toastView = ToastView(error: error)
                         toastView.show(in: self)
                     }
+                    
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            do
+            {
+                try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+                
+                let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
+                
+                guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
+                
+                #if !BETA
+                guard AppManager.whitelistedSideloadingBundleIDs.contains(application.bundleIdentifier) else { throw OperationError.sideloadingAppNotSupported(application) }
+                #endif
+                
+                func install()
+                {
+                    self.sideloadingProgress = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                        finish(result.map { _ in application })
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.sideloadingProgressView.progress = 0
+                        self.sideloadingProgressView.isHidden = false
+                        self.sideloadingProgressView.observedProgress = self.sideloadingProgress
+                    }
                 }
                 
-                completion(.failure(error))
+                if !application.appExtensions.isEmpty
+                {
+                    DispatchQueue.main.async {
+                        let alertController = UIAlertController(title: NSLocalizedString("App Contains Extensions", comment: ""), message: NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions. Would you like to remove this app's app extensions so they don't count towards your limit?", comment: ""), preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style, handler: { (action) in
+                            finish(.failure(OperationError.cancelled))
+                        }))
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Keep App Extensions", comment: ""), style: .default) { (action) in
+                            install()
+                        })
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Remove App Extensions", comment: ""), style: .destructive) { (action) in
+                            do
+                            {
+                                for appExtension in application.appExtensions
+                                {
+                                    try FileManager.default.removeItem(at: appExtension.fileURL)
+                                }
+                                
+                                install()
+                            }
+                            catch
+                            {
+                                finish(.failure(error))
+                            }
+                        })
+                        
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                }
+                else
+                {
+                    install()
+                }
+            }
+            catch
+            {
+                finish(.failure(error))
             }
         }
     }
