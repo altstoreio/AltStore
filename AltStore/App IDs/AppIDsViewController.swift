@@ -187,19 +187,22 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
             
             if let activeTeam = DatabaseManager.shared.activeTeam(), activeTeam.type == .free
             {
-                headerView.textLabel.text = """
+                let text = NSLocalizedString("""
                 Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits free developer accounts to 10 App IDs at a time.
 
-                App IDs expire after one week, but AltStore will automatically renew them for all installed apps. Once an App ID expires, it no longer counts toward your total.
-                """
+                **App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps.
+                """, comment: "")
+                
+                let attributedText = NSAttributedString(markdownRepresentation: text, attributes: [.font: headerView.textLabel.font as Any])
+                headerView.textLabel.attributedText = attributedText
             }
             else
             {
-                headerView.textLabel.text = """
+                headerView.textLabel.text = NSLocalizedString("""
                 Each app and app extension installed with AltStore must register an App ID with Apple.
                 
                 App IDs for paid developer accounts never expire, and there is no limit to how many you can create.
-                """
+                """, comment: "")
             }
             
             return headerView

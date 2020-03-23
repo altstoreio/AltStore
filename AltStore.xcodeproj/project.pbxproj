@@ -124,6 +124,7 @@
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
+		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
 		BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
 		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
@@ -441,6 +442,8 @@
 		BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+LocalizedFailure.swift"; sourceTree = "<group>"; };
 		BF6C33632419ADEB0034FD24 /* AltStore 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 5.xcdatamodel"; sourceTree = "<group>"; };
 		BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore4ToAltStore5.xcmappingmodel; sourceTree = "<group>"; };
+		BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+Markdown.m"; path = "Dependencies/MarkdownAttributedString/NSAttributedString+Markdown.m"; sourceTree = SOURCE_ROOT; };
+		BF6C8FAB242935ED00125131 /* NSAttributedString+Markdown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+Markdown.h"; path = "Dependencies/MarkdownAttributedString/NSAttributedString+Markdown.h"; sourceTree = SOURCE_ROOT; };
 		BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAltStoreViewController.swift; sourceTree = "<group>"; };
 		BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFNotificationName+AltStore.h"; sourceTree = "<group>"; };
 		BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CFNotificationName+AltStore.m"; sourceTree = "<group>"; };
@@ -890,6 +893,23 @@
 			path = AltPlugin;
 			sourceTree = "<group>";
 		};
+		BF6C8FA8242935CA00125131 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				BF6C8FA9242935DB00125131 /* MarkdownAttributedString */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		BF6C8FA9242935DB00125131 /* MarkdownAttributedString */ = {
+			isa = PBXGroup;
+			children = (
+				BF6C8FAB242935ED00125131 /* NSAttributedString+Markdown.h */,
+				BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */,
+			);
+			name = MarkdownAttributedString;
+			sourceTree = "<group>";
+		};
 		BF703194229F36F6006E110F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1013,6 +1033,7 @@
 				BFDB6A0622A9B114007EA6D6 /* Protocols */,
 				BFD2479D2284FBBD00981D42 /* Extensions */,
 				BFD247962284D7C100981D42 /* Resources */,
+				BF6C8FA8242935CA00125131 /* Dependencies */,
 				BFD247972284D7D800981D42 /* Supporting Files */,
 			);
 			path = AltStore;
@@ -1758,6 +1779,7 @@
 				BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
+				BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
 				BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */,
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
