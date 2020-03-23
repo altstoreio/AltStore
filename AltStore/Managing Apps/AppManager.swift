@@ -48,55 +48,79 @@ extension AppManager
 {
     func update()
     {
-        #if targetEnvironment(simulator)
-        // Apps aren't ever actually installed to simulator, so just do nothing rather than delete them from database.
-        return
-        #else
-        
-        let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
-        
-        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.returnsObjectsAsFaults = false
-                
-        do
-        {
-            let installedApps = try context.fetch(fetchRequest)
-            
-            if UserDefaults.standard.legacySideloadedApps == nil
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            #if targetEnvironment(simulator)
+            // Apps aren't ever actually installed to simulator, so just do nothing rather than delete them from database.
+            #else
+            do
             {
-                // First time updating apps since updating AltStore to use custom UTIs,
-                // so cache all existing apps temporarily to prevent us from accidentally
-                // deleting them due to their custom UTI not existing (yet).
-                let apps = installedApps.map { $0.bundleIdentifier }
-                UserDefaults.standard.legacySideloadedApps = apps
-            }
-            
-            let legacySideloadedApps = Set(UserDefaults.standard.legacySideloadedApps ?? [])
-            
-            for app in installedApps
-            {
-                guard app.bundleIdentifier != StoreApp.altstoreAppID else {
-                    self.scheduleExpirationWarningLocalNotification(for: app)
-                    continue
-                }
+                let installedApps = InstalledApp.all(in: context)
                 
-                let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
+                if UserDefaults.standard.legacySideloadedApps == nil
                 {
-                    // This UTI is not declared by any apps, which means this app has been deleted by the user.
-                    // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
-                    context.delete(app)
+                    // First time updating apps since updating AltStore to use custom UTIs,
+                    // so cache all existing apps temporarily to prevent us from accidentally
+                    // deleting them due to their custom UTI not existing (yet).
+                    let apps = installedApps.map { $0.bundleIdentifier }
+                    UserDefaults.standard.legacySideloadedApps = apps
+                }
+                
+                let legacySideloadedApps = Set(UserDefaults.standard.legacySideloadedApps ?? [])
+                
+                for app in installedApps
+                {
+                    guard app.bundleIdentifier != StoreApp.altstoreAppID else {
+                        self.scheduleExpirationWarningLocalNotification(for: app)
+                        continue
+                    }
+                    
+                    let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                    if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
+                    {
+                        // This UTI is not declared by any apps, which means this app has been deleted by the user.
+                        // This app is also not a legacy sideloaded app, so we can assume it's fine to delete it.
+                        context.delete(app)
+                    }
+                }
+                
+                try context.save()
+            }
+            catch
+            {
+                print("Error while fetching installed apps.", error)
+            }
+            #endif
+            
+            do
+            {
+                let installedAppBundleIDs = InstalledApp.all(in: context).map { $0.bundleIdentifier }
+                                
+                let cachedAppDirectories = try FileManager.default.contentsOfDirectory(at: InstalledApp.appsDirectoryURL,
+                                                                                       includingPropertiesForKeys: [.isDirectoryKey, .nameKey],
+                                                                                       options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles])
+                for appDirectory in cachedAppDirectories
+                {
+                    do
+                    {
+                        let resourceValues = try appDirectory.resourceValues(forKeys: [.isDirectoryKey, .nameKey])
+                        guard let isDirectory = resourceValues.isDirectory, let bundleID = resourceValues.name else { continue }
+                        
+                        if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.installationProgress.keys.contains(bundleID)
+                        {
+                            try FileManager.default.removeItem(at: appDirectory)
+                        }
+                    }
+                    catch
+                    {
+                        print("Failed to remove cached app directory.", error)
+                    }
                 }
             }
-            
-            try context.save()
+            catch
+            {
+                print("Failed to remove cached apps.", error)
+            }
         }
-        catch
-        {
-            print("Error while fetching installed apps")
-        }
-        
-        #endif
     }
     
     @discardableResult

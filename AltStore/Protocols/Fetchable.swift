@@ -8,21 +8,25 @@
 
 import CoreData
 
+typealias FetchRequest = NSFetchRequest<NSFetchRequestResult>
+
 protocol Fetchable: NSManagedObject
 {
 }
 
 extension Fetchable
 {
-    static func first(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext) -> Self?
+    static func first(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext,
+                      requestProperties: [PartialKeyPath<FetchRequest>: Any?] = [:]) -> Self?
     {
-        let managedObjects = Self.all(satisfying: predicate, sortedBy: sortDescriptors, in: context, returnFirstResult: true)
+        let managedObjects = Self.all(satisfying: predicate, sortedBy: sortDescriptors, in: context, requestProperties: requestProperties, returnFirstResult: true)
         return managedObjects.first
     }
     
-    static func all(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext) -> [Self]
+    static func all(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext,
+                    requestProperties: [PartialKeyPath<FetchRequest>: Any?] = [:]) -> [Self]
     {
-        let managedObjects = Self.all(satisfying: predicate, sortedBy: sortDescriptors, in: context, returnFirstResult: false)
+        let managedObjects = Self.all(satisfying: predicate, sortedBy: sortDescriptors, in: context, requestProperties: requestProperties, returnFirstResult: false)
         return managedObjects
     }
     
@@ -40,7 +44,7 @@ extension Fetchable
         }
     }
     
-    private static func all(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext, returnFirstResult: Bool) -> [Self]
+    private static func all(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext, requestProperties: [PartialKeyPath<FetchRequest>: Any?], returnFirstResult: Bool) -> [Self]
     {
         let registeredObjects = context.registeredObjects.lazy.compactMap({ $0 as? Self }).filter({ predicate?.evaluate(with: $0) != false })
         
@@ -52,6 +56,14 @@ extension Fetchable
         let fetchRequest = self.fetchRequest() as! NSFetchRequest<Self>
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = sortDescriptors
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        for (keyPath, value) in requestProperties
+        {
+            // Still no easy way to cast PartialKeyPath back to usable WritableKeyPath :(
+            guard let objcKeyString = keyPath._kvcKeyPathString else { continue }
+            fetchRequest.setValue(value, forKey: objcKeyString)
+        }
         
         let fetchedObjects = self.fetch(fetchRequest, in: context)
         

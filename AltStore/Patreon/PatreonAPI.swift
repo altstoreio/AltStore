@@ -235,7 +235,7 @@ extension PatreonAPI
     func signOut(completion: @escaping (Result<Void, Swift.Error>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let accounts = PatreonAccount.all(in: context)
+            let accounts = PatreonAccount.all(in: context, requestProperties: [\FetchRequest.returnsObjectsAsFaults: true])
             accounts.forEach(context.delete(_:))
             
             do
