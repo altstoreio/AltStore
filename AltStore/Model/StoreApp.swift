@@ -46,12 +46,26 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged private(set) var tintColor: UIColor?
     @NSManaged private(set) var isBeta: Bool
     
+    @NSManaged var sourceIdentifier: String?
+    
     @NSManaged var sortIndex: Int32
     
     /* Relationships */
     @NSManaged var installedApp: InstalledApp?
-    @NSManaged var source: Source?
-    @objc(permissions) @NSManaged var _permissions: NSOrderedSet
+    @NSManaged var newsItems: Set<NewsItem>
+    
+    @NSManaged @objc(source) var _source: Source?
+    @NSManaged @objc(permissions) var _permissions: NSOrderedSet
+    
+    @nonobjc var source: Source? {
+        set {
+            self._source = newValue
+            self.sourceIdentifier = newValue?.identifier
+        }
+        get {
+            return self._source
+        }
+    }
     
     @nonobjc var permissions: [AppPermission] {
         return self._permissions.array as! [AppPermission]

@@ -64,7 +64,13 @@
                             <outlet property="delegate" destination="e3L-BF-iXp" id="Mdp-x4-hZe"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Browse" id="pUx-6k-rtr"/>
+                    <navigationItem key="navigationItem" title="Browse" id="pUx-6k-rtr">
+                        <barButtonItem key="rightBarButtonItem" title="Sources" id="6Ul-JW-TMT">
+                            <connections>
+                                <segue destination="Qo4-72-Hmr" kind="presentation" id="de9-NH-aec"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cMN-i4-Bxk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -792,7 +798,7 @@ World</string>
                             <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="20"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XWu-DU-xbh" customClass="AppIDCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XWu-DU-xbh" customClass="BannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="70" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -818,7 +824,7 @@ World</string>
                                 </connections>
                             </collectionViewCell>
                         </cells>
-                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="th0-G6-bRt" customClass="AppIDsCollectionReusableView" customModule="AltStore" customModuleProvider="target">
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="th0-G6-bRt" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
@@ -839,7 +845,7 @@ World</string>
                                 <outlet property="textLabel" destination="83Z-Ih-nOW" id="xxM-HD-iJS"/>
                             </connections>
                         </collectionReusableView>
-                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="xMh-lD-r6C" customClass="AppIDsCollectionReusableView" customModule="AltStore" customModuleProvider="target">
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="xMh-lD-r6C" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="170" width="375" height="50"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
@@ -922,6 +928,109 @@ World</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3LN-mt-qWn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2526" y="731"/>
+        </scene>
+        <!--Sources-->
+        <scene sceneID="0S1-zn-9KZ">
+            <objects>
+                <collectionViewController title="Sources" id="cHC-TX-KzQ" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" dataMode="prototypes" id="S36-hD-vu2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="X20-b5-XEP">
+                            <size key="itemSize" width="375" height="80"/>
+                            <size key="headerReferenceSize" width="50" height="200"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="20"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XcN-o4-9qm" customClass="BannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="210" width="375" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LW1-CC-bWu" customClass="AppBannerView" customModule="AltStore" customModuleProvider="target">
+                                            <rect key="frame" x="8" y="0.0" width="359" height="80"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <bool key="isElement" value="YES"/>
+                                            </accessibility>
+                                        </view>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="LW1-CC-bWu" secondAttribute="bottom" id="Pkr-zO-0wx"/>
+                                    <constraint firstItem="LW1-CC-bWu" firstAttribute="leading" secondItem="XcN-o4-9qm" secondAttribute="leadingMargin" id="egJ-X3-yEz"/>
+                                    <constraint firstItem="LW1-CC-bWu" firstAttribute="top" secondItem="XcN-o4-9qm" secondAttribute="top" id="glF-aM-4xQ"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="LW1-CC-bWu" secondAttribute="trailing" id="tQx-yV-LTq"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="bannerView" destination="LW1-CC-bWu" id="mwO-Ne-L1L"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="8N7-JY-mcA" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage sources to control which apps are available to download through AltStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TZv-TM-uJj">
+                                    <rect key="frame" x="8" y="14" width="359" height="171"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                    <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="TZv-TM-uJj" firstAttribute="top" secondItem="8N7-JY-mcA" secondAttribute="top" constant="14" id="2zE-UV-24S"/>
+                                <constraint firstAttribute="bottom" secondItem="TZv-TM-uJj" secondAttribute="bottom" constant="15" id="Aml-PC-dko"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="TZv-TM-uJj" secondAttribute="trailing" id="V0U-al-5eb"/>
+                                <constraint firstAttribute="leadingMargin" secondItem="TZv-TM-uJj" secondAttribute="leading" id="aS5-6Y-rMd"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="textLabel" destination="TZv-TM-uJj" id="kWV-Wv-5gz"/>
+                            </connections>
+                        </collectionReusableView>
+                        <connections>
+                            <outlet property="dataSource" destination="cHC-TX-KzQ" id="VHQ-ls-gde"/>
+                            <outlet property="delegate" destination="cHC-TX-KzQ" id="MWr-Xg-N2k"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Sources" id="QTB-W7-6BG">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="kBB-5c-8gw">
+                            <connections>
+                                <action selector="addSource" destination="cHC-TX-KzQ" id="WiB-Jg-NzT"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="NQF-u2-PZv">
+                            <connections>
+                                <segue destination="zjS-Nr-VTw" kind="unwind" unwindAction="unwindToBrowseViewController:" id="VFy-hV-mNV"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TrV-p3-ZAt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="zjS-Nr-VTw" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="3302" y="1430"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="6NV-LQ-gKB">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Qo4-72-Hmr" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="mcx-oR-qPe">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="108"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="cHC-TX-KzQ" kind="relationship" relationship="rootViewController" id="BC5-Fs-dCj"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4mO-93-4qk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2526" y="1445"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

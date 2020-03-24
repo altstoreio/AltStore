@@ -125,6 +125,8 @@
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
 		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
+		BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */; };
+		BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
 		BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
 		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
@@ -152,7 +154,7 @@
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
 		BFA8172D23C5823E001B5953 /* InstalledExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172C23C5823E001B5953 /* InstalledExtension.swift */; };
 		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
-		BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */; };
+		BFB1169B2293274D00BB457C /* JSONDecoder+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+Properties.swift */; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
 		BFB49AAA23834CF900D542D9 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
@@ -167,6 +169,7 @@
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
 		BFC57A702416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */; };
+		BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC84A4C2421A19100853474 /* SourcesViewController.swift */; };
 		BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2476D2284B9A500981D42 /* AppDelegate.swift */; };
 		BFD247752284B9A500981D42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247732284B9A500981D42 /* Main.storyboard */; };
 		BFD247772284B9A700981D42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFD247762284B9A700981D42 /* Assets.xcassets */; };
@@ -234,7 +237,6 @@
 		BFE6326622A857C200F30809 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326522A857C100F30809 /* Team.swift */; };
 		BFE6326822A858F300F30809 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
-		BFEE944123F22AA100CDA07D /* AppIDComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE944023F22AA100CDA07D /* AppIDComponents.swift */; };
 		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
 		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
 		BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */; };
@@ -444,6 +446,8 @@
 		BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore4ToAltStore5.xcmappingmodel; sourceTree = "<group>"; };
 		BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+Markdown.m"; path = "Dependencies/MarkdownAttributedString/NSAttributedString+Markdown.m"; sourceTree = SOURCE_ROOT; };
 		BF6C8FAB242935ED00125131 /* NSAttributedString+Markdown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+Markdown.h"; path = "Dependencies/MarkdownAttributedString/NSAttributedString+Markdown.h"; sourceTree = SOURCE_ROOT; };
+		BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCollectionReusableView.swift; sourceTree = "<group>"; };
 		BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAltStoreViewController.swift; sourceTree = "<group>"; };
 		BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFNotificationName+AltStore.h"; sourceTree = "<group>"; };
 		BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CFNotificationName+AltStore.m"; sourceTree = "<group>"; };
@@ -478,7 +482,7 @@
 		BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnisetteDataOperation.swift; sourceTree = "<group>"; };
 		BFA8172C23C5823E001B5953 /* InstalledExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledExtension.swift; sourceTree = "<group>"; };
 		BFB11691229322E400BB457C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
-		BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+ManagedObjectContext.swift"; sourceTree = "<group>"; };
+		BFB1169A2293274D00BB457C /* JSONDecoder+Properties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Properties.swift"; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
 		BFB364592325985F00CD0EB1 /* FindServerOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindServerOperation.swift; sourceTree = "<group>"; };
 		BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -496,6 +500,7 @@
 		BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAppOperation.swift; sourceTree = "<group>"; };
 		BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppsCollectionHeaderView.swift; sourceTree = "<group>"; };
 		BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InstalledAppsCollectionHeaderView.xib; sourceTree = "<group>"; };
+		BFC84A4C2421A19100853474 /* SourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesViewController.swift; sourceTree = "<group>"; };
 		BFD2476A2284B9A500981D42 /* AltStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2476D2284B9A500981D42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFD247742284B9A500981D42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -567,7 +572,6 @@
 		BFE6326522A857C100F30809 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		BFE6326722A858F300F30809 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
-		BFEE944023F22AA100CDA07D /* AppIDComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIDComponents.swift; sourceTree = "<group>"; };
 		BFF0B68D23219520007A79E1 /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
 		BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonComponents.swift; sourceTree = "<group>"; };
 		BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutPatreonHeaderView.xib; sourceTree = "<group>"; };
@@ -876,7 +880,6 @@
 			isa = PBXGroup;
 			children = (
 				BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */,
-				BFEE944023F22AA100CDA07D /* AppIDComponents.swift */,
 			);
 			path = "App IDs";
 			sourceTree = "<group>";
@@ -982,6 +985,14 @@
 			path = Server;
 			sourceTree = "<group>";
 		};
+		BFC84A4B2421A13000853474 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BFC84A4C2421A19100853474 /* SourcesViewController.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		BFD247612284B9A500981D42 = {
 			isa = PBXGroup;
 			children = (
@@ -1025,6 +1036,7 @@
 				BFD5D6E6230CC94B007955AB /* Patreon */,
 				BFD2478A2284C49000981D42 /* Managing Apps */,
 				BF56D2AD23DF9E170006506D /* App IDs */,
+				BFC84A4B2421A13000853474 /* Sources */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BFD247982284D7FC00981D42 /* Model */,
 				BFDB6A0922AAEDA1007EA6D6 /* Operations */,
@@ -1078,6 +1090,8 @@
 				BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */,
 				BF2901302318F7A800D88A45 /* AppBannerView.swift */,
 				BF29012E2318F6B100D88A45 /* AppBannerView.xib */,
+				BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */,
+				BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1128,7 +1142,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */,
-				BFB1169A2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift */,
+				BFB1169A2293274D00BB457C /* JSONDecoder+Properties.swift */,
 				BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */,
 				BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */,
 				BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */,
@@ -1710,7 +1724,6 @@
 				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,
 				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */,
-				BFEE944123F22AA100CDA07D /* AppIDComponents.swift in Sources */,
 				BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */,
@@ -1747,6 +1760,7 @@
 				BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */,
+				BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BF56D2AA23DF88310006506D /* AppID.swift in Sources */,
 				BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */,
@@ -1754,7 +1768,7 @@
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */,
-				BFB1169B2293274D00BB457C /* JSONDecoder+ManagedObjectContext.swift in Sources */,
+				BFB1169B2293274D00BB457C /* JSONDecoder+Properties.swift in Sources */,
 				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
 				BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */,
 				BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */,
@@ -1771,6 +1785,7 @@
 				BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
 				BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
+				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
@@ -1788,6 +1803,7 @@
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
+				BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,

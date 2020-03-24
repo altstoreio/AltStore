@@ -71,7 +71,7 @@ private extension AppIDsViewController
         dataSource.cellConfigurationHandler = { (cell, appID, indexPath) in
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! AppIDCollectionViewCell
+            let cell = cell as! BannerCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
@@ -79,6 +79,8 @@ private extension AppIDsViewController
             cell.bannerView.iconImageView.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.betaBadgeView.isHidden = true
+            
+            cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in…", comment: "")
             
             if let expirationDate = appID.expirationDate
             {
@@ -181,7 +183,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
         switch kind
         {
         case UICollectionView.elementKindSectionHeader:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! AppIDsCollectionReusableView
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! TextCollectionReusableView
             headerView.layoutMargins.left = self.view.layoutMargins.left
             headerView.layoutMargins.right = self.view.layoutMargins.right
             
@@ -208,7 +210,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
             return headerView
             
         case UICollectionView.elementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! AppIDsCollectionReusableView
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! TextCollectionReusableView
             
             let count = self.dataSource.itemCount
             if count == 1

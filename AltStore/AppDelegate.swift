@@ -250,20 +250,20 @@ private extension AppDelegate
                      backgroundFetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void,
                      completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
     {
-        var fetchSourceResult: Result<Source, Error>?
+        var fetchSourcesResult: Result<Set<Source>, Error>?
         var serversResult: Result<Void, Error>?
         
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         
-        AppManager.shared.fetchSource() { (result) in
-            fetchSourceResult = result
+        AppManager.shared.fetchSources() { (result) in
+            fetchSourcesResult = result
             
             do
             {
-                let source = try result.get()
+                let sources = try result.get()
                 
-                guard let context = source.managedObjectContext else { return }
+                guard let context = sources.first?.managedObjectContext else { return }
                 
                 let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
@@ -331,7 +331,7 @@ private extension AppDelegate
             {
                 print("Error fetching apps:", error)
                 
-                fetchSourceResult = .failure(error)
+                fetchSourcesResult = .failure(error)
             }
             
             dispatchGroup.leave()
@@ -424,12 +424,12 @@ private extension AppDelegate
         dispatchGroup.notify(queue: .main) {
             if !UserDefaults.standard.isBackgroundRefreshEnabled
             {
-                guard let fetchSourceResult = fetchSourceResult else {
+                guard let fetchSourcesResult = fetchSourcesResult else {
                     backgroundFetchCompletionHandler(.failed)
                     return
                 }
                 
-                switch fetchSourceResult
+                switch fetchSourcesResult
                 {
                 case .failure: backgroundFetchCompletionHandler(.failed)
                 case .success: backgroundFetchCompletionHandler(.newData)
@@ -439,13 +439,13 @@ private extension AppDelegate
             }
             else
             {
-                guard let fetchSourceResult = fetchSourceResult, let serversResult = serversResult else {
+                guard let fetchSourcesResult = fetchSourcesResult, let serversResult = serversResult else {
                     backgroundFetchCompletionHandler(.failed)
                     return
                 }
                 
                 // Call completionHandler early to improve chances of refreshing in the background again.
-                switch (fetchSourceResult, serversResult)
+                switch (fetchSourcesResult, serversResult)
                 {
                 case (.success, .success): backgroundFetchCompletionHandler(.newData)
                 case (.success, .failure(ConnectionError.serverNotFound)): backgroundFetchCompletionHandler(.newData)

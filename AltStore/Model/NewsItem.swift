@@ -26,6 +26,7 @@ class NewsItem: NSManagedObject, Decodable, Fetchable
     @NSManaged var externalURL: URL?
     
     @NSManaged var appID: String?
+    @NSManaged var sourceIdentifier: String?
     
     /* Relationships */
     @NSManaged var storeApp: StoreApp?

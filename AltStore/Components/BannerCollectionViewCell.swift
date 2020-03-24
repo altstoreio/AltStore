@@ -1,14 +1,14 @@
 //
-//  AppIDComponents.swift
+//  BannerCollectionViewCell.swift
 //  AltStore
 //
-//  Created by Riley Testut on 2/10/20.
+//  Created by Riley Testut on 3/23/20.
 //  Copyright © 2020 Riley Testut. All rights reserved.
 //
 
 import UIKit
 
-class AppIDCollectionViewCell: UICollectionViewCell
+class BannerCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var bannerView: AppBannerView!
     
@@ -18,13 +18,5 @@ class AppIDCollectionViewCell: UICollectionViewCell
         
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.preservesSuperviewLayoutMargins = true
-        
-        self.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
-        self.bannerView.buttonLabel.isHidden = false
     }
-}
-
-class AppIDsCollectionReusableView: UICollectionReusableView
-{
-    @IBOutlet var textLabel: UILabel!
 }

@@ -15,4 +15,13 @@ extension NSError
         let localizedFailure = (self.userInfo[NSLocalizedFailureErrorKey] as? String) ?? (NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSLocalizedFailureErrorKey) as? String)
         return localizedFailure
     }
+    
+    func withLocalizedFailure(_ failure: String) -> NSError
+    {
+        var userInfo = self.userInfo
+        userInfo[NSLocalizedFailureErrorKey] = failure
+        
+        let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
+        return error
+    }
 }

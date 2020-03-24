@@ -170,26 +170,68 @@ extension AppManager
 
 extension AppManager
 {
-    func fetchSource(completionHandler: @escaping (Result<Source, Error>) -> Void)
+    func fetchSource(sourceURL: URL, completionHandler: @escaping (Result<Source, Error>) -> Void)
+    {
+        let fetchSourceOperation = FetchSourceOperation(sourceURL: sourceURL)
+        fetchSourceOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error):
+                completionHandler(.failure(error))
+                
+            case .success(let source):
+                completionHandler(.success(source))
+            }
+        }
+        
+        self.run([fetchSourceOperation])
+    }
+    
+    func fetchSources(completionHandler: @escaping (Result<Set<Source>, Error>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), Source.altStoreIdentifier), in: context) else {
-                return completionHandler(.failure(OperationError.noSources))
+            let sources = Source.all(in: context)
+            guard !sources.isEmpty else { return completionHandler(.failure(OperationError.noSources)) }
+            
+            let dispatchGroup = DispatchGroup()
+            var fetchedSources = Set<Source>()
+            var error: Error?
+            
+            let managedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+            
+            let operations = sources.map { (source) -> FetchSourceOperation in
+                dispatchGroup.enter()
+                
+                let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL, managedObjectContext: managedObjectContext)
+                fetchSourceOperation.resultHandler = { (result) in
+                    switch result
+                    {
+                    case .failure(let e): error = e
+                    case .success(let source): fetchedSources.insert(source)
+                    }
+                    
+                    dispatchGroup.leave()
+                }
+                
+                return fetchSourceOperation
             }
             
-            let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL)
-            fetchSourceOperation.resultHandler = { (result) in
-                switch result
+            dispatchGroup.notify(queue: .global()) {
+                if let error = error
                 {
-                case .failure(let error):
                     completionHandler(.failure(error))
-                    
-                case .success(let source):
-                    completionHandler(.success(source))
-                    NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
                 }
+                else
+                {
+                    managedObjectContext.perform {
+                        completionHandler(.success(fetchedSources))
+                    }
+                }
+                
+                NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
             }
-            self.run([fetchSourceOperation])
+            
+            self.run(operations)
         }
     }
     

@@ -99,9 +99,11 @@ private extension NewsViewController
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>
     {
         let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: false)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.date, ascending: false),
+                                        NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
+                                        NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.sortIndex), cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
@@ -165,11 +167,11 @@ private extension NewsViewController
     {
         self.loadingState = .loading
         
-        AppManager.shared.fetchSource() { (result) in
+        AppManager.shared.fetchSources() { (result) in
             do
             {
-                let source = try result.get()
-                try source.managedObjectContext?.save()
+                let sources = try result.get()
+                try sources.first?.managedObjectContext?.save()
                 
                 DispatchQueue.main.async {
                     self.loadingState = .finished(.success(()))
@@ -180,7 +182,7 @@ private extension NewsViewController
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
+                        let toastView = ToastView(text: NSLocalizedString("Failed to Fetch Sources", comment: ""), detailText: error.localizedDescription)
                         toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
                     }
                     
