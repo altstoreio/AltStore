@@ -56,6 +56,13 @@ class NewsViewController: UICollectionViewController
     // Cache
     private var cachedCellSizes = [String: CGSize]()
     
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(NewsViewController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -299,6 +306,14 @@ private extension NewsViewController
     func open(_ installedApp: InstalledApp)
     {
         UIApplication.shared.open(installedApp.openAppURL)
+    }
+}
+
+private extension NewsViewController
+{
+    @objc func importApp(_ notification: Notification)
+    {
+        self.presentedViewController?.dismiss(animated: true, completion: nil)
     }
 }
 
