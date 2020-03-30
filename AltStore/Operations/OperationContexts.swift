@@ -16,6 +16,25 @@ class OperationContext
 {
     var server: Server?
     var error: Error?
+    
+    let operations: NSHashTable<Foundation.Operation>
+    
+    init(server: Server? = nil, error: Error? = nil, operations: [Foundation.Operation] = [])
+    {
+        self.server = server
+        self.error = error
+        
+        self.operations = NSHashTable<Foundation.Operation>.weakObjects()
+        for operation in operations
+        {
+            self.operations.add(operation)
+        }
+    }
+    
+    convenience init(context: OperationContext)
+    {
+        self.init(server: context.server, error: context.error, operations: context.operations.allObjects)
+    }
 }
 
 class AuthenticatedOperationContext: OperationContext
@@ -26,6 +45,16 @@ class AuthenticatedOperationContext: OperationContext
     var certificate: ALTCertificate?
     
     weak var authenticationOperation: AuthenticationOperation?
+    
+    convenience init(context: AuthenticatedOperationContext)
+    {
+        self.init(server: context.server, error: context.error, operations: context.operations.allObjects)
+        
+        self.session = context.session
+        self.team = context.team
+        self.certificate = context.certificate
+        self.authenticationOperation = context.authenticationOperation
+    }
 }
 
 @dynamicMemberLookup

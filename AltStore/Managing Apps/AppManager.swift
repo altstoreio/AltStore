@@ -135,7 +135,7 @@ extension AppManager
             }
         }
         
-        self.run([findServerOperation])
+        self.run([findServerOperation], context: context)
         
         return findServerOperation
     }
@@ -162,7 +162,7 @@ extension AppManager
         }
         authenticationOperation.addDependency(findServerOperation)
         
-        self.run([authenticationOperation])
+        self.run([authenticationOperation], context: context)
         
         return authenticationOperation
     }
@@ -184,7 +184,7 @@ extension AppManager
             }
         }
         
-        self.run([fetchSourceOperation])
+        self.run([fetchSourceOperation], context: nil)
     }
     
     func fetchSources(completionHandler: @escaping (Result<Set<Source>, Error>) -> Void)
@@ -231,7 +231,7 @@ extension AppManager
                 NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
             }
             
-            self.run(operations)
+            self.run(operations, context: nil)
         }
     }
     
@@ -244,7 +244,7 @@ extension AppManager
         let fetchAppIDsOperation = FetchAppIDsOperation(context: authenticationOperation.context)
         fetchAppIDsOperation.resultHandler = completionHandler
         fetchAppIDsOperation.addDependency(authenticationOperation)
-        self.run([fetchAppIDsOperation])
+        self.run([fetchAppIDsOperation], context: authenticationOperation.context)
     }
     
     @discardableResult
@@ -311,7 +311,7 @@ extension AppManager
         }
         deactivateAppOperation.addDependency(findServerOperation)
         
-        self.run([deactivateAppOperation], requiresSerialQueue: true)
+        self.run([deactivateAppOperation], context: context, requiresSerialQueue: true)
     }
     
     func installationProgress(for app: AppProtocol) -> Progress?
@@ -434,7 +434,7 @@ private extension AppManager
                 }
             }
             awaitAuthenticationOperation.addDependency(authenticationOperation)
-            self.run([awaitAuthenticationOperation], requiresSerialQueue: true)
+            self.run([awaitAuthenticationOperation], context: group.context, requiresSerialQueue: true)
         }
         else
         {
@@ -541,7 +541,7 @@ private extension AppManager
         
         let operations = [downloadOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
-        self.run(operations)
+        self.run(operations, context: group.context)
         
         return progress
     }
@@ -590,7 +590,7 @@ private extension AppManager
         
         let operations = [fetchProvisioningProfilesOperation, refreshAppOperation]
         group.add(operations)
-        self.run(operations)
+        self.run(operations, context: group.context)
         
         return progress
     }
@@ -665,7 +665,7 @@ private extension AppManager
         UNUserNotificationCenter.current().add(request)
     }
     
-    func run(_ operations: [Foundation.Operation], requiresSerialQueue: Bool = false)
+    func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
         for operation in operations
         {
@@ -673,9 +673,9 @@ private extension AppManager
             {
             case _ where requiresSerialQueue: fallthrough
             case is InstallAppOperation, is RefreshAppOperation:
-                if let previousOperation = self.serialOperationQueue.operations.last
+                if let context = context, let previousOperation = self.serialOperationQueue.operations.last(where: { context.operations.contains($0) })
                 {
-                    // Ensure operations execute in the order they're added, since they may become ready at different points.
+                    // Ensure operations execute in the order they're added (in same context), since they may become ready at different points.
                     operation.addDependency(previousOperation)
                 }
                 
@@ -684,6 +684,8 @@ private extension AppManager
             default:
                 self.operationQueue.addOperation(operation)
             }
+            
+            context?.operations.add(operation)
         }
     }
     

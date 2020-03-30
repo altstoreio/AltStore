@@ -52,12 +52,12 @@ private extension RefreshAltStoreViewController
                 switch result
                 {
                 case .success: self.completionHandler?(.success(()))
-                case .failure(let error):
+                case .failure(let error as NSError):
                     DispatchQueue.main.async {
                         sender.progress = nil
                         sender.isIndicatingActivity = false
                         
-                        let alertController = UIAlertController(title: NSLocalizedString("Failed to Refresh AltStore", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                        let alertController = UIAlertController(title: NSLocalizedString("Failed to Refresh AltStore", comment: ""), message: error.localizedFailureReason ?? error.localizedDescription, preferredStyle: .alert)
                         alertController.addAction(UIAlertAction(title: NSLocalizedString("Try Again", comment: ""), style: .default, handler: { (action) in
                             refresh()
                         }))

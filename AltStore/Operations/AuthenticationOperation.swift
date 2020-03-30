@@ -655,8 +655,11 @@ private extension AuthenticationOperation
         completionHandler(false)
 #else
         DispatchQueue.main.async {
+            let context = AuthenticatedOperationContext(context: self.context)
+            context.operations.removeAllObjects() // Prevent deadlock due to endless waiting on previous operations to finish.
+            
             let refreshViewController = self.storyboard.instantiateViewController(withIdentifier: "refreshAltStoreViewController") as! RefreshAltStoreViewController
-            refreshViewController.context = self.context
+            refreshViewController.context = context
             refreshViewController.completionHandler = { _ in
                 completionHandler(true)
             }
