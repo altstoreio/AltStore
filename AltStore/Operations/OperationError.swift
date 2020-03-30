@@ -29,7 +29,7 @@ enum OperationError: LocalizedError
     
     case noSources
     
-    var errorDescription: String? {
+    var failureReason: String? {
         switch self {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
