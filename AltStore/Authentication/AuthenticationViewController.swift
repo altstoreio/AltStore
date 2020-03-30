@@ -106,12 +106,14 @@ private extension AuthenticationViewController
                     self.signInButton.isIndicatingActivity = false
                 }
                 
-            case .failure(let error):
+            case .failure(let error as NSError):
                 DispatchQueue.main.async {
-                    let toastView = ToastView(text: NSLocalizedString("Failed to Log In", comment: ""), detailText: error.localizedDescription)
+                    let error = error.withLocalizedFailure(NSLocalizedString("Failed to Log In", comment: ""))
+                    
+                    let toastView = ToastView(error: error)
                     toastView.textLabel.textColor = .altPink
                     toastView.detailTextLabel.textColor = .altPink
-                    toastView.show(in: self.navigationController?.view ?? self.view)
+                    toastView.show(in: self)
                     self.toastView = toastView
                     
                     self.signInButton.isIndicatingActivity = false

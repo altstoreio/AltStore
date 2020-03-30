@@ -180,12 +180,14 @@ private extension BrowseViewController
                     self.loadingState = .finished(.success(()))
                 }
             }
-            catch
+            catch let error as NSError
             {
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let toastView = ToastView(text: NSLocalizedString("Failed to Fetch Sources", comment: ""), detailText: error.localizedDescription)
+                        let error = error.withLocalizedFailure(NSLocalizedString("Failed to Fetch Sources", comment: ""))
+                        
+                        let toastView = ToastView(error: error)
                         toastView.show(in: self)
                     }
                     

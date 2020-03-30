@@ -184,13 +184,15 @@ private extension NewsViewController
                     self.loadingState = .finished(.success(()))
                 }
             }
-            catch
+            catch let error as NSError
             {
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let toastView = ToastView(text: NSLocalizedString("Failed to Fetch Sources", comment: ""), detailText: error.localizedDescription)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let error = error.withLocalizedFailure(NSLocalizedString("Failed to Fetch Sources", comment: ""))
+                        
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                     }
                     
                     self.loadingState = .finished(.failure(error))
@@ -286,8 +288,8 @@ private extension NewsViewController
                 {
                 case .failure(OperationError.cancelled): break // Ignore
                 case .failure(let error):
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                     
                 case .success: print("Installed app:", storeApp.bundleIdentifier)
                 }
