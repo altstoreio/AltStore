@@ -80,7 +80,7 @@ private extension AppIDsViewController
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.betaBadgeView.isHidden = true
             
-            cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in…", comment: "")
+            cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
             
             if let expirationDate = appID.expirationDate
             {
