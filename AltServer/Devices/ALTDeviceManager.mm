@@ -115,6 +115,15 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             }
             
             [cachedProfiles enumerateKeysAndObjectsUsingBlock:^(NSString *bundleID, ALTProvisioningProfile *profile, BOOL * _Nonnull stop) {
+                for (ALTProvisioningProfile *installedProfile in installedProfiles)
+                {
+                    if ([installedProfile.bundleIdentifier isEqualToString:profile.bundleIdentifier])
+                    {
+                        // Don't reinstall cached profile because it was installed with the app.
+                        return;
+                    }
+                }
+                
                 NSError *installError = nil;
                 if (![self installProvisioningProfile:profile misagent:mis error:&installError])
                 {
