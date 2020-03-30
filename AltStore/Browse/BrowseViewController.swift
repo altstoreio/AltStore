@@ -31,6 +31,9 @@ class BrowseViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
+        self.navigationItem.searchController = self.dataSource.searchController
+        
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
         self.collectionView.register(BrowseCollectionViewCell.nib, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
