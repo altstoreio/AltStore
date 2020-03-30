@@ -21,7 +21,7 @@ private enum RefreshError: LocalizedError
     var errorDescription: String? {
         switch self
         {
-        case .noInstalledApps: return NSLocalizedString("No installed apps to refresh.", comment: "")
+        case .noInstalledApps: return NSLocalizedString("No active apps require refreshing.", comment: "")
         }
     }
 }
