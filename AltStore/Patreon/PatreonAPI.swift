@@ -8,6 +8,7 @@
 
 import Foundation
 import AuthenticationServices
+import CoreData
 
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
@@ -235,11 +236,13 @@ extension PatreonAPI
     func signOut(completion: @escaping (Result<Void, Swift.Error>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let accounts = PatreonAccount.all(in: context, requestProperties: [\FetchRequest.returnsObjectsAsFaults: true])
-            accounts.forEach(context.delete(_:))
-            
             do
             {
+                let accounts = PatreonAccount.all(in: context, requestProperties: [\FetchRequest.returnsObjectsAsFaults: true])
+                accounts.forEach(context.delete(_:))
+                
+                self.deactivateBetaApps(in: context)
+                
                 try context.save()
                 
                 Keychain.shared.patreonAccessToken = nil
@@ -253,10 +256,7 @@ extension PatreonAPI
             }
         }
     }
-}
-
-extension PatreonAPI
-{
+    
     func refreshPatreonAccount()
     {
         guard PatreonAPI.shared.isAuthenticated else { return }
@@ -265,6 +265,13 @@ extension PatreonAPI
             do
             {
                 let account = try result.get()
+                
+                if let context = account.managedObjectContext, !account.isPatron
+                {
+                    // Deactivate all beta apps now that we're no longer a patron.
+                    self.deactivateBetaApps(in: context)
+                }
+                
                 try account.managedObjectContext?.save()
             }
             catch
@@ -390,6 +397,15 @@ private extension PatreonAPI
         }
         
         task.resume()
+    }
+    
+    func deactivateBetaApps(in context: NSManagedObjectContext)
+    {
+        let predicate = NSPredicate(format: "%K != %@ AND %K != nil AND %K == YES",
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
+        
+        let installedApps = InstalledApp.all(satisfying: predicate, in: context)
+        installedApps.forEach { $0.isActive = false }
     }
 }
 
