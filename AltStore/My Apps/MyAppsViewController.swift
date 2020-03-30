@@ -675,36 +675,20 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        self.presentSideloadingAlert { (shouldContinue) in
-            guard shouldContinue else { return }
-            
-            let supportedTypes: [String]
-            
-            if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
-            {
-                supportedTypes = (types as NSArray).map { $0 as! String }
-            }
-            else
-            {
-                supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
-            }
-            
-            let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
-            documentPickerViewController.delegate = self
-            self.present(documentPickerViewController, animated: true, completion: nil)
+        let supportedTypes: [String]
+        
+        if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
+        {
+            supportedTypes = (types as NSArray).map { $0 as! String }
         }
-    }
-    
-    func presentSideloadingAlert(completion: @escaping (Bool) -> Void)
-    {
-        let alertController = UIAlertController(title: NSLocalizedString("Sideload Apps (Beta)", comment: ""), message: NSLocalizedString("If you encounter an app that is not able to be sideloaded, please report the app to support@altstore.io.", comment: ""), preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: RSTSystemLocalizedString("OK"), style: .default, handler: { (action) in
-            completion(true)
-        }))
-        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style, handler: { (action) in
-            completion(false)
-        }))
-        self.present(alertController, animated: true, completion: nil)
+        else
+        {
+            supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
+        }
+        
+        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
+        documentPickerViewController.delegate = self
+        self.present(documentPickerViewController, animated: true, completion: nil)
     }
     
     func sideloadApp(at fileURL: URL, completion: @escaping (Result<Void, Error>) -> Void)
@@ -1044,10 +1028,8 @@ private extension MyAppsViewController
         self.loadViewIfNeeded()
         
         guard let fileURL = notification.userInfo?[AppDelegate.importAppDeepLinkURLKey] as? URL else { return }
-        guard self.presentedViewController == nil else { return }
         
-        func finish()
-        {
+        self.sideloadApp(at: fileURL) { (result) in
             do
             {
                 try FileManager.default.removeItem(at: fileURL)
@@ -1057,29 +1039,6 @@ private extension MyAppsViewController
                 print("Unable to remove imported .ipa.", error)
             }
         }
-        
-        #if BETA
-        
-        self.presentSideloadingAlert { (shouldContinue) in
-            if shouldContinue
-            {
-                self.sideloadApp(at: fileURL) { (result) in
-                    finish()
-                }
-            }
-            else
-            {
-                finish()
-            }
-        }
-        
-        #else
-        
-        self.sideloadApp(at: fileURL) { (result) in
-            finish()
-        }
-        
-        #endif
     }
 }
 
