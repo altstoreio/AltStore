@@ -117,12 +117,10 @@ extension FetchProvisioningProfilesOperation
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             
-            let preferredBundleID: String
+            let preferredBundleID: String?
             
             // Check if we have already installed this app with this team before.
-            let predicate = NSPredicate(format: "%K == %@ AND %K == %@",
-                                        #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier,
-                                        #keyPath(InstalledApp.team.identifier), team.identifier)
+            let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier)
             if let installedApp = InstalledApp.first(satisfying: predicate, in: context)
             {
                 #if DEBUG
@@ -139,12 +137,34 @@ extension FetchProvisioningProfilesOperation
                 
                 #else
                 
-                // This app is already installed, so use the same resigned bundle identifier as before.
-                // This way, if we change the identifier format (again), AltStore will continue to use
-                // the old bundle identifier to prevent it from installing as a new app.
-                preferredBundleID = installedApp.resignedBundleIdentifier
+                // Teams match if installedApp.team has same identifier as team,
+                // or if installedApp.team is nil but resignedBundleIdentifier contains the team's identifier.
+                let teamsMatch = installedApp.team?.identifier == team.identifier || (installedApp.team == nil && installedApp.resignedBundleIdentifier.contains(team.identifier))
+                
+                if teamsMatch
+                {
+                    // This app is already installed with the same team, so use the same resigned bundle identifier as before.
+                    // This way, if we change the identifier format (again), AltStore will continue to use
+                    // the old bundle identifier to prevent it from installing as a new app.
+                    preferredBundleID = installedApp.resignedBundleIdentifier
+                }
+                else
+                {
+                    preferredBundleID = nil
+                }
                 
                 #endif
+            }
+            else
+            {
+                preferredBundleID = nil
+            }
+            
+            let bundleID: String
+            
+            if let preferredBundleID = preferredBundleID
+            {
+                bundleID = preferredBundleID
             }
             else
             {
@@ -157,11 +177,11 @@ extension FetchProvisioningProfilesOperation
                 if app.bundleIdentifier == StoreApp.altstoreAppID || app.bundleIdentifier == StoreApp.alternativeAltStoreAppID
                 {
                     // Use legacy bundle ID format for AltStore.
-                    preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
+                    bundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
                 }
                 else
                 {
-                    preferredBundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+                    bundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
                 }
             }
             
@@ -177,7 +197,7 @@ extension FetchProvisioningProfilesOperation
             }
             
             // Register
-            self.registerAppID(for: app, name: preferredName, bundleIdentifier: preferredBundleID, team: team, session: session) { (result) in
+            self.registerAppID(for: app, name: preferredName, bundleIdentifier: bundleID, team: team, session: session) { (result) in
                 switch result
                 {
                 case .failure(let error): completionHandler(.failure(error))
