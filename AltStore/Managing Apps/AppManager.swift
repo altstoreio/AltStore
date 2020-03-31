@@ -270,6 +270,35 @@ extension AppManager
     }
     
     @discardableResult
+    func update(_ app: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        guard let storeApp = app.storeApp else {
+            completionHandler(.failure(OperationError.appNotFound))
+            return Progress.discreteProgress(totalUnitCount: 1)
+        }
+        
+        let group = RefreshGroup(context: context)
+        group.completionHandler = { (results) in
+            do
+            {
+                guard let result = results.values.first else { throw OperationError.unknown }
+                completionHandler(result)
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        let operation = AppOperation.update(storeApp)
+        assert(operation.app as AnyObject === storeApp) // Make sure we never accidentally "update" to already installed app.
+        
+        self.perform([operation], presentingViewController: presentingViewController, group: group)
+        
+        return group.progress
+    }
+    
+    @discardableResult
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: RefreshGroup? = nil) -> RefreshGroup
     {
         let group = group ?? RefreshGroup()
@@ -332,12 +361,13 @@ private extension AppManager
     enum AppOperation
     {
         case install(AppProtocol)
+        case update(AppProtocol)
         case refresh(AppProtocol)
         
         var app: AppProtocol {
             switch self
             {
-            case .install(let app), .refresh(let app): return app
+            case .install(let app), .update(let app), .refresh(let app): return app
             }
         }
         
@@ -404,16 +434,16 @@ private extension AppManager
                 case .refresh(let installedApp as InstalledApp) where installedApp.certificateSerialNumber == group.context.certificate?.serialNumber:
                     // Refreshing apps, but using same certificate as last time, so we can just refresh provisioning profiles.
                                         
-                    let refreshProgress = self._refresh(installedApp, group: group) { (result) in
+                    let refreshProgress = self._refresh(installedApp, operation: operation, group: group) { (result) in
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(refreshProgress, withPendingUnitCount: 80)
                     
-                case .refresh(let app), .install(let app):
+                case .refresh(let app), .install(let app), .update(let app):
                     // Either installing for first time, or refreshing with a different signing certificate,
                     // so we need to resign the app then install it.
                     
-                    let installProgress = self._install(app, group: group) { (result) in
+                    let installProgress = self._install(app, operation: operation, group: group) { (result) in
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(installProgress, withPendingUnitCount: 80)
@@ -444,13 +474,25 @@ private extension AppManager
         return group
     }
     
-    
-    private func _install(_ app: AppProtocol, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
         let context = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
-        context.beginInstallationHandler = group.beginInstallationHandler
+        context.beginInstallationHandler = { (installedApp) in
+            switch operation
+            {
+            case .update where installedApp.bundleIdentifier == StoreApp.altstoreAppID:
+                // AltStore will quit before installation finishes,
+                // so assume if we get this far the update will finish successfully.
+                let event = AnalyticsManager.Event.updatedApp(installedApp)
+                AnalyticsManager.shared.trackEvent(event)
+                
+            default: break
+            }
+            
+            group.beginInstallationHandler?(installedApp)
+        }
         
         /* Download */
         let downloadOperation = DownloadAppOperation(app: app, context: context)
@@ -546,7 +588,7 @@ private extension AppManager
         return progress
     }
     
-    private func _refresh(_ app: InstalledApp, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _refresh(_ app: InstalledApp, operation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -575,7 +617,7 @@ private extension AppManager
             case .failure(ALTServerError.unknownRequest):
                 // Fall back to installation if AltServer doesn't support newer provisioning profile requests.
                 app.managedObjectContext?.performAndWait { // Must performAndWait to ensure we add operations before we return.
-                    let installProgress = self._install(app, group: group) { (result) in
+                    let installProgress = self._install(app, operation: operation, group: group) { (result) in
                         completionHandler(result)
                     }
                     progress.addChild(installProgress, withPendingUnitCount: 40)
@@ -633,6 +675,26 @@ private extension AppManager
             if installedApp.bundleIdentifier == StoreApp.altstoreAppID
             {
                 self.scheduleExpirationWarningLocalNotification(for: installedApp)
+            }
+            
+            let event: AnalyticsManager.Event?
+            
+            switch operation
+            {
+            case .install: event = .installedApp(installedApp)
+            case .refresh: event = .refreshedApp(installedApp)
+            case .update where installedApp.bundleIdentifier == StoreApp.altstoreAppID:
+                // AltStore quits before update finishes, so we've preemptively logged this update event.
+                // In case AltStore doesn't quit, such as when update has a different bundle identifier,
+                // make sure we don't log this update event a second time.
+                event = nil
+                
+            case .update: event = .updatedApp(installedApp)
+            }
+            
+            if let event = event
+            {
+                AnalyticsManager.shared.trackEvent(event)
             }
             
             do { try installedApp.managedObjectContext?.save() }
@@ -693,7 +755,7 @@ private extension AppManager
     {
         switch operation
         {
-        case .install: return self.installationProgress[operation.bundleIdentifier]
+        case .install, .update: return self.installationProgress[operation.bundleIdentifier]
         case .refresh: return self.refreshProgress[operation.bundleIdentifier]
         }
     }
@@ -702,7 +764,7 @@ private extension AppManager
     {
         switch operation
         {
-        case .install: self.installationProgress[operation.bundleIdentifier] = progress
+        case .install, .update: self.installationProgress[operation.bundleIdentifier] = progress
         case .refresh: self.refreshProgress[operation.bundleIdentifier] = progress
         }
     }

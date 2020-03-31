@@ -640,15 +640,15 @@ private extension MyAppsViewController
         let point = self.collectionView.convert(sender.center, from: sender.superview)
         guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
         
-        guard let storeApp = self.dataSource.item(at: indexPath).storeApp else { return }
+        let installedApp = self.dataSource.item(at: indexPath)
         
-        let previousProgress = AppManager.shared.installationProgress(for: storeApp)
+        let previousProgress = AppManager.shared.installationProgress(for: installedApp)
         guard previousProgress == nil else {
             previousProgress?.cancel()
             return
         }
         
-        _ = AppManager.shared.install(storeApp, presentingViewController: self) { (result) in
+        _ = AppManager.shared.update(installedApp, presentingViewController: self) { (result) in
             DispatchQueue.main.async {
                 switch result
                 {
@@ -662,7 +662,7 @@ private extension MyAppsViewController
                     self.collectionView.reloadItems(at: [indexPath])
                     
                 case .success:
-                    print("Updated app:", storeApp.bundleIdentifier)
+                    print("Updated app:", installedApp.bundleIdentifier)
                     // No need to reload, since the the update cell is gone now.
                 }
                 

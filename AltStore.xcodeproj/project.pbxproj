@@ -19,6 +19,7 @@
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
+		BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */; };
 		BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */; };
 		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
 		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
@@ -122,6 +123,7 @@
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
+		BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */; };
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
 		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
@@ -323,6 +325,7 @@
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
 		BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
+		BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore3ToAltStore4.xcmappingmodel; sourceTree = "<group>"; };
 		BF100C46232D7828006A8926 /* AltStore 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 2.xcdatamodel"; sourceTree = "<group>"; };
 		BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStoreToAltStore2.xcmappingmodel; sourceTree = "<group>"; };
@@ -442,6 +445,7 @@
 		BF5C5FC7237DF5AE00EDD0C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF5C5FCD237DF69100EDD0C6 /* ALTPluginService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPluginService.h; sourceTree = "<group>"; };
 		BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPluginService.m; sourceTree = "<group>"; };
+		BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+DirectorySize.swift"; sourceTree = "<group>"; };
 		BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+LocalizedFailure.swift"; sourceTree = "<group>"; };
 		BF6C33632419ADEB0034FD24 /* AltStore 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 5.xcdatamodel"; sourceTree = "<group>"; };
 		BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore4ToAltStore5.xcmappingmodel; sourceTree = "<group>"; };
@@ -652,6 +656,14 @@
 				BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BF0DCA642433BDE200E3A595 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		BF100C4E232D7C95006A8926 /* Migrations */ = {
@@ -1042,6 +1054,7 @@
 				BF56D2AD23DF9E170006506D /* App IDs */,
 				BFC84A4B2421A13000853474 /* Sources */,
 				BFC51D7922972F1F00388324 /* Server */,
+				BF0DCA642433BDE200E3A595 /* Analytics */,
 				BFD247982284D7FC00981D42 /* Model */,
 				BFDB6A0922AAEDA1007EA6D6 /* Operations */,
 				BFD2478D2284C4C700981D42 /* Components */,
@@ -1152,6 +1165,7 @@
 				BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */,
 				BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */,
 				BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */,
+				BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1739,6 +1753,7 @@
 				BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */,
 				BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
+				BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
 				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
 				BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */,
@@ -1809,6 +1824,7 @@
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
 				BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */,
+				BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
@@ -2180,7 +2196,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

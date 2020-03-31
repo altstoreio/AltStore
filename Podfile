@@ -8,6 +8,7 @@ target 'AltStore' do
   # Pods for AltStore
   pod 'KeychainAccess', '~> 3.2.0'
   pod 'Nuke', '~> 7.0'
+  pod 'AppCenter', '~> 3.1.0'
   pod 'AltSign', :path => 'Dependencies/AltSign'
   pod 'Roxas', :path => 'Dependencies/Roxas'
 
