@@ -123,6 +123,10 @@ extension FetchProvisioningProfilesOperation
             let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier)
             if let installedApp = InstalledApp.first(satisfying: predicate, in: context)
             {
+                // Teams match if installedApp.team has same identifier as team,
+                // or if installedApp.team is nil but resignedBundleIdentifier contains the team's identifier.
+                let teamsMatch = installedApp.team?.identifier == team.identifier || (installedApp.team == nil && installedApp.resignedBundleIdentifier.contains(team.identifier))
+                
                 #if DEBUG
                 
                 if app.bundleIdentifier == StoreApp.altstoreAppID || app.bundleIdentifier == StoreApp.alternativeAltStoreAppID
@@ -132,14 +136,10 @@ extension FetchProvisioningProfilesOperation
                 }
                 else
                 {
-                    preferredBundleID = installedApp.resignedBundleIdentifier
+                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
                 }
                 
                 #else
-                
-                // Teams match if installedApp.team has same identifier as team,
-                // or if installedApp.team is nil but resignedBundleIdentifier contains the team's identifier.
-                let teamsMatch = installedApp.team?.identifier == team.identifier || (installedApp.team == nil && installedApp.resignedBundleIdentifier.contains(team.identifier))
                 
                 if teamsMatch
                 {
