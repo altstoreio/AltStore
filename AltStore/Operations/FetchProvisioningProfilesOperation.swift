@@ -129,7 +129,7 @@ extension FetchProvisioningProfilesOperation
                 
                 #if DEBUG
                 
-                if app.bundleIdentifier == StoreApp.altstoreAppID || app.bundleIdentifier == StoreApp.alternativeAltStoreAppID
+                if app.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(app.bundleIdentifier)
                 {
                     // Use legacy bundle ID format for AltStore.
                     preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
@@ -174,7 +174,7 @@ extension FetchProvisioningProfilesOperation
                 let parentBundleID = parentApp?.bundleIdentifier ?? app.bundleIdentifier
                 let updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
                 
-                if app.bundleIdentifier == StoreApp.altstoreAppID || app.bundleIdentifier == StoreApp.alternativeAltStoreAppID
+                if app.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(app.bundleIdentifier)
                 {
                     // Use legacy bundle ID format for AltStore.
                     bundleID = "com.\(team.identifier).\(app.bundleIdentifier)"

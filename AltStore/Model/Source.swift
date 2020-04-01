@@ -10,12 +10,28 @@ import CoreData
 
 extension Source
 {
+    #if ALPHA
+    static let altStoreIdentifier = "com.rileytestut.AltStore.Alpha"
+    #else
     static let altStoreIdentifier = "com.rileytestut.AltStore"
+    #endif
     
     #if STAGING
+    
+    #if ALPHA
+    static let altStoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/sources/alpha/apps-alpha-staging.json")!
+    #else
     static let altStoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/apps-staging.json")!
+    #endif
+    
+    #else
+    
+    #if ALPHA
+    static let altStoreSourceURL = URL(string: "https://alpha.altstore.io/")!
     #else
     static let altStoreSourceURL = URL(string: "https://apps.altstore.io/")!
+    #endif
+    
     #endif
 }
 
