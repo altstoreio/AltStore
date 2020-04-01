@@ -70,12 +70,6 @@ class MyAppsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
-        #if !BETA
-        // Set leftBarButtonItem to invisible UIBarButtonItem so we can still use it
-        // to show an activity indicator while sideloading whitelisted apps.
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        #endif
-        
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
         
@@ -119,9 +113,7 @@ class MyAppsViewController: UICollectionViewController
         
         self.updateDataSource()
         
-        #if BETA
         self.fetchAppIDs()
-        #endif
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -715,27 +707,8 @@ private extension MyAppsViewController
                 case .failure(OperationError.cancelled): break
                     
                 case .failure(let error):
-                    if let localizedError = error as? OperationError, case OperationError.sideloadingAppNotSupported = localizedError
-                    {
-                        let message = NSLocalizedString("""
-                        Sideloading apps is in beta, and is currently limited to a small number of apps. This restriction is temporary, and you will be able to sideload any app once the feature is finished.
-
-                        In the meantime, you can help us beta test sideloading apps by becoming a Patron.
-                        """, comment: "")
-                        
-                        let alertController = UIAlertController(title: localizedError.localizedDescription, message: message, preferredStyle: .alert)
-                        alertController.addAction(.cancel)
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Become a Patron", comment: ""), style: .default, handler: { (action) in
-                            NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
-                        }))
-                        
-                        self.present(alertController, animated: true, completion: nil)
-                    }
-                    else
-                    {
-                        let toastView = ToastView(error: error)
-                        toastView.show(in: self)
-                    }
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                     
                     completion(.failure(error))
                 }
@@ -750,10 +723,6 @@ private extension MyAppsViewController
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: temporaryDirectory)
                 
                 guard let application = ALTApplication(fileURL: unzippedApplicationURL) else { throw OperationError.invalidApp }
-                
-                #if !BETA
-                guard AppManager.whitelistedSideloadingBundleIDs.contains(application.bundleIdentifier) else { throw OperationError.sideloadingAppNotSupported(application) }
-                #endif
                 
                 func install()
                 {
@@ -1324,7 +1293,6 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         
         func appIDsFooterSize() -> CGSize
         {
-            #if BETA
             guard let _ = DatabaseManager.shared.activeTeam() else { return .zero }
             
             let indexPath = IndexPath(row: 0, section: section.rawValue)
@@ -1334,9 +1302,6 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
                                                           withHorizontalFittingPriority: .required,
                                                           verticalFittingPriority: .fittingSizeLevel)
             return size
-            #else
-            return .zero
-            #endif
         }
         
         switch section

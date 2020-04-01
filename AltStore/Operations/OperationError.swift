@@ -24,7 +24,6 @@ enum OperationError: LocalizedError
     case invalidParameters
     
     case iOSVersionNotSupported(ALTApplication)
-    case sideloadingAppNotSupported(ALTApplication)
     case maximumAppIDLimitReached(application: ALTApplication, requiredAppIDs: Int, availableAppIDs: Int, nextExpirationDate: Date)
     
     case noSources
@@ -50,10 +49,6 @@ enum OperationError: LocalizedError
             }
             
             let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
-            return localizedDescription
-            
-        case .sideloadingAppNotSupported(let app):
-            let localizedDescription = String(format: NSLocalizedString("Sideloading “%@” Not Supported", comment: ""), app.name)
             return localizedDescription
             
         case .maximumAppIDLimitReached: return NSLocalizedString("Cannot register more than 10 App IDs.", comment: "")
