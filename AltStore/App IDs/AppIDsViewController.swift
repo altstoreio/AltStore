@@ -192,7 +192,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
                 let text = NSLocalizedString("""
                 Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits free developer accounts to 10 App IDs at a time.
 
-                **App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps.
+                **App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired.
                 """, comment: "")
                 
                 let attributedText = NSAttributedString(markdownRepresentation: text, attributes: [.font: headerView.textLabel.font as Any])
