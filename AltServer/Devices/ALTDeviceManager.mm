@@ -656,7 +656,8 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                                                                                      misagent:(misagent_client_t)mis
                                                                                         error:(NSError **)error
 {
-    NSMutableDictionary<NSString *, ALTProvisioningProfile *> *cachedProfiles = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, ALTProvisioningProfile *> *ignoredProfiles = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, ALTProvisioningProfile *> *removedProfiles = [NSMutableDictionary dictionary];
     
     NSArray<ALTProvisioningProfile *> *provisioningProfiles = [self copyProvisioningProfilesWithClient:mis error:error];
     if (provisioningProfiles == nil)
@@ -678,20 +679,46 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         
         if (excludedBundleIdentifiers != nil && [excludedBundleIdentifiers containsObject:provisioningProfile.bundleIdentifier])
         {
+            // This provisioning profile has an excluded bundle identifier.
+            // Ignore it, unless we've already ignored one with the same bundle identifier,
+            // in which case remove whichever profile is the oldest.
+            
+            ALTProvisioningProfile *previousProfile = ignoredProfiles[provisioningProfile.bundleIdentifier];
+            if (previousProfile != nil)
+            {
+                // We've already ignored a profile with this bundle identifier,
+                // so make sure we only ignore the newest one and remove the oldest one.
+                BOOL isNewerThanPreviousProfile = ([provisioningProfile.expirationDate compare:previousProfile.expirationDate] == NSOrderedDescending);
+                ALTProvisioningProfile *oldestProfile = isNewerThanPreviousProfile ? previousProfile : provisioningProfile;
+                ALTProvisioningProfile *newestProfile = isNewerThanPreviousProfile ? provisioningProfile : previousProfile;
+                
+                ignoredProfiles[provisioningProfile.bundleIdentifier] = newestProfile;
+                
+                // Don't cache this profile or else it will be reinstalled, so just remove it without caching.
+                if (![self removeProvisioningProfile:oldestProfile misagent:mis error:error])
+                {
+                    return nil;
+                }
+            }
+            else
+            {
+                ignoredProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+            }
+            
             continue;
         }
         
-        ALTProvisioningProfile *preferredProfile = cachedProfiles[provisioningProfile.bundleIdentifier];
+        ALTProvisioningProfile *preferredProfile = removedProfiles[provisioningProfile.bundleIdentifier];
         if (preferredProfile != nil)
         {
             if ([provisioningProfile.expirationDate compare:preferredProfile.expirationDate] == NSOrderedDescending)
             {
-                cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+                removedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
             }
         }
         else
         {
-            cachedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
+            removedProfiles[provisioningProfile.bundleIdentifier] = provisioningProfile;
         }
         
         if (![self removeProvisioningProfile:provisioningProfile misagent:mis error:error])
@@ -700,7 +727,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         }
     }
     
-    return cachedProfiles;
+    return removedProfiles;
 }
 
 - (BOOL)installProvisioningProfile:(ALTProvisioningProfile *)provisioningProfile misagent:(misagent_client_t)mis error:(NSError **)error
