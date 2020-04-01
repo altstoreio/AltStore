@@ -31,8 +31,13 @@ class BrowseViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        #if BETA
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
         self.navigationItem.searchController = self.dataSource.searchController
+        #else
+        // Hide Sources button for public version while in beta.
+        self.navigationItem.rightBarButtonItem = nil
+        #endif
         
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
