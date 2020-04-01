@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import AltSign
 
 @objc(InstalledAppToInstalledAppMigrationPolicy)
 class InstalledAppToInstalledAppMigrationPolicy: NSEntityMigrationPolicy
@@ -28,10 +29,30 @@ class InstalledAppToInstalledAppMigrationPolicy: NSEntityMigrationPolicy
         dInstance.setValue(teams.first, forKey: #keyPath(InstalledApp.team))
     }
     
-    @objc(defaultIsActiveForBundleID:)
-    func defaultIsActive(for bundleID: String) -> NSNumber
+    @objc(defaultIsActiveForBundleID:team:)
+    func defaultIsActive(for bundleID: String, team: NSManagedObject?) -> NSNumber
     {
-        let isActive = (bundleID == StoreApp.altstoreAppID)
+        let isActive: Bool
+        
+        let activeAppsMinimumVersion = OperatingSystemVersion(majorVersion: 13, minorVersion: 3, patchVersion: 1)
+        if !ProcessInfo.processInfo.isOperatingSystemAtLeast(activeAppsMinimumVersion)
+        {
+            isActive = true
+        }
+        else if let team = team, let type = team.value(forKey: #keyPath(Team.type)) as? Int16, type != ALTTeamType.free.rawValue
+        {
+            isActive = true
+        }
+        else
+        {
+            // AltStore should always be active, but deactivate all other apps.
+            isActive = (bundleID == StoreApp.altstoreAppID)
+            
+            // We can assume there is an active app limit,
+            // but will confirm next time user authenticates.
+            UserDefaults.standard.activeAppsLimit = ALTActiveAppsLimit
+        }
+        
         return NSNumber(value: isActive)
     }
 }
