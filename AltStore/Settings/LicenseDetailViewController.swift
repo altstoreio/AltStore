@@ -13,22 +13,22 @@ class LicenseDetailViewController: UITableViewController
     @IBOutlet weak var copyrightLabel: UILabel!
     @IBOutlet weak var licenseTextView: UITextView!
     
-    var license: [String: String]?
+    var license: LicenseItem?
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
 
-        guard let product = license?["product"],
-            let copyright = license?["copyright"],
-            let license = license?["license"] else
+        guard let product = license?.product,
+            let copyright = license?.copyright,
+            let license = license?.license else
         {
             dismiss(animated: true)
             return
         }
 
         navigationItem.title = product
-        copyrightLabel.text = copyright != "" ? copyright : "(no copyright line)"
-        licenseTextView.text = license != "" ? license : "(no license text)"
+        copyrightLabel.text = copyright.isEmpty ?  "(no copyright line)" : copyright
+        licenseTextView.text = license.isEmpty ? "(no license text)" : license
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 
 class LicensesViewController: UITableViewController
 {
-    private var licenses: [[String: String]] = []
+    private var licenses: [LicenseItem] = []
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -31,7 +31,7 @@ class LicensesViewController: UITableViewController
 
         let url = URL(fileURLWithPath: path)
 
-        guard let data = try? Data(contentsOf: url), let json = try? JSONSerialization.jsonObject(with: data) as? [[String: String]] else {
+        guard let data = try? Data(contentsOf: url), let json = try? JSONDecoder().decode([LicenseItem].self, from: data) else {
             dismiss(animated: true)
             return
         }
@@ -57,6 +57,16 @@ extension LicensesViewController
         let cell = tableView.dequeueReusableCell(withIdentifier: "licenseListCell", for: indexPath) as! LicenseTableViewCell
         let license = licenses[indexPath.row]
 
+        setStyle(for: cell, at: indexPath)
+
+        cell.productLabel.text = license.product
+        cell.authorLabel.text = license.author
+
+        return cell
+    }
+
+    private func setStyle(for cell: LicenseTableViewCell, at indexPath: IndexPath)
+    {
         switch indexPath.row {
         case 0:
             cell.style = .top
@@ -67,11 +77,6 @@ extension LicensesViewController
         default:
             cell.style = .middle
         }
-
-        cell.productLabel.text = license["product"]
-        cell.authorLabel.text = license["author"]
-
-        return cell
     }
 
 }
