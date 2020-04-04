@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -235,6 +235,10 @@
 		BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B695232242D3007A79E1 /* LicensesViewController.swift */; };
 		BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */; };
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
+		D703E93423448AFD00D793A1 /* LicenseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */; };
+		D7220EBB23436669000CAE4C /* licenses.json in Resources */ = {isa = PBXBuildFile; fileRef = D7220EBA23436669000CAE4C /* licenses.json */; };
+		D7C1BD83234B51FA0054F711 /* LicenseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */; };
+		DBAC68F8EC03F4A41D62EDE1 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1039C07E517311FC499A0B64 /* Pods_AltStore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -559,6 +563,9 @@
 		BFF0B695232242D3007A79E1 /* LicensesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensesViewController.swift; sourceTree = "<group>"; };
 		BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsViewController.swift; sourceTree = "<group>"; };
 		BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+CompactHeight.swift"; sourceTree = "<group>"; };
+		D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseTableViewCell.swift; sourceTree = "<group>"; };
+		D7220EBA23436669000CAE4C /* licenses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = licenses.json; sourceTree = "<group>"; };
+		D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseDetailViewController.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1048,6 +1055,7 @@
 			isa = PBXGroup;
 			children = (
 				BFB1169C22932DB100BB457C /* apps.json */,
+				D7220EBA23436669000CAE4C /* licenses.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
@@ -1140,6 +1148,8 @@
 				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
+				D703E93323448AFD00D793A1 /* LicenseTableViewCell.swift */,
+				D7C1BD82234B51FA0054F711 /* LicenseDetailViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1424,6 +1434,7 @@
 			files = (
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
+				D7220EBB23436669000CAE4C /* licenses.json in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
@@ -1739,6 +1750,7 @@
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
+				D7C1BD83234B51FA0054F711 /* LicenseDetailViewController.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
@@ -1752,6 +1764,7 @@
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
 				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
+				D703E93423448AFD00D793A1 /* LicenseTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
