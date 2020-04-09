@@ -12,6 +12,14 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 
+#if DEBUG
+private let appCenterAppSecret = "bb08e9bb-c126-408d-bf3f-324c8473fd40"
+#elseif RELEASE
+private let appCenterAppSecret = "b6718932-294a-432b-81f2-be1e17ff85c5"
+#else
+private let appCenterAppSecret = "e873f6ca-75eb-4685-818f-801e0e375d60"
+#endif
+
 extension AnalyticsManager
 {
     enum EventProperty: String
@@ -80,7 +88,7 @@ extension AnalyticsManager
 {
     func start()
     {
-        MSAppCenter.start("bb08e9bb-c126-408d-bf3f-324c8473fd40", withServices:[
+        MSAppCenter.start(appCenterAppSecret, withServices:[
             MSAnalytics.self,
             MSCrashes.self
         ])
