@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2b",
-      "versionDate": "2020-02-11T16:30:00-08:00",
-      "versionDescription": "GENERAL\n• Replaces 3D Touch peek/pop with iOS 13 context menus\n\nCONTROLLER SKINS\n• Brand new Nintendo DS controller skin\n• New Quick Save, Quick Load, and Fast Forward inputs for controller skins\n• Apply video filters with controller skins\n• Assign controller skins to individual games",
+      "version": "1.2b2",
+      "versionDate": "2020-04-27T14:30:00-07:00",
+      "versionDescription": "Delta, meet melonDS! melonDS is a modern Nintendo DS emulator that is more accurate and reliable than DeSmuME. melonDS is actively being worked on and supports many features DeSmuME does not, which is why Delta now includes a melonDS emulator core 🎉 melonDS will soon become the default, so please report any issues you find! \n\nNEW FEATURES\n• New core based on melonDS for DS emulation (will soon become the default)\n• DS settings screen to switch cores and import melonDS BIOS files\n• Fast forward DS games\n• Action Replay cheat codes for DS games (melonDS core)\n• Boot directly to Nintendo DS home screen and change system settings (melonDS core)\n• Access Delta files directory in Files > On My iPhone > Delta\n• Support for 8-character NES Game Genie cheat codes\n• Export save files for games from context menu\n\nBUG FIXES\n• Fixes graphical issues when playing DS games\n• Fixes incorrect formatting when entering cheat codes\n• Fixes incorrect game name text color after deleting a game or switching cores\n• Fixes save files being overwritten when previewing games\n\nSwitching to melonDS has been a _big_ transition, so please report any and all bugs you find using the melonDS core. Enjoy!",
       "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-beta.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 17631726,
+      "size": 18607156,
       "beta": true,
       "permissions": [
         {
