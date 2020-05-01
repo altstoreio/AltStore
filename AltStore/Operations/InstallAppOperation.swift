@@ -16,11 +16,11 @@ import Roxas
 @objc(InstallAppOperation)
 class InstallAppOperation: ResultOperation<InstalledApp>
 {
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     
     private var didCleanUp = false
     
-    init(context: AppOperationContext)
+    init(context: InstallAppOperationContext)
     {
         self.context = context
         
@@ -40,6 +40,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         }
         
         guard
+            let certificate = self.context.certificate,
             let resignedApp = self.context.resignedApp,
             let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
@@ -57,10 +58,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, context: backgroundContext)
+                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, certificateSerialNumber: certificate.serialNumber, context: backgroundContext)
             }
             
-            installedApp.update(resignedApp: resignedApp)
+            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)
 
             if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
             {
@@ -108,9 +109,42 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
             
-            self.context.group.beginInstallationHandler?(installedApp)
+            self.context.beginInstallationHandler?(installedApp)
             
-            let request = BeginInstallationRequest()
+            var activeProfiles: Set<String>?
+            if let sideloadedAppsLimit = UserDefaults.standard.activeAppsLimit
+            {
+                // When installing these new profiles, AltServer will remove all non-active profiles to ensure we remain under limit.
+                
+                let fetchRequest = InstalledApp.activeAppsFetchRequest()
+                fetchRequest.includesPendingChanges = false
+                
+                var activeApps = InstalledApp.fetch(fetchRequest, in: backgroundContext)
+                if !activeApps.contains(installedApp)
+                {
+                    let availableActiveApps = max(sideloadedAppsLimit - activeApps.count, 0)
+                    let requiredActiveAppSlots = 1 + installedExtensions.count // As of iOS 13.3.1, app extensions count as "apps"
+                    
+                    if requiredActiveAppSlots <= availableActiveApps
+                    {
+                        // This app has not been explicitly activated, but there are enough slots available,
+                        // so implicitly activate it.
+                        installedApp.isActive = true
+                        activeApps.append(installedApp)
+                    }
+                    else
+                    {
+                        installedApp.isActive = false
+                    }
+                }
+
+                activeProfiles = Set(activeApps.flatMap { (installedApp) -> [String] in
+                    let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
+                    return [installedApp.resignedBundleIdentifier] + appExtensionProfiles
+                })
+            }
+            
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles)
             connection.send(request) { (result) in
                 switch result
                 {

@@ -29,6 +29,11 @@ public extension Bundle
         return infoPlistURL
     }
     
+    var provisioningProfileURL: URL {
+        let infoPlistURL = self.bundleURL.appendingPathComponent("embedded.mobileprovision")
+        return infoPlistURL
+    }
+    
     var certificateURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
         return infoPlistURL

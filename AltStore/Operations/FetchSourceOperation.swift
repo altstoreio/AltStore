@@ -7,12 +7,15 @@
 //
 
 import Foundation
+import CoreData
+
 import Roxas
 
 @objc(FetchSourceOperation)
 class FetchSourceOperation: ResultOperation<Source>
 {
     let sourceURL: URL
+    let managedObjectContext: NSManagedObjectContext
     
     private let session: URLSession
     
@@ -21,9 +24,10 @@ class FetchSourceOperation: ResultOperation<Source>
         return dateFormatter
     }()
     
-    init(sourceURL: URL)
+    init(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
     {
         self.sourceURL = sourceURL
+        self.managedObjectContext = managedObjectContext
         
         let configuration = URLSessionConfiguration.default
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -37,7 +41,7 @@ class FetchSourceOperation: ResultOperation<Source>
         super.main()
         
         let dataTask = self.session.dataTask(with: self.sourceURL) { (data, response, error) in
-            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            self.managedObjectContext.perform {
                 do
                 {
                     let (data, _) = try Result((data, response), error).get()
@@ -64,18 +68,15 @@ class FetchSourceOperation: ResultOperation<Source>
                         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date is in invalid format.")
                     })
                     
-                    decoder.managedObjectContext = context
+                    decoder.managedObjectContext = self.managedObjectContext
+                    decoder.sourceURL = self.sourceURL
                     
                     let source = try decoder.decode(Source.self, from: data)
                     
-                    if let patreonAccessToken = source.userInfo?[.patreonAccessToken]
+                    if source.identifier == Source.altStoreIdentifier, let patreonAccessToken = source.userInfo?[.patreonAccessToken]
                     {
                         Keychain.shared.patreonCreatorAccessToken = patreonAccessToken
                     }
-                    
-                    #if STAGING
-                    source.sourceURL = self.sourceURL
-                    #endif
                     
                     self.finish(.success(source))
                 }

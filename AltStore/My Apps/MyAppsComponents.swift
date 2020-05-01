@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import Roxas
 
 class InstalledAppCollectionViewCell: UICollectionViewCell
 {
+    private(set) var deactivateBadge: UIView?
+    
     @IBOutlet var bannerView: AppBannerView!
     
     override func awakeFromNib()
@@ -19,15 +22,37 @@ class InstalledAppCollectionViewCell: UICollectionViewCell
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.preservesSuperviewLayoutMargins = true
         
-        self.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
-        self.bannerView.buttonLabel.isHidden = false
+        if #available(iOS 13.0, *)
+        {
+            let deactivateBadge = UIView()
+            deactivateBadge.translatesAutoresizingMaskIntoConstraints = false
+            deactivateBadge.isHidden = true
+            self.addSubview(deactivateBadge)
+            
+            // Solid background to make the X opaque white.
+            let backgroundView = UIView()
+            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+            backgroundView.backgroundColor = .white
+            deactivateBadge.addSubview(backgroundView)
+                        
+            let badgeView = UIImageView(image: UIImage(systemName: "xmark.circle.fill"))
+            badgeView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(scale: .large)
+            badgeView.tintColor = .systemRed
+            deactivateBadge.addSubview(badgeView, pinningEdgesWith: .zero)
+            
+            NSLayoutConstraint.activate([
+                deactivateBadge.centerXAnchor.constraint(equalTo: self.bannerView.iconImageView.trailingAnchor),
+                deactivateBadge.centerYAnchor.constraint(equalTo: self.bannerView.iconImageView.topAnchor),
+                
+                backgroundView.centerXAnchor.constraint(equalTo: badgeView.centerXAnchor),
+                backgroundView.centerYAnchor.constraint(equalTo: badgeView.centerYAnchor),
+                backgroundView.widthAnchor.constraint(equalTo: badgeView.widthAnchor, multiplier: 0.5),
+                backgroundView.heightAnchor.constraint(equalTo: badgeView.heightAnchor, multiplier: 0.5)
+            ])
+            
+            self.deactivateBadge = deactivateBadge
+        }
     }
-}
-
-class InstalledAppsCollectionHeaderView: UICollectionReusableView
-{
-    @IBOutlet var textLabel: UILabel!
-    @IBOutlet var button: UIButton!
 }
 
 class InstalledAppsCollectionFooterView: UICollectionReusableView

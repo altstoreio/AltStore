@@ -71,7 +71,7 @@ private extension AppIDsViewController
         dataSource.cellConfigurationHandler = { (cell, appID, indexPath) in
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! AppIDCollectionViewCell
+            let cell = cell as! BannerCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
@@ -79,6 +79,8 @@ private extension AppIDsViewController
             cell.bannerView.iconImageView.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.betaBadgeView.isHidden = true
+            
+            cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
             
             if let expirationDate = appID.expirationDate
             {
@@ -181,31 +183,34 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
         switch kind
         {
         case UICollectionView.elementKindSectionHeader:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! AppIDsCollectionReusableView
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! TextCollectionReusableView
             headerView.layoutMargins.left = self.view.layoutMargins.left
             headerView.layoutMargins.right = self.view.layoutMargins.right
             
             if let activeTeam = DatabaseManager.shared.activeTeam(), activeTeam.type == .free
             {
-                headerView.textLabel.text = """
+                let text = NSLocalizedString("""
                 Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits free developer accounts to 10 App IDs at a time.
 
-                App IDs expire after one week, but AltStore will automatically renew them for all installed apps. Once an App ID expires, it no longer counts toward your total.
-                """
+                **App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired.
+                """, comment: "")
+                
+                let attributedText = NSAttributedString(markdownRepresentation: text, attributes: [.font: headerView.textLabel.font as Any])
+                headerView.textLabel.attributedText = attributedText
             }
             else
             {
-                headerView.textLabel.text = """
+                headerView.textLabel.text = NSLocalizedString("""
                 Each app and app extension installed with AltStore must register an App ID with Apple.
                 
                 App IDs for paid developer accounts never expire, and there is no limit to how many you can create.
-                """
+                """, comment: "")
             }
             
             return headerView
             
         case UICollectionView.elementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! AppIDsCollectionReusableView
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! TextCollectionReusableView
             
             let count = self.dataSource.itemCount
             if count == 1

@@ -7,3 +7,5 @@
 #import "ALTAppPermission.h"
 #import "ALTPatreonBenefitType.h"
 #import "ALTSourceUserInfoKey.h"
+
+#import "NSAttributedString+Markdown.h"

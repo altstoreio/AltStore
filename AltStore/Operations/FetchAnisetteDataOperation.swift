@@ -16,26 +16,24 @@ import Roxas
 @objc(FetchAnisetteDataOperation)
 class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
 {
-    let group: OperationGroup
+    let context: OperationContext
     
-    init(group: OperationGroup)
+    init(context: OperationContext)
     {
-        self.group = group
-        
-        super.init()
+        self.context = context
     }
     
     override func main()
     {
         super.main()
         
-        if let error = self.group.error
+        if let error = self.context.error
         {
             self.finish(.failure(error))
             return
         }
         
-        guard let server = self.group.server else { return self.finish(.failure(OperationError.invalidParameters)) }
+        guard let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         ServerManager.shared.connect(to: server) { (result) in
             switch result
@@ -55,7 +53,7 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
                     case .success:
                         print("Waiting for anisette data...")
                         connection.receiveResponse() { (result) in
-                            print("Receiving anisette data:", result)
+                            print("Receiving anisette data:", result.error?.localizedDescription ?? "success")
                             
                             switch result
                             {

@@ -1,7 +1,6 @@
 /*
- #
  # STPrivilegedTask - NSTask-like wrapper around AuthorizationExecuteWithPrivileges
- # Copyright (C) 2009-2015 Sveinbjorn Thordarson <sveinbjornt@gmail.com>
+ # Copyright (C) 2009-2017 Sveinbjorn Thordarson <sveinbjorn@sveinbjorn.org>
  #
  # BSD License
  # Redistribution and use in source and binary forms, with or without
@@ -11,7 +10,7 @@
  #     * Redistributions in binary form must reproduce the above copyright
  #       notice, this list of conditions and the following disclaimer in the
  #       documentation and/or other materials provided with the distribution.
- #     * Neither the name of Sveinbjorn Thordarson nor that of any other
+ #     * Neither the name of the copyright holder nor that of any other
  #       contributors may be used to endorse or promote products
  #       derived from this software without specific prior written permission.
  # 
@@ -28,54 +27,43 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
-#import <Security/Authorization.h>
-#import <Security/AuthorizationTags.h>
 
 #define STPrivilegedTaskDidTerminateNotification @"STPrivilegedTaskDidTerminateNotification"
-//#define TMP_STDERR_TEMPLATE @".authStderr.XXXXXX"
 
-// Defines error value for when AuthorizationExecuteWithPrivilleges no longer
-// exists anyplace. Rather than defining a new enum, we just create a global
-// constant
+// Defines error value for when AuthorizationExecuteWithPrivileges no longer exists
+// Rather than defining a new enum, we just create a global constant
 extern const OSStatus errAuthorizationFnNoLongerExists;
 
-@interface STPrivilegedTask : NSObject 
-{
-    NSArray         *arguments;
-    NSString        *cwd;
-    NSString        *launchPath;
-    BOOL            isRunning;
-    pid_t           pid;
-    int             terminationStatus;
-    NSFileHandle    *outputFileHandle;
-    NSTimer         *checkStatusTimer;
-}
--(id)initWithLaunchPath:(NSString *)path;
--(id)initWithLaunchPath:(NSString *)path arguments:  (NSArray *)args;
-+(STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path;
-+(STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path arguments:(NSArray *)arguments;
--(NSArray *)arguments;
--(NSString *)currentDirectoryPath;
--(BOOL)isRunning;
--(int)launch;
--(NSString *)launchPath;
--(int)processIdentifier;
--(void)setArguments:(NSArray *)arguments;
--(void)setCurrentDirectoryPath:(NSString *)path;
--(void)setLaunchPath:(NSString *)path;
--(NSFileHandle *)outputFileHandle;
--(void)terminate;  // doesn't work
--(int)terminationStatus;
--(void)_checkTaskStatus;
--(void)waitUntilExit;
+@interface STPrivilegedTask : NSObject
+
+@property (copy) NSArray *arguments;
+@property (copy) NSString *currentDirectoryPath;
+@property (copy) NSString *launchPath;
+@property (assign) BOOL freeAuthorizationWhenDone;
+
+@property (readonly) NSFileHandle *outputFileHandle;
+@property (readonly) BOOL isRunning;
+@property (readonly) pid_t processIdentifier;
+@property (readonly) int terminationStatus;
+@property (readonly) AuthorizationRef authorization;
+
+@property (copy) void (^terminationHandler)(STPrivilegedTask *);
+
++ (BOOL)authorizationFunctionAvailable;
+    
+- (instancetype)initWithLaunchPath:(NSString *)path;
+- (instancetype)initWithLaunchPath:(NSString *)path arguments:(NSArray *)args;
+- (instancetype)initWithLaunchPath:(NSString *)path arguments:(NSArray *)args currentDirectory:(NSString *)cwd;
+
++ (STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path;
++ (STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path arguments:(NSArray *)args;
++ (STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path arguments:(NSArray *)args currentDirectory:(NSString *)cwd;
++ (STPrivilegedTask *)launchedPrivilegedTaskWithLaunchPath:(NSString *)path arguments:(NSArray *)args currentDirectory:(NSString *)cwd authorization:(AuthorizationRef)authorization;
+
+- (OSStatus)launch;
+- (OSStatus)launchWithAuthorization:(AuthorizationRef)authorization;
+- (void)terminate; // doesn't work
+- (void)waitUntilExit;
+
 @end
-/*static OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
-                                                                AuthorizationRef authorization,
-                                                                const char *pathToTool,
-                                                                AuthorizationFlags options,
-                                                                char * const *arguments,
-                                                                FILE **communicationsPipe,
-                                                                FILE **errPipe,
-                                                                pid_t* processid
-                                                                );*/
+

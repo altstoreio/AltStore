@@ -15,8 +15,33 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
     open override func resolve(constraintConflicts conflicts: [NSConstraintConflict]) throws
     {
         guard conflicts.allSatisfy({ $0.databaseObject != nil }) else {
-            assertionFailure("MergePolicy is only intended to work with database-level conflicts.")
-            return try super.resolve(constraintConflicts: conflicts)            
+            for conflict in conflicts
+            {
+                switch conflict.conflictingObjects.first
+                {
+                case is StoreApp where conflict.conflictingObjects.count == 2:
+                    // Modified cached StoreApp while replacing it with new one, causing context-level conflict.
+                    // Most likely, we set up a relationship between the new StoreApp and a NewsItem,
+                    // causing cached StoreApp to delete it's NewsItem relationship, resulting in (resolvable) conflict.
+                    
+                    if let previousApp = conflict.conflictingObjects.first(where: { !$0.isInserted }) as? StoreApp
+                    {
+                        // Delete previous permissions (same as below).
+                        for permission in previousApp.permissions
+                        {
+                            permission.managedObjectContext?.delete(permission)
+                        }
+                    }
+                    
+                default:
+                    // Unknown context-level conflict.
+                    assertionFailure("MergePolicy is only intended to work with database-level conflicts.")
+                }
+            }
+            
+            try super.resolve(constraintConflicts: conflicts)
+                        
+            return
         }
         
         for conflict in conflicts

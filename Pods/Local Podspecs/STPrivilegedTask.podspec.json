@@ -1,0 +1,25 @@
+{
+  "name": "STPrivilegedTask",
+  "version": "1.0.7",
+  "summary": "An NSTask-like wrapper around Mac OS X Security Framework's AuthorizationExecuteWithPrivileges()",
+  "description": "An NSTask-like wrapper around AuthorizationExecuteWithPrivileges() in the Security API to run shell commands with root privileges in Mac OS X.",
+  "homepage": "http://github.com/sveinbjornt/STPrivilegedTask",
+  "license": {
+    "type": "BSD"
+  },
+  "authors": {
+    "Sveinbjorn Thordarson": "sveinbjorn@sveinbjorn.org"
+  },
+  "platforms": {
+    "osx": "10.8"
+  },
+  "source": {
+    "git": "https://github.com/sveinbjornt/STPrivilegedTask.git",
+    "tag": "1.0.7"
+  },
+  "source_files": "STPrivilegedTask.{h,m}",
+  "exclude_files": "PrivilegedTaskExample",
+  "public_header_files": "STPrivilegedTask.h",
+  "frameworks": "Security",
+  "requires_arc": false
+}
