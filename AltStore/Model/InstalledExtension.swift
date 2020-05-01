@@ -55,9 +55,14 @@ class InstalledExtension: NSManagedObject, InstalledAppProtocol
 
         if let provisioningProfile = resignedAppExtension.provisioningProfile
         {
-            self.refreshedDate = provisioningProfile.creationDate
-            self.expirationDate = provisioningProfile.expirationDate
+            self.update(provisioningProfile: provisioningProfile)
         }
+    }
+    
+    func update(provisioningProfile: ALTProvisioningProfile)
+    {
+        self.refreshedDate = provisioningProfile.creationDate
+        self.expirationDate = provisioningProfile.expirationDate
     }
 }
 

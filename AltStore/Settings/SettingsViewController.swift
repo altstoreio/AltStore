@@ -204,8 +204,8 @@ private extension SettingsViewController
                     break
                     
                 case .failure(let error):
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                     
                 case .success: break
                 }
@@ -223,8 +223,8 @@ private extension SettingsViewController
                 DispatchQueue.main.async {
                     if let error = error
                     {
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                     }
                     
                     self.update()
@@ -433,7 +433,7 @@ extension SettingsViewController
                 else
                 {
                     let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    toastView.show(in: self)
                 }
                 
             case .refreshAttempts: break
@@ -450,8 +450,8 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate
     {
         if let error = error
         {
-            let toastView = ToastView(text: error.localizedDescription, detailText: "")
-            toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+            let toastView = ToastView(error: error)
+            toastView.show(in: self)
         }
         
         controller.dismiss(animated: true, completion: nil)

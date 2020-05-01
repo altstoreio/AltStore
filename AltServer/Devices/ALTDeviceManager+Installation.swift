@@ -536,7 +536,8 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                     {
                         try Result(success, error).get()
                         
-                        ALTDeviceManager.shared.installApp(at: application.fileURL, toDeviceWithUDID: device.identifier) { (success, error) in
+                        let activeProfiles: Set<String>? = (team.type == .free) ? [profile.bundleIdentifier] : nil
+                        ALTDeviceManager.shared.installApp(at: application.fileURL, toDeviceWithUDID: device.identifier, activeProvisioningProfiles: activeProfiles) { (success, error) in
                             completionHandler(Result(success, error))
                         }
                     }

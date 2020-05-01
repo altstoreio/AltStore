@@ -21,7 +21,7 @@ private enum RefreshError: LocalizedError
     var errorDescription: String? {
         switch self
         {
-        case .noInstalledApps: return NSLocalizedString("No installed apps to refresh.", comment: "")
+        case .noInstalledApps: return NSLocalizedString("No active apps require refreshing.", comment: "")
         }
     }
 }
@@ -64,9 +64,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     private var runningApplications: Set<String>?
+    private var backgroundRefreshContext: NSManagedObjectContext? // Keep context alive until finished refreshing.
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        AnalyticsManager.shared.start()
+        
         self.setTintColor()
         
         ServerManager.shared.startDiscovering()
@@ -209,6 +212,8 @@ extension AppDelegate
                 }
                 
                 taskCompletionHandler()
+                
+                self.backgroundRefreshContext = nil
             }
             
             if let error = taskResult.error
@@ -247,20 +252,20 @@ private extension AppDelegate
                      backgroundFetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void,
                      completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
     {
-        var fetchSourceResult: Result<Source, Error>?
+        var fetchSourcesResult: Result<Set<Source>, Error>?
         var serversResult: Result<Void, Error>?
         
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         
-        AppManager.shared.fetchSource() { (result) in
-            fetchSourceResult = result
+        AppManager.shared.fetchSources() { (result) in
+            fetchSourcesResult = result
             
             do
             {
-                let source = try result.get()
+                let sources = try result.get()
                 
-                guard let context = source.managedObjectContext else { return }
+                guard let context = sources.first?.managedObjectContext else { return }
                 
                 let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
@@ -328,7 +333,7 @@ private extension AppDelegate
             {
                 print("Error fetching apps:", error)
                 
-                fetchSourceResult = .failure(error)
+                fetchSourcesResult = .failure(error)
             }
             
             dispatchGroup.leave()
@@ -339,7 +344,6 @@ private extension AppDelegate
             dispatchGroup.enter()
             
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                
                 let installedApps = InstalledApp.fetchAppsForBackgroundRefresh(in: context)
                 guard !installedApps.isEmpty else {
                     serversResult = .success(())
@@ -351,6 +355,7 @@ private extension AppDelegate
                 }
                 
                 self.runningApplications = []
+                self.backgroundRefreshContext = context
                 
                 let identifiers = installedApps.compactMap { $0.bundleIdentifier }
                 print("Apps to refresh:", identifiers)
@@ -398,7 +403,7 @@ private extension AppDelegate
                             
                             // Also since AltServer has already received the app, it can finish installing even if we're no longer running in background.
                             
-                            if let error = group.error
+                            if let error = group.context.error
                             {
                                 self.scheduleFinishedRefreshingNotification(for: .failure(error), identifier: identifier)
                             }
@@ -410,8 +415,8 @@ private extension AppDelegate
                                 self.scheduleFinishedRefreshingNotification(for: .success(results), identifier: identifier)
                             }
                         }
-                        group.completionHandler = { (result) in
-                            completionHandler(result)
+                        group.completionHandler = { (results) in
+                            completionHandler(.success(results))
                         }
                     }
                 }
@@ -421,12 +426,12 @@ private extension AppDelegate
         dispatchGroup.notify(queue: .main) {
             if !UserDefaults.standard.isBackgroundRefreshEnabled
             {
-                guard let fetchSourceResult = fetchSourceResult else {
+                guard let fetchSourcesResult = fetchSourcesResult else {
                     backgroundFetchCompletionHandler(.failed)
                     return
                 }
                 
-                switch fetchSourceResult
+                switch fetchSourcesResult
                 {
                 case .failure: backgroundFetchCompletionHandler(.failed)
                 case .success: backgroundFetchCompletionHandler(.newData)
@@ -436,13 +441,13 @@ private extension AppDelegate
             }
             else
             {
-                guard let fetchSourceResult = fetchSourceResult, let serversResult = serversResult else {
+                guard let fetchSourcesResult = fetchSourcesResult, let serversResult = serversResult else {
                     backgroundFetchCompletionHandler(.failed)
                     return
                 }
                 
                 // Call completionHandler early to improve chances of refreshing in the background again.
-                switch (fetchSourceResult, serversResult)
+                switch (fetchSourcesResult, serversResult)
                 {
                 case (.success, .success): backgroundFetchCompletionHandler(.newData)
                 case (.success, .failure(ConnectionError.serverNotFound)): backgroundFetchCompletionHandler(.newData)

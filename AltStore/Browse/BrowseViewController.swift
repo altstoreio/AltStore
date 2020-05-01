@@ -31,6 +31,14 @@ class BrowseViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        #if BETA
+        self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
+        self.navigationItem.searchController = self.dataSource.searchController
+        #else
+        // Hide Sources button for public version while in beta.
+        self.navigationItem.rightBarButtonItem = nil
+        #endif
+        
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
         self.collectionView.register(BrowseCollectionViewCell.nib, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
@@ -50,6 +58,11 @@ class BrowseViewController: UICollectionViewController
         self.fetchSource()
         self.updateDataSource()
     }
+    
+    @IBAction private func unwindToBrowseViewController(_ segue: UIStoryboardSegue)
+    {
+        self.fetchSource()
+    }
 }
 
 private extension BrowseViewController
@@ -57,17 +70,12 @@ private extension BrowseViewController
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: true), NSSortDescriptor(keyPath: \StoreApp.name, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+                                        NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: true),
+                                        NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                                        NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
-        
-        if let source = Source.fetchAltStoreSource(in: DatabaseManager.shared.viewContext)
-        {
-            fetchRequest.predicate = NSPredicate(format: "%K != %@ AND %K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(StoreApp.source), source)
-        }
-        else
-        {
-            fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
-        }
+        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
@@ -167,23 +175,25 @@ private extension BrowseViewController
     {
         self.loadingState = .loading
         
-        AppManager.shared.fetchSource() { (result) in
+        AppManager.shared.fetchSources() { (result) in
             do
             {
-                let source = try result.get()
-                try source.managedObjectContext?.save()
+                let sources = try result.get()
+                try sources.first?.managedObjectContext?.save()
                 
                 DispatchQueue.main.async {
                     self.loadingState = .finished(.success(()))
                 }
             }
-            catch
+            catch let error as NSError
             {
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let error = error.withLocalizedFailure(NSLocalizedString("Failed to Fetch Sources", comment: ""))
+                        
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                     }
                     
                     self.loadingState = .finished(.failure(error))

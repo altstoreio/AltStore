@@ -13,3 +13,6 @@
 [submodule "Dependencies/libplist"]
 	path = Dependencies/libplist
 	url = https://github.com/libimobiledevice/libplist.git
+[submodule "Dependencies/MarkdownAttributedString"]
+	path = Dependencies/MarkdownAttributedString
+	url = https://github.com/chockenberry/MarkdownAttributedString.git

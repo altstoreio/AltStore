@@ -227,8 +227,8 @@ private extension PatreonViewController
             catch
             {
                 DispatchQueue.main.async {
-                    let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                    toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                 }
             }
         }
@@ -250,8 +250,8 @@ private extension PatreonViewController
                 catch
                 {
                     DispatchQueue.main.async {
-                        let toastView = ToastView(text: error.localizedDescription, detailText: nil)
-                        toastView.show(in: self.navigationController?.view ?? self.view, duration: 2.0)
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
                     }
                 }
             }

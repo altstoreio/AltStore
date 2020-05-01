@@ -22,6 +22,23 @@ extension UserDefaults
     
     @NSManaged var legacySideloadedApps: [String]?
     
+    var activeAppsLimit: Int? {
+        get {
+            return self._activeAppsLimit?.intValue
+        }
+        set {
+            if let value = newValue
+            {
+                self._activeAppsLimit = NSNumber(value: value)
+            }
+            else
+            {
+                self._activeAppsLimit = nil
+            }
+        }
+    }
+    @NSManaged @objc(activeAppsLimit) private var _activeAppsLimit: NSNumber?
+    
     func registerDefaults()
     {
         self.register(defaults: [#keyPath(UserDefaults.isBackgroundRefreshEnabled): true])

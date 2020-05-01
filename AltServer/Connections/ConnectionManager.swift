@@ -21,9 +21,8 @@ extension ALTServerError
         case let error as ALTServerError: self = error
         case is DecodingError: self = ALTServerError(.invalidRequest)
         case is EncodingError: self = ALTServerError(.invalidResponse)
-        default:
-            assertionFailure("Caught unknown error type")
-            self = ALTServerError(.unknown)
+        case let error as NSError:
+            self = ALTServerError(.unknown, userInfo: error.userInfo)
         }
     }
 }
@@ -266,7 +265,15 @@ private extension ConnectionManager
             case .success(.prepareApp(let request)):
                 self.handlePrepareAppRequest(request, for: connection)
                 
-            case .success:
+            case .success(.beginInstallation): break
+                
+            case .success(.installProvisioningProfiles(let request)):
+                self.handleInstallProvisioningProfilesRequest(request, for: connection)
+                
+            case .success(.removeProvisioningProfiles(let request)):
+                self.handleRemoveProvisioningProfilesRequest(request, for: connection)
+                
+            case .success(.unknown):
                 let response = ErrorResponse(error: ALTServerError(.unknownRequest))
                 connection.send(response, shouldDisconnect: true) { (result) in
                     print("Sent unknown request response with result:", result)
@@ -344,10 +351,10 @@ private extension ConnectionManager
                     switch result
                     {
                     case .failure(let error): finish(.failure(error))
-                    case .success(.beginInstallation):
+                    case .success(.beginInstallation(let installRequest)):
                         print("Installing to device \(request.udid)...")
                         
-                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, connection: connection) { (result) in
+                        self.installApp(at: fileURL, toDeviceWithUDID: request.udid, activeProvisioningProfiles: installRequest.activeProfiles, connection: connection) { (result) in
                             print("Installed to device with result:", result)
                             switch result
                             {
@@ -396,14 +403,14 @@ private extension ConnectionManager
         }
     }
     
-    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, connection: ClientConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
+    func installApp(at fileURL: URL, toDeviceWithUDID udid: String, activeProvisioningProfiles: Set<String>?, connection: ClientConnection, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {
         let serialQueue = DispatchQueue(label: "com.altstore.ConnectionManager.installQueue", qos: .default)
         var isSending = false
         
         var observation: NSKeyValueObservation?
         
-        let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid) { (success, error) in
+        let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid, activeProvisioningProfiles: activeProvisioningProfiles) { (success, error) in
             print("Installed app with result:", error == nil ? "Success" : error!.localizedDescription)
             
             if let error = error.map({ $0 as? ALTServerError ?? ALTServerError(.unknown) })
@@ -434,6 +441,54 @@ private extension ConnectionManager
                 }
             }
         })
+    }
+    
+    func handleInstallProvisioningProfilesRequest(_ request: InstallProvisioningProfilesRequest, for connection: ClientConnection)
+    {
+        ALTDeviceManager.shared.installProvisioningProfiles(request.provisioningProfiles, toDeviceWithUDID: request.udid, activeProvisioningProfiles: request.activeProfiles) { (success, error) in
+            if let error = error, !success
+            {
+                print("Failed to install profiles \(request.provisioningProfiles.map { $0.bundleIdentifier }):", error)
+                
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                connection.send(errorResponse, shouldDisconnect: true) { (result) in
+                    print("Sent install profiles error response with result:", result)
+                }
+            }
+            else
+            {
+                print("Installed profiles:", request.provisioningProfiles.map { $0.bundleIdentifier })
+                
+                let response = InstallProvisioningProfilesResponse()
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent install profiles response to \(connection) with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handleRemoveProvisioningProfilesRequest(_ request: RemoveProvisioningProfilesRequest, for connection: ClientConnection)
+    {
+        ALTDeviceManager.shared.removeProvisioningProfiles(forBundleIdentifiers: request.bundleIdentifiers, fromDeviceWithUDID: request.udid) { (success, error) in
+            if let error = error, !success
+            {
+                print("Failed to remove profiles \(request.bundleIdentifiers):", error)
+                
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                connection.send(errorResponse, shouldDisconnect: true) { (result) in
+                    print("Sent remove profiles error response with result:", result)
+                }
+            }
+            else
+            {
+                print("Removed profiles:", request.bundleIdentifiers)
+                
+                let response = RemoveProvisioningProfilesResponse()
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent remove profiles error response to \(connection) with result:", result)
+                }
+            }
+        }
     }
 }
 

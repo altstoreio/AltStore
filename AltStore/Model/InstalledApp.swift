@@ -11,6 +11,9 @@ import CoreData
 
 import AltSign
 
+// Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
+let ALTActiveAppsLimit = 3
+
 protocol InstalledAppProtocol: Fetchable
 {
     var name: String { get }
@@ -36,6 +39,10 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged var expirationDate: Date
     @NSManaged var installedDate: Date
     
+    @NSManaged var isActive: Bool
+    
+    @NSManaged var certificateSerialNumber: String?
+    
     /* Relationships */
     @NSManaged var storeApp: StoreApp?
     @NSManaged var team: Team?
@@ -45,12 +52,16 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         return self.storeApp == nil
     }
     
+    var appIDCount: Int {
+        return 1 + self.appExtensions.count
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(resignedApp: ALTApplication, originalBundleIdentifier: String, context: NSManagedObjectContext)
+    init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -61,21 +72,28 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
         
-        self.update(resignedApp: resignedApp)
+        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
     }
     
-    func update(resignedApp: ALTApplication)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        
+        self.certificateSerialNumber = certificateSerialNumber
 
         if let provisioningProfile = resignedApp.provisioningProfile
         {
-            self.refreshedDate = provisioningProfile.creationDate
-            self.expirationDate = provisioningProfile.expirationDate
+            self.update(provisioningProfile: provisioningProfile)
         }
+    }
+    
+    func update(provisioningProfile: ALTProvisioningProfile)
+    {
+        self.refreshedDate = provisioningProfile.creationDate
+        self.expirationDate = provisioningProfile.expirationDate
     }
 }
 
@@ -89,7 +107,15 @@ extension InstalledApp
     class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K != nil AND %K != %K", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+        return fetchRequest
+    }
+    
+    class func activeAppsFetchRequest() -> NSFetchRequest<InstalledApp>
+    {
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
+        fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(InstalledApp.isActive))
         return fetchRequest
     }
     
@@ -101,9 +127,15 @@ extension InstalledApp
         return altStore
     }
     
+    class func fetchActiveApps(in context: NSManagedObjectContext) -> [InstalledApp]
+    {
+        let activeApps = InstalledApp.fetch(InstalledApp.activeAppsFetchRequest(), in: context)
+        return activeApps
+    }
+    
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        var predicate = NSPredicate(format: "%K != %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        var predicate = NSPredicate(format: "%K == YES AND %K != %@", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
         if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
@@ -133,7 +165,8 @@ extension InstalledApp
         // Date 6 hours before now.
         let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
         
-        var predicate = NSPredicate(format: "(%K < %@) AND (%K != %@)",
+        var predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@)",
+                                    #keyPath(InstalledApp.isActive),
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
                                     #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
         
@@ -153,7 +186,7 @@ extension InstalledApp
         
         if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
         {
-            // Refresh AltStore last since it causes app to quit.
+            // Refresh AltStore last since it may cause app to quit.
             installedApps.append(altStoreApp)
         }
         
