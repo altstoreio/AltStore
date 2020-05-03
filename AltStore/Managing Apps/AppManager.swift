@@ -396,6 +396,11 @@ private extension AppManager
             self.set(progress, for: operation)
         }
         
+        if let viewController = presentingViewController
+        {
+            group.context.presentingViewController = viewController
+        }
+        
         /* Authenticate (if necessary) */
         var authenticationOperation: AuthenticationOperation?
         if group.context.session == nil
@@ -503,6 +508,16 @@ private extension AppManager
         }
         progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
         
+        /* Verify App */
+        let verifyOperation = VerifyAppOperation(context: context)
+        verifyOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
+        verifyOperation.addDependency(downloadOperation)
         
         /* Refresh Anisette Data */
         let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: group.context)
@@ -513,7 +528,7 @@ private extension AppManager
             case .success(let anisetteData): group.context.session?.anisetteData = anisetteData
             }
         }
-        refreshAnisetteDataOperation.addDependency(downloadOperation)
+        refreshAnisetteDataOperation.addDependency(verifyOperation)
         
         
         /* Fetch Provisioning Profiles */
@@ -579,7 +594,7 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        let operations = [downloadOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        let operations = [downloadOperation, verifyOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
         self.run(operations, context: group.context)
         

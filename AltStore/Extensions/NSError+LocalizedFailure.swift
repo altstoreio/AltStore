@@ -25,3 +25,18 @@ extension NSError
         return error
     }
 }
+
+protocol ALTLocalizedError: LocalizedError, CustomNSError
+{
+    var errorFailure: String? { get }
+}
+
+extension ALTLocalizedError
+{
+    var errorUserInfo: [String : Any] {
+        let userInfo = [NSLocalizedDescriptionKey: self.errorDescription,
+                        NSLocalizedFailureReasonErrorKey: self.failureReason,
+                        NSLocalizedFailureErrorKey: self.errorFailure].compactMapValues { $0 }
+        return userInfo
+    }
+}

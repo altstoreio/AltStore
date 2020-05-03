@@ -17,6 +17,8 @@ class OperationContext
     var server: Server?
     var error: Error?
     
+    var presentingViewController: UIViewController?
+    
     let operations: NSHashTable<Foundation.Operation>
     
     init(server: Server? = nil, error: Error? = nil, operations: [Foundation.Operation] = [])
