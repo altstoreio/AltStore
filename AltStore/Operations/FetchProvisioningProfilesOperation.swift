@@ -237,7 +237,7 @@ extension FetchProvisioningProfilesOperation
             {
                 let appIDs = try Result(appIDs, error).get()
                 
-                if let appID = appIDs.first(where: { $0.bundleIdentifier == bundleIdentifier })
+                if let appID = appIDs.first(where: { $0.bundleIdentifier.lowercased() == bundleIdentifier.lowercased() })
                 {
                     completionHandler(.success(appID))
                 }
