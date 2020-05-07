@@ -15,11 +15,14 @@ import Roxas
 
 enum VerificationError: ALTLocalizedError
 {
-    case privateEntitlements(ALTApplication, [String: Any])
+    case privateEntitlements(ALTApplication, entitlements: [String: Any])
+    case mismatchedBundleIdentifiers(ALTApplication, sourceBundleID: String)
     
     var app: ALTApplication {
-        switch self {
+        switch self
+        {
         case .privateEntitlements(let app, _): return app
+        case .mismatchedBundleIdentifiers(let app, _): return app
         }
     }
     
@@ -32,6 +35,9 @@ enum VerificationError: ALTLocalizedError
         {
         case .privateEntitlements(let app, _):
             return String(format: NSLocalizedString("“%@” requires private permissions.", comment: ""), app.name)
+            
+        case .mismatchedBundleIdentifiers(let app, let sourceBundleID):
+            return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), app.bundleIdentifier, sourceBundleID)
         }
     }
 }
@@ -61,7 +67,12 @@ class VerifyAppOperation: ResultOperation<Void>
             }
             
             guard let app = self.context.app else { throw OperationError.invalidParameters }
+            
+            guard app.bundleIdentifier == self.context.bundleIdentifier else {
+                throw VerificationError.mismatchedBundleIdentifiers(app, sourceBundleID: self.context.bundleIdentifier)
+            }
                         
+            // Make sure this goes last, since once user responds to alert we don't do any more app verification.
             if let commentStart = app.entitlementsString.range(of: "<!---><!-->"), let commentEnd = app.entitlementsString.range(of: "<!-- -->")
             {
                 // Psychic Paper private entitlements.
@@ -81,7 +92,7 @@ class VerifyAppOperation: ResultOperation<Void>
                 let entitlementsPlist = String(format: plistTemplate, rawEntitlements)
                 let entitlements = try PropertyListSerialization.propertyList(from: entitlementsPlist.data(using: .utf8)!, options: [], format: nil) as! [String: Any]
                 
-                let error = VerificationError.privateEntitlements(app, entitlements)
+                let error = VerificationError.privateEntitlements(app, entitlements: entitlements)
                 self.process(error) { (result) in
                     self.finish(result.mapError { $0 as Error })
                 }
@@ -125,6 +136,8 @@ private extension VerifyAppOperation
                     completion(.failure(error))
                 }))
                 presentingViewController.present(alertController, animated: true, completion: nil)
+                
+            case .mismatchedBundleIdentifiers: return completion(.failure(error))
             }
         }
     }
