@@ -105,6 +105,7 @@ extension AppManager
                         
                         if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.installationProgress.keys.contains(bundleID)
                         {
+                            print("DELETING CACHED APP:", bundleID)
                             try FileManager.default.removeItem(at: appDirectory)
                         }
                     }
