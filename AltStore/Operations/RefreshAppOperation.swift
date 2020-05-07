@@ -88,7 +88,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                                         self.managedObjectContext.perform {
                                             let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier)
                                             guard let installedApp = InstalledApp.first(satisfying: predicate, in: self.managedObjectContext) else {
-                                                return self.finish(.failure(OperationError.invalidApp))
+                                                return self.finish(.failure(OperationError.appNotFound))
                                             }
                                             
                                             self.progress.completedUnitCount += 1
