@@ -40,12 +40,9 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                 throw error
             }
             
-            guard
-                let server = self.context.server,
-                let app = self.context.app,
-                let profiles = self.context.provisioningProfiles
-            else { throw OperationError.invalidParameters }
+            guard let server = self.context.server, let profiles = self.context.provisioningProfiles else { throw OperationError.invalidParameters }
             
+            guard let app = self.context.app else { throw OperationError.appNotFound }
             guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
             
             ServerManager.shared.connect(to: server) { (result) in

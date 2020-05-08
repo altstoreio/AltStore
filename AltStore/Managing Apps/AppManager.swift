@@ -498,8 +498,16 @@ private extension AppManager
             group.beginInstallationHandler?(installedApp)
         }
         
+        var downloadingApp = app
+        
+        if let installedApp = app as? InstalledApp, let storeApp = installedApp.storeApp, !FileManager.default.fileExists(atPath: installedApp.fileURL.path)
+        {
+            // Cached app has been deleted, so we need to redownload it.
+            downloadingApp = storeApp
+        }
+        
         /* Download */
-        let downloadOperation = DownloadAppOperation(app: app, context: context)
+        let downloadOperation = DownloadAppOperation(app: downloadingApp, context: context)
         downloadOperation.resultHandler = { (result) in
             switch result
             {
@@ -628,8 +636,9 @@ private extension AppManager
             case .success(let installedApp):
                 completionHandler(.success(installedApp))
                 
-            case .failure(ALTServerError.unknownRequest):
-                // Fall back to installation if AltServer doesn't support newer provisioning profile requests.
+            case .failure(ALTServerError.unknownRequest), .failure(OperationError.appNotFound):
+                // Fall back to installation if AltServer doesn't support newer provisioning profile requests,
+                // OR if the cached app could not be found and we may need to redownload it.
                 app.managedObjectContext?.performAndWait { // Must performAndWait to ensure we add operations before we return.
                     let installProgress = self._install(app, operation: operation, group: group) { (result) in
                         completionHandler(result)
