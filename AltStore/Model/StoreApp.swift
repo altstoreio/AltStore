@@ -24,6 +24,8 @@ extension StoreApp
     static let altstoreAppID = "com.rileytestut.AltStore"
     static let alternativeAltStoreAppIDs: Set<String> = ["com.rileytestut.AltStore.Beta", "com.rileytestut.AltStore.Alpha"]
     #endif
+    
+    static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
 }
 
 @objc(StoreApp)

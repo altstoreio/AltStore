@@ -83,6 +83,19 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
                 
                 try FileManager.default.copyItem(at: appBundleURL, to: self.destinationURL, shouldReplace: true)
                 
+                if self.context.bundleIdentifier == StoreApp.dolphinAppID, self.context.bundleIdentifier != application.bundleIdentifier
+                {
+                    let infoPlistURL = self.destinationURL.appendingPathComponent("Info.plist")
+
+                    if var infoPlist = NSDictionary(contentsOf: infoPlistURL) as? [String: Any]
+                    {
+                        // Manually update the app's bundle identifier to match the one specified in the source.
+                        // This allows people who previously installed the app to still update and refresh normally.
+                        infoPlist[kCFBundleIdentifierKey as String] = StoreApp.dolphinAppID
+                        (infoPlist as NSDictionary).write(to: infoPlistURL, atomically: true)
+                    }
+                }
+                
                 guard let copiedApplication = ALTApplication(fileURL: self.destinationURL) else { throw OperationError.invalidApp }
                 self.finish(.success(copiedApplication))
             }
