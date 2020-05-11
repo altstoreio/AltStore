@@ -21,19 +21,19 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
     [NSError setUserInfoValueProviderForDomain:AltServerErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
         if ([userInfoKey isEqualToString:NSLocalizedFailureReasonErrorKey])
         {
-            return [error alt_localizedFailureReason];
+            return [error altserver_localizedFailureReason];
         }
         
         if ([userInfoKey isEqualToString:NSLocalizedRecoverySuggestionErrorKey])
         {
-            return [error alt_localizedRecoverySuggestion];
+            return [error altserver_localizedRecoverySuggestion];
         }
         
         return nil;
     }];
 }
 
-- (nullable NSString *)alt_localizedFailureReason
+- (nullable NSString *)altserver_localizedFailureReason
 {
     switch ((ALTServerError)self.code)
     {
@@ -98,7 +98,7 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
     }
 }
 
-- (nullable NSString *)alt_localizedRecoverySuggestion
+- (nullable NSString *)altserver_localizedRecoverySuggestion
 {
     switch ((ALTServerError)self.code)
     {
