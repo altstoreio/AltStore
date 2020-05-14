@@ -46,8 +46,8 @@ class RefreshGroup: NSObject
         
         if self.operations.isEmpty && !operations.isEmpty
         {
-            self.dispatchGroup.notify(queue: .global()) {
-                self.finish()
+            self.dispatchGroup.notify(queue: .global()) { [weak self] in
+                self?.finish()
             }
         }
         
