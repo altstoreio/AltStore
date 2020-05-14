@@ -1160,7 +1160,7 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         {
             if (code != 0 || name != NULL)
             {
-                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name), @(description));
+                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name ?: ""), @(description ?: ""));
                 
                 NSError *error = nil;
                 
@@ -1170,14 +1170,14 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
                 }
                 else
                 {
-                    NSString *errorName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+                    NSString *errorName = [NSString stringWithCString:name ?: "" encoding:NSUTF8StringEncoding];
                     if ([errorName isEqualToString:@"DeviceOSVersionTooLow"])
                     {
                         error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnsupportediOSVersion userInfo:nil];
                     }
                     else
                     {
-                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description)}];
+                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description ?: "")}];
                         error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
                     }
                 }
