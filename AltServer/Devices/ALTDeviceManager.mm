@@ -20,6 +20,7 @@
 #include <libimobiledevice/misagent.h>
 
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
+void ALTDeviceManagerUpdateAppDeletionStatus(plist_t command, plist_t status, void *uuid);
 void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user_data);
 
 NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification = @"ALTDeviceManagerDeviceDidConnectNotification";
@@ -28,6 +29,8 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 @interface ALTDeviceManager ()
 
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *installationCompletionHandlers;
+@property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *deletionCompletionHandlers;
+
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
 @property (nonatomic, readonly) dispatch_queue_t installationQueue;
 
@@ -54,8 +57,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     if (self)
     {
         _installationCompletionHandlers = [NSMutableDictionary dictionary];
-        _installationProgress = [NSMutableDictionary dictionary];
+        _deletionCompletionHandlers = [NSMutableDictionary dictionary];
         
+        _installationProgress = [NSMutableDictionary dictionary];
         _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
         
         _cachedDevices = [NSMutableSet set];
@@ -496,6 +500,87 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     afc_file_close(afc, af);
     
     return success;
+}
+
+- (void)removeAppForBundleIdentifier:(NSString *)bundleIdentifier fromDeviceWithUDID:(NSString *)udid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    
+    void (^finish)(NSError *error) = ^(NSError *e) {
+        __block NSError *error = e;
+        
+        lockdownd_service_descriptor_free(service);
+        instproxy_client_free(ipc);
+        lockdownd_client_free(client);
+        idevice_free(device);
+        
+        if (error != nil)
+        {
+            completionHandler(NO, error);
+        }
+        else
+        {
+            completionHandler(YES, nil);
+        }
+    };
+    
+    /* Find Device */
+    if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+    {
+        return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+    }
+    
+    /* Connect to Device */
+    if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+    {
+        return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    /* Connect to Installation Proxy */
+    if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+    {
+        return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    if (instproxy_client_new(device, service, &ipc) != INSTPROXY_E_SUCCESS)
+    {
+        return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+    }
+    
+    if (service)
+    {
+        lockdownd_service_descriptor_free(service);
+        service = NULL;
+    }
+    
+    NSUUID *UUID = [NSUUID UUID];
+    __block char *uuidString = (char *)malloc(UUID.UUIDString.length + 1);
+    strncpy(uuidString, (const char *)UUID.UUIDString.UTF8String, UUID.UUIDString.length);
+    uuidString[UUID.UUIDString.length] = '\0';
+    
+    self.deletionCompletionHandlers[UUID] = ^(NSError *error) {
+        if (error != nil)
+        {
+            NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"Could not remove “%@”.", @""), bundleIdentifier];
+            
+            NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
+            userInfo[NSLocalizedFailureErrorKey] = localizedFailure;
+            
+            NSError *localizedError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
+            finish(localizedError);
+        }
+        else
+        {
+            finish(nil);
+        }
+        
+        free(uuidString);
+    };
+    
+    instproxy_uninstall(ipc, bundleIdentifier.UTF8String, NULL, ALTDeviceManagerUpdateAppDeletionStatus, uuidString);
 }
 
 #pragma mark - Provisioning Profiles -
@@ -1114,6 +1199,43 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         progress.completedUnitCount = percent;
         
         NSLog(@"Installation Progress: %@", @(percent));
+    }
+}
+
+void ALTDeviceManagerUpdateAppDeletionStatus(plist_t command, plist_t status, void *uuid)
+{
+    NSUUID *UUID = [[NSUUID alloc] initWithUUIDString:[NSString stringWithUTF8String:(const char *)uuid]];
+    
+    char *statusName = NULL;
+    instproxy_status_get_name(status, &statusName);
+
+    char *errorName = NULL;
+    char *errorDescription = NULL;
+    uint64_t code = 0;
+    instproxy_status_get_error(status, &errorName, &errorDescription, &code);
+    
+    if ([@(statusName) isEqualToString:@"Complete"] || code != 0 || errorName != NULL)
+    {
+        void (^completionHandler)(NSError *) = ALTDeviceManager.sharedManager.deletionCompletionHandlers[UUID];
+        if (completionHandler != nil)
+        {
+            if (code != 0 || errorName != NULL)
+            {
+                NSLog(@"Error removing app. %@ (%@). %@", @(code), @(errorName ?: ""), @(errorDescription ?: ""));
+                
+                NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(errorDescription ?: "")}];
+                NSError *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorAppDeletionFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
+                
+                completionHandler(error);
+            }
+            else
+            {
+                NSLog(@"Finished removing app!");
+                completionHandler(nil);
+            }
+            
+            ALTDeviceManager.sharedManager.deletionCompletionHandlers[UUID] = nil;
+        }
     }
 }
 

@@ -95,6 +95,9 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
             
         case ALTServerErrorProfileNotFound:
             return [self profileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not find profile", "")];
+            
+        case ALTServerErrorAppDeletionFailed:
+            return NSLocalizedString(@"An error occured while removing the app.", @"");
     }
 }
 
