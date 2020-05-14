@@ -72,6 +72,8 @@ extension AppManager
                         continue
                     }
                     
+                    guard !self.isActivelyManagingApp(withBundleID: app.bundleIdentifier) else { continue }
+                    
                     let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
                     if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
                     {
@@ -103,7 +105,7 @@ extension AppManager
                         let resourceValues = try appDirectory.resourceValues(forKeys: [.isDirectoryKey, .nameKey])
                         guard let isDirectory = resourceValues.isDirectory, let bundleID = resourceValues.name else { continue }
                         
-                        if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.installationProgress.keys.contains(bundleID)
+                        if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.isActivelyManagingApp(withBundleID: bundleID)
                         {
                             print("DELETING CACHED APP:", bundleID)
                             try FileManager.default.removeItem(at: appDirectory)
@@ -384,6 +386,12 @@ private extension AppManager
             
             return bundleIdentifier
         }
+    }
+    
+    func isActivelyManagingApp(withBundleID bundleID: String) -> Bool
+    {
+        let isActivelyManaging = self.installationProgress.keys.contains(bundleID) || self.refreshProgress.keys.contains(bundleID)
+        return isActivelyManaging
     }
     
     @discardableResult
