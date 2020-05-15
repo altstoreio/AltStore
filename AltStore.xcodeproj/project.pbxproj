@@ -27,7 +27,6 @@
 		BF1E312B229F474900370A3C /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* ConnectionManager.swift */; };
 		BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
 		BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBAC8852295C90300587369 /* Result+Conveniences.swift */; };
-		BF1E315922A061FB00370A3C /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
 		BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
 		BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
@@ -50,6 +49,7 @@
 		BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */; };
 		BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; };
 		BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF44EEF0246B08BA002A52F2 /* BackupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EEEF246B08BA002A52F2 /* BackupController.swift */; };
 		BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF45868F229872EA00BD7491 /* AppDelegate.swift */; };
 		BF458694229872EA00BD7491 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF458693229872EA00BD7491 /* Assets.xcassets */; };
 		BF458697229872EA00BD7491 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF458695229872EA00BD7491 /* Main.storyboard */; };
@@ -118,10 +118,19 @@
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
+		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
 		BF56D2AA23DF88310006506D /* AppID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2A923DF88310006506D /* AppID.swift */; };
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
+		BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF58047D246A28F7008AE704 /* AppDelegate.swift */; };
+		BF580482246A28F7008AE704 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF580481246A28F7008AE704 /* ViewController.swift */; };
+		BF580487246A28F9008AE704 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF580486246A28F9008AE704 /* Assets.xcassets */; };
+		BF58048A246A28F9008AE704 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF580488246A28F9008AE704 /* LaunchScreen.storyboard */; };
+		BF580492246A2C5C008AE704 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
+		BF580496246A3CB5008AE704 /* UIColor+AltBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF580495246A3CB5008AE704 /* UIColor+AltBackup.swift */; };
+		BF580498246A3D19008AE704 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF580497246A3D19008AE704 /* UIKit.framework */; };
+		BF58049B246A432D008AE704 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */; };
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
@@ -360,6 +369,7 @@
 		BF43002D22A714AF0051E2BC /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltStore.swift"; sourceTree = "<group>"; };
 		BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
+		BF44EEEF246B08BA002A52F2 /* BackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupController.swift; sourceTree = "<group>"; };
 		BF45868D229872EA00BD7491 /* AltServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF45868F229872EA00BD7491 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF458693229872EA00BD7491 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -441,6 +451,15 @@
 		BF56D2A923DF88310006506D /* AppID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppID.swift; sourceTree = "<group>"; };
 		BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppIDsOperation.swift; sourceTree = "<group>"; };
 		BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIDsViewController.swift; sourceTree = "<group>"; };
+		BF58047B246A28F7008AE704 /* AltBackup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltBackup.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF58047D246A28F7008AE704 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BF580481246A28F7008AE704 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BF580486246A28F9008AE704 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF580489246A28F9008AE704 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BF58048B246A28F9008AE704 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF580495246A3CB5008AE704 /* UIColor+AltBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltBackup.swift"; sourceTree = "<group>"; };
+		BF580497246A3D19008AE704 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BF580499246A4153008AE704 /* AltBackup.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltBackup.entitlements; sourceTree = "<group>"; };
 		BF5AB3A72285FE6C00DC914B /* AltSign.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5C5FC5237DF5AE00EDD0C6 /* AltPlugin.mailbundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltPlugin.mailbundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5C5FC7237DF5AE00EDD0C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -619,6 +638,14 @@
 				BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */,
 				BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */,
 				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF580478246A28F7008AE704 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF580498246A3D19008AE704 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -902,6 +929,21 @@
 			path = "App IDs";
 			sourceTree = "<group>";
 		};
+		BF58047C246A28F7008AE704 /* AltBackup */ = {
+			isa = PBXGroup;
+			children = (
+				BF580499246A4153008AE704 /* AltBackup.entitlements */,
+				BF58047D246A28F7008AE704 /* AppDelegate.swift */,
+				BF580481246A28F7008AE704 /* ViewController.swift */,
+				BF44EEEF246B08BA002A52F2 /* BackupController.swift */,
+				BF580495246A3CB5008AE704 /* UIColor+AltBackup.swift */,
+				BF580486246A28F9008AE704 /* Assets.xcassets */,
+				BF580488246A28F9008AE704 /* LaunchScreen.storyboard */,
+				BF58048B246A28F9008AE704 /* Info.plist */,
+			);
+			path = AltBackup;
+			sourceTree = "<group>";
+		};
 		BF5C5FC6237DF5AE00EDD0C6 /* AltPlugin */ = {
 			isa = PBXGroup;
 			children = (
@@ -1019,6 +1061,7 @@
 				BF1E315122A0616100370A3C /* AltKit */,
 				BF45872C2298D31600BD7491 /* libimobiledevice */,
 				BF5C5FC6237DF5AE00EDD0C6 /* AltPlugin */,
+				BF58047C246A28F7008AE704 /* AltBackup */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
 				4460E048E3AC1C9708C4FA33 /* Pods */,
@@ -1033,6 +1076,7 @@
 				BF45872B2298D31600BD7491 /* libimobiledevice.a */,
 				BF1E315022A0616100370A3C /* libAltKit.a */,
 				BF5C5FC5237DF5AE00EDD0C6 /* AltPlugin.mailbundle */,
+				BF58047B246A28F7008AE704 /* AltBackup.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1073,6 +1117,7 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF580497246A3D19008AE704 /* UIKit.framework */,
 				BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */,
 				BF9B63C5229DD44D002F0A62 /* AltSign.framework */,
 				BF4588962298DE6E00BD7491 /* libzip.framework */,
@@ -1370,6 +1415,23 @@
 			productReference = BF45872B2298D31600BD7491 /* libimobiledevice.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		BF58047A246A28F7008AE704 /* AltBackup */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF58048E246A28F9008AE704 /* Build configuration list for PBXNativeTarget "AltBackup" */;
+			buildPhases = (
+				BF580477246A28F7008AE704 /* Sources */,
+				BF580478246A28F7008AE704 /* Frameworks */,
+				BF580479246A28F7008AE704 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AltBackup;
+			productName = AltBackup;
+			productReference = BF58047B246A28F7008AE704 /* AltBackup.app */;
+			productType = "com.apple.product-type.application";
+		};
 		BF5C5FC4237DF5AE00EDD0C6 /* AltPlugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF5C5FC8237DF5AE00EDD0C6 /* Build configuration list for PBXNativeTarget "AltPlugin" */;
@@ -1414,7 +1476,7 @@
 		BFD247622284B9A500981D42 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
+				LastSwiftUpdateCheck = 1140;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Riley Testut";
 				TargetAttributes = {
@@ -1435,6 +1497,9 @@
 					};
 					BF45872A2298D31600BD7491 = {
 						CreatedOnToolsVersion = 10.2.1;
+					};
+					BF58047A246A28F7008AE704 = {
+						CreatedOnToolsVersion = 11.4.1;
 					};
 					BF5C5FC4237DF5AE00EDD0C6 = {
 						CreatedOnToolsVersion = 11.2;
@@ -1472,6 +1537,7 @@
 				BF1E314F22A0616100370A3C /* AltKit */,
 				BF45872A2298D31600BD7491 /* libimobiledevice */,
 				BF5C5FC4237DF5AE00EDD0C6 /* AltPlugin */,
+				BF58047A246A28F7008AE704 /* AltBackup */,
 			);
 		};
 /* End PBXProject section */
@@ -1483,6 +1549,15 @@
 			files = (
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF580479246A28F7008AE704 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF58048A246A28F9008AE704 /* LaunchScreen.storyboard in Resources */,
+				BF580487246A28F9008AE704 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1639,11 +1714,11 @@
 			files = (
 				BF718BD823C93DB700A89F2D /* AltKit.m in Sources */,
 				BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */,
-				BF1E315922A061FB00370A3C /* Bundle+AltStore.swift in Sources */,
 				BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */,
 				BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */,
 				BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */,
 				BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */,
+				BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1721,6 +1796,19 @@
 				BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */,
 				BF45880C2298D3AB00BD7491 /* mobilebackup2.c in Sources */,
 				BFD52C1922A1A9CB000B7ED1 /* Structure.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF580477246A28F7008AE704 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF580492246A2C5C008AE704 /* Bundle+AltStore.swift in Sources */,
+				BF580496246A3CB5008AE704 /* UIColor+AltBackup.swift in Sources */,
+				BF580482246A28F7008AE704 /* ViewController.swift in Sources */,
+				BF44EEF0246B08BA002A52F2 /* BackupController.swift in Sources */,
+				BF58049B246A432D008AE704 /* NSError+LocalizedFailure.swift in Sources */,
+				BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1875,6 +1963,14 @@
 				BF458696229872EA00BD7491 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BF580488246A28F9008AE704 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF580489246A28F9008AE704 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 		BFD247732284B9A500981D42 /* Main.storyboard */ = {
@@ -2106,6 +2202,49 @@
 				PRODUCT_NAME = imobiledevice;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		BF58048C246A28F9008AE704 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				INFOPLIST_FILE = AltBackup/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltBackup;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF58048D246A28F9008AE704 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				INFOPLIST_FILE = AltBackup/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltBackup;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -2365,6 +2504,15 @@
 			buildConfigurations = (
 				BF4587342298D31600BD7491 /* Debug */,
 				BF4587352298D31600BD7491 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF58048E246A28F9008AE704 /* Build configuration list for PBXNativeTarget "AltBackup" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF58048C246A28F9008AE704 /* Debug */,
+				BF58048D246A28F9008AE704 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -38,4 +38,8 @@ public extension Bundle
         let infoPlistURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
         return infoPlistURL
     }
+    
+    var appGroups: [String] {
+        return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
+    }
 }
