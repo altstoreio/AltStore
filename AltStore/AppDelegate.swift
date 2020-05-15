@@ -55,7 +55,10 @@ extension AppDelegate
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
     static let importAppDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.ImportAppDeepLinkNotification")
     
+    static let appBackupDidFinish = Notification.Name("com.rileytestut.AltStore.AppBackupDidFinish")
+    
     static let importAppDeepLinkURLKey = "fileURL"
+    static let appBackupResultKey = "result"
 }
 
 @UIApplicationMain
@@ -134,13 +137,43 @@ private extension AppDelegate
         else
         {
             guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
-            guard let host = components.host, host.lowercased() == "patreon" else { return false }
+            guard let host = components.host?.lowercased() else { return false }
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+            switch host
+            {
+            case "patreon":
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                }
+                
+                return true
+                
+            case "appbackupresponse":
+                let result: Result<Void, Error>
+                
+                switch url.path.lowercased()
+                {
+                case "/success": result = .success(())
+                case "/failure":
+                    let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name] = $1.value } ?? [:]
+                    guard
+                        let errorDomain = queryItems["errorDomain"],
+                        let errorCodeString = queryItems["errorCode"], let errorCode = Int(errorCodeString),
+                        let errorDescription = queryItems["errorDescription"]
+                    else { return false }
+                    
+                    let error = NSError(domain: errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+                    result = .failure(error)
+                    
+                default: return false
+                }
+                
+                NotificationCenter.default.post(name: AppDelegate.appBackupDidFinish, object: nil, userInfo: [AppDelegate.appBackupResultKey: result])
+                
+                return true
+                
+            default: return false
             }
-            
-            return true
         }
     }
 }

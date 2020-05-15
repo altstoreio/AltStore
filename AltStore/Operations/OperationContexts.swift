@@ -105,6 +105,12 @@ class InstallAppOperationContext: AppOperationContext
     
     var resignedApp: ALTApplication?
     var installationConnection: ServerConnection?
+    var installedApp: InstalledApp? {
+        didSet {
+            self.installedAppContext = self.installedApp?.managedObjectContext
+        }
+    }
+    private var installedAppContext: NSManagedObjectContext?
     
     var beginInstallationHandler: ((InstalledApp) -> Void)?
 }

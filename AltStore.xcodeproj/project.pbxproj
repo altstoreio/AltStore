@@ -34,6 +34,7 @@
 		BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
+		BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */; };
 		BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */; };
 		BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */; };
 		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
@@ -354,6 +355,7 @@
 		BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF29012E2318F6B100D88A45 /* AppBannerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppBannerView.xib; sourceTree = "<group>"; };
 		BF2901302318F7A800D88A45 /* AppBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBannerView.swift; sourceTree = "<group>"; };
+		BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupAppOperation.swift; sourceTree = "<group>"; };
 		BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchProvisioningProfilesOperation.swift; sourceTree = "<group>"; };
 		BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAppOperation.swift; sourceTree = "<group>"; };
 		BF3D648722E79A3700E9056B /* AppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermission.swift; sourceTree = "<group>"; };
@@ -1290,6 +1292,7 @@
 				BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */,
 				BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */,
 				BFCCB519245E3401001853EA /* VerifyAppOperation.swift */,
+				BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1912,6 +1915,7 @@
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
+				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
