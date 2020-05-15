@@ -478,7 +478,7 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, additionalEntitlements: [ALTEntitlement: Any]? = nil, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -542,6 +542,7 @@ private extension AppManager
         
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+        fetchProvisioningProfilesOperation.additionalEntitlements = additionalEntitlements
         fetchProvisioningProfilesOperation.resultHandler = { (result) in
             switch result
             {

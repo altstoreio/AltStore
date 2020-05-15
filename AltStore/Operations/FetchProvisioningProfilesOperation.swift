@@ -16,6 +16,8 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
 {
     let context: AppOperationContext
     
+    var additionalEntitlements: [ALTEntitlement: Any]?
+    
     private let appGroupsLock = NSLock()
     
     init(context: AppOperationContext)
@@ -300,14 +302,20 @@ extension FetchProvisioningProfilesOperation
     
     func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
+        var entitlements = app.entitlements
+        for (key, value) in additionalEntitlements ?? [:]
+        {
+            entitlements[key] = value
+        }
+        
+        let requiredFeatures = entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
             guard let feature = ALTFeature(entitlement: entitlement) else { return nil }
             return (feature, value)
         }
         
         var features = requiredFeatures.reduce(into: [ALTFeature: Any]()) { $0[$1.0] = $1.1 }
         
-        if let applicationGroups = app.entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
+        if let applicationGroups = entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
         {
             features[.appGroups] = true
         }
@@ -348,8 +356,14 @@ extension FetchProvisioningProfilesOperation
     
     func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
+        var entitlements = app.entitlements
+        for (key, value) in additionalEntitlements ?? [:]
+        {
+            entitlements[key] = value
+        }
+        
         // TODO: Handle apps belonging to more than one app group.
-        guard let applicationGroups = app.entitlements[.appGroups] as? [String], let groupIdentifier = applicationGroups.first else {
+        guard let applicationGroups = entitlements[.appGroups] as? [String], let groupIdentifier = applicationGroups.first else {
             return completionHandler(.success(appID))
         }
         
