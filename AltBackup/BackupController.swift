@@ -77,10 +77,6 @@ struct BackupError: ALTLocalizedError
 
 class BackupController: NSObject
 {
-    private var altstoreAppGroup: String? {
-        return Bundle.main.appGroups.first
-    }
-    
     private let fileCoordinator = NSFileCoordinator(filePresenter: nil)
     private let operationQueue = OperationQueue()
     
@@ -96,7 +92,7 @@ class BackupController: NSObject
             guard let bundleIdentifier = Bundle.main.bundleIdentifier else { throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to create backup directory.", comment: "")) }
             
             guard
-                let altstoreAppGroup = self.altstoreAppGroup,
+                let altstoreAppGroup = Bundle.main.altstoreAppGroup,
                 let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: altstoreAppGroup)
             else { throw BackupError(.appGroupNotFound(nil), description: NSLocalizedString("Unable to create backup directory.", comment: "")) }
             
@@ -193,7 +189,7 @@ class BackupController: NSObject
             guard let bundleIdentifier = Bundle.main.bundleIdentifier else { throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to access backup.", comment: "")) }
             
             guard
-                let altstoreAppGroup = self.altstoreAppGroup,
+                let altstoreAppGroup = Bundle.main.altstoreAppGroup,
                 let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: altstoreAppGroup)
             else { throw BackupError(.appGroupNotFound(nil), description: NSLocalizedString("Unable to access backup.", comment: "")) }
             

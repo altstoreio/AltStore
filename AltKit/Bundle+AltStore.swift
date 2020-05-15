@@ -24,6 +24,8 @@ public extension Bundle
 
 public extension Bundle
 {
+    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
+    
     var infoPlistURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("Info.plist")
         return infoPlistURL
@@ -41,5 +43,10 @@ public extension Bundle
     
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
+    }
+    
+    var altstoreAppGroup: String? {        
+        let appGroup = self.appGroups.first { $0.contains(Bundle.baseAltStoreAppGroupID) }
+        return appGroup
     }
 }
