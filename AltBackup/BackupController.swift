@@ -89,7 +89,9 @@ class BackupController: NSObject
     {
         do
         {
-            guard let bundleIdentifier = Bundle.main.bundleIdentifier else { throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to create backup directory.", comment: "")) }
+            guard let bundleIdentifier = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.altBundleID) as? String else {
+                throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to create backup directory.", comment: ""))
+            }
             
             guard
                 let altstoreAppGroup = Bundle.main.altstoreAppGroup,
@@ -186,7 +188,9 @@ class BackupController: NSObject
     {
         do
         {
-            guard let bundleIdentifier = Bundle.main.bundleIdentifier else { throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to access backup.", comment: "")) }
+            guard let bundleIdentifier = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.altBundleID) as? String else {
+                throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to access backup.", comment: ""))
+            }
             
             guard
                 let altstoreAppGroup = Bundle.main.altstoreAppGroup,

@@ -6,6 +6,8 @@
 	<array>
 		<string>group.com.rileytestut.AltStore</string>
 	</array>
+	<key>ALTBundleIdentifier</key>
+	<string>com.rileytestut.AltBackup</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
