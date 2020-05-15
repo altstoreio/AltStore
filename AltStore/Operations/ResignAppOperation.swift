@@ -112,6 +112,7 @@ private extension ResignAppOperation
             guard var infoDictionary = bundle.infoDictionary else { throw ALTError(.missingInfoPlist) }
             
             infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
+            infoDictionary[Bundle.Info.altBundleID] = identifier
             
             for (key, value) in additionalInfoDictionaryValues
             {
