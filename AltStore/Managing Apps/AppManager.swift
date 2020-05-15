@@ -486,7 +486,7 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, additionalEntitlements: [ALTEntitlement: Any]? = nil, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -514,13 +514,24 @@ private extension AppManager
             downloadingApp = storeApp
         }
         
+        let downloadedAppURL = context.temporaryDirectory.appendingPathComponent("Cached.app")
+        
         /* Download */
-        let downloadOperation = DownloadAppOperation(app: downloadingApp, context: context)
+        let downloadOperation = DownloadAppOperation(app: downloadingApp, destinationURL: downloadedAppURL, context: context)
         downloadOperation.resultHandler = { (result) in
-            switch result
+            do
             {
-            case .failure(let error): context.error = error
-            case .success(let app): context.app = app
+                let app = try result.get()
+                context.app = app
+                
+                if cacheApp
+                {
+                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
+                }
+            }
+            catch
+            {
+                context.error = error
             }
         }
         progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)

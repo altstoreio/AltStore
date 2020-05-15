@@ -23,14 +23,14 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     
     private let session = URLSession(configuration: .default)
     
-    init(app: AppProtocol, context: AppOperationContext)
+    init(app: AppProtocol, destinationURL: URL, context: AppOperationContext)
     {
         self.app = app
         self.context = context
         
         self.bundleIdentifier = app.bundleIdentifier
         self.sourceURL = app.url
-        self.destinationURL = InstalledApp.fileURL(for: app)
+        self.destinationURL = destinationURL
         
         super.init()
         
