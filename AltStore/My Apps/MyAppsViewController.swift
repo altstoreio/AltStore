@@ -404,6 +404,15 @@ private extension MyAppsViewController
             
             // Ensure no leftover progress from active apps cell reuse.
             cell.bannerView.button.progress = nil
+            
+            if let progress = AppManager.shared.refreshProgress(for: installedApp), progress.fractionCompleted < 1.0
+            {
+                cell.bannerView.button.progress = progress
+            }
+            else
+            {
+                cell.bannerView.button.progress = nil
+            }
         }
         dataSource.prefetchHandler = { (item, indexPath, completion) in
             let fileURL = item.fileURL
@@ -887,7 +896,7 @@ private extension MyAppsViewController
         guard installedApp.isActive else { return }
         installedApp.isActive = false
         
-        AppManager.shared.deactivate(installedApp) { (result) in
+        AppManager.shared.deactivate(installedApp, presentingViewController: self) { (result) in
             do
             {
                 let app = try result.get()
