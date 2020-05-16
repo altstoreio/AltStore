@@ -22,6 +22,8 @@ extension UserDefaults
     
     @NSManaged var legacySideloadedApps: [String]?
     
+    @NSManaged var isLegacyDeactivationSupported: Bool
+    
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue
@@ -41,6 +43,9 @@ extension UserDefaults
     
     func registerDefaults()
     {
-        self.register(defaults: [#keyPath(UserDefaults.isBackgroundRefreshEnabled): true])
+        self.register(defaults: [
+            #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
+            #keyPath(UserDefaults.isLegacyDeactivationSupported): false
+        ])
     }
 }

@@ -960,15 +960,31 @@ private extension MyAppsViewController
     
     func remove(_ installedApp: InstalledApp)
     {
-        let alertController = UIAlertController(title: nil, message: NSLocalizedString("Removing a sideloaded app only removes it from AltStore. You must also delete it from the home screen to fully uninstall the app.", comment: ""), preferredStyle: .actionSheet)
+        let title = String(format: NSLocalizedString("Remove “%@” from AltStore?", comment: ""), installedApp.name)
+        let message: String
+        
+        if UserDefaults.standard.isLegacyDeactivationSupported
+        {
+            message = NSLocalizedString("You must also delete it from the home screen to fully uninstall the app.", comment: "")
+        }
+        else
+        {
+            message = NSLocalizedString("This will also erase all backup data for this app.", comment: "")
+        }
+
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alertController.addAction(.cancel)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Remove", comment: ""), style: .destructive, handler: { (action) in
-            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
-                context.delete(installedApp)
-                
-                do { try context.save() }
-                catch { print("Failed to remove sideloaded app.", error) }
+            AppManager.shared.remove(installedApp) { (result) in
+                switch result
+                {
+                case .success: break
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
+                    }
+                }
             }
         }))
         
@@ -1161,38 +1177,42 @@ extension MyAppsViewController
             self.remove(installedApp)
         }
         
-        if installedApp.bundleIdentifier == StoreApp.altstoreAppID
+        guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
+            return [refreshAction]
+        }
+        
+        if installedApp.isActive
         {
-            actions = [refreshAction]
+            actions.append(refreshAction)
+            actions.append(deactivateAction)
         }
         else
         {
-            if installedApp.isActive
-            {
-                if UserDefaults.standard.activeAppsLimit != nil
-                {
-                    actions = [refreshAction, deactivateAction]
-                }
-                else
-                {
-                    actions = [refreshAction]
-                }
-            }
-            else
-            {
-                actions.append(activateAction)
-            }
-            
-            #if DEBUG
-            actions.append(removeAction)
-            #else
-            if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
-            {
-                // Only display option for legacy sideloaded apps.
-                actions.append(removeAction)
-            }
-            #endif
+            actions.append(activateAction)
         }
+        
+        #if DEBUG
+        
+        if installedApp.bundleIdentifier != StoreApp.altstoreAppID
+        {
+            actions.append(removeAction)
+        }
+        
+        #else
+        
+        if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
+        {
+            // Legacy sideloaded app, so can't detect if it's deleted.
+            actions.append(removeAction)
+        }
+        else if !UserDefaults.standard.isLegacyDeactivationSupported && !installedApp.isActive
+        {
+            // Inactive apps are actually deleted, so we need another way
+            // for user to remove them from AltStore.
+            actions.append(removeAction)
+        }
+        
+        #endif
         
         return actions
     }

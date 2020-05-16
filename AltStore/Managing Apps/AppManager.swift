@@ -344,6 +344,48 @@ extension AppManager
         self.run([deactivateAppOperation], context: context, requiresSerialQueue: true)
     }
     
+    func remove(_ installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let authenticationContext = AuthenticatedOperationContext()
+        let appContext = InstallAppOperationContext(bundleIdentifier: installedApp.bundleIdentifier, authenticatedContext: authenticationContext)
+        appContext.installedApp = installedApp
+
+        let removeAppOperation = RSTAsyncBlockOperation { (operation) in
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+                context.delete(installedApp)
+                
+                do { try context.save() }
+                catch { appContext.error = error }
+                
+                operation.finish()
+            }
+        }
+        
+        let removeAppBackupOperation = RemoveAppBackupOperation(context: appContext)
+        removeAppBackupOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("Failed to remove app backup.", error)
+            }
+            
+            // Throw the error from removeAppOperation,
+            // since that's the error we really care about.
+            if let error = appContext.error
+            {
+                completionHandler(.failure(error))
+            }
+            else
+            {
+                completionHandler(.success(()))
+            }
+        }
+        removeAppBackupOperation.addDependency(removeAppOperation)
+        
+        self.run([removeAppOperation, removeAppBackupOperation], context: authenticationContext)
+    }
+    
     func installationProgress(for app: AppProtocol) -> Progress?
     {
         let progress = self.installationProgress[app.bundleIdentifier]
