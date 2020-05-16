@@ -389,6 +389,32 @@ extension AppManager
         }
     }
     
+    func restore(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let group = RefreshGroup()
+        group.completionHandler = { (results) in
+            do
+            {
+                guard let result = results.values.first else { throw OperationError.unknown }
+                
+                let installedApp = try result.get()
+                assert(installedApp.managedObjectContext != nil)
+                
+                installedApp.managedObjectContext?.perform {
+                    installedApp.isActive = true
+                    completionHandler(.success(installedApp))
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        let operation = AppOperation.restore(installedApp)
+        self.perform([operation], presentingViewController: presentingViewController, group: group)
+    }
+    
     func remove(_ installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         let authenticationContext = AuthenticatedOperationContext()
@@ -453,13 +479,14 @@ private extension AppManager
         case refresh(InstalledApp)
         case activate(InstalledApp)
         case deactivate(InstalledApp)
+        case restore(InstalledApp)
         
         var app: AppProtocol {
             switch self
             {
             case .install(let app), .update(let app),
                  .refresh(let app as AppProtocol), .activate(let app as AppProtocol),
-                 .deactivate(let app as AppProtocol):
+                 .deactivate(let app as AppProtocol), .restore(let app as AppProtocol):
                 return app
             }
         }
@@ -578,6 +605,14 @@ private extension AppManager
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(deactivateProgress, withPendingUnitCount: 80)
+                    
+                case .restore(let app):
+                    // Restoring, which is effectively just activating an app.
+                    
+                    let activateProgress = self._activate(app, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(activateProgress, withPendingUnitCount: 80)
                 }
             }
         }
@@ -1121,7 +1156,7 @@ private extension AppManager
                 event = nil
                 
             case .update: event = .updatedApp(installedApp)
-            case .activate, .deactivate: event = nil
+            case .activate, .deactivate, .restore: event = nil
             }
             
             if let event = event
@@ -1179,7 +1214,7 @@ private extension AppManager
         switch operation
         {
         case .install, .update: return self.installationProgress[operation.bundleIdentifier]
-        case .refresh, .activate, .deactivate: return self.refreshProgress[operation.bundleIdentifier]
+        case .refresh, .activate, .deactivate, .restore: return self.refreshProgress[operation.bundleIdentifier]
         }
     }
     
@@ -1188,7 +1223,7 @@ private extension AppManager
         switch operation
         {
         case .install, .update: self.installationProgress[operation.bundleIdentifier] = progress
-        case .refresh, .activate, .deactivate: self.refreshProgress[operation.bundleIdentifier] = progress
+        case .refresh, .activate, .deactivate, .restore: self.refreshProgress[operation.bundleIdentifier] = progress
         }
     }
 }

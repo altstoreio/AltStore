@@ -1002,6 +1002,39 @@ private extension MyAppsViewController
         self.present(alertController, animated: true, completion: nil)
     }
     
+    func restore(_ installedApp: InstalledApp)
+    {
+        let message = String(format: NSLocalizedString("This will replace all data you currently have in %@.", comment: ""), installedApp.name)
+        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to restore this backup?", comment: ""), message: message, preferredStyle: .actionSheet)
+        alertController.addAction(.cancel)
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Restore Backup", comment: ""), style: .destructive, handler: { (action) in
+            AppManager.shared.restore(installedApp, presentingViewController: self) { (result) in
+                do
+                {
+                    let app = try result.get()
+                    try? app.managedObjectContext?.save()
+                    
+                    print("Finished restoring app:", app.bundleIdentifier)
+                }
+                catch
+                {
+                    print("Failed to restore app:", error)
+                    
+                    DispatchQueue.main.async {
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadSections([Section.activeApps.rawValue])
+            }
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     func exportBackup(for installedApp: InstalledApp)
     {
         guard let backupURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return }
@@ -1201,6 +1234,10 @@ extension MyAppsViewController
             self.exportBackup(for: installedApp)
         }
         
+        let restoreBackupAction = UIAction(title: NSLocalizedString("Restore Backup", comment: ""), image: UIImage(systemName: "arrow.down.doc")) { (action) in
+            self.restore(installedApp)
+        }
+        
         guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
             return [refreshAction]
         }
@@ -1231,6 +1268,11 @@ extension MyAppsViewController
             if backupExists
             {
                 actions.append(exportBackupAction)
+                
+                if installedApp.isActive
+                {
+                    actions.append(restoreBackupAction)
+                }
             }
             else if let error = outError
             {
