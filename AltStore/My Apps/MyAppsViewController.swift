@@ -31,6 +31,8 @@ extension MyAppsViewController
 
 class MyAppsViewController: UICollectionViewController
 {
+    private let coordinator = NSFileCoordinator()
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var noUpdatesDataSource = self.makeNoUpdatesDataSource()
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
@@ -999,6 +1001,15 @@ private extension MyAppsViewController
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    func exportBackup(for installedApp: InstalledApp)
+    {
+        guard let backupURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return }
+        
+        let documentPicker = UIDocumentPickerViewController(url: backupURL, in: .exportToService)
+        documentPicker.delegate = self
+        self.present(documentPicker, animated: true, completion: nil)
+    }
 }
 
 private extension MyAppsViewController
@@ -1186,6 +1197,10 @@ extension MyAppsViewController
             self.remove(installedApp)
         }
         
+        let exportBackupAction = UIAction(title: NSLocalizedString("Export Backup", comment: ""), image: UIImage(systemName: "arrow.up.doc")) { (action) in
+            self.exportBackup(for: installedApp)
+        }
+        
         guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
             return [refreshAction]
         }
@@ -1198,6 +1213,29 @@ extension MyAppsViewController
         else
         {
             actions.append(activateAction)
+        }
+                
+        if let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp), !UserDefaults.standard.isLegacyDeactivationSupported
+        {
+            var backupExists = false
+            var outError: NSError? = nil
+            
+            self.coordinator.coordinate(readingItemAt: backupDirectoryURL, options: [.withoutChanges], error: &outError) { (backupDirectoryURL) in
+                #if DEBUG
+                backupExists = true
+                #else
+                backupExists = FileManager.default.fileExists(atPath: backupDirectoryURL.path)
+                #endif
+            }
+            
+            if backupExists
+            {
+                actions.append(exportBackupAction)
+            }
+            else if let error = outError
+            {
+                print("Unable to check if backup exists:", error)
+            }
         }
         
         #if DEBUG
@@ -1615,8 +1653,15 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        self.sideloadApp(at: fileURL) { (result) in
-            print("Sideloaded app at \(fileURL) with result:", result)
+        switch controller.documentPickerMode
+        {
+        case .import, .open:
+            self.sideloadApp(at: fileURL) { (result) in
+                print("Sideloaded app at \(fileURL) with result:", result)
+            }
+        
+        case .exportToService, .moveToService: break
+        @unknown default: break
         }
     }
 }
