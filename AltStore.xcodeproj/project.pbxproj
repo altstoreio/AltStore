@@ -135,6 +135,7 @@
 		BF58049B246A432D008AE704 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF5C5FCF237DF69100EDD0C6 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */; };
+		BF6A5320246DC1B0004F59C8 /* FileManager+SharedDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */; };
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
 		BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
 		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
@@ -239,6 +240,7 @@
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
 		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
 		BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */; };
+		BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */; };
 		BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DC22F0E7F3002E24B9 /* Source.swift */; };
 		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
@@ -470,6 +472,7 @@
 		BF5C5FCD237DF69100EDD0C6 /* ALTPluginService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPluginService.h; sourceTree = "<group>"; };
 		BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPluginService.m; sourceTree = "<group>"; };
 		BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+DirectorySize.swift"; sourceTree = "<group>"; };
+		BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SharedDirectories.swift"; sourceTree = "<group>"; };
 		BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+LocalizedFailure.swift"; sourceTree = "<group>"; };
 		BF6C33632419ADEB0034FD24 /* AltStore 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 5.xcdatamodel"; sourceTree = "<group>"; };
 		BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore4ToAltStore5.xcmappingmodel; sourceTree = "<group>"; };
@@ -591,6 +594,7 @@
 		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationError.swift; sourceTree = "<group>"; };
 		BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAppOperation.swift; sourceTree = "<group>"; };
+		BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppBackupOperation.swift; sourceTree = "<group>"; };
 		BFE338DC22F0E7F3002E24B9 /* Source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
 		BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSourceOperation.swift; sourceTree = "<group>"; };
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
@@ -1217,6 +1221,7 @@
 				BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */,
 				BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */,
 				BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */,
+				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1296,6 +1301,7 @@
 				BFCCB519245E3401001853EA /* VerifyAppOperation.swift */,
 				BF44EEFB246B4550002A52F2 /* RemoveAppOperation.swift */,
 				BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */,
+				BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1918,6 +1924,7 @@
 				BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */,
 				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
 				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
+				BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
 				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
@@ -1935,6 +1942,7 @@
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
+				BF6A5320246DC1B0004F59C8 /* FileManager+SharedDirectories.swift in Sources */,
 				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
