@@ -362,7 +362,17 @@ extension FetchProvisioningProfilesOperation
             entitlements[key] = value
         }
                 
-        guard let applicationGroups = entitlements[.appGroups] as? [String] else { return completionHandler(.success(appID)) }
+        let applicationGroups = entitlements[.appGroups] as? [String] ?? []
+        if applicationGroups.isEmpty
+        {
+            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
+                // No app groups, and we also haven't enabled the feature, so don't continue.
+                // For apps with no app groups but have had the feature enabled already
+                // we'll continue and assign the app ID to an empty array
+                // in case we need to explicitly remove them.
+                return completionHandler(.success(appID))
+            }
+        }
         
         // Dispatch onto global queue to prevent appGroupsLock deadlock.
         DispatchQueue.global().async {
