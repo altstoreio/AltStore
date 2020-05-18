@@ -172,6 +172,16 @@ private extension AppDelegate
                 
                 return true
                 
+            case "install":
+                let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name.lowercased()] = $1.value } ?? [:]
+                guard let downloadURLString = queryItems["url"], let downloadURL = URL(string: downloadURLString) else { return false }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: downloadURL])
+                }
+                
+                return true
+                
             default: return false
             }
         }
