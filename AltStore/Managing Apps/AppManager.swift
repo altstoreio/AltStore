@@ -1056,6 +1056,26 @@ private extension AppManager
                         exportedUTIs.append(installedAppUTI)
                         infoDictionary[Bundle.Info.exportedUTIs] = exportedUTIs
                         
+                        if let cachedApp = ALTApplication(fileURL: app.fileURL), let icon = cachedApp.icon?.resizing(to: CGSize(width: 180, height: 180))
+                        {
+                            let iconFileURL = unzippedAppBundleURL.appendingPathComponent("AppIcon.png")
+                            
+                            if let iconData = icon.pngData()
+                            {
+                                do
+                                {
+                                    try iconData.write(to: iconFileURL, options: .atomic)
+                                    
+                                    let bundleIcons = ["CFBundlePrimaryIcon": ["CFBundleIconFiles": [iconFileURL.lastPathComponent]]]
+                                    infoDictionary["CFBundleIcons"] = bundleIcons
+                                }
+                                catch
+                                {
+                                    print("Failed to write app icon data.", error)
+                                }
+                            }
+                        }
+                        
                         try (infoDictionary as NSDictionary).write(to: unzippedAppBundle.infoPlistURL)
                     }
                     
