@@ -2228,7 +2228,6 @@
 		BF58048C246A28F9008AE704 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -2250,7 +2249,6 @@
 		BF58048D246A28F9008AE704 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
 				CODE_SIGN_STYLE = Automatic;

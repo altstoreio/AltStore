@@ -8,9 +8,40 @@
 
 import UIKit
 
+extension Bundle
+{
+    var appName: String? {
+        let appName =
+            Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
+            Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String
+        return appName
+    }
+}
+
+extension ViewController
+{
+    enum BackupOperation
+    {
+        case backup
+        case restore
+    }
+}
+
 class ViewController: UIViewController
 {
     private let backupController = BackupController()
+    
+    private var currentOperation: BackupOperation? {
+        didSet {
+            DispatchQueue.main.async {
+                self.update()
+            }
+        }
+    }
+    
+    private var textLabel: UILabel!
+    private var detailTextLabel: UILabel!
+    private var activityIndicatorView: UIActivityIndicatorView!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -22,6 +53,7 @@ class ViewController: UIViewController
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.backup), name: AppDelegate.startBackupNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.restore), name: AppDelegate.startRestoreNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -34,14 +66,21 @@ class ViewController: UIViewController
         
         self.view.backgroundColor = .altstoreBackground
         
-        let textLabel = UILabel(frame: .zero)
-        textLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        textLabel.textColor = .altstoreText
-        textLabel.text = NSLocalizedString("Backing up app data…", comment: "")
+        self.textLabel = UILabel(frame: .zero)
+        self.textLabel.font = UIFont.preferredFont(forTextStyle: .title2)
+        self.textLabel.textColor = .altstoreText
+        self.textLabel.textAlignment = .center
+        self.textLabel.numberOfLines = 0
         
-        let activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
-        activityIndicatorView.color = .altstoreText
-        activityIndicatorView.startAnimating()
+        self.detailTextLabel = UILabel(frame: .zero)
+        self.detailTextLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        self.detailTextLabel.textColor = .altstoreText
+        self.detailTextLabel.textAlignment = .center
+        self.detailTextLabel.numberOfLines = 0
+        
+        self.activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
+        self.activityIndicatorView.color = .altstoreText
+        self.activityIndicatorView.startAnimating()
         
         #if DEBUG
         let button1 = UIButton(type: .system)
@@ -56,9 +95,9 @@ class ViewController: UIViewController
         button2.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         button2.addTarget(self, action: #selector(ViewController.restore), for: .primaryActionTriggered)
         
-        let arrangedSubviews = [textLabel, activityIndicatorView, button1, button2]
+        let arrangedSubviews = [self.textLabel!, self.detailTextLabel!, self.activityIndicatorView!, button1, button2]
         #else
-        let arrangedSubviews = [textLabel, activityIndicatorView]
+        let arrangedSubviews = [self.textLabel!, self.detailTextLabel!, self.activityIndicatorView!]
         #endif
         
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
@@ -69,7 +108,11 @@ class ViewController: UIViewController
         self.view.addSubview(stackView)
         
         NSLayoutConstraint.activate([stackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                                     stackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)])
+                                     stackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+                                     stackView.leadingAnchor.constraint(greaterThanOrEqualToSystemSpacingAfter: self.view.safeAreaLayoutGuide.leadingAnchor, multiplier: 1.0),
+                                     self.view.safeAreaLayoutGuide.trailingAnchor.constraint(greaterThanOrEqualToSystemSpacingAfter: stackView.trailingAnchor, multiplier: 1.0)])
+        
+        self.update()
     }
 }
 
@@ -77,10 +120,10 @@ private extension ViewController
 {
     @objc func backup()
     {
+        self.currentOperation = .backup
+        
         self.backupController.performBackup { (result) in
-            let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
-                Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ??
-                NSLocalizedString("App", comment: "")
+            let appName = Bundle.main.appName ?? NSLocalizedString("App", comment: "")
 
             let title = String(format: NSLocalizedString("%@ could not be backed up.", comment: ""), appName)
             self.process(result, errorTitle: title)
@@ -89,13 +132,39 @@ private extension ViewController
     
     @objc func restore()
     {
+        self.currentOperation = .restore
+        
         self.backupController.restoreBackup { (result) in
-            let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
-                Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ??
-                NSLocalizedString("App", comment: "")
+            let appName = Bundle.main.appName ?? NSLocalizedString("App", comment: "")
 
             let title = String(format: NSLocalizedString("%@ could not be restored.", comment: ""), appName)
             self.process(result, errorTitle: title)
+        }
+    }
+    
+    func update()
+    {
+        switch self.currentOperation
+        {
+        case .backup:
+            self.textLabel.text = NSLocalizedString("Backing up app data…", comment: "")
+            self.detailTextLabel.isHidden = true
+            self.activityIndicatorView.startAnimating()
+            
+        case .restore:
+            self.textLabel.text = NSLocalizedString("Restoring app data…", comment: "")
+            self.detailTextLabel.isHidden = true
+            self.activityIndicatorView.startAnimating()
+            
+        case .none:
+            self.textLabel.text = String(format: NSLocalizedString("%@ is inactive.", comment: ""),
+                                         Bundle.main.appName ?? NSLocalizedString("App", comment: ""))
+                                            
+            self.detailTextLabel.text = String(format: NSLocalizedString("Refresh %@ in AltStore to continue using it.", comment: ""),
+                                               Bundle.main.appName ?? NSLocalizedString("this app", comment: ""))
+            
+            self.detailTextLabel.isHidden = false
+            self.activityIndicatorView.stopAnimating()
         }
     }
 }
@@ -127,5 +196,11 @@ private extension ViewController
             
             NotificationCenter.default.post(name: AppDelegate.operationDidFinishNotification, object: nil, userInfo: [AppDelegate.operationResultKey: result])
         }
+    }
+    
+    @objc func didEnterBackground(_ notification: Notification)
+    {
+        // Reset UI once we've left app (but not before).
+        self.currentOperation = nil
     }
 }
