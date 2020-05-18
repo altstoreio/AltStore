@@ -362,7 +362,7 @@ extension FetchProvisioningProfilesOperation
             entitlements[key] = value
         }
                 
-        let applicationGroups = entitlements[.appGroups] as? [String] ?? []
+        var applicationGroups = entitlements[.appGroups] as? [String] ?? []
         if applicationGroups.isEmpty
         {
             guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
@@ -371,6 +371,22 @@ extension FetchProvisioningProfilesOperation
                 // we'll continue and assign the app ID to an empty array
                 // in case we need to explicitly remove them.
                 return completionHandler(.success(appID))
+            }
+        }
+        
+        if app.bundleIdentifier == StoreApp.altstoreAppID
+        {
+            // Updating app groups for this specific AltStore.
+            // Find the (unique) AltStore app group, then replace it
+            // with the correct "base" app group ID.
+            // Otherwise, we may append a duplicate team identifier to the end.
+            if let index = applicationGroups.firstIndex(where: { $0.contains(Bundle.baseAltStoreAppGroupID) })
+            {
+                applicationGroups[index] = Bundle.baseAltStoreAppGroupID
+            }
+            else
+            {
+                applicationGroups.append(Bundle.baseAltStoreAppGroupID)
             }
         }
         
