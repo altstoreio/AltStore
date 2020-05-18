@@ -1117,7 +1117,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
         
-        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier];
+        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:ALTDeviceTypeiPhone];
         [connectedDevices addObject:altDevice];
         
         if (device_name != NULL)

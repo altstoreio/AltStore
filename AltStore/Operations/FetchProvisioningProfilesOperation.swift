@@ -361,57 +361,70 @@ extension FetchProvisioningProfilesOperation
         {
             entitlements[key] = value
         }
-        
-        // TODO: Handle apps belonging to more than one app group.
-        guard let applicationGroups = entitlements[.appGroups] as? [String], let groupIdentifier = applicationGroups.first else {
-            return completionHandler(.success(appID))
-        }
-        
-        func finish(_ result: Result<ALTAppGroup, Error>)
-        {
-            switch result
-            {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let group):
-                // Assign App Group
-                // TODO: Determine whether app already belongs to app group.
                 
-                ALTAppleAPI.shared.add(appID, to: group, team: team, session: session) { (success, error) in
-                    let result = result.map { _ in appID }
-                    completionHandler(result)
-                }
-            }
-        }
+        guard let applicationGroups = entitlements[.appGroups] as? [String] else { return completionHandler(.success(appID)) }
         
         // Dispatch onto global queue to prevent appGroupsLock deadlock.
         DispatchQueue.global().async {
-            let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
             
             // Ensure we're not concurrently fetching and updating app groups,
             // which can lead to race conditions such as adding an app group twice.
             self.appGroupsLock.lock()
             
+            func finish(_ result: Result<ALTAppID, Error>)
+            {
+                self.appGroupsLock.unlock()
+                completionHandler(result)
+            }
+            
             ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
                 switch Result(groups, error)
                 {
-                case .failure(let error):
-                    self.appGroupsLock.unlock()
-                    completionHandler(.failure(error))
+                case .failure(let error): finish(.failure(error))
+                case .success(let fetchedGroups):
+                    let dispatchGroup = DispatchGroup()
                     
-                case .success(let groups):
-                    if let group = groups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                    var groups = [ALTAppGroup]()
+                    var errors = [Error]()
+                    
+                    for groupIdentifier in applicationGroups
                     {
-                        self.appGroupsLock.unlock()
-                        finish(.success(group))
-                    }
-                    else
-                    {
-                        // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
-                        let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
                         
-                        ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
-                            self.appGroupsLock.unlock()
-                            finish(Result(group, error))
+                        if let group = fetchedGroups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                        {
+                            groups.append(group)
+                        }
+                        else
+                        {
+                            dispatchGroup.enter()
+                            
+                            // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
+                            let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                            
+                            ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
+                                switch Result(group, error)
+                                {
+                                case .success(let group): groups.append(group)
+                                case .failure(let error): errors.append(error)
+                                }
+                                
+                                dispatchGroup.leave()
+                            }
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .global()) {
+                        if let error = errors.first
+                        {
+                            finish(.failure(error))
+                        }
+                        else
+                        {
+                            ALTAppleAPI.shared.assign(appID, to: Array(groups), team: team, session: session) { (success, error) in
+                                let result = Result(success, error)
+                                finish(result.map { _ in appID })
+                            }
                         }
                     }
                 }
