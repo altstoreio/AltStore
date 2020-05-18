@@ -122,10 +122,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 var activeApps = InstalledApp.fetch(fetchRequest, in: backgroundContext)
                 if !activeApps.contains(installedApp)
                 {
-                    let availableActiveApps = max(sideloadedAppsLimit - activeApps.count, 0)
-                    let requiredActiveAppSlots = 1 + installedExtensions.count // As of iOS 13.3.1, app extensions count as "apps"
+                    let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
                     
-                    if requiredActiveAppSlots <= availableActiveApps
+                    let availableActiveApps = max(sideloadedAppsLimit - activeAppsCount, 0)
+                    if installedApp.requiredActiveSlots <= availableActiveApps
                     {
                         // This app has not been explicitly activated, but there are enough slots available,
                         // so implicitly activate it.

@@ -56,6 +56,11 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         return 1 + self.appExtensions.count
     }
     
+    var requiredActiveSlots: Int {
+        let requiredActiveSlots = UserDefaults.standard.activeAppLimitIncludesExtensions ? self.appIDCount : 1
+        return requiredActiveSlots
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)

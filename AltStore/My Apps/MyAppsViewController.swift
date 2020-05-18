@@ -809,7 +809,18 @@ private extension MyAppsViewController
     
     @objc func presentInactiveAppsAlert()
     {
-        let alertController = UIAlertController(title: NSLocalizedString("What are inactive apps?", comment: ""), message: NSLocalizedString("Free developer accounts are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated.", comment: ""), preferredStyle: .alert)
+        let message: String
+        
+        if UserDefaults.standard.activeAppLimitIncludesExtensions
+        {
+            message = NSLocalizedString("Free developer accounts are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated.", comment: "")
+        }
+        else
+        {
+            message = NSLocalizedString("Free developer accounts are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again.", comment: "")
+        }
+                
+        let alertController = UIAlertController(title: NSLocalizedString("What are inactive apps?", comment: ""), message: message, preferredStyle: .alert)
         alertController.addAction(.ok)
         self.present(alertController, animated: true, completion: nil)
     }
@@ -929,12 +940,34 @@ private extension MyAppsViewController
         let activeApps = InstalledApp.fetchActiveApps(in: DatabaseManager.shared.viewContext)
             .filter { $0.bundleIdentifier != installedApp.bundleIdentifier } // Don't count app towards total if it matches activating app
         
-        let activeAppsCount = activeApps.map { $0.appIDCount }.reduce(0, +)
+        var title: String = NSLocalizedString("Cannot Activate More than 3 Apps", comment: "")
+        let message: String
         
+        if UserDefaults.standard.activeAppLimitIncludesExtensions
+        {
+            if installedApp.appExtensions.isEmpty
+            {
+                message = NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions. Please choose an app to deactivate.", comment: "")
+            }
+            else
+            {
+                title = NSLocalizedString("Cannot Activate More than 3 Apps and App Extensions", comment: "")
+                
+                let appExtensionText = installedApp.appExtensions.count == 1 ? NSLocalizedString("app extension", comment: "") : NSLocalizedString("app extensions", comment: "")
+                message = String(format: NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions, and “%@” contains %@ %@. Please choose an app to deactivate.", comment: ""), installedApp.name, NSNumber(value: installedApp.appExtensions.count), appExtensionText)
+            }
+        }
+        else
+        {
+            message = NSLocalizedString("Free developer accounts are limited to 3 active apps. Please choose an app to deactivate.", comment: "")
+        }
+        
+        let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
+                
         let availableActiveApps = max(activeAppsLimit - activeAppsCount, 0)
-        guard installedApp.appIDCount > availableActiveApps else { return completion(true) }
+        guard installedApp.requiredActiveSlots > availableActiveApps else { return completion(true) }
         
-        let alertController = UIAlertController(title: NSLocalizedString("Cannot Activate More than 3 Apps", comment: ""), message: NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions. Please choose an app to deactivate.", comment: ""), preferredStyle: .alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { (action) in
             completion(false)
         })
@@ -942,8 +975,8 @@ private extension MyAppsViewController
         for app in activeApps where app.bundleIdentifier != StoreApp.altstoreAppID
         {
             alertController.addAction(UIAlertAction(title: app.name, style: .default) { (action) in
-                let availableActiveApps = availableActiveApps + app.appIDCount
-                if availableActiveApps >= installedApp.appIDCount
+                let availableActiveApps = availableActiveApps + app.requiredActiveSlots
+                if availableActiveApps >= installedApp.requiredActiveSlots
                 {
                     // There are enough slots now to activate the app, so pre-emptively
                     // mark it as active to provide visual feedback sooner.
@@ -1572,10 +1605,10 @@ extension MyAppsViewController: UICollectionViewDropDelegate
                 return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
             }
             
-            let activeAppsCount = (self.activeAppsDataSource.fetchedResultsController.fetchedObjects ?? []).map { $0.appIDCount }.reduce(0, +)
+            let activeAppsCount = (self.activeAppsDataSource.fetchedResultsController.fetchedObjects ?? []).map { $0.requiredActiveSlots }.reduce(0, +)
             let availableActiveApps = max(activeAppsLimit - activeAppsCount, 0)
             
-            if installedApp.appIDCount <= availableActiveApps
+            if installedApp.requiredActiveSlots <= availableActiveApps
             {
                 // Enough active app slots, so no need to deactivate app first.
                 return UICollectionViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
