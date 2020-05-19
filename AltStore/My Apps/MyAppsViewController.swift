@@ -1174,6 +1174,45 @@ private extension MyAppsViewController
         self.present(alertController, animated: true, completion: nil)
     }
     
+    func backup(_ installedApp: InstalledApp)
+    {
+        let title = NSLocalizedString("Start Backup?", comment: "")
+        let message = NSLocalizedString("This will replace any previous backups. Please leave AltStore open until the backup is complete.", comment: "")
+
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        alertController.addAction(.cancel)
+        
+        let actionTitle = String(format: NSLocalizedString("Back Up %@", comment: ""), installedApp.name)
+        alertController.addAction(UIAlertAction(title: actionTitle, style: .default, handler: { (action) in
+            AppManager.shared.backup(installedApp, presentingViewController: self) { (result) in
+                do
+                {
+                    let app = try result.get()
+                    try? app.managedObjectContext?.save()
+                    
+                    print("Finished backing up app:", app.bundleIdentifier)
+                }
+                catch
+                {
+                    print("Failed to back up app:", error)
+                    
+                    DispatchQueue.main.async {
+                        let toastView = ToastView(error: error)
+                        toastView.show(in: self)
+                        
+                        self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
+            }
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     func restore(_ installedApp: InstalledApp)
     {
         let message = String(format: NSLocalizedString("This will replace all data you currently have in %@.", comment: ""), installedApp.name)
@@ -1404,6 +1443,10 @@ extension MyAppsViewController
             self.remove(installedApp)
         }
         
+        let backupAction = UIAction(title: NSLocalizedString("Back Up", comment: ""), image: UIImage(systemName: "doc.on.doc")) { (action) in
+            self.backup(installedApp)
+        }
+        
         let exportBackupAction = UIAction(title: NSLocalizedString("Export Backup", comment: ""), image: UIImage(systemName: "arrow.up.doc")) { (action) in
             self.exportBackup(for: installedApp)
         }
@@ -1419,14 +1462,26 @@ extension MyAppsViewController
         if installedApp.isActive
         {
             actions.append(refreshAction)
-            actions.append(deactivateAction)
         }
         else
         {
             actions.append(activateAction)
         }
+        
+        if installedApp.isActive
+        {
+            actions.append(backupAction)
+        }
+        else if let _ = UTTypeCopyDeclaration(installedApp.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?, !UserDefaults.standard.isLegacyDeactivationSupported
+        {
+            // Allow backing up inactive apps if they are still installed,
+            // but on an iOS version that no longer supports legacy deactivation.
+            // This handles edge case where you can't install more apps until you
+            // delete some, but can't activate inactive apps again to back them up first.
+            actions.append(backupAction)
+        }
                 
-        if let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp), !UserDefaults.standard.isLegacyDeactivationSupported
+        if let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp)
         {
             var backupExists = false
             var outError: NSError? = nil
@@ -1452,6 +1507,11 @@ extension MyAppsViewController
             {
                 print("Unable to check if backup exists:", error)
             }
+        }
+        
+        if installedApp.isActive
+        {
+            actions.append(deactivateAction)
         }
         
         #if DEBUG
