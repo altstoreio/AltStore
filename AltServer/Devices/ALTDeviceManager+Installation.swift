@@ -16,6 +16,8 @@ private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-sta
 private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
 #endif
 
+private let appGroupsLock = NSLock()
+
 enum InstallError: LocalizedError
 {
     case cancelled
@@ -125,18 +127,29 @@ extension ALTDeviceManager
                                                                             {
                                                                                 let appID = try result.get()
                                                                                 
-                                                                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                                                                self.updateAppGroups(for: appID, app: application, team: team, session: session) { (result) in
                                                                                     do
                                                                                     {
-                                                                                        let provisioningProfile = try result.get()
+                                                                                        let appID = try result.get()
                                                                                         
-                                                                                        self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
-                                                                                            finish(result.error, title: "Failed to Install AltStore")
+                                                                                        self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                                                                            do
+                                                                                            {
+                                                                                                let provisioningProfile = try result.get()
+                                                                                                
+                                                                                                self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
+                                                                                                    finish(result.error, title: "Failed to Install AltStore")
+                                                                                                }
+                                                                                            }
+                                                                                            catch
+                                                                                            {
+                                                                                                finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                     catch
                                                                                     {
-                                                                                        finish(error, title: "Failed to Fetch Provisioning Profile")
+                                                                                        finish(error, title: "Failed to Update App Groups")
                                                                                     }
                                                                                 }
                                                                             }
@@ -468,11 +481,119 @@ To prevent this from happening, feel free to try again with another Apple ID to 
             features[.appGroups] = true
         }
         
-        let appID = appID.copy() as! ALTAppID
-        appID.features = features
+        var updateFeatures = false
         
-        ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
-            completionHandler(Result(appID, error))
+        // Determine whether the required features are already enabled for the AppID.
+        for (feature, value) in features
+        {
+            if let appIDValue = appID.features[feature] as AnyObject?, (value as AnyObject).isEqual(appIDValue)
+            {
+                // AppID already has this feature enabled and the values are the same.
+                continue
+            }
+            else
+            {
+                // AppID either doesn't have this feature enabled or the value has changed,
+                // so we need to update it to reflect new values.
+                updateFeatures = true
+                break
+            }
+        }
+        
+        if updateFeatures
+        {
+            let appID = appID.copy() as! ALTAppID
+            appID.features = features
+            
+            ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
+                completionHandler(Result(appID, error))
+            }
+        }
+        else
+        {
+            completionHandler(.success(appID))
+        }
+    }
+    
+    func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    {
+        let applicationGroups = app.entitlements[.appGroups] as? [String] ?? []
+        if applicationGroups.isEmpty
+        {
+            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
+                // No app groups, and we also haven't enabled the feature, so don't continue.
+                // For apps with no app groups but have had the feature enabled already
+                // we'll continue and assign the app ID to an empty array
+                // in case we need to explicitly remove them.
+                return completionHandler(.success(appID))
+            }
+        }
+        
+        // Dispatch onto global queue to prevent appGroupsLock deadlock.
+        DispatchQueue.global().async {
+            
+            // Ensure we're not concurrently fetching and updating app groups,
+            // which can lead to race conditions such as adding an app group twice.
+            appGroupsLock.lock()
+            
+            func finish(_ result: Result<ALTAppID, Error>)
+            {
+                appGroupsLock.unlock()
+                completionHandler(result)
+            }
+            
+            ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
+                switch Result(groups, error)
+                {
+                case .failure(let error): finish(.failure(error))
+                case .success(let fetchedGroups):
+                    let dispatchGroup = DispatchGroup()
+                    
+                    var groups = [ALTAppGroup]()
+                    var errors = [Error]()
+                    
+                    for groupIdentifier in applicationGroups
+                    {
+                        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
+                        
+                        if let group = fetchedGroups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                        {
+                            groups.append(group)
+                        }
+                        else
+                        {
+                            dispatchGroup.enter()
+                            
+                            // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
+                            let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                            
+                            ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
+                                switch Result(group, error)
+                                {
+                                case .success(let group): groups.append(group)
+                                case .failure(let error): errors.append(error)
+                                }
+                                
+                                dispatchGroup.leave()
+                            }
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .global()) {
+                        if let error = errors.first
+                        {
+                            finish(.failure(error))
+                        }
+                        else
+                        {
+                            ALTAppleAPI.shared.assign(appID, to: Array(groups), team: team, session: session) { (success, error) in
+                                let result = Result(success, error)
+                                finish(result.map { _ in appID })
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -520,6 +641,24 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 infoDictionary[Bundle.Info.deviceID] = device.identifier
                 infoDictionary[Bundle.Info.serverID] = UserDefaults.standard.serverID
                 infoDictionary[Bundle.Info.certificateID] = certificate.serialNumber
+                
+                let openAppURL = URL(string: "altstore-" + application.bundleIdentifier + "://")!
+                
+                var allURLSchemes = infoDictionary[Bundle.Info.urlTypes] as? [[String: Any]] ?? []
+                
+                // Embed open URL so AltBackup can return to AltStore.
+                let altstoreURLScheme = ["CFBundleTypeRole": "Editor",
+                                         "CFBundleURLName": application.bundleIdentifier,
+                                         "CFBundleURLSchemes": [openAppURL.scheme!]] as [String : Any]
+                allURLSchemes.append(altstoreURLScheme)
+                
+                infoDictionary[Bundle.Info.urlTypes] = allURLSchemes
+                
+                if let appGroups = profile.entitlements[.appGroups] as? [String]
+                {
+                    infoDictionary[Bundle.Info.appGroups] = appGroups
+                }
+                
                 try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                                 
                 if
