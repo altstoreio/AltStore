@@ -31,5 +31,5 @@ If applicable, add screenshots to help explain your problem.
  - Device: [e.g. iPhone8]
  - iOS: [e.g. 13.1]
 
-**Additional context**
-Add any other context about the problem here.
+**Additional context and logs**
+Add any error logs or any other context about the problem here.
