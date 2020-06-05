@@ -8,5 +8,7 @@
 
 import Foundation
 
-ConnectionManager.shared.start()
-RunLoop.current.run()
+autoreleasepool {
+    ConnectionManager.shared.start()
+    RunLoop.current.run()
+}
