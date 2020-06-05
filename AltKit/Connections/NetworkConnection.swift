@@ -28,6 +28,10 @@ public class NetworkConnection: NSObject, Connection
     public func __receiveData(expectedSize: Int, completionHandler: @escaping (Data?, Error?) -> Void)
     {
         self.nwConnection.receive(minimumIncompleteLength: expectedSize, maximumLength: expectedSize) { (data, context, isComplete, error) in
+            guard data != nil || error != nil else {
+                return completionHandler(nil, ALTServerError(.lostConnection))
+            }
+            
             completionHandler(data, error)
         }
     }
