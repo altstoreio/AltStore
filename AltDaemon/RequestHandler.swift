@@ -52,12 +52,12 @@ struct RequestHandler: AltKit.RequestHandler
                 guard case .beginInstallation(let request) = try result.get() else { throw ALTServerError(.unknownRequest) }
                 guard let bundleIdentifier = request.bundleIdentifier else { throw ALTServerError(.invalidRequest) }
                 
-                try AppManager.shared.installApp(at: fileURL, bundleIdentifier: bundleIdentifier, activeProfiles: request.activeProfiles)
-
-                print("Installed app with result:", result)
-                
-                let response = InstallationProgressResponse(progress: 1.0)
-                completionHandler(.success(response))
+                AppManager.shared.installApp(at: fileURL, bundleIdentifier: bundleIdentifier, activeProfiles: request.activeProfiles) { (result) in
+                    let result = result.map { InstallationProgressResponse(progress: 1.0) }
+                    print("Installed app with result:", result)
+                    
+                    completionHandler(result)
+                }
             }
             catch
             {
@@ -69,48 +69,56 @@ struct RequestHandler: AltKit.RequestHandler
     func handleInstallProvisioningProfilesRequest(_ request: InstallProvisioningProfilesRequest, for connection: Connection,
                                                   completionHandler: @escaping (Result<InstallProvisioningProfilesResponse, Error>) -> Void)
     {
-        do
-        {
-            try AppManager.shared.install(request.provisioningProfiles, activeProfiles: request.activeProfiles)
-            
-            print("Installed profiles:", request.provisioningProfiles.map { $0.bundleIdentifier })
-            
-            let response = InstallProvisioningProfilesResponse()
-            completionHandler(.success(response))
-        }
-        catch
-        {
-            print("Failed to install profiles \(request.provisioningProfiles.map { $0.bundleIdentifier }):", error)
-            completionHandler(.failure(error))
+        AppManager.shared.install(request.provisioningProfiles, activeProfiles: request.activeProfiles) { (result) in
+            switch result
+            {
+            case .failure(let error):
+                print("Failed to install profiles \(request.provisioningProfiles.map { $0.bundleIdentifier }):", error)
+                completionHandler(.failure(error))
+                
+            case .success:
+                print("Installed profiles:", request.provisioningProfiles.map { $0.bundleIdentifier })
+                
+                let response = InstallProvisioningProfilesResponse()
+                completionHandler(.success(response))
+            }
         }
     }
     
     func handleRemoveProvisioningProfilesRequest(_ request: RemoveProvisioningProfilesRequest, for connection: Connection,
                                                  completionHandler: @escaping (Result<RemoveProvisioningProfilesResponse, Error>) -> Void)
     {
-        do
-        {
-            try AppManager.shared.removeProvisioningProfiles(forBundleIdentifiers: request.bundleIdentifiers)
-            
-            print("Removed profiles:", request.bundleIdentifiers)
-            
-            let response = RemoveProvisioningProfilesResponse()
-            completionHandler(.success(response))
-        }
-        catch
-        {
-            print("Failed to remove profiles \(request.bundleIdentifiers):", error)
-            completionHandler(.failure(error))
+        AppManager.shared.removeProvisioningProfiles(forBundleIdentifiers: request.bundleIdentifiers) { (result) in
+            switch result
+            {
+            case .failure(let error):
+                print("Failed to remove profiles \(request.bundleIdentifiers):", error)
+                completionHandler(.failure(error))
+                
+            case .success:
+                print("Removed profiles:", request.bundleIdentifiers)
+                
+                let response = RemoveProvisioningProfilesResponse()
+                completionHandler(.success(response))
+            }
         }
     }
     
     func handleRemoveAppRequest(_ request: RemoveAppRequest, for connection: Connection, completionHandler: @escaping (Result<RemoveAppResponse, Error>) -> Void)
     {
-        AppManager.shared.removeApp(forBundleIdentifier: request.bundleIdentifier)
-        
-        print("Removed app:", request.bundleIdentifier)
-        
-        let response = RemoveAppResponse()
-        completionHandler(.success(response))
+        AppManager.shared.removeApp(forBundleIdentifier: request.bundleIdentifier) { (result) in
+            switch result
+            {
+            case .failure(let error):
+                print("Failed to remove app \(request.bundleIdentifier):", error)
+                completionHandler(.failure(error))
+                
+            case .success:
+                print("Removed app:", request.bundleIdentifier)
+                
+                let response = RemoveAppResponse()
+                completionHandler(.success(response))
+            }
+        }
     }
 }

@@ -19,63 +19,107 @@ struct AppManager
 {
     static let shared = AppManager()
     
+    private let appQueue = DispatchQueue(label: "com.rileytestut.AltDaemon.appQueue", qos: .userInitiated)
+    private let profilesQueue = OperationQueue()
+    
+    private let fileCoordinator = NSFileCoordinator()
+    
     private init()
     {
+        self.profilesQueue.name = "com.rileytestut.AltDaemon.profilesQueue"
+        self.profilesQueue.qualityOfService = .userInitiated
     }
     
-    func installApp(at fileURL: URL, bundleIdentifier: String, activeProfiles: Set<String>?) throws
+    func installApp(at fileURL: URL, bundleIdentifier: String, activeProfiles: Set<String>?, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        let lsApplicationWorkspace = unsafeBitCast(NSClassFromString("LSApplicationWorkspace")!, to: LSApplicationWorkspace.Type.self)
-        
-        let options = ["CFBundleIdentifier": bundleIdentifier, "AllowInstallLocalProvisioned": NSNumber(value: true)] as [String : Any]
-        try lsApplicationWorkspace.default.installApplication(fileURL, withOptions: options)
-    }
-    
-    func removeApp(forBundleIdentifier bundleIdentifier: String)
-    {
-        let lsApplicationWorkspace = unsafeBitCast(NSClassFromString("LSApplicationWorkspace")!, to: LSApplicationWorkspace.Type.self)
-        lsApplicationWorkspace.default.uninstallApplication(bundleIdentifier, withOptions: nil)
-    }
-    
-    func install(_ profiles: Set<ALTProvisioningProfile>, activeProfiles: Set<String>?) throws
-    {
-        let installingBundleIDs = Set(profiles.map(\.bundleIdentifier))
-        
-        let profileURLs = try FileManager.default.contentsOfDirectory(at: .profilesDirectoryURL, includingPropertiesForKeys: nil, options: [])
-        
-        // Remove all inactive profiles (if active profiles are provided), and the previous profiles.
-        for fileURL in profileURLs
-        {
-            guard let profile = ALTProvisioningProfile(url: fileURL) else { continue }
+        self.appQueue.async {
+            let lsApplicationWorkspace = unsafeBitCast(NSClassFromString("LSApplicationWorkspace")!, to: LSApplicationWorkspace.Type.self)
             
-            if installingBundleIDs.contains(profile.bundleIdentifier) || (activeProfiles?.contains(profile.bundleIdentifier) == false && profile.isFreeProvisioningProfile)
-            {
-                try FileManager.default.removeItem(at: fileURL)
-            }
-            else
-            {
-                print("Ignoring:", profile.bundleIdentifier, profile.uuid)
-            }
-        }
-        
-        for profile in profiles
-        {
-            let destinationURL = URL.profilesDirectoryURL.appendingPathComponent(profile.uuid.uuidString.lowercased())
-            try profile.data.write(to: destinationURL, options: .atomic)
+            let options = ["CFBundleIdentifier": bundleIdentifier, "AllowInstallLocalProvisioned": NSNumber(value: true)] as [String : Any]
+            let result = Result { try lsApplicationWorkspace.default.installApplication(fileURL, withOptions: options) }
+            
+            completionHandler(result)
         }
     }
     
-    func removeProvisioningProfiles(forBundleIdentifiers bundleIdentifiers: Set<String>) throws
+    func removeApp(forBundleIdentifier bundleIdentifier: String, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        let profileURLs = try FileManager.default.contentsOfDirectory(at: .profilesDirectoryURL, includingPropertiesForKeys: nil, options: [])
-        
-        for fileURL in profileURLs
-        {
-            guard let profile = ALTProvisioningProfile(url: fileURL) else { continue }
+        self.appQueue.async {
+            let lsApplicationWorkspace = unsafeBitCast(NSClassFromString("LSApplicationWorkspace")!, to: LSApplicationWorkspace.Type.self)
+            lsApplicationWorkspace.default.uninstallApplication(bundleIdentifier, withOptions: nil)
             
-            if bundleIdentifiers.contains(profile.bundleIdentifier)
+            completionHandler(.success(()))
+        }
+    }
+    
+    func install(_ profiles: Set<ALTProvisioningProfile>, activeProfiles: Set<String>?, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let intent = NSFileAccessIntent.writingIntent(with: .profilesDirectoryURL, options: [])
+        self.fileCoordinator.coordinate(with: [intent], queue: self.profilesQueue) { (error) in
+            do
             {
-                try FileManager.default.removeItem(at: fileURL)
+                if let error = error
+                {
+                    throw error
+                }
+                
+                let installingBundleIDs = Set(profiles.map(\.bundleIdentifier))
+                
+                let profileURLs = try FileManager.default.contentsOfDirectory(at: intent.url, includingPropertiesForKeys: nil, options: [])
+                
+                // Remove all inactive profiles (if active profiles are provided), and the previous profiles.
+                for fileURL in profileURLs
+                {
+                    guard let profile = ALTProvisioningProfile(url: fileURL) else { continue }
+                    
+                    if installingBundleIDs.contains(profile.bundleIdentifier) || (activeProfiles?.contains(profile.bundleIdentifier) == false && profile.isFreeProvisioningProfile)
+                    {
+                        try FileManager.default.removeItem(at: fileURL)
+                    }
+                    else
+                    {
+                        print("Ignoring:", profile.bundleIdentifier, profile.uuid)
+                    }
+                }
+                
+                for profile in profiles
+                {
+                    let destinationURL = URL.profilesDirectoryURL.appendingPathComponent(profile.uuid.uuidString.lowercased())
+                    try profile.data.write(to: destinationURL, options: .atomic)
+                }
+                
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func removeProvisioningProfiles(forBundleIdentifiers bundleIdentifiers: Set<String>, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let intent = NSFileAccessIntent.writingIntent(with: .profilesDirectoryURL, options: [])
+        self.fileCoordinator.coordinate(with: [intent], queue: self.profilesQueue) { (error) in
+            do
+            {
+                let profileURLs = try FileManager.default.contentsOfDirectory(at: intent.url, includingPropertiesForKeys: nil, options: [])
+                
+                for fileURL in profileURLs
+                {
+                    guard let profile = ALTProvisioningProfile(url: fileURL) else { continue }
+                    
+                    if bundleIdentifiers.contains(profile.bundleIdentifier)
+                    {
+                        try FileManager.default.removeItem(at: fileURL)
+                    }
+                }
+                
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
             }
         }
     }
