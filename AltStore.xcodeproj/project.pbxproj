@@ -24,7 +24,10 @@
 		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
 		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
-		BF1E312B229F474900370A3C /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* ConnectionManager.swift */; };
+		BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
+		BF18BFF724858BDE00DD5981 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
+		BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */; };
+		BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* RequestHandler.swift */; };
 		BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
 		BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBAC8852295C90300587369 /* Result+Conveniences.swift */; };
 		BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
@@ -130,7 +133,6 @@
 		BF580482246A28F7008AE704 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF580481246A28F7008AE704 /* ViewController.swift */; };
 		BF580487246A28F9008AE704 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF580486246A28F9008AE704 /* Assets.xcassets */; };
 		BF58048A246A28F9008AE704 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF580488246A28F9008AE704 /* LaunchScreen.storyboard */; };
-		BF580492246A2C5C008AE704 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		BF580496246A3CB5008AE704 /* UIColor+AltBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF580495246A3CB5008AE704 /* UIColor+AltBackup.swift */; };
 		BF580498246A3D19008AE704 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF580497246A3D19008AE704 /* UIKit.framework */; };
 		BF58049B246A432D008AE704 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
@@ -158,7 +160,6 @@
 		BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
-		BF9A03C623C7DD0D000D08DB /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
 		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
@@ -262,6 +263,9 @@
 		BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B695232242D3007A79E1 /* LicensesViewController.swift */; };
 		BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */; };
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
+		BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */; };
+		BFF767CC2489AB5C0097E58C /* ALTServerError+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */; };
+		BFF767CE2489ABE90097E58C /* NetworkConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CD2489ABE90097E58C /* NetworkConnection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -346,8 +350,12 @@
 		BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStoreToAltStore2.xcmappingmodel; sourceTree = "<group>"; };
 		BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreAppPolicy.swift; sourceTree = "<group>"; };
 		BF18B0F022E25DF9005C4CF5 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		BF18BFF22485828200DD5981 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
+		BF18BFF624858BDE00DD5981 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiredConnectionHandler.swift; sourceTree = "<group>"; };
+		BF18BFFE2485A42800DD5981 /* ALTConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTConnection.h; sourceTree = "<group>"; };
 		BF1E3128229F474900370A3C /* ServerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProtocol.swift; sourceTree = "<group>"; };
-		BF1E3129229F474900370A3C /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
+		BF1E3129229F474900370A3C /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
 		BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AltStore.swift"; sourceTree = "<group>"; };
 		BF1E314722A060F300370A3C /* AltStore-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AltStore-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF1E314822A060F400370A3C /* NSError+ALTServerError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSError+ALTServerError.h"; sourceTree = "<group>"; };
@@ -504,7 +512,6 @@
 		BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppPolicy.swift; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
-		BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -617,6 +624,9 @@
 		BFF0B695232242D3007A79E1 /* LicensesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensesViewController.swift; sourceTree = "<group>"; };
 		BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsViewController.swift; sourceTree = "<group>"; };
 		BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+CompactHeight.swift"; sourceTree = "<group>"; };
+		BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WirelessConnectionHandler.swift; sourceTree = "<group>"; };
+		BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTServerError+Conveniences.swift"; sourceTree = "<group>"; };
+		BFF767CD2489ABE90097E58C /* NetworkConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnection.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -735,19 +745,24 @@
 			path = Policies;
 			sourceTree = "<group>";
 		};
+		BF18BFFF2485A75F00DD5981 /* Server Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				BF1E3128229F474900370A3C /* ServerProtocol.swift */,
+				BFD44605241188C300EAB90A /* CodableServerError.swift */,
+			);
+			path = "Server Protocol";
+			sourceTree = "<group>";
+		};
 		BF1E315122A0616100370A3C /* AltKit */ = {
 			isa = PBXGroup;
 			children = (
 				BFD52BD222A06EFB000B7ED1 /* AltKit.h */,
 				BF718BD723C93DB700A89F2D /* AltKit.m */,
-				BFBAC8852295C90300587369 /* Result+Conveniences.swift */,
-				BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */,
-				BF1E3128229F474900370A3C /* ServerProtocol.swift */,
-				BFD44605241188C300EAB90A /* CodableServerError.swift */,
-				BF1E314822A060F400370A3C /* NSError+ALTServerError.h */,
-				BF1E314922A060F400370A3C /* NSError+ALTServerError.m */,
-				BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */,
-				BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */,
+				BF18BFFF2485A75F00DD5981 /* Server Protocol */,
+				BFF767CF2489AC240097E58C /* Connections */,
+				BFF767C32489A6800097E58C /* Extensions */,
+				BFF767C42489A6980097E58C /* Categories */,
 			);
 			path = AltKit;
 			sourceTree = "<group>";
@@ -1232,8 +1247,9 @@
 		BFD52BDC22A0A659000B7ED1 /* Connections */ = {
 			isa = PBXGroup;
 			children = (
-				BF1E3129229F474900370A3C /* ConnectionManager.swift */,
-				BF9A03C523C7DD0D000D08DB /* ClientConnection.swift */,
+				BF1E3129229F474900370A3C /* RequestHandler.swift */,
+				BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */,
+				BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */,
 				BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */,
 				BF718BD223C91C7000A89F2D /* ALTWiredConnection+Private.h */,
 				BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */,
@@ -1318,6 +1334,38 @@
 				BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		BFF767C32489A6800097E58C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BFBAC8852295C90300587369 /* Result+Conveniences.swift */,
+				BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */,
+				BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BFF767C42489A6980097E58C /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				BF1E314822A060F400370A3C /* NSError+ALTServerError.h */,
+				BF1E314922A060F400370A3C /* NSError+ALTServerError.m */,
+				BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */,
+				BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		BFF767CF2489AC240097E58C /* Connections */ = {
+			isa = PBXGroup;
+			children = (
+				BF18BFF22485828200DD5981 /* ConnectionManager.swift */,
+				BF18BFFE2485A42800DD5981 /* ALTConnection.h */,
+				BF18BFF624858BDE00DD5981 /* Connection.swift */,
+				BFF767CD2489ABE90097E58C /* NetworkConnection.swift */,
+			);
+			path = Connections;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1729,10 +1777,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF718BD823C93DB700A89F2D /* AltKit.m in Sources */,
+				BFF767CE2489ABE90097E58C /* NetworkConnection.swift in Sources */,
+				BFF767CC2489AB5C0097E58C /* ALTServerError+Conveniences.swift in Sources */,
 				BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */,
 				BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */,
 				BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */,
 				BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */,
+				BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */,
+				BF18BFF724858BDE00DD5981 /* Connection.swift in Sources */,
 				BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */,
 				BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */,
 			);
@@ -1742,10 +1794,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */,
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
+				BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */,
 				BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */,
-				BF1E312B229F474900370A3C /* ConnectionManager.swift in Sources */,
-				BF9A03C623C7DD0D000D08DB /* ClientConnection.swift in Sources */,
+				BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */,
 				BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */,
 				BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */,
 				BF4586C52298CDB800BD7491 /* ALTDeviceManager.mm in Sources */,
@@ -1819,7 +1872,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF580492246A2C5C008AE704 /* Bundle+AltStore.swift in Sources */,
 				BF580496246A3CB5008AE704 /* UIColor+AltBackup.swift in Sources */,
 				BF580482246A28F7008AE704 /* ViewController.swift in Sources */,
 				BF44EEF0246B08BA002A52F2 /* BackupController.swift in Sources */,
