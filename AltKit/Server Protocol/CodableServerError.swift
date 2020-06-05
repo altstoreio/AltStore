@@ -11,6 +11,52 @@ import Foundation
 // Can only automatically conform ALTServerError.Code to Codable, not ALTServerError itself
 extension ALTServerError.Code: Codable {}
 
+extension CodableServerError
+{
+    enum UserInfoValue: Codable
+    {
+        case string(String)
+        case error(NSError)
+        
+        public init(from decoder: Decoder) throws
+        {
+            let container = try decoder.singleValueContainer()
+
+            if
+                let data = try? container.decode(Data.self),
+                let error = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSError.self, from: data)
+            {
+                self = .error(error)
+            }
+            else if let string = try? container.decode(String.self)
+            {
+                self = .string(string)
+            }
+            else
+            {
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "UserInfoValue value cannot be decoded")
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws
+        {
+            var container = encoder.singleValueContainer()
+            
+            switch self
+            {
+            case .string(let string): try container.encode(string)
+            case .error(let error):
+                guard let data = try? NSKeyedArchiver.archivedData(withRootObject: error, requiringSecureCoding: true) else {
+                    let context = EncodingError.Context(codingPath: container.codingPath, debugDescription: "UserInfoValue value \(self) cannot be encoded")
+                    throw EncodingError.invalidValue(self, context)
+                }
+                
+                try container.encode(data)
+            }
+        }
+    }
+}
+
 struct CodableServerError: Codable
 {
     var error: ALTServerError {
@@ -18,7 +64,7 @@ struct CodableServerError: Codable
     }
     
     private var errorCode: ALTServerError.Code
-    private var userInfo: [String: String]?
+    private var userInfo: [String: Any]?
     
     private enum CodingKeys: String, CodingKey
     {
@@ -30,8 +76,7 @@ struct CodableServerError: Codable
     {
         self.errorCode = error.code
         
-        var userInfo = error.userInfo.compactMapValues { $0 as? String }
-        
+        var userInfo = error.userInfo
         if let localizedRecoverySuggestion = (error as NSError).localizedRecoverySuggestion
         {
             userInfo[NSLocalizedRecoverySuggestionErrorKey] = localizedRecoverySuggestion
@@ -50,7 +95,15 @@ struct CodableServerError: Codable
         let errorCode = try container.decode(Int.self, forKey: .errorCode)
         self.errorCode = ALTServerError.Code(rawValue: errorCode) ?? .unknown
         
-        let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
+        let rawUserInfo = try container.decodeIfPresent([String: UserInfoValue].self, forKey: .userInfo)
+        
+        let userInfo = rawUserInfo?.mapValues { (value) -> Any in
+            switch value
+            {
+            case .string(let string): return string
+            case .error(let error): return error
+            }
+        }
         self.userInfo = userInfo
     }
     
@@ -58,7 +111,16 @@ struct CodableServerError: Codable
     {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.error.code.rawValue, forKey: .errorCode)
-        try container.encodeIfPresent(self.userInfo, forKey: .userInfo)
+        
+        let rawUserInfo = self.userInfo?.compactMapValues { (value) -> UserInfoValue? in
+            switch value
+            {
+            case let string as String: return .string(string)
+            case let error as NSError: return .error(error)
+            default: return nil
+            }
+        }
+        try container.encodeIfPresent(rawUserInfo, forKey: .userInfo)
     }
 }
 

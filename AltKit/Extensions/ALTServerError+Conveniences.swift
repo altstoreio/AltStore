@@ -25,12 +25,12 @@ public extension ALTServerError
                 userInfo[NSUnderlyingErrorKey] = error
             }
             
-            self = ALTServerError(.unknown, userInfo: error.userInfo)
+            self = ALTServerError(.underlyingError, userInfo: userInfo)
         }
     }
     
     init<E: Error>(_ code: ALTServerError.Code, underlyingError: E)
     {
-        self = ALTServerError(.invalidRequest, userInfo: [NSUnderlyingErrorKey: underlyingError])
+        self = ALTServerError(code, userInfo: [NSUnderlyingErrorKey: underlyingError])
     }
 }

@@ -39,13 +39,19 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
     {
         case ALTServerErrorUnderlyingError:
         {
-            NSString *underlyingErrorCode = self.userInfo[ALTUnderlyingErrorCodeErrorKey];
-            if (underlyingErrorCode == nil)
+            NSError *underlyingError = self.userInfo[NSUnderlyingErrorKey];
+            if (underlyingError.localizedFailureReason != nil)
             {
-                return NSLocalizedString(@"An unknown error occured.", @"");
+                return underlyingError.localizedFailureReason;
+            }
+
+            NSString *underlyingErrorCode = self.userInfo[ALTUnderlyingErrorCodeErrorKey];
+            if (underlyingErrorCode != nil)
+            {
+                return [NSString stringWithFormat:NSLocalizedString(@"Error code: %@", @""), underlyingErrorCode];
             }
             
-            return [NSString stringWithFormat:NSLocalizedString(@"Error code: %@", @""), underlyingErrorCode];
+            return NSLocalizedString(@"An internal error occured.", @"");
         }
         
         case ALTServerErrorUnknown:
