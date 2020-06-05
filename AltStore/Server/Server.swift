@@ -10,22 +10,6 @@ import Network
 
 import AltKit
 
-extension ALTServerError
-{
-    init<E: Error>(_ error: E)
-    {
-        switch error
-        {
-        case let error as ALTServerError: self = error
-        case is DecodingError: self = ALTServerError(.invalidResponse)
-        case is EncodingError: self = ALTServerError(.invalidRequest)
-        default:
-            assertionFailure("Caught unknown error type")
-            self = ALTServerError(.unknown)
-        }
-    }
-}
-
 enum ConnectionError: LocalizedError
 {
     case serverNotFound
@@ -42,13 +26,23 @@ enum ConnectionError: LocalizedError
     }
 }
 
+extension Server
+{
+    enum ConnectionType
+    {
+        case wireless
+        case wired
+        case local
+    }
+}
+
 struct Server: Equatable
 {
     var identifier: String? = nil
     var service: NetService? = nil
     
     var isPreferred = false
-    var isWiredConnection = false
+    var connectionType: ConnectionType = .wireless
 }
 
 extension Server

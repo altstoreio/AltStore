@@ -144,7 +144,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 })
             }
             
-            let request = BeginInstallationRequest(activeProfiles: activeProfiles)
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: installedApp.resignedBundleIdentifier)
             connection.send(request) { (result) in
                 switch result
                 {
@@ -172,6 +172,21 @@ class InstallAppOperation: ResultOperation<InstalledApp>
     override func finish(_ result: Result<InstalledApp, Error>)
     {
         self.cleanUp()
+        
+        // Only remove refreshed IPA when finished.
+        if let app = self.context.app
+        {
+            let fileURL = InstalledApp.refreshedIPAURL(for: app)
+            
+            do
+            {
+                try FileManager.default.removeItem(at: fileURL)
+            }
+            catch
+            {
+                print("Failed to remove refreshed .ipa:", error)
+            }
+        }
         
         super.finish(result)
     }
@@ -223,12 +238,6 @@ private extension InstallAppOperation
         do
         {
             try FileManager.default.removeItem(at: self.context.temporaryDirectory)
-            
-            if let app = self.context.app
-            {
-                let fileURL = InstalledApp.refreshedIPAURL(for: app)
-                try FileManager.default.removeItem(at: fileURL)
-            }
         }
         catch
         {
