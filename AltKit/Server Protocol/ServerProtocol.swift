@@ -267,24 +267,30 @@ public struct PrepareAppRequest: ServerMessageProtocol
     public var udid: String
     public var contentSize: Int
     
-    public init(udid: String, contentSize: Int)
+    public var fileURL: URL?
+    
+    public init(udid: String, contentSize: Int, fileURL: URL? = nil)
     {
         self.udid = udid
         self.contentSize = contentSize
+        self.fileURL = fileURL
     }
 }
 
 public struct BeginInstallationRequest: ServerMessageProtocol
 {
-    public var version = 2
+    public var version = 3
     public var identifier = "BeginInstallationRequest"
     
     // If activeProfiles is non-nil, then AltServer should remove all profiles except active ones.
     public var activeProfiles: Set<String>?
     
-    public init(activeProfiles: Set<String>?)
+    public var bundleIdentifier: String?
+    
+    public init(activeProfiles: Set<String>?, bundleIdentifier: String?)
     {
         self.activeProfiles = activeProfiles
+        self.bundleIdentifier = bundleIdentifier
     }
 }
 
