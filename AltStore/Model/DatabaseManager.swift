@@ -172,7 +172,14 @@ private extension DatabaseManager
             }
             
             let fileURL = installedApp.fileURL
-            if !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
+            
+            #if DEBUG
+            let replaceCachedApp = true
+            #else
+            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
+            #endif
+            
+            if replaceCachedApp
             {
                 FileManager.default.prepareTemporaryURL() { (temporaryFileURL) in
                     do
