@@ -187,7 +187,7 @@ private extension RequestHandler
         let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid, activeProvisioningProfiles: activeProvisioningProfiles) { (success, error) in
             print("Installed app with result:", error == nil ? "Success" : error!.localizedDescription)
             
-            if let error = error.map({ $0 as? ALTServerError ?? ALTServerError(.unknown) })
+            if let error = error.map { ALTServerError($0) }
             {
                 completionHandler(.failure(error))
             }
