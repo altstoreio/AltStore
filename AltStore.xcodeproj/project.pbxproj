@@ -162,6 +162,8 @@
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
 		BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* RequestHandler.swift */; };
+		BF8CAE4C2489F637004D6CCE /* AltDaemon.deb in Resources */ = {isa = PBXBuildFile; fileRef = BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */; };
+		BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
@@ -526,6 +528,8 @@
 		BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BF8CAE432489E772004D6CCE /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF8CAE442489E772004D6CCE /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
+		BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = AltDaemon.deb; sourceTree = "<group>"; };
+		BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Jailbreak.swift"; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
@@ -1238,6 +1242,7 @@
 				BFB1169C22932DB100BB457C /* apps.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
+				BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1286,6 +1291,7 @@
 				BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */,
 				BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */,
 				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
+				BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1704,6 +1710,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF8CAE4C2489F637004D6CCE /* AltDaemon.deb in Resources */,
 				BFC57A702416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib in Resources */,
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
@@ -2026,6 +2033,7 @@
 				BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */,
 				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
+				BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
@@ -2239,6 +2247,7 @@
 				DYLIB_CURRENT_VERSION = "";
 				EXECUTABLE_EXTENSION = "";
 				EXECUTABLE_SUFFIX = "";
+				GCC_OPTIMIZATION_LEVEL = z;
 				INSTALL_PATH = /usr/bin;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_DYLIB_INSTALL_NAME = /usr/bin/AltDaemon;
