@@ -1225,9 +1225,9 @@ private extension AppManager
             switch error.code
             {
             case .deviceNotFound, .lostConnection:
-                if let server = group.context.server, server.isPreferred || server.isWiredConnection
+                if let server = group.context.server, server.isPreferred || server.connectionType != .wireless
                 {
-                    // Preferred server (or wired connection), so report errors normally.
+                    // Preferred server (or not random wireless connection), so report errors normally.
                     return error
                 }
                 else

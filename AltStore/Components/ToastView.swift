@@ -8,6 +8,12 @@
 
 import Roxas
 
+extension TimeInterval
+{
+    static let shortToastViewDuration = 4.0
+    static let longToastViewDuration = 8.0
+}
+
 class ToastView: RSTToastView
 {
     var preferredDuration: TimeInterval
@@ -16,11 +22,11 @@ class ToastView: RSTToastView
     {
         if detailedText == nil
         {
-            self.preferredDuration = 4.0
+            self.preferredDuration = .shortToastViewDuration
         }
         else
         {
-            self.preferredDuration = 8.0
+            self.preferredDuration = .longToastViewDuration
         }
         
         super.init(text: text, detailText: detailedText)
@@ -38,7 +44,22 @@ class ToastView: RSTToastView
     
     convenience init(error: Error)
     {
-        let error = error as NSError
+        var error = error as NSError
+        var underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError
+        
+        var preferredDuration: TimeInterval?
+        
+        if
+            let unwrappedUnderlyingError = underlyingError,
+            error.domain == AltServerErrorDomain && error.code == ALTServerError.Code.underlyingError.rawValue
+        {
+            // Treat underlyingError as the primary error.
+            
+            error = unwrappedUnderlyingError
+            underlyingError = nil
+            
+            preferredDuration = .longToastViewDuration
+        }
         
         let text: String
         let detailText: String?
@@ -46,20 +67,25 @@ class ToastView: RSTToastView
         if let failure = error.localizedFailure
         {
             text = failure
-            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.localizedDescription
+            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription ?? error.localizedDescription
         }
         else if let reason = error.localizedFailureReason
         {
             text = reason
-            detailText = error.localizedRecoverySuggestion
+            detailText = error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription
         }
         else
         {
             text = error.localizedDescription
-            detailText = nil
+            detailText = underlyingError?.localizedDescription
         }
         
         self.init(text: text, detailText: detailText)
+        
+        if let preferredDuration = preferredDuration
+        {
+            self.preferredDuration = preferredDuration
+        }
     }
     
     required init(coder aDecoder: NSCoder) {

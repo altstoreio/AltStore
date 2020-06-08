@@ -94,12 +94,18 @@ extension ServerManager
                 connection.start(queue: self.dispatchQueue)
             }
             
-            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.isWiredConnection
+            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.connectionType != .wireless
             {
-                print("Waiting for new wired connection...")
+                print("Waiting for incoming connection...")
                 
                 let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
-                CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
+                                
+                switch server.connectionType
+                {
+                case .wired: CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
+                case .local: CFNotificationCenterPostNotification(notificationCenter, .localServerConnectionStartRequest, nil, nil, true)
+                case .wireless: break
+                }
                 
                 _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
                 
@@ -114,7 +120,17 @@ extension ServerManager
             }
             else if let service = server.service
             {
-                let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: .tcp)
+                print("Connecting to service:", service)
+                
+                let parameters = NWParameters.tcp
+                
+                if server.connectionType == .local
+                {
+                    // Prevent AltStore from initiating connections over multiple interfaces simultaneously 🤷‍♂️
+                    parameters.requiredInterfaceType = .loopback
+                }
+                
+                let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: parameters)
                 start(connection)
             }
         }

@@ -1,0 +1,2 @@
+#!/bin/sh
+launchctl unload /Library/LaunchDaemons/com.rileytestut.altdaemon.plist >> /dev/null 2>&1

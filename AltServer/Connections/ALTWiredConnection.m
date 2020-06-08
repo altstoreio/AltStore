@@ -30,8 +30,15 @@
 
 - (void)disconnect
 {
+    if (![self isConnected])
+    {
+        return;
+    }
+    
     idevice_disconnect(self.connection);
     _connection = nil;
+    
+    self.connected = NO;
 }
 
 - (void)sendData:(NSData *)data completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
@@ -96,6 +103,13 @@
         
         finish(receivedData, nil);
     });
+}
+
+#pragma mark - NSObject -
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@ (Wired)", self.device.name];
 }
 
 @end

@@ -181,7 +181,7 @@
 		68178896553225CC371A439822E86255 /* UIViewController+TransitionState.h in Headers */ = {isa = PBXBuildFile; fileRef = DC700BEFCDC775BF366DC842E52854DD /* UIViewController+TransitionState.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6917E87E8C8CE780B8A31B0C11A18440 /* Key.h in Headers */ = {isa = PBXBuildFile; fileRef = 79926042DA0FE3AC31BE54B760B6F908 /* Key.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		695874C3111A6C110481D87968B7B2ED /* ALTCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = B348AC7ABB9564CBB9312DCAEA83CCA8 /* ALTCertificate.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		6B25D76AA9531920602674422A2E3174 /* Pods-AltStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EC9F77AC7ECBA94225DE401B6A8004F2 /* Pods-AltStore-dummy.m */; };
+		6B25D76AA9531920602674422A2E3174 /* Pods-AltStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C9132C40CB4837DADEB046E727F867FB /* Pods-AltStore-dummy.m */; };
 		6BEAFA9ACE3022B335DA0811B01D9D31 /* des_old.h in Headers */ = {isa = PBXBuildFile; fileRef = 442C72B32657E76148EBC3129ED2B08F /* des_old.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6F0AEBA27C394CAD36373D4BC635A627 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = C72FC0FB6B8986A4FB1980229B73DDEE /* mztools.c */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		6F30FECE94464AE2FEE52B10A54E2E53 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE107E4A9765C8FEB873EB1DD6945AE5 /* Node.cpp */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
@@ -295,7 +295,7 @@
 		B48A7C9B5400E62C541570902B447BF4 /* NSBundle+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8BC9C468CBA45218B0935330923A03 /* NSBundle+Extensions.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		B49C6C4BB263813111865E9E6C1B5763 /* RSTOperation_Subclasses.h in Headers */ = {isa = PBXBuildFile; fileRef = 214A7740331D44B14BED994D0AD62890 /* RSTOperation_Subclasses.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		B521A6187844EE5CEFEFE07A5D1DA298 /* cms.h in Headers */ = {isa = PBXBuildFile; fileRef = 037FB3B672D2D4A5D48669AB61EA914F /* cms.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		B592B30E0A198D1F2E99F9E42FD1F332 /* Pods-AltServer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E8434827ABB58D1C0275F5BDE3717F16 /* Pods-AltServer-dummy.m */; };
+		B592B30E0A198D1F2E99F9E42FD1F332 /* Pods-AltServer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C63B22556372BD6A596092190AC874E3 /* Pods-AltServer-dummy.m */; };
 		B5C917462DB73F1880C6D1CE4665A4FA /* txt_db.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E9AC3ACB0E77B051E9401069DA4F792 /* txt_db.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		B619F619AAEC640C10789093CDABC708 /* node_list.h in Headers */ = {isa = PBXBuildFile; fileRef = FDBED95D85CFE5DE2E1A73C8BDE40AF8 /* node_list.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		B6CF49653D8AECE522F2393D5F7E0E25 /* cccmac.h in Headers */ = {isa = PBXBuildFile; fileRef = 2119733D600F6F015CE868CFBBA5E2E1 /* cccmac.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -329,7 +329,7 @@
 		C8D3B91FF9292E6606553941712BAB4C /* ldid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAFA796C2028D51219FED104E02BBA2E /* ldid.cpp */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		C8D7A5021858F9A7BE3FFF4FCE4FC8F1 /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = D6B718DB69C902E4BB79FFC1C7E66C65 /* stack.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CABB5C4666EF8BA07A6CE46F825D6F16 /* obj_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 5496E932BB2B72CA3794430120AD503D /* obj_mac.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		CB3B06F6B2DA11115709519F68A7E443 /* Pods-AltStore-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 695286014335265E05C28AD7B887F02F /* Pods-AltStore-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		CB3B06F6B2DA11115709519F68A7E443 /* Pods-AltStore-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7B51BFE6F7A28BF6D5614373C24DB981 /* Pods-AltStore-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CBD35A6A8664554106B1D3299A860A9B /* NSUserDefaults+DynamicProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 82BCE1984F56DA8A1D3B838D10199799 /* NSUserDefaults+DynamicProperties.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CC77C0103FFB833464F050472CFAA06B /* ccn.h in Headers */ = {isa = PBXBuildFile; fileRef = C556A67CD97EE39683D31C0B9F0918EB /* ccn.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CCA8A63BEDECA611CADF620A05A9EC5C /* ccdrbg_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 29DDEEEB045FDE52E9750BDC8D15D561 /* ccdrbg_impl.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -341,6 +341,7 @@
 		CFC146CDF3E73A5DE481651447554DB6 /* ALTDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA1938AA1B5E8390790EC972AF13407 /* ALTDevice.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		D05C23FC782B87DE30EB6C19C2E22ECF /* ALTAppleAPI_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 490F5F18CD5B71977FAEF4CD4BDCC5F9 /* ALTAppleAPI_Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D155BE42D57F338F2E08EF48457F5654 /* ALTProvisioningProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = F908C96C7967FF6B7D5D5B285844D269 /* ALTProvisioningProfile.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		D2517BDBD1ABC11CE0956092866DE325 /* Pods-AltDaemon-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 546B88CFC6EBED3C7F26035C1D82B8B7 /* Pods-AltDaemon-dummy.m */; };
 		D377ED8648D9A1CE9B36AFD6447CC5B0 /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 9A8A48D68CE5B5EF610D60AE61C9F584 /* unzip.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D38417833634FBF5417E1710E58C0082 /* UIKit+ActivityIndicating.h in Headers */ = {isa = PBXBuildFile; fileRef = 226B01F8B34FFE63742C089DDE49D208 /* UIKit+ActivityIndicating.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D392A50B49F1B4A91D2F1F7F9A5215D7 /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B27464FED48BC6328C2539851FAA825 /* sha.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -384,7 +385,7 @@
 		EE29F8F3123CE9D8110AA5DE779B972B /* UITableViewCell+CellContent.m in Sources */ = {isa = PBXBuildFile; fileRef = F3A77F6E48BAFA480142E4AA3CD6A301 /* UITableViewCell+CellContent.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		F030BF3436D9DE224E357140463045D3 /* ccdrbg.h in Headers */ = {isa = PBXBuildFile; fileRef = 66BACEB5A46F609F5EC73F3A2E4AAEA3 /* ccdrbg.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F0DCCE9786B72C8EF925C5294A68A03A /* RSTCellContentDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C523F13B0698E9E1E0C8BC56663CDD /* RSTCellContentDataSource.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		F56FF4EABEF80FA5EC5D6AA4A348031C /* Pods-AltServer-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A3F93787631B5439B1EA07C44C1097A /* Pods-AltServer-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F56FF4EABEF80FA5EC5D6AA4A348031C /* Pods-AltServer-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E6C49955A91A9BF96052D43477EE8A79 /* Pods-AltServer-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F643A81BFE5A686AF434AB8EC619E68F /* UITableView+CellContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E4AE6D1449D7BFE1D6B397E971652F9B /* UITableView+CellContent.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F6570E449D7D7F7CC8D0F6A7471304DC /* RSTHasher.h in Headers */ = {isa = PBXBuildFile; fileRef = 0FF4DFCBD550423E377A4B95FF98BFC4 /* RSTHasher.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F6DCF78E53424519321B9FA4BF334107 /* RSTHelperFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D056070FF1CAD623E04B056987D215E /* RSTHelperFile.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
@@ -432,6 +433,13 @@
 			remoteGlobalIDString = B5D1BA64AC676FF46408FCDE19A05767;
 			remoteInfo = Roxas;
 		};
+		B1324C39ACC0CCA590E2F6C1CEE2A8A0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B5D1BA64AC676FF46408FCDE19A05767;
+			remoteInfo = Roxas;
+		};
 		C24230D37E930D006BF95D0AD49EEC82 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -446,6 +454,13 @@
 			remoteGlobalIDString = 062A64896E847A6749F58B6BA9A931B1;
 			remoteInfo = Nuke;
 		};
+		EB92C48D1AC6614C7A547B50D0514BC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 951A9DDCF9D2F851D1EC2B8CCD08ADFA;
+			remoteInfo = AltSign;
+		};
 		EFC1BC25A31E50DAEF6382D28E7E2F7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -457,6 +472,7 @@
 
 /* Begin PBXFileReference section */
 		005E0CD4F4EEA460F60A980AB9F94EB4 /* KeychainAccess-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KeychainAccess-prefix.pch"; sourceTree = "<group>"; };
+		0100FAF2D9192354B5AD97C5ACA2892A /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		01EE98A5766917099B441607B08AEF3B /* RSTDynamicDataSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTDynamicDataSource.h; path = Roxas/RSTDynamicDataSource.h; sourceTree = "<group>"; };
 		026DC37EEB01428D873261F3CB427FE8 /* Roxas.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Roxas.modulemap; sourceTree = "<group>"; };
 		02B30122F755FA8B1BAE13CA00BA4D40 /* blowfish.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = blowfish.h; path = Dependencies/OpenSSL/ios/include/openssl/blowfish.h; sourceTree = "<group>"; };
@@ -469,6 +485,7 @@
 		059702EBFD928AE0189CA3F830C3616E /* ALTCertificateRequest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALTCertificateRequest.m; sourceTree = "<group>"; };
 		0609BCE55DD9CFA3B184D68CE9D8D29B /* UISpringTimingParameters+Conveniences.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UISpringTimingParameters+Conveniences.m"; path = "Roxas/UISpringTimingParameters+Conveniences.m"; sourceTree = "<group>"; };
 		0751F7694817D0E796E34BDA38D20A3B /* ccmd5.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccmd5.h; path = Dependencies/corecrypto/ccmd5.h; sourceTree = "<group>"; };
+		09CBBA5767A1426DCF3A11FFFCCD6C9A /* Pods-AltStore-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltStore-acknowledgements.markdown"; sourceTree = "<group>"; };
 		0A0CAD2F5EF0037CACB181692CCEFC6F /* RSTLaunchViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTLaunchViewController.m; path = Roxas/RSTLaunchViewController.m; sourceTree = "<group>"; };
 		0A42A9A1EEFA70A1653FD7A3CEA23219 /* cc_debug.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cc_debug.h; path = Dependencies/corecrypto/cc_debug.h; sourceTree = "<group>"; };
 		0AF287DBC0725AF33B14CD9BE967E93D /* ccsrp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccsrp.h; path = Dependencies/corecrypto/ccsrp.h; sourceTree = "<group>"; };
@@ -476,14 +493,13 @@
 		0D056070FF1CAD623E04B056987D215E /* RSTHelperFile.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTHelperFile.m; path = Roxas/RSTHelperFile.m; sourceTree = "<group>"; };
 		0D0916ED915FE3469729DB8CD31E623C /* UIAlertAction+Actions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIAlertAction+Actions.h"; path = "Roxas/UIAlertAction+Actions.h"; sourceTree = "<group>"; };
 		0D659CD2AA9C92DF6E9B43DA90AF27AC /* ebcdic.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ebcdic.h; path = Dependencies/OpenSSL/ios/include/openssl/ebcdic.h; sourceTree = "<group>"; };
-		0D7CC1D321A7EFF4B480E5BAC0685CFC /* Pods-AltStore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStore.modulemap"; sourceTree = "<group>"; };
 		0E8386150C1F216DF0D0047940058BCF /* e_os2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = e_os2.h; path = Dependencies/OpenSSL/ios/include/openssl/e_os2.h; sourceTree = "<group>"; };
 		0FF4DFCBD550423E377A4B95FF98BFC4 /* RSTHasher.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTHasher.h; path = Roxas/RSTHasher.h; sourceTree = "<group>"; };
 		107026048A6314BCB6551F23F23AEFD4 /* Boolean.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = Boolean.cpp; sourceTree = "<group>"; };
 		1096054AEB4A5C2B7057CD805622BD3E /* ccder_encode_eckey.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccder_encode_eckey.h; path = Dependencies/corecrypto/ccder_encode_eckey.h; sourceTree = "<group>"; };
 		1104F3DB9BFE2FD485E07DFDCE51C324 /* STPrivilegedTask-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "STPrivilegedTask-dummy.m"; sourceTree = "<group>"; };
 		1169B08138008F968889C891FB8233CD /* ccrng_rsafips_test.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccrng_rsafips_test.h; path = Dependencies/corecrypto/ccrng_rsafips_test.h; sourceTree = "<group>"; };
-		1215053FA027E4CE849DAF4D00697FF1 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
+		1192029049EFACF019572AE1D7C92004 /* Pods-AltStore-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-acknowledgements.plist"; sourceTree = "<group>"; };
 		14CFEC626B7EA4CA5CD713FE6CC97FDC /* NSPredicate+Search.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSPredicate+Search.m"; path = "Roxas/NSPredicate+Search.m"; sourceTree = "<group>"; };
 		14EAE44A37B74218DAE2706E4BA6711D /* plist.c */ = {isa = PBXFileReference; includeInIndex = 1; path = plist.c; sourceTree = "<group>"; };
 		15401FF4A3F7C90F76DE04FB0BBF5A00 /* AppCenter.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.xcconfig; sourceTree = "<group>"; };
@@ -510,7 +526,6 @@
 		1DF21761F51793B1E79B815C42A7224C /* AltSign.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AltSign.xcconfig; sourceTree = "<group>"; };
 		1E0ADF893622CFC816C5CF2BD893648E /* time64.c */ = {isa = PBXFileReference; includeInIndex = 1; path = time64.c; sourceTree = "<group>"; };
 		1E4C74EB97AA653EB2B4ED3024626A52 /* bplist.c */ = {isa = PBXFileReference; includeInIndex = 1; path = bplist.c; sourceTree = "<group>"; };
-		1FDDB64DD95C45BA9E30FFB7ECFB9C30 /* Pods-AltServer.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltServer.modulemap"; sourceTree = "<group>"; };
 		2119733D600F6F015CE868CFBBA5E2E1 /* cccmac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cccmac.h; path = Dependencies/corecrypto/cccmac.h; sourceTree = "<group>"; };
 		214A7740331D44B14BED994D0AD62890 /* RSTOperation_Subclasses.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTOperation_Subclasses.h; path = Roxas/RSTOperation_Subclasses.h; sourceTree = "<group>"; };
 		21622C57776B02F7072D150F0B8361ED /* SUAppcast.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUAppcast.h; path = Sparkle.framework/Versions/A/Headers/SUAppcast.h; sourceTree = "<group>"; };
@@ -527,6 +542,7 @@
 		289381B8EDD6B16F3DF7EFEE1612E74A /* pem2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pem2.h; path = Dependencies/OpenSSL/ios/include/openssl/pem2.h; sourceTree = "<group>"; };
 		28CC4C54E2CCB470E999C3B9B45DDEB0 /* STPrivilegedTask.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = STPrivilegedTask.modulemap; sourceTree = "<group>"; };
 		29839951F935B229EC6919D9B7379D26 /* RSTCellContentPrefetchingDataSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCellContentPrefetchingDataSource.h; path = Roxas/RSTCellContentPrefetchingDataSource.h; sourceTree = "<group>"; };
+		29D47FB44A4B93E67977EA7DA41FDBFE /* Pods-AltDaemon-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltDaemon-resources.sh"; sourceTree = "<group>"; };
 		29DDEEEB045FDE52E9750BDC8D15D561 /* ccdrbg_impl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccdrbg_impl.h; path = Dependencies/corecrypto/ccdrbg_impl.h; sourceTree = "<group>"; };
 		2A31A3F9BAB499BD3B13B3F6F7BFA8A1 /* Nuke.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Nuke.modulemap; sourceTree = "<group>"; };
 		2AB59EF78CE48305009BCBE5CFD27596 /* Data.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = Data.cpp; sourceTree = "<group>"; };
@@ -550,9 +566,9 @@
 		38090EB442D3768A7A0B8A9E04F17CE8 /* ccrng_pbkdf2_prng.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccrng_pbkdf2_prng.h; path = Dependencies/corecrypto/ccrng_pbkdf2_prng.h; sourceTree = "<group>"; };
 		3847A3DB493D2B9BD693D49F7F252F93 /* aes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = aes.h; path = Dependencies/OpenSSL/ios/include/openssl/aes.h; sourceTree = "<group>"; };
 		389771695B320767CE9FE0680E37A623 /* cczp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cczp.h; path = Dependencies/corecrypto/cczp.h; sourceTree = "<group>"; };
+		38B25887E1C1D20811EEFC7E4F30E75E /* Pods-AltDaemon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltDaemon.release.xcconfig"; sourceTree = "<group>"; };
 		39C8B442E4F1D331FA20406BD841D05A /* ts.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ts.h; path = Dependencies/OpenSSL/ios/include/openssl/ts.h; sourceTree = "<group>"; };
 		39F52AFBCFA9F816FF726CF258D87FB2 /* ui.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ui.h; path = Dependencies/OpenSSL/ios/include/openssl/ui.h; sourceTree = "<group>"; };
-		3A44D4EBF7CD579B73B275F0F125F846 /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		3B785D124B1FE49B3A725737AE70E203 /* Roxas-Prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Roxas-Prefix.pch"; path = "Roxas/Roxas-Prefix.pch"; sourceTree = "<group>"; };
 		3BFD8D7E4F26C273FA16D730BBE09E13 /* SPUURLRequest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUURLRequest.h; path = Sparkle.framework/Versions/A/Headers/SPUURLRequest.h; sourceTree = "<group>"; };
 		3C6E6C40CF28ADEC88B15ECDF2F3E884 /* SPUDownloaderSession.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUDownloaderSession.h; path = Sparkle.framework/Versions/A/Headers/SPUDownloaderSession.h; sourceTree = "<group>"; };
@@ -561,6 +577,7 @@
 		3E050D4CE1C16A0C2923D75EE79FCD4E /* cc_runtime_config.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cc_runtime_config.h; path = Dependencies/corecrypto/cc_runtime_config.h; sourceTree = "<group>"; };
 		407C9DAC0B6F7CB610C85D0263AE17B8 /* opensslconf-arm64.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "opensslconf-arm64.h"; path = "Dependencies/OpenSSL/ios/include/openssl/opensslconf-arm64.h"; sourceTree = "<group>"; };
 		413693D82E21BB52B74898987363EA99 /* cast.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cast.h; path = Dependencies/OpenSSL/ios/include/openssl/cast.h; sourceTree = "<group>"; };
+		415A2399B6A802A272A86233D7C9DA25 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
 		41CB48690B18FAE99417885EF7E6E767 /* cchmac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cchmac.h; path = Dependencies/corecrypto/cchmac.h; sourceTree = "<group>"; };
 		42D5F4993737B5DFAA5F5E6FB06C2BB8 /* ALTAppleAPISession.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAppleAPISession.h; sourceTree = "<group>"; };
 		4405793D5AF1EFD9D2BDA30AA0D2E514 /* libRoxas.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libRoxas.a; path = libRoxas.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -569,11 +586,12 @@
 		4537E82F32214FD7818D7CD91F603D5B /* conf_api.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = conf_api.h; path = Dependencies/OpenSSL/ios/include/openssl/conf_api.h; sourceTree = "<group>"; };
 		46BDD3848FE0E636C85F4304CF3FB840 /* pem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pem.h; path = Dependencies/OpenSSL/ios/include/openssl/pem.h; sourceTree = "<group>"; };
 		474C34D18454CBF5A04B49C2055FBBAB /* ssl2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ssl2.h; path = Dependencies/OpenSSL/ios/include/openssl/ssl2.h; sourceTree = "<group>"; };
+		4773ABB518FBF6876DAC8F0AE260A54B /* Pods-AltDaemon-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltDaemon-acknowledgements.markdown"; sourceTree = "<group>"; };
 		47F936C4BE30E448468E5D325E02CD12 /* ALTSigner.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTSigner.h; sourceTree = "<group>"; };
 		490F5F18CD5B71977FAEF4CD4BDCC5F9 /* ALTAppleAPI_Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAppleAPI_Private.h; sourceTree = "<group>"; };
 		4920980B5315FFD0E2EBB7F30EF2BFC5 /* RSTCellContentDataSource_Subclasses.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCellContentDataSource_Subclasses.h; path = Roxas/RSTCellContentDataSource_Subclasses.h; sourceTree = "<group>"; };
 		493A0B3CB13D03370FC0105ACD627968 /* whrlpool.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = whrlpool.h; path = Dependencies/OpenSSL/ios/include/openssl/whrlpool.h; sourceTree = "<group>"; };
-		4A3F93787631B5439B1EA07C44C1097A /* Pods-AltServer-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltServer-umbrella.h"; sourceTree = "<group>"; };
+		49B0F76928525434803E52E609201454 /* libPods-AltDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-AltDaemon.a"; path = "libPods-AltDaemon.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AFC2A8BFD44BF4705CDB538A5A700C9 /* UIViewController+TransitionState.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+TransitionState.m"; path = "Roxas/UIViewController+TransitionState.m"; sourceTree = "<group>"; };
 		4BFFC3AD9DB5992D2F577A558958972F /* SPUDownloaderDeprecated.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUDownloaderDeprecated.h; path = Sparkle.framework/Versions/A/Headers/SPUDownloaderDeprecated.h; sourceTree = "<group>"; };
 		4C4EB1FF702E3A1ACF22B0FD9AEFDFAE /* md4.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = md4.h; path = Dependencies/OpenSSL/ios/include/openssl/md4.h; sourceTree = "<group>"; };
@@ -591,12 +609,14 @@
 		520E4EFA88F054B4BFBE69E7598ED29D /* RSTCollectionViewCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCollectionViewCell.h; path = Roxas/RSTCollectionViewCell.h; sourceTree = "<group>"; };
 		52758575FDE408FC483B772F1A509906 /* ccripemd.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccripemd.h; path = Dependencies/corecrypto/ccripemd.h; sourceTree = "<group>"; };
 		5317E660654C64DB949B1E59A273A07C /* alt_ldid.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = alt_ldid.cpp; sourceTree = "<group>"; };
+		546B88CFC6EBED3C7F26035C1D82B8B7 /* Pods-AltDaemon-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltDaemon-dummy.m"; sourceTree = "<group>"; };
 		5496E932BB2B72CA3794430120AD503D /* obj_mac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = obj_mac.h; path = Dependencies/OpenSSL/ios/include/openssl/obj_mac.h; sourceTree = "<group>"; };
 		557113703F2557617D59ADA3DB5FD9E8 /* mdc2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mdc2.h; path = Dependencies/OpenSSL/ios/include/openssl/mdc2.h; sourceTree = "<group>"; };
 		568687E6B6B277681DE9A457F089DF57 /* RSTBlockOperation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTBlockOperation.h; path = Roxas/RSTBlockOperation.h; sourceTree = "<group>"; };
 		568A2EC5A1E112757032C27664AC2E1C /* ccpbkdf2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccpbkdf2.h; path = Dependencies/corecrypto/ccpbkdf2.h; sourceTree = "<group>"; };
 		577F20AC9D1D37C21171DE3BC57EB4B8 /* RSTCellContentView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCellContentView.h; path = Roxas/RSTCellContentView.h; sourceTree = "<group>"; };
 		58093B01C1E44E948FEDBDB15079C7C6 /* alt_ldid.hpp */ = {isa = PBXFileReference; includeInIndex = 1; path = alt_ldid.hpp; sourceTree = "<group>"; };
+		5835BCCA38BE408715F2124CE34EE05A /* Pods-AltServer.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltServer.modulemap"; sourceTree = "<group>"; };
 		5894D9DE89EF3AD8F90F2B9359464119 /* cctest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cctest.h; path = Dependencies/corecrypto/cctest.h; sourceTree = "<group>"; };
 		58BC72BB52DEC3634030DEDACD3B932E /* RSTCellContentChangeOperation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCellContentChangeOperation.h; path = Roxas/RSTCellContentChangeOperation.h; sourceTree = "<group>"; };
 		5997619C66BBB2F2D0E31C562EA522F9 /* hmac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hmac.h; path = Dependencies/OpenSSL/ios/include/openssl/hmac.h; sourceTree = "<group>"; };
@@ -611,11 +631,11 @@
 		5E6C305E38932B0284A040A773DFF879 /* RSTCollectionViewCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTCollectionViewCell.m; path = Roxas/RSTCollectionViewCell.m; sourceTree = "<group>"; };
 		5F0027637207387F612B8391E5111E9D /* STPrivilegedTask-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPrivilegedTask-prefix.pch"; sourceTree = "<group>"; };
 		60987BC87BDAE2562C44DF9109931565 /* RSTCellContentChange.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTCellContentChange.m; path = Roxas/RSTCellContentChange.m; sourceTree = "<group>"; };
+		60B0985C122B155F5C155FCB90F30B94 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		61472883BDD4214BDDEEA2288061A605 /* RSTSearchController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTSearchController.m; path = Roxas/RSTSearchController.m; sourceTree = "<group>"; };
 		61501C1661FD2F24B7E32026E45D5AA1 /* x509_vfy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = x509_vfy.h; path = Dependencies/OpenSSL/ios/include/openssl/x509_vfy.h; sourceTree = "<group>"; };
 		61A98FE2E2A5A1751790C7E5E36372B5 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		61C5B1B207DD52BC5ACAB62A5A6DEF64 /* tls1.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = tls1.h; path = Dependencies/OpenSSL/ios/include/openssl/tls1.h; sourceTree = "<group>"; };
-		61DDF5B83CA12D93D7CBD4F0B3242860 /* Pods-AltStore-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltStore-acknowledgements.markdown"; sourceTree = "<group>"; };
 		631B9239A14B8849600FF2BE44308CD2 /* UITableView+CellContent.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UITableView+CellContent.m"; path = "Roxas/UITableView+CellContent.m"; sourceTree = "<group>"; };
 		63413445A679C0467BDE3CAE89B94D34 /* STPrivilegedTask.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPrivilegedTask.xcconfig; sourceTree = "<group>"; };
 		65625EB922D2287FB6B5065FA82D7CA8 /* RSTPlaceholderView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = RSTPlaceholderView.xib; path = Roxas/RSTPlaceholderView.xib; sourceTree = "<group>"; };
@@ -626,11 +646,9 @@
 		6701293BB9F23B8CF472B900EFFCDE04 /* NSError+ALTErrors.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSError+ALTErrors.m"; sourceTree = "<group>"; };
 		676644EB1805E96CE47F7882733262B3 /* libPods-AltStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-AltStore.a"; path = "libPods-AltStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67DF21072AF32876EAA108A94774E489 /* bn.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bn.h; path = Dependencies/OpenSSL/ios/include/openssl/bn.h; sourceTree = "<group>"; };
-		67F9C672B6F11F0BC41900AED4C10DE0 /* Pods-AltServer-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltServer-acknowledgements.markdown"; sourceTree = "<group>"; };
 		6858F0A591CF832F5B248EE55B17F5A0 /* RSTError.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTError.m; path = Roxas/RSTError.m; sourceTree = "<group>"; };
 		68D8D3A708227C0506574E6358D79A3D /* ALTAppGroup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAppGroup.h; sourceTree = "<group>"; };
 		694E6932887B1C0D0912130564BB474B /* asn1t.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = asn1t.h; path = Dependencies/OpenSSL/ios/include/openssl/asn1t.h; sourceTree = "<group>"; };
-		695286014335265E05C28AD7B887F02F /* Pods-AltStore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltStore-umbrella.h"; sourceTree = "<group>"; };
 		69BC2DC6AC50B0C61B4F7E90078ECBCB /* cc_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cc_priv.h; path = Dependencies/corecrypto/cc_priv.h; sourceTree = "<group>"; };
 		69BCF448A4351DCC0562F34132ABDD71 /* SUVersionComparisonProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUVersionComparisonProtocol.h; path = Sparkle.framework/Versions/A/Headers/SUVersionComparisonProtocol.h; sourceTree = "<group>"; };
 		69ECB6396AFAB0A666321652A0E61F09 /* RSTOperation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTOperation.h; path = Roxas/RSTOperation.h; sourceTree = "<group>"; };
@@ -642,6 +660,7 @@
 		6E2FE91417F00A47CBBD4CAFC7944947 /* UICollectionViewCell+CellContent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UICollectionViewCell+CellContent.h"; path = "Roxas/UICollectionViewCell+CellContent.h"; sourceTree = "<group>"; };
 		6E64CA484C441CC0643B335135212607 /* RSTNibView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTNibView.h; path = Roxas/RSTNibView.h; sourceTree = "<group>"; };
 		6E917D3B3ADB864E9C69574812B5733D /* UIView+AnimatedHide.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIView+AnimatedHide.m"; path = "Roxas/UIView+AnimatedHide.m"; sourceTree = "<group>"; };
+		702E803654797D70C915837AF7D76C6B /* Pods-AltServer-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltServer-Info.plist"; sourceTree = "<group>"; };
 		705EFF4E047D0012135E9FC6B039DAAE /* UICollectionViewCell+CellContent.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UICollectionViewCell+CellContent.m"; path = "Roxas/UICollectionViewCell+CellContent.m"; sourceTree = "<group>"; };
 		709FED73AB0971FF10898C166D5C34DD /* pkcs12.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pkcs12.h; path = Dependencies/OpenSSL/ios/include/openssl/pkcs12.h; sourceTree = "<group>"; };
 		71121C9D9F2640ECC1FAA0F3FCDA607F /* SUStandardVersionComparator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUStandardVersionComparator.h; path = Sparkle.framework/Versions/A/Headers/SUStandardVersionComparator.h; sourceTree = "<group>"; };
@@ -656,8 +675,10 @@
 		7861F7E486DBFDA791F172183A52B4CF /* ccecies.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccecies.h; path = Dependencies/corecrypto/ccecies.h; sourceTree = "<group>"; };
 		7870A8AD5E4B6B18B10B9DD5A40084E5 /* UICollectionViewCell+Nibs.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UICollectionViewCell+Nibs.m"; path = "Roxas/UICollectionViewCell+Nibs.m"; sourceTree = "<group>"; };
 		79926042DA0FE3AC31BE54B760B6F908 /* Key.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
+		79DC23F753EEAEA1F99B4F772AC87CEB /* Pods-AltDaemon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltDaemon.debug.xcconfig"; sourceTree = "<group>"; };
 		7AC3A57327833C46EF9AEA88A5664D69 /* ALTModel+Internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ALTModel+Internal.h"; sourceTree = "<group>"; };
 		7AC49781BB0CCCCFBFFF6EEFB0867FEF /* ccmd2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccmd2.h; path = Dependencies/corecrypto/ccmd2.h; sourceTree = "<group>"; };
+		7B51BFE6F7A28BF6D5614373C24DB981 /* Pods-AltStore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltStore-umbrella.h"; sourceTree = "<group>"; };
 		7B937B69AB1B177FA5B33FAC4EF2B1F9 /* ALTAppID.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAppID.h; sourceTree = "<group>"; };
 		7B93E8672E3990ED78D813FADC50EECF /* ssl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ssl.h; path = Dependencies/OpenSSL/ios/include/openssl/ssl.h; sourceTree = "<group>"; };
 		7C02717986AF7E99DD42B70931BDE20A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
@@ -675,8 +696,9 @@
 		81B1303346FA0756C50186333EFB1F84 /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = "AppCenter-SDK-Apple/iOS/AppCenterCrashes.framework"; sourceTree = "<group>"; };
 		81FEA74DB1902FB97CE333C1CEDB224A /* ccrng_system.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccrng_system.h; path = Dependencies/corecrypto/ccrng_system.h; sourceTree = "<group>"; };
 		82341B13B5AF5BB883018AF6C0C29A35 /* Uid.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Uid.h; sourceTree = "<group>"; };
-		827E121948344EAD1A1BAD926CD89E2C /* Pods-AltServer-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltServer-acknowledgements.plist"; sourceTree = "<group>"; };
+		82392F6B02D2A2D62197B66C2056B9B9 /* Pods-AltStore-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltStore-resources.sh"; sourceTree = "<group>"; };
 		82BCE1984F56DA8A1D3B838D10199799 /* NSUserDefaults+DynamicProperties.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSUserDefaults+DynamicProperties.h"; path = "Roxas/NSUserDefaults+DynamicProperties.h"; sourceTree = "<group>"; };
+		83727454E3DD81F758E0BDADE642B5C9 /* Pods-AltDaemon-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltDaemon-acknowledgements.plist"; sourceTree = "<group>"; };
 		83BB07F284FD8A5C58CFAFC534D68D48 /* ALTAnisetteData.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALTAnisetteData.m; sourceTree = "<group>"; };
 		863044A19021CE9383C742A072B8641C /* UICollectionView+CellContent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UICollectionView+CellContent.h"; path = "Roxas/UICollectionView+CellContent.h"; sourceTree = "<group>"; };
 		86BC9D65F62DE91B357F9221B01D3DD9 /* KeychainAccess.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = KeychainAccess.modulemap; sourceTree = "<group>"; };
@@ -699,14 +721,12 @@
 		8C8CB396F5F3F3E83C4FCE36B8954F1B /* zip.c */ = {isa = PBXFileReference; includeInIndex = 1; name = zip.c; path = Dependencies/minizip/zip.c; sourceTree = "<group>"; };
 		8D56DC21CF454680EB780E780B5BC4A3 /* RSTRelationshipPreservingMergePolicy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTRelationshipPreservingMergePolicy.h; path = Roxas/RSTRelationshipPreservingMergePolicy.h; sourceTree = "<group>"; };
 		8DC59D60A54C55B6E1685B2CAB5D5A35 /* SUVersionDisplayProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUVersionDisplayProtocol.h; path = Sparkle.framework/Versions/A/Headers/SUVersionDisplayProtocol.h; sourceTree = "<group>"; };
-		8E59788A401232096F8BFE2CF38011B3 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
 		8E59C3A64EF23452AA58698B0F5F2A39 /* RSTToastView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTToastView.h; path = Roxas/RSTToastView.h; sourceTree = "<group>"; };
 		8EBF5043034AFB3A6A8F28C373BF0EC0 /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltServer.framework; path = "Pods-AltServer.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F5832C9D79544C20373B7A1438E6671 /* AltSign.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AltSign.h; path = AltSign/AltSign.h; sourceTree = "<group>"; };
 		8F5E1856E53AF0DB69BD508F9A6D3D10 /* opensslconf.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = opensslconf.h; path = Dependencies/OpenSSL/ios/include/openssl/opensslconf.h; sourceTree = "<group>"; };
 		903DA55629D1B8B8172C106D1027247B /* ccec25519_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccec25519_priv.h; path = Dependencies/corecrypto/ccec25519_priv.h; sourceTree = "<group>"; };
 		911AB656234F15A99CA82B25BA46A6DF /* cc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cc.h; path = Dependencies/corecrypto/cc.h; sourceTree = "<group>"; };
-		91203FEFD09BD6533A223ACCB6D53735 /* Pods-AltServer-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltServer-Info.plist"; sourceTree = "<group>"; };
 		91372A6AD9FBF98E332A9431BA39D4D1 /* RSTNibView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTNibView.m; path = Roxas/RSTNibView.m; sourceTree = "<group>"; };
 		92199C8E1E8E1DFC2347DB246CA7F1DA /* ImagePreheater.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePreheater.swift; path = Sources/ImagePreheater.swift; sourceTree = "<group>"; };
 		92B239E2FA94463894D8553410190216 /* plist.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = plist.h; sourceTree = "<group>"; };
@@ -728,6 +748,7 @@
 		99A34B91E3966B3C42216C9E4A2D4CFF /* ecdsa.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ecdsa.h; path = Dependencies/OpenSSL/ios/include/openssl/ecdsa.h; sourceTree = "<group>"; };
 		99C7B66B038F2B0D0975A387F4E73F29 /* ccchacha20poly1305.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccchacha20poly1305.h; path = Dependencies/corecrypto/ccchacha20poly1305.h; sourceTree = "<group>"; };
 		9A43A3EB159CA9C66ED383CAB0E128A6 /* ossl_typ.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ossl_typ.h; path = Dependencies/OpenSSL/ios/include/openssl/ossl_typ.h; sourceTree = "<group>"; };
+		9A5F712C8D5959F1E477A2D285AB9A07 /* Pods-AltServer-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltServer-acknowledgements.markdown"; sourceTree = "<group>"; };
 		9A69C6F20E3BBAE1C8C90A58CBA3DB0C /* ALTAccount.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAccount.h; sourceTree = "<group>"; };
 		9A8A48D68CE5B5EF610D60AE61C9F584 /* unzip.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = unzip.h; path = Dependencies/minizip/unzip.h; sourceTree = "<group>"; };
 		9ACE8C95ED09F41B08C4DF0B178B37EA /* objects.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = objects.h; path = Dependencies/OpenSSL/ios/include/openssl/objects.h; sourceTree = "<group>"; };
@@ -753,8 +774,8 @@
 		A65888B0E090B10E6170D43D8E1C0F6F /* STPrivilegedTask-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "STPrivilegedTask-Info.plist"; sourceTree = "<group>"; };
 		A6C7A3F8405342E0CFCF2C6C5F9B0A3D /* dh.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dh.h; path = Dependencies/OpenSSL/ios/include/openssl/dh.h; sourceTree = "<group>"; };
 		A6CB7BCDAD00CC9657632FA0DF9599EC /* ccdh_gp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccdh_gp.h; path = Dependencies/corecrypto/ccdh_gp.h; sourceTree = "<group>"; };
+		A79744C0D952ADD34EC8CCD2D1501838 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
 		A8093B399024794431159E69E5C18C92 /* ccmode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccmode.h; path = Dependencies/corecrypto/ccmode.h; sourceTree = "<group>"; };
-		A82A21359DA7189002E88491D87FB6BE /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		A8918968EFD5B0DD448B57256A730D5A /* RSTCellContentChange.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTCellContentChange.h; path = Roxas/RSTCellContentChange.h; sourceTree = "<group>"; };
 		AA460D4136BE705CF537D99DB76207FF /* ALTAnisetteData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTAnisetteData.h; sourceTree = "<group>"; };
 		AA7D8EE75A3FE7F4EB2ECBCABDA9330D /* ccchacha20poly1305_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccchacha20poly1305_priv.h; path = Dependencies/corecrypto/ccchacha20poly1305_priv.h; sourceTree = "<group>"; };
@@ -782,11 +803,11 @@
 		B831FF60290BCF3108FDBC1BD6525103 /* Dictionary.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Dictionary.h; sourceTree = "<group>"; };
 		B87FE5286C1FD482F82C01FCB38DB158 /* ccrc4.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccrc4.h; path = Dependencies/corecrypto/ccrc4.h; sourceTree = "<group>"; };
 		B88B0C4661B00E43F453B1A81826157A /* STPrivilegedTask-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPrivilegedTask-umbrella.h"; sourceTree = "<group>"; };
+		B8B4E51528ACF4ED0E62FD2946936A77 /* Pods-AltServer-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltServer-frameworks.sh"; sourceTree = "<group>"; };
 		B9B1CEF2EED0B01E64AB78B582825997 /* ALTApplication.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = ALTApplication.mm; sourceTree = "<group>"; };
 		B9C77F574EE4D8FCC56A32497585256D /* ccdh.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccdh.h; path = Dependencies/corecrypto/ccdh.h; sourceTree = "<group>"; };
 		BAF50E693DDCD83078B5CA7F1DA5D5B8 /* ALTAppleAPISession.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALTAppleAPISession.m; sourceTree = "<group>"; };
 		BB3E62EAAE23B1F6A4465CC181048F4E /* ALTApplication.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALTApplication.h; sourceTree = "<group>"; };
-		BC6F74406EF976ECC3669BD38B0ECED4 /* Pods-AltServer-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltServer-frameworks.sh"; sourceTree = "<group>"; };
 		BD03248F0F2BB2C459A7CC45CDF38647 /* RSTHasher.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTHasher.m; path = Roxas/RSTHasher.m; sourceTree = "<group>"; };
 		BE3254B479A7B3EC6F741494E430EA42 /* ioapi.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ioapi.h; path = Dependencies/minizip/ioapi.h; sourceTree = "<group>"; };
 		BE86423754DE6F326E05DA81C8610E5B /* ccrsa_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccrsa_priv.h; path = Dependencies/corecrypto/ccrsa_priv.h; sourceTree = "<group>"; };
@@ -794,7 +815,6 @@
 		BEFC63944685F87ABCA6731E33ECA843 /* RSTSeparatorView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTSeparatorView.h; path = Roxas/RSTSeparatorView.h; sourceTree = "<group>"; };
 		BF327FF6D10BE735B3541D8135486FAC /* ImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCache.swift; path = Sources/ImageCache.swift; sourceTree = "<group>"; };
 		BFC87DA394F783CD7D6834276283DE6F /* ImageRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageRequest.swift; path = Sources/ImageRequest.swift; sourceTree = "<group>"; };
-		C0D26B225AB108A39AD161E5C626DFCA /* Pods-AltStore-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltStore-resources.sh"; sourceTree = "<group>"; };
 		C1E18A24C4A563BC4DDCA5EF6254C778 /* mztools.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mztools.h; path = Dependencies/minizip/mztools.h; sourceTree = "<group>"; };
 		C1EBD0BA39E3F8B25F16880B710E2C5B /* opensslconf-armv7s.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "opensslconf-armv7s.h"; path = "Dependencies/OpenSSL/ios/include/openssl/opensslconf-armv7s.h"; sourceTree = "<group>"; };
 		C208E8E78D20910EAC3E2EF269C195EC /* SUAppcastItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUAppcastItem.h; path = Sparkle.framework/Versions/A/Headers/SUAppcastItem.h; sourceTree = "<group>"; };
@@ -804,11 +824,13 @@
 		C4F3A4BFDFD12AB4EB01F4BCA312A94D /* crypt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crypt.h; path = Dependencies/minizip/crypt.h; sourceTree = "<group>"; };
 		C50FB407DB2A72F5D827B19042A714F8 /* rc4.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = rc4.h; path = Dependencies/OpenSSL/ios/include/openssl/rc4.h; sourceTree = "<group>"; };
 		C556A67CD97EE39683D31C0B9F0918EB /* ccn.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccn.h; path = Dependencies/corecrypto/ccn.h; sourceTree = "<group>"; };
+		C63B22556372BD6A596092190AC874E3 /* Pods-AltServer-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltServer-dummy.m"; sourceTree = "<group>"; };
 		C65850A307D6D5D8B9CBB2C7795093CC /* ccdrbg_factory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccdrbg_factory.h; path = Dependencies/corecrypto/ccdrbg_factory.h; sourceTree = "<group>"; };
 		C72FC0FB6B8986A4FB1980229B73DDEE /* mztools.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mztools.c; path = Dependencies/minizip/mztools.c; sourceTree = "<group>"; };
 		C7C523F13B0698E9E1E0C8BC56663CDD /* RSTCellContentDataSource.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTCellContentDataSource.m; path = Roxas/RSTCellContentDataSource.m; sourceTree = "<group>"; };
 		C8158E0DE7EA9639894587255DB9F03C /* fipspost.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fipspost.h; path = Dependencies/corecrypto/fipspost.h; sourceTree = "<group>"; };
 		C906AF9E4AF1DA84489A450180EE84AE /* node.c */ = {isa = PBXFileReference; includeInIndex = 1; path = node.c; sourceTree = "<group>"; };
+		C9132C40CB4837DADEB046E727F867FB /* Pods-AltStore-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltStore-dummy.m"; sourceTree = "<group>"; };
 		CA894C38E3874FEC9FCD1A4BC67184F7 /* RSTError.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTError.h; path = Roxas/RSTError.h; sourceTree = "<group>"; };
 		CB4FFC20503BA7993FDFB654063591EC /* cchkdf.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cchkdf.h; path = Dependencies/corecrypto/cchkdf.h; sourceTree = "<group>"; };
 		CB732A4A4314642DEF76FAB814B59DF8 /* SUUpdater.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUUpdater.h; path = Sparkle.framework/Versions/A/Headers/SUUpdater.h; sourceTree = "<group>"; };
@@ -846,18 +868,17 @@
 		E57351A0D30872C6AADDD2E5294EF95A /* ocsp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ocsp.h; path = Dependencies/OpenSSL/ios/include/openssl/ocsp.h; sourceTree = "<group>"; };
 		E58E9ACAA603F0479C9159E248BDD542 /* bio.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bio.h; path = Dependencies/OpenSSL/ios/include/openssl/bio.h; sourceTree = "<group>"; };
 		E6064D2203D88A9ACE189177C3722660 /* NSPredicate+Search.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSPredicate+Search.h"; path = "Roxas/NSPredicate+Search.h"; sourceTree = "<group>"; };
+		E6C49955A91A9BF96052D43477EE8A79 /* Pods-AltServer-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltServer-umbrella.h"; sourceTree = "<group>"; };
 		E7223D60AEAF953DAF7871518753EBB9 /* RSTPersistentContainer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTPersistentContainer.m; path = Roxas/RSTPersistentContainer.m; sourceTree = "<group>"; };
 		E7709D93E2CB7C73F6D5FA5E3032EAC6 /* AltSign.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = AltSign.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E77CC6E8557F17BBC9A36A2847A51100 /* RSTArrayDataSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTArrayDataSource.h; path = Roxas/RSTArrayDataSource.h; sourceTree = "<group>"; };
 		E8196FCC04FA21317C838435B5F4FCA1 /* RSTTintedImageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTTintedImageView.h; path = Roxas/RSTTintedImageView.h; sourceTree = "<group>"; };
-		E8434827ABB58D1C0275F5BDE3717F16 /* Pods-AltServer-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltServer-dummy.m"; sourceTree = "<group>"; };
 		E8EE7F078656FABB8F6821D10FF994BB /* libKeychainAccess.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libKeychainAccess.a; path = libKeychainAccess.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E92A1B8716EB4DF6BF0A824E1662069E /* ccmode_siv_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccmode_siv_priv.h; path = Dependencies/corecrypto/ccmode_siv_priv.h; sourceTree = "<group>"; };
 		E9AB7E00EF57815340C28751AFAD3798 /* ptrarray.c */ = {isa = PBXFileReference; includeInIndex = 1; path = ptrarray.c; sourceTree = "<group>"; };
 		EA706258C6F1B1F2B19EF8197E8F4349 /* unzip.c */ = {isa = PBXFileReference; includeInIndex = 1; name = unzip.c; path = Dependencies/minizip/unzip.c; sourceTree = "<group>"; };
 		EB20FCA19FFC2313BFF8BBE3AA934288 /* RSTSearchController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RSTSearchController.h; path = Roxas/RSTSearchController.h; sourceTree = "<group>"; };
 		EB343A74480E905489EFD2CBA6F6339E /* ImagePipeline.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePipeline.swift; path = Sources/ImagePipeline.swift; sourceTree = "<group>"; };
-		EC9F77AC7ECBA94225DE401B6A8004F2 /* Pods-AltStore-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltStore-dummy.m"; sourceTree = "<group>"; };
 		ECB70FB9A0943AD3C24308D934E452AC /* ImageTaskMetrics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageTaskMetrics.swift; path = Sources/ImageTaskMetrics.swift; sourceTree = "<group>"; };
 		ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = STPrivilegedTask.framework; path = STPrivilegedTask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED35088C8A16722DEF3F72976FF9CEA4 /* ccec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccec.h; path = Dependencies/corecrypto/ccec.h; sourceTree = "<group>"; };
@@ -869,6 +890,7 @@
 		F255B45E106FBFFFBF10D506992EC655 /* RSTDynamicDataSource.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTDynamicDataSource.m; path = Roxas/RSTDynamicDataSource.m; sourceTree = "<group>"; };
 		F2CF961D1535400D1D9228FD823EE7D9 /* Real.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Real.h; sourceTree = "<group>"; };
 		F35FA9FBDE25A463886F53B66B39A748 /* NSError+ALTErrors.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSError+ALTErrors.h"; sourceTree = "<group>"; };
+		F36150F4B2D5DD35C5AE24D34254DD5B /* Pods-AltServer-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltServer-acknowledgements.plist"; sourceTree = "<group>"; };
 		F3A77F6E48BAFA480142E4AA3CD6A301 /* UITableViewCell+CellContent.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UITableViewCell+CellContent.m"; path = "Roxas/UITableViewCell+CellContent.m"; sourceTree = "<group>"; };
 		F41304FE31EBAE0769092641DA09FD04 /* ccz_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccz_priv.h; path = Dependencies/corecrypto/ccz_priv.h; sourceTree = "<group>"; };
 		F456D30A7BC124649CB25DFC1B8C8D83 /* Sparkle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Sparkle.h; path = Sparkle.framework/Versions/A/Headers/Sparkle.h; sourceTree = "<group>"; };
@@ -885,13 +907,13 @@
 		F9E154EE6519BD64EF44E725EC3AFB89 /* UIImage+Manipulation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Manipulation.m"; path = "Roxas/UIImage+Manipulation.m"; sourceTree = "<group>"; };
 		FA30F634D3EEACD6C9E258E0551D357A /* STPrivilegedTask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = STPrivilegedTask.h; sourceTree = "<group>"; };
 		FA31890BE5D6782EE2C66D17C3FA5F73 /* RSTOperationQueue.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RSTOperationQueue.m; path = Roxas/RSTOperationQueue.m; sourceTree = "<group>"; };
-		FAED4B69775DE96F8861BCA8BF35E38B /* Pods-AltStore-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-acknowledgements.plist"; sourceTree = "<group>"; };
 		FAFA796C2028D51219FED104E02BBA2E /* ldid.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = ldid.cpp; sourceTree = "<group>"; };
 		FB0B4256965EEBCC93E6D0A895696520 /* ccdigest_priv.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccdigest_priv.h; path = Dependencies/corecrypto/ccdigest_priv.h; sourceTree = "<group>"; };
 		FB6237E2F93A403AB9147341A339398E /* asn1_mac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = asn1_mac.h; path = Dependencies/OpenSSL/ios/include/openssl/asn1_mac.h; sourceTree = "<group>"; };
 		FC422EC5FAE52EEE9570A6C6CD463B9C /* UICollectionViewCell+Nibs.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UICollectionViewCell+Nibs.h"; path = "Roxas/UICollectionViewCell+Nibs.h"; sourceTree = "<group>"; };
 		FC9139A28E7A28DDB6875A26A978DCBB /* UIKit+ActivityIndicating.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIKit+ActivityIndicating.m"; path = "Roxas/UIKit+ActivityIndicating.m"; sourceTree = "<group>"; };
 		FCEACD7381B4CD496C8776BA4B4DDECD /* cccast.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cccast.h; path = Dependencies/corecrypto/cccast.h; sourceTree = "<group>"; };
+		FD54352444A7AFFFB59DA62203AF58BE /* Pods-AltStore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStore.modulemap"; sourceTree = "<group>"; };
 		FDBED95D85CFE5DE2E1A73C8BDE40AF8 /* node_list.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = node_list.h; sourceTree = "<group>"; };
 		FE3B0942ABD1EF218327EAFDB5930E8F /* ccz.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ccz.h; path = Dependencies/corecrypto/ccz.h; sourceTree = "<group>"; };
 		FF6A87F5B921A4731A72BAA58BC686B5 /* KeychainAccess-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KeychainAccess-umbrella.h"; sourceTree = "<group>"; };
@@ -922,6 +944,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		93C01ECC0AA00200A4D745BFDDB57B63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C60D4971328D3B30E809D85DF9AC9C1C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1025,6 +1054,20 @@
 			path = Sparkle;
 			sourceTree = "<group>";
 		};
+		21B07EE04CFA7F279AE8450F26AA35AD /* Pods-AltDaemon */ = {
+			isa = PBXGroup;
+			children = (
+				4773ABB518FBF6876DAC8F0AE260A54B /* Pods-AltDaemon-acknowledgements.markdown */,
+				83727454E3DD81F758E0BDADE642B5C9 /* Pods-AltDaemon-acknowledgements.plist */,
+				546B88CFC6EBED3C7F26035C1D82B8B7 /* Pods-AltDaemon-dummy.m */,
+				29D47FB44A4B93E67977EA7DA41FDBFE /* Pods-AltDaemon-resources.sh */,
+				79DC23F753EEAEA1F99B4F772AC87CEB /* Pods-AltDaemon.debug.xcconfig */,
+				38B25887E1C1D20811EEFC7E4F30E75E /* Pods-AltDaemon.release.xcconfig */,
+			);
+			name = "Pods-AltDaemon";
+			path = "Target Support Files/Pods-AltDaemon";
+			sourceTree = "<group>";
+		};
 		27C9B3764A8EC89602B2168BCD3B0541 /* Nuke */ = {
 			isa = PBXGroup;
 			children = (
@@ -1056,22 +1099,6 @@
 			path = AltSign/Model;
 			sourceTree = "<group>";
 		};
-		29BB281BA7D464B1749908A7D7B87093 /* Pods-AltStore */ = {
-			isa = PBXGroup;
-			children = (
-				0D7CC1D321A7EFF4B480E5BAC0685CFC /* Pods-AltStore.modulemap */,
-				61DDF5B83CA12D93D7CBD4F0B3242860 /* Pods-AltStore-acknowledgements.markdown */,
-				FAED4B69775DE96F8861BCA8BF35E38B /* Pods-AltStore-acknowledgements.plist */,
-				EC9F77AC7ECBA94225DE401B6A8004F2 /* Pods-AltStore-dummy.m */,
-				C0D26B225AB108A39AD161E5C626DFCA /* Pods-AltStore-resources.sh */,
-				695286014335265E05C28AD7B887F02F /* Pods-AltStore-umbrella.h */,
-				A82A21359DA7189002E88491D87FB6BE /* Pods-AltStore.debug.xcconfig */,
-				8E59788A401232096F8BFE2CF38011B3 /* Pods-AltStore.release.xcconfig */,
-			);
-			name = "Pods-AltStore";
-			path = "Target Support Files/Pods-AltStore";
-			sourceTree = "<group>";
-		};
 		2ADBE40AD4FBCECB7EC3654624D470B5 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -1098,6 +1125,31 @@
 			);
 			name = src;
 			path = Dependencies/ldid/libplist/src;
+			sourceTree = "<group>";
+		};
+		2C6DD3243036D912CFF08FC91260A033 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				97376E80213BC9E42F08C1C3E739327F /* libAltSign.a */,
+				E8EE7F078656FABB8F6821D10FF994BB /* libKeychainAccess.a */,
+				2DAD7D76FC007F48AE48F2FD15BF01BB /* libNuke.a */,
+				49B0F76928525434803E52E609201454 /* libPods-AltDaemon.a */,
+				676644EB1805E96CE47F7882733262B3 /* libPods-AltStore.a */,
+				4405793D5AF1EFD9D2BDA30AA0D2E514 /* libRoxas.a */,
+				8EBF5043034AFB3A6A8F28C373BF0EC0 /* Pods_AltServer.framework */,
+				ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30C5E295E48CEDE7497C55DE64DBC687 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				21B07EE04CFA7F279AE8450F26AA35AD /* Pods-AltDaemon */,
+				7F5AD92236E83BA3EB39205EBAB8A9B8 /* Pods-AltServer */,
+				843530E93DA12B817029E9018B03DD06 /* Pods-AltStore */,
+			);
+			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		3598F2B00D4321009D713747EEC1E46B /* Capabilities */ = {
@@ -1176,20 +1228,6 @@
 			);
 			name = "Support Files";
 			path = "../Target Support Files/Sparkle";
-			sourceTree = "<group>";
-		};
-		4E801E465E7C325D42C6ADBADF282456 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				97376E80213BC9E42F08C1C3E739327F /* libAltSign.a */,
-				E8EE7F078656FABB8F6821D10FF994BB /* libKeychainAccess.a */,
-				2DAD7D76FC007F48AE48F2FD15BF01BB /* libNuke.a */,
-				676644EB1805E96CE47F7882733262B3 /* libPods-AltStore.a */,
-				4405793D5AF1EFD9D2BDA30AA0D2E514 /* libRoxas.a */,
-				8EBF5043034AFB3A6A8F28C373BF0EC0 /* Pods_AltServer.framework */,
-				ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		509C180E6A90B89D30B2070FD2CB5026 /* include */ = {
@@ -1407,6 +1445,39 @@
 			path = AltSign/Categories;
 			sourceTree = "<group>";
 		};
+		7F5AD92236E83BA3EB39205EBAB8A9B8 /* Pods-AltServer */ = {
+			isa = PBXGroup;
+			children = (
+				5835BCCA38BE408715F2124CE34EE05A /* Pods-AltServer.modulemap */,
+				9A5F712C8D5959F1E477A2D285AB9A07 /* Pods-AltServer-acknowledgements.markdown */,
+				F36150F4B2D5DD35C5AE24D34254DD5B /* Pods-AltServer-acknowledgements.plist */,
+				C63B22556372BD6A596092190AC874E3 /* Pods-AltServer-dummy.m */,
+				B8B4E51528ACF4ED0E62FD2946936A77 /* Pods-AltServer-frameworks.sh */,
+				702E803654797D70C915837AF7D76C6B /* Pods-AltServer-Info.plist */,
+				E6C49955A91A9BF96052D43477EE8A79 /* Pods-AltServer-umbrella.h */,
+				0100FAF2D9192354B5AD97C5ACA2892A /* Pods-AltServer.debug.xcconfig */,
+				A79744C0D952ADD34EC8CCD2D1501838 /* Pods-AltServer.release.xcconfig */,
+			);
+			name = "Pods-AltServer";
+			path = "Target Support Files/Pods-AltServer";
+			sourceTree = "<group>";
+		};
+		843530E93DA12B817029E9018B03DD06 /* Pods-AltStore */ = {
+			isa = PBXGroup;
+			children = (
+				FD54352444A7AFFFB59DA62203AF58BE /* Pods-AltStore.modulemap */,
+				09CBBA5767A1426DCF3A11FFFCCD6C9A /* Pods-AltStore-acknowledgements.markdown */,
+				1192029049EFACF019572AE1D7C92004 /* Pods-AltStore-acknowledgements.plist */,
+				C9132C40CB4837DADEB046E727F867FB /* Pods-AltStore-dummy.m */,
+				82392F6B02D2A2D62197B66C2056B9B9 /* Pods-AltStore-resources.sh */,
+				7B51BFE6F7A28BF6D5614373C24DB981 /* Pods-AltStore-umbrella.h */,
+				60B0985C122B155F5C155FCB90F30B94 /* Pods-AltStore.debug.xcconfig */,
+				415A2399B6A802A272A86233D7C9DA25 /* Pods-AltStore.release.xcconfig */,
+			);
+			name = "Pods-AltStore";
+			path = "Target Support Files/Pods-AltStore";
+			sourceTree = "<group>";
+		};
 		9307E5FFD57ACBE2597611F16A6139DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1421,32 +1492,6 @@
 				0321A885A585CCA30D5C15D35ADAD766 /* AppCenter.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A25CEE5A93D9C8F43DE9AB2C39CEE220 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				A623B766890FCB34E7F40129A4502B63 /* Pods-AltServer */,
-				29BB281BA7D464B1749908A7D7B87093 /* Pods-AltStore */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
-		A623B766890FCB34E7F40129A4502B63 /* Pods-AltServer */ = {
-			isa = PBXGroup;
-			children = (
-				1FDDB64DD95C45BA9E30FFB7ECFB9C30 /* Pods-AltServer.modulemap */,
-				67F9C672B6F11F0BC41900AED4C10DE0 /* Pods-AltServer-acknowledgements.markdown */,
-				827E121948344EAD1A1BAD926CD89E2C /* Pods-AltServer-acknowledgements.plist */,
-				E8434827ABB58D1C0275F5BDE3717F16 /* Pods-AltServer-dummy.m */,
-				BC6F74406EF976ECC3669BD38B0ECED4 /* Pods-AltServer-frameworks.sh */,
-				91203FEFD09BD6533A223ACCB6D53735 /* Pods-AltServer-Info.plist */,
-				4A3F93787631B5439B1EA07C44C1097A /* Pods-AltServer-umbrella.h */,
-				3A44D4EBF7CD579B73B275F0F125F846 /* Pods-AltServer.debug.xcconfig */,
-				1215053FA027E4CE849DAF4D00697FF1 /* Pods-AltServer.release.xcconfig */,
-			);
-			name = "Pods-AltServer";
-			path = "Target Support Files/Pods-AltServer";
 			sourceTree = "<group>";
 		};
 		A8E8EC855E36F4AD2F328CCDAA64BFAB /* Pod */ = {
@@ -1689,8 +1734,8 @@
 				AF69713775B03B86677F3D2E78371BDA /* Development Pods */,
 				C080C886C9E2F80D52E3E86A62E5B711 /* Frameworks */,
 				C27EC5BB44921E86A3540A05A3E4DE34 /* Pods */,
-				4E801E465E7C325D42C6ADBADF282456 /* Products */,
-				A25CEE5A93D9C8F43DE9AB2C39CEE220 /* Targets Support Files */,
+				2C6DD3243036D912CFF08FC91260A033 /* Products */,
+				30C5E295E48CEDE7497C55DE64DBC687 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1851,6 +1896,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		0C5FFA2756F2B38D09CD34ABD1FC2356 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5A0720C096941A3006070216308EE5E4 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2275,6 +2327,25 @@
 			productReference = 97376E80213BC9E42F08C1C3E739327F /* libAltSign.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		A7A6DC28A6D60809855FE404C6A3EA29 /* Pods-AltDaemon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0D7F14884B35286EA8908CE5B7BE6DFC /* Build configuration list for PBXNativeTarget "Pods-AltDaemon" */;
+			buildPhases = (
+				0C5FFA2756F2B38D09CD34ABD1FC2356 /* Headers */,
+				1D0BC9C1B9B61E3D8F6D25D2B03BF8EF /* Sources */,
+				C60D4971328D3B30E809D85DF9AC9C1C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				654042244EF3A473B122D0548F1E7D5F /* PBXTargetDependency */,
+				4A8907B54AA4AE05FA8507388DF4C44F /* PBXTargetDependency */,
+			);
+			name = "Pods-AltDaemon";
+			productName = "Pods-AltDaemon";
+			productReference = 49B0F76928525434803E52E609201454 /* libPods-AltDaemon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		B5D1BA64AC676FF46408FCDE19A05767 /* Roxas */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 729F25285E2C7B6E2B1F4A22919FEC8C /* Build configuration list for PBXNativeTarget "Roxas" */;
@@ -2310,7 +2381,7 @@
 				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = 4E801E465E7C325D42C6ADBADF282456 /* Products */;
+			productRefGroup = 2C6DD3243036D912CFF08FC91260A033 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -2318,6 +2389,7 @@
 				A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */,
 				615C831BCE925ED486B225B87E44926D /* KeychainAccess */,
 				062A64896E847A6749F58B6BA9A931B1 /* Nuke */,
+				A7A6DC28A6D60809855FE404C6A3EA29 /* Pods-AltDaemon */,
 				89B529DD288896C2EFC49575065F70FB /* Pods-AltServer */,
 				7083360F3F274C756CA77375F9D2A2BD /* Pods-AltStore */,
 				B5D1BA64AC676FF46408FCDE19A05767 /* Roxas */,
@@ -2396,6 +2468,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1D0BC9C1B9B61E3D8F6D25D2B03BF8EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2517BDBD1ABC11CE0956092866DE325 /* Pods-AltDaemon-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D542A07EC16C65863169B12C3EFA1AE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2571,11 +2651,23 @@
 			target = A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */;
 			targetProxy = C24230D37E930D006BF95D0AD49EEC82 /* PBXContainerItemProxy */;
 		};
+		4A8907B54AA4AE05FA8507388DF4C44F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Roxas;
+			target = B5D1BA64AC676FF46408FCDE19A05767 /* Roxas */;
+			targetProxy = B1324C39ACC0CCA590E2F6C1CEE2A8A0 /* PBXContainerItemProxy */;
+		};
 		5DC764A2079E6566B6F43A6E4DC9F4AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Roxas;
 			target = B5D1BA64AC676FF46408FCDE19A05767 /* Roxas */;
 			targetProxy = AEF8A1FC207CBD08591F3D9033C2F05B /* PBXContainerItemProxy */;
+		};
+		654042244EF3A473B122D0548F1E7D5F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AltSign;
+			target = 951A9DDCF9D2F851D1EC2B8CCD08ADFA /* AltSign */;
+			targetProxy = EB92C48D1AC6614C7A547B50D0514BC5 /* PBXContainerItemProxy */;
 		};
 		6E8C33961EA95A1968B7F180F87A0A68 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2632,7 +2724,7 @@
 		};
 		03A826C198089C15D11AC65F5BED730D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3A44D4EBF7CD579B73B275F0F125F846 /* Pods-AltServer.debug.xcconfig */;
+			baseConfigurationReference = 0100FAF2D9192354B5AD97C5ACA2892A /* Pods-AltServer.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -2776,6 +2868,28 @@
 			};
 			name = Debug;
 		};
+		1993FA6D3A63D76A42298DDD4D69750B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79DC23F753EEAEA1F99B4F772AC87CEB /* Pods-AltDaemon.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		21221507EB6C5017FA40BD87C8A5AE87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 98D79D75B1A90F9F6A3DDAF54FF3C81A /* Sparkle.xcconfig */;
@@ -2891,7 +3005,7 @@
 		};
 		81F1B766BA25BC1DF5BB72B95C79D4F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8E59788A401232096F8BFE2CF38011B3 /* Pods-AltStore.release.xcconfig */;
+			baseConfigurationReference = 415A2399B6A802A272A86233D7C9DA25 /* Pods-AltStore.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -3009,9 +3123,32 @@
 			};
 			name = Debug;
 		};
+		C8E31C3BA27894CDC72F7EA65DE99EF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 38B25887E1C1D20811EEFC7E4F30E75E /* Pods-AltDaemon.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		D2269E4D719DBA594A24DD1B71DB0AA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A82A21359DA7189002E88491D87FB6BE /* Pods-AltStore.debug.xcconfig */;
+			baseConfigurationReference = 60B0985C122B155F5C155FCB90F30B94 /* Pods-AltStore.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -3137,7 +3274,7 @@
 		};
 		E8921B3E2DFC77CDA00FEE1D9EA36AA0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1215053FA027E4CE849DAF4D00697FF1 /* Pods-AltServer.release.xcconfig */;
+			baseConfigurationReference = A79744C0D952ADD34EC8CCD2D1501838 /* Pods-AltServer.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -3217,6 +3354,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0D7F14884B35286EA8908CE5B7BE6DFC /* Build configuration list for PBXNativeTarget "Pods-AltDaemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1993FA6D3A63D76A42298DDD4D69750B /* Debug */,
+				C8E31C3BA27894CDC72F7EA65DE99EF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2C8D06A2289713323892B3638F08AC0B /* Build configuration list for PBXAggregateTarget "Sparkle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
