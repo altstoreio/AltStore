@@ -212,6 +212,10 @@ private extension AppDelegate
                     {
                         alert.informativeText = underlyingError.localizedDescription
                     }
+                    else if let recoverySuggestion = error.localizedRecoverySuggestion
+                    {
+                        alert.informativeText = error.localizedDescription + "\n\n" + recoverySuggestion
+                    }
                     else
                     {
                         alert.informativeText = error.localizedDescription

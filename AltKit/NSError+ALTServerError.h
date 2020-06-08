@@ -39,7 +39,9 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorInvalidAnisetteData = 13,
     ALTServerErrorPluginNotFound = 14,
     
-    ALTServerErrorProfileNotFound = 15
+    ALTServerErrorProfileNotFound = 15,
+    
+    ALTServerErrorAppDeletionFailed = 16,
 };
 
 NS_ASSUME_NONNULL_BEGIN

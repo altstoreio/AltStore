@@ -56,6 +56,11 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         return 1 + self.appExtensions.count
     }
     
+    var requiredActiveSlots: Int {
+        let requiredActiveSlots = UserDefaults.standard.activeAppLimitIncludesExtensions ? self.appIDCount : 1
+        return requiredActiveSlots
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -247,6 +252,12 @@ extension InstalledApp
         return installedAppUTI
     }
     
+    class func installedBackupAppUTI(forBundleIdentifier bundleIdentifier: String) -> String
+    {
+        let installedBackupAppUTI = InstalledApp.installedAppUTI(forBundleIdentifier: bundleIdentifier) + ".backup"
+        return installedBackupAppUTI
+    }
+    
     var directoryURL: URL {
         return InstalledApp.directoryURL(for: self)
     }
@@ -261,5 +272,9 @@ extension InstalledApp
     
     var installedAppUTI: String {
         return InstalledApp.installedAppUTI(forBundleIdentifier: self.resignedBundleIdentifier)
+    }
+    
+    var installedBackupAppUTI: String {
+        return InstalledApp.installedBackupAppUTI(forBundleIdentifier: self.resignedBundleIdentifier)
     }
 }

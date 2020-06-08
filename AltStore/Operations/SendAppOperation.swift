@@ -89,8 +89,13 @@ private extension SendAppOperation
                     connection.send(appData, prependSize: false) { (result) in
                         switch result
                         {
-                        case .failure(let error): completionHandler(.failure(error))
-                        case .success: completionHandler(.success(()))
+                        case .failure(let error):
+                            print("Failed to send app data (\(appData.count) bytes)")
+                            completionHandler(.failure(error))
+                            
+                        case .success:
+                            print("Successfully sent app data (\(appData.count) bytes)")
+                            completionHandler(.success(()))
                         }
                     }
                 }

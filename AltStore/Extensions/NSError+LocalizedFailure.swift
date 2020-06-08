@@ -20,6 +20,9 @@ extension NSError
     {
         var userInfo = self.userInfo
         userInfo[NSLocalizedFailureErrorKey] = failure
+        userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
+        userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
+        userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
         
         let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
         return error

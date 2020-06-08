@@ -16,6 +16,7 @@ public extension Bundle
         public static let serverID = "ALTServerID"
         public static let certificateID = "ALTCertificateID"
         public static let appGroups = "ALTAppGroups"
+        public static let altBundleID = "ALTBundleIdentifier"
         
         public static let urlTypes = "CFBundleURLTypes"
         public static let exportedUTIs = "UTExportedTypeDeclarations"
@@ -24,6 +25,8 @@ public extension Bundle
 
 public extension Bundle
 {
+    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
+    
     var infoPlistURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("Info.plist")
         return infoPlistURL
@@ -37,5 +40,14 @@ public extension Bundle
     var certificateURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
         return infoPlistURL
+    }
+    
+    var appGroups: [String] {
+        return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
+    }
+    
+    var altstoreAppGroup: String? {        
+        let appGroup = self.appGroups.first { $0.contains(Bundle.baseAltStoreAppGroupID) }
+        return appGroup
     }
 }

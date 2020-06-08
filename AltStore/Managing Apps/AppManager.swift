@@ -72,6 +72,17 @@ extension AppManager
                         continue
                     }
                     
+                    guard !self.isActivelyManagingApp(withBundleID: app.bundleIdentifier) else { continue }
+                    
+                    if !UserDefaults.standard.isLegacyDeactivationSupported
+                    {
+                        // We can't (ab)use provisioning profiles to deactivate apps,
+                        // which means we must delete apps to free up active slots.
+                        // So, only check if active apps are installed to prevent
+                        // false positives when checking inactive apps.
+                        guard app.isActive else { continue }
+                    }
+                    
                     let uti = UTTypeCopyDeclaration(app.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
                     if uti == nil && !legacySideloadedApps.contains(app.bundleIdentifier)
                     {
@@ -103,7 +114,7 @@ extension AppManager
                         let resourceValues = try appDirectory.resourceValues(forKeys: [.isDirectoryKey, .nameKey])
                         guard let isDirectory = resourceValues.isDirectory, let bundleID = resourceValues.name else { continue }
                         
-                        if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.installationProgress.keys.contains(bundleID)
+                        if isDirectory && !installedAppBundleIDs.contains(bundleID) && !self.isActivelyManagingApp(withBundleID: bundleID)
                         {
                             print("DELETING CACHED APP:", bundleID)
                             try FileManager.default.removeItem(at: appDirectory)
@@ -308,13 +319,19 @@ extension AppManager
     
     func activate(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
     {
-        let group = self.refresh([installedApp], presentingViewController: presentingViewController)
+        let group = RefreshGroup()
+        
+        let operation = AppOperation.activate(installedApp)
+        self.perform([operation], presentingViewController: presentingViewController, group: group)
+        
         group.completionHandler = { (results) in
             do
             {
                 guard let result = results.values.first else { throw OperationError.unknown }
                 
                 let installedApp = try result.get()
+                assert(installedApp.managedObjectContext != nil)
+                
                 installedApp.managedObjectContext?.perform {
                     installedApp.isActive = true
                     completionHandler(.success(installedApp))
@@ -327,19 +344,142 @@ extension AppManager
         }
     }
     
-    func deactivate(_ installedApp: InstalledApp, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    func deactivate(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
     {
-        let context = OperationContext()
-        
-        let findServerOperation = self.findServer(context: context) { _ in }
-        
-        let deactivateAppOperation = DeactivateAppOperation(app: installedApp, context: context)
-        deactivateAppOperation.resultHandler = { (result) in
-            completionHandler(result)
+        if UserDefaults.standard.isLegacyDeactivationSupported
+        {
+            // Normally we pipe everything down into perform(),
+            // but the pre-iOS 13.5 deactivation method doesn't require
+            // authentication, so we keep it separate.
+            let context = OperationContext()
+            
+            let findServerOperation = self.findServer(context: context) { _ in }
+            
+            let deactivateAppOperation = DeactivateAppOperation(app: installedApp, context: context)
+            deactivateAppOperation.resultHandler = { (result) in
+                completionHandler(result)
+            }
+            deactivateAppOperation.addDependency(findServerOperation)
+            
+            self.run([deactivateAppOperation], context: context, requiresSerialQueue: true)
         }
-        deactivateAppOperation.addDependency(findServerOperation)
+        else
+        {
+            let group = RefreshGroup()
+            group.completionHandler = { (results) in
+                do
+                {
+                    guard let result = results.values.first else { throw OperationError.unknown }
+
+                    let installedApp = try result.get()
+                    assert(installedApp.managedObjectContext != nil)
+                    
+                    installedApp.managedObjectContext?.perform {
+                        completionHandler(.success(installedApp))
+                    }
+                }
+                catch
+                {
+                    completionHandler(.failure(error))
+                }
+            }
+            
+            let operation = AppOperation.deactivate(installedApp)
+            self.perform([operation], presentingViewController: presentingViewController, group: group)
+        }
+    }
+    
+    func backup(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let group = RefreshGroup()
+        group.completionHandler = { (results) in
+            do
+            {
+                guard let result = results.values.first else { throw OperationError.unknown }
+                
+                let installedApp = try result.get()
+                assert(installedApp.managedObjectContext != nil)
+                
+                installedApp.managedObjectContext?.perform {
+                    completionHandler(.success(installedApp))
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
         
-        self.run([deactivateAppOperation], context: context, requiresSerialQueue: true)
+        let operation = AppOperation.backup(installedApp)
+        self.perform([operation], presentingViewController: presentingViewController, group: group)
+    }
+    
+    func restore(_ installedApp: InstalledApp, presentingViewController: UIViewController?, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void)
+    {
+        let group = RefreshGroup()
+        group.completionHandler = { (results) in
+            do
+            {
+                guard let result = results.values.first else { throw OperationError.unknown }
+                
+                let installedApp = try result.get()
+                assert(installedApp.managedObjectContext != nil)
+                
+                installedApp.managedObjectContext?.perform {
+                    installedApp.isActive = true
+                    completionHandler(.success(installedApp))
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        let operation = AppOperation.restore(installedApp)
+        self.perform([operation], presentingViewController: presentingViewController, group: group)
+    }
+    
+    func remove(_ installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        let authenticationContext = AuthenticatedOperationContext()
+        let appContext = InstallAppOperationContext(bundleIdentifier: installedApp.bundleIdentifier, authenticatedContext: authenticationContext)
+        appContext.installedApp = installedApp
+
+        let removeAppOperation = RSTAsyncBlockOperation { (operation) in
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+                context.delete(installedApp)
+                
+                do { try context.save() }
+                catch { appContext.error = error }
+                
+                operation.finish()
+            }
+        }
+        
+        let removeAppBackupOperation = RemoveAppBackupOperation(context: appContext)
+        removeAppBackupOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("Failed to remove app backup.", error)
+            }
+            
+            // Throw the error from removeAppOperation,
+            // since that's the error we really care about.
+            if let error = appContext.error
+            {
+                completionHandler(.failure(error))
+            }
+            else
+            {
+                completionHandler(.success(()))
+            }
+        }
+        removeAppBackupOperation.addDependency(removeAppOperation)
+        
+        self.run([removeAppOperation, removeAppBackupOperation], context: authenticationContext)
     }
     
     func installationProgress(for app: AppProtocol) -> Progress?
@@ -361,12 +501,19 @@ private extension AppManager
     {
         case install(AppProtocol)
         case update(AppProtocol)
-        case refresh(AppProtocol)
+        case refresh(InstalledApp)
+        case activate(InstalledApp)
+        case deactivate(InstalledApp)
+        case backup(InstalledApp)
+        case restore(InstalledApp)
         
         var app: AppProtocol {
             switch self
             {
-            case .install(let app), .update(let app), .refresh(let app): return app
+            case .install(let app), .update(let app), .refresh(let app as AppProtocol),
+                 .activate(let app as AppProtocol), .deactivate(let app as AppProtocol),
+                 .backup(let app as AppProtocol), .restore(let app as AppProtocol):
+                return app
             }
         }
         
@@ -384,6 +531,12 @@ private extension AppManager
             
             return bundleIdentifier
         }
+    }
+    
+    func isActivelyManagingApp(withBundleID bundleID: String) -> Bool
+    {
+        let isActivelyManaging = self.installationProgress.keys.contains(bundleID) || self.refreshProgress.keys.contains(bundleID)
+        return isActivelyManaging
     }
     
     @discardableResult
@@ -435,22 +588,63 @@ private extension AppManager
                 
                 switch operation
                 {
-                case .refresh(let installedApp as InstalledApp) where installedApp.certificateSerialNumber == group.context.certificate?.serialNumber:
-                    // Refreshing apps, but using same certificate as last time, so we can just refresh provisioning profiles.
-                                        
-                    let refreshProgress = self._refresh(installedApp, operation: operation, group: group) { (result) in
-                        self.finish(operation, result: result, group: group, progress: progress)
-                    }
-                    progress?.addChild(refreshProgress, withPendingUnitCount: 80)
-                    
-                case .refresh(let app), .install(let app), .update(let app):
-                    // Either installing for first time, or refreshing with a different signing certificate,
-                    // so we need to resign the app then install it.
-                    
+                case .install(let app), .update(let app):
                     let installProgress = self._install(app, operation: operation, group: group) { (result) in
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(installProgress, withPendingUnitCount: 80)
+                    
+                case .activate(let app) where UserDefaults.standard.isLegacyDeactivationSupported: fallthrough
+                case .refresh(let app):
+                    // Check if backup app is installed in place of real app.
+                    let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                    
+                    if app.certificateSerialNumber == group.context.certificate?.serialNumber && uti == nil
+                    {
+                        // Refreshing with same certificate as last time, and backup app isn't still installed,
+                        // so we can just refresh provisioning profiles.
+                        
+                        let refreshProgress = self._refresh(app, operation: operation, group: group) { (result) in
+                            self.finish(operation, result: result, group: group, progress: progress)
+                        }
+                        progress?.addChild(refreshProgress, withPendingUnitCount: 80)
+                    }
+                    else
+                    {
+                        // Refreshing using different certificate or backup app is still installed,
+                        // so we need to resign + install.
+                        
+                        let installProgress = self._install(app, operation: operation, group: group) { (result) in
+                            self.finish(operation, result: result, group: group, progress: progress)
+                        }
+                        progress?.addChild(installProgress, withPendingUnitCount: 80)
+                    }
+                    
+                case .activate(let app):
+                    let activateProgress = self._activate(app, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(activateProgress, withPendingUnitCount: 80)
+                    
+                case .deactivate(let app):
+                    let deactivateProgress = self._deactivate(app, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(deactivateProgress, withPendingUnitCount: 80)
+                    
+                case .backup(let app):
+                    let backupProgress = self._backup(app, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(backupProgress, withPendingUnitCount: 80)
+                    
+                case .restore(let app):
+                    // Restoring, which is effectively just activating an app.
+                    
+                    let activateProgress = self._activate(app, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(activateProgress, withPendingUnitCount: 80)
                 }
             }
         }
@@ -478,11 +672,13 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext? = nil, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
-        let context = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        let context = context ?? InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        assert(context.authenticatedContext === group.context)
+        
         context.beginInstallationHandler = { (installedApp) in
             switch operation
             {
@@ -506,16 +702,28 @@ private extension AppManager
             downloadingApp = storeApp
         }
         
+        let downloadedAppURL = context.temporaryDirectory.appendingPathComponent("Cached.app")
+        
         /* Download */
-        let downloadOperation = DownloadAppOperation(app: downloadingApp, context: context)
+        let downloadOperation = DownloadAppOperation(app: downloadingApp, destinationURL: downloadedAppURL, context: context)
         downloadOperation.resultHandler = { (result) in
-            switch result
+            do
             {
-            case .failure(let error): context.error = error
-            case .success(let app): context.app = app
+                let app = try result.get()
+                context.app = app
+                
+                if cacheApp
+                {
+                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
+                }
+            }
+            catch
+            {
+                context.error = error
             }
         }
         progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
+        
         
         /* Verify App */
         let verifyOperation = VerifyAppOperation(context: context)
@@ -527,6 +735,7 @@ private extension AppManager
             }
         }
         verifyOperation.addDependency(downloadOperation)
+        
         
         /* Refresh Anisette Data */
         let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: group.context)
@@ -542,6 +751,7 @@ private extension AppManager
         
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
+        fetchProvisioningProfilesOperation.additionalEntitlements = additionalEntitlements
         fetchProvisioningProfilesOperation.resultHandler = { (result) in
             switch result
             {
@@ -586,6 +796,8 @@ private extension AppManager
             {
             case .failure(let error): completionHandler(.failure(error))
             case .success(let installedApp):
+                context.installedApp = installedApp
+                
                 if let app = app as? StoreApp, let storeApp = installedApp.managedObjectContext?.object(with: app.objectID) as? StoreApp
                 {
                     installedApp.storeApp = storeApp
@@ -616,7 +828,7 @@ private extension AppManager
         
         let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
         context.app = ALTApplication(fileURL: app.url)
-           
+        
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
         fetchProvisioningProfilesOperation.resultHandler = { (result) in
@@ -627,7 +839,7 @@ private extension AppManager
             }
         }
         progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 60)
-                
+        
         /* Refresh */
         let refreshAppOperation = RefreshAppOperation(context: context)
         refreshAppOperation.resultHandler = { (result) in
@@ -656,6 +868,351 @@ private extension AppManager
         let operations = [fetchProvisioningProfilesOperation, refreshAppOperation]
         group.add(operations)
         self.run(operations, context: group.context)
+
+        return progress
+    }
+    
+    private func _activate(_ app: InstalledApp, operation appOperation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        
+        let restoreContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        let appContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        
+        let installBackupAppProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installBackupAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            app.managedObjectContext?.perform {
+                guard let self = self else { return }
+                
+                let progress = self._installBackupApp(for: app, operation: appOperation, group: group, context: restoreContext) { (result) in
+                    switch result
+                    {
+                    case .success(let installedApp): restoreContext.installedApp = installedApp
+                    case .failure(let error):
+                        restoreContext.error = error
+                        appContext.error = error
+                    }
+                    
+                    operation.finish()
+                }
+                installBackupAppProgress.addChild(progress, withPendingUnitCount: 100)
+            }
+        }
+        progress.addChild(installBackupAppProgress, withPendingUnitCount: 30)
+        
+        let restoreAppOperation = BackupAppOperation(action: .restore, context: restoreContext)
+        restoreAppOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .success: break
+            case .failure(let error):
+                restoreContext.error = error
+                appContext.error = error
+            }
+        }
+        restoreAppOperation.addDependency(installBackupAppOperation)
+        progress.addChild(restoreAppOperation.progress, withPendingUnitCount: 15)
+        
+        let installAppProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            app.managedObjectContext?.perform {
+                guard let self = self else { return }
+                
+                let progress = self._install(app, operation: appOperation, group: group, context: appContext) { (result) in
+                    switch result
+                    {
+                    case .success(let installedApp): appContext.installedApp = installedApp
+                    case .failure(let error): appContext.error = error
+                    }
+                    
+                    operation.finish()
+                }
+                installAppProgress.addChild(progress, withPendingUnitCount: 100)
+            }
+        }
+        installAppOperation.addDependency(restoreAppOperation)
+        progress.addChild(installAppProgress, withPendingUnitCount: 50)
+        
+        let cleanUpProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let cleanUpOperation = RSTAsyncBlockOperation { (operation) in
+            do
+            {
+                let installedApp = try Result(appContext.installedApp, appContext.error).get()
+                
+                var result: Result<Void, Error>!
+                installedApp.managedObjectContext?.performAndWait {
+                    result = Result { try installedApp.managedObjectContext?.save() }
+                }
+                try result.get()
+                
+                // Successfully saved, so _now_ we can remove backup.
+                
+                let removeAppBackupOperation = RemoveAppBackupOperation(context: appContext)
+                removeAppBackupOperation.resultHandler = { (result) in
+                    installedApp.managedObjectContext?.perform {
+                        switch result
+                        {
+                        case .failure(let error):
+                            // Don't report error, since it doesn't really matter.
+                            print("Failed to delete app backup.", error)
+                            
+                        case .success: break
+                        }
+                        
+                        completionHandler(.success(installedApp))
+                        operation.finish()
+                    }
+                }
+                cleanUpProgress.addChild(removeAppBackupOperation.progress, withPendingUnitCount: 100)
+                
+                group.add([removeAppBackupOperation])
+                self.run([removeAppBackupOperation], context: group.context)
+            }
+            catch let error where restoreContext.installedApp != nil
+            {
+                // Activation failed, but restore app was installed, so remove the app.
+                
+                // Remove error so operation doesn't quit early,
+                restoreContext.error = nil
+                
+                let removeAppOperation = RemoveAppOperation(context: restoreContext)
+                removeAppOperation.resultHandler = { (result) in
+                    completionHandler(.failure(error))
+                    operation.finish()
+                }
+                cleanUpProgress.addChild(removeAppOperation.progress, withPendingUnitCount: 100)
+                
+                group.add([removeAppOperation])
+                self.run([removeAppOperation], context: group.context)
+            }
+            catch
+            {
+                // Activation failed.
+                completionHandler(.failure(error))
+                operation.finish()
+            }
+        }
+        cleanUpOperation.addDependency(installAppOperation)
+        progress.addChild(cleanUpProgress, withPendingUnitCount: 5)
+        
+        group.add([installBackupAppOperation, restoreAppOperation, installAppOperation, cleanUpOperation])
+        self.run([installBackupAppOperation, installAppOperation, restoreAppOperation, cleanUpOperation], context: group.context)
+        
+        return progress
+    }
+    
+    private func _deactivate(_ app: InstalledApp, operation appOperation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        let context = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        
+        let installBackupAppProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installBackupAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            app.managedObjectContext?.perform {
+                guard let self = self else { return }
+                
+                let progress = self._installBackupApp(for: app, operation: appOperation, group: group, context: context) { (result) in
+                    switch result
+                    {
+                    case .success(let installedApp): context.installedApp = installedApp
+                    case .failure(let error): context.error = error
+                    }
+                    
+                    operation.finish()
+                }
+                installBackupAppProgress.addChild(progress, withPendingUnitCount: 100)
+            }
+        }
+        progress.addChild(installBackupAppProgress, withPendingUnitCount: 70)
+                    
+        let backupAppOperation = BackupAppOperation(action: .backup, context: context)
+        backupAppOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
+        backupAppOperation.addDependency(installBackupAppOperation)
+        progress.addChild(backupAppOperation.progress, withPendingUnitCount: 15)
+        
+        let removeAppOperation = RemoveAppOperation(context: context)
+        removeAppOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        removeAppOperation.addDependency(backupAppOperation)
+        progress.addChild(removeAppOperation.progress, withPendingUnitCount: 15)
+        
+        group.add([installBackupAppOperation, backupAppOperation, removeAppOperation])
+        self.run([installBackupAppOperation, backupAppOperation, removeAppOperation], context: group.context)
+        
+        return progress
+    }
+    
+    private func _backup(_ app: InstalledApp, operation appOperation: AppOperation, group: RefreshGroup, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        
+        let restoreContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        let appContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        
+        let installBackupAppProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installBackupAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            app.managedObjectContext?.perform {
+                guard let self = self else { return }
+                
+                let progress = self._installBackupApp(for: app, operation: appOperation, group: group, context: restoreContext) { (result) in
+                    switch result
+                    {
+                    case .success(let installedApp): restoreContext.installedApp = installedApp
+                    case .failure(let error):
+                        restoreContext.error = error
+                        appContext.error = error
+                    }
+                    
+                    operation.finish()
+                }
+                installBackupAppProgress.addChild(progress, withPendingUnitCount: 100)
+            }
+        }
+        progress.addChild(installBackupAppProgress, withPendingUnitCount: 30)
+        
+        let backupAppOperation = BackupAppOperation(action: .backup, context: restoreContext)
+        backupAppOperation.resultHandler = { (result) in
+            switch result
+            {
+            case .success: break
+            case .failure(let error):
+                restoreContext.error = error
+                appContext.error = error
+            }
+        }
+        backupAppOperation.addDependency(installBackupAppOperation)
+        progress.addChild(backupAppOperation.progress, withPendingUnitCount: 15)
+        
+        let installAppProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            app.managedObjectContext?.perform {
+                guard let self = self else { return }
+                
+                let progress = self._install(app, operation: appOperation, group: group, context: appContext) { (result) in
+                    completionHandler(result)
+                    operation.finish()
+                }
+                installAppProgress.addChild(progress, withPendingUnitCount: 100)
+            }
+        }
+        installAppOperation.addDependency(backupAppOperation)
+        progress.addChild(installAppProgress, withPendingUnitCount: 55)
+        
+        group.add([installBackupAppOperation, backupAppOperation, installAppOperation])
+        self.run([installBackupAppOperation, installAppOperation, backupAppOperation], context: group.context)
+        
+        return progress
+    }
+    
+    private func _installBackupApp(for app: InstalledApp, operation appOperation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 100)
+        
+        guard let application = ALTApplication(fileURL: app.fileURL) else {
+            completionHandler(.failure(OperationError.appNotFound))
+            return progress
+        }
+        
+        let prepareProgress = Progress.discreteProgress(totalUnitCount: 1)
+        let prepareOperation = RSTAsyncBlockOperation { (operation) in
+            app.managedObjectContext?.perform {
+                do
+                {
+                    let temporaryDirectoryURL = context.temporaryDirectory.appendingPathComponent("AltBackup-" + UUID().uuidString)
+                    try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                    
+                    guard let altbackupFileURL = Bundle.main.url(forResource: "AltBackup", withExtension: "ipa") else { throw OperationError.appNotFound }
+                    
+                    let unzippedAppBundleURL = try FileManager.default.unzipAppBundle(at: altbackupFileURL, toDirectory: temporaryDirectoryURL)
+                    guard let unzippedAppBundle = Bundle(url: unzippedAppBundleURL) else { throw OperationError.invalidApp }
+                    
+                    if var infoDictionary = unzippedAppBundle.infoDictionary
+                    {
+                        // Replace name + bundle identifier so AltStore treats it as the same app.
+                        infoDictionary["CFBundleDisplayName"] = app.name
+                        infoDictionary[kCFBundleIdentifierKey as String] = app.bundleIdentifier
+                        
+                        // Add app-specific exported UTI so we can check later if this temporary backup app is still installed or not.
+                        let installedAppUTI = ["UTTypeConformsTo": [],
+                                               "UTTypeDescription": "AltStore Backup App",
+                                               "UTTypeIconFiles": [],
+                                               "UTTypeIdentifier": app.installedBackupAppUTI,
+                                               "UTTypeTagSpecification": [:]] as [String : Any]
+                        
+                        var exportedUTIs = infoDictionary[Bundle.Info.exportedUTIs] as? [[String: Any]] ?? []
+                        exportedUTIs.append(installedAppUTI)
+                        infoDictionary[Bundle.Info.exportedUTIs] = exportedUTIs
+                        
+                        if let cachedApp = ALTApplication(fileURL: app.fileURL), let icon = cachedApp.icon?.resizing(to: CGSize(width: 180, height: 180))
+                        {
+                            let iconFileURL = unzippedAppBundleURL.appendingPathComponent("AppIcon.png")
+                            
+                            if let iconData = icon.pngData()
+                            {
+                                do
+                                {
+                                    try iconData.write(to: iconFileURL, options: .atomic)
+                                    
+                                    let bundleIcons = ["CFBundlePrimaryIcon": ["CFBundleIconFiles": [iconFileURL.lastPathComponent]]]
+                                    infoDictionary["CFBundleIcons"] = bundleIcons
+                                }
+                                catch
+                                {
+                                    print("Failed to write app icon data.", error)
+                                }
+                            }
+                        }
+                        
+                        try (infoDictionary as NSDictionary).write(to: unzippedAppBundle.infoPlistURL)
+                    }
+                    
+                    guard let backupApp = ALTApplication(fileURL: unzippedAppBundleURL) else { throw OperationError.invalidApp }
+                    context.app = backupApp
+                    
+                    prepareProgress.completedUnitCount += 1
+                }
+                catch
+                {
+                    print(error)
+                }
+                
+                operation.finish()
+            }
+        }
+        progress.addChild(prepareProgress, withPendingUnitCount: 20)
+        
+        let installProgress = Progress.discreteProgress(totalUnitCount: 100)
+        let installOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            guard let self = self else { return }
+            
+            guard let backupApp = context.app else {
+                context.error = OperationError.invalidApp
+                operation.finish()
+                return
+            }
+            
+            var appGroups = application.entitlements[.appGroups] as? [String] ?? []
+            appGroups.append(Bundle.baseAltStoreAppGroupID)
+            
+            let additionalEntitlements: [ALTEntitlement: Any] = [.appGroups: appGroups]
+            let progress = self._install(backupApp, operation: appOperation, group: group, context: context, additionalEntitlements: additionalEntitlements, cacheApp: false) { (result) in
+                completionHandler(result)
+                operation.finish()
+            }
+            installProgress.addChild(progress, withPendingUnitCount: 100)
+        }
+        installOperation.addDependency(prepareOperation)
+        progress.addChild(installProgress, withPendingUnitCount: 80)
+        
+        group.add([prepareOperation, installOperation])
+        self.run([prepareOperation, installOperation], context: group.context)
         
         return progress
     }
@@ -713,6 +1270,7 @@ private extension AppManager
                 event = nil
                 
             case .update: event = .updatedApp(installedApp)
+            case .activate, .deactivate, .backup, .restore: event = nil
             }
             
             if let event = event
@@ -757,17 +1315,8 @@ private extension AppManager
             switch operation
             {
             case _ where requiresSerialQueue: fallthrough
-            case is InstallAppOperation, is RefreshAppOperation:
-                if let context = context, let previousOperation = self.serialOperationQueue.operations.last(where: { context.operations.contains($0) })
-                {
-                    // Ensure operations execute in the order they're added (in same context), since they may become ready at different points.
-                    operation.addDependency(previousOperation)
-                }
-                
-                self.serialOperationQueue.addOperation(operation)
-                
-            default:
-                self.operationQueue.addOperation(operation)
+            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation: self.serialOperationQueue.addOperation(operation)
+            default: self.operationQueue.addOperation(operation)
             }
             
             context?.operations.add(operation)
@@ -779,7 +1328,7 @@ private extension AppManager
         switch operation
         {
         case .install, .update: return self.installationProgress[operation.bundleIdentifier]
-        case .refresh: return self.refreshProgress[operation.bundleIdentifier]
+        case .refresh, .activate, .deactivate, .backup, .restore: return self.refreshProgress[operation.bundleIdentifier]
         }
     }
     
@@ -788,7 +1337,7 @@ private extension AppManager
         switch operation
         {
         case .install, .update: self.installationProgress[operation.bundleIdentifier] = progress
-        case .refresh: self.refreshProgress[operation.bundleIdentifier] = progress
+        case .refresh, .activate, .deactivate, .backup, .restore: self.refreshProgress[operation.bundleIdentifier] = progress
         }
     }
 }

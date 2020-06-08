@@ -16,6 +16,8 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
 {
     let context: AppOperationContext
     
+    var additionalEntitlements: [ALTEntitlement: Any]?
+    
     private let appGroupsLock = NSLock()
     
     init(context: AppOperationContext)
@@ -300,14 +302,20 @@ extension FetchProvisioningProfilesOperation
     
     func updateFeatures(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        let requiredFeatures = app.entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
+        var entitlements = app.entitlements
+        for (key, value) in additionalEntitlements ?? [:]
+        {
+            entitlements[key] = value
+        }
+        
+        let requiredFeatures = entitlements.compactMap { (entitlement, value) -> (ALTFeature, Any)? in
             guard let feature = ALTFeature(entitlement: entitlement) else { return nil }
             return (feature, value)
         }
         
         var features = requiredFeatures.reduce(into: [ALTFeature: Any]()) { $0[$1.0] = $1.1 }
         
-        if let applicationGroups = app.entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
+        if let applicationGroups = entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
         {
             features[.appGroups] = true
         }
@@ -348,56 +356,101 @@ extension FetchProvisioningProfilesOperation
     
     func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        // TODO: Handle apps belonging to more than one app group.
-        guard let applicationGroups = app.entitlements[.appGroups] as? [String], let groupIdentifier = applicationGroups.first else {
-            return completionHandler(.success(appID))
+        var entitlements = app.entitlements
+        for (key, value) in additionalEntitlements ?? [:]
+        {
+            entitlements[key] = value
+        }
+                
+        var applicationGroups = entitlements[.appGroups] as? [String] ?? []
+        if applicationGroups.isEmpty
+        {
+            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
+                // No app groups, and we also haven't enabled the feature, so don't continue.
+                // For apps with no app groups but have had the feature enabled already
+                // we'll continue and assign the app ID to an empty array
+                // in case we need to explicitly remove them.
+                return completionHandler(.success(appID))
+            }
         }
         
-        func finish(_ result: Result<ALTAppGroup, Error>)
+        if app.bundleIdentifier == StoreApp.altstoreAppID
         {
-            switch result
+            // Updating app groups for this specific AltStore.
+            // Find the (unique) AltStore app group, then replace it
+            // with the correct "base" app group ID.
+            // Otherwise, we may append a duplicate team identifier to the end.
+            if let index = applicationGroups.firstIndex(where: { $0.contains(Bundle.baseAltStoreAppGroupID) })
             {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let group):
-                // Assign App Group
-                // TODO: Determine whether app already belongs to app group.
-                
-                ALTAppleAPI.shared.add(appID, to: group, team: team, session: session) { (success, error) in
-                    let result = result.map { _ in appID }
-                    completionHandler(result)
-                }
+                applicationGroups[index] = Bundle.baseAltStoreAppGroupID
+            }
+            else
+            {
+                applicationGroups.append(Bundle.baseAltStoreAppGroupID)
             }
         }
         
         // Dispatch onto global queue to prevent appGroupsLock deadlock.
         DispatchQueue.global().async {
-            let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
             
             // Ensure we're not concurrently fetching and updating app groups,
             // which can lead to race conditions such as adding an app group twice.
             self.appGroupsLock.lock()
             
+            func finish(_ result: Result<ALTAppID, Error>)
+            {
+                self.appGroupsLock.unlock()
+                completionHandler(result)
+            }
+            
             ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
                 switch Result(groups, error)
                 {
-                case .failure(let error):
-                    self.appGroupsLock.unlock()
-                    completionHandler(.failure(error))
+                case .failure(let error): finish(.failure(error))
+                case .success(let fetchedGroups):
+                    let dispatchGroup = DispatchGroup()
                     
-                case .success(let groups):
-                    if let group = groups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                    var groups = [ALTAppGroup]()
+                    var errors = [Error]()
+                    
+                    for groupIdentifier in applicationGroups
                     {
-                        self.appGroupsLock.unlock()
-                        finish(.success(group))
-                    }
-                    else
-                    {
-                        // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
-                        let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
                         
-                        ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
-                            self.appGroupsLock.unlock()
-                            finish(Result(group, error))
+                        if let group = fetchedGroups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                        {
+                            groups.append(group)
+                        }
+                        else
+                        {
+                            dispatchGroup.enter()
+                            
+                            // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
+                            let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                            
+                            ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
+                                switch Result(group, error)
+                                {
+                                case .success(let group): groups.append(group)
+                                case .failure(let error): errors.append(error)
+                                }
+                                
+                                dispatchGroup.leave()
+                            }
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .global()) {
+                        if let error = errors.first
+                        {
+                            finish(.failure(error))
+                        }
+                        else
+                        {
+                            ALTAppleAPI.shared.assign(appID, to: Array(groups), team: team, session: session) { (success, error) in
+                                let result = Result(success, error)
+                                finish(result.map { _ in appID })
+                            }
                         }
                     }
                 }

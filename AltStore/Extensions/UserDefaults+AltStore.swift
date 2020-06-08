@@ -22,6 +22,9 @@ extension UserDefaults
     
     @NSManaged var legacySideloadedApps: [String]?
     
+    @NSManaged var isLegacyDeactivationSupported: Bool
+    @NSManaged var activeAppLimitIncludesExtensions: Bool
+    
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue
@@ -41,6 +44,14 @@ extension UserDefaults
     
     func registerDefaults()
     {
-        self.register(defaults: [#keyPath(UserDefaults.isBackgroundRefreshEnabled): true])
+        let ios13_5 = OperatingSystemVersion(majorVersion: 13, minorVersion: 5, patchVersion: 0)
+        let isLegacyDeactivationSupported = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
+        let activeAppLimitIncludesExtensions = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
+        
+        self.register(defaults: [
+            #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
+            #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
+            #keyPath(UserDefaults.activeAppLimitIncludesExtensions): activeAppLimitIncludesExtensions
+        ])
     }
 }

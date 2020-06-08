@@ -52,7 +52,11 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
             return NSLocalizedString(@"An unknown error occured.", @"");
             
         case ALTServerErrorConnectionFailed:
+#if TARGET_OS_OSX
+            return NSLocalizedString(@"Could not connect to device.", @"");
+#else
             return NSLocalizedString(@"Could not connect to AltServer.", @"");
+#endif
             
         case ALTServerErrorLostConnection:
             return NSLocalizedString(@"Lost connection to AltServer.", @"");
@@ -95,6 +99,9 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
             
         case ALTServerErrorProfileNotFound:
             return [self profileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not find profile", "")];
+            
+        case ALTServerErrorAppDeletionFailed:
+            return NSLocalizedString(@"An error occured while removing the app.", @"");
     }
 }
 
@@ -104,10 +111,13 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
     {
         case ALTServerErrorConnectionFailed:
         case ALTServerErrorDeviceNotFound:
-            return NSLocalizedString(@"Make sure you have trusted this phone with your computer and WiFi sync is enabled.", @"");
+            return NSLocalizedString(@"Make sure you have trusted this device with your computer and WiFi sync is enabled.", @"");
             
         case ALTServerErrorPluginNotFound:
             return NSLocalizedString(@"Make sure Mail is running and the plug-in is enabled in Mail's preferences.", @"");
+            
+        case ALTServerErrorMaximumFreeAppLimitReached:
+            return NSLocalizedString(@"Make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");
             
         default:
             return nil;

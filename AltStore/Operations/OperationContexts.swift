@@ -63,7 +63,7 @@ class AuthenticatedOperationContext: OperationContext
 class AppOperationContext
 {
     let bundleIdentifier: String
-    private let authenticatedContext: AuthenticatedOperationContext
+    let authenticatedContext: AuthenticatedOperationContext
     
     var app: ALTApplication?
     var provisioningProfiles: [String: ALTProvisioningProfile]?
@@ -105,6 +105,12 @@ class InstallAppOperationContext: AppOperationContext
     
     var resignedApp: ALTApplication?
     var installationConnection: ServerConnection?
+    var installedApp: InstalledApp? {
+        didSet {
+            self.installedAppContext = self.installedApp?.managedObjectContext
+        }
+    }
+    private var installedAppContext: NSManagedObjectContext?
     
     var beginInstallationHandler: ((InstalledApp) -> Void)?
 }

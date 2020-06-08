@@ -30,7 +30,13 @@ struct CodableServerError: Codable
     {
         self.errorCode = error.code
         
-        let userInfo = error.userInfo.compactMapValues { $0 as? String }
+        var userInfo = error.userInfo.compactMapValues { $0 as? String }
+        
+        if let localizedRecoverySuggestion = (error as NSError).localizedRecoverySuggestion
+        {
+            userInfo[NSLocalizedRecoverySuggestionErrorKey] = localizedRecoverySuggestion
+        }
+        
         if !userInfo.isEmpty
         {
             self.userInfo = userInfo

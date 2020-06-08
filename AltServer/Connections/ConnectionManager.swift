@@ -273,6 +273,9 @@ private extension ConnectionManager
             case .success(.removeProvisioningProfiles(let request)):
                 self.handleRemoveProvisioningProfilesRequest(request, for: connection)
                 
+            case .success(.removeApp(let request)):
+                self.handleRemoveAppRequest(request, for: connection)
+                
             case .success(.unknown):
                 let response = ErrorResponse(error: ALTServerError(.unknownRequest))
                 connection.send(response, shouldDisconnect: true) { (result) in
@@ -485,7 +488,31 @@ private extension ConnectionManager
                 
                 let response = RemoveProvisioningProfilesResponse()
                 connection.send(response, shouldDisconnect: true) { (result) in
-                    print("Sent remove profiles error response to \(connection) with result:", result)
+                    print("Sent remove profiles success response to \(connection) with result:", result)
+                }
+            }
+        }
+    }
+    
+    func handleRemoveAppRequest(_ request: RemoveAppRequest, for connection: ClientConnection)
+    {
+        ALTDeviceManager.shared.removeApp(forBundleIdentifier: request.bundleIdentifier, fromDeviceWithUDID: request.udid) { (success, error) in
+            if let error = error, !success
+            {
+                print("Failed to remove app \(request.bundleIdentifier):", error)
+                
+                let errorResponse = ErrorResponse(error: ALTServerError(error))
+                connection.send(errorResponse, shouldDisconnect: true) { (result) in
+                    print("Sent remove a[[ error response with result:", result)
+                }
+            }
+            else
+            {
+                print("Removed app:", request.bundleIdentifier)
+                
+                let response = RemoveAppResponse()
+                connection.send(response, shouldDisconnect: true) { (result) in
+                    print("Sent remove app success response to \(connection) with result:", result)
                 }
             }
         }

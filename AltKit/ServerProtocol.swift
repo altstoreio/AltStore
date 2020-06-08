@@ -24,6 +24,7 @@ public enum ServerRequest: Decodable
     case beginInstallation(BeginInstallationRequest)
     case installProvisioningProfiles(InstallProvisioningProfilesRequest)
     case removeProvisioningProfiles(RemoveProvisioningProfilesRequest)
+    case removeApp(RemoveAppRequest)
     case unknown(identifier: String, version: Int)
     
     var identifier: String {
@@ -34,6 +35,7 @@ public enum ServerRequest: Decodable
         case .beginInstallation(let request): return request.identifier
         case .installProvisioningProfiles(let request): return request.identifier
         case .removeProvisioningProfiles(let request): return request.identifier
+        case .removeApp(let request): return request.identifier
         case .unknown(let identifier, _): return identifier
         }
     }
@@ -46,6 +48,7 @@ public enum ServerRequest: Decodable
         case .beginInstallation(let request): return request.version
         case .installProvisioningProfiles(let request): return request.version
         case .removeProvisioningProfiles(let request): return request.version
+        case .removeApp(let request): return request.version
         case .unknown(_, let version): return version
         }
     }
@@ -85,6 +88,10 @@ public enum ServerRequest: Decodable
             let request = try RemoveProvisioningProfilesRequest(from: decoder)
             self = .removeProvisioningProfiles(request)
             
+        case "RemoveAppRequest":
+            let request = try RemoveAppRequest(from: decoder)
+            self = .removeApp(request)
+            
         default:
             self = .unknown(identifier: identifier, version: version)
         }
@@ -97,6 +104,7 @@ public enum ServerResponse: Decodable
     case installationProgress(InstallationProgressResponse)
     case installProvisioningProfiles(InstallProvisioningProfilesResponse)
     case removeProvisioningProfiles(RemoveProvisioningProfilesResponse)
+    case removeApp(RemoveAppResponse)
     case error(ErrorResponse)
     case unknown(identifier: String, version: Int)
     
@@ -107,6 +115,7 @@ public enum ServerResponse: Decodable
         case .installationProgress(let response): return response.identifier
         case .installProvisioningProfiles(let response): return response.identifier
         case .removeProvisioningProfiles(let response): return response.identifier
+        case .removeApp(let response): return response.identifier
         case .error(let response): return response.identifier
         case .unknown(let identifier, _): return identifier
         }
@@ -119,6 +128,7 @@ public enum ServerResponse: Decodable
         case .installationProgress(let response): return response.version
         case .installProvisioningProfiles(let response): return response.version
         case .removeProvisioningProfiles(let response): return response.version
+        case .removeApp(let response): return response.version
         case .error(let response): return response.version
         case .unknown(_, let version): return version
         }
@@ -154,6 +164,10 @@ public enum ServerResponse: Decodable
         case "RemoveProvisioningProfilesResponse":
             let response = try RemoveProvisioningProfilesResponse(from: decoder)
             self = .removeProvisioningProfiles(response)
+            
+        case "RemoveAppResponse":
+            let response = try RemoveAppResponse(from: decoder)
+            self = .removeApp(response)
             
         case "ErrorResponse":
             let response = try ErrorResponse(from: decoder)
@@ -374,6 +388,31 @@ public struct RemoveProvisioningProfilesResponse: ServerMessageProtocol
 {
     public var version = 1
     public var identifier = "RemoveProvisioningProfilesResponse"
+    
+    public init()
+    {
+    }
+}
+
+public struct RemoveAppRequest: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "RemoveAppRequest"
+    
+    public var udid: String
+    public var bundleIdentifier: String
+
+    public init(udid: String, bundleIdentifier: String)
+    {
+        self.udid = udid
+        self.bundleIdentifier = bundleIdentifier
+    }
+}
+
+public struct RemoveAppResponse: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "RemoveAppResponse"
     
     public init()
     {

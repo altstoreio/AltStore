@@ -32,7 +32,7 @@ enum ConnectionError: LocalizedError
     case connectionFailed
     case connectionDropped
     
-    var errorDescription: String? {
+    var failureReason: String? {
         switch self
         {
         case .serverNotFound: return NSLocalizedString("Could not find AltServer.", comment: "")
