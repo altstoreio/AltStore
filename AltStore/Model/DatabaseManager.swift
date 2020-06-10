@@ -211,7 +211,7 @@ private extension DatabaseManager
                 {
                     let infoPlistURL = bundle.bundleURL.appendingPathComponent("Info.plist")
                     
-                    guard var infoDictionary = bundle.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                    guard var infoDictionary = bundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
                     infoDictionary[kCFBundleIdentifierKey as String] = bundleID
                     try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                 }

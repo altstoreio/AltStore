@@ -50,4 +50,9 @@ public extension Bundle
         let appGroup = self.appGroups.first { $0.contains(Bundle.baseAltStoreAppGroupID) }
         return appGroup
     }
+    
+    var completeInfoDictionary: [String : Any]? {
+        let infoPlistURL = self.infoPlistURL
+        return NSDictionary(contentsOf: infoPlistURL) as? [String : Any]
+    }
 }
