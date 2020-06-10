@@ -109,7 +109,7 @@ private extension ResignAppOperation
         {
             guard let identifier = bundle.bundleIdentifier else { throw ALTError(.missingAppBundle) }
             guard let profile = profiles[identifier] else { throw ALTError(.missingProvisioningProfile) }
-            guard var infoDictionary = bundle.infoDictionary else { throw ALTError(.missingInfoPlist) }
+            guard var infoDictionary = bundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
             
             infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
             
@@ -147,7 +147,7 @@ private extension ResignAppOperation
                 progress.becomeCurrent(withPendingUnitCount: 1)
                 
                 guard let appBundle = Bundle(url: appBundleURL) else { throw ALTError(.missingAppBundle) }
-                guard let infoDictionary = appBundle.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                guard let infoDictionary = appBundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
                 
                 var allURLSchemes = infoDictionary[Bundle.Info.urlTypes] as? [[String: Any]] ?? []
                 

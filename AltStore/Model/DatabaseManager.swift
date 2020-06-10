@@ -181,7 +181,7 @@ private extension DatabaseManager
                         
                         let infoPlistURL = temporaryFileURL.appendingPathComponent("Info.plist")
                         
-                        guard var infoDictionary = Bundle.main.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                        guard var infoDictionary = Bundle.main.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
                         infoDictionary[kCFBundleIdentifierKey as String] = StoreApp.altstoreAppID
                         try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                         
