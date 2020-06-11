@@ -6,6 +6,9 @@
 	<string>com.rileytestut.altdaemon</string>
 	<key>ProgramArguments</key>
 	<array>
+		<string>/usr/bin/env</string>
+		<string>_MSSafeMode=1</string>
+		<string>_SafeMode=1</string>
 		<string>/usr/bin/AltDaemon</string>
 	</array>
 	<key>UserName</key>
