@@ -15,6 +15,11 @@ private extension URL
     static let profilesDirectoryURL = URL(fileURLWithPath: "/var/MobileDevice/ProvisioningProfiles", isDirectory: true)
 }
 
+private extension CFNotificationName
+{
+    static let updatedProvisioningProfiles = CFNotificationName("MISProvisioningProfileRemoved" as CFString)
+}
+
 struct AppManager
 {
     static let shared = AppManager()
@@ -94,6 +99,9 @@ struct AppManager
             {
                 completionHandler(.failure(error))
             }
+            
+            // Notify system to prevent accidentally untrusting developer certificate.
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .updatedProvisioningProfiles, nil, nil, true)
         }
     }
     
@@ -121,6 +129,9 @@ struct AppManager
             {
                 completionHandler(.failure(error))
             }
+            
+            // Notify system to prevent accidentally untrusting developer certificate.
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .updatedProvisioningProfiles, nil, nil, true)
         }
     }
 }
