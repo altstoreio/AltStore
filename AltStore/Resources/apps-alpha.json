@@ -7,10 +7,10 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.3.4a6",
-      "versionDate": "2020-05-19T13:00:00-07:00",
-      "versionDescription": "** Requires latest AltServer beta available for download in Discord **\n\nNEW:\n- Adds \"Back Up\" option to installed apps context menu\n\nPREVIOUS:\n- Removes active app extension limits on devices running iOS 13.5 or later\n- Correctly says \"backing up\" or \"restoring\" when opening temporary app during (de-)activation\n- Uses real app icon for temporary app during (de-)activation \n- Limits new (de-)activation method to iOS 13.5 or later\n- Fixes invalid entitlements when AltStore refreshes itself\n\nDue to iOS 13.5 changes, apps are now backed up & deleted when marked as inactive. When you later activate an inactive app, AltStore will reinstall the app, then restore your data from before.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/1_3_4_a6.ipa",
+      "version": "1.4a4",
+      "versionDate": "2020-06-07T10:00:00-07:00",
+      "versionDescription": "NEW:\n- Improves error messages from AltDaemon\n\nPREVIOUS VERSION:\n- Uses background daemon to install apps without AltServer. This allows AltStore to remain a normal sandboxed app and continue working even if not jailbroken, while still using jailbreak functionality when the daemon is running.\n- Adds \"Install AltDaemon\" option in Settings to export AltDaemon.deb.\n- Cleans up codebase more in preparation for beta launch soon.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/1_4_a4.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore allows you to install Delta as well as any app (.ipa) directly from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
@@ -98,6 +98,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "BSLUtJEvetvJNgOsqz0v98-FmBO5JYDfuO90o-reGB8"
+    "patreonAccessToken": "325E4QVOJs1X6YXNNd_d7tewb9gckOMqvkPCtDE8Kcc"
   }
 }
