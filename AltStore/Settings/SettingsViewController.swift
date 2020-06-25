@@ -419,6 +419,15 @@ extension SettingsViewController
             let fileURL = Bundle.main.url(forResource: "AltDaemon", withExtension: "deb")!
             
             let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            
+            if UIDevice.current.userInterfaceIdiom == .pad
+            {
+                // Showing share sheet crashes AltStore if it's forced to run as an iPad app via Jailbreak tweak.
+                // To fix this, we explicitly set the sourceRect and sourceView for it to appear as a popover instead.
+                activityViewController.popoverPresentationController?.sourceRect = tableView.rectForRow(at: indexPath)
+                activityViewController.popoverPresentationController?.sourceView = tableView
+            }
+            
             self.present(activityViewController, animated: true, completion: nil)
             
             tableView.deselectRow(at: indexPath, animated: true)
