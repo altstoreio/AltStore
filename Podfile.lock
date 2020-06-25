@@ -54,7 +54,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
 SPEC CHECKSUMS:
-  AltSign: c3693fa5a4b6d0ec6bedb74a5d768fe58bd67b87
+  AltSign: 5fc085b4b371fd37a70c798b06362d002ea39230
   AppCenter: a1c30c47b7882a04a615ffa5ab26c007326436d8
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
