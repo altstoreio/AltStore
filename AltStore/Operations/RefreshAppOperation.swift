@@ -9,7 +9,7 @@
 import Foundation
 
 import AltSign
-import AltKit
+import AltStoreCore
 
 import Roxas
 

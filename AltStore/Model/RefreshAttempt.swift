@@ -9,20 +9,20 @@
 import CoreData
 
 @objc(RefreshAttempt)
-class RefreshAttempt: NSManagedObject, Fetchable
+public class RefreshAttempt: NSManagedObject, Fetchable
 {
-    @NSManaged var identifier: String
-    @NSManaged var date: Date
+    @NSManaged public var identifier: String
+    @NSManaged public var date: Date
     
-    @NSManaged var isSuccess: Bool
-    @NSManaged var errorDescription: String?
+    @NSManaged public var isSuccess: Bool
+    @NSManaged public var errorDescription: String?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(identifier: String, result: Result<[String: Result<InstalledApp, Error>], Error>, context: NSManagedObjectContext)
+    public init(identifier: String, result: Result<[String: Result<InstalledApp, Error>], Error>, context: NSManagedObjectContext)
     {
         super.init(entity: RefreshAttempt.entity(), insertInto: context)
         
@@ -50,7 +50,7 @@ class RefreshAttempt: NSManagedObject, Fetchable
     }
 }
 
-extension RefreshAttempt
+public extension RefreshAttempt
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<RefreshAttempt>
     {

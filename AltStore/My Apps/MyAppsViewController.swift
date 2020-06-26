@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-import AltKit
+import AltStoreCore
 import Roxas
 
 import AltSign

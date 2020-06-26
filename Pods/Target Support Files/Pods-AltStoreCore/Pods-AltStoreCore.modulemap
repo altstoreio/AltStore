@@ -1,0 +1,6 @@
+module Pods_AltStoreCore {
+  umbrella header "Pods-AltStoreCore-umbrella.h"
+
+  export *
+  module * { export * }
+}

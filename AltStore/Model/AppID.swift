@@ -12,24 +12,24 @@ import CoreData
 import AltSign
 
 @objc(AppID)
-class AppID: NSManagedObject, Fetchable
+public class AppID: NSManagedObject, Fetchable
 {
     /* Properties */
-    @NSManaged var name: String
-    @NSManaged var identifier: String
-    @NSManaged var bundleIdentifier: String
-    @NSManaged var features: [ALTFeature: Any]
-    @NSManaged var expirationDate: Date?
+    @NSManaged public var name: String
+    @NSManaged public var identifier: String
+    @NSManaged public var bundleIdentifier: String
+    @NSManaged public var features: [ALTFeature: Any]
+    @NSManaged public var expirationDate: Date?
     
     /* Relationships */
-    @NSManaged private(set) var team: Team?
+    @NSManaged public private(set) var team: Team?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(_ appID: ALTAppID, team: Team, context: NSManagedObjectContext)
+    public init(_ appID: ALTAppID, team: Team, context: NSManagedObjectContext)
     {
         super.init(entity: AppID.entity(), insertInto: context)
                 
@@ -43,7 +43,7 @@ class AppID: NSManagedObject, Fetchable
     }
 }
 
-extension AppID
+public extension AppID
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<AppID>
     {

@@ -12,27 +12,27 @@ import CoreData
 import AltSign
 
 @objc(InstalledExtension)
-class InstalledExtension: NSManagedObject, InstalledAppProtocol
+public class InstalledExtension: NSManagedObject, InstalledAppProtocol
 {
     /* Properties */
-    @NSManaged var name: String
-    @NSManaged var bundleIdentifier: String
-    @NSManaged var resignedBundleIdentifier: String
-    @NSManaged var version: String
+    @NSManaged public var name: String
+    @NSManaged public var bundleIdentifier: String
+    @NSManaged public var resignedBundleIdentifier: String
+    @NSManaged public var version: String
     
-    @NSManaged var refreshedDate: Date
-    @NSManaged var expirationDate: Date
-    @NSManaged var installedDate: Date
+    @NSManaged public var refreshedDate: Date
+    @NSManaged public var expirationDate: Date
+    @NSManaged public var installedDate: Date
     
     /* Relationships */
-    @NSManaged var parentApp: InstalledApp?
+    @NSManaged public var parentApp: InstalledApp?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(resignedAppExtension: ALTApplication, originalBundleIdentifier: String, context: NSManagedObjectContext)
+    public init(resignedAppExtension: ALTApplication, originalBundleIdentifier: String, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledExtension.entity(), insertInto: context)
         
@@ -46,7 +46,7 @@ class InstalledExtension: NSManagedObject, InstalledAppProtocol
         self.update(resignedAppExtension: resignedAppExtension)
     }
     
-    func update(resignedAppExtension: ALTApplication)
+    public func update(resignedAppExtension: ALTApplication)
     {
         self.name = resignedAppExtension.name
         
@@ -59,14 +59,14 @@ class InstalledExtension: NSManagedObject, InstalledAppProtocol
         }
     }
     
-    func update(provisioningProfile: ALTProvisioningProfile)
+    public func update(provisioningProfile: ALTProvisioningProfile)
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
     }
 }
 
-extension InstalledExtension
+public extension InstalledExtension
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<InstalledExtension>
     {

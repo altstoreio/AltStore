@@ -7,22 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */; };
+		2C241769F2FCDBDF611F5B5A /* libPods-AltStoreCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */; };
+		3B6BF3A7D9F53370A1BDF286 /* libPods-AltStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5803824FCE1A5927FD330A /* libPods-AltStore.a */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; };
 		BF0201BE22C2EFBC000B93E4 /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419322F2156E00129732 /* RefreshAttempt.swift */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
 		BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */; };
-		BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */; };
-		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
-		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
 		BF10EB34248730750055E6DB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB33248730750055E6DB /* main.swift */; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
@@ -33,25 +30,73 @@
 		BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBAC8852295C90300587369 /* Result+Conveniences.swift */; };
 		BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
 		BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
-		BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
-		BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF258CE222EBAE2800023032 /* AppProtocol.swift */; };
-		BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
 		BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */; };
 		BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */; };
 		BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */; };
-		BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
-		BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648C22E79AC800E9056B /* ALTAppPermission.m */; };
 		BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */; };
 		BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */; };
-		BF3D64A222E8031100E9056B /* MergePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D64A122E8031100E9056B /* MergePolicy.swift */; };
 		BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D64AF22E8D4B800E9056B /* AppContentViewControllerCells.swift */; };
 		BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */; };
 		BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF41B805233423AE00C593A3 /* TabBarController.swift */; };
 		BF41B808233433C100C593A3 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF41B807233433C100C593A3 /* LoadingState.swift */; };
-		BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002D22A714AF0051E2BC /* Keychain.swift */; };
-		BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */; };
+		BF429E2924A67AE600FA912A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E2824A67AE600FA912A /* WidgetKit.framework */; };
+		BF429E2B24A67AE600FA912A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E2A24A67AE600FA912A /* SwiftUI.framework */; };
+		BF429E2E24A67AE600FA912A /* AltWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF429E2D24A67AE600FA912A /* AltWidget.swift */; };
+		BF429E3024A67AE700FA912A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF429E2F24A67AE700FA912A /* Assets.xcassets */; };
+		BF429E3424A67AE700FA912A /* AltWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BF429E2724A67AE600FA912A /* AltWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BF429E4224A67C3600FA912A /* AltStoreCore.h in Headers */ = {isa = PBXBuildFile; fileRef = BF429E4024A67C3600FA912A /* AltStoreCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF429E4524A67C3600FA912A /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; };
+		BF429E4624A67C3600FA912A /* AltStoreCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF429E4B24A67C7800FA912A /* AppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648722E79A3700E9056B /* AppPermission.swift */; };
+		BF429E4C24A67C7800FA912A /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326522A857C100F30809 /* Team.swift */; };
+		BF429E4D24A67C7800FA912A /* RefreshAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419322F2156E00129732 /* RefreshAttempt.swift */; };
+		BF429E4E24A67C7800FA912A /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DC22F0E7F3002E24B9 /* Source.swift */; };
+		BF429E4F24A67C7800FA912A /* StoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* StoreApp.swift */; };
+		BF429E5024A67C7800FA912A /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
+		BF429E5224A67C7800FA912A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
+		BF429E5324A67C7800FA912A /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21A23186D640022A802 /* NewsItem.swift */; };
+		BF429E5424A67C7800FA912A /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
+		BF429E5524A67C7800FA912A /* AppID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2A923DF88310006506D /* AppID.swift */; };
+		BF429E5624A67C7800FA912A /* InstalledExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172C23C5823E001B5953 /* InstalledExtension.swift */; };
+		BF429E5724A67C7800FA912A /* MergePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3D64A122E8031100E9056B /* MergePolicy.swift */; };
+		BF429E5C24A67CC300FA912A /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
+		BF429E5D24A67CC300FA912A /* InstalledAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */; };
+		BF429E5E24A67CC800FA912A /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
+		BF429E5F24A67CC800FA912A /* AltStore3ToAltStore4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */; };
+		BF429E6024A67CC800FA912A /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
+		BF429E6124A67CC800FA912A /* AltStore5ToAltStore6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF9F8D19242AA6BC0024E48B /* AltStore5ToAltStore6.xcmappingmodel */; };
+		BF429E6224A67CC800FA912A /* AltStore2ToAltStore3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */; };
+		BF429E6324A67CE800FA912A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */; };
+		BF429E6424A67D0200FA912A /* UserDefaults+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */; };
+		BF429E6524A67D2200FA912A /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF258CE222EBAE2800023032 /* AppProtocol.swift */; };
+		BF429E6724A67D7E00FA912A /* ALTAppPermission.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3D648B22E79AC800E9056B /* ALTAppPermission.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF429E6824A67D9800FA912A /* JSONDecoder+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+Properties.swift */; };
+		BF429E6924A67DA700FA912A /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */; };
+		BF429E6A24A67DEC00FA912A /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
+		BF429E6B24A67E4200FA912A /* ALTSourceUserInfoKey.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26A0DF2370C5D400F53F9F /* ALTSourceUserInfoKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF429E6D24A67E8700FA912A /* PatreonAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */; };
+		BF429E6E24A67EA000FA912A /* Tier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F5230DDB12007955AB /* Tier.swift */; };
+		BF429E6F24A67EA000FA912A /* Patron.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6ED230D8A86007955AB /* Patron.swift */; };
+		BF429E7024A67EA000FA912A /* Benefit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F1230DD974007955AB /* Benefit.swift */; };
+		BF429E7124A67EA000FA912A /* PatreonAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E7230CC961007955AB /* PatreonAPI.swift */; };
+		BF429E7224A67EA000FA912A /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F3230DDB0A007955AB /* Campaign.swift */; };
+		BF429E7324A67ECB00FA912A /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002D22A714AF0051E2BC /* Keychain.swift */; };
+		BF429E7424A67FC600FA912A /* ALTPatreonBenefitType.h in Headers */ = {isa = PBXBuildFile; fileRef = BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF429E7724A6826200FA912A /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
+		BF429E7924A6834A00FA912A /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF26A0E02370C5D400F53F9F /* ALTSourceUserInfoKey.m */; };
+		BF429E7A24A6834A00FA912A /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D648C22E79AC800E9056B /* ALTAppPermission.m */; };
+		BF429E7B24A6834A00FA912A /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
+		BF429E9924A6943900FA912A /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
+		BF429E9F24A6A2F500FA912A /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
+		BF429EA224A6A2F600FA912A /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
+		BF429EA424A6A30000FA912A /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
+		BF429EA524A6A30000FA912A /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF429EA624A6A30400FA912A /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
+		BF429EA724A6A30400FA912A /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF429EA824A6A32800FA912A /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; };
+		BF429EA924A6A32800FA912A /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; };
 		BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF44EEF0246B08BA002A52F2 /* BackupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EEEF246B08BA002A52F2 /* BackupController.swift */; };
@@ -126,8 +171,6 @@
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
-		BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */; };
-		BF56D2AA23DF88310006506D /* AppID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2A923DF88310006506D /* AppID.swift */; };
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
 		BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF58047D246A28F7008AE704 /* AppDelegate.swift */; };
@@ -141,12 +184,10 @@
 		BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */; };
 		BF6A5320246DC1B0004F59C8 /* FileManager+SharedDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */; };
 		BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+LocalizedFailure.swift */; };
-		BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF6C33642419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel */; };
 		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
 		BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */; };
 		BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
-		BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
 		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
 		BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */; };
 		BF718BD823C93DB700A89F2D /* AltKit.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD723C93DB700A89F2D /* AltKit.m */; };
@@ -157,8 +198,6 @@
 		BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* RefreshGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
-		BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */; };
-		BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */; };
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
 		BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* RequestHandler.swift */; };
@@ -171,23 +210,14 @@
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
 		BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4A22DD137F008935CF /* NavigationBar.swift */; };
 		BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4C22DD16DE008935CF /* PillButton.swift */; };
-		BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4E22DD41A9008935CF /* UIColor+Hex.swift */; };
-		BF9F8D1A242AA6BC0024E48B /* AltStore5ToAltStore6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF9F8D19242AA6BC0024E48B /* AltStore5ToAltStore6.xcmappingmodel */; };
 		BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172823C56042001B5953 /* ServerConnection.swift */; };
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
-		BFA8172D23C5823E001B5953 /* InstalledExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172C23C5823E001B5953 /* InstalledExtension.swift */; };
-		BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB11691229322E400BB457C /* DatabaseManager.swift */; };
-		BFB1169B2293274D00BB457C /* JSONDecoder+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB1169A2293274D00BB457C /* JSONDecoder+Properties.swift */; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
 		BFB49AAA23834CF900D542D9 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
-		BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21A23186D640022A802 /* NewsItem.swift */; };
 		BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21D231870160022A802 /* NewsViewController.swift */; };
 		BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */; };
 		BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */; };
-		BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */; };
-		BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2DE22931F73002097FA /* StoreApp.swift */; };
-		BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBBE2E022931F81002097FA /* InstalledApp.swift */; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
@@ -234,22 +264,14 @@
 		BFD52C2022A1A9EC000B7ED1 /* node.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1D22A1A9EC000B7ED1 /* node.c */; };
 		BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1E22A1A9EC000B7ED1 /* node_list.c */; };
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
-		BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E7230CC961007955AB /* PatreonAPI.swift */; };
-		BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6E9230CCAE5007955AB /* PatreonAccount.swift */; };
-		BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6ED230D8A86007955AB /* Patron.swift */; };
-		BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F1230DD974007955AB /* Benefit.swift */; };
-		BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F3230DDB0A007955AB /* Campaign.swift */; };
-		BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5D6F5230DDB12007955AB /* Tier.swift */; };
 		BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */; };
 		BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */; };
-		BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0422A9AFB2007EA6D6 /* Fetchable.swift */; };
 		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
 		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
 		BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */; };
 		BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */; };
-		BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DC22F0E7F3002E24B9 /* Source.swift */; };
 		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
 		BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE48974238007CE003239E0 /* AnisetteDataManager.swift */; };
@@ -259,8 +281,6 @@
 		BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */; };
 		BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */; };
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
-		BFE6326622A857C200F30809 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326522A857C100F30809 /* Team.swift */; };
-		BFE6326822A858F300F30809 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326722A858F300F30809 /* Account.swift */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
 		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
 		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
@@ -291,6 +311,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = BF1E314F22A0616100370A3C;
 			remoteInfo = AltKit;
+		};
+		BF429E3224A67AE700FA912A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF429E2624A67AE600FA912A;
+			remoteInfo = AltWidgetExtension;
+		};
+		BF429E4324A67C3600FA912A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF429E3D24A67C3600FA912A;
+			remoteInfo = AltStoreCore;
 		};
 		BF4588442298D48B00BD7491 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -331,6 +365,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BF429E3824A67AE700FA912A /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BF429E3424A67AE700FA912A /* AltWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E4A24A67C3600FA912A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BF429E4624A67C3600FA912A /* AltStoreCore.framework in Embed Frameworks */,
+				BF429EA924A6A32800FA912A /* openssl.framework in Embed Frameworks */,
+				BF429EA724A6A30400FA912A /* Roxas.framework in Embed Frameworks */,
+				BF429EA524A6A30000FA912A /* AltSign.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BF5C5FE9237E438C00EDD0C6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -344,10 +403,12 @@
 
 /* Begin PBXFileReference section */
 		06959A23FD240B33CB3EF551 /* Pods-AltDaemon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltDaemon.release.xcconfig"; path = "Target Support Files/Pods-AltDaemon/Pods-AltDaemon.release.xcconfig"; sourceTree = "<group>"; };
-		0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
+		26C2B7055EF49CE0DB234015 /* Pods-AltStoreCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.debug.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.debug.xcconfig"; sourceTree = "<group>"; };
 		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
 		5B0B5097D956380B6E11D09C /* libPods-AltDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltDaemon.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		65A4E786DD8D6BAD4D65E547 /* Pods-AltStoreCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.release.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.release.xcconfig"; sourceTree = "<group>"; };
+		9B5803824FCE1A5927FD330A /* libPods-AltStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
 		BF02419322F2156E00129732 /* RefreshAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttempt.swift; sourceTree = "<group>"; };
 		BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttemptsViewController.swift; sourceTree = "<group>"; };
@@ -395,6 +456,17 @@
 		BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTDeviceManager+Installation.swift"; sourceTree = "<group>"; };
 		BF41B805233423AE00C593A3 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		BF41B807233433C100C593A3 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
+		BF429E2724A67AE600FA912A /* AltWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AltWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF429E2824A67AE600FA912A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		BF429E2A24A67AE600FA912A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		BF429E2D24A67AE600FA912A /* AltWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltWidget.swift; sourceTree = "<group>"; };
+		BF429E2F24A67AE700FA912A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF429E3124A67AE700FA912A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF429E3E24A67C3600FA912A /* AltStoreCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AltStoreCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF429E4024A67C3600FA912A /* AltStoreCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltStoreCore.h; sourceTree = "<group>"; };
+		BF429E4124A67C3600FA912A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF429E5824A67C9800FA912A /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF429E5A24A67CA800FA912A /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF43002D22A714AF0051E2BC /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltStore.swift"; sourceTree = "<group>"; };
 		BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
@@ -649,6 +721,7 @@
 		BFF767CD2489ABE90097E58C /* NetworkConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnection.swift; sourceTree = "<group>"; };
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
 		DA55288EC4433117304BAF39 /* Pods-AltDaemon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltDaemon.debug.xcconfig"; path = "Target Support Files/Pods-AltDaemon/Pods-AltDaemon.debug.xcconfig"; sourceTree = "<group>"; };
+		DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStoreCore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -675,6 +748,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E2424A67AE600FA912A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429E2B24A67AE600FA912A /* SwiftUI.framework in Frameworks */,
+				BF429E2924A67AE600FA912A /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E3B24A67C3600FA912A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429EA224A6A2F600FA912A /* Roxas.framework in Frameworks */,
+				BF429E6A24A67DEC00FA912A /* libAltKit.a in Frameworks */,
+				2C241769F2FCDBDF611F5B5A /* libPods-AltStoreCore.a in Frameworks */,
+				BF429E9F24A6A2F500FA912A /* AltSign.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,8 +804,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF1E316022A0636400370A3C /* libAltKit.a in Frameworks */,
-				01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */,
+				BF429EA824A6A32800FA912A /* openssl.framework in Frameworks */,
+				BF429EA624A6A30400FA912A /* Roxas.framework in Frameworks */,
+				BF429E4524A67C3600FA912A /* AltStoreCore.framework in Frameworks */,
+				3B6BF3A7D9F53370A1BDF286 /* libPods-AltStore.a in Frameworks */,
+				BF429EA424A6A30000FA912A /* AltSign.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -728,6 +824,8 @@
 				589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */,
 				DA55288EC4433117304BAF39 /* Pods-AltDaemon.debug.xcconfig */,
 				06959A23FD240B33CB3EF551 /* Pods-AltDaemon.release.xcconfig */,
+				26C2B7055EF49CE0DB234015 /* Pods-AltStoreCore.debug.xcconfig */,
+				65A4E786DD8D6BAD4D65E547 /* Pods-AltStoreCore.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -837,6 +935,25 @@
 				BF3D649C22E7AC1B00E9056B /* PermissionPopoverViewController.swift */,
 			);
 			path = "App Detail";
+			sourceTree = "<group>";
+		};
+		BF429E2C24A67AE600FA912A /* AltWidget */ = {
+			isa = PBXGroup;
+			children = (
+				BF429E2D24A67AE600FA912A /* AltWidget.swift */,
+				BF429E2F24A67AE700FA912A /* Assets.xcassets */,
+				BF429E3124A67AE700FA912A /* Info.plist */,
+			);
+			path = AltWidget;
+			sourceTree = "<group>";
+		};
+		BF429E3F24A67C3600FA912A /* AltStoreCore */ = {
+			isa = PBXGroup;
+			children = (
+				BF429E4024A67C3600FA912A /* AltStoreCore.h */,
+				BF429E4124A67C3600FA912A /* Info.plist */,
+			);
+			path = AltStoreCore;
 			sourceTree = "<group>";
 		};
 		BF45868E229872EA00BD7491 /* AltServer */ = {
@@ -1135,6 +1252,8 @@
 				BF5C5FC6237DF5AE00EDD0C6 /* AltPlugin */,
 				BF58047C246A28F7008AE704 /* AltBackup */,
 				BF18BFE824857D7900DD5981 /* AltDaemon */,
+				BF429E2C24A67AE600FA912A /* AltWidget */,
+				BF429E3F24A67C3600FA912A /* AltStoreCore */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
 				4460E048E3AC1C9708C4FA33 /* Pods */,
@@ -1151,6 +1270,8 @@
 				BF5C5FC5237DF5AE00EDD0C6 /* AltPlugin.mailbundle */,
 				BF58047B246A28F7008AE704 /* AltBackup.app */,
 				BF18BFE724857D7900DD5981 /* AltDaemon */,
+				BF429E2724A67AE600FA912A /* AltWidgetExtension.appex */,
+				BF429E3E24A67C3600FA912A /* AltStoreCore.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1191,6 +1312,8 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF429E5A24A67CA800FA912A /* Roxas.framework */,
+				BF429E5824A67C9800FA912A /* AltSign.framework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
 				BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */,
 				BF9B63C5229DD44D002F0A62 /* AltSign.framework */,
@@ -1201,8 +1324,11 @@
 				BF5AB3A72285FE6C00DC914B /* AltSign.framework */,
 				BF4713A422976CFC00784A2F /* openssl.framework */,
 				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
-				0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */,
 				5B0B5097D956380B6E11D09C /* libPods-AltDaemon.a */,
+				BF429E2824A67AE600FA912A /* WidgetKit.framework */,
+				BF429E2A24A67AE600FA912A /* SwiftUI.framework */,
+				9B5803824FCE1A5927FD330A /* libPods-AltStore.a */,
+				DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1423,6 +1549,17 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		BF429E3924A67C3600FA912A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429E4224A67C3600FA912A /* AltStoreCore.h in Headers */,
+				BF429E6B24A67E4200FA912A /* ALTSourceUserInfoKey.h in Headers */,
+				BF429E7424A67FC600FA912A /* ALTPatreonBenefitType.h in Headers */,
+				BF429E6724A67D7E00FA912A /* ALTAppPermission.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BF4587272298D31600BD7491 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1478,7 +1615,6 @@
 				BF50DDF3ED17533F566F5915 /* [CP] Check Pods Manifest.lock */,
 				BF18BFE324857D7900DD5981 /* Sources */,
 				BF18BFE424857D7900DD5981 /* Frameworks */,
-				258892614AC96DBEA6CBA5F5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1505,6 +1641,42 @@
 			productName = AltKit;
 			productReference = BF1E315022A0616100370A3C /* libAltKit.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		BF429E2624A67AE600FA912A /* AltWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF429E3524A67AE700FA912A /* Build configuration list for PBXNativeTarget "AltWidgetExtension" */;
+			buildPhases = (
+				BF429E2324A67AE600FA912A /* Sources */,
+				BF429E2424A67AE600FA912A /* Frameworks */,
+				BF429E2524A67AE600FA912A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AltWidgetExtension;
+			productName = AltWidgetExtension;
+			productReference = BF429E2724A67AE600FA912A /* AltWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		BF429E3D24A67C3600FA912A /* AltStoreCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF429E4724A67C3600FA912A /* Build configuration list for PBXNativeTarget "AltStoreCore" */;
+			buildPhases = (
+				CCADF7659F903C8335E8C905 /* [CP] Check Pods Manifest.lock */,
+				BF429E3924A67C3600FA912A /* Headers */,
+				BF429E3A24A67C3600FA912A /* Sources */,
+				BF429E3B24A67C3600FA912A /* Frameworks */,
+				BF429E3C24A67C3600FA912A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AltStoreCore;
+			productName = AltStoreCore;
+			productReference = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		BF45868C229872EA00BD7491 /* AltServer */ = {
 			isa = PBXNativeTarget;
@@ -1591,12 +1763,15 @@
 				BFD247662284B9A500981D42 /* Sources */,
 				BFD247672284B9A500981D42 /* Frameworks */,
 				BFD247682284B9A500981D42 /* Resources */,
-				8C9013C41DD92A1476195C0E /* [CP] Copy Pods Resources */,
+				BF429E3824A67AE700FA912A /* Embed App Extensions */,
+				BF429E4A24A67C3600FA912A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				BF1E315C22A0621900370A3C /* PBXTargetDependency */,
+				BF429E3324A67AE700FA912A /* PBXTargetDependency */,
+				BF429E4424A67C3600FA912A /* PBXTargetDependency */,
 			);
 			name = AltStore;
 			productName = AltStore;
@@ -1609,7 +1784,7 @@
 		BFD247622284B9A500981D42 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1150;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Riley Testut";
 				TargetAttributes = {
@@ -1619,6 +1794,12 @@
 					};
 					BF1E314F22A0616100370A3C = {
 						CreatedOnToolsVersion = 10.2.1;
+					};
+					BF429E2624A67AE600FA912A = {
+						CreatedOnToolsVersion = 12.0;
+					};
+					BF429E3D24A67C3600FA912A = {
+						CreatedOnToolsVersion = 12.0;
 					};
 					BF45868C229872EA00BD7491 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -1676,11 +1857,28 @@
 				BF5C5FC4237DF5AE00EDD0C6 /* AltPlugin */,
 				BF58047A246A28F7008AE704 /* AltBackup */,
 				BF18BFE624857D7900DD5981 /* AltDaemon */,
+				BF429E2624A67AE600FA912A /* AltWidgetExtension */,
+				BF429E3D24A67C3600FA912A /* AltStoreCore */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		BF429E2524A67AE600FA912A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429E3024A67AE700FA912A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E3C24A67C3600FA912A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BF45868B229872EA00BD7491 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1731,40 +1929,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		258892614AC96DBEA6CBA5F5 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltDaemon/Pods-AltDaemon-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltDaemon/Pods-AltDaemon-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltDaemon/Pods-AltDaemon-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8C9013C41DD92A1476195C0E /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1840,6 +2004,28 @@
 			shellPath = /bin/sh;
 			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\nIDENTITY=${EXPANDED_CODE_SIGN_IDENTITY_NAME}\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n";
 		};
+		CCADF7659F903C8335E8C905 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AltStoreCore-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FACBF95CCAAAB7121E1D92C8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1908,12 +2094,62 @@
 				BFF767CC2489AB5C0097E58C /* ALTServerError+Conveniences.swift in Sources */,
 				BF1E315A22A0620000370A3C /* NSError+ALTServerError.m in Sources */,
 				BF1E315822A061F900370A3C /* Result+Conveniences.swift in Sources */,
-				BF718BC923C919E300A89F2D /* CFNotificationName+AltStore.m in Sources */,
 				BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */,
 				BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */,
 				BF18BFF724858BDE00DD5981 /* Connection.swift in Sources */,
 				BF1E315722A061F500370A3C /* ServerProtocol.swift in Sources */,
+				BF429E9924A6943900FA912A /* CFNotificationName+AltStore.m in Sources */,
 				BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E2324A67AE600FA912A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429E2E24A67AE600FA912A /* AltWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF429E3A24A67C3600FA912A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF429E6F24A67EA000FA912A /* Patron.swift in Sources */,
+				BF429E5624A67C7800FA912A /* InstalledExtension.swift in Sources */,
+				BF429E5724A67C7800FA912A /* MergePolicy.swift in Sources */,
+				BF429E6424A67D0200FA912A /* UserDefaults+AltStore.swift in Sources */,
+				BF429E4E24A67C7800FA912A /* Source.swift in Sources */,
+				BF429E7924A6834A00FA912A /* ALTSourceUserInfoKey.m in Sources */,
+				BF429E7324A67ECB00FA912A /* Keychain.swift in Sources */,
+				BF429E4C24A67C7800FA912A /* Team.swift in Sources */,
+				BF429E7724A6826200FA912A /* AltStore.xcdatamodeld in Sources */,
+				BF429E7B24A6834A00FA912A /* ALTPatreonBenefitType.m in Sources */,
+				BF429E6524A67D2200FA912A /* AppProtocol.swift in Sources */,
+				BF429E6824A67D9800FA912A /* JSONDecoder+Properties.swift in Sources */,
+				BF429E7224A67EA000FA912A /* Campaign.swift in Sources */,
+				BF429E6224A67CC800FA912A /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
+				BF429E6324A67CE800FA912A /* Fetchable.swift in Sources */,
+				BF429E5024A67C7800FA912A /* DatabaseManager.swift in Sources */,
+				BF429E5524A67C7800FA912A /* AppID.swift in Sources */,
+				BF429E6024A67CC800FA912A /* AltStoreToAltStore2.xcmappingmodel in Sources */,
+				BF429E6E24A67EA000FA912A /* Tier.swift in Sources */,
+				BF429E7A24A6834A00FA912A /* ALTAppPermission.m in Sources */,
+				BF429E6D24A67E8700FA912A /* PatreonAccount.swift in Sources */,
+				BF429E5424A67C7800FA912A /* InstalledApp.swift in Sources */,
+				BF429E5D24A67CC300FA912A /* InstalledAppPolicy.swift in Sources */,
+				BF429E5E24A67CC800FA912A /* AltStore4ToAltStore5.xcmappingmodel in Sources */,
+				BF429E5F24A67CC800FA912A /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
+				BF429E7124A67EA000FA912A /* PatreonAPI.swift in Sources */,
+				BF429E4D24A67C7800FA912A /* RefreshAttempt.swift in Sources */,
+				BF429E5224A67C7800FA912A /* Account.swift in Sources */,
+				BF429E7024A67EA000FA912A /* Benefit.swift in Sources */,
+				BF429E6924A67DA700FA912A /* UIColor+Hex.swift in Sources */,
+				BF429E4F24A67C7800FA912A /* StoreApp.swift in Sources */,
+				BF429E5324A67C7800FA912A /* NewsItem.swift in Sources */,
+				BF429E4B24A67C7800FA912A /* AppPermission.swift in Sources */,
+				BF429E6124A67CC800FA912A /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
+				BF429E5C24A67CC300FA912A /* StoreAppPolicy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2025,89 +2261,56 @@
 				BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */,
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
-				BFD5D6F6230DDB12007955AB /* Tier.swift in Sources */,
-				BFB11692229322E400BB457C /* DatabaseManager.swift in Sources */,
 				BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */,
-				BF26A0E12370C5D400F53F9F /* ALTSourceUserInfoKey.m in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
-				BF54E8212315EF0D000AE0D8 /* ALTPatreonBenefitType.m in Sources */,
-				BFBBE2E122931F81002097FA /* InstalledApp.swift in Sources */,
 				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
 				BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
-				BFBBE2DF22931F73002097FA /* StoreApp.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
 				BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */,
 				BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */,
-				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
-				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
 				BFCCB51A245E3401001853EA /* VerifyAppOperation.swift in Sources */,
 				BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */,
-				BFA8172D23C5823E001B5953 /* InstalledExtension.swift in Sources */,
-				BFD5D6E8230CC961007955AB /* PatreonAPI.swift in Sources */,
-				BF6C33652419AE310034FD24 /* AltStore4ToAltStore5.xcmappingmodel in Sources */,
 				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
-				BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */,
-				BF9F8D1A242AA6BC0024E48B /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
 				BF770E5422BC044E002A40FE /* OperationContexts.swift in Sources */,
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
-				BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
 				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
-				BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */,
-				BFE6326822A858F300F30809 /* Account.swift in Sources */,
 				BF6C336224197D700034FD24 /* NSError+LocalizedFailure.swift in Sources */,
-				BFE6326622A857C200F30809 /* Team.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
 				BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */,
-				BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */,
-				BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */,
 				BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */,
-				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
-				BF56D2AA23DF88310006506D /* AppID.swift in Sources */,
-				BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */,
 				BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */,
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */,
-				BFB1169B2293274D00BB457C /* JSONDecoder+Properties.swift in Sources */,
 				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
-				BF3D648822E79A3700E9056B /* AppPermission.swift in Sources */,
 				BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */,
 				BF41B808233433C100C593A3 /* LoadingState.swift in Sources */,
 				BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */,
-				BFD5D6EE230D8A86007955AB /* Patron.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
-				BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
-				BF258CE322EBAE2800023032 /* AppProtocol.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */,
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
-				BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
 				BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
-				BF9ABA4F22DD41A9008935CF /* UIColor+Hex.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
-				BF3D64A222E8031100E9056B /* MergePolicy.swift in Sources */,
-				BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
 				BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */,
-				BF3D648D22E79AC800E9056B /* ALTAppPermission.m in Sources */,
-				BFD5D6F2230DD974007955AB /* Benefit.swift in Sources */,
 				BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
 				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
@@ -2117,7 +2320,6 @@
 				BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */,
 				BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
-				BFDB6A0522A9AFB2007EA6D6 /* Fetchable.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,
@@ -2127,7 +2329,6 @@
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
 				BF6A5320246DC1B0004F59C8 /* FileManager+SharedDirectories.swift in Sources */,
-				BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2143,6 +2344,16 @@
 			isa = PBXTargetDependency;
 			target = BF1E314F22A0616100370A3C /* AltKit */;
 			targetProxy = BF1E315D22A0621F00370A3C /* PBXContainerItemProxy */;
+		};
+		BF429E3324A67AE700FA912A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF429E2624A67AE600FA912A /* AltWidgetExtension */;
+			targetProxy = BF429E3224A67AE700FA912A /* PBXContainerItemProxy */;
+		};
+		BF429E4424A67C3600FA912A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF429E3D24A67C3600FA912A /* AltStoreCore */;
+			targetProxy = BF429E4324A67C3600FA912A /* PBXContainerItemProxy */;
 		};
 		BF4588452298D48B00BD7491 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2279,13 +2490,17 @@
 				CLANG_MODULES_AUTOLINK = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = AltKit/AltKit.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2297,15 +2512,141 @@
 				CLANG_MODULES_AUTOLINK = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = AltKit/AltKit.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BF429E3624A67AE700FA912A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				INFOPLIST_FILE = AltWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF429E3724A67AE700FA912A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				INFOPLIST_FILE = AltWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BF429E4824A67C3600FA912A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 26C2B7055EF49CE0DB234015 /* Pods-AltStoreCore.debug.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AltStoreCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		BF429E4924A67C3600FA912A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65A4E786DD8D6BAD4D65E547 /* Pods-AltStoreCore.release.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AltStoreCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -2319,7 +2660,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2352,7 +2693,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.4b1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2372,7 +2713,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2405,7 +2746,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.4b1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2708,8 +3049,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2720,7 +3063,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.4b3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2736,8 +3079,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2748,7 +3093,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.4b3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2776,6 +3121,24 @@
 			buildConfigurations = (
 				BF1E315522A0616100370A3C /* Debug */,
 				BF1E315622A0616100370A3C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF429E3524A67AE700FA912A /* Build configuration list for PBXNativeTarget "AltWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF429E3624A67AE700FA912A /* Debug */,
+				BF429E3724A67AE700FA912A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF429E4724A67C3600FA912A /* Build configuration list for PBXNativeTarget "AltStoreCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF429E4824A67C3600FA912A /* Debug */,
+				BF429E4924A67C3600FA912A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -9,7 +9,7 @@
 import CoreData
 import UIKit
 
-extension ALTAppPermissionType
+public extension ALTAppPermissionType
 {
     var localizedShortName: String? {
         switch self
@@ -43,14 +43,14 @@ extension ALTAppPermissionType
 }
 
 @objc(AppPermission)
-class AppPermission: NSManagedObject, Decodable, Fetchable
+public class AppPermission: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
-    @NSManaged var type: ALTAppPermissionType
-    @NSManaged var usageDescription: String
+    @NSManaged public var type: ALTAppPermissionType
+    @NSManaged public var usageDescription: String
     
     /* Relationships */
-    @NSManaged private(set) var app: StoreApp!
+    @NSManaged public private(set) var app: StoreApp!
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -63,7 +63,7 @@ class AppPermission: NSManagedObject, Decodable, Fetchable
         case usageDescription
     }
     
-    required init(from decoder: Decoder) throws
+    public required init(from decoder: Decoder) throws
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
@@ -79,7 +79,7 @@ class AppPermission: NSManagedObject, Decodable, Fetchable
     }
 }
 
-extension AppPermission
+public extension AppPermission
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<AppPermission>
     {

@@ -16,9 +16,9 @@ extension PatreonAPI
     }
 }
 
-struct Campaign
+public struct Campaign
 {
-    var identifier: String
+    public var identifier: String
         
     init(response: PatreonAPI.CampaignResponse)
     {

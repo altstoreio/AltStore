@@ -12,7 +12,7 @@ import CoreData
 import Roxas
 import AltSign
 
-extension StoreApp
+public extension StoreApp
 {
     #if ALPHA
     static let altstoreAppID = "com.rileytestut.AltStore.Alpha"
@@ -29,40 +29,40 @@ extension StoreApp
 }
 
 @objc(StoreApp)
-class StoreApp: NSManagedObject, Decodable, Fetchable
+public class StoreApp: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
-    @NSManaged private(set) var name: String
-    @NSManaged private(set) var bundleIdentifier: String
-    @NSManaged private(set) var subtitle: String?
+    @NSManaged public private(set) var name: String
+    @NSManaged public private(set) var bundleIdentifier: String
+    @NSManaged public private(set) var subtitle: String?
     
-    @NSManaged private(set) var developerName: String
-    @NSManaged private(set) var localizedDescription: String
-    @NSManaged private(set) var size: Int32
+    @NSManaged public private(set) var developerName: String
+    @NSManaged public private(set) var localizedDescription: String
+    @NSManaged public private(set) var size: Int32
     
-    @NSManaged private(set) var iconURL: URL
-    @NSManaged private(set) var screenshotURLs: [URL]
+    @NSManaged public private(set) var iconURL: URL
+    @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged var version: String
-    @NSManaged private(set) var versionDate: Date
-    @NSManaged private(set) var versionDescription: String?
+    @NSManaged public var version: String
+    @NSManaged public private(set) var versionDate: Date
+    @NSManaged public private(set) var versionDescription: String?
     
-    @NSManaged private(set) var downloadURL: URL
-    @NSManaged private(set) var tintColor: UIColor?
-    @NSManaged private(set) var isBeta: Bool
+    @NSManaged public private(set) var downloadURL: URL
+    @NSManaged public private(set) var tintColor: UIColor?
+    @NSManaged public private(set) var isBeta: Bool
     
-    @NSManaged var sourceIdentifier: String?
+    @NSManaged public var sourceIdentifier: String?
     
-    @NSManaged var sortIndex: Int32
+    @NSManaged public var sortIndex: Int32
     
     /* Relationships */
-    @NSManaged var installedApp: InstalledApp?
-    @NSManaged var newsItems: Set<NewsItem>
+    @NSManaged public var installedApp: InstalledApp?
+    @NSManaged public var newsItems: Set<NewsItem>
     
-    @NSManaged @objc(source) var _source: Source?
-    @NSManaged @objc(permissions) var _permissions: NSOrderedSet
+    @NSManaged @objc(source) public var _source: Source?
+    @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
-    @nonobjc var source: Source? {
+    @nonobjc public var source: Source? {
         set {
             self._source = newValue
             self.sourceIdentifier = newValue?.identifier
@@ -72,7 +72,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
         }
     }
     
-    @nonobjc var permissions: [AppPermission] {
+    @nonobjc public var permissions: [AppPermission] {
         return self._permissions.array as! [AppPermission]
     }
     
@@ -100,7 +100,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
         case isBeta = "beta"
     }
     
-    required init(from decoder: Decoder) throws
+    public required init(from decoder: Decoder) throws
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
@@ -144,7 +144,7 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
     }
 }
 
-extension StoreApp
+public extension StoreApp
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {

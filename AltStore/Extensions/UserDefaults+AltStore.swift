@@ -10,8 +10,15 @@ import Foundation
 
 import Roxas
 
-extension UserDefaults
+public extension UserDefaults
 {
+    static let shared: UserDefaults = {
+        guard let appGroup = Bundle.main.appGroups.first else { return .standard }
+        
+        let sharedUserDefaults = UserDefaults(suiteName: appGroup)!
+        return sharedUserDefaults
+    }()
+    
     @NSManaged var firstLaunch: Date?
     
     @NSManaged var preferredServerID: String?

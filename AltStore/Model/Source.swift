@@ -8,7 +8,7 @@
 
 import CoreData
 
-extension Source
+public extension Source
 {
     #if ALPHA
     static let altStoreIdentifier = "com.rileytestut.AltStore.Alpha"
@@ -36,21 +36,21 @@ extension Source
 }
 
 @objc(Source)
-class Source: NSManagedObject, Fetchable, Decodable
+public class Source: NSManagedObject, Fetchable, Decodable
 {
     /* Properties */
-    @NSManaged var name: String
-    @NSManaged var identifier: String
-    @NSManaged var sourceURL: URL
+    @NSManaged public var name: String
+    @NSManaged public var identifier: String
+    @NSManaged public var sourceURL: URL
     
     /* Non-Core Data Properties */
-    var userInfo: [ALTSourceUserInfoKey: String]?
+    public var userInfo: [ALTSourceUserInfoKey: String]?
     
     /* Relationships */
-    @objc(apps) @NSManaged private(set) var _apps: NSOrderedSet
-    @objc(newsItems) @NSManaged private(set) var _newsItems: NSOrderedSet
+    @objc(apps) @NSManaged public private(set) var _apps: NSOrderedSet
+    @objc(newsItems) @NSManaged public private(set) var _newsItems: NSOrderedSet
     
-    @nonobjc var apps: [StoreApp] {
+    @nonobjc public var apps: [StoreApp] {
         get {
             return self._apps.array as! [StoreApp]
         }
@@ -59,7 +59,7 @@ class Source: NSManagedObject, Fetchable, Decodable
         }
     }
     
-    @nonobjc var newsItems: [NewsItem] {
+    @nonobjc public var newsItems: [NewsItem] {
         get {
             return self._newsItems.array as! [NewsItem]
         }
@@ -83,7 +83,7 @@ class Source: NSManagedObject, Fetchable, Decodable
         super.init(entity: entity, insertInto: context)
     }
     
-    required init(from decoder: Decoder) throws
+    public required init(from decoder: Decoder) throws
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         guard let sourceURL = decoder.sourceURL else { preconditionFailure("Decoder must have non-nil sourceURL.") }
@@ -137,7 +137,7 @@ class Source: NSManagedObject, Fetchable, Decodable
     }
 }
 
-extension Source
+public extension Source
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<Source>
     {

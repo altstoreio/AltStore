@@ -16,9 +16,9 @@ extension PatreonAPI
     }
 }
 
-struct Benefit: Hashable
+public struct Benefit: Hashable
 {
-    var type: ALTPatreonBenefitType
+    public var type: ALTPatreonBenefitType
     
     init(response: PatreonAPI.BenefitResponse)
     {

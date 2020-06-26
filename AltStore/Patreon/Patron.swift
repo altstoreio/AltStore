@@ -43,7 +43,7 @@ extension PatreonAPI
 
 extension Patron
 {
-    enum Status: String, Decodable
+    public enum Status: String, Decodable
     {
         case active = "active_patron"
         case declined = "declined_patron"
@@ -52,14 +52,14 @@ extension Patron
     }
 }
 
-class Patron
+public class Patron
 {
-    var name: String
-    var identifier: String
+    public var name: String
+    public var identifier: String
     
-    var status: Status
+    public var status: Status
     
-    var benefits: Set<Benefit> = []
+    public var benefits: Set<Benefit> = []
     
     init(response: PatreonAPI.PatronResponse)
     {

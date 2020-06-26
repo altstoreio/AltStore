@@ -8,7 +8,7 @@
 
 import Network
 
-import AltKit
+import AltStoreCore
 
 enum ConnectionError: LocalizedError
 {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-import AltKit
+import AltStoreCore
 import AltSign
 
 extension BackupAppOperation

@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-extension CodingUserInfoKey
+public extension CodingUserInfoKey
 {
     static let managedObjectContext = CodingUserInfoKey(rawValue: "managedObjectContext")!
     static let sourceURL = CodingUserInfoKey(rawValue: "sourceURL")!
@@ -18,29 +18,29 @@ extension CodingUserInfoKey
 public final class JSONDecoder: Foundation.JSONDecoder
 {
     @DecoderItem(key: .managedObjectContext)
-    var managedObjectContext: NSManagedObjectContext?
+    public var managedObjectContext: NSManagedObjectContext?
     
     @DecoderItem(key: .sourceURL)
-    var sourceURL: URL?
+    public var sourceURL: URL?
 }
 
-extension Decoder
+public extension Decoder
 {
     var managedObjectContext: NSManagedObjectContext? { self.userInfo[.managedObjectContext] as? NSManagedObjectContext }
     var sourceURL: URL? { self.userInfo[.sourceURL] as? URL }
 }
 
 @propertyWrapper
-struct DecoderItem<Value>
+public struct DecoderItem<Value>
 {
-    let key: CodingUserInfoKey
+    public let key: CodingUserInfoKey
     
-    var wrappedValue: Value? {
+    public var wrappedValue: Value? {
         get { fatalError("only works on instance properties of classes") }
         set { fatalError("only works on instance properties of classes") }
     }
     
-    init(key: CodingUserInfoKey)
+    public init(key: CodingUserInfoKey)
     {
         self.key = key
     }

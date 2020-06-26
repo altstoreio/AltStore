@@ -12,9 +12,9 @@ import CoreData
 import AltSign
 
 // Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
-let ALTActiveAppsLimit = 3
+public let ALTActiveAppsLimit = 3
 
-protocol InstalledAppProtocol: Fetchable
+public protocol InstalledAppProtocol: Fetchable
 {
     var name: String { get }
     var bundleIdentifier: String { get }
@@ -27,36 +27,36 @@ protocol InstalledAppProtocol: Fetchable
 }
 
 @objc(InstalledApp)
-class InstalledApp: NSManagedObject, InstalledAppProtocol
+public class InstalledApp: NSManagedObject, InstalledAppProtocol
 {
     /* Properties */
-    @NSManaged var name: String
-    @NSManaged var bundleIdentifier: String
-    @NSManaged var resignedBundleIdentifier: String
-    @NSManaged var version: String
+    @NSManaged public var name: String
+    @NSManaged public var bundleIdentifier: String
+    @NSManaged public var resignedBundleIdentifier: String
+    @NSManaged public var version: String
     
-    @NSManaged var refreshedDate: Date
-    @NSManaged var expirationDate: Date
-    @NSManaged var installedDate: Date
+    @NSManaged public var refreshedDate: Date
+    @NSManaged public var expirationDate: Date
+    @NSManaged public var installedDate: Date
     
-    @NSManaged var isActive: Bool
+    @NSManaged public var isActive: Bool
     
-    @NSManaged var certificateSerialNumber: String?
+    @NSManaged public var certificateSerialNumber: String?
     
     /* Relationships */
-    @NSManaged var storeApp: StoreApp?
-    @NSManaged var team: Team?
-    @NSManaged var appExtensions: Set<InstalledExtension>
+    @NSManaged public var storeApp: StoreApp?
+    @NSManaged public var team: Team?
+    @NSManaged public var appExtensions: Set<InstalledExtension>
     
-    var isSideloaded: Bool {
+    public var isSideloaded: Bool {
         return self.storeApp == nil
     }
     
-    var appIDCount: Int {
+    public var appIDCount: Int {
         return 1 + self.appExtensions.count
     }
     
-    var requiredActiveSlots: Int {
+    public var requiredActiveSlots: Int {
         let requiredActiveSlots = UserDefaults.standard.activeAppLimitIncludesExtensions ? self.appIDCount : 1
         return requiredActiveSlots
     }
@@ -66,7 +66,7 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         super.init(entity: entity, insertInto: context)
     }
     
-    init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
+    public init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -80,7 +80,7 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
     }
     
-    func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
+    public func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
         
@@ -95,14 +95,14 @@ class InstalledApp: NSManagedObject, InstalledAppProtocol
         }
     }
     
-    func update(provisioningProfile: ALTProvisioningProfile)
+    public func update(provisioningProfile: ALTProvisioningProfile)
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
     }
 }
 
-extension InstalledApp
+public extension InstalledApp
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<InstalledApp>
     {
@@ -199,7 +199,7 @@ extension InstalledApp
     }
 }
 
-extension InstalledApp
+public extension InstalledApp
 {
     var openAppURL: URL {
         let openAppURL = URL(string: "altstore-" + self.bundleIdentifier + "://")!
@@ -213,7 +213,7 @@ extension InstalledApp
     }
 }
 
-extension InstalledApp
+public extension InstalledApp
 {
     class var appsDirectoryURL: URL {
         let appsDirectoryURL = FileManager.default.applicationSupportDirectory.appendingPathComponent("Apps")

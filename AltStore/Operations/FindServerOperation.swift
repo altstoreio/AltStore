@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import AltKit
+import AltStoreCore
 import Roxas
 
 private let ReceivedServerConnectionResponse: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void =

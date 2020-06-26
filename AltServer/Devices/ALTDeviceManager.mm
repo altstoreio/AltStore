@@ -8,7 +8,7 @@
 
 #import "ALTDeviceManager.h"
 
-#import "AltKit.h"
+//#import "AltKit.h"
 #import "ALTWiredConnection+Private.h"
 #import "ALTNotificationConnection+Private.h"
 

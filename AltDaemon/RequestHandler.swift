@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import AltKit
+import AltStoreCore
 
 typealias ConnectionManager = AltKit.ConnectionManager<RequestHandler>
 

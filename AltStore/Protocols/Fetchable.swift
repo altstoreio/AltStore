@@ -8,13 +8,13 @@
 
 import CoreData
 
-typealias FetchRequest = NSFetchRequest<NSFetchRequestResult>
+public typealias FetchRequest = NSFetchRequest<NSFetchRequestResult>
 
-protocol Fetchable: NSManagedObject
+public protocol Fetchable: NSManagedObject
 {
 }
 
-extension Fetchable
+public extension Fetchable
 {
     static func first(satisfying predicate: NSPredicate? = nil, sortedBy sortDescriptors: [NSSortDescriptor]? = nil, in context: NSManagedObjectContext,
                       requestProperties: [PartialKeyPath<FetchRequest>: Any?] = [:]) -> Self?

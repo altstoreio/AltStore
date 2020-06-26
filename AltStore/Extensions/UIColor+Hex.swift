@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIColor
+public extension UIColor
 {
     // Borrowed from https://stackoverflow.com/a/26341062
     var hexString: String {

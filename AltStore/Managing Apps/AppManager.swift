@@ -12,7 +12,7 @@ import UserNotifications
 import MobileCoreServices
 
 import AltSign
-import AltKit
+import AltStoreCore
 
 import Roxas
 

@@ -11,7 +11,7 @@ import UserNotifications
 import AVFoundation
 
 import AltSign
-import AltKit
+import AltStoreCore
 import Roxas
 
 private enum RefreshError: LocalizedError

@@ -6,11 +6,8 @@ target 'AltStore' do
   use_modular_headers!
 
   # Pods for AltStore
-  pod 'KeychainAccess', '~> 3.2.0'
   pod 'Nuke', '~> 7.0'
   pod 'AppCenter', '~> 3.1.0'
-  pod 'AltSign', :path => 'Dependencies/AltSign'
-  pod 'Roxas', :path => 'Dependencies/Roxas'
 
 end
 
@@ -31,8 +28,18 @@ target 'AltDaemon' do
   use_modular_headers!
 
   # Pods for AltDaemon
-  pod 'AltSign', :path => 'Dependencies/AltSign'
-  pod 'Roxas', :path => 'Dependencies/Roxas'
+  #pod 'AltSign', :path => 'Dependencies/AltSign'
+  #pod 'Roxas', :path => 'Dependencies/Roxas'
+
+end
+
+target 'AltStoreCore' do
+  platform :ios, '12.0'
+
+  use_modular_headers!
+
+  # Pods for AltStoreCore
+  pod 'KeychainAccess', '~> 3.2.0'
 
 end
 

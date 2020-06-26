@@ -10,7 +10,7 @@ import CoreData
 
 extension PatreonAPI
 {
-    struct AccountResponse: Decodable
+    public struct AccountResponse: Decodable
     {
         struct Data: Decodable
         {
@@ -30,21 +30,21 @@ extension PatreonAPI
 }
 
 @objc(PatreonAccount)
-class PatreonAccount: NSManagedObject, Fetchable
+public class PatreonAccount: NSManagedObject, Fetchable
 {
-    @NSManaged var identifier: String
+    @NSManaged public var identifier: String
     
-    @NSManaged var name: String
-    @NSManaged var firstName: String?
+    @NSManaged public var name: String
+    @NSManaged public var firstName: String?
     
-    @NSManaged var isPatron: Bool
+    @NSManaged public var isPatron: Bool
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(response: PatreonAPI.AccountResponse, context: NSManagedObjectContext)
+    public init(response: PatreonAPI.AccountResponse, context: NSManagedObjectContext)
     {
         super.init(entity: PatreonAccount.entity(), insertInto: context)
         
@@ -64,7 +64,7 @@ class PatreonAccount: NSManagedObject, Fetchable
     }
 }
 
-extension PatreonAccount
+public extension PatreonAccount
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<PatreonAccount>
     {

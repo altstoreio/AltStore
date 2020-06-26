@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 
 class ServerConnection
 {
@@ -95,7 +95,7 @@ class ServerConnection
                     {
                         let data = try self.process(data: data, error: error)
                         
-                        let response = try JSONDecoder().decode(ServerResponse.self, from: data)
+                        let response = try AltStoreCore.JSONDecoder().decode(ServerResponse.self, from: data)
                         completionHandler(.success(response))
                     }
                     catch

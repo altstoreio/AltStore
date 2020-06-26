@@ -1,0 +1,6 @@
+module AltKit {
+  umbrella header "AltKit.h"
+
+  export *
+  module * { export * }
+}

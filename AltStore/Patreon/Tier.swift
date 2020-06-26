@@ -34,12 +34,12 @@ extension PatreonAPI
     }
 }
 
-struct Tier
+public struct Tier
 {
-    var name: String
-    var identifier: String
+    public var name: String
+    public var identifier: String
     
-    var benefits: [Benefit] = []
+    public var benefits: [Benefit] = []
     
     init(response: PatreonAPI.TierResponse)
     {

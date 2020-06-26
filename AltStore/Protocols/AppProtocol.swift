@@ -9,7 +9,7 @@
 import Foundation
 import AltSign
 
-protocol AppProtocol
+public protocol AppProtocol
 {
     var name: String { get }
     var bundleIdentifier: String { get }
@@ -18,21 +18,21 @@ protocol AppProtocol
 
 extension ALTApplication: AppProtocol
 {
-    var url: URL {
+    public var url: URL {
         return self.fileURL
     }
 }
 
 extension StoreApp: AppProtocol
 {
-    var url: URL {
+    public var url: URL {
         return self.downloadURL
     }
 }
 
 extension InstalledApp: AppProtocol
 {
-    var url: URL {
+    public var url: URL {
         return self.fileURL
     }
 }

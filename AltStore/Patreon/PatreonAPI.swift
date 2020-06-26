@@ -17,13 +17,13 @@ private let campaignID = "2863968"
 
 extension PatreonAPI
 {
-    enum Error: LocalizedError
+    public enum Error: LocalizedError
     {
         case unknown
         case notAuthenticated
         case invalidAccessToken
         
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self
             {
             case .unknown: return NSLocalizedString("An unknown error occurred.", comment: "")
@@ -71,11 +71,11 @@ extension PatreonAPI
     }
 }
 
-class PatreonAPI: NSObject
+public class PatreonAPI: NSObject
 {
-    static let shared = PatreonAPI()
+    public static let shared = PatreonAPI()
     
-    var isAuthenticated: Bool {
+    public var isAuthenticated: Bool {
         return Keychain.shared.patreonAccessToken != nil
     }
     
@@ -90,7 +90,7 @@ class PatreonAPI: NSObject
     }
 }
 
-extension PatreonAPI
+public extension PatreonAPI
 {
     func authenticate(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
@@ -412,8 +412,10 @@ private extension PatreonAPI
 @available(iOS 13.0, *)
 extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
 {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
     {
-        return UIApplication.shared.keyWindow ?? UIWindow()
+//        return UIApplication.
+//        return UIApplication.shared.keyWindow ?? UIWindow()
+        return UIWindow()
     }
 }

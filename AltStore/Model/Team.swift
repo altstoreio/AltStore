@@ -11,7 +11,7 @@ import CoreData
 
 import AltSign
 
-extension ALTTeamType
+public extension ALTTeamType
 {
     var localizedDescription: String {
         switch self
@@ -25,25 +25,25 @@ extension ALTTeamType
     }
 }
 
-extension Team
+public extension Team
 {
     static let maximumFreeAppIDs = 10
 }
 
 @objc(Team)
-class Team: NSManagedObject, Fetchable
+public class Team: NSManagedObject, Fetchable
 {
     /* Properties */
-    @NSManaged var name: String
-    @NSManaged var identifier: String
-    @NSManaged var type: ALTTeamType
+    @NSManaged public var name: String
+    @NSManaged public var identifier: String
+    @NSManaged public var type: ALTTeamType
     
-    @NSManaged var isActiveTeam: Bool
+    @NSManaged public var isActiveTeam: Bool
     
     /* Relationships */
-    @NSManaged private(set) var account: Account!
-    @NSManaged var installedApps: Set<InstalledApp>
-    @NSManaged private(set) var appIDs: Set<AppID>
+    @NSManaged public private(set) var account: Account!
+    @NSManaged public var installedApps: Set<InstalledApp>
+    @NSManaged public private(set) var appIDs: Set<AppID>
     
     var altTeam: ALTTeam?
     
@@ -52,7 +52,7 @@ class Team: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    init(_ team: ALTTeam, account: Account, context: NSManagedObjectContext)
+    public init(_ team: ALTTeam, account: Account, context: NSManagedObjectContext)
     {
         super.init(entity: Team.entity(), insertInto: context)
         
@@ -61,7 +61,7 @@ class Team: NSManagedObject, Fetchable
         self.update(team: team)
     }
     
-    func update(team: ALTTeam)
+    public func update(team: ALTTeam)
     {
         self.altTeam = team
         
@@ -71,7 +71,7 @@ class Team: NSManagedObject, Fetchable
     }
 }
 
-extension Team
+public extension Team
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<Team>
     {

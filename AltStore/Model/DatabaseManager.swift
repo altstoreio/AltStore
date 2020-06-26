@@ -8,8 +8,25 @@
 
 import CoreData
 
-import AltSign
-import Roxas
+@_exported import AltKit
+@_exported import AltSign
+@_exported import Roxas
+
+private class PersistentContainer: RSTPersistentContainer
+{
+    override class func defaultDirectoryURL() -> URL
+    {
+        guard let appGroup = Bundle.main.appGroups.first else { return super.defaultDirectoryURL() }
+        
+        let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)!
+        
+        let databaseDirectoryURL = sharedDirectoryURL.appendingPathComponent("Database")
+        try? FileManager.default.createDirectory(at: databaseDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+        
+        print("Database URL:", databaseDirectoryURL)
+        return databaseDirectoryURL
+    }
+}
 
 public class DatabaseManager
 {
@@ -23,7 +40,10 @@ public class DatabaseManager
     
     private init()
     {
-        self.persistentContainer = RSTPersistentContainer(name: "AltStore")
+        let notification = CFNotificationName.localServerConnectionAvailableRequest
+        let socket = ALTDeviceListeningSocket
+        
+        self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
     }
 }
@@ -98,7 +118,7 @@ public extension DatabaseManager
     }
 }
 
-extension DatabaseManager
+public extension DatabaseManager
 {
     func activeAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> Account?
     {

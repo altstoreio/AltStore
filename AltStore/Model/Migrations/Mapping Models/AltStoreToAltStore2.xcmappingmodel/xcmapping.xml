@@ -10,7 +10,7 @@
             <plist version="1.0">
                 <dict>
                     <key>NSPersistenceFrameworkVersion</key>
-                    <integer>866</integer>
+                    <integer>977</integer>
                     <key>NSStoreModelVersionHashes</key>
                     <dict>
                         <key>XDDevAttributeMapping</key>
@@ -34,6 +34,8 @@
 		akYY9LhehVA/mCb4ATLWuI9XGLcjpm14wWL1oEBtIcs=
 		</data>
                     </dict>
+                    <key>NSStoreModelVersionHashesDigest</key>
+                    <string>+Hmc2uYZK6og+Pvx5GUJ7oW75UG4V/ksQanTjfTKUnxyGWJRMtB5tIRgVwGsrd7lz/QR57++wbvWsr6nxwyS0A==</string>
                     <key>NSStoreModelVersionHashesVersion</key>
                     <integer>3</integer>
                     <key>NSStoreModelVersionIdentifiers</key>

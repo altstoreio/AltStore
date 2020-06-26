@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 
 extension WirelessConnectionHandler
 {

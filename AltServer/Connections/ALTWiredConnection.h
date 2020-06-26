@@ -8,7 +8,7 @@
 
 #import <AltSign/AltSign.h>
 
-#import "AltKit.h"
+//#import "AltKit.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

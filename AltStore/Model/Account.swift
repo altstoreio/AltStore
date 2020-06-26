@@ -12,7 +12,7 @@ import CoreData
 import AltSign
 
 @objc(Account)
-class Account: NSManagedObject, Fetchable
+public class Account: NSManagedObject, Fetchable
 {
     var localizedName: String {
         var components = PersonNameComponents()
@@ -24,30 +24,30 @@ class Account: NSManagedObject, Fetchable
     }
     
     /* Properties */
-    @NSManaged var appleID: String
-    @NSManaged var identifier: String
+    @NSManaged public var appleID: String
+    @NSManaged public var identifier: String
     
-    @NSManaged var firstName: String
-    @NSManaged var lastName: String
+    @NSManaged public var firstName: String
+    @NSManaged public var lastName: String
     
-    @NSManaged var isActiveAccount: Bool
+    @NSManaged public var isActiveAccount: Bool
     
     /* Relationships */
-    @NSManaged var teams: Set<Team>
+    @NSManaged public var teams: Set<Team>
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(_ account: ALTAccount, context: NSManagedObjectContext)
+    public init(_ account: ALTAccount, context: NSManagedObjectContext)
     {
         super.init(entity: Account.entity(), insertInto: context)
         
         self.update(account: account)
     }
     
-    func update(account: ALTAccount)
+    public func update(account: ALTAccount)
     {
         self.appleID = account.appleID
         self.identifier = account.identifier
@@ -57,7 +57,7 @@ class Account: NSManagedObject, Fetchable
     }
 }
 
-extension Account
+public extension Account
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<Account>
     {

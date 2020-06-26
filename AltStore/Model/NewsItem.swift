@@ -10,27 +10,27 @@ import UIKit
 import CoreData
 
 @objc(NewsItem)
-class NewsItem: NSManagedObject, Decodable, Fetchable
+public class NewsItem: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
-    @NSManaged var identifier: String
-    @NSManaged var date: Date
+    @NSManaged public var identifier: String
+    @NSManaged public var date: Date
     
-    @NSManaged var title: String
-    @NSManaged var caption: String
-    @NSManaged var tintColor: UIColor
-    @NSManaged var sortIndex: Int32
-    @NSManaged var isSilent: Bool
+    @NSManaged public var title: String
+    @NSManaged public var caption: String
+    @NSManaged public var tintColor: UIColor
+    @NSManaged public var sortIndex: Int32
+    @NSManaged public var isSilent: Bool
     
-    @NSManaged var imageURL: URL?
-    @NSManaged var externalURL: URL?
+    @NSManaged public var imageURL: URL?
+    @NSManaged public var externalURL: URL?
     
-    @NSManaged var appID: String?
-    @NSManaged var sourceIdentifier: String?
+    @NSManaged public var appID: String?
+    @NSManaged public var sourceIdentifier: String?
     
     /* Relationships */
-    @NSManaged var storeApp: StoreApp?
-    @NSManaged var source: Source?
+    @NSManaged public var storeApp: StoreApp?
+    @NSManaged public var source: Source?
     
     private enum CodingKeys: String, CodingKey
     {
@@ -50,7 +50,7 @@ class NewsItem: NSManagedObject, Decodable, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    required init(from decoder: Decoder) throws
+    public required init(from decoder: Decoder) throws
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
@@ -82,7 +82,7 @@ class NewsItem: NSManagedObject, Decodable, Fetchable
     }
 }
 
-extension NewsItem
+public extension NewsItem
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<NewsItem>
     {

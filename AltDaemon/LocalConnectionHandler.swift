@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 
 private let ReceivedLocalServerConnectionRequest: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void =
 { (center, observer, name, object, userInfo) in

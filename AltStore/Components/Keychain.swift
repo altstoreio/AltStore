@@ -12,11 +12,11 @@ import KeychainAccess
 import AltSign
 
 @propertyWrapper
-struct KeychainItem<Value>
+public struct KeychainItem<Value>
 {
-    let key: String
+    public let key: String
     
-    var wrappedValue: Value? {
+    public var wrappedValue: Value? {
         get {
             switch Value.self
             {
@@ -35,50 +35,50 @@ struct KeychainItem<Value>
         }
     }
     
-    init(key: String)
+    public init(key: String)
     {
         self.key = key
     }
 }
 
-class Keychain
+public class Keychain
 {
-    static let shared = Keychain()
+    public static let shared = Keychain()
     
     fileprivate let keychain = KeychainAccess.Keychain(service: "com.rileytestut.AltStore").accessibility(.afterFirstUnlock).synchronizable(true)
     
     @KeychainItem(key: "appleIDEmailAddress")
-    var appleIDEmailAddress: String?
+    public var appleIDEmailAddress: String?
     
     @KeychainItem(key: "appleIDPassword")
-    var appleIDPassword: String?
+    public var appleIDPassword: String?
     
     @KeychainItem(key: "signingCertificatePrivateKey")
-    var signingCertificatePrivateKey: Data?
+    public var signingCertificatePrivateKey: Data?
     
     @KeychainItem(key: "signingCertificateSerialNumber")
-    var signingCertificateSerialNumber: String?
+    public var signingCertificateSerialNumber: String?
     
     @KeychainItem(key: "signingCertificate")
-    var signingCertificate: Data?
+    public var signingCertificate: Data?
     
     @KeychainItem(key: "signingCertificatePassword")
-    var signingCertificatePassword: String?
+    public var signingCertificatePassword: String?
     
     @KeychainItem(key: "patreonAccessToken")
-    var patreonAccessToken: String?
+    public var patreonAccessToken: String?
     
     @KeychainItem(key: "patreonRefreshToken")
-    var patreonRefreshToken: String?
+    public var patreonRefreshToken: String?
     
     @KeychainItem(key: "patreonCreatorAccessToken")
-    var patreonCreatorAccessToken: String?
+    public var patreonCreatorAccessToken: String?
     
     private init()
     {
     }
     
-    func reset()
+    public func reset()
     {
         self.appleIDEmailAddress = nil
         self.appleIDPassword = nil
