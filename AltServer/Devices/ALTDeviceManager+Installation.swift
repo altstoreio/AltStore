@@ -345,7 +345,12 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 let certificates = try Result(certificates, error).get()
                 
                 // Check if there is another AltStore certificate, which means AltStore has been installed with this Apple ID before.
-                if certificates.contains(where: { $0.machineName?.starts(with: "AltStore") == true })
+                if certificates.contains(where: { certificate in
+                    guard let machineName = certificate.machineName as? String else {
+                        return false
+                    }
+                    return machineName.starts(with: "AltStore") == true
+                })
                 {
                     var isCancelled = false
                     
@@ -523,7 +528,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 try (infoDictionary as NSDictionary).write(to: infoPlistURL)
                                 
                 if
-                    let machineIdentifier = certificate.machineIdentifier,
+                    let machineIdentifier = certificate.machineIdentifier as? String,
                     let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
                 {
                     let certificateURL = application.fileURL.appendingPathComponent("ALTCertificate.p12")
