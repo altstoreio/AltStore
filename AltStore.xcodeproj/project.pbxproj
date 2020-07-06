@@ -18,6 +18,8 @@
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
+		BF0A1F0E24E1D18500C510DD /* CreditsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A1F0D24E1D18500C510DD /* CreditsViewController.swift */; };
+		BF0A1F1024E1E69E00C510DD /* Credits.plist in Resources */ = {isa = PBXBuildFile; fileRef = BF0A1F0F24E1E69E00C510DD /* Credits.plist */; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
 		BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */; };
 		BF0F5FC723F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */; };
@@ -354,6 +356,8 @@
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
 		BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF0A1F0D24E1D18500C510DD /* CreditsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsViewController.swift; sourceTree = "<group>"; };
+		BF0A1F0F24E1E69E00C510DD /* Credits.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Credits.plist; sourceTree = "<group>"; };
 		BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		BF0F5FC623F394AD0080DB64 /* AltStore3ToAltStore4.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore3ToAltStore4.xcmappingmodel; sourceTree = "<group>"; };
@@ -1243,6 +1247,7 @@
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 				BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */,
+				BF0A1F0F24E1E69E00C510DD /* Credits.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1337,6 +1342,7 @@
 				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
+				BF0A1F0D24E1D18500C510DD /* CreditsViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1715,6 +1721,7 @@
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
+				BF0A1F1024E1E69E00C510DD /* Credits.plist in Resources */,
 				BF44EEF3246B3A17002A52F2 /* AltBackup.ipa in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
@@ -2043,6 +2050,7 @@
 				BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */,
 				BFD5D6F4230DDB0A007955AB /* Campaign.swift in Sources */,
 				BFB6B21B23186D640022A802 /* NewsItem.swift in Sources */,
+				BF0A1F0E24E1D18500C510DD /* CreditsViewController.swift in Sources */,
 				BFCCB51A245E3401001853EA /* VerifyAppOperation.swift in Sources */,
 				BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */,
 				BFA8172D23C5823E001B5953 /* InstalledExtension.swift in Sources */,

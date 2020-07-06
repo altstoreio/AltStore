@@ -33,6 +33,9 @@ class InsetGroupTableViewCell: UITableViewCell
     
     @IBInspectable var isSelectable: Bool = false
     
+    @IBOutlet var nameLabel: UILabel?
+    @IBOutlet var creditLabel: UILabel?
+    
     private let separatorView = UIView()
     private let insetView = UIView()
     

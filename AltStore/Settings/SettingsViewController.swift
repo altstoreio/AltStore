@@ -29,6 +29,7 @@ extension SettingsViewController
         case developer
         case designer
         case softwareLicenses
+        case credits
     }
     
     fileprivate enum DebugRow: Int, CaseIterable
@@ -429,7 +430,7 @@ extension SettingsViewController
             {
             case .developer: self.openTwitter(username: "rileytestut")
             case .designer: self.openTwitter(username: "1carolinemoore")
-            case .softwareLicenses: break
+            case .softwareLicenses, .credits: break
             }
             
         case .debug:
