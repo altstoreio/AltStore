@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIColor
+public extension UIColor
 {
     static let altPrimary = UIColor(named: "Primary")!
     

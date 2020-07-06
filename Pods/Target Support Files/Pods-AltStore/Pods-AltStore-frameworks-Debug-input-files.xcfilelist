@@ -1,5 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework
-${BUILT_PRODUCTS_DIR}/AltSign-framework/AltSign.framework
-${BUILT_PRODUCTS_DIR}/Roxas-framework/Roxas.framework
 ${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework

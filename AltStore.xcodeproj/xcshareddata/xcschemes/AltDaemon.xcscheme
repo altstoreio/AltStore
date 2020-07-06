@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A7A6DC28A6D60809855FE404C6A3EA29"
-               BuildableName = "libPods-AltDaemon.a"
+               BuildableName = "Pods_AltDaemon.framework"
                BlueprintName = "Pods-AltDaemon"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>

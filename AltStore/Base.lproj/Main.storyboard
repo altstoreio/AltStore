@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16092.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17132" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16082.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17105"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,8 +17,8 @@
                     <view key="view" contentMode="scaleToFill" id="G9E-Qs-gFM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="sZd-sc-Bvn"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vOq-mm-rY5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -150,7 +151,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mkD-3C-WMV">
+                                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mkD-3C-WMV">
                                                                 <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <state key="normal" image="Back"/>
@@ -171,6 +172,7 @@
                                 </subviews>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="wiR-52-nwg"/>
                         <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstItem="Ci9-Iw-aR2" firstAttribute="top" secondItem="0cR-li-tCB" secondAttribute="top" id="015-fz-v3B"/>
@@ -182,11 +184,10 @@
                             <constraint firstAttribute="trailing" secondItem="Qlg-m3-lXg" secondAttribute="trailing" id="UrQ-oK-TKQ"/>
                             <constraint firstAttribute="bottom" secondItem="Qlg-m3-lXg" secondAttribute="bottom" id="Vf7-Fg-88c"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="wiR-52-nwg"/>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="maq-gT-QcS">
                         <barButtonItem key="rightBarButtonItem" style="plain" id="FLf-DS-F77">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="grk-xM-YWA" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="grk-xM-YWA" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
                                 <rect key="frame" x="287" y="6.5" width="72" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
@@ -334,7 +335,7 @@
                                                                     <rect key="frame" x="0.0" y="0.0" width="335" height="0.0"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="What's New" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="obM-TM-y2E">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="123.5" height="0.0"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="124" height="0.0"/>
                                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                                                             <nil key="textColor"/>
                                                                             <nil key="highlightedColor"/>
@@ -425,7 +426,7 @@
                                                                             <stackView verifyAmbiguity="off" opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="fSx-We-L4W">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
                                                                                 <subviews>
-                                                                                    <button opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="79g-9q-mE2">
+                                                                                    <button opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="79g-9q-mE2">
                                                                                         <rect key="frame" x="5" y="0.0" width="50" height="50"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="50" id="0LZ-4n-COH"/>
@@ -529,14 +530,14 @@ World</string>
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="c7x-ee-3HH"/>
+                        <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="xnC-tS-ZdV" firstAttribute="leading" secondItem="c7x-ee-3HH" secondAttribute="leading" constant="20" id="LO8-Au-SYF"/>
                             <constraint firstItem="c7x-ee-3HH" firstAttribute="bottom" secondItem="xnC-tS-ZdV" secondAttribute="bottom" constant="10" id="NZ9-iG-E10"/>
                             <constraint firstItem="c7x-ee-3HH" firstAttribute="trailing" secondItem="xnC-tS-ZdV" secondAttribute="trailing" constant="20" id="ZkD-tb-mBf"/>
                             <constraint firstItem="xnC-tS-ZdV" firstAttribute="top" secondItem="c7x-ee-3HH" secondAttribute="top" constant="10" id="oKq-9e-DtW"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="c7x-ee-3HH"/>
                     </view>
                     <connections>
                         <outlet property="descriptionLabel" destination="ErG-8A-uqY" id="iuN-kE-IEm"/>
@@ -742,7 +743,7 @@ World</string>
                                             <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHb-0F-cHZ">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHb-0F-cHZ">
                                             <rect key="frame" x="0.0" y="20.5" width="98" height="32"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <state key="normal" title="View App IDs"/>
@@ -788,9 +789,9 @@ World</string>
             <objects>
                 <collectionViewController title="App IDs" id="y1A-Nm-mw7" customClass="AppIDsViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" dataMode="prototypes" id="v1r-C8-h6h">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="Wzt-qc-XG8">
                             <size key="itemSize" width="375" height="80"/>
                             <size key="headerReferenceSize" width="50" height="60"/>
@@ -934,9 +935,9 @@ World</string>
             <objects>
                 <collectionViewController title="Sources" id="cHC-TX-KzQ" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" dataMode="prototypes" id="S36-hD-vu2">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="X20-b5-XEP">
                             <size key="itemSize" width="375" height="80"/>
                             <size key="headerReferenceSize" width="50" height="200"/>
@@ -1052,5 +1053,11 @@ World</string>
         <namedColor name="Primary">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tertiarySystemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

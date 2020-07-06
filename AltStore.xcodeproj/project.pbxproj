@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C241769F2FCDBDF611F5B5A /* libPods-AltStoreCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */; };
-		3B6BF3A7D9F53370A1BDF286 /* libPods-AltStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5803824FCE1A5927FD330A /* libPods-AltStore.a */; };
+		2D12387000F7FBCB3E2D6A71 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5B481D2E6F514B5630A9294 /* Pods_AltStore.framework */; };
+		4145A20A75F9EDEE1B06AC7B /* Pods_AltDaemon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5042B4942D9CE2BD12E3A636 /* Pods_AltDaemon.framework */; };
+		79DC87454DB3202573CFDE0B /* Pods_AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30681817F3B99FB5D85E290F /* Pods_AltStoreCore.framework */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
 		BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -171,6 +172,11 @@
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
+		BF51D61324A6A53A006B3ED0 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
+		BF51D62224A6AB5B006B3ED0 /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; };
+		BF51D62324A6AB5B006B3ED0 /* AltStoreCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF51D62824A6AB5F006B3ED0 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF51D62724A6AB5F006B3ED0 /* AltSign.framework */; };
+		BF51D62924A6AB5F006B3ED0 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF51D62724A6AB5F006B3ED0 /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
 		BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF58047D246A28F7008AE704 /* AppDelegate.swift */; };
@@ -230,7 +236,6 @@
 		BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD247782284B9A700981D42 /* LaunchScreen.storyboard */; };
 		BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478B2284C4C300981D42 /* AppIconImageView.swift */; };
 		BFD2478F2284C8F900981D42 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2478E2284C8F900981D42 /* Button.swift */; };
-		BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BFD44606241188C400EAB90A /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
 		BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BD322A0800A000B7ED1 /* ServerManager.swift */; };
 		BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */; };
@@ -294,7 +299,6 @@
 		BFF767CE2489ABE90097E58C /* NetworkConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CD2489ABE90097E58C /* NetworkConnection.swift */; };
 		BFFCFA582488648D0077BFCE /* LocalConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */; };
 		BFFCFA5B2488649E0077BFCE /* libAltKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1E315022A0616100370A3C /* libAltKit.a */; };
-		EFB988A976C401E5710498B7 /* libPods-AltDaemon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B0B5097D956380B6E11D09C /* libPods-AltDaemon.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -332,6 +336,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = BF45872A2298D31600BD7491;
 			remoteInfo = libimobiledevice;
+		};
+		BF51D62424A6AB5B006B3ED0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF429E3D24A67C3600FA912A;
+			remoteInfo = AltStoreCore;
 		};
 		BFBFFB262380C72F00993A4A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -390,6 +401,18 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BF51D62624A6AB5B006B3ED0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BF51D62324A6AB5B006B3ED0 /* AltStoreCore.framework in Embed Frameworks */,
+				BF51D62924A6AB5F006B3ED0 /* AltSign.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BF5C5FE9237E438C00EDD0C6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -403,13 +426,16 @@
 
 /* Begin PBXFileReference section */
 		06959A23FD240B33CB3EF551 /* Pods-AltDaemon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltDaemon.release.xcconfig"; path = "Target Support Files/Pods-AltDaemon/Pods-AltDaemon.release.xcconfig"; sourceTree = "<group>"; };
+		072E5482429D75E286214DA2 /* Pods-AltWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-AltWidgetExtension/Pods-AltWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		26C2B7055EF49CE0DB234015 /* Pods-AltStoreCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.debug.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.debug.xcconfig"; sourceTree = "<group>"; };
+		30681817F3B99FB5D85E290F /* Pods_AltStoreCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStoreCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5042B4942D9CE2BD12E3A636 /* Pods_AltDaemon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltDaemon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
-		5B0B5097D956380B6E11D09C /* libPods-AltDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltDaemon.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		61BC61BBB3A2C4BDE2BB7A55 /* Pods-AltWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-AltWidgetExtension/Pods-AltWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		65A4E786DD8D6BAD4D65E547 /* Pods-AltStoreCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.release.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.release.xcconfig"; sourceTree = "<group>"; };
-		9B5803824FCE1A5927FD330A /* libPods-AltStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
+		A3EC054396AEB04DC158CBEC /* Pods_AltWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF02419322F2156E00129732 /* RefreshAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttempt.swift; sourceTree = "<group>"; };
 		BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttemptsViewController.swift; sourceTree = "<group>"; };
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
@@ -548,6 +574,8 @@
 		BF4588872298DD3F00BD7491 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib/libxml2.tbd; sourceTree = DEVELOPER_DIR; };
 		BF4588962298DE6E00BD7491 /* libzip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = libzip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4713A422976CFC00784A2F /* openssl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF51D61924A6A6D0006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF51D62724A6AB5F006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
 		BF56D2A823DF87570006506D /* AltStore 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 4.xcdatamodel"; sourceTree = "<group>"; };
@@ -720,8 +748,8 @@
 		BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTServerError+Conveniences.swift"; sourceTree = "<group>"; };
 		BFF767CD2489ABE90097E58C /* NetworkConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnection.swift; sourceTree = "<group>"; };
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
+		D5B481D2E6F514B5630A9294 /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA55288EC4433117304BAF39 /* Pods-AltDaemon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltDaemon.debug.xcconfig"; path = "Target Support Files/Pods-AltDaemon/Pods-AltDaemon.debug.xcconfig"; sourceTree = "<group>"; };
-		DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AltStoreCore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -739,7 +767,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFFCFA5B2488649E0077BFCE /* libAltKit.a in Frameworks */,
-				EFB988A976C401E5710498B7 /* libPods-AltDaemon.a in Frameworks */,
+				4145A20A75F9EDEE1B06AC7B /* Pods_AltDaemon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,6 +785,8 @@
 			files = (
 				BF429E2B24A67AE600FA912A /* SwiftUI.framework in Frameworks */,
 				BF429E2924A67AE600FA912A /* WidgetKit.framework in Frameworks */,
+				BF51D62224A6AB5B006B3ED0 /* AltStoreCore.framework in Frameworks */,
+				BF51D62824A6AB5F006B3ED0 /* AltSign.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,8 +796,8 @@
 			files = (
 				BF429EA224A6A2F600FA912A /* Roxas.framework in Frameworks */,
 				BF429E6A24A67DEC00FA912A /* libAltKit.a in Frameworks */,
-				2C241769F2FCDBDF611F5B5A /* libPods-AltStoreCore.a in Frameworks */,
 				BF429E9F24A6A2F500FA912A /* AltSign.framework in Frameworks */,
+				79DC87454DB3202573CFDE0B /* Pods_AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -807,8 +837,8 @@
 				BF429EA824A6A32800FA912A /* openssl.framework in Frameworks */,
 				BF429EA624A6A30400FA912A /* Roxas.framework in Frameworks */,
 				BF429E4524A67C3600FA912A /* AltStoreCore.framework in Frameworks */,
-				3B6BF3A7D9F53370A1BDF286 /* libPods-AltStore.a in Frameworks */,
 				BF429EA424A6A30000FA912A /* AltSign.framework in Frameworks */,
+				2D12387000F7FBCB3E2D6A71 /* Pods_AltStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -826,6 +856,8 @@
 				06959A23FD240B33CB3EF551 /* Pods-AltDaemon.release.xcconfig */,
 				26C2B7055EF49CE0DB234015 /* Pods-AltStoreCore.debug.xcconfig */,
 				65A4E786DD8D6BAD4D65E547 /* Pods-AltStoreCore.release.xcconfig */,
+				61BC61BBB3A2C4BDE2BB7A55 /* Pods-AltWidgetExtension.debug.xcconfig */,
+				072E5482429D75E286214DA2 /* Pods-AltWidgetExtension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1312,6 +1344,8 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF51D62724A6AB5F006B3ED0 /* AltSign.framework */,
+				BF51D61924A6A6D0006B3ED0 /* AltSign.framework */,
 				BF429E5A24A67CA800FA912A /* Roxas.framework */,
 				BF429E5824A67C9800FA912A /* AltSign.framework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
@@ -1324,11 +1358,12 @@
 				BF5AB3A72285FE6C00DC914B /* AltSign.framework */,
 				BF4713A422976CFC00784A2F /* openssl.framework */,
 				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
-				5B0B5097D956380B6E11D09C /* libPods-AltDaemon.a */,
 				BF429E2824A67AE600FA912A /* WidgetKit.framework */,
 				BF429E2A24A67AE600FA912A /* SwiftUI.framework */,
-				9B5803824FCE1A5927FD330A /* libPods-AltStore.a */,
-				DDB9887B19AA1EB3075A2C7E /* libPods-AltStoreCore.a */,
+				D5B481D2E6F514B5630A9294 /* Pods_AltStore.framework */,
+				30681817F3B99FB5D85E290F /* Pods_AltStoreCore.framework */,
+				5042B4942D9CE2BD12E3A636 /* Pods_AltDaemon.framework */,
+				A3EC054396AEB04DC158CBEC /* Pods_AltWidgetExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1646,13 +1681,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF429E3524A67AE700FA912A /* Build configuration list for PBXNativeTarget "AltWidgetExtension" */;
 			buildPhases = (
+				D840D00CF3ED8FC535D94303 /* [CP] Check Pods Manifest.lock */,
 				BF429E2324A67AE600FA912A /* Sources */,
 				BF429E2424A67AE600FA912A /* Frameworks */,
 				BF429E2524A67AE600FA912A /* Resources */,
+				BF51D62624A6AB5B006B3ED0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BF51D62524A6AB5B006B3ED0 /* PBXTargetDependency */,
 			);
 			name = AltWidgetExtension;
 			productName = AltWidgetExtension;
@@ -1765,6 +1803,7 @@
 				BFD247682284B9A500981D42 /* Resources */,
 				BF429E3824A67AE700FA912A /* Embed App Extensions */,
 				BF429E4A24A67C3600FA912A /* Embed Frameworks */,
+				AAE94105A5E26A7885CEC396 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1946,6 +1985,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		AAE94105A5E26A7885CEC396 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		BF50DDF3ED17533F566F5915 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2020,6 +2076,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-AltStoreCore-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D840D00CF3ED8FC535D94303 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AltWidgetExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2150,6 +2228,7 @@
 				BF429E4B24A67C7800FA912A /* AppPermission.swift in Sources */,
 				BF429E6124A67CC800FA912A /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
 				BF429E5C24A67CC300FA912A /* StoreAppPolicy.swift in Sources */,
+				BF51D61324A6A53A006B3ED0 /* UIColor+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2321,7 +2400,6 @@
 				BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
-				BFD2479F2284FBD000981D42 /* UIColor+AltStore.swift in Sources */,
 				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
@@ -2359,6 +2437,11 @@
 			isa = PBXTargetDependency;
 			target = BF45872A2298D31600BD7491 /* libimobiledevice */;
 			targetProxy = BF4588442298D48B00BD7491 /* PBXContainerItemProxy */;
+		};
+		BF51D62524A6AB5B006B3ED0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF429E3D24A67C3600FA912A /* AltStoreCore */;
+			targetProxy = BF51D62424A6AB5B006B3ED0 /* PBXContainerItemProxy */;
 		};
 		BFBFFB272380C72F00993A4A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2494,10 +2577,7 @@
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = AltKit/AltKit.h;
@@ -2516,10 +2596,7 @@
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = AltKit/AltKit.h;
@@ -2530,6 +2607,7 @@
 		};
 		BF429E3624A67AE700FA912A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61BC61BBB3A2C4BDE2BB7A55 /* Pods-AltWidgetExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -2556,6 +2634,7 @@
 		};
 		BF429E3724A67AE700FA912A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 072E5482429D75E286214DA2 /* Pods-AltWidgetExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -2604,6 +2683,12 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"KeychainAccess\"",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2638,6 +2723,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"KeychainAccess\"",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
