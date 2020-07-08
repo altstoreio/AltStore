@@ -841,6 +841,9 @@ Settings by i cons from the Noun Project</string>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Credits" largeTitleDisplayMode="never" id="SaQ-Ux-nu4"/>
+                    <connections>
+                        <segue destination="zCw-dh-bCE" kind="show" identifier="showLicense" id="NEv-3f-NYj"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yrt-4Y-inw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -906,6 +909,40 @@ Settings by i cons from the Noun Project</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DWO-P8-4U7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1697" y="-199"/>
+        </scene>
+        <!--License-->
+        <scene sceneID="PRL-7J-uiQ">
+            <objects>
+                <viewController id="zCw-dh-bCE" customClass="LicenseViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="HpC-dl-PQR">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" contentInsetAdjustmentBehavior="never" indicatorStyle="white" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0oG-yY-mK6">
+                                <rect key="frame" x="0.0" y="44" width="375" height="574"/>
+                                <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                <color key="textColor" white="1" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="5XM-Yk-TBf"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
+                        <constraints>
+                            <constraint firstItem="0oG-yY-mK6" firstAttribute="top" secondItem="5XM-Yk-TBf" secondAttribute="top" id="H49-Fd-tsi"/>
+                            <constraint firstItem="0oG-yY-mK6" firstAttribute="leading" secondItem="5XM-Yk-TBf" secondAttribute="leading" id="VZh-3n-UVc"/>
+                            <constraint firstItem="0oG-yY-mK6" firstAttribute="trailing" secondItem="5XM-Yk-TBf" secondAttribute="trailing" id="ao8-U8-0NO"/>
+                            <constraint firstItem="5XM-Yk-TBf" firstAttribute="bottom" secondItem="0oG-yY-mK6" secondAttribute="bottom" id="hfN-rF-ft5"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="License" largeTitleDisplayMode="never" id="kOp-W1-afA"/>
+                    <connections>
+                        <outlet property="textView" destination="0oG-yY-mK6" id="Pg9-rN-IDa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3Tv-2N-Vru" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3366" y="72"/>
         </scene>
     </scenes>
     <resources>

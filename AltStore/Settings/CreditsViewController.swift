@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SafariServices
+
 import Roxas
 
 extension CreditsViewController
@@ -21,6 +23,21 @@ extension CreditsViewController
     {
         var name: String
         var credit: String
+        var license: String?
+        var url: URL? {
+            guard let string = self._url else { return nil }
+            return URL(string: string)
+        }
+        
+        private var _url: String?
+        
+        enum CodingKeys: String, CodingKey
+        {
+            case name = "name"
+            case credit = "credit"
+            case license = "license"
+            case _url = "url"
+        }
     }
 }
 
@@ -51,6 +68,17 @@ class CreditsViewController: UITableViewController
         self.prototypeHeaderFooterView = nib.instantiate(withOwner: nil, options: nil)[0] as? SettingsHeaderFooterView
         
         self.tableView.register(nib, forHeaderFooterViewReuseIdentifier: "HeaderFooterView")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard segue.identifier == "showLicense" else { return }
+        guard let cell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell) else { return }
+        
+        let credit = self.dataSource.item(at: indexPath)
+        
+        let licenseViewController = segue.destination as! LicenseViewController
+        licenseViewController.credit = credit.value
     }
 }
 
@@ -123,10 +151,36 @@ private extension CreditsViewController
         
         settingsHeaderFooterView.primaryLabel.text = section.name.uppercased()
     }
+    
+    func presentSafariViewController(for url: URL)
+    {
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.preferredControlTintColor = .altPrimary
+        self.present(safariViewController, animated: true, completion: nil)
+    }
 }
 
 extension CreditsViewController
 {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let credit = self.dataSource.item(at: indexPath).value
+        
+        if let url = credit.url
+        {
+            self.presentSafariViewController(for: url)
+        }
+        else if credit.license != nil
+        {
+            let cell = tableView.cellForRow(at: indexPath)
+            self.performSegue(withIdentifier: "showLicense", sender: cell)
+        }
+        else
+        {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
         let section = self.sections[section]

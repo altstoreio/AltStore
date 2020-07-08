@@ -26,6 +26,7 @@
 		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
 		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
 		BF10EB34248730750055E6DB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB33248730750055E6DB /* main.swift */; };
+		BF11481224E1F260006723AC /* LicenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11481124E1F260006723AC /* LicenseViewController.swift */; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BF18BFF724858BDE00DD5981 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
@@ -366,6 +367,7 @@
 		BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreAppPolicy.swift; sourceTree = "<group>"; };
 		BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalConnectionHandler.swift; sourceTree = "<group>"; };
 		BF10EB33248730750055E6DB /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		BF11481124E1F260006723AC /* LicenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewController.swift; sourceTree = "<group>"; };
 		BF18B0F022E25DF9005C4CF5 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		BF18BFE724857D7900DD5981 /* AltDaemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = AltDaemon; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF18BFF22485828200DD5981 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
@@ -1343,6 +1345,7 @@
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
 				BF0A1F0D24E1D18500C510DD /* CreditsViewController.swift */,
+				BF11481124E1F260006723AC /* LicenseViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2063,6 +2066,7 @@
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BFE338DD22F0E7F3002E24B9 /* Source.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
+				BF11481224E1F260006723AC /* LicenseViewController.swift in Sources */,
 				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
 				BFD5D6EA230CCAE5007955AB /* PatreonAccount.swift in Sources */,
 				BFE6326822A858F300F30809 /* Account.swift in Sources */,
