@@ -19,6 +19,8 @@ struct Countdown: View {
     
     var numberOfDays: Int
     
+    @Environment(\.font) var font
+    
     @ViewBuilder
     private var overlay: some View {
         if self.numberOfDays >= 10 {
@@ -37,7 +39,7 @@ struct Countdown: View {
                                       endPoint: .bottom)
         
         let body = Text("\(self.numberOfDays)")
-            .font(.title)
+            .font(self.font ?? .title)
             .bold()
             .opacity(1.0)
             .padding(.horizontal, 16)
@@ -46,13 +48,13 @@ struct Countdown: View {
 
         return body
             .opacity(0.0)
-            .padding()
+            .padding(.all, 3)
             .overlay(
                 gradient.mask(
                     body
                         .scaledToFill()
                 )
-        )
+            )
     }
 }
 

@@ -194,6 +194,7 @@
 		BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */; };
 		BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
+		BF6FC5C024B8F9A300759B06 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6FC5BE24B8F9A300759B06 /* UIImage+ImageEffects.m */; };
 		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
 		BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */; };
 		BF718BD823C93DB700A89F2D /* AltKit.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD723C93DB700A89F2D /* AltKit.m */; };
@@ -607,6 +608,10 @@
 		BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCollectionReusableView.swift; sourceTree = "<group>"; };
 		BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAltStoreViewController.swift; sourceTree = "<group>"; };
+		BF6FC5BD24B8F9A200759B06 /* AltWidgetExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AltWidgetExtension-Bridging-Header.h"; sourceTree = "<group>"; };
+		BF6FC5BE24B8F9A300759B06 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		BF6FC5BF24B8F9A300759B06 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		BF6FC5C124B9022B00759B06 /* AltWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltWidgetExtension.entitlements; sourceTree = "<group>"; };
 		BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFNotificationName+AltStore.h"; sourceTree = "<group>"; };
 		BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CFNotificationName+AltStore.m"; sourceTree = "<group>"; };
 		BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWiredConnection.h; sourceTree = "<group>"; };
@@ -974,10 +979,14 @@
 		BF429E2C24A67AE600FA912A /* AltWidget */ = {
 			isa = PBXGroup;
 			children = (
+				BF6FC5C124B9022B00759B06 /* AltWidgetExtension.entitlements */,
 				BF429E2D24A67AE600FA912A /* AltWidget.swift */,
 				BFE819EE24B3B5C80044717A /* Countdown.swift */,
+				BF6FC5BF24B8F9A300759B06 /* UIImage+ImageEffects.h */,
+				BF6FC5BE24B8F9A300759B06 /* UIImage+ImageEffects.m */,
 				BF429E2F24A67AE700FA912A /* Assets.xcassets */,
 				BF429E3124A67AE700FA912A /* Info.plist */,
+				BF6FC5BD24B8F9A200759B06 /* AltWidgetExtension-Bridging-Header.h */,
 			);
 			path = AltWidget;
 			sourceTree = "<group>";
@@ -1839,6 +1848,7 @@
 					};
 					BF429E2624A67AE600FA912A = {
 						CreatedOnToolsVersion = 12.0;
+						LastSwiftMigration = 1200;
 					};
 					BF429E3D24A67C3600FA912A = {
 						CreatedOnToolsVersion = 12.0;
@@ -2190,6 +2200,7 @@
 			files = (
 				BF429E2E24A67AE600FA912A /* AltWidget.swift in Sources */,
 				BFE819EF24B3B5C80044717A /* Countdown.swift in Sources */,
+				BF6FC5C024B8F9A300759B06 /* UIImage+ImageEffects.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2615,8 +2626,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -2628,9 +2641,11 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AltWidget/AltWidgetExtension-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2642,8 +2657,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
@@ -2654,9 +2671,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AltWidget/AltWidgetExtension-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -12,6 +12,12 @@ import SwiftUI
 import AltStoreCore
 import CoreData
 
+extension Color
+{
+    static let altstorePrimary = Color("Primary")
+    static let deltaPrimary = Color("DeltaPrimary")
+}
+
 @propertyWrapper
 struct RSTManaged<Value: NSManagedObject>
 {
@@ -37,6 +43,32 @@ struct AppSnapshot
     var refreshedDate: Date
     var expirationDate: Date
     var installedDate: Date
+    
+    var tintColor: Color
+}
+
+extension AppSnapshot
+{
+    // Declared in extension so we retain synthesized initializer.
+    init(installedApp: InstalledApp)
+    {
+        self.name = installedApp.name
+        self.bundleIdentifier = installedApp.bundleIdentifier
+        self.resignedBundleIdentifier = installedApp.resignedBundleIdentifier
+        self.version = installedApp.version
+        self.refreshedDate = installedApp.refreshedDate
+        self.expirationDate = installedApp.expirationDate
+        self.installedDate = installedApp.installedDate
+        
+        if let tintColor = installedApp.storeApp?.tintColor
+        {
+            self.tintColor = Color(tintColor)
+        }
+        else
+        {
+            self.tintColor = .altstorePrimary
+        }
+    }
 }
 
 struct Provider: TimelineProvider
@@ -51,21 +83,19 @@ struct Provider: TimelineProvider
                 let context = try result.get()
                 
                 let installedApp = InstalledApp.fetchAltStore(in: context)
+                let snapshot = installedApp.map { AppSnapshot(installedApp: $0) }
                 
-                let entry = AppEntry(date: Date(), installedApp: installedApp)
+                let entry = AppEntry(date: Date(), app: snapshot)
                 completion(entry)
             }
             catch
             {
                 print("Error:", error)
                 
-                let entry = AppEntry(date: Date(), installedApp: nil)
+                let entry = AppEntry(date: Date(), app: nil)
                 completion(entry)
             }
         }
-        
-//        let entry = AppEntry(date: Date())
-//        completion(entry)
     }
 
     public func timeline(with context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
@@ -82,7 +112,7 @@ struct Provider: TimelineProvider
                 let currentDate = Date()
                 for hourOffset in 0 ..< 5 {
                     let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-                    let entry = AppEntry(date: entryDate, installedApp: installedApp)
+                    let entry = AppEntry(date: entryDate, app: installedApp.map(AppSnapshot.init))
                     entries.append(entry)
                 }
 
@@ -93,7 +123,7 @@ struct Provider: TimelineProvider
             {
                 print("Error:", error)
                 
-                let entry = AppEntry(date: Date(), installedApp: nil)
+                let entry = AppEntry(date: Date(), app: nil)
                 let timeline = Timeline(entries: [entry], policy: .atEnd)
                 completion(timeline)
             }
@@ -133,7 +163,6 @@ struct AppEntry: TimelineEntry
 {
     public var date: Date
     
-    public var installedApp: InstalledApp?
     public var app: AppSnapshot?
 }
 
@@ -145,56 +174,82 @@ struct PlaceholderView : View {
 
 struct AltWidgetEntryView : View {
     var entry: Provider.Entry
-
+    
+    var darkenedImage: UIImage {
+        let color = UIColor(white: 0.0, alpha: 0.4)
+        let image = self.entry.app.map {
+            UIImage(named: $0.name)?.applyBlur(withRadius: 10, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
+        } ?? nil
+        return image!
+    }
+    
+    @ViewBuilder
     var body: some View {
-        GeometryReader { (geometry) in
-            VStack(alignment: .leading) {
-                HStack(alignment: .top) {
-                    Image("AltStore")
-                        .resizable()
-                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                        .mask(ContainerRelativeShape())
-                        .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                    
-                    Spacer()
-                    
-                    Image("AltStore")
-                        .resizable()
-                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                        .frame(height: geometry.size.height / 4)
-                        .mask(ContainerRelativeShape())
-                }
-                
-                Spacer()
-                
-                VStack(spacing: 4) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("AltStore")
-                            .font(.system(size: 14, weight: .semibold, design: .rounded))
-                            .bold()
-                        
+        if let app = self.entry.app
+        {
+            GeometryReader { (geometry) in
+                Group {
+                    VStack(alignment: .leading) {
+                        HStack(alignment: .top) {
+                            Image(app.name)
+                                .resizable()
+                                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                .frame(height: geometry.size.height * 0.45)
+                                .mask(ContainerRelativeShape())
+                            
+                            Spacer()
+                            
+                            Image("Badge")
+                                .resizable()
+                                .frame(width: 26, height: 26)
+                        }
+                                  
                         Spacer()
                         
-                        Text("Expires in")
-                            .font(.caption2)
-                            .layoutPriority(100)
+                        HStack(alignment: .bottom) {
+                            VStack(alignment: .leading) {
+                                Text(app.name.uppercased())
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .lineLimit(2)
+
+                                Spacer(minLength: 0)
+
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("Expires in")
+                                        .font(.system(size: 11, weight: .semibold))
+                                        .foregroundColor(Color.white.opacity(0.35))
+                                        .minimumScaleFactor(0.5)
+
+                                    Text("7 days")
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundColor(.white)
+                                }
+                            }
+
+                            Spacer()
+
+                            Countdown(numberOfDays: 7)
+                                .font(.system(size: 20, weight: .semibold))
+                                .offset(x: 6.5, y: 5)
+                        }
                     }
-                    
-                    Text("7 DAYS")
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
-                        .padding(.vertical, 6)
-                        .frame(minWidth: nil, maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                        .background(Color.green)
-                        .mask(Capsule())
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                .padding()
+                .background(
+                    ZStack {
+                        app.tintColor
+                        Color.black.opacity(0.25)
+                    }
+                )
+//                .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+//                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
             }
-            .padding(EdgeInsets(top: 16, leading: 16, bottom: 11, trailing: 16))
-            .foregroundColor(.white)
         }
-        .background(
-            Image("AppIconBackground")
-                .resizable()
-        )
+        else{
+            Text("No App")
+        }
     }
 }
 
@@ -217,15 +272,29 @@ struct AltWidget_Previews: PreviewProvider {
         let refreshedDate = Date()
         let expirationDate = refreshedDate.addingTimeInterval(1 * 7 * 24 * 60 * 60)
         
-        let app = AppSnapshot(name: "AltStore",
+        let altstore = AppSnapshot(name: "AltStore",
                               bundleIdentifier: "com.rileytestut.AltStore",
                               resignedBundleIdentifier: "com.rileytestut.AltStore.resigned",
                               version: "1.4",
                               refreshedDate: Date(),
                               expirationDate: expirationDate,
-                              installedDate: refreshedDate)
+                              installedDate: refreshedDate,
+                              tintColor: .altstorePrimary)
+        
+        let delta = AppSnapshot(name: "Delta",
+                              bundleIdentifier: "com.rileytestut.Delta",
+                              resignedBundleIdentifier: "com.rileytestut.Delta.resigned",
+                              version: "1.4",
+                              refreshedDate: Date(),
+                              expirationDate: expirationDate,
+                              installedDate: refreshedDate,
+                              tintColor: .deltaPrimary)
+        
         return Group {
-            AltWidgetEntryView(entry: AppEntry(date: Date(), app: app))
+            AltWidgetEntryView(entry: AppEntry(date: Date(), app: altstore))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            
+            AltWidgetEntryView(entry: AppEntry(date: Date(), app: delta))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
     }

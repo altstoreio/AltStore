@@ -147,6 +147,8 @@ private extension DatabaseManager
 {
     func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
+        guard !Bundle.isAppExtension() else { return completionHandler(.success(())) }
+        
         let context = self.persistentContainer.newBackgroundContext()
         context.performAndWait {
             guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
