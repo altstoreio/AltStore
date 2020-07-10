@@ -209,21 +209,25 @@ struct AltWidgetEntryView : View {
                         HStack(alignment: .bottom) {
                             VStack(alignment: .leading) {
                                 Text(app.name.uppercased())
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(.system(size: 13, weight: .semibold))
                                     .foregroundColor(.white)
                                     .lineLimit(2)
+                                    .minimumScaleFactor(0.8)
 
-                                Spacer(minLength: 0)
+                                Spacer(minLength: 2)
 
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text("Expires in")
-                                        .font(.system(size: 11, weight: .semibold))
-                                        .foregroundColor(Color.white.opacity(0.35))
-                                        .minimumScaleFactor(0.5)
-
-                                    Text("7 days")
-                                        .font(.system(size: 13, weight: .semibold))
-                                        .foregroundColor(.white)
+                                    (
+                                        Text("Expires in\n")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundColor(Color.white.opacity(0.35)) +
+                                        Text("7 days")
+                                            .font(.system(size: 15, weight: .semibold))
+                                            .foregroundColor(.white)
+                                    )
+                                    .lineSpacing(1.0)
+                                    .layoutPriority(10)
+                                    .minimumScaleFactor(0.5)
                                 }
                             }
 
