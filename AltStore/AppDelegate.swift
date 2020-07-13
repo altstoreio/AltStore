@@ -9,6 +9,7 @@
 import UIKit
 import UserNotifications
 import AVFoundation
+import Intents
 
 import AltSign
 import AltStoreCore
@@ -68,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private var runningApplications: Set<String>?
     private var backgroundRefreshContext: NSManagedObjectContext? // Keep context alive until finished refreshing.
+    
+//    @available(iOS 14, *)
+//    private lazy var intentHandler = ViewAppIntentHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
@@ -113,6 +117,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         return self.open(url)
     }
+    
+//    @available(iOS 14, *)
+//    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any?
+//    {
+//        return self.intentHandler
+//    }
 }
 
 private extension AppDelegate

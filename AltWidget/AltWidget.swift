@@ -45,6 +45,13 @@ struct AppSnapshot
     var installedDate: Date
     
     var tintColor: Color
+    var icon: UIImage?
+    
+    lazy var darkenedIcon: UIImage? = {
+        let color = UIColor(white: 0.0, alpha: 0.4)
+        let darkenedIcon = self.icon?.applyBlur(withRadius: 10, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
+        return darkenedIcon
+    }()
 }
 
 extension AppSnapshot
@@ -68,23 +75,35 @@ extension AppSnapshot
         {
             self.tintColor = .altstorePrimary
         }
+        
+        if let application = ALTApplication(fileURL: installedApp.fileURL), let icon = application.icon
+        {
+            self.icon = icon
+        }
+        else
+        {
+            self.icon = UIImage(named: installedApp.name)
+        }
     }
 }
 
-struct Provider: TimelineProvider
+struct Provider: IntentTimelineProvider
 {
     public typealias Entry = AppEntry
-
-    public func snapshot(with context: Context, completion: @escaping (AppEntry) -> ())
+    
+    public func snapshot(for configuration: ViewAppIntent, with context: Context, completion: @escaping (AppEntry) -> ())
     {
         self.prepare { (result) in
             do
             {
                 let context = try result.get()
                 
-                let installedApp = InstalledApp.fetchAltStore(in: context)
-                let snapshot = installedApp.map { AppSnapshot(installedApp: $0) }
-                
+                let snapshot = InstalledApp.fetchAltStore(in: context).map(AppSnapshot.init)
+//                let snapshot = configuration.app?.identifier.map { (identifier) in
+//                    (InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
+//                                       in: context) ?? InstalledApp.fetchAltStore(in: context)).map(AppSnapshot.init)
+//                } ?? nil
+
                 let entry = AppEntry(date: Date(), app: snapshot)
                 completion(entry)
             }
@@ -98,13 +117,16 @@ struct Provider: TimelineProvider
         }
     }
 
-    public func timeline(with context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    public func timeline(for configuration: ViewAppIntent, with context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         self.prepare { (result) in
             do
             {
                 let context = try result.get()
-                
-                let installedApp = InstalledApp.fetchAltStore(in: context)
+                                
+                let snapshot = configuration.app?.identifier.map { (identifier) in
+                    InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
+                                       in: context).map(AppSnapshot.init)
+                } ?? nil
                 
                 var entries: [AppEntry] = []
 
@@ -112,7 +134,7 @@ struct Provider: TimelineProvider
                 let currentDate = Date()
                 for hourOffset in 0 ..< 5 {
                     let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-                    let entry = AppEntry(date: entryDate, app: installedApp.map(AppSnapshot.init))
+                    let entry = AppEntry(date: entryDate, app: snapshot)
                     entries.append(entry)
                 }
 
@@ -175,23 +197,15 @@ struct PlaceholderView : View {
 struct AltWidgetEntryView : View {
     var entry: Provider.Entry
     
-    var darkenedImage: UIImage {
-        let color = UIColor(white: 0.0, alpha: 0.4)
-        let image = self.entry.app.map {
-            UIImage(named: $0.name)?.applyBlur(withRadius: 10, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
-        } ?? nil
-        return image!
-    }
-    
     @ViewBuilder
-    var body: some View {
+    var body: some View {        
         if let app = self.entry.app
         {
             GeometryReader { (geometry) in
                 Group {
                     VStack(alignment: .leading) {
                         HStack(alignment: .top) {
-                            Image(app.name)
+                            Image(uiImage: app.icon ?? UIImage(named: "AltStore")!)
                                 .resizable()
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .frame(height: geometry.size.height * 0.45)
@@ -236,6 +250,7 @@ struct AltWidgetEntryView : View {
                             Countdown(numberOfDays: 7)
                                 .font(.system(size: 20, weight: .semibold))
                                 .offset(x: 6.5, y: 5)
+//                                .fixedSize(horizontal: true, vertical: false)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -263,11 +278,11 @@ struct AltWidget: Widget
     private let kind: String = "AltWidget"
 
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider(), placeholder: PlaceholderView()) { entry in
+        IntentConfiguration(kind: kind, intent: ViewAppIntent.self, provider: Provider(), placeholder: PlaceholderView()) { (entry) in
             AltWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("AltWidget")
+        .description("View expiration countdown for sideloaded apps.")
     }
 }
 
@@ -283,7 +298,8 @@ struct AltWidget_Previews: PreviewProvider {
                               refreshedDate: Date(),
                               expirationDate: expirationDate,
                               installedDate: refreshedDate,
-                              tintColor: .altstorePrimary)
+                              tintColor: .altstorePrimary,
+                              icon: UIImage(named: "AltStore"))
         
         let delta = AppSnapshot(name: "Delta",
                               bundleIdentifier: "com.rileytestut.Delta",
@@ -292,7 +308,8 @@ struct AltWidget_Previews: PreviewProvider {
                               refreshedDate: Date(),
                               expirationDate: expirationDate,
                               installedDate: refreshedDate,
-                              tintColor: .deltaPrimary)
+                              tintColor: .deltaPrimary,
+                              icon: UIImage(named: "Delta"))
         
         return Group {
             AltWidgetEntryView(entry: AppEntry(date: Date(), app: altstore))
