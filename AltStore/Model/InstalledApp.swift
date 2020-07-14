@@ -168,7 +168,7 @@ extension InstalledApp
     class func fetchAppsForBackgroundRefresh(in context: NSManagedObjectContext) -> [InstalledApp]
     {
         // Date 6 hours before now.
-        let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
+        let date = Date()//.addingTimeInterval(-1 * 6 * 60 * 60)
         
         var predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@)",
                                     #keyPath(InstalledApp.isActive),

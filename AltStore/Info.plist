@@ -7,7 +7,11 @@
 		<string>group.com.rileytestut.AltStore</string>
 	</array>
 	<key>ALTDeviceID</key>
+	<string>00008027-001419E41A06802E</string>
+	<key>ALTDeviceID11</key>
 	<string>00008030-001948590202802E</string>
+	<key>ALTDeviceIDX</key>
+	<string>1c3416b7b0ab68773e6e7eb7f0d110f7c9353acc</string>
 	<key>ALTServerID</key>
 	<string>1AAAB6FD-E8CE-4B70-8F26-4073215C03B0</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -66,6 +70,10 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>RefreshAllIntent</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>altstore-com.rileytestut.AltStore</string>
@@ -85,6 +93,10 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>AltStore uses the local network to find and communicate with AltServer.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>RefreshAllIntent</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

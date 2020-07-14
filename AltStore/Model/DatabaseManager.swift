@@ -11,18 +11,18 @@ import CoreData
 import AltSign
 import Roxas
 
-public class DatabaseManager
+public class DatabaseManager: NSObject
 {
     public static let shared = DatabaseManager()
     
     public let persistentContainer: RSTPersistentContainer
     
-    public private(set) var isStarted = false
+    @objc public private(set) dynamic var isStarted = false
     
     private var startCompletionHandlers = [(Error?) -> Void]()
     private let dispatchQueue = DispatchQueue(label: "io.altstore.DatabaseManager")
     
-    private init()
+    private override init()
     {
         self.persistentContainer = RSTPersistentContainer(name: "AltStore")
         self.persistentContainer.preferredMergePolicy = MergePolicy()
@@ -210,7 +210,7 @@ private extension DatabaseManager
             let cachedExpirationDate = installedApp.expirationDate
                         
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
+//            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
             
             if installedApp.refreshedDate < cachedRefreshedDate
             {
@@ -218,8 +218,8 @@ private extension DatabaseManager
                 // This most likely means we've refreshed the app since then, and profile is now outdated,
                 // so use cached dates instead (i.e. not the dates updated from provisioning profile).
                 
-                installedApp.refreshedDate = cachedRefreshedDate
-                installedApp.expirationDate = cachedExpirationDate
+//                installedApp.refreshedDate = cachedRefreshedDate
+//                installedApp.expirationDate = cachedExpirationDate
             }
             
             do
@@ -233,4 +233,10 @@ private extension DatabaseManager
             }
         }
     }
+}
+
+@available(iOS 13.0, *)
+extension DatabaseManager: ObservableObject
+{
+    
 }

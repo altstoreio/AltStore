@@ -1,9 +1,4 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AltSign" "${PODS_ROOT}/Headers/Public/Roxas" "$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/include" "$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/src"
-LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AltSign" "${PODS_CONFIGURATION_BUILD_DIR}/Roxas" "${PODS_ROOT}/../Dependencies/AltSign/Dependencies/OpenSSL/ios/lib"
-OTHER_CFLAGS = $(inherited) -fmodule-map-file="${PODS_ROOT}/Headers/Public/AltSign/AltSign.modulemap" -fmodule-map-file="${PODS_ROOT}/Headers/Public/Roxas/Roxas.modulemap" -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/AltSign" -DCORECRYPTO_DONOT_USE_TRANSPARENT_UNION=1
-OTHER_LDFLAGS = $(inherited) -ObjC -l"AltSign" -l"Roxas" -l"c++" -l"crypto" -l"ssl"
-OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS -Xcc -fmodule-map-file="${PODS_ROOT}/Headers/Public/AltSign/AltSign.modulemap" -Xcc -fmodule-map-file="${PODS_ROOT}/Headers/Public/Roxas/Roxas.modulemap"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.

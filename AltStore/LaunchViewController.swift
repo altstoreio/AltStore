@@ -14,6 +14,7 @@ class LaunchViewController: RSTLaunchViewController
     private var didFinishLaunching = false
     
     private var destinationViewController: UIViewController!
+    private var observer: NSKeyValueObservation?
     
     override var launchConditions: [RSTLaunchCondition] {
         let isDatabaseStarted = RSTLaunchCondition(condition: { DatabaseManager.shared.isStarted }) { (completionHandler) in
@@ -37,6 +38,10 @@ class LaunchViewController: RSTLaunchViewController
         
         // Create destinationViewController now so view controllers can register for receiving Notifications.
         self.destinationViewController = self.storyboard!.instantiateViewController(withIdentifier: "tabBarController") as! TabBarController
+        
+        self.observer = DatabaseManager.shared.observe(\.isStarted, changeHandler: { (databaseManager, change) in
+            self.handleLaunchConditions()
+        })
     }
 }
 

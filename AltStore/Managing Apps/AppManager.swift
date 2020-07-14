@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import UserNotifications
 import MobileCoreServices
+import Intents
 
 import AltSign
 import AltKit
@@ -44,6 +45,25 @@ class AppManager
 
 extension AppManager
 {
+    func donate()
+    {
+        let refreshAllIntent = RefreshAllIntent()
+        refreshAllIntent.suggestedInvocationPhrase = NSString.deferredLocalizedIntentsString(with: "Refresh my apps") as String
+        
+        let interaction = INInteraction(intent: refreshAllIntent, response: nil)
+        interaction.identifier = "refresh-all-apps"
+        interaction.donate { (error) in
+            if let error = error
+            {
+                print("Failed to donate intent:", error)
+            }
+            else
+            {
+                print("Donated intent:", refreshAllIntent)
+            }
+        }
+    }
+    
     func update()
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
@@ -311,6 +331,8 @@ extension AppManager
     @discardableResult
     func refresh(_ installedApps: [InstalledApp], presentingViewController: UIViewController?, group: RefreshGroup? = nil) -> RefreshGroup
     {
+//        self.donate()
+        
         let group = group ?? RefreshGroup()
         
         let operations = installedApps.map { AppOperation.refresh($0) }
@@ -492,6 +514,16 @@ extension AppManager
     {
         let progress = self.refreshProgress[app.bundleIdentifier]
         return progress
+    }
+}
+
+extension AppManager
+{
+    func backgroundRefresh(_ installedApps: [InstalledApp], completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
+    {
+        let backgroundRefreshAppsOperation = BackgroundRefreshAppsOperation(installedApps: installedApps)
+        backgroundRefreshAppsOperation.resultHandler = completionHandler
+        self.run([backgroundRefreshAppsOperation], context: nil)
     }
 }
 
