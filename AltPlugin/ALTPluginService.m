@@ -55,9 +55,11 @@
     return self;
 }
 
-+ (void)initialize
++ (void)load
 {
+#if PLUGIN
     [[ALTPluginService sharedService] start];
+#endif
 }
 
 - (void)start

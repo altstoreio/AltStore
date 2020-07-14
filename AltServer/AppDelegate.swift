@@ -53,8 +53,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private weak var authenticationPasswordTextField: NSSecureTextField?
     
     private var isMailPluginInstalled: Bool {
+        #if PLUGIN
+        return true
+        #else
         let isMailPluginInstalled = FileManager.default.fileExists(atPath: pluginURL.path)
         return isMailPluginInstalled
+        #endif
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification)
@@ -111,6 +115,12 @@ private extension AppDelegate
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         
+        #if PLUGIN
+        
+        self.installMailPluginMenuItem.isHidden = true
+        
+        #else
+        
         if self.isMailPluginInstalled
         {
             self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
@@ -122,6 +132,8 @@ private extension AppDelegate
 
         self.installMailPluginMenuItem.target = self
         self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
+        
+        #endif
                 
         let x = button.frame.origin.x
         let y = button.frame.origin.y - 5

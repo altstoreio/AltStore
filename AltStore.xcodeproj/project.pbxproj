@@ -24,6 +24,7 @@
 		BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF100C4F232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel */; };
 		BF100C54232D7DAE006A8926 /* StoreAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF100C53232D7DAE006A8926 /* StoreAppPolicy.swift */; };
 		BF10EB34248730750055E6DB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB33248730750055E6DB /* main.swift */; };
+		BF15C67024A5616500766758 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF18BFF32485828200DD5981 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BF18BFF724858BDE00DD5981 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
@@ -1923,6 +1924,7 @@
 			files = (
 				BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */,
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
+				BF15C67024A5616500766758 /* ALTPluginService.m in Sources */,
 				BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */,
 				BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */,
 				BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */,
@@ -2354,6 +2356,18 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
 				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
+				MARKETING_VERSION = 1.4b1;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/STPrivilegedTask/STPrivilegedTask.framework/Headers\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/STPrivilegedTask\"",
+					"-iframework",
+					"\"${PODS_ROOT}/Sparkle\"",
+					"-DPLUGIN=1",
+				);
+				OTHER_SWIFT_FLAGS = "-DPLUGIN";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
@@ -2407,6 +2421,17 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
 				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/STPrivilegedTask/STPrivilegedTask.framework/Headers\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/STPrivilegedTask\"",
+					"-iframework",
+					"\"${PODS_ROOT}/Sparkle\"",
+					"-DPLUGIN=1",
+				);
+				OTHER_SWIFT_FLAGS = "-DPLUGIN";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
@@ -2548,6 +2573,7 @@
 					"/Users/Riley/Library/Developer/Xcode/DerivedData/AltStore-bhqnkrahfutztzeudtxhcxccgtlo/Build/Products/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = "-DPLUGIN=1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2577,6 +2603,7 @@
 					"/Users/Riley/Library/Developer/Xcode/DerivedData/AltStore-bhqnkrahfutztzeudtxhcxccgtlo/Build/Products/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = "-DPLUGIN=1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
