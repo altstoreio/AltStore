@@ -37,6 +37,7 @@ public class DatabaseManager
     public private(set) var isStarted = false
     
     private var startCompletionHandlers = [(Error?) -> Void]()
+    private let dispatchQueue = DispatchQueue(label: "io.altstore.DatabaseManager")
     
     private init()
     {
@@ -52,30 +53,34 @@ public extension DatabaseManager
 {
     func start(completionHandler: @escaping (Error?) -> Void)
     {
-        self.startCompletionHandlers.append(completionHandler)
-        
-        guard self.startCompletionHandlers.count == 1 else { return }
-        
         func finish(_ error: Error?)
         {
-            self.startCompletionHandlers.forEach { $0(error) }
-            self.startCompletionHandlers.removeAll()
+            self.dispatchQueue.async {
+                if error == nil
+                {
+                    self.isStarted = true
+                }
+                
+                self.startCompletionHandlers.forEach { $0(error) }
+                self.startCompletionHandlers.removeAll()
+            }
         }
         
-        guard !self.isStarted else { return finish(nil) }
-        
-        self.persistentContainer.loadPersistentStores { (description, error) in
-            guard error == nil else { return finish(error!) }
+        self.dispatchQueue.async {
+            self.startCompletionHandlers.append(completionHandler)
+            guard self.startCompletionHandlers.count == 1 else { return }
             
-            self.prepareDatabase() { (result) in
-                switch result
-                {
-                case .failure(let error):
-                    finish(error)
-                    
-                case .success:
-                    self.isStarted = true
-                    finish(nil)
+            guard !self.isStarted else { return finish(nil) }
+            
+            self.persistentContainer.loadPersistentStores { (description, error) in
+                guard error == nil else { return finish(error!) }
+                
+                self.prepareDatabase() { (result) in
+                    switch result
+                    {
+                    case .failure(let error): finish(error)
+                    case .success: finish(nil)
+                    }
                 }
             }
         }

@@ -174,6 +174,7 @@
 		BF45884A2298D55000BD7491 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588482298D55000BD7491 /* thread.c */; };
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
+		BF4B78FE24B3D1DB008AB4AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		BF51D61324A6A53A006B3ED0 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
@@ -596,6 +597,7 @@
 		BF4713A422976CFC00784A2F /* openssl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF51D61924A6A6D0006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF51D62724A6AB5F006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
 		BF56D2A823DF87570006506D /* AltStore 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 4.xcdatamodel"; sourceTree = "<group>"; };
@@ -1364,6 +1366,7 @@
 			children = (
 				BF219A7E22CAC431007676A6 /* AltStore.entitlements */,
 				BFD2476D2284B9A500981D42 /* AppDelegate.swift */,
+				BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */,
 				BFD247732284B9A500981D42 /* Main.storyboard */,
 				BFE338E722F10E56002E24B9 /* LaunchViewController.swift */,
 				BF41B805233423AE00C593A3 /* TabBarController.swift */,
@@ -2489,6 +2492,7 @@
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */,
+				BF4B78FE24B3D1DB008AB4AC /* SceneDelegate.swift in Sources */,
 				BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */,
 				BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
