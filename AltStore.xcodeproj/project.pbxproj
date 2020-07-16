@@ -179,9 +179,7 @@
 		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		BF51D61324A6A53A006B3ED0 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BF51D62224A6AB5B006B3ED0 /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; };
-		BF51D62324A6AB5B006B3ED0 /* AltStoreCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E3E24A67C3600FA912A /* AltStoreCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF51D62824A6AB5F006B3ED0 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF51D62724A6AB5F006B3ED0 /* AltSign.framework */; };
-		BF51D62924A6AB5F006B3ED0 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF51D62724A6AB5F006B3ED0 /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
 		BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF58047D246A28F7008AE704 /* AppDelegate.swift */; };
@@ -403,18 +401,6 @@
 				BF429EA924A6A32800FA912A /* openssl.framework in Embed Frameworks */,
 				BF429EA724A6A30400FA912A /* Roxas.framework in Embed Frameworks */,
 				BF429EA524A6A30000FA912A /* AltSign.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BF51D62624A6AB5B006B3ED0 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BF51D62324A6AB5B006B3ED0 /* AltStoreCore.framework in Embed Frameworks */,
-				BF51D62924A6AB5F006B3ED0 /* AltSign.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1707,7 +1693,6 @@
 				BF429E2324A67AE600FA912A /* Sources */,
 				BF429E2424A67AE600FA912A /* Frameworks */,
 				BF429E2524A67AE600FA912A /* Resources */,
-				BF51D62624A6AB5B006B3ED0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

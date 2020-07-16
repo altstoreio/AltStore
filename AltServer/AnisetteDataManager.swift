@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import AltStoreCore
+import AltKit
 
 class AnisetteDataManager: NSObject
 {
