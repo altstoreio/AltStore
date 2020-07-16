@@ -25,11 +25,11 @@ struct Countdown: View {
     private var overlay: some View {
         if self.numberOfDays >= 10 {
             Capsule(style: .continuous)
-                .stroke(lineWidth: 5.0)
+                .stroke(lineWidth: 4.0)
         }
         else {
             Circle()
-                .stroke(lineWidth: 5.0)
+                .stroke(lineWidth: 4.0)
         }
     }
     
@@ -39,11 +39,11 @@ struct Countdown: View {
                                       endPoint: .bottom)
         
         let body = Text("\(self.numberOfDays)")
-            .font(self.font ?? .title)
+            .font((self.font ?? .title).monospacedDigit())
             .bold()
             .opacity(1.0)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
             .overlay(self.overlay)
 
         return body

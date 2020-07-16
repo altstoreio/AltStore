@@ -12,44 +12,30 @@ import SwiftUI
 import AltStoreCore
 import CoreData
 
+extension UIColor
+{
+    static let altstorePrimary = UIColor(named: "Primary")!
+    static let deltaPrimary = UIColor(named: "DeltaPrimary")!
+}
+
 extension Color
 {
     static let altstorePrimary = Color("Primary")
     static let deltaPrimary = Color("DeltaPrimary")
 }
 
-@propertyWrapper
-struct RSTManaged<Value: NSManagedObject>
-{
-    private var managedObject: Value?
-    private var managedObjectContext: NSManagedObjectContext?
-    
-    var wrappedValue: Value? {
-        get { self.managedObject }
-        set {
-            self.managedObject = newValue
-            self.managedObjectContext = newValue?.managedObjectContext
-        }
-    }
-}
-
 struct AppSnapshot
 {
     var name: String
     var bundleIdentifier: String
-    var resignedBundleIdentifier: String
-    var version: String
-    
-    var refreshedDate: Date
     var expirationDate: Date
-    var installedDate: Date
     
-    var tintColor: Color
+    var tintColor: UIColor?
     var icon: UIImage?
     
     lazy var darkenedIcon: UIImage? = {
-        let color = UIColor(white: 0.0, alpha: 0.4)
-        let darkenedIcon = self.icon?.applyBlur(withRadius: 10, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
+        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.35)
+        let darkenedIcon = self.icon?.applyBlur(withRadius: 20, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
         return darkenedIcon
     }()
 }
@@ -61,55 +47,33 @@ extension AppSnapshot
     {
         self.name = installedApp.name
         self.bundleIdentifier = installedApp.bundleIdentifier
-        self.resignedBundleIdentifier = installedApp.resignedBundleIdentifier
-        self.version = installedApp.version
-        self.refreshedDate = installedApp.refreshedDate
         self.expirationDate = installedApp.expirationDate
-        self.installedDate = installedApp.installedDate
         
-        if let tintColor = installedApp.storeApp?.tintColor
-        {
-            self.tintColor = Color(tintColor)
-        }
-        else
-        {
-            self.tintColor = .altstorePrimary
-        }
+        self.tintColor = installedApp.storeApp?.tintColor
         
-        if let application = ALTApplication(fileURL: installedApp.fileURL), let icon = application.icon
-        {
-            self.icon = icon
-        }
-        else
-        {
-            self.icon = UIImage(named: installedApp.name)
-        }
+//        let application = ALTApplication(fileURL: installedApp.fileURL)
+        self.icon = UIImage(named: installedApp.name)// application?.icon
     }
 }
 
 struct Provider: IntentTimelineProvider
 {
-    public typealias Entry = AppEntry
+    typealias Entry = AppEntry
     
-    public func snapshot(for configuration: ViewAppIntent, with context: Context, completion: @escaping (AppEntry) -> ())
+    func snapshot(for configuration: ViewAppIntent, with context: Context, completion: @escaping (AppEntry) -> ())
     {
         self.prepare { (result) in
             do
             {
                 let context = try result.get()
-                
                 let snapshot = InstalledApp.fetchAltStore(in: context).map(AppSnapshot.init)
-//                let snapshot = configuration.app?.identifier.map { (identifier) in
-//                    (InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
-//                                       in: context) ?? InstalledApp.fetchAltStore(in: context)).map(AppSnapshot.init)
-//                } ?? nil
 
                 let entry = AppEntry(date: Date(), app: snapshot)
                 completion(entry)
             }
             catch
             {
-                print("Error:", error)
+                print("Error preparing widget snapshot:", error)
                 
                 let entry = AppEntry(date: Date(), app: nil)
                 completion(entry)
@@ -117,7 +81,8 @@ struct Provider: IntentTimelineProvider
         }
     }
 
-    public func timeline(for configuration: ViewAppIntent, with context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func timeline(for configuration: ViewAppIntent, with context: Context, completion: @escaping (Timeline<Entry>) -> ())
+    {
         self.prepare { (result) in
             do
             {
@@ -143,7 +108,7 @@ struct Provider: IntentTimelineProvider
             }
             catch
             {
-                print("Error:", error)
+                print("Error preparing widget timeline:", error)
                 
                 let entry = AppEntry(date: Date(), app: nil)
                 let timeline = Timeline(entries: [entry], policy: .atEnd)
@@ -154,28 +119,16 @@ struct Provider: IntentTimelineProvider
     
     private func prepare(completion: @escaping (Result<NSManagedObjectContext, Error>) -> Void)
     {
-        func finish(_ result: Result<Void, Error>)
-        {
-            switch result
-            {
-            case .failure(let error): completion(.failure(error))
-            case .success:
-                DatabaseManager.shared.viewContext.perform {
-                    completion(.success(DatabaseManager.shared.viewContext))
-                }
-            }
-        }
-        
-        guard !DatabaseManager.shared.isStarted else { return finish(.success(())) }
-        
         DatabaseManager.shared.start { (error) in
             if let error = error
             {
-                finish(.failure(error))
+                completion(.failure(error))
             }
             else
             {
-                finish(.success(()))
+                DatabaseManager.shared.viewContext.perform {
+                    completion(.success(DatabaseManager.shared.viewContext))
+                }
             }
         }
     }
@@ -183,14 +136,13 @@ struct Provider: IntentTimelineProvider
 
 struct AppEntry: TimelineEntry
 {
-    public var date: Date
-    
-    public var app: AppSnapshot?
+    var date: Date
+    var app: AppSnapshot?
 }
 
 struct PlaceholderView : View {
     var body: some View {
-        Text("Placeholder View")
+        Text("Placeholder 2")
     }
 }
 
@@ -198,18 +150,23 @@ struct AltWidgetEntryView : View {
     var entry: Provider.Entry
     
     @ViewBuilder
-    var body: some View {        
-        if let app = self.entry.app
+    var body: some View {
+        if var app = self.entry.app
         {
+            let daysRemaining = app.expirationDate.numberOfCalendarDays(since: Date())
+                
             GeometryReader { (geometry) in
                 Group {
                     VStack(alignment: .leading) {
                         HStack(alignment: .top) {
-                            Image(uiImage: app.icon ?? UIImage(named: "AltStore")!)
+                            
+                            let imageHeight = geometry.size.height * 0.45
+                            
+                            Image(app.name)
                                 .resizable()
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                                .frame(height: geometry.size.height * 0.45)
-                                .mask(ContainerRelativeShape())
+                                .frame(height: imageHeight)
+                                .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: /*@START_MENU_TOKEN@*/.continuous/*@END_MENU_TOKEN@*/))
                             
                             Spacer()
                             
@@ -223,10 +180,10 @@ struct AltWidgetEntryView : View {
                         HStack(alignment: .bottom) {
                             VStack(alignment: .leading) {
                                 Text(app.name.uppercased())
-                                    .font(.system(size: 13, weight: .semibold))
+                                    .font(.system(size: 12, weight: .semibold))
                                     .foregroundColor(.white)
-                                    .lineLimit(2)
-                                    .minimumScaleFactor(0.8)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
 
                                 Spacer(minLength: 2)
 
@@ -235,22 +192,23 @@ struct AltWidgetEntryView : View {
                                         Text("Expires in\n")
                                             .font(.system(size: 13, weight: .semibold))
                                             .foregroundColor(Color.white.opacity(0.35)) +
-                                        Text("7 days")
+                                        Text(daysRemaining == 1 ? "1 day" : "\(daysRemaining) days")
                                             .font(.system(size: 15, weight: .semibold))
                                             .foregroundColor(.white)
                                     )
                                     .lineSpacing(1.0)
-                                    .layoutPriority(10)
                                     .minimumScaleFactor(0.5)
                                 }
                             }
 
                             Spacer()
 
-                            Countdown(numberOfDays: 7)
+                            Countdown(numberOfDays: daysRemaining)
                                 .font(.system(size: 20, weight: .semibold))
                                 .offset(x: 6.5, y: 5)
-//                                .fixedSize(horizontal: true, vertical: false)
+                                .padding(.leading, -6.5)
+                                .padding(.top, -5)
+                                .fixedSize(horizontal: true, vertical: false)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -258,8 +216,10 @@ struct AltWidgetEntryView : View {
                 .padding()
                 .background(
                     ZStack {
-                        app.tintColor
-                        Color.black.opacity(0.25)
+                        app.darkenedIcon.map {
+                            Image(uiImage: $0)
+                                .resizable()
+                        }
                     }
                 )
 //                .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
@@ -282,7 +242,7 @@ struct AltWidget: Widget
             AltWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("AltWidget")
-        .description("View expiration countdown for sideloaded apps.")
+        .description("View remaining days until your sideloaded apps expire.")
     }
 }
 
@@ -293,21 +253,13 @@ struct AltWidget_Previews: PreviewProvider {
         
         let altstore = AppSnapshot(name: "AltStore",
                               bundleIdentifier: "com.rileytestut.AltStore",
-                              resignedBundleIdentifier: "com.rileytestut.AltStore.resigned",
-                              version: "1.4",
-                              refreshedDate: Date(),
                               expirationDate: expirationDate,
-                              installedDate: refreshedDate,
                               tintColor: .altstorePrimary,
                               icon: UIImage(named: "AltStore"))
         
         let delta = AppSnapshot(name: "Delta",
                               bundleIdentifier: "com.rileytestut.Delta",
-                              resignedBundleIdentifier: "com.rileytestut.Delta.resigned",
-                              version: "1.4",
-                              refreshedDate: Date(),
                               expirationDate: expirationDate,
-                              installedDate: refreshedDate,
                               tintColor: .deltaPrimary,
                               icon: UIImage(named: "Delta"))
         

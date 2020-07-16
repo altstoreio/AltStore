@@ -174,6 +174,9 @@
 		BF45884A2298D55000BD7491 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = BF4588482298D55000BD7491 /* thread.c */; };
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
+		BF4A3D5824BFB7DB009D7E46 /* ViewAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2C10C224B924F60078F255 /* ViewAppIntentHandler.swift */; };
+		BF4A3D5924BFB7E6009D7E46 /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF2C10C024B921B00078F255 /* ViewApp.intentdefinition */; };
+		BF4A3D5A24BFE638009D7E46 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BF4B78FE24B3D1DB008AB4AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */; };
 		BF4C7F2523801F0800B2556E /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B63C5229DD44D002F0A62 /* AltSign.framework */; };
 		BF4E8456246F16D700ECCBD4 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
@@ -276,7 +279,6 @@
 		BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1E22A1A9EC000B7ED1 /* node_list.c */; };
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
 		BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */; };
-		BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */; };
 		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
@@ -595,9 +597,9 @@
 		BF4588872298DD3F00BD7491 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib/libxml2.tbd; sourceTree = DEVELOPER_DIR; };
 		BF4588962298DE6E00BD7491 /* libzip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = libzip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4713A422976CFC00784A2F /* openssl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openssl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		BF51D61924A6A6D0006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF51D62724A6AB5F006B3ED0 /* AltSign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AltSign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		BF54E81F2315EF0D000AE0D8 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF54E8202315EF0D000AE0D8 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
 		BF56D2A823DF87570006506D /* AltStore 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 4.xcdatamodel"; sourceTree = "<group>"; };
@@ -2307,6 +2309,7 @@
 				BF429E5024A67C7800FA912A /* DatabaseManager.swift in Sources */,
 				BF429E5524A67C7800FA912A /* AppID.swift in Sources */,
 				BF429E6024A67CC800FA912A /* AltStoreToAltStore2.xcmappingmodel in Sources */,
+				BF4A3D5A24BFE638009D7E46 /* Date+RelativeDate.swift in Sources */,
 				BF429E6E24A67EA000FA912A /* Tier.swift in Sources */,
 				BF429E7A24A6834A00FA912A /* ALTAppPermission.m in Sources */,
 				BF429E6D24A67E8700FA912A /* PatreonAccount.swift in Sources */,
@@ -2464,6 +2467,7 @@
 				BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */,
 				BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */,
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
+				BF4A3D5824BFB7DB009D7E46 /* ViewAppIntentHandler.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */,
 				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
@@ -2476,6 +2480,7 @@
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
 				BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */,
+				BF4A3D5924BFB7E6009D7E46 /* ViewApp.intentdefinition in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
@@ -2497,7 +2502,6 @@
 				BF663C4F2433ED8200DAA738 /* FileManager+DirectorySize.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
-				BFDB5B1622EE90D300F74113 /* Date+RelativeDate.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,

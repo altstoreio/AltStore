@@ -74,26 +74,6 @@
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
 						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${app}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>4FjRC0</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${app}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>geajn5</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
-						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
 					<true/>

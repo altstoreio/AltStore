@@ -1,6 +1,6 @@
 //
 //  ViewAppIntentHandler.swift
-//  AltStoreCore
+//  ViewAppIntentHandler
 //
 //  Created by Riley Testut on 7/10/20.
 //  Copyright © 2020 Riley Testut. All rights reserved.
@@ -15,13 +15,20 @@ public class ViewAppIntentHandler: NSObject, ViewAppIntentHandling
     {
         print("Providing options...")
         
-        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let apps = InstalledApp.all(in: context).map { (installedApp) in
-                return App(identifier: installedApp.bundleIdentifier, display: installedApp.name)
+        DatabaseManager.shared.start { (error) in
+            if let error = error
+            {
+                print("Error starting extension:", error)
             }
             
-            let collection = INObjectCollection(items: apps)
-            completion(collection, nil)
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                let apps = InstalledApp.all(in: context).map { (installedApp) in
+                    return App(identifier: installedApp.bundleIdentifier, display: installedApp.name)
+                }
+                
+                let collection = INObjectCollection(items: apps)
+                completion(collection, nil)
+            }
         }
     }
 }
