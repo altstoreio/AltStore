@@ -16,9 +16,7 @@ private class PersistentContainer: RSTPersistentContainer
 {
     override class func defaultDirectoryURL() -> URL
     {
-        guard let appGroup = Bundle.main.appGroups.first else { return super.defaultDirectoryURL() }
-        
-        let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)!
+        guard let sharedDirectoryURL = FileManager.default.altstoreSharedDirectory else { return super.defaultDirectoryURL() }
         
         let databaseDirectoryURL = sharedDirectoryURL.appendingPathComponent("Database")
         try? FileManager.default.createDirectory(at: databaseDirectoryURL, withIntermediateDirectories: true, attributes: nil)
@@ -41,6 +39,7 @@ public class DatabaseManager
     
     private init()
     {
+        // Prevents linker from discarding these symbols.
         let notification = CFNotificationName.localServerConnectionAvailableRequest
         let socket = ALTDeviceListeningSocket
         

@@ -34,8 +34,12 @@ struct AppSnapshot
     var icon: UIImage?
     
     lazy var darkenedIcon: UIImage? = {
-        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.35)
-        let darkenedIcon = self.icon?.applyBlur(withRadius: 20, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
+        guard let icon = self.icon else { return nil }
+        
+        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.55)
+        
+        let resizedImage = icon.resizing(toFit: CGSize(width: 180, height: 180))
+        let darkenedIcon = resizedImage?.applyBlur(withRadius: 15, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
         return darkenedIcon
     }()
 }
@@ -51,8 +55,8 @@ extension AppSnapshot
         
         self.tintColor = installedApp.storeApp?.tintColor
         
-//        let application = ALTApplication(fileURL: installedApp.fileURL)
-        self.icon = UIImage(named: installedApp.name)// application?.icon
+        let application = ALTApplication(fileURL: installedApp.fileURL)
+        self.icon = application?.icon
     }
 }
 
@@ -162,11 +166,13 @@ struct AltWidgetEntryView : View {
                             
                             let imageHeight = geometry.size.height * 0.45
                             
-                            Image(app.name)
-                                .resizable()
-                                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                                .frame(height: imageHeight)
-                                .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: /*@START_MENU_TOKEN@*/.continuous/*@END_MENU_TOKEN@*/))
+                            app.icon.map {
+                                Image(uiImage: $0)
+                                    .resizable()
+                                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                    .frame(height: imageHeight)
+                                    .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: /*@START_MENU_TOKEN@*/.continuous/*@END_MENU_TOKEN@*/))
+                            }
                             
                             Spacer()
                             
@@ -191,7 +197,7 @@ struct AltWidgetEntryView : View {
                                     (
                                         Text("Expires in\n")
                                             .font(.system(size: 13, weight: .semibold))
-                                            .foregroundColor(Color.white.opacity(0.35)) +
+                                            .foregroundColor(Color.white.opacity(0.45)) +
                                         Text(daysRemaining == 1 ? "1 day" : "\(daysRemaining) days")
                                             .font(.system(size: 15, weight: .semibold))
                                             .foregroundColor(.white)

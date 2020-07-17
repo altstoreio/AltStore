@@ -34,7 +34,10 @@ struct Countdown: View {
     }
     
     var body: some View {
-        let gradient = LinearGradient(gradient: Gradient(colors: [.countdownLightGreen, .countdownDarkGreen]),
+        // Badge should be 40% transparent, white
+        let gradient = LinearGradient(gradient: Gradient(colors: [
+                                                            Color(white: 1.0, opacity: 0.8), Color(white: 1.0, opacity: 0.8)
+        ]),
                                       startPoint: .top,
                                       endPoint: .bottom)
         
