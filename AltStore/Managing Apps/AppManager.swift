@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import UserNotifications
 import MobileCoreServices
+import WidgetKit
 
 import AltSign
 import AltStoreCore
@@ -1280,6 +1281,22 @@ private extension AppManager
             
             do { try installedApp.managedObjectContext?.save() }
             catch { print("Error saving installed app.", error) }
+            
+            if #available(iOS 14, *)
+            {
+                let bundleIdentifier = installedApp.bundleIdentifier
+                
+                WidgetCenter.shared.getCurrentConfigurations { (result) in
+                    guard case .success(let widgets) = result else { return }
+                    
+                    guard let widget = widgets.first(where: { (widget) in
+                        guard let intent = widget.configuration as? ViewAppIntent else { return false }
+                        return intent.app?.identifier == bundleIdentifier
+                    }) else { return }
+                    
+                    WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
+                }
+            }
         }
         catch
         {
