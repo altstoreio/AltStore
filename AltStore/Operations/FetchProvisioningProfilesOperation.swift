@@ -132,7 +132,7 @@ extension FetchProvisioningProfilesOperation
                 
                 #if DEBUG
                 
-                if app.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(app.bundleIdentifier)
+                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
                 {
                     // Use legacy bundle ID format for AltStore.
                     preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
@@ -175,17 +175,19 @@ extension FetchProvisioningProfilesOperation
                 // Or, if the app _is_ installed but with a different team, we need to create a new
                 // bundle identifier anyway to prevent collisions with the previous team.
                 let parentBundleID = parentApp?.bundleIdentifier ?? app.bundleIdentifier
-                let updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
+                let updatedParentBundleID: String
                 
-                if app.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(app.bundleIdentifier)
+                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
                 {
-                    // Use legacy bundle ID format for AltStore.
-                    bundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
+                    // Use legacy bundle ID format for AltStore (and its extensions).
+                    updatedParentBundleID = "com.\(team.identifier).\(parentBundleID)"
                 }
                 else
                 {
-                    bundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+                    updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
                 }
+                
+                bundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
             }
             
             let preferredName: String
