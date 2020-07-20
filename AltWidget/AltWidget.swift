@@ -32,16 +32,16 @@ struct AppSnapshot
     
     var tintColor: UIColor?
     var icon: UIImage?
-    
-    lazy var darkenedIcon: UIImage? = {
-        guard let icon = self.icon else { return nil }
-        
-        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.55)
-        
-        let resizedImage = icon.resizing(toFit: CGSize(width: 180, height: 180))
-        let darkenedIcon = resizedImage?.applyBlur(withRadius: 15, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
-        return darkenedIcon
-    }()
+//
+//    lazy var darkenedIcon: UIImage? = {
+//        guard let icon = self.icon else { return nil }
+//
+//        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.55)
+//
+//        let resizedImage = icon.resizing(toFit: CGSize(width: 180, height: 180))
+//        let darkenedIcon = resizedImage?.applyBlur(withRadius: 15, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
+//        return darkenedIcon
+//    }()
 }
 
 extension AppSnapshot
@@ -49,6 +49,7 @@ extension AppSnapshot
     // Declared in extension so we retain synthesized initializer.
     init(installedApp: InstalledApp)
     {
+        let socket = ALTDeviceListeningSocket
         self.name = installedApp.name
         self.bundleIdentifier = installedApp.bundleIdentifier
         self.expirationDate = installedApp.expirationDate
@@ -56,7 +57,7 @@ extension AppSnapshot
         self.tintColor = installedApp.storeApp?.tintColor
         
         let application = ALTApplication(fileURL: installedApp.fileURL)
-        self.icon = application?.icon
+        self.icon = application?.icon?.resizing(toFill: CGSize(width: 180, height: 180))
     }
 }
 
@@ -88,35 +89,56 @@ struct Provider: IntentTimelineProvider
     func timeline(for configuration: ViewAppIntent, with context: Context, completion: @escaping (Timeline<Entry>) -> ())
     {
         self.prepare { (result) in
-            do
-            {
-                let context = try result.get()
-                                
-                let snapshot = configuration.app?.identifier.map { (identifier) in
-                    InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
-                                       in: context).map(AppSnapshot.init)
-                } ?? nil
-                
-                var entries: [AppEntry] = []
+            autoreleasepool {
+                do
+                {
+                    let context = try result.get()
+                    
+                    let installedApp: InstalledApp?
+                    
+                    if let identifier = configuration.app?.identifier
+                    {
+                        let app = InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
+                                                     in: context)
+                        installedApp = app ?? InstalledApp.fetchAltStore(in: context)
+                    }
+                    else
+                    {
+                        installedApp = InstalledApp.fetchAltStore(in: context)
+                    }
+                    
+                    let snapshot = installedApp.map(AppSnapshot.init)
+                    
+                    var entries: [AppEntry] = []
 
-                // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-                let currentDate = Date()
-                for hourOffset in 0 ..< 5 {
-                    let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-                    let entry = AppEntry(date: entryDate, app: snapshot)
-                    entries.append(entry)
+                    // Generate a timeline consisting of one entry per day.
+                                    
+                    if let snapshot = snapshot
+                    {
+                        let currentDate = Calendar.current.startOfDay(for: Date())
+                        let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
+                        
+                        for dayOffset in 0 ..< max(numberOfDays, 7)
+                        {
+                            guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
+                            
+                            let score = Float(dayOffset + 1) / Float(numberOfDays)
+                            let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
+                            entries.append(entry)
+                        }
+                    }
+
+                    let timeline = Timeline(entries: entries, policy: .atEnd)
+                    completion(timeline)
                 }
-
-                let timeline = Timeline(entries: entries, policy: .atEnd)
-                completion(timeline)
-            }
-            catch
-            {
-                print("Error preparing widget timeline:", error)
-                
-                let entry = AppEntry(date: Date(), app: nil)
-                let timeline = Timeline(entries: [entry], policy: .atEnd)
-                completion(timeline)
+                catch
+                {
+                    print("Error preparing widget timeline:", error)
+                    
+                    let entry = AppEntry(date: Date(), app: nil)
+                    let timeline = Timeline(entries: [entry], policy: .atEnd)
+                    completion(timeline)
+                }
             }
         }
     }
@@ -141,29 +163,66 @@ struct Provider: IntentTimelineProvider
 struct AppEntry: TimelineEntry
 {
     var date: Date
+    var relevance: TimelineEntryRelevance?
+    
     var app: AppSnapshot?
 }
 
-struct PlaceholderView : View {
+struct BackgroundView: View
+{
+    var icon: UIImage
+    var tintColor: UIColor
+    
+    init(icon: UIImage? = nil, tintColor: UIColor? = nil)
+    {
+        self.icon = icon ?? UIImage(named: "AltStore")!
+        self.tintColor = tintColor ?? .altPrimary
+    }
+
     var body: some View {
-        Text("Placeholder 2")
+        let imageHeight = 60 as CGFloat
+        let saturation = 1.8
+        let blurRadius = 5 as CGFloat
+        let tintOpacity = 0.45
+        
+        ZStack(alignment: .topTrailing) {
+            // Blurred Image
+            GeometryReader { geometry in
+                ZStack {
+                    Image(uiImage: icon)
+                        .resizable()
+                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                        .frame(width: imageHeight, height: imageHeight, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .saturation(saturation)
+                        .blur(radius: blurRadius, opaque: true)
+                        .scaleEffect(geometry.size.width / imageHeight, anchor: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    
+                    Color(tintColor)
+                        .opacity(tintOpacity)
+                }
+            }
+            
+            Image("Badge")
+                .resizable()
+                .frame(width: 26, height: 26)
+                .padding()
+        }
     }
 }
 
-struct AltWidgetEntryView : View {
+struct AltWidgetEntryView : View
+{
     var entry: Provider.Entry
     
-    @ViewBuilder
     var body: some View {
-        if var app = self.entry.app
-        {
-            let daysRemaining = app.expirationDate.numberOfCalendarDays(since: Date())
-                
-            GeometryReader { (geometry) in
-                Group {
-                    VStack(alignment: .leading) {
-                        HStack(alignment: .top) {
-                            
+        Group {
+            if let app = self.entry.app
+            {
+                let daysRemaining = app.expirationDate.numberOfCalendarDays(since: Date())
+                    
+                GeometryReader { (geometry) in
+                    Group {
+                        VStack(alignment: .leading) {
                             let imageHeight = geometry.size.height * 0.45
                             
                             app.icon.map {
@@ -173,68 +232,62 @@ struct AltWidgetEntryView : View {
                                     .frame(height: imageHeight)
                                     .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: /*@START_MENU_TOKEN@*/.continuous/*@END_MENU_TOKEN@*/))
                             }
-                            
+                                      
                             Spacer()
                             
-                            Image("Badge")
-                                .resizable()
-                                .frame(width: 26, height: 26)
-                        }
-                                  
-                        Spacer()
-                        
-                        HStack(alignment: .bottom) {
-                            VStack(alignment: .leading) {
-                                Text(app.name.uppercased())
-                                    .font(.system(size: 12, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
+                            HStack(alignment: .bottom) {
+                                VStack(alignment: .leading) {
+                                    Text(app.name.uppercased())
+                                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.white)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
 
-                                Spacer(minLength: 2)
+                                    Spacer(minLength: 2)
 
-                                VStack(alignment: .leading, spacing: 0) {
-                                    (
-                                        Text("Expires in\n")
-                                            .font(.system(size: 13, weight: .semibold))
-                                            .foregroundColor(Color.white.opacity(0.45)) +
-                                        Text(daysRemaining == 1 ? "1 day" : "\(daysRemaining) days")
-                                            .font(.system(size: 15, weight: .semibold))
-                                            .foregroundColor(.white)
-                                    )
-                                    .lineSpacing(1.0)
-                                    .minimumScaleFactor(0.5)
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        (
+                                            Text("Expires in\n")
+                                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                                .foregroundColor(Color.white.opacity(0.45)) +
+                                            Text(daysRemaining == 1 ? "1 day" : "\(daysRemaining) days")
+                                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                                .foregroundColor(.white)
+                                        )
+                                        .lineSpacing(1.0)
+                                        .minimumScaleFactor(0.5)
+                                    }
                                 }
+
+                                Spacer()
+
+                                Countdown(numberOfDays: daysRemaining)
+                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                    .foregroundColor(Color.white.opacity(0.8))
+                                    .fixedSize(horizontal: true, vertical: false)
                             }
-
-                            Spacer()
-
-                            Countdown(numberOfDays: daysRemaining)
-                                .font(.system(size: 20, weight: .semibold))
-                                .offset(x: 6.5, y: 5)
-                                .padding(.leading, -6.5)
-                                .padding(.top, -5)
-                                .fixedSize(horizontal: true, vertical: false)
                         }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding()
+    //                .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+    //                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
-                .padding()
-                .background(
-                    ZStack {
-                        app.darkenedIcon.map {
-                            Image(uiImage: $0)
-                                .resizable()
-                        }
-                    }
-                )
-//                .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-//                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+            }
+            else
+            {
+                VStack {
+                    Text("App Not Found")
+                        .font(.system(.body, design: .rounded))
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.white.opacity(0.4))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        else{
-            Text("No App")
-        }
+        .background(
+            BackgroundView(icon: entry.app?.icon, tintColor: entry.app?.tintColor)
+        )
     }
 }
 
@@ -244,9 +297,10 @@ struct AltWidget: Widget
     private let kind: String = "AltWidget"
 
     public var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ViewAppIntent.self, provider: Provider(), placeholder: PlaceholderView()) { (entry) in
+        IntentConfiguration(kind: kind, intent: ViewAppIntent.self, provider: Provider(), placeholder: BackgroundView()) { (entry) in
             AltWidgetEntryView(entry: entry)
         }
+        .supportedFamilies([.systemSmall])
         .configurationDisplayName("AltWidget")
         .description("View remaining days until your sideloaded apps expire.")
     }
@@ -274,6 +328,12 @@ struct AltWidget_Previews: PreviewProvider {
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
             AltWidgetEntryView(entry: AppEntry(date: Date(), app: delta))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            
+            BackgroundView()
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            
+            AltWidgetEntryView(entry: AppEntry(date: Date(), app: nil))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
     }
