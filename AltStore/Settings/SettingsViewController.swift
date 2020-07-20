@@ -28,7 +28,6 @@ extension SettingsViewController
     {
         case developer
         case designer
-        case softwareLicenses
         case credits
     }
     
@@ -430,7 +429,7 @@ extension SettingsViewController
             {
             case .developer: self.openTwitter(username: "rileytestut")
             case .designer: self.openTwitter(username: "1carolinemoore")
-            case .softwareLicenses, .credits: break
+            case .credits: break
             }
             
         case .debug:
