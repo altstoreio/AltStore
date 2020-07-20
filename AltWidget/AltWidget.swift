@@ -18,30 +18,15 @@ extension UIColor
     static let deltaPrimary = UIColor(named: "DeltaPrimary")!
 }
 
-extension Color
-{
-    static let altstorePrimary = Color("Primary")
-    static let deltaPrimary = Color("DeltaPrimary")
-}
-
 struct AppSnapshot
 {
     var name: String
     var bundleIdentifier: String
     var expirationDate: Date
+    var refreshedDate: Date
     
     var tintColor: UIColor?
     var icon: UIImage?
-//
-//    lazy var darkenedIcon: UIImage? = {
-//        guard let icon = self.icon else { return nil }
-//
-//        let color = (self.tintColor ?? UIColor.altstorePrimary).withAlphaComponent(0.55)
-//
-//        let resizedImage = icon.resizing(toFit: CGSize(width: 180, height: 180))
-//        let darkenedIcon = resizedImage?.applyBlur(withRadius: 15, tintColor: color, saturationDeltaFactor: 1.8, maskImage: nil)
-//        return darkenedIcon
-//    }()
 }
 
 extension AppSnapshot
@@ -49,10 +34,10 @@ extension AppSnapshot
     // Declared in extension so we retain synthesized initializer.
     init(installedApp: InstalledApp)
     {
-        let socket = ALTDeviceListeningSocket
         self.name = installedApp.name
         self.bundleIdentifier = installedApp.bundleIdentifier
         self.expirationDate = installedApp.expirationDate
+        self.refreshedDate = installedApp.refreshedDate
         
         self.tintColor = installedApp.storeApp?.tintColor
         
@@ -100,7 +85,7 @@ struct Provider: IntentTimelineProvider
                     {
                         let app = InstalledApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), identifier),
                                                      in: context)
-                        installedApp = app ?? InstalledApp.fetchAltStore(in: context)
+                        installedApp = app
                     }
                     else
                     {
@@ -118,7 +103,7 @@ struct Provider: IntentTimelineProvider
                         let currentDate = Calendar.current.startOfDay(for: Date())
                         let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
                         
-                        for dayOffset in 0 ..< max(numberOfDays, 7)
+                        for dayOffset in 0 ..< min(numberOfDays, 7)
                         {
                             guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
                             
@@ -261,9 +246,10 @@ struct AltWidgetEntryView : View
 
                                 Spacer()
 
-                                Countdown(numberOfDays: daysRemaining)
+                                Countdown(startDate: app.refreshedDate, endDate: app.expirationDate)
                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                    .foregroundColor(Color.white.opacity(0.8))
+                                    .foregroundColor(Color.white)
+                                    .opacity(0.8)
                                     .fixedSize(horizontal: true, vertical: false)
                             }
                         }
@@ -294,10 +280,14 @@ struct AltWidgetEntryView : View
 @main
 struct AltWidget: Widget
 {
-    private let kind: String = "AltWidget"
+    private let kind: String = "AppDetail"
 
     public var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ViewAppIntent.self, provider: Provider(), placeholder: BackgroundView()) { (entry) in
+        IntentConfiguration(kind: kind,
+                            intent: ViewAppIntent.self,
+                            provider: Provider(),
+                            placeholder: BackgroundView()
+        ) { (entry) in
             AltWidgetEntryView(entry: entry)
         }
         .supportedFamilies([.systemSmall])
@@ -308,18 +298,20 @@ struct AltWidget: Widget
 
 struct AltWidget_Previews: PreviewProvider {
     static var previews: some View {
-        let refreshedDate = Date()
-        let expirationDate = refreshedDate.addingTimeInterval(1 * 7 * 24 * 60 * 60)
+        let refreshedDate = Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date()
+        let expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: refreshedDate) ?? Date()
         
         let altstore = AppSnapshot(name: "AltStore",
                               bundleIdentifier: "com.rileytestut.AltStore",
                               expirationDate: expirationDate,
+                              refreshedDate: refreshedDate,
                               tintColor: .altstorePrimary,
                               icon: UIImage(named: "AltStore"))
         
         let delta = AppSnapshot(name: "Delta",
                               bundleIdentifier: "com.rileytestut.Delta",
                               expirationDate: expirationDate,
+                              refreshedDate: refreshedDate,
                               tintColor: .deltaPrimary,
                               icon: UIImage(named: "Delta"))
         
