@@ -25,7 +25,7 @@ class ServerManager: NSObject
     
     private var connectionListener: NWListener?
     private var incomingConnections: [NWConnection]?
-    private var incomingConnectionsSemaphore: DispatchSemaphore?
+    private var incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
     
     private override init()
     {
@@ -94,7 +94,7 @@ extension ServerManager
                 connection.start(queue: self.dispatchQueue)
             }
             
-            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.connectionType != .wireless
+            if server.connectionType != .wireless
             {
                 print("Waiting for incoming connection...")
                 
@@ -107,7 +107,7 @@ extension ServerManager
                 case .wireless: break
                 }
                 
-                _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
+                _ = self.incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
                 
                 if let connection = self.incomingConnections?.popLast()
                 {
@@ -133,6 +133,10 @@ extension ServerManager
                 let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: parameters)
                 start(connection)
             }
+            else
+            {
+                finish(.failure(ALTServerError(.connectionFailed)))
+            }
         }
     }
 }
@@ -154,7 +158,7 @@ private extension ServerManager
         let listener = try! NWListener(using: .tcp, on: NWEndpoint.Port(rawValue: ALTDeviceListeningSocket)!)
         listener.newConnectionHandler = { [weak self] (connection) in
             self?.incomingConnections?.append(connection)
-            self?.incomingConnectionsSemaphore?.signal()
+            self?.incomingConnectionsSemaphore.signal()
         }
         listener.stateUpdateHandler = { (state) in
             switch state
@@ -173,7 +177,6 @@ private extension ServerManager
     func startListeningForWiredConnections()
     {
         self.incomingConnections = []
-        self.incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
         
         self.connectionListener = self.makeListener()
         self.connectionListener?.start(queue: self.dispatchQueue)
@@ -185,7 +188,7 @@ private extension ServerManager
         self.connectionListener = nil
         
         self.incomingConnections = nil
-        self.incomingConnectionsSemaphore = nil
+        self.incomingConnectionsSemaphore = DispatchSemaphore(value: 0)
     }
 }
 
