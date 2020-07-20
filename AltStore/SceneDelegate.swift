@@ -48,4 +48,63 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         ServerManager.shared.stopDiscovering()
     }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
+    {
+        guard let url = URLContexts.first?.url else { return }
+        
+        if url.isFileURL
+        {
+            guard url.pathExtension.lowercased() == "ipa" else { return }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: url])
+            }
+        }
+        else
+        {
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return }
+            guard let host = components.host?.lowercased() else { return }
+            
+            switch host
+            {
+            case "patreon":
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                }
+                
+            case "appbackupresponse":
+                let result: Result<Void, Error>
+                
+                switch url.path.lowercased()
+                {
+                case "/success": result = .success(())
+                case "/failure":
+                    let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name] = $1.value } ?? [:]
+                    guard
+                        let errorDomain = queryItems["errorDomain"],
+                        let errorCodeString = queryItems["errorCode"], let errorCode = Int(errorCodeString),
+                        let errorDescription = queryItems["errorDescription"]
+                    else { return }
+                    
+                    let error = NSError(domain: errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+                    result = .failure(error)
+                    
+                default: return
+                }
+                
+                NotificationCenter.default.post(name: AppDelegate.appBackupDidFinish, object: nil, userInfo: [AppDelegate.appBackupResultKey: result])
+                
+            case "install":
+                let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name.lowercased()] = $1.value } ?? [:]
+                guard let downloadURLString = queryItems["url"], let downloadURL = URL(string: downloadURLString) else { return }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: downloadURL])
+                }
+                
+            default: break
+            }
+        }
+    }
 }
