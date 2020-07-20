@@ -171,6 +171,32 @@ private extension DatabaseManager
                 installedApp.storeApp = storeApp
             }
             
+            /* App Extensions */
+            var installedExtensions = Set<InstalledExtension>()
+            
+            for appExtension in localApp.appExtensions
+            {
+                let resignedBundleID = appExtension.bundleIdentifier
+                let originalBundleID = resignedBundleID.replacingOccurrences(of: localApp.bundleIdentifier, with: StoreApp.altstoreAppID)
+                
+                let installedExtension: InstalledExtension
+                
+                if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == originalBundleID })
+                {
+                    installedExtension = appExtension
+                }
+                else
+                {
+                    installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: originalBundleID, context: context)
+                }
+                
+                installedExtension.update(resignedAppExtension: appExtension)
+                
+                installedExtensions.insert(installedExtension)
+            }
+            
+            installedApp.appExtensions = installedExtensions
+            
             let fileURL = installedApp.fileURL
             
             #if DEBUG
@@ -181,16 +207,32 @@ private extension DatabaseManager
             
             if replaceCachedApp
             {
+                func update(_ bundle: Bundle, bundleID: String) throws
+                {
+                    let infoPlistURL = bundle.bundleURL.appendingPathComponent("Info.plist")
+                    
+                    guard var infoDictionary = bundle.infoDictionary else { throw ALTError(.missingInfoPlist) }
+                    infoDictionary[kCFBundleIdentifierKey as String] = bundleID
+                    try (infoDictionary as NSDictionary).write(to: infoPlistURL)
+                }
+                
                 FileManager.default.prepareTemporaryURL() { (temporaryFileURL) in
                     do
                     {
                         try FileManager.default.copyItem(at: Bundle.main.bundleURL, to: temporaryFileURL)
                         
-                        let infoPlistURL = temporaryFileURL.appendingPathComponent("Info.plist")
+                        guard let appBundle = Bundle(url: temporaryFileURL) else { throw ALTError(.invalidApp) }
+                        try update(appBundle, bundleID: StoreApp.altstoreAppID)
                         
-                        guard var infoDictionary = Bundle.main.infoDictionary else { throw ALTError(.missingInfoPlist) }
-                        infoDictionary[kCFBundleIdentifierKey as String] = StoreApp.altstoreAppID
-                        try (infoDictionary as NSDictionary).write(to: infoPlistURL)
+                        if let tempApp = ALTApplication(fileURL: temporaryFileURL)
+                        {
+                            for appExtension in tempApp.appExtensions
+                            {
+                                guard let extensionBundle = Bundle(url: appExtension.fileURL) else { throw ALTError(.invalidApp) }
+                                guard let installedExtension = installedExtensions.first(where: { $0.resignedBundleIdentifier == appExtension.bundleIdentifier }) else { throw ALTError(.invalidApp) }
+                                try update(extensionBundle, bundleID: installedExtension.bundleIdentifier)
+                            }
+                        }
                         
                         try FileManager.default.copyItem(at: temporaryFileURL, to: fileURL, shouldReplace: true)
                     }
