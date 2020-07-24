@@ -211,6 +211,7 @@
 		BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5722BC3D0F002A40FE /* RefreshGroup.swift */; };
 		BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */; };
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
+		BF798B1224CB7BA300ABDD12 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF429E2824A67AE600FA912A /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
 		BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* RequestHandler.swift */; };
@@ -838,6 +839,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF798B1224CB7BA300ABDD12 /* WidgetKit.framework in Frameworks */,
 				BF429EA824A6A32800FA912A /* openssl.framework in Frameworks */,
 				BF429EA624A6A30400FA912A /* Roxas.framework in Frameworks */,
 				BF429E4524A67C3600FA912A /* AltStoreCore.framework in Frameworks */,
