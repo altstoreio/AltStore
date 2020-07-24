@@ -2650,7 +2650,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.Widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltWidget/AltWidgetExtension-Bridging-Header.h";
@@ -2680,7 +2680,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.Widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltWidget/AltWidgetExtension-Bridging-Header.h";
