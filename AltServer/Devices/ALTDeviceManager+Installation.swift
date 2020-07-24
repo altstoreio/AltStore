@@ -117,7 +117,7 @@ extension ALTDeviceManager
                                                                 let anisetteData = try result.get()
                                                                 session.anisetteData = anisetteData
                                                                 
-                                                                self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team, session: session) { (result) in
+                                                                self.registerAppID(name: "AltStore", identifier: application.bundleIdentifier, team: team, session: session) { (result) in
                                                                     do
                                                                     {
                                                                         let appID = try result.get()
