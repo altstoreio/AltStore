@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.3.4",
-      "versionDate": "2020-05-20T10:00:00-07:00",
-      "versionDescription": "** iOS 13.5 Compatibility Update **\n\niOS 13.5 changes how active apps are counted. Previously, app extensions counted towards the 3 active app limit, and inactive apps could remain installed without counting. Now, app extensions are excluded, but inactive apps must be uninstalled to not count.\n\nOn devices running iOS 13.5 or later, apps will now be backed up & uninstalled when deactivated. When you later activate an inactive app, AltStore will reinstall the app and restore its data so you can continue using it as if it was never uninstalled.\n\nNOTE: This does not affect devices running iOS 13.4.1 or earlier.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_3_4.ipa",
+      "version": "1.3.5",
+      "versionDate": "2020-07-15T13:00:00-07:00",
+      "versionDescription": "This update fixes various issues when running on iOS 14. \n\nIf you have already updated to iOS 14, you can manually update AltStore by reinstalling with AltServer. You do not need to delete the app first.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_3_5.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 2665222,
+      "size": 2611481,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.3.4b3",
-      "versionDate": "2020-05-20T10:00:00-07:00",
-      "versionDescription": "NEW\n• Adds \"Back Up\" option when long pressing app to manually back up app data, which can then be restored later.\n• GM version of 1.3.4\n\nPREVIOUS UPDATE:\n\n**Requires AltServer 1.3.1 beta. Download from https://altstore.io/altserver/beta/**\n\nIMPORTANT\niOS 13.5 (due for release soon) changes how active apps are counted. Previously, app extensions counted towards the 3 active app limit, and inactive apps could remain installed without counting. Now, app extensions are excluded, but inactive apps must be uninstalled to not count.\n\nOn devices running iOS 13.5 or later, apps will now be backed up & uninstalled when deactivated. When you later activate an inactive app, AltStore will reinstall the app and restore its data so you can continue using it as if it was never uninstalled.\n\nNOTE: This does not affect devices running iOS 13.4.1 or earlier.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_3_4_b3.ipa",
+      "version": "1.4b4",
+      "versionDate": "2020-07-27T12:30:00-07:00",
+      "versionDescription": "NEW\n• Fixes \"code signature no longer supported\" error on iOS 14 beta 3.\n• Fixes installing future AltStore updates containing app extensions.\n\n⚠️ To update to this version if you're already on iOS 14 beta 3, download the latest AltServer beta from Patreon and use it to reinstall AltStore.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_b4.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 2665126,
+      "size": 3257185,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -117,13 +117,37 @@
     },
     {
       "name": "Clip",
+      "bundleIdentifier": "com.rileytestut.Clip",
+      "subtitle": "Manage your clipboard history with ease.",
+      "developerName": "Riley Testut",
+      "version": "1.0",
+      "versionDate": "2020-06-17T12:30:00-07:00",
+      "versionDescription": "Initial version 🎉",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/clip/1_0.ipa",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
+      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
+      "tintColor": "EC008C",
+      "size": 445056,
+      "permissions": [
+        {
+          "type": "background-audio",
+          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
+        }
+      ],
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+      ]
+    },
+    {
+      "name": "Clip",
       "bundleIdentifier": "com.rileytestut.Clip.Beta",
       "subtitle": "Manage your clipboard history with ease.",
       "developerName": "Riley Testut",
-      "version": "1.0b",
-      "versionDate": "2019-01-24T18:20:00-08:00",
-      "versionDescription": "• Disables notification vibration when sound is disabled for notifications.\n\nAssuming all goes well, this should be the final beta before the public launch! Please report any last minute bugs you find to support@altstore.io.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip-beta.ipa",
+      "version": "1.1b1",
+      "versionDate": "2020-06-17T12:30:00-07:00",
+      "versionDescription": "This update adds a Custom Keyboard app extension for quick access to clippings when editing text.\n\nTo enable the keyboard, go to Settings > General > Keyboard > Keyboards > Add New Keyboard... and add \"ClipBoard\". Once added, make sure to then enable \"Allow Full Access\" for ClipBoard so it can access your clippings.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/clip/1_1_b1.ipa",
       "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
       "tintColor": "EC008C",
@@ -137,7 +161,9 @@
       ],
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
-        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
+        "https://user-images.githubusercontent.com/705880/84842227-70a80b00-aff9-11ea-8b04-bedb1f49c4a7.PNG",
+        "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
       ]
     },
     {
@@ -220,16 +246,6 @@
       "notify": false
     },
     {
-      "title": "Coming Soon: Clip",
-      "identifier": "clip-coming-soon",
-      "caption": "A clipboard manager that can run in the background. Beta available now for all Patrons.",
-      "tintColor": "EC008C",
-      "url": "https://twitter.com/altstoreio/status/1205597959699582977",
-      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
-      "date": "2019-12-16",
-      "notify": false
-    },
-    {
       "title": "Sideloading is Here!",
       "identifier": "sideloading-is-here",
       "caption": "Update to AltStore 1.3 to install any app directly from Files.",
@@ -245,9 +261,19 @@
       "tintColor": "34C759",
       "date": "2020-04-10T13:30:00-07:00",
       "notify": false
+    },
+    {
+      "title": "Clip Now Available!",
+      "identifier": "clip-now-available",
+      "caption": "Finally, a clipboard manager that can run in the background — no jailbreak required.",
+      "tintColor": "EC008C",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
+      "appID": "com.rileytestut.Clip",
+      "date": "2020-06-17",
+      "notify": true
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "TMcqAvUDhaWs03TqD55lp_Ccs7tyGzaOYhYjt0YMYPg"
+    "patreonAccessToken": "0tupEDihCZr4ALW2GZvcx1Of_pmV47Ip4o1RVjreOoI"
   }
 }
