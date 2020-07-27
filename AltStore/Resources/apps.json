@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4b3",
-      "versionDate": "2020-06-25T14:00:00-07:00",
-      "versionDescription": "NEW\n• Adds support for iOS 14.\n• Fixes authenticating Apple ID on iOS 14.\n• Fixes communicating with AltServer over WiFi on iOS 14.\n• Fixes crash installing AltDaemon when running AltStore as iPad app via Jailbreak tweak.\n\nPREVIOUS\n• Fixes certificate becoming untrusted after refreshing with AltDaemon\n• Fixes \"Unknown Error Occured\" when refreshing with AltDaemon\n• Removes .DS_Store files from AltDaemon.deb to prevent installation conflicts.\n\nTo update to this version if you're already on iOS 14, download the latest AltServer beta from Patreon and use it to reinstall AltStore.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_b3.ipa",
+      "version": "1.4b4",
+      "versionDate": "2020-07-27T12:30:00-07:00",
+      "versionDescription": "NEW\n• Fixes \"code signature no longer supported\" error on iOS 14 beta 3.\n• Fixes installing future AltStore updates containing app extensions.\n\n⚠️ To update to this version if you're already on iOS 14 beta 3, download the latest AltServer beta from Patreon and use it to reinstall AltStore.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_b4.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 3257451,
+      "size": 3257185,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "jJIFmy_QmQfev3isUdj2EFyThVCOArtw5nOGwOxZmnI"
+    "patreonAccessToken": "0tupEDihCZr4ALW2GZvcx1Of_pmV47Ip4o1RVjreOoI"
   }
 }
