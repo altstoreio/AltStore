@@ -27,6 +27,7 @@ extension SettingsViewController
     {
         case developer
         case designer
+        case authentication
         case softwareLicenses
     }
     
@@ -405,6 +406,7 @@ extension SettingsViewController
             {
             case .developer: self.openTwitter(username: "rileytestut")
             case .designer: self.openTwitter(username: "1carolinemoore")
+            case .authentication: self.openTwitter(username: "kabiroberai")
             case .softwareLicenses: break
             }
             
