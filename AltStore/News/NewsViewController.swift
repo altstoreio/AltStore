@@ -135,6 +135,18 @@ private extension NewsViewController
                 cell.imageView.isIndicatingActivity = false
                 cell.imageView.isHidden = true
             }
+            
+            cell.isAccessibilityElement = true
+            cell.accessibilityLabel = (cell.titleLabel.text ?? "") + ". " + (cell.captionLabel.text ?? "")
+            
+            if newsItem.storeApp != nil || newsItem.externalURL != nil
+            {
+                cell.accessibilityTraits.insert(.button)
+            }
+            else
+            {
+                cell.accessibilityTraits.remove(.button)
+            }
         }
         dataSource.prefetchHandler = { (newsItem, indexPath, completionHandler) in
             guard let imageURL = newsItem.imageURL else { return nil }
