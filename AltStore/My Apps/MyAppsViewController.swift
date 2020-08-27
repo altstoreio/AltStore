@@ -1367,7 +1367,18 @@ extension MyAppsViewController
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshAllApps(_:)), for: .primaryActionTriggered)
                 
                 headerView.button.layoutIfNeeded()
-                headerView.button.isIndicatingActivity = self.isRefreshingAllApps
+                
+                if self.isRefreshingAllApps
+                {
+                    headerView.button.isIndicatingActivity = true
+                    headerView.button.accessibilityLabel = NSLocalizedString("Refreshing", comment: "")
+                    headerView.button.accessibilityTraits.remove(.notEnabled)
+                }
+                else
+                {
+                    headerView.button.isIndicatingActivity = false
+                    headerView.button.accessibilityLabel = nil
+                }
             }
             
             return headerView
