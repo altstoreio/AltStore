@@ -43,6 +43,8 @@ class Source: NSManagedObject, Fetchable, Decodable
     @NSManaged var identifier: String
     @NSManaged var sourceURL: URL
     
+    @NSManaged var error: NSError?
+    
     /* Non-Core Data Properties */
     var userInfo: [ALTSourceUserInfoKey: String]?
     

@@ -220,6 +220,7 @@ extension AppManager
                     case .success(let source): fetchedSources.insert(source)
                     case .failure(let error):
                         let source = managedObjectContext.object(with: source.objectID) as! Source
+                        source.error = (error as NSError).sanitizedForCoreData()
                         errors[source] = error
                     }
                     

@@ -53,6 +53,8 @@ private extension SourcesViewController
             cell.bannerView.subtitleLabel.text = source.sourceURL.absoluteString
             cell.bannerView.subtitleLabel.numberOfLines = 2
             
+            cell.errorBadge?.isHidden = (source.error == nil)
+            
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
         }
@@ -98,6 +100,29 @@ private extension SourcesViewController
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    func present(_ error: Error)
+    {
+        let nsError = error as NSError
+        let message = nsError.userInfo[NSDebugDescriptionErrorKey] as? String ?? nsError.localizedRecoverySuggestion
+        
+        let alertController = UIAlertController(title: error.localizedDescription, message: message, preferredStyle: .alert)
+        alertController.addAction(.ok)
+        self.present(alertController, animated: true, completion: nil)
+    }
+}
+
+extension SourcesViewController
+{
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        self.collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let source = self.dataSource.item(at: indexPath)
+        guard let error = source.error else { return }
+        
+        self.present(error)
+    }
 }
 
 extension SourcesViewController: UICollectionViewDelegateFlowLayout
@@ -134,9 +159,13 @@ extension SourcesViewController
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
         let source = self.dataSource.item(at: indexPath)
-        guard source.identifier != Source.altStoreIdentifier else { return nil }
 
         return UIContextMenuConfiguration(identifier: indexPath as NSIndexPath, previewProvider: nil) { (suggestedActions) -> UIMenu? in
+            let viewErrorAction = UIAction(title: NSLocalizedString("View Error", comment: ""), image: UIImage(systemName: "exclamationmark.circle")) { (action) in
+                guard let error = source.error else { return }
+                self.present(error)
+            }
+            
             let deleteAction = UIAction(title: NSLocalizedString("Remove", comment: ""), image: UIImage(systemName: "trash"), attributes: [.destructive]) { (action) in
                 
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
@@ -153,8 +182,20 @@ extension SourcesViewController
                     }
                 }
             }
+            
+            var actions: [UIAction] = []
+            
+            if source.error != nil
+            {
+                actions.append(viewErrorAction)
+            }
+            
+            if source.identifier != Source.altStoreIdentifier
+            {
+                actions.append(deleteAction)
+            }            
 
-            let menu = UIMenu(title: "", children: [deleteAction])
+            let menu = UIMenu(title: "", children: actions)
             return menu
         }
     }

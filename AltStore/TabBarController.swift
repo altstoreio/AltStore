@@ -30,6 +30,14 @@ class TabBarController: UITabBarController
     }
 }
 
+extension TabBarController
+{
+    @objc func presentSources(_ sender: Any)
+    {
+        self.performSegue(withIdentifier: "presentSources", sender: sender)
+    }
+}
+
 private extension TabBarController
 {
     @objc func openPatreonSettings(_ notification: Notification)

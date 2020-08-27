@@ -59,7 +59,7 @@ class BrowseViewController: UICollectionViewController
         self.updateDataSource()
     }
     
-    @IBAction private func unwindToBrowseViewController(_ segue: UIStoryboardSegue)
+    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
     {
         self.fetchSource()
     }
@@ -199,6 +199,7 @@ private extension BrowseViewController
                     if self.dataSource.itemCount > 0
                     {
                         let toastView = ToastView(error: error)
+                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
                         toastView.show(in: self)
                     }
                     

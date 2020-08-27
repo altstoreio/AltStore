@@ -1,5 +1,5 @@
 //
-//  NSError+LocalizedFailure.swift
+//  NSError+AltStore.swift
 //  AltStore
 //
 //  Created by Riley Testut on 3/11/20.
@@ -23,6 +23,21 @@ extension NSError
         userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
         userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
         userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
+        
+        let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
+        return error
+    }
+    
+    func sanitizedForCoreData() -> NSError
+    {
+        var userInfo = self.userInfo
+        userInfo[NSLocalizedFailureErrorKey] = self.localizedFailure
+        userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
+        userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
+        userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
+        
+        // Remove non-ObjC-compliant userInfo values.
+        userInfo["NSCodingPath"] = nil
         
         let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
         return error

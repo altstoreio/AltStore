@@ -99,6 +99,11 @@ class NewsViewController: UICollectionViewController
             self.collectionView.contentInset.bottom = 20
         }
     }
+    
+    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
+    {
+        self.fetchSource()
+    }
 }
 
 private extension NewsViewController
@@ -198,6 +203,7 @@ private extension NewsViewController
                     if self.dataSource.itemCount > 0
                     {
                         let toastView = ToastView(error: error)
+                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
                         toastView.show(in: self)
                     }
                     

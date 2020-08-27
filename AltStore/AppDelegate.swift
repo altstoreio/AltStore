@@ -77,6 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ServerManager.shared.startDiscovering()
         
+        SecureValueTransformer.register()
+        
         UserDefaults.standard.registerDefaults()
         
         if UserDefaults.standard.firstLaunch == nil

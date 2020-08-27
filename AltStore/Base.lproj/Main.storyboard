@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16092.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16082.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -38,6 +38,7 @@
                         <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="dXz-Tu-hW8"/>
                         <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
                         <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="4Nf-rL-P4c"/>
+                        <segue destination="Qo4-72-Hmr" kind="presentation" identifier="presentSources" id="Qd6-ba-dIo"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -1004,7 +1005,7 @@ World</string>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="NQF-u2-PZv">
                             <connections>
-                                <segue destination="zjS-Nr-VTw" kind="unwind" unwindAction="unwindToBrowseViewController:" id="VFy-hV-mNV"/>
+                                <segue destination="zjS-Nr-VTw" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="la1-dJ-UhL"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1034,6 +1035,7 @@ World</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="Qd6-ba-dIo"/>
         <segue reference="cnd-KK-o60"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Primary"/>
@@ -1044,7 +1046,7 @@ World</string>
         <image name="News" width="19" height="20"/>
         <image name="Settings" width="20" height="20"/>
         <namedColor name="Background">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0040000001899898052" green="0.50199997425079346" blue="0.51800000667572021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="BlurTint">
             <color red="1" green="1" blue="1" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
