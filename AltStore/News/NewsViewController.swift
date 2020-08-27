@@ -348,10 +348,9 @@ extension NewsViewController
         footerView.layoutMargins.left = self.view.layoutMargins.left
         footerView.layoutMargins.right = self.view.layoutMargins.right
         
-        footerView.bannerView.titleLabel.text = storeApp.name
-        footerView.bannerView.subtitleLabel.text = storeApp.developerName
+        footerView.bannerView.configure(for: storeApp)
+        
         footerView.bannerView.tintColor = storeApp.tintColor
-        footerView.bannerView.betaBadgeView.isHidden = !storeApp.isBeta
         footerView.bannerView.button.addTarget(self, action: #selector(NewsViewController.performAppAction(_:)), for: .primaryActionTriggered)
         footerView.tapGestureRecognizer.addTarget(self, action: #selector(NewsViewController.handleTapGesture(_:)))
         
@@ -359,7 +358,10 @@ extension NewsViewController
         
         if storeApp.installedApp == nil
         {
-            footerView.bannerView.button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+            let buttonTitle = NSLocalizedString("Free", comment: "")
+            footerView.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
+            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), storeApp.name)
+            footerView.bannerView.button.accessibilityValue = buttonTitle
             
             let progress = AppManager.shared.installationProgress(for: storeApp)
             footerView.bannerView.button.progress = progress
@@ -376,6 +378,8 @@ extension NewsViewController
         else
         {
             footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), storeApp.name)
+            footerView.bannerView.button.accessibilityValue = nil
             footerView.bannerView.button.progress = nil
             footerView.bannerView.button.countdownDate = nil
         }

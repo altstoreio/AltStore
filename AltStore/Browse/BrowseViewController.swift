@@ -83,11 +83,9 @@ private extension BrowseViewController
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             
-            cell.subtitleLabel.text = app.subtitle
             cell.imageURLs = Array(app.screenshotURLs.prefix(2))
-            cell.bannerView.titleLabel.text = app.name
-            cell.bannerView.subtitleLabel.text = app.developerName
-            cell.bannerView.betaBadgeView.isHidden = !app.isBeta
+            
+            cell.bannerView.configure(for: app)
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -104,7 +102,10 @@ private extension BrowseViewController
             
             if app.installedApp == nil
             {
-                cell.bannerView.button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+                let buttonTitle = NSLocalizedString("Free", comment: "")
+                cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+                cell.bannerView.button.accessibilityValue = buttonTitle
                 
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
@@ -121,6 +122,8 @@ private extension BrowseViewController
             else
             {
                 cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
+                cell.bannerView.button.accessibilityValue = nil
                 cell.bannerView.button.progress = nil
                 cell.bannerView.button.countdownDate = nil
             }

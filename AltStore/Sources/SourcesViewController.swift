@@ -44,7 +44,6 @@ private extension SourcesViewController
             cell.tintColor = tintColor
                         
             cell.bannerView.iconImageView.isHidden = true
-            cell.bannerView.betaBadgeView.isHidden = true
             cell.bannerView.buttonLabel.isHidden = true
             cell.bannerView.button.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
@@ -52,6 +51,10 @@ private extension SourcesViewController
             cell.bannerView.titleLabel.text = source.name
             cell.bannerView.subtitleLabel.text = source.sourceURL.absoluteString
             cell.bannerView.subtitleLabel.numberOfLines = 2
+            
+            let attributedLabel = NSAttributedString(string: source.name + "\n" + source.sourceURL.absoluteString, attributes: [.accessibilitySpeechPunctuation: true])
+            cell.bannerView.accessibilityAttributedLabel = attributedLabel
+            cell.bannerView.accessibilityTraits.remove(.button)
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
