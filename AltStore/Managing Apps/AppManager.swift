@@ -197,15 +197,16 @@ extension AppManager
         self.run([fetchSourceOperation], context: nil)
     }
     
-    func fetchSources(completionHandler: @escaping (Result<Set<Source>, Error>) -> Void)
+    func fetchSources(completionHandler: @escaping (Result<(Set<Source>, NSManagedObjectContext), FetchSourcesError>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             let sources = Source.all(in: context)
-            guard !sources.isEmpty else { return completionHandler(.failure(OperationError.noSources)) }
+            guard !sources.isEmpty else { return completionHandler(.failure(.init(OperationError.noSources))) }
             
             let dispatchGroup = DispatchGroup()
             var fetchedSources = Set<Source>()
-            var error: Error?
+            
+            var errors = [Source: Error]()
             
             let managedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
             
@@ -216,8 +217,10 @@ extension AppManager
                 fetchSourceOperation.resultHandler = { (result) in
                     switch result
                     {
-                    case .failure(let e): error = e
                     case .success(let source): fetchedSources.insert(source)
+                    case .failure(let error):
+                        let source = managedObjectContext.object(with: source.objectID) as! Source
+                        errors[source] = error
                     }
                     
                     dispatchGroup.leave()
@@ -227,14 +230,15 @@ extension AppManager
             }
             
             dispatchGroup.notify(queue: .global()) {
-                if let error = error
-                {
-                    completionHandler(.failure(error))
-                }
-                else
-                {
-                    managedObjectContext.perform {
-                        completionHandler(.success(fetchedSources))
+                managedObjectContext.perform {
+                    if !errors.isEmpty
+                    {
+                        let sources = Set(sources.compactMap { managedObjectContext.object(with: $0.objectID) as? Source })
+                        completionHandler(.failure(.init(sources: sources, errors: errors, context: managedObjectContext)))
+                    }
+                    else
+                    {
+                        completionHandler(.success((fetchedSources, managedObjectContext)))
                     }
                 }
                 

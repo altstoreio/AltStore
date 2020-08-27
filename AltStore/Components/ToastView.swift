@@ -77,7 +77,7 @@ class ToastView: RSTToastView
         else
         {
             text = error.localizedDescription
-            detailText = underlyingError?.localizedDescription
+            detailText = underlyingError?.localizedDescription ?? error.localizedRecoverySuggestion
         }
         
         self.init(text: text, detailText: detailText)

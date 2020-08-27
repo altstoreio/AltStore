@@ -302,13 +302,11 @@ private extension AppDelegate
         dispatchGroup.enter()
         
         AppManager.shared.fetchSources() { (result) in
-            fetchSourcesResult = result
+            fetchSourcesResult = result.map { $0.0 }.mapError { $0 as Error }
             
             do
             {
-                let sources = try result.get()
-                
-                guard let context = sources.first?.managedObjectContext else { return }
+                let (_, context) = try result.get()
                 
                 let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false

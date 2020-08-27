@@ -88,52 +88,60 @@ class Source: NSManagedObject, Fetchable, Decodable
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         guard let sourceURL = decoder.sourceURL else { preconditionFailure("Decoder must have non-nil sourceURL.") }
         
-        super.init(entity: Source.entity(), insertInto: nil)
+        super.init(entity: Source.entity(), insertInto: context)
         
-        self.sourceURL = sourceURL
-        
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.identifier = try container.decode(String.self, forKey: .identifier)
-        
-        let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
-        self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
-        
-        let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
-        let appsByID = Dictionary(apps.map { ($0.bundleIdentifier, $0) }, uniquingKeysWith: { (a, b) in return a })
-        
-        for (index, app) in apps.enumerated()
+        do
         {
-            app.sourceIdentifier = self.identifier
-            app.sortIndex = Int32(index)
-        }
-        
-        let newsItems = try container.decodeIfPresent([NewsItem].self, forKey: .news) ?? []
-        for (index, item) in newsItems.enumerated()
-        {
-            item.sourceIdentifier = self.identifier
-            item.sortIndex = Int32(index)
-        }
-        
-        context.insert(self)
-                
-        for newsItem in newsItems
-        {            
-            guard let appID = newsItem.appID else { continue }
+            self.sourceURL = sourceURL
             
-            if let storeApp = appsByID[appID]
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.name = try container.decode(String.self, forKey: .name)
+            self.identifier = try container.decode(String.self, forKey: .identifier)
+            
+            let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
+            self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
+            
+            let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
+            let appsByID = Dictionary(apps.map { ($0.bundleIdentifier, $0) }, uniquingKeysWith: { (a, b) in return a })
+            
+            for (index, app) in apps.enumerated()
             {
-                newsItem.storeApp = storeApp
+                app.sourceIdentifier = self.identifier
+                app.sortIndex = Int32(index)
             }
-            else
+            self._apps = NSMutableOrderedSet(array: apps)
+            
+            let newsItems = try container.decodeIfPresent([NewsItem].self, forKey: .news) ?? []
+            for (index, item) in newsItems.enumerated()
             {
-                newsItem.storeApp = nil
+                item.sourceIdentifier = self.identifier
+                item.sortIndex = Int32(index)
             }
+                                
+            for newsItem in newsItems
+            {
+                guard let appID = newsItem.appID else { continue }
+                
+                if let storeApp = appsByID[appID]
+                {
+                    newsItem.storeApp = storeApp
+                }
+                else
+                {
+                    newsItem.storeApp = nil
+                }
+            }
+            self._newsItems = NSMutableOrderedSet(array: newsItems)
         }
-        
-        // Must assign after we're inserted into context.
-        self._apps = NSMutableOrderedSet(array: apps)
-        self._newsItems = NSMutableOrderedSet(array: newsItems)
+        catch
+        {
+            if let context = self.managedObjectContext
+            {
+                context.delete(self)
+            }
+            
+            throw error
+        }
     }
 }
 

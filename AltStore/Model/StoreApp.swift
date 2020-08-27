@@ -104,43 +104,52 @@ class StoreApp: NSManagedObject, Decodable, Fetchable
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
-        super.init(entity: StoreApp.entity(), insertInto: nil)
+        // Must initialize with context in order for child context saves to work correctly.
+        super.init(entity: StoreApp.entity(), insertInto: context)
         
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
-        self.developerName = try container.decode(String.self, forKey: .developerName)
-        self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
-        
-        self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
-        
-        self.version = try container.decode(String.self, forKey: .version)
-        self.versionDate = try container.decode(Date.self, forKey: .versionDate)
-        self.versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
-        
-        self.iconURL = try container.decode(URL.self, forKey: .iconURL)
-        self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
-        
-        self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
-        
-        if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
+        do
         {
-            guard let tintColor = UIColor(hexString: tintColorHex) else {
-                throw DecodingError.dataCorruptedError(forKey: .tintColor, in: container, debugDescription: "Hex code is invalid.")
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.name = try container.decode(String.self, forKey: .name)
+            self.bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
+            self.developerName = try container.decode(String.self, forKey: .developerName)
+            self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
+            
+            self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
+            
+            self.version = try container.decode(String.self, forKey: .version)
+            self.versionDate = try container.decode(Date.self, forKey: .versionDate)
+            self.versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
+            
+            self.iconURL = try container.decode(URL.self, forKey: .iconURL)
+            self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
+            
+            self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+            
+            if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
+            {
+                guard let tintColor = UIColor(hexString: tintColorHex) else {
+                    throw DecodingError.dataCorruptedError(forKey: .tintColor, in: container, debugDescription: "Hex code is invalid.")
+                }
+                
+                self.tintColor = tintColor
             }
             
-            self.tintColor = tintColor
+            self.size = try container.decode(Int32.self, forKey: .size)
+            self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
+            
+            let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
+            self._permissions = NSOrderedSet(array: permissions)
         }
-        
-        self.size = try container.decode(Int32.self, forKey: .size)
-        self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
-        
-        let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
-        
-        context.insert(self)
-        
-        // Must assign after we're inserted into context.
-        self._permissions = NSOrderedSet(array: permissions)
+        catch
+        {
+            if let context = self.managedObjectContext
+            {
+                context.delete(self)
+            }
+            
+            throw error
+        }
     }
 }
 

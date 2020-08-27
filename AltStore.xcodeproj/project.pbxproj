@@ -159,6 +159,7 @@
 		BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BF770E6822BD57DD002A40FE /* Silence.m4a */; };
 		BF7C627223DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */; };
 		BF7C627423DBB78C00515A2D /* InstalledAppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */; };
+		BF88F97224F8727D00BB75DF /* AppManagerErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF88F97124F8727D00BB75DF /* AppManagerErrors.swift */; };
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
 		BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* RequestHandler.swift */; };
@@ -525,6 +526,7 @@
 		BF7C627023DBB33300515A2D /* AltStore 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 3.xcdatamodel"; sourceTree = "<group>"; };
 		BF7C627123DBB3B400515A2D /* AltStore2ToAltStore3.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore2ToAltStore3.xcmappingmodel; sourceTree = "<group>"; };
 		BF7C627323DBB78C00515A2D /* InstalledAppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppPolicy.swift; sourceTree = "<group>"; };
+		BF88F97124F8727D00BB75DF /* AppManagerErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManagerErrors.swift; sourceTree = "<group>"; };
 		BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BF8CAE432489E772004D6CCE /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF8CAE442489E772004D6CCE /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
@@ -1211,6 +1213,7 @@
 			isa = PBXGroup;
 			children = (
 				BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */,
+				BF88F97124F8727D00BB75DF /* AppManagerErrors.swift */,
 			);
 			path = "Managing Apps";
 			sourceTree = "<group>";
@@ -2069,6 +2072,7 @@
 				BF100C50232D7CD1006A8926 /* AltStoreToAltStore2.xcmappingmodel in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */,
+				BF88F97224F8727D00BB75DF /* AppManagerErrors.swift in Sources */,
 				BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */,
 				BFBBE2DD22931B20002097FA /* AltStore.xcdatamodeld in Sources */,
 				BF56D2AA23DF88310006506D /* AppID.swift in Sources */,

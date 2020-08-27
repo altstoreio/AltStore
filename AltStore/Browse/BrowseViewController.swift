@@ -178,20 +178,26 @@ private extension BrowseViewController
         AppManager.shared.fetchSources() { (result) in
             do
             {
-                let sources = try result.get()
-                try sources.first?.managedObjectContext?.save()
-                
-                DispatchQueue.main.async {
-                    self.loadingState = .finished(.success(()))
+                do
+                {
+                    let (_, context) = try result.get()
+                    try context.save()
+                    
+                    DispatchQueue.main.async {
+                        self.loadingState = .finished(.success(()))
+                    }
+                }
+                catch let error as AppManager.FetchSourcesError
+                {
+                    try error.managedObjectContext?.save()
+                    throw error
                 }
             }
-            catch let error as NSError
+            catch
             {
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let error = error.withLocalizedFailure(NSLocalizedString("Failed to Fetch Sources", comment: ""))
-                        
                         let toastView = ToastView(error: error)
                         toastView.show(in: self)
                     }

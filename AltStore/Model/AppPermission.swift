@@ -67,15 +67,25 @@ class AppPermission: NSManagedObject, Decodable, Fetchable
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
-        super.init(entity: AppPermission.entity(), insertInto: nil)
+        super.init(entity: AppPermission.entity(), insertInto: context)
         
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.usageDescription = try container.decode(String.self, forKey: .usageDescription)
-        
-        let rawType = try container.decode(String.self, forKey: .type)
-        self.type = ALTAppPermissionType(rawValue: rawType)
-        
-        context.insert(self)
+        do
+        {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.usageDescription = try container.decode(String.self, forKey: .usageDescription)
+            
+            let rawType = try container.decode(String.self, forKey: .type)
+            self.type = ALTAppPermissionType(rawValue: rawType)
+        }
+        catch
+        {
+            if let context = self.managedObjectContext
+            {
+                context.delete(self)
+            }
+            
+            throw error
+        }
     }
 }
 
