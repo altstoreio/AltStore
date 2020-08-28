@@ -649,9 +649,6 @@ World</string>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mos-e4-dQ7" customClass="AppBannerView" customModule="AltStore" customModuleProvider="target">
                                             <rect key="frame" x="8" y="0.0" width="359" height="60"/>
-                                            <accessibility key="accessibilityConfiguration">
-                                                <bool key="isElement" value="YES"/>
-                                            </accessibility>
                                         </view>
                                     </subviews>
                                 </view>

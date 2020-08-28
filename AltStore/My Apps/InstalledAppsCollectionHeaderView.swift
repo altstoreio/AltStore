@@ -18,6 +18,7 @@ class InstalledAppsCollectionHeaderView: UICollectionReusableView
         self.textLabel = UILabel()
         self.textLabel.translatesAutoresizingMaskIntoConstraints = false
         self.textLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        self.textLabel.accessibilityTraits.insert(.header)
         
         self.button = UIButton(type: .system)
         self.button.translatesAutoresizingMaskIntoConstraints = false

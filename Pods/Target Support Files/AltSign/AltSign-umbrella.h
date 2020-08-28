@@ -11,7 +11,6 @@
 #endif
 
 #import "AltSign.h"
-#import "ALTAppleAPI+Authentication.h"
 #import "ALTAppleAPI.h"
 #import "ALTAppleAPISession.h"
 #import "ALTAppleAPI_Private.h"

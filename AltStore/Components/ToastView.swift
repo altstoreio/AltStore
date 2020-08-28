@@ -31,6 +31,8 @@ class ToastView: RSTToastView
         
         super.init(text: text, detailText: detailedText)
         
+        self.isAccessibilityElement = true
+        
         self.layoutMargins = UIEdgeInsets(top: 8, left: 16, bottom: 10, right: 16)
         self.setNeedsLayout()
         
@@ -104,6 +106,19 @@ class ToastView: RSTToastView
     func show(in viewController: UIViewController)
     {
         self.show(in: viewController.navigationController?.view ?? viewController.view, duration: self.preferredDuration)
+    }
+    
+    override func show(in view: UIView, duration: TimeInterval)
+    {
+        super.show(in: view, duration: duration)
+        
+        let announcement = (self.textLabel.text ?? "") + ". " + (self.detailTextLabel.text ?? "")
+        self.accessibilityLabel = announcement
+        
+        // Minimum 0.75 delay to prevent announcement being cut off by VoiceOver.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
+        }
     }
     
     override func show(in view: UIView)

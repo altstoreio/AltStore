@@ -1,0 +1,6 @@
+module Pods_AltDaemon {
+  umbrella header "Pods-AltDaemon-umbrella.h"
+
+  export *
+  module * { export * }
+}
