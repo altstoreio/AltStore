@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16117.1" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -104,6 +104,7 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="sourceURL" attributeType="URI"/>
@@ -166,7 +167,7 @@
         <element name="NewsItem" positionX="-45" positionY="126" width="128" height="238"/>
         <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
         <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
-        <element name="Source" positionX="-45" positionY="99" width="128" height="118"/>
+        <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
     </elements>
