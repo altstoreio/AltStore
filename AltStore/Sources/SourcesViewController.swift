@@ -13,6 +13,13 @@ import Roxas
 
 class SourcesViewController: UICollectionViewController
 {
+    var deepLinkSourceURL: URL? {
+        didSet {
+            guard let sourceURL = self.deepLinkSourceURL else { return }
+            self.addSource(url: sourceURL)
+        }
+    }
+    
     private lazy var dataSource = self.makeDataSource()
         
     override func viewDidLoad()
@@ -20,6 +27,27 @@ class SourcesViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.collectionView.dataSource = self.dataSource
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        if self.deepLinkSourceURL != nil
+        {
+            self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        
+        if let sourceURL = self.deepLinkSourceURL
+        {
+            self.addSource(url: sourceURL)
+            self.deepLinkSourceURL = nil
+        }
     }
 }
 
@@ -67,26 +95,6 @@ private extension SourcesViewController
 {
     @IBAction func addSource()
     {
-        func addSource(url: URL)
-        {
-            AppManager.shared.fetchSource(sourceURL: url) { (result) in
-                do
-                {
-                    let source = try result.get()
-                    try source.managedObjectContext?.save()
-                }
-                catch let error as NSError
-                {
-                    let error = error.withLocalizedFailure(NSLocalizedString("Could not add source.", comment: ""))
-                    
-                    DispatchQueue.main.async {
-                        let toastView = ToastView(error: error)
-                        toastView.show(in: self)
-                    }
-                }
-            }
-        }
-        
         let alertController = UIAlertController(title: NSLocalizedString("Add Source", comment: ""), message: nil, preferredStyle: .alert)
         alertController.addTextField { (textField) in
             textField.placeholder = "https://apps.altstore.io"
@@ -95,14 +103,77 @@ private extension SourcesViewController
         alertController.addAction(.cancel)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Add", comment: ""), style: .default) { (action) in
             guard let text = alertController.textFields![0].text, let sourceURL = URL(string: text) else { return }
-            addSource(url: sourceURL)
+            self.addSource(url: sourceURL)
         })
         
         self.present(alertController, animated: true, completion: nil)
     }
+
+    func addSource(url: URL)
+    {
+        guard self.view.window != nil else { return }
+        
+        self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
+        
+        func finish(error: Error?)
+        {
+            DispatchQueue.main.async {
+                if let error = error
+                {
+                    self.present(error)
+                }
+                
+                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+            }
+        }
+        
+        AppManager.shared.fetchSource(sourceURL: url) { (result) in
+            do
+            {
+                let source = try result.get()
+                let sourceName = source.name
+                let managedObjectContext = source.managedObjectContext
+                
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName),
+                                                            message: NSLocalizedString("Sources control what apps appear in AltStore. Make sure to only add sources that you trust.", comment: ""), preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
+                        finish(error: nil)
+                    })
+                    alertController.addAction(UIAlertAction(title: UIAlertAction.ok.title, style: UIAlertAction.ok.style) { _ in
+                        managedObjectContext?.perform {
+                            do
+                            {
+                                try managedObjectContext?.save()
+                                finish(error: nil)
+                            }
+                            catch
+                            {
+                                finish(error: error)
+                            }
+                        }
+                    })
+                    self.present(alertController, animated: true, completion: nil)
+                }
+            }
+            catch
+            {
+                finish(error: error)
+            }
+        }
+    }
     
     func present(_ error: Error)
     {
+        if let transitionCoordinator = self.transitionCoordinator
+        {
+            transitionCoordinator.animate(alongsideTransition: nil) { _ in
+                self.present(error)
+            }
+            
+            return
+        }
+        
         let nsError = error as NSError
         let message = nsError.userInfo[NSDebugDescriptionErrorKey] as? String ?? nsError.localizedRecoverySuggestion
         

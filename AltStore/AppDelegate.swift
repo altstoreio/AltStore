@@ -54,11 +54,13 @@ extension AppDelegate
 {
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
     static let importAppDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.ImportAppDeepLinkNotification")
+    static let addSourceDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.AddSourceDeepLinkNotification")
     
     static let appBackupDidFinish = Notification.Name("com.rileytestut.AltStore.AppBackupDidFinish")
     
     static let importAppDeepLinkURLKey = "fileURL"
     static let appBackupResultKey = "result"
+    static let addSourceDeepLinkURLKey = "sourceURL"
 }
 
 @UIApplicationMain
@@ -180,6 +182,16 @@ private extension AppDelegate
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: downloadURL])
+                }
+                
+                return true
+            
+            case "source":
+                let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name.lowercased()] = $1.value } ?? [:]
+                guard let sourceURLString = queryItems["url"], let sourceURL = URL(string: sourceURLString) else { return false }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.addSourceDeepLinkNotification, object: nil, userInfo: [AppDelegate.addSourceDeepLinkURLKey: sourceURL])
                 }
                 
                 return true
