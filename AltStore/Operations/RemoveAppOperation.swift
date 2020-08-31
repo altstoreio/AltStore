@@ -8,8 +8,6 @@
 
 import Foundation
 
-import AltKit
-
 @objc(RemoveAppOperation)
 class RemoveAppOperation: ResultOperation<InstalledApp>
 {

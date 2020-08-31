@@ -9,8 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
-
 class ServerConnection
 {
     var server: Server

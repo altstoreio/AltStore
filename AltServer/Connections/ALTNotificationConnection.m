@@ -7,7 +7,8 @@
 //
 
 #import "ALTNotificationConnection+Private.h"
-#import "AltKit.h"
+
+#import "NSError+ALTServerError.h"
 
 void ALTDeviceReceivedNotification(const char *notification, void *user_data);
 

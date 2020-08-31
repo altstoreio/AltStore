@@ -1,5 +1,5 @@
 //
-//  AltKit.m
+//  ALTConstants.m
 //  AltKit
 //
 //  Created by Riley Testut on 1/10/20.

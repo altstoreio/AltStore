@@ -9,8 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
-
 class ServerManager: NSObject
 {
     static let shared = ServerManager()

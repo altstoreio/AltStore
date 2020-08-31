@@ -9,6 +9,6 @@
 import Foundation
 
 autoreleasepool {
-    ConnectionManager.shared.start()
+    DaemonConnectionManager.shared.start()
     RunLoop.current.run()
 }

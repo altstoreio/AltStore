@@ -9,8 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
-
 private let ReceivedLocalServerConnectionRequest: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void =
 { (center, observer, name, object, userInfo) in
     guard let name = name, let observer = observer else { return }

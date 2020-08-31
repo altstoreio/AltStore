@@ -9,8 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
-
 @objc(SendAppOperation)
 class SendAppOperation: ResultOperation<ServerConnection>
 {

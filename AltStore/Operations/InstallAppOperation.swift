@@ -9,7 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
 import AltSign
 import Roxas
 

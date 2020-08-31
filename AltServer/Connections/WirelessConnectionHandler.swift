@@ -9,8 +9,6 @@
 import Foundation
 import Network
 
-import AltKit
-
 extension WirelessConnectionHandler
 {
     public enum State

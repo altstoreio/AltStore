@@ -7,7 +7,9 @@
 //
 
 #import "ALTWiredConnection+Private.h"
-#import "AltKit.h"
+
+#import "ALTConnection.h"
+#import "NSError+ALTServerError.h"
 
 @implementation ALTWiredConnection
 

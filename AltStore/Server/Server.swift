@@ -8,8 +8,6 @@
 
 import Network
 
-import AltKit
-
 enum ConnectionError: LocalizedError
 {
     case serverNotFound
