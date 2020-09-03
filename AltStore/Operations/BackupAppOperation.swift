@@ -8,6 +8,7 @@
 
 import Foundation
 
+import AltStoreCore
 import AltSign
 
 extension BackupAppOperation

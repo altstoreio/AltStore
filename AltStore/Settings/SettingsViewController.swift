@@ -10,6 +10,8 @@ import UIKit
 import SafariServices
 import MessageUI
 
+import AltStoreCore
+
 extension SettingsViewController
 {
     fileprivate enum Section: Int, CaseIterable

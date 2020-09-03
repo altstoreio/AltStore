@@ -9,9 +9,9 @@
 import UIKit
 import MobileCoreServices
 
-import Roxas
-
+import AltStoreCore
 import AltSign
+import Roxas
 
 import Nuke
 

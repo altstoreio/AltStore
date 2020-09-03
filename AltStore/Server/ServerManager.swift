@@ -9,6 +9,8 @@
 import Foundation
 import Network
 
+import AltStoreCore
+
 class ServerManager: NSObject
 {
     static let shared = ServerManager()

@@ -11,8 +11,8 @@ import UIKit
 import UserNotifications
 import MobileCoreServices
 
+import AltStoreCore
 import AltSign
-
 import Roxas
 
 extension AppManager

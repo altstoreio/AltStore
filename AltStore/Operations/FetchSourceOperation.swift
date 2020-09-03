@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+import AltStoreCore
 import Roxas
 
 @objc(FetchSourceOperation)
@@ -49,7 +50,7 @@ class FetchSourceOperation: ResultOperation<Source>
                 {
                     let (data, _) = try Result((data, response), error).get()
                     
-                    let decoder = JSONDecoder()
+                    let decoder = AltStoreCore.JSONDecoder()
                     decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
                         let container = try decoder.singleValueContainer()
                         let text = try container.decode(String.self)

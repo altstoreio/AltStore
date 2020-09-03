@@ -7,8 +7,9 @@
 //
 
 import UIKit
-import AltSign
 
+import AltStoreCore
+import AltSign
 import Roxas
 
 class RefreshAltStoreViewController: UIViewController

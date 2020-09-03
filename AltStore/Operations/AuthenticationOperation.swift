@@ -10,6 +10,7 @@ import Foundation
 import Roxas
 import Network
 
+import AltStoreCore
 import AltSign
 
 enum AuthenticationError: LocalizedError

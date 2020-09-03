@@ -8,6 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
+
 extension FileManager
 {
     var altstoreSharedDirectory: URL? {

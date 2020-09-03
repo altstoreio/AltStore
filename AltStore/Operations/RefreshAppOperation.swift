@@ -8,8 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
 import AltSign
-
 import Roxas
 
 @objc(RefreshAppOperation)

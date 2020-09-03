@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import Roxas
 
 class AppIDsViewController: UICollectionViewController

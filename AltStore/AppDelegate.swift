@@ -10,6 +10,7 @@ import UIKit
 import UserNotifications
 import AVFoundation
 
+import AltStoreCore
 import AltSign
 import Roxas
 

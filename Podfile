@@ -3,10 +3,9 @@ inhibit_all_warnings!
 target 'AltStore' do
   platform :ios, '12.0'
 
-  use_modular_headers!
+  use_frameworks!
 
   # Pods for AltStore
-  pod 'KeychainAccess', '~> 3.2.0'
   pod 'Nuke', '~> 7.0'
   pod 'AppCenter', '~> 3.1.0'
   pod 'Roxas', :path => 'Dependencies/Roxas'
@@ -21,6 +20,17 @@ target 'AltServer' do
   # Pods for AltServer
   pod 'STPrivilegedTask', :git => 'https://github.com/rileytestut/STPrivilegedTask.git'
   pod 'Sparkle'
+
+end
+
+target 'AltStoreCore' do
+  platform :ios, '12.0'
+
+  use_frameworks!
+
+  # Pods for AltServer
+  pod 'KeychainAccess', '~> 3.2.0'
+  pod 'Roxas', :path => 'Dependencies/Roxas'
 
 end
 

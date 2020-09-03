@@ -8,6 +8,8 @@
 
 import Roxas
 
+import AltStoreCore
+
 extension TimeInterval
 {
     static let shortToastViewDuration = 4.0

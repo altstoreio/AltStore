@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
-               BuildableName = "libPods-AltStore.a"
+               BuildableName = "Pods_AltStore.framework"
                BlueprintName = "Pods-AltStore"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
@@ -44,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
-            BuildableName = "libPods-AltStore.a"
+            BuildableName = "Pods_AltStore.framework"
             BlueprintName = "Pods-AltStore"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
@@ -60,7 +60,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7083360F3F274C756CA77375F9D2A2BD"
-            BuildableName = "libPods-AltStore.a"
+            BuildableName = "Pods_AltStore.framework"
             BlueprintName = "Pods-AltStore"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>

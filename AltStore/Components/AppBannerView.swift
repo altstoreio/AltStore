@@ -7,6 +7,8 @@
 //
 
 import UIKit
+
+import AltStoreCore
 import Roxas
 
 class AppBannerView: RSTNibView

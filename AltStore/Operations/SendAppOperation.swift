@@ -9,6 +9,8 @@
 import Foundation
 import Network
 
+import AltStoreCore
+
 @objc(SendAppOperation)
 class SendAppOperation: ResultOperation<ServerConnection>
 {
