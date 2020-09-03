@@ -3,21 +3,26 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE618FA97EA42C3F468D186 /* libPods-AltStore.a */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
-		BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; };
-		BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF5AB3A72285FE6C00DC914B /* AltSign.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; };
-		BF0201BE22C2EFBC000B93E4 /* openssl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF4713A422976CFC00784A2F /* openssl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF02419422F2156E00129732 /* RefreshAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419322F2156E00129732 /* RefreshAttempt.swift */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
+		BF088D0F25019ABA008082D9 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D0E25019ABA008082D9 /* AltSign-Static */; };
+		BF088D2D2501A18E008082D9 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* AltSign-Dynamic */; };
+		BF088D2E2501A18E008082D9 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
+		BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; };
+		BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
+		BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
 		BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */; };
 		BF0E4E5124F99D4000FB5EEC /* AltStore6ToAltStore7.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BF0E4E5024F99D4000FB5EEC /* AltStore6ToAltStore7.xcmappingmodel */; };
@@ -139,8 +144,8 @@
 		BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAD2429597900125131 /* BannerCollectionViewCell.swift */; };
 		BF6C8FB02429599900125131 /* TextCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAF2429599900125131 /* TextCollectionReusableView.swift */; };
 		BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */; };
-		BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */; };
-		BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */; };
+		BF718BD123C91BD300A89F2D /* ALTWiredConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD023C91BD300A89F2D /* ALTWiredConnection.mm */; };
+		BF718BD523C928A300A89F2D /* ALTNotificationConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD423C928A300A89F2D /* ALTNotificationConnection.mm */; };
 		BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */; };
 		BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5022BB1CF6002A40FE /* InstallAppOperation.swift */; };
 		BF770E5422BC044E002A40FE /* OperationContexts.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF770E5322BC044E002A40FE /* OperationContexts.swift */; };
@@ -322,9 +327,21 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */,
-				BF0201BE22C2EFBC000B93E4 /* openssl.framework in Embed Frameworks */,
+				BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
 				BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */,
+				BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF088D2B2501A087008082D9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
+				BF088D2E2501A18E008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,6 +369,7 @@
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
 		BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF088D322501A4FF008082D9 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		BF0E4E4F24F99C0200FB5EEC /* AltStore 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 7.xcdatamodel"; sourceTree = "<group>"; };
@@ -509,10 +527,10 @@
 		BF718BC723C919CC00A89F2D /* CFNotificationName+AltStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFNotificationName+AltStore.h"; sourceTree = "<group>"; };
 		BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CFNotificationName+AltStore.m"; sourceTree = "<group>"; };
 		BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWiredConnection.h; sourceTree = "<group>"; };
-		BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWiredConnection.m; sourceTree = "<group>"; };
+		BF718BD023C91BD300A89F2D /* ALTWiredConnection.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ALTWiredConnection.mm; sourceTree = "<group>"; };
 		BF718BD223C91C7000A89F2D /* ALTWiredConnection+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ALTWiredConnection+Private.h"; sourceTree = "<group>"; };
 		BF718BD323C928A300A89F2D /* ALTNotificationConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTNotificationConnection.h; sourceTree = "<group>"; };
-		BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTNotificationConnection.m; sourceTree = "<group>"; };
+		BF718BD423C928A300A89F2D /* ALTNotificationConnection.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ALTNotificationConnection.mm; sourceTree = "<group>"; };
 		BF718BD623C92B3700A89F2D /* ALTNotificationConnection+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ALTNotificationConnection+Private.h"; sourceTree = "<group>"; };
 		BF718BD723C93DB700A89F2D /* ALTConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTConstants.m; sourceTree = "<group>"; };
 		BF74989A23621C0700CED65F /* ForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardingNavigationController.swift; sourceTree = "<group>"; };
@@ -667,6 +685,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFB988A976C401E5710498B7 /* libPods-AltDaemon.a in Frameworks */,
+				BF088D0F25019ABA008082D9 /* AltSign-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,11 +693,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
 				BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
-				BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */,
-				BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */,
+				BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */,
 				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,6 +721,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */,
+				BF088D2D2501A18E008082D9 /* AltSign-Dynamic in Frameworks */,
 				01100C7036F0EBAC5B30984B /* libPods-AltStore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1181,6 +1202,7 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF088D322501A4FF008082D9 /* OpenSSL.xcframework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
 				BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */,
 				BF9B63C5229DD44D002F0A62 /* AltSign.framework */,
@@ -1296,10 +1318,10 @@
 				BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */,
 				BF718BCF23C91BD300A89F2D /* ALTWiredConnection.h */,
 				BF718BD223C91C7000A89F2D /* ALTWiredConnection+Private.h */,
-				BF718BD023C91BD300A89F2D /* ALTWiredConnection.m */,
+				BF718BD023C91BD300A89F2D /* ALTWiredConnection.mm */,
 				BF718BD323C928A300A89F2D /* ALTNotificationConnection.h */,
 				BF718BD623C92B3700A89F2D /* ALTNotificationConnection+Private.h */,
-				BF718BD423C928A300A89F2D /* ALTNotificationConnection.m */,
+				BF718BD423C928A300A89F2D /* ALTNotificationConnection.mm */,
 			);
 			path = Connections;
 			sourceTree = "<group>";
@@ -1477,6 +1499,9 @@
 			dependencies = (
 			);
 			name = AltDaemon;
+			packageProductDependencies = (
+				BF088D0E25019ABA008082D9 /* AltSign-Static */,
+			);
 			productName = AltDaemon;
 			productReference = BF18BFE724857D7900DD5981 /* AltDaemon */;
 			productType = "com.apple.product-type.library.dynamic";
@@ -1501,6 +1526,9 @@
 				BF4588452298D48B00BD7491 /* PBXTargetDependency */,
 			);
 			name = AltServer;
+			packageProductDependencies = (
+				BF088D352501A821008082D9 /* AltSign-Dynamic */,
+			);
 			productName = AltServer;
 			productReference = BF45868D229872EA00BD7491 /* AltServer.app */;
 			productType = "com.apple.product-type.application";
@@ -1566,12 +1594,16 @@
 				BFD247672284B9A500981D42 /* Frameworks */,
 				BFD247682284B9A500981D42 /* Resources */,
 				8C9013C41DD92A1476195C0E /* [CP] Copy Pods Resources */,
+				BF088D2B2501A087008082D9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = AltStore;
+			packageProductDependencies = (
+				BF088D2C2501A18E008082D9 /* AltSign-Dynamic */,
+			);
 			productName = AltStore;
 			productReference = BFD2476A2284B9A500981D42 /* AltStore.app */;
 			productType = "com.apple.product-type.application";
@@ -1893,9 +1925,9 @@
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
 				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
 				BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */,
-				BF718BD523C928A300A89F2D /* ALTNotificationConnection.m in Sources */,
+				BF718BD523C928A300A89F2D /* ALTNotificationConnection.mm in Sources */,
 				BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */,
-				BF718BD123C91BD300A89F2D /* ALTWiredConnection.m in Sources */,
+				BF718BD123C91BD300A89F2D /* ALTWiredConnection.mm in Sources */,
 				BFECAC8524FD950B0077C41F /* Connection.swift in Sources */,
 				BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */,
 				BFECAC8424FD950B0077C41F /* ALTConstants.m in Sources */,
@@ -2192,11 +2224,14 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Roxas\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/ios/lib\"",
+				);
 				MACH_O_TYPE = mh_execute;
 				OTHER_LDFLAGS = (
 					"-ObjC",
-					"-lRoxas",
-					"-lAltSign",
 					"-lc++",
 					"-lcrypto",
 					"-lssl",
@@ -2233,11 +2268,14 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Roxas\"",
+					"\"$(SRCROOT)/Dependencies/AltSign/Dependencies/OpenSSL/ios/lib\"",
+				);
 				MACH_O_TYPE = mh_execute;
 				OTHER_LDFLAGS = (
 					"-ObjC",
-					"-lRoxas",
-					"-lAltSign",
 					"-lc++",
 					"-lcrypto",
 					"-lssl",
@@ -2582,6 +2620,10 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-module-import-in-extern-c",
+				);
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -2638,6 +2680,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-module-import-in-extern-c",
+				);
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2769,6 +2815,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BF088D0E25019ABA008082D9 /* AltSign-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "AltSign-Static";
+		};
+		BF088D2C2501A18E008082D9 /* AltSign-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "AltSign-Dynamic";
+		};
+		BF088D352501A821008082D9 /* AltSign-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "AltSign-Dynamic";
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		BFBBE2DB22931B20002097FA /* AltStore.xcdatamodeld */ = {

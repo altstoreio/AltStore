@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AltSign/AltSign.h>
+#import "AltSign.h"
 
 @class ALTWiredConnection;
 @class ALTNotificationConnection;
