@@ -67,14 +67,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ALTDeviceManager.shared.start()
         
         let item = NSStatusBar.system.statusItem(withLength: -1)
-        guard let button = item.button else { return }
-        
-        button.image = NSImage(named: "MenuBarIcon")
-        button.target = self
-        button.action = #selector(AppDelegate.presentMenu)
-        
+        item.menu = self.appMenu
+        item.button?.image = NSImage(named: "MenuBarIcon") 
         self.statusItem = item
         
+        self.appMenu.delegate = self
         self.connectedDevicesMenu.delegate = self
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { (success, error) in
@@ -102,40 +99,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 private extension AppDelegate
 {
-    @objc func presentMenu()
-    {
-        guard let button = self.statusItem?.button, let superview = button.superview, let window = button.window else { return }
-        
-        self.connectedDevices = ALTDeviceManager.shared.availableDevices
-        
-        self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
-        self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
-        
-        if self.isMailPluginInstalled
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
-        }
-        else
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in", comment: "")
-        }
-
-        self.installMailPluginMenuItem.target = self
-        self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
-                
-        let x = button.frame.origin.x
-        let y = button.frame.origin.y - 5
-        
-        let location = superview.convert(NSMakePoint(x, y), to: nil)
-
-        guard let event = NSEvent.mouseEvent(with: .leftMouseUp, location: location,
-                                             modifierFlags: [], timestamp: 0, windowNumber: window.windowNumber, context: nil,
-                                             eventNumber: 0, clickCount: 1, pressure: 0)
-        else { return }
-        
-        NSMenu.popUpContextMenu(self.appMenu, with: event, for: button)
-    }
-    
     @objc func installAltStore(_ item: NSMenuItem)
     {
         guard case let index = self.connectedDevicesMenu.index(of: item), index != -1 else { return }
@@ -260,15 +223,6 @@ private extension AppDelegate
     
     @objc func toggleLaunchAtLogin(_ item: NSMenuItem)
     {
-        if item.state == .on
-        {
-            item.state = .off
-        }
-        else
-        {
-            item.state = .on
-        }
-        
         LaunchAtLogin.isEnabled.toggle()
     }
     
@@ -483,13 +437,40 @@ private extension AppDelegate
 
 extension AppDelegate: NSMenuDelegate
 {
+    
+    func menuWillOpen(_ menu: NSMenu)
+    {
+        guard menu == self.appMenu else { return }
+
+        self.connectedDevices = ALTDeviceManager.shared.connectedDevices
+
+        self.launchAtLoginMenuItem.target = self
+        self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
+        self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
+
+        if self.isMailPluginInstalled
+        {
+            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
+        }
+        else
+        {
+            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in", comment: "")
+        }
+        self.installMailPluginMenuItem.target = self
+        self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
+    }
+
     func numberOfItems(in menu: NSMenu) -> Int
     {
+        guard menu == self.connectedDevicesMenu else { return -1 }
+        
         return self.connectedDevices.isEmpty ? 1 : self.connectedDevices.count
     }
     
     func menu(_ menu: NSMenu, update item: NSMenuItem, at index: Int, shouldCancel: Bool) -> Bool
     {
+        guard menu == self.connectedDevicesMenu else { return false }
+        
         if self.connectedDevices.isEmpty
         {
             item.title = NSLocalizedString("No Connected Devices", comment: "")
