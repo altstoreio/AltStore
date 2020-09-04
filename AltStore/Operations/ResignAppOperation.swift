@@ -113,15 +113,24 @@ private extension ResignAppOperation
             
             infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
             infoDictionary[Bundle.Info.altBundleID] = identifier
-            
+
             for (key, value) in additionalInfoDictionaryValues
             {
                 infoDictionary[key] = value
             }
-            
+
             if let appGroups = profile.entitlements[.appGroups] as? [String]
             {
                 infoDictionary[Bundle.Info.appGroups] = appGroups
+
+                // To keep file providers working, remap the NSExtensionFileProviderDocumentGroup, if there is one.
+                if var extensionInfo = infoDictionary["NSExtension"] as? [String: Any],
+                    let appGroup = extensionInfo["NSExtensionFileProviderDocumentGroup"] as? String,
+                    let localAppGroup = appGroups.filter({ $0.starts(with: appGroup + ".") }).min(by: { $0.count < $1.count })
+                {
+                    extensionInfo["NSExtensionFileProviderDocumentGroup"] = localAppGroup
+                    infoDictionary["NSExtension"] = extensionInfo
+                }
             }
             
             // Add app-specific exported UTI so we can check later if this app (extension) is installed or not.
