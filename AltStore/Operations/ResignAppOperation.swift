@@ -126,7 +126,7 @@ private extension ResignAppOperation
                 // To keep file providers working, remap the NSExtensionFileProviderDocumentGroup, if there is one.
                 if var extensionInfo = infoDictionary["NSExtension"] as? [String: Any],
                     let appGroup = extensionInfo["NSExtensionFileProviderDocumentGroup"] as? String,
-                    let localAppGroup = appGroups.filter({ $0.starts(with: appGroup + ".") }).min(by: { $0.count < $1.count })
+                    let localAppGroup = appGroups.filter({ $0.contains(appGroup) }).min(by: { $0.count < $1.count })
                 {
                     extensionInfo["NSExtensionFileProviderDocumentGroup"] = localAppGroup
                     infoDictionary["NSExtension"] = extensionInfo
