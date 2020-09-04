@@ -68,11 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let item = NSStatusBar.system.statusItem(withLength: -1)
         item.menu = self.appMenu
-        item.button?.image = NSImage(named: "MenuBarIcon")
-        if let button = item.button
-        {
-            button.image = NSImage(named: "MenuBarIcon")
-        }
+        item.button?.image = NSImage(named: "MenuBarIcon") 
         self.statusItem = item
         
         self.appMenu.delegate = self
