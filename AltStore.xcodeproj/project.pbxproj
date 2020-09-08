@@ -703,6 +703,7 @@
 		BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WirelessConnectionHandler.swift; sourceTree = "<group>"; };
 		BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTServerError+Conveniences.swift"; sourceTree = "<group>"; };
 		BFF767CD2489ABE90097E58C /* NetworkConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnection.swift; sourceTree = "<group>"; };
+		BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 8.xcdatamodel"; sourceTree = "<group>"; };
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
 		C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA55288EC4433117304BAF39 /* Pods-AltDaemon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltDaemon.debug.xcconfig"; path = "Target Support Files/Pods-AltDaemon/Pods-AltDaemon.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3104,6 +3105,7 @@
 		BF66EEB72501AECA007EE018 /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */,
 				BF66EEB82501AECA007EE018 /* AltStore 3.xcdatamodel */,
 				BF66EEB92501AECA007EE018 /* AltStore.xcdatamodel */,
 				BF66EEBA2501AECA007EE018 /* AltStore 6.xcdatamodel */,
@@ -3112,7 +3114,7 @@
 				BF66EEBD2501AECA007EE018 /* AltStore 2.xcdatamodel */,
 				BF66EEBE2501AECA007EE018 /* AltStore 4.xcdatamodel */,
 			);
-			currentVersion = BF66EEBC2501AECA007EE018 /* AltStore 7.xcdatamodel */;
+			currentVersion = BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
