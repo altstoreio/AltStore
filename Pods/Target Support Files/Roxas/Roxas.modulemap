@@ -1,5 +1,5 @@
 module Roxas {
-  umbrella header "Roxas-library-umbrella.h"
+  umbrella header "Roxas-umbrella.h"
 
   export *
   module * { export * }

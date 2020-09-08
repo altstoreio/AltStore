@@ -26,6 +26,8 @@
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
 		BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */; };
 		BF10EB34248730750055E6DB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB33248730750055E6DB /* main.swift */; };
+		BF1614F1250822F100767AEA /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
+		BF1614F2250822F100767AEA /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */; };
 		BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* RequestHandler.swift */; };
@@ -365,6 +367,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BF1614F2250822F100767AEA /* Roxas.framework in Embed Frameworks */,
 				BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
 				BF088D2E2501A18E008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 				BF66EE862501AE50007EE018 /* AltStoreCore.framework in Embed Frameworks */,
@@ -401,6 +404,7 @@
 		BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalConnectionHandler.swift; sourceTree = "<group>"; };
 		BF10EB33248730750055E6DB /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		BF1614EE250822B400767AEA /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF18B0F022E25DF9005C4CF5 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		BF18BFE724857D7900DD5981 /* AltDaemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = AltDaemon; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF18BFF22485828200DD5981 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
@@ -769,6 +773,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF1614F1250822F100767AEA /* Roxas.framework in Frameworks */,
 				BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */,
 				BF088D2D2501A18E008082D9 /* AltSign-Dynamic in Frameworks */,
@@ -1339,6 +1344,7 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF1614EE250822B400767AEA /* Roxas.framework */,
 				BF088D322501A4FF008082D9 /* OpenSSL.xcframework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
 				BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */,
