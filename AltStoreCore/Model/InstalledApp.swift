@@ -43,6 +43,9 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     
     @NSManaged public var certificateSerialNumber: String?
     
+    /* Transient */
+    @NSManaged public var isRefreshing: Bool
+    
     /* Relationships */
     @NSManaged public var storeApp: StoreApp?
     @NSManaged public var team: Team?
