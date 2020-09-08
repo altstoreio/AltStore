@@ -14,13 +14,13 @@
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
 		BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858422DE7EC800DE9F1E /* UpdateCollectionViewCell.swift */; };
-		BF088D0F25019ABA008082D9 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D0E25019ABA008082D9 /* SwiftPackageProductDependency */; };
-		BF088D2D2501A18E008082D9 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* SwiftPackageProductDependency */; };
-		BF088D2E2501A18E008082D9 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* SwiftPackageProductDependency */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BF088D0F25019ABA008082D9 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D0E25019ABA008082D9 /* AltSign-Static */; };
+		BF088D2D2501A18E008082D9 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* AltSign-Dynamic */; };
+		BF088D2E2501A18E008082D9 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D2C2501A18E008082D9 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
 		BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BF088D362501A821008082D9 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* SwiftPackageProductDependency */; };
-		BF088D372501A821008082D9 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* SwiftPackageProductDependency */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; };
+		BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
 		BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
@@ -168,7 +168,7 @@
 		BF66EEE92501AED0007EE018 /* JSONDecoder+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EEE52501AED0007EE018 /* JSONDecoder+Properties.swift */; };
 		BF66EEEA2501AED0007EE018 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EEE62501AED0007EE018 /* UIColor+Hex.swift */; };
 		BF66EEEB2501AED0007EE018 /* UIApplication+AppExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EEE72501AED0007EE018 /* UIApplication+AppExtension.swift */; };
-		BF66EEF12501AF9D007EE018 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = BF66EEF02501AF9D007EE018 /* SwiftPackageProductDependency */; };
+		BF66EEF12501AF9D007EE018 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF66EEF02501AF9D007EE018 /* AltSign-Dynamic */; };
 		BF6A5320246DC1B0004F59C8 /* FileManager+SharedDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */; };
 		BF6C336224197D700034FD24 /* NSError+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+AltStore.swift */; };
 		BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6C8FAA242935ED00125131 /* NSAttributedString+Markdown.m */; };
@@ -273,6 +273,7 @@
 		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
 		BFDB6A0F22AB2776007EA6D6 /* SendAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */; };
 		BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */; };
+		BFE00A202503097F00EB4D0C /* INInteraction+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */; };
 		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
 		BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE48974238007CE003239E0 /* AnisetteDataManager.swift */; };
@@ -305,6 +306,9 @@
 		BFECAC9424FD98BA0077C41F /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
 		BFECAC9524FD98BB0077C41F /* CFNotificationName+AltStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BC823C919E300A89F2D /* CFNotificationName+AltStore.m */; };
 		BFECAC9624FD98BB0077C41F /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
+		BFF00D302501BD7D00746320 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */; };
+		BFF00D322501BDA100746320 /* BackgroundRefreshAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */; };
+		BFF00D342501BDCF00746320 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D332501BDCF00746320 /* IntentHandler.swift */; };
 		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
 		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
 		BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */; };
@@ -350,7 +354,7 @@
 			files = (
 				BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
 				BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */,
-				BF088D372501A821008082D9 /* BuildFile in Embed Frameworks */,
+				BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -362,7 +366,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
-				BF088D2E2501A18E008082D9 /* BuildFile in Embed Frameworks */,
+				BF088D2E2501A18E008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 				BF66EE862501AE50007EE018 /* AltStoreCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -675,6 +679,7 @@
 		BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationError.swift; sourceTree = "<group>"; };
 		BFDB6A0E22AB2776007EA6D6 /* SendAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAppOperation.swift; sourceTree = "<group>"; };
 		BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppBackupOperation.swift; sourceTree = "<group>"; };
+		BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "INInteraction+AltStore.swift"; sourceTree = "<group>"; };
 		BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSourceOperation.swift; sourceTree = "<group>"; };
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BFE48974238007CE003239E0 /* AnisetteDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
@@ -685,6 +690,9 @@
 		BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderFooterView.swift; sourceTree = "<group>"; };
 		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
+		BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshAppsOperation.swift; sourceTree = "<group>"; };
+		BFF00D332501BDCF00746320 /* IntentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		BFF0B68D23219520007A79E1 /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
 		BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonComponents.swift; sourceTree = "<group>"; };
 		BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutPatreonHeaderView.xib; sourceTree = "<group>"; };
@@ -715,7 +723,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFB988A976C401E5710498B7 /* libPods-AltDaemon.a in Frameworks */,
-				BF088D0F25019ABA008082D9 /* BuildFile in Frameworks */,
+				BF088D0F25019ABA008082D9 /* AltSign-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,7 +735,7 @@
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
 				BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
-				BF088D362501A821008082D9 /* BuildFile in Frameworks */,
+				BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */,
 				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -751,7 +759,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF66EEF12501AF9D007EE018 /* BuildFile in Frameworks */,
+				BF66EEF12501AF9D007EE018 /* AltSign-Dynamic in Frameworks */,
 				0E33F94B8D78AB969FD309A3 /* Pods_AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -762,7 +770,7 @@
 			files = (
 				BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */,
-				BF088D2D2501A18E008082D9 /* BuildFile in Frameworks */,
+				BF088D2D2501A18E008082D9 /* AltSign-Dynamic in Frameworks */,
 				2A77E3D272F3D92436FAC272 /* Pods_AltStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1315,6 +1323,7 @@
 				BFC84A4B2421A13000853474 /* Sources */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BF0DCA642433BDE200E3A595 /* Analytics */,
+				BFF00D2E2501BD4B00746320 /* Intents */,
 				BFDB6A0922AAEDA1007EA6D6 /* Operations */,
 				BFD2478D2284C4C700981D42 /* Components */,
 				BF3D648922E79A7700E9056B /* Types */,
@@ -1407,6 +1416,7 @@
 				BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */,
 				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
 				BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */,
+				BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1467,6 +1477,7 @@
 				BF44EEFB246B4550002A52F2 /* RemoveAppOperation.swift */,
 				BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */,
 				BFDBBD7F246CB84F004ED2F3 /* RemoveAppBackupOperation.swift */,
+				BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1480,6 +1491,15 @@
 				BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		BFF00D2E2501BD4B00746320 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */,
+				BFF00D332501BDCF00746320 /* IntentHandler.swift */,
+			);
+			path = Intents;
 			sourceTree = "<group>";
 		};
 		BFF767C32489A6800097E58C /* Extensions */ = {
@@ -1595,7 +1615,7 @@
 			);
 			name = AltDaemon;
 			packageProductDependencies = (
-				BF088D0E25019ABA008082D9 /* SwiftPackageProductDependency */,
+				BF088D0E25019ABA008082D9 /* AltSign-Static */,
 			);
 			productName = AltDaemon;
 			productReference = BF18BFE724857D7900DD5981 /* AltDaemon */;
@@ -1622,7 +1642,7 @@
 			);
 			name = AltServer;
 			packageProductDependencies = (
-				BF088D352501A821008082D9 /* SwiftPackageProductDependency */,
+				BF088D352501A821008082D9 /* AltSign-Dynamic */,
 			);
 			productName = AltServer;
 			productReference = BF45868D229872EA00BD7491 /* AltServer.app */;
@@ -1696,7 +1716,7 @@
 			);
 			name = AltStoreCore;
 			packageProductDependencies = (
-				BF66EEF02501AF9D007EE018 /* SwiftPackageProductDependency */,
+				BF66EEF02501AF9D007EE018 /* AltSign-Dynamic */,
 			);
 			productName = AltStoreCore;
 			productReference = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */;
@@ -1720,7 +1740,7 @@
 			);
 			name = AltStore;
 			packageProductDependencies = (
-				BF088D2C2501A18E008082D9 /* SwiftPackageProductDependency */,
+				BF088D2C2501A18E008082D9 /* AltSign-Dynamic */,
 			);
 			productName = AltStore;
 			productReference = BFD2476A2284B9A500981D42 /* AltStore.app */;
@@ -2254,9 +2274,11 @@
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
 				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
+				BFF00D302501BD7D00746320 /* Intents.intentdefinition in Sources */,
 				BF6C336224197D700034FD24 /* NSError+AltStore.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
+				BFE00A202503097F00EB4D0C /* INInteraction+AltStore.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
 				BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */,
@@ -2286,8 +2308,10 @@
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */,
+				BFF00D322501BDA100746320 /* BackgroundRefreshAppsOperation.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
 				BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */,
+				BFF00D342501BDCF00746320 /* IntentHandler.swift in Sources */,
 				BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
 				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
@@ -3058,19 +3082,19 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BF088D0E25019ABA008082D9 /* SwiftPackageProductDependency */ = {
+		BF088D0E25019ABA008082D9 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Static";
 		};
-		BF088D2C2501A18E008082D9 /* SwiftPackageProductDependency */ = {
+		BF088D2C2501A18E008082D9 /* AltSign-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Dynamic";
 		};
-		BF088D352501A821008082D9 /* SwiftPackageProductDependency */ = {
+		BF088D352501A821008082D9 /* AltSign-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Dynamic";
 		};
-		BF66EEF02501AF9D007EE018 /* SwiftPackageProductDependency */ = {
+		BF66EEF02501AF9D007EE018 /* AltSign-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Dynamic";
 		};

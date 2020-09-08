@@ -499,6 +499,17 @@ extension AppManager
     }
 }
 
+extension AppManager
+{
+    func backgroundRefresh(_ installedApps: [InstalledApp], presentsNotifications: Bool = true, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
+    {
+        let backgroundRefreshAppsOperation = BackgroundRefreshAppsOperation(installedApps: installedApps)
+        backgroundRefreshAppsOperation.resultHandler = completionHandler
+        backgroundRefreshAppsOperation.presentsFinishedNotification = presentsNotifications
+        self.run([backgroundRefreshAppsOperation], context: nil)
+    }
+}
+
 private extension AppManager
 {
     enum AppOperation

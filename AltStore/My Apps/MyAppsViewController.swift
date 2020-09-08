@@ -8,6 +8,7 @@
 
 import UIKit
 import MobileCoreServices
+import Intents
 
 import AltStoreCore
 import AltSign
@@ -651,6 +652,15 @@ private extension MyAppsViewController
             DispatchQueue.main.async {
                 self.isRefreshingAllApps = false
                 self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
+            }
+        }
+        
+        if #available(iOS 14, *)
+        {
+            let interaction = INInteraction.refreshAllApps()
+            interaction.donate { (error) in
+                guard let error = error else { return }
+                print("Failed to donate intent \(interaction.intent).", error)
             }
         }
     }
