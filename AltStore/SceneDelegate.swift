@@ -20,6 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        if let context = connectionOptions.urlContexts.first
+        {
+            self.open(context)
+        }
     }
 
     func sceneWillEnterForeground(_ scene: UIScene)
@@ -48,5 +53,82 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         guard UIApplication.shared.applicationState == .background else { return }
         
         ServerManager.shared.stopDiscovering()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
+    {
+        guard let context = URLContexts.first else { return }
+        self.open(context)
+    }
+}
+
+@available(iOS 13.0, *)
+private extension SceneDelegate
+{
+    func open(_ context: UIOpenURLContext)
+    {
+        if context.url.isFileURL
+        {
+            guard context.url.pathExtension.lowercased() == "ipa" else { return }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
+            }
+        }
+        else
+        {
+            guard let components = URLComponents(url: context.url, resolvingAgainstBaseURL: false) else { return }
+            guard let host = components.host?.lowercased() else { return }
+            
+            switch host
+            {
+            case "patreon":
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                }
+                
+            case "appbackupresponse":
+                let result: Result<Void, Error>
+                
+                switch context.url.path.lowercased()
+                {
+                case "/success": result = .success(())
+                case "/failure":
+                    let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name] = $1.value } ?? [:]
+                    guard
+                        let errorDomain = queryItems["errorDomain"],
+                        let errorCodeString = queryItems["errorCode"], let errorCode = Int(errorCodeString),
+                        let errorDescription = queryItems["errorDescription"]
+                    else { return }
+                    
+                    let error = NSError(domain: errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+                    result = .failure(error)
+                    
+                default: return
+                }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.appBackupDidFinish, object: nil, userInfo: [AppDelegate.appBackupResultKey: result])
+                }
+                
+            case "install":
+                let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name.lowercased()] = $1.value } ?? [:]
+                guard let downloadURLString = queryItems["url"], let downloadURL = URL(string: downloadURLString) else { return }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: downloadURL])
+                }
+            
+            case "source":
+                let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name.lowercased()] = $1.value } ?? [:]
+                guard let sourceURLString = queryItems["url"], let sourceURL = URL(string: sourceURLString) else { return }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.addSourceDeepLinkNotification, object: nil, userInfo: [AppDelegate.addSourceDeepLinkURLKey: sourceURL])
+                }
+                
+            default: break
+            }
+        }
     }
 }
