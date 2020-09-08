@@ -34,8 +34,9 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
             completion(RefreshAllIntentResponse(code: .ready, userActivity: nil))
         }
         
-        // Give ourselves 5 extra seconds before starting timeout timer.
-        self.queue.asyncAfter(deadline: .now() + 5.0) {
+        // Give ourselves 9 extra seconds before starting handle() timeout timer.
+        // 10 seconds or longer results in timeout regardless.
+        self.queue.asyncAfter(deadline: .now() + 9.0) {
             self.finish(intent, response: RefreshAllIntentResponse(code: .ready, userActivity: nil))
         }
         
