@@ -5,4 +5,9 @@
 #import "ALTDeviceManager.h"
 #import "ALTWiredConnection.h"
 #import "ALTNotificationConnection.h"
-#import "AltKit.h"
+
+// Shared
+#import "ALTConstants.h"
+#import "ALTConnection.h"
+#import "NSError+ALTServerError.h"
+#import "CFNotificationName+AltStore.h"

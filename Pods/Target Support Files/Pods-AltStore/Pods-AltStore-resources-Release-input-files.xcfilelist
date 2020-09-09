@@ -1,4 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-resources.sh
-${PODS_ROOT}/../Dependencies/AltSign/AltSign/Resources/apple.pem
 ${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTCollectionViewCell.xib
 ${PODS_ROOT}/../Dependencies/Roxas/Roxas/RSTPlaceholderView.xib

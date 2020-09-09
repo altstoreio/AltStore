@@ -7,21 +7,20 @@
 //
 
 import Foundation
-import AltKit
 
-typealias ConnectionManager = AltKit.ConnectionManager<RequestHandler>
+typealias DaemonConnectionManager = ConnectionManager<DaemonRequestHandler>
 
-private let connectionManager = ConnectionManager(requestHandler: RequestHandler(),
+private let connectionManager = ConnectionManager(requestHandler: DaemonRequestHandler(),
                                                   connectionHandlers: [LocalConnectionHandler()])
 
-extension ConnectionManager
+extension DaemonConnectionManager
 {
     static var shared: ConnectionManager {
         return connectionManager
     }
 }
 
-struct RequestHandler: AltKit.RequestHandler
+struct DaemonRequestHandler: RequestHandler
 {
     func handleAnisetteDataRequest(_ request: AnisetteDataRequest, for connection: Connection, completionHandler: @escaping (Result<AnisetteDataResponse, Error>) -> Void)
     {

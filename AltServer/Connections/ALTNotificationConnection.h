@@ -6,7 +6,7 @@
 //  Copyright © 2020 Riley Testut. All rights reserved.
 //
 
-#import <AltSign/AltSign.h>
+#import "AltSign.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -8,9 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
 import AltSign
-import AltKit
-
 import Roxas
 
 @objc(FetchAppIDsOperation)

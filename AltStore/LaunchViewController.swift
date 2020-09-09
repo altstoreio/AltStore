@@ -9,6 +9,8 @@
 import UIKit
 import Roxas
 
+import AltStoreCore
+
 class LaunchViewController: RSTLaunchViewController
 {
     private var didFinishLaunching = false

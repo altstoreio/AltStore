@@ -1,6 +1,7 @@
 CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/AppCenter
 FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+OTHER_LDFLAGS = $(inherited) -l"c++" -l"sqlite3" -l"z" -framework "CoreTelephony" -framework "Foundation" -framework "SystemConfiguration" -framework "UIKit"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_ROOT = ${SRCROOT}

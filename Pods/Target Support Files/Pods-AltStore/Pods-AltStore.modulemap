@@ -1,4 +1,4 @@
-module Pods_AltStore {
+framework module Pods_AltStore {
   umbrella header "Pods-AltStore-umbrella.h"
 
   export *

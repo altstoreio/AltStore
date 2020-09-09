@@ -4,6 +4,12 @@
 
 #import <Foundation/Foundation.h>
 
+// Shared
+#import "ALTConstants.h"
+#import "ALTConnection.h"
+#import "NSError+ALTServerError.h"
+#import "CFNotificationName+AltStore.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AKDevice : NSObject

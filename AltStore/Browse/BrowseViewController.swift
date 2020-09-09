@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import Roxas
 
 import Nuke
@@ -83,6 +84,7 @@ private extension BrowseViewController
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             
+            cell.subtitleLabel.text = app.subtitle
             cell.imageURLs = Array(app.screenshotURLs.prefix(2))
             
             cell.bannerView.configure(for: app)

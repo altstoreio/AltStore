@@ -10,7 +10,7 @@ import Foundation
 import Roxas
 import Network
 
-import AltKit
+import AltStoreCore
 import AltSign
 
 enum AuthenticationError: LocalizedError

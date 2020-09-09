@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+import AltStoreCore
 import Roxas
 
 class SourcesViewController: UICollectionViewController

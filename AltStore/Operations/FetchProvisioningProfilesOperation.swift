@@ -7,9 +7,10 @@
 //
 
 import Foundation
-import Roxas
 
+import AltStoreCore
 import AltSign
+import Roxas
 
 @objc(FetchProvisioningProfilesOperation)
 class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioningProfile]>

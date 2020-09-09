@@ -9,6 +9,8 @@
 import Foundation
 import CoreData
 
+import AltStoreCore
+
 extension AppManager
 {
     struct FetchSourcesError: LocalizedError, CustomNSError

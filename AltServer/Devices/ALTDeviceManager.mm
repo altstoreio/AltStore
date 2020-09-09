@@ -8,9 +8,11 @@
 
 #import "ALTDeviceManager.h"
 
-#import "AltKit.h"
 #import "ALTWiredConnection+Private.h"
 #import "ALTNotificationConnection+Private.h"
+
+#import "ALTConstants.h"
+#import "NSError+ALTServerError.h"
 
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>

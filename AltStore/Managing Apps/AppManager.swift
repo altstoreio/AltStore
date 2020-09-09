@@ -10,10 +10,11 @@ import Foundation
 import UIKit
 import UserNotifications
 import MobileCoreServices
+import Intents
+import Combine
 
+import AltStoreCore
 import AltSign
-import AltKit
-
 import Roxas
 
 extension AppManager
@@ -23,15 +24,41 @@ extension AppManager
     static let expirationWarningNotificationID = "altstore-expiration-warning"
 }
 
+@available(iOS 13, *)
+class AppManagerPublisher: ObservableObject
+{
+    @Published
+    fileprivate(set) var installationProgress = [String: Progress]()
+    
+    @Published
+    fileprivate(set) var refreshProgress = [String: Progress]()
+}
+
 class AppManager
 {
     static let shared = AppManager()
     
+    @available(iOS 13, *)
+    private(set) lazy var publisher: AppManagerPublisher = AppManagerPublisher()
+    
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
+
+    private var installationProgress = [String: Progress]() {
+        didSet {
+            guard #available(iOS 13, *) else { return }
+            self.publisher.installationProgress = self.installationProgress
+        }
+    }
+    private var refreshProgress = [String: Progress]() {
+        didSet {
+            guard #available(iOS 13, *) else { return }
+            self.publisher.refreshProgress = self.refreshProgress
+        }
+    }
     
-    private var installationProgress = [String: Progress]()
-    private var refreshProgress = [String: Progress]()
+    @available(iOS 13.0, *)
+    private lazy var cancellables = Set<AnyCancellable>()
     
     private init()
     {
@@ -39,6 +66,28 @@ class AppManager
         
         self.serialOperationQueue.name = "com.altstore.AppManager.serialOperationQueue"
         self.serialOperationQueue.maxConcurrentOperationCount = 1
+        
+        if #available(iOS 13, *)
+        {
+            self.prepareSubscriptions()
+        }
+    }
+    
+    @available(iOS 13, *)
+    func prepareSubscriptions()
+    {
+        self.publisher.$refreshProgress
+            .receive(on: RunLoop.main)
+            .map(\.keys)
+            .flatMap { (bundleIDs) in
+                DatabaseManager.shared.viewContext.registeredObjects.publisher
+                    .compactMap { $0 as? InstalledApp }
+                    .map { ($0, bundleIDs) }
+            }
+            .sink { (installedApp, bundleIDs) in
+                installedApp.isRefreshing = bundleIDs.contains(installedApp.bundleIdentifier)
+            }
+            .store(in: &self.cancellables)
     }
 }
 
@@ -497,6 +546,17 @@ extension AppManager
     {
         let progress = self.refreshProgress[app.bundleIdentifier]
         return progress
+    }
+}
+
+extension AppManager
+{
+    func backgroundRefresh(_ installedApps: [InstalledApp], presentsNotifications: Bool = true, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void)
+    {
+        let backgroundRefreshAppsOperation = BackgroundRefreshAppsOperation(installedApps: installedApps)
+        backgroundRefreshAppsOperation.resultHandler = completionHandler
+        backgroundRefreshAppsOperation.presentsFinishedNotification = presentsNotifications
+        self.run([backgroundRefreshAppsOperation], context: nil)
     }
 }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-import AltKit
+import AltStoreCore
 
 @objc(RemoveAppOperation)
 class RemoveAppOperation: ResultOperation<InstalledApp>

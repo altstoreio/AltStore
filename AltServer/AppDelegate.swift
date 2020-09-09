@@ -63,7 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         UNUserNotificationCenter.current().delegate = self
         
-        ConnectionManager.shared.start()
+        ServerConnectionManager.shared.start()
         ALTDeviceManager.shared.start()
         
         let item = NSStatusBar.system.statusItem(withLength: -1)

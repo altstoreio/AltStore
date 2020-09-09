@@ -7,21 +7,20 @@
 //
 
 import Foundation
-import AltKit
 
-typealias ConnectionManager = AltKit.ConnectionManager<RequestHandler>
+typealias ServerConnectionManager = ConnectionManager<ServerRequestHandler>
 
-private let connectionManager = ConnectionManager(requestHandler: RequestHandler(),
+private let connectionManager = ConnectionManager(requestHandler: ServerRequestHandler(),
                                                   connectionHandlers: [WirelessConnectionHandler(), WiredConnectionHandler()])
 
-extension ConnectionManager
+extension ServerConnectionManager
 {
     static var shared: ConnectionManager {
         return connectionManager
     }
 }
 
-struct RequestHandler: AltKit.RequestHandler
+struct ServerRequestHandler: RequestHandler
 {
     func handleAnisetteDataRequest(_ request: AnisetteDataRequest, for connection: Connection, completionHandler: @escaping (Result<AnisetteDataResponse, Error>) -> Void)
     {
@@ -187,7 +186,7 @@ private extension RequestHandler
         let progress = ALTDeviceManager.shared.installApp(at: fileURL, toDeviceWithUDID: udid, activeProvisioningProfiles: activeProvisioningProfiles) { (success, error) in
             print("Installed app with result:", error == nil ? "Success" : error!.localizedDescription)
             
-            if let error = error.map { ALTServerError($0) }
+            if let error = error.map({ ALTServerError($0) })
             {
                 completionHandler(.failure(error))
             }

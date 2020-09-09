@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 import Network
 
+import AltStoreCore
 import AltSign
 
 class OperationContext
