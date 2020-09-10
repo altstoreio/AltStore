@@ -76,16 +76,19 @@ class AppManager
     @available(iOS 13, *)
     func prepareSubscriptions()
     {
+        /// Every time refreshProgress is changed, update all InstalledApps in memory
+        /// so that app.isRefreshing == refreshProgress.keys.contains(app.bundleID)
+        
         self.publisher.$refreshProgress
             .receive(on: RunLoop.main)
             .map(\.keys)
             .flatMap { (bundleIDs) in
                 DatabaseManager.shared.viewContext.registeredObjects.publisher
                     .compactMap { $0 as? InstalledApp }
-                    .map { ($0, bundleIDs) }
+                    .map { ($0, bundleIDs.contains($0.bundleIdentifier)) }
             }
-            .sink { (installedApp, bundleIDs) in
-                installedApp.isRefreshing = bundleIDs.contains(installedApp.bundleIdentifier)
+            .sink { (installedApp, isRefreshing) in
+                installedApp.isRefreshing = isRefreshing
             }
             .store(in: &self.cancellables)
     }
