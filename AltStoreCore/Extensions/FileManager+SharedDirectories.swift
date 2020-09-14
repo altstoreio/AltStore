@@ -8,9 +8,7 @@
 
 import Foundation
 
-import AltStoreCore
-
-extension FileManager
+public extension FileManager
 {
     var altstoreSharedDirectory: URL? {
         guard let appGroup = Bundle.main.appGroups.first else { return nil }
