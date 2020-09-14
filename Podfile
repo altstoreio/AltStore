@@ -32,16 +32,6 @@ target 'AltStoreCore' do
 
 end
 
-target 'AltDaemon' do
-  platform :ios, '12.0'
-
-  use_modular_headers!
-
-  # Pods for AltDaemon
-  pod 'Roxas', :path => 'Dependencies/Roxas'
-
-end
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
