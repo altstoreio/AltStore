@@ -11,6 +11,20 @@ import CoreData
 import AltSign
 import Roxas
 
+private class PersistentContainer: RSTPersistentContainer
+{
+    override class func defaultDirectoryURL() -> URL
+    {
+        guard let sharedDirectoryURL = FileManager.default.altstoreSharedDirectory else { return super.defaultDirectoryURL() }
+        
+        let databaseDirectoryURL = sharedDirectoryURL.appendingPathComponent("Database")
+        try? FileManager.default.createDirectory(at: databaseDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+        
+        print("Database URL:", databaseDirectoryURL)
+        return databaseDirectoryURL
+    }
+}
+
 public class DatabaseManager
 {
     public static let shared = DatabaseManager()
@@ -21,10 +35,10 @@ public class DatabaseManager
     
     private var startCompletionHandlers = [(Error?) -> Void]()
     private let dispatchQueue = DispatchQueue(label: "io.altstore.DatabaseManager")
-    
+        
     private init()
     {
-        self.persistentContainer = RSTPersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
+        self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
     }
 }
@@ -132,6 +146,8 @@ private extension DatabaseManager
 {
     func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
+        guard !Bundle.isAppExtension() else { return completionHandler(.success(())) }
+        
         let context = self.persistentContainer.newBackgroundContext()
         context.performAndWait {
             guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
@@ -260,8 +276,8 @@ private extension DatabaseManager
                 // This most likely means we've refreshed the app since then, and profile is now outdated,
                 // so use cached dates instead (i.e. not the dates updated from provisioning profile).
                 
-                installedApp.refreshedDate = cachedRefreshedDate
-                installedApp.expirationDate = cachedExpirationDate
+//                installedApp.refreshedDate = cachedRefreshedDate
+//                installedApp.expirationDate = cachedExpirationDate
             }
             
             do

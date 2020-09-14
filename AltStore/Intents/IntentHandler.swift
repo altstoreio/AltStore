@@ -10,14 +10,15 @@ import Foundation
 
 import AltStoreCore
 
-class IntentHandler: NSObject, RefreshAllIntentHandling
+@available(iOS 14, *)
+public class IntentHandler: NSObject, RefreshAllIntentHandling
 {
     private let queue = DispatchQueue(label: "io.altstore.IntentHandler")
     
     private var completionHandlers = [RefreshAllIntent: (RefreshAllIntentResponse) -> Void]()
     private var queuedResponses = [RefreshAllIntent: RefreshAllIntentResponse]()
     
-    func confirm(intent: RefreshAllIntent, completion: @escaping (RefreshAllIntentResponse) -> Void)
+    public func confirm(intent: RefreshAllIntent, completion: @escaping (RefreshAllIntentResponse) -> Void)
     {
         // Refreshing apps usually, but not always, completes within alotted time.
         // As a workaround, we'll start refreshing apps in confirm() so we can
@@ -59,7 +60,7 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
         }
     }
     
-    func handle(intent: RefreshAllIntent, completion: @escaping (RefreshAllIntentResponse) -> Void)
+    public func handle(intent: RefreshAllIntent, completion: @escaping (RefreshAllIntentResponse) -> Void)
     {
         self.completionHandlers[intent] = { (response) in
             // Ignore .ready response from confirm() timeout.
@@ -75,6 +76,7 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
     }
 }
 
+@available(iOS 14, *)
 private extension IntentHandler
 {
     func finish(_ intent: RefreshAllIntent, response: RefreshAllIntentResponse)

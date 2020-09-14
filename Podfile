@@ -38,7 +38,7 @@ target 'AltDaemon' do
   use_modular_headers!
 
   # Pods for AltDaemon
-  pod 'Roxas', :path => 'Dependencies/Roxas'
+  #pod 'Roxas', :path => 'Dependencies/Roxas'
 
 end
 

@@ -12,6 +12,7 @@ import UserNotifications
 import MobileCoreServices
 import Intents
 import Combine
+import WidgetKit
 
 import AltStoreCore
 import AltSign
@@ -1344,6 +1345,16 @@ private extension AppManager
             if let event = event
             {
                 AnalyticsManager.shared.trackEvent(event)
+            }
+            
+            if #available(iOS 14, *)
+            {                
+                WidgetCenter.shared.getCurrentConfigurations { (result) in
+                    guard case .success(let widgets) = result else { return }
+                    
+                    guard let widget = widgets.first(where: { $0.configuration is ViewAppIntent }) else { return }
+                    WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
+                }
             }
             
             do { try installedApp.managedObjectContext?.save() }
