@@ -11,6 +11,19 @@ import CoreData
 import AltSign
 import Roxas
 
+private class PersistentContainer: RSTPersistentContainer
+{
+    override class func defaultDirectoryURL() -> URL
+    {
+        guard let sharedDirectoryURL = FileManager.default.altstoreSharedDirectory else { return super.defaultDirectoryURL() }
+        
+        let databaseDirectoryURL = sharedDirectoryURL.appendingPathComponent("Database")
+        try? FileManager.default.createDirectory(at: databaseDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+
+        return databaseDirectoryURL
+    }
+}
+
 public class DatabaseManager
 {
     public static let shared = DatabaseManager()
@@ -24,7 +37,7 @@ public class DatabaseManager
     
     private init()
     {
-        self.persistentContainer = RSTPersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
+        self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
     }
 }
