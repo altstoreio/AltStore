@@ -31,6 +31,7 @@
 		BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* RequestHandler.swift */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
+		BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; };
 		BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3432FA246B894F0052F4A1 /* BackupAppOperation.swift */; };
 		BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFBE2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift */; };
 		BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BEFC024086A1E00DE7D55 /* RefreshAppOperation.swift */; };
@@ -40,6 +41,7 @@
 		BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */; };
 		BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF41B805233423AE00C593A3 /* TabBarController.swift */; };
 		BF41B808233433C100C593A3 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF41B807233433C100C593A3 /* LoadingState.swift */; };
+		BF42345A25101C35006D1EB2 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF42345825101C1D006D1EB2 /* WidgetView.swift */; };
 		BF42345C251024B0006D1EB2 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = BF42345B251024B0006D1EB2 /* AltSign-Static */; };
 		BF42345D25102688006D1EB2 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
 		BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; };
@@ -193,6 +195,10 @@
 		BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
+		BF989171250AABF4002ACF50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF989170250AABF4002ACF50 /* Assets.xcassets */; };
+		BF989177250AABF4002ACF50 /* AltWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BF98917E250AAC4F002ACF50 /* Countdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF98917C250AAC4F002ACF50 /* Countdown.swift */; };
+		BF98917F250AAC4F002ACF50 /* AltWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF98917D250AAC4F002ACF50 /* AltWidget.swift */; };
 		BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BF989185250AAD1D002ACF50 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
@@ -223,6 +229,7 @@
 		BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21D231870160022A802 /* NewsViewController.swift */; };
 		BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */; };
 		BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */; };
+		BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
@@ -318,6 +325,7 @@
 		BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B695232242D3007A79E1 /* LicensesViewController.swift */; };
 		BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6972322CAB8007A79E1 /* InstructionsViewController.swift */; };
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
+		BFF615A82510042B00484D3B /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */; };
 		BFFCFA582488648D0077BFCE /* LocalConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */; };
 /* End PBXBuildFile section */
@@ -337,12 +345,26 @@
 			remoteGlobalIDString = BF66EE7D2501AE50007EE018;
 			remoteInfo = AltStoreCore;
 		};
+		BF989175250AABF4002ACF50 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF989166250AABF3002ACF50;
+			remoteInfo = AltWidgetExtension;
+		};
 		BFBFFB262380C72F00993A4A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BF5C5FC4237DF5AE00EDD0C6;
 			remoteInfo = AltPlugin;
+		};
+		BFF615AA2510042B00484D3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF66EE7D2501AE50007EE018;
+			remoteInfo = AltStoreCore;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -380,6 +402,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF98917B250AABF4002ACF50 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BF989177250AABF4002ACF50 /* AltWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -425,6 +458,7 @@
 		BF3F786322CAA41E008FBD20 /* ALTDeviceManager+Installation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALTDeviceManager+Installation.swift"; sourceTree = "<group>"; };
 		BF41B805233423AE00C593A3 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		BF41B807233433C100C593A3 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
+		BF42345825101C1D006D1EB2 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
 		BF44EEEF246B08BA002A52F2 /* BackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupController.swift; sourceTree = "<group>"; };
 		BF44EEF2246B3A17002A52F2 /* AltBackup.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltBackup.ipa; sourceTree = "<group>"; };
@@ -592,6 +626,7 @@
 		BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		BF770E6822BD57DD002A40FE /* Silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Silence.m4a; sourceTree = "<group>"; };
 		BF88F97124F8727D00BB75DF /* AppManagerErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManagerErrors.swift; sourceTree = "<group>"; };
+		BF8B17F0250AC62400F8157F /* AltWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltWidgetExtension.entitlements; sourceTree = "<group>"; };
 		BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BF8CAE432489E772004D6CCE /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF8CAE442489E772004D6CCE /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
@@ -599,6 +634,12 @@
 		BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Jailbreak.swift"; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
+		BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AltWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF989170250AABF4002ACF50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF989172250AABF4002ACF50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF98917C250AAC4F002ACF50 /* Countdown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Countdown.swift; sourceTree = "<group>"; };
+		BF98917D250AAC4F002ACF50 /* AltWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltWidget.swift; sourceTree = "<group>"; };
+		BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = ViewApp.intentdefinition; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -756,6 +797,14 @@
 				BF42345D25102688006D1EB2 /* OpenSSL.xcframework in Frameworks */,
 				BF42345C251024B0006D1EB2 /* AltSign-Static in Frameworks */,
 				0E33F94B8D78AB969FD309A3 /* Pods_AltStoreCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF989164250AABF3002ACF50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFF615A82510042B00484D3B /* AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1054,6 +1103,7 @@
 				BF66EEE32501AED0007EE018 /* Extensions */,
 				BF66EEAA2501AECA007EE018 /* Model */,
 				BF66EE9F2501AEC5007EE018 /* Patreon */,
+				BF98918B250AAE18002ACF50 /* Intents */,
 				BF66EE9A2501AEC1007EE018 /* Protocols */,
 				BF66EE8D2501AEBC007EE018 /* Types */,
 				BF66EE812501AE50007EE018 /* Info.plist */,
@@ -1217,6 +1267,27 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BF98916C250AABF3002ACF50 /* AltWidget */ = {
+			isa = PBXGroup;
+			children = (
+				BF8B17F0250AC62400F8157F /* AltWidgetExtension.entitlements */,
+				BF98917D250AAC4F002ACF50 /* AltWidget.swift */,
+				BF42345825101C1D006D1EB2 /* WidgetView.swift */,
+				BF98917C250AAC4F002ACF50 /* Countdown.swift */,
+				BF989170250AABF4002ACF50 /* Assets.xcassets */,
+				BF989172250AABF4002ACF50 /* Info.plist */,
+			);
+			path = AltWidget;
+			sourceTree = "<group>";
+		};
+		BF98918B250AAE18002ACF50 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		BF9ABA4322DCFF33008935CF /* Browse */ = {
 			isa = PBXGroup;
 			children = (
@@ -1288,6 +1359,7 @@
 				BF5C5FC6237DF5AE00EDD0C6 /* AltPlugin */,
 				BF58047C246A28F7008AE704 /* AltBackup */,
 				BF18BFE824857D7900DD5981 /* AltDaemon */,
+				BF98916C250AABF3002ACF50 /* AltWidget */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
 				4460E048E3AC1C9708C4FA33 /* Pods */,
@@ -1304,6 +1376,7 @@
 				BF58047B246A28F7008AE704 /* AltBackup.app */,
 				BF18BFE724857D7900DD5981 /* AltDaemon */,
 				BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */,
+				BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1716,6 +1789,24 @@
 			productReference = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		BF989166250AABF3002ACF50 /* AltWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF989178250AABF4002ACF50 /* Build configuration list for PBXNativeTarget "AltWidgetExtension" */;
+			buildPhases = (
+				BF989163250AABF3002ACF50 /* Sources */,
+				BF989164250AABF3002ACF50 /* Frameworks */,
+				BF989165250AABF3002ACF50 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BFF615AB2510042B00484D3B /* PBXTargetDependency */,
+			);
+			name = AltWidgetExtension;
+			productName = AltWidgetExtension;
+			productReference = BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		BFD247692284B9A500981D42 /* AltStore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFD2477E2284B9A700981D42 /* Build configuration list for PBXNativeTarget "AltStore" */;
@@ -1726,11 +1817,13 @@
 				BFD247682284B9A500981D42 /* Resources */,
 				BF088D2B2501A087008082D9 /* Embed Frameworks */,
 				744AE3B03F6BF664FC5705C5 /* [CP] Embed Pods Frameworks */,
+				BF98917B250AABF4002ACF50 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				BF66EE842501AE50007EE018 /* PBXTargetDependency */,
+				BF989176250AABF4002ACF50 /* PBXTargetDependency */,
 			);
 			name = AltStore;
 			productName = AltStore;
@@ -1776,6 +1869,10 @@
 					BF66EE7D2501AE50007EE018 = {
 						CreatedOnToolsVersion = 12.0;
 					};
+					BF989166250AABF3002ACF50 = {
+						CreatedOnToolsVersion = 12.0;
+						LastSwiftMigration = 1200;
+					};
 					BFD247692284B9A500981D42 = {
 						CreatedOnToolsVersion = 10.2.1;
 						LastSwiftMigration = 1020;
@@ -1810,6 +1907,7 @@
 				BF58047A246A28F7008AE704 /* AltBackup */,
 				BF18BFE624857D7900DD5981 /* AltDaemon */,
 				BF66EE7D2501AE50007EE018 /* AltStoreCore */,
+				BF989166250AABF3002ACF50 /* AltWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1845,6 +1943,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFCB9207250AB2120057B44E /* Colors.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF989165250AABF3002ACF50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF989171250AABF4002ACF50 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2155,6 +2261,7 @@
 				BFAECC5B2501B0A400528F27 /* Bundle+AltStore.swift in Sources */,
 				BF66EECD2501AECA007EE018 /* StoreAppPolicy.swift in Sources */,
 				BF66EEE82501AED0007EE018 /* UserDefaults+AltStore.swift in Sources */,
+				BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */,
 				BFAECC522501B0A400528F27 /* CodableServerError.swift in Sources */,
 				BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */,
 				BF66EEDF2501AECA007EE018 /* PatreonAccount.swift in Sources */,
@@ -2201,6 +2308,16 @@
 				BF66EEA72501AEC5007EE018 /* Campaign.swift in Sources */,
 				BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */,
 				BF989185250AAD1D002ACF50 /* UIColor+AltStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF989163250AABF3002ACF50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF98917E250AAC4F002ACF50 /* Countdown.swift in Sources */,
+				BF42345A25101C35006D1EB2 /* WidgetView.swift in Sources */,
+				BF98917F250AAC4F002ACF50 /* AltWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2281,6 +2398,7 @@
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
+				BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
@@ -2300,10 +2418,20 @@
 			target = BF66EE7D2501AE50007EE018 /* AltStoreCore */;
 			targetProxy = BF66EE832501AE50007EE018 /* PBXContainerItemProxy */;
 		};
+		BF989176250AABF4002ACF50 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF989166250AABF3002ACF50 /* AltWidgetExtension */;
+			targetProxy = BF989175250AABF4002ACF50 /* PBXContainerItemProxy */;
+		};
 		BFBFFB272380C72F00993A4A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BF5C5FC4237DF5AE00EDD0C6 /* AltPlugin */;
 			targetProxy = BFBFFB262380C72F00993A4A /* PBXContainerItemProxy */;
+		};
+		BFF615AB2510042B00484D3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF66EE7D2501AE50007EE018 /* AltStoreCore */;
+			targetProxy = BFF615AA2510042B00484D3B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2772,6 +2900,72 @@
 			};
 			name = Release;
 		};
+		BF989179250AABF4002ACF50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/iossimulator",
+					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/ios",
+				);
+				INFOPLIST_FILE = AltWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF98917A250AABF4002ACF50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/iossimulator",
+					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/ios",
+				);
+				INFOPLIST_FILE = AltWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		BFD2477C2284B9A700981D42 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3010,6 +3204,15 @@
 			buildConfigurations = (
 				BF66EE872501AE50007EE018 /* Debug */,
 				BF66EE882501AE50007EE018 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF989178250AABF4002ACF50 /* Build configuration list for PBXNativeTarget "AltWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF989179250AABF4002ACF50 /* Debug */,
+				BF98917A250AABF4002ACF50 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
