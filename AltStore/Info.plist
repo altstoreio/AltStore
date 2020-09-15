@@ -69,6 +69,7 @@
 	<key>INIntentsSupported</key>
 	<array>
 		<string>RefreshAllIntent</string>
+		<string>ViewAppIntent</string>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
@@ -92,6 +93,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>RefreshAllIntent</string>
+		<string>ViewAppIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

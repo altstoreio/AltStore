@@ -230,6 +230,7 @@
 		BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21F231870B00022A802 /* NewsCollectionViewCell.swift */; };
 		BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB6B22323187A3D0022A802 /* NewsCollectionViewCell.xib */; };
 		BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		BFBE0007250AD0E70080826E /* ViewAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF989190250AAE86002ACF50 /* ViewAppIntentHandler.swift */; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
@@ -639,6 +640,7 @@
 		BF989172250AABF4002ACF50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF98917C250AAC4F002ACF50 /* Countdown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Countdown.swift; sourceTree = "<group>"; };
 		BF98917D250AAC4F002ACF50 /* AltWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltWidget.swift; sourceTree = "<group>"; };
+		BF989190250AAE86002ACF50 /* ViewAppIntentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewAppIntentHandler.swift; sourceTree = "<group>"; };
 		BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = ViewApp.intentdefinition; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -1284,6 +1286,7 @@
 			isa = PBXGroup;
 			children = (
 				BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */,
+				BF989190250AAE86002ACF50 /* ViewAppIntentHandler.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -2377,6 +2380,7 @@
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
+				BFBE0007250AD0E70080826E /* ViewAppIntentHandler.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
