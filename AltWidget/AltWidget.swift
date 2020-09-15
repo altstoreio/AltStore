@@ -113,12 +113,20 @@ struct Provider: IntentTimelineProvider
                         let currentDate = Calendar.current.startOfDay(for: Date())
                         let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
                         
-                        for dayOffset in 0 ..< min(numberOfDays, 7)
+                        if numberOfDays >= 0
                         {
-                            guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
-                            
-                            let score = Float(dayOffset + 1) / Float(numberOfDays)
-                            let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
+                            for dayOffset in 0 ..< min(numberOfDays, 7)
+                            {
+                                guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
+                                
+                                let score = Float(dayOffset + 1) / Float(numberOfDays)
+                                let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
+                                entries.append(entry)
+                            }
+                        }
+                        else
+                        {
+                            let entry = AppEntry(date: Date(), app: snapshot)
                             entries.append(entry)
                         }
                     }

@@ -45,12 +45,21 @@ struct WidgetView : View
                             }
                             
                             HStack(alignment: .bottom) {
+                                let expirationText: Text = {
+                                    switch daysRemaining
+                                    {
+                                    case ..<0: return Text("Expired")
+                                    case 1: return Text("1 day")
+                                    default: return Text("\(daysRemaining) days")
+                                    }
+                                }()
+                                
                                 (
                                     Text("Expires in\n")
                                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                                         .foregroundColor(Color.white.opacity(0.45)) +
                                         
-                                    Text(daysRemaining == 1 ? "1 day" : "\(daysRemaining) days")
+                                    expirationText
                                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .foregroundColor(.white)
                                 )
@@ -60,12 +69,16 @@ struct WidgetView : View
                                 
                                 Spacer()
                                 
-                                Countdown(startDate: app.refreshedDate, endDate: app.expirationDate)
-                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                    .foregroundColor(Color.white)
-                                    .opacity(0.8)
-                                    .fixedSize(horizontal: true, vertical: false)
-                                    .offset(x: 5)
+                                if daysRemaining >= 0
+                                {
+                                    Countdown(startDate: app.refreshedDate,
+                                              endDate: app.expirationDate)
+                                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                        .foregroundColor(Color.white)
+                                        .opacity(0.8)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                        .offset(x: 5)
+                                }
                             }
                             .offset(y: 5) // Offset so we don't affect layout, but still leave space between app name and Countdown.
                         }
