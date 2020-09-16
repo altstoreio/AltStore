@@ -41,6 +41,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        // Register default settings before doing anything else.
+        UserDefaults.registerDefaults()
+        
         DatabaseManager.shared.start { (error) in
             if let error = error
             {
@@ -58,9 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ServerManager.shared.startDiscovering()
         
-        SecureValueTransformer.register()
-        
-        UserDefaults.standard.registerDefaults()
+        SecureValueTransformer.register()        
         
         if UserDefaults.standard.firstLaunch == nil
         {

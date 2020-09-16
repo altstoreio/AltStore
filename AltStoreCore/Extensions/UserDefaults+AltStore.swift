@@ -12,7 +12,15 @@ import Roxas
 
 public extension UserDefaults
 {
+    static let shared: UserDefaults = {
+        guard let appGroup = Bundle.main.appGroups.first else { return .standard }
+        
+        let sharedUserDefaults = UserDefaults(suiteName: appGroup)!
+        return sharedUserDefaults
+    }()
+    
     @NSManaged var firstLaunch: Date?
+    @NSManaged var requiresAppGroupMigration: Bool
     
     @NSManaged var preferredServerID: String?
     
@@ -42,16 +50,20 @@ public extension UserDefaults
     }
     @NSManaged @objc(activeAppsLimit) private var _activeAppsLimit: NSNumber?
     
-    func registerDefaults()
+    class func registerDefaults()
     {
         let ios13_5 = OperatingSystemVersion(majorVersion: 13, minorVersion: 5, patchVersion: 0)
         let isLegacyDeactivationSupported = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
         let activeAppLimitIncludesExtensions = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
         
-        self.register(defaults: [
+        let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
-            #keyPath(UserDefaults.activeAppLimitIncludesExtensions): activeAppLimitIncludesExtensions
-        ])
+            #keyPath(UserDefaults.activeAppLimitIncludesExtensions): activeAppLimitIncludesExtensions,
+            #keyPath(UserDefaults.requiresAppGroupMigration): true
+        ]
+        
+        UserDefaults.standard.register(defaults: defaults)
+        UserDefaults.shared.register(defaults: defaults)
     }
 }

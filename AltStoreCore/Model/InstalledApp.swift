@@ -228,6 +228,12 @@ public extension InstalledApp
         return appsDirectoryURL
     }
     
+    class var legacyAppsDirectoryURL: URL {
+        let baseDirectory = FileManager.default.applicationSupportDirectory
+        let appsDirectoryURL = baseDirectory.appendingPathComponent("Apps")
+        return appsDirectoryURL
+    }
+    
     class func fileURL(for app: AppProtocol) -> URL
     {
         let appURL = self.directoryURL(for: app).appendingPathComponent("App.app")
