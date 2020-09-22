@@ -63,39 +63,23 @@ extension ServerManager
     func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
     {
         DispatchQueue.global().async {
-            func finish(_ result: Result<ServerConnection, Error>)
+            func finish(_ result: Result<Connection, Error>)
             {
-                completion(result)
-            }
-            
-            func start(_ connection: NWConnection)
-            {
-                connection.stateUpdateHandler = { [unowned connection] (state) in
-                    switch state
-                    {
-                    case .failed(let error):
-                        print("Failed to connect to service \(server.service?.name ?? "").", error)
-                        finish(.failure(ConnectionError.connectionFailed))
-                        
-                    case .cancelled:
-                        finish(.failure(OperationError.cancelled))
-                        
-                    case .ready:
-                        let connection = ServerConnection(server: server, connection: connection)
-                        finish(.success(connection))
-                        
-                    case .waiting: break
-                    case .setup: break
-                    case .preparing: break
-                    @unknown default: break
-                    }
+                switch result
+                {
+                case .failure(let error): completion(.failure(error))
+                case .success(let connection):
+                    let serverConnection = ServerConnection(server: server, connection: connection)
+                    completion(.success(serverConnection))
                 }
-                
-                connection.start(queue: self.dispatchQueue)
             }
             
-            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.connectionType != .wireless
+            switch server.connectionType
             {
+            case .local: self.connectToLocalServer(completion: finish(_:))
+            case .wired:
+                guard let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore else { return finish(.failure(ALTServerError(.connectionFailed))) }
+                
                 print("Waiting for incoming connection...")
                 
                 let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
@@ -103,39 +87,27 @@ extension ServerManager
                 switch server.connectionType
                 {
                 case .wired: CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
-                case .local: CFNotificationCenterPostNotification(notificationCenter, .localServerConnectionStartRequest, nil, nil, true)
-                case .wireless: break
+                case .local, .wireless: break
                 }
                 
                 _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
                 
                 if let connection = self.incomingConnections?.popLast()
                 {
-                    start(connection)
+                    self.connectToRemoteServer(server, connection: connection, completion: finish(_:))
                 }
                 else
                 {
                     finish(.failure(ALTServerError(.connectionFailed)))
                 }
-            }
-            else if let service = server.service
-            {
+                
+            case .wireless:
+                guard let service = server.service else { return finish(.failure(ALTServerError(.connectionFailed))) }
+                
                 print("Connecting to service:", service)
                 
-                let parameters = NWParameters.tcp
-                
-                if server.connectionType == .local
-                {
-                    // Prevent AltStore from initiating connections over multiple interfaces simultaneously 🤷‍♂️
-                    parameters.requiredInterfaceType = .loopback
-                }
-                
-                let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: parameters)
-                start(connection)
-            }
-            else
-            {
-                finish(.failure(ALTServerError(.connectionFailed)))
+                let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: .tcp)
+                self.connectToRemoteServer(server, connection: connection, completion: finish(_:))
             }
         }
     }
@@ -190,6 +162,47 @@ private extension ServerManager
         
         self.incomingConnections = nil
         self.incomingConnectionsSemaphore = nil
+    }
+    
+    func connectToRemoteServer(_ server: Server, connection: NWConnection, completion: @escaping (Result<Connection, Error>) -> Void)
+    {
+        connection.stateUpdateHandler = { [unowned connection] (state) in
+            switch state
+            {
+            case .failed(let error):
+                print("Failed to connect to service \(server.service?.name ?? "").", error)
+                completion(.failure(ConnectionError.connectionFailed))
+                
+            case .cancelled:
+                completion(.failure(OperationError.cancelled))
+                
+            case .ready:
+                let connection = NetworkConnection(connection)
+                completion(.success(connection))
+                
+            case .waiting: break
+            case .setup: break
+            case .preparing: break
+            @unknown default: break
+            }
+        }
+        
+        connection.start(queue: self.dispatchQueue)
+    }
+    
+    func connectToLocalServer(completion: @escaping (Result<Connection, Error>) -> Void)
+    {
+        let connection = XPCConnection()
+        connection.connect { (result) in
+            switch result
+            {
+            case .failure(let error):
+                print("Could not connect to AltDaemon XPC service.", error)
+                completion(.failure(error))
+                
+            case .success: completion(.success(connection))
+            }
+        }
     }
 }
 

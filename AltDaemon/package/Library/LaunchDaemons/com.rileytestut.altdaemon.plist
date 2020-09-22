@@ -14,8 +14,13 @@
 	<key>UserName</key>
 	<string>mobile</string>
 	<key>KeepAlive</key>
-    <true/>
+	<false/>
 	<key>RunAtLoad</key>
-    <true/>
+	<false/>
+	<key>MachServices</key>
+	<dict>
+		<key>cy:io.altstore.altdaemon</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

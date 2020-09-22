@@ -29,6 +29,8 @@
 		BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B0F022E25DF9005C4CF5 /* ToastView.swift */; };
 		BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFFC2485A1E400DD5981 /* WiredConnectionHandler.swift */; };
 		BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* RequestHandler.swift */; };
+		BF1FE358251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */; };
+		BF1FE359251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
 		BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; };
@@ -190,7 +192,7 @@
 		BF8B17EB250AC40000F8157F /* FileManager+SharedDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */; };
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
-		BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* RequestHandler.swift */; };
+		BF8CAE472489E772004D6CCE /* DaemonRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* DaemonRequestHandler.swift */; };
 		BF8CAE4C2489F637004D6CCE /* AltDaemon.deb in Resources */ = {isa = PBXBuildFile; fileRef = BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */; };
 		BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
@@ -235,6 +237,9 @@
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
 		BFC57A702416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */; };
+		BFC712C32512D5F100AB5EBE /* XPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C12512D5F100AB5EBE /* XPCConnection.swift */; };
+		BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C12512D5F100AB5EBE /* XPCConnection.swift */; };
+		BFC712C52512D5F100AB5EBE /* XPCConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C22512D5F100AB5EBE /* XPCConnectionHandler.swift */; };
 		BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC84A4C2421A19100853474 /* SourcesViewController.swift */; };
 		BFCB9207250AB2120057B44E /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFCB9206250AB2120057B44E /* Colors.xcassets */; };
 		BFCCB51A245E3401001853EA /* VerifyAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCCB519245E3401001853EA /* VerifyAppOperation.swift */; };
@@ -307,7 +312,6 @@
 		BFECAC8924FD950E0077C41F /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BFECAC8A24FD950E0077C41F /* ALTServerError+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */; };
 		BFECAC8B24FD950E0077C41F /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
-		BFECAC8C24FD950E0077C41F /* NetworkConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CD2489ABE90097E58C /* NetworkConnection.swift */; };
 		BFECAC8D24FD950E0077C41F /* ALTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = BF718BD723C93DB700A89F2D /* ALTConstants.m */; };
 		BFECAC8E24FD950E0077C41F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
 		BFECAC8F24FD950E0077C41F /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBAC8852295C90300587369 /* Result+Conveniences.swift */; };
@@ -328,7 +332,6 @@
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
 		BFF615A82510042B00484D3B /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */; };
-		BFFCFA582488648D0077BFCE /* LocalConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -432,7 +435,6 @@
 		BF088D322501A4FF008082D9 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF0DCA652433BDF500E3A595 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
-		BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalConnectionHandler.swift; sourceTree = "<group>"; };
 		BF10EB33248730750055E6DB /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		BF18B0F022E25DF9005C4CF5 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		BF18BFE724857D7900DD5981 /* AltDaemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = AltDaemon; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -447,6 +449,7 @@
 		BF1E314722A060F300370A3C /* AltStore-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AltStore-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF1E314822A060F400370A3C /* NSError+ALTServerError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSError+ALTServerError.h"; sourceTree = "<group>"; };
 		BF1E314922A060F400370A3C /* NSError+ALTServerError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSError+ALTServerError.m"; sourceTree = "<group>"; };
+		BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSXPCConnection+MachServices.swift"; sourceTree = "<group>"; };
 		BF219A7E22CAC431007676A6 /* AltStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltStore.entitlements; sourceTree = "<group>"; };
 		BF29012E2318F6B100D88A45 /* AppBannerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppBannerView.xib; sourceTree = "<group>"; };
 		BF2901302318F7A800D88A45 /* AppBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBannerView.swift; sourceTree = "<group>"; };
@@ -630,7 +633,7 @@
 		BF8B17F0250AC62400F8157F /* AltWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltWidgetExtension.entitlements; sourceTree = "<group>"; };
 		BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BF8CAE432489E772004D6CCE /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
-		BF8CAE442489E772004D6CCE /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
+		BF8CAE442489E772004D6CCE /* DaemonRequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaemonRequestHandler.swift; sourceTree = "<group>"; };
 		BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = AltDaemon.deb; sourceTree = "<group>"; };
 		BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Jailbreak.swift"; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
@@ -662,6 +665,8 @@
 		BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAppOperation.swift; sourceTree = "<group>"; };
 		BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppsCollectionHeaderView.swift; sourceTree = "<group>"; };
 		BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InstalledAppsCollectionHeaderView.xib; sourceTree = "<group>"; };
+		BFC712C12512D5F100AB5EBE /* XPCConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPCConnection.swift; sourceTree = "<group>"; };
+		BFC712C22512D5F100AB5EBE /* XPCConnectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPCConnectionHandler.swift; sourceTree = "<group>"; };
 		BFC84A4C2421A19100853474 /* SourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesViewController.swift; sourceTree = "<group>"; };
 		BFCB9206250AB2120057B44E /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		BFCCB519245E3401001853EA /* VerifyAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAppOperation.swift; sourceTree = "<group>"; };
@@ -858,8 +863,8 @@
 			children = (
 				BFFCFA45248835530077BFCE /* AltDaemon.entitlements */,
 				BF10EB33248730750055E6DB /* main.swift */,
-				BF8CAE442489E772004D6CCE /* RequestHandler.swift */,
-				BF10EB3124870B3F0055E6DB /* LocalConnectionHandler.swift */,
+				BFC712C22512D5F100AB5EBE /* XPCConnectionHandler.swift */,
+				BF8CAE442489E772004D6CCE /* DaemonRequestHandler.swift */,
 				BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */,
 				BF8CAE432489E772004D6CCE /* AppManager.swift */,
 				BF18C0032485B4DE00DD5981 /* AltDaemon-Bridging-Header.h */,
@@ -1580,6 +1585,7 @@
 				BFBAC8852295C90300587369 /* Result+Conveniences.swift */,
 				BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */,
 				BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */,
+				BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1602,6 +1608,7 @@
 				BF18BFFE2485A42800DD5981 /* ALTConnection.h */,
 				BF18BFF624858BDE00DD5981 /* Connection.swift */,
 				BFF767CD2489ABE90097E58C /* NetworkConnection.swift */,
+				BFC712C12512D5F100AB5EBE /* XPCConnection.swift */,
 			);
 			path = Connections;
 			sourceTree = "<group>";
@@ -2126,10 +2133,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */,
+				BF1FE358251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */,
 				BFECAC8F24FD950E0077C41F /* Result+Conveniences.swift in Sources */,
-				BF8CAE472489E772004D6CCE /* RequestHandler.swift in Sources */,
-				BFECAC8C24FD950E0077C41F /* NetworkConnection.swift in Sources */,
+				BF8CAE472489E772004D6CCE /* DaemonRequestHandler.swift in Sources */,
 				BFECAC8824FD950E0077C41F /* CodableServerError.swift in Sources */,
+				BFC712C32512D5F100AB5EBE /* XPCConnection.swift in Sources */,
+				BFC712C52512D5F100AB5EBE /* XPCConnectionHandler.swift in Sources */,
 				BFECAC8A24FD950E0077C41F /* ALTServerError+Conveniences.swift in Sources */,
 				BFECAC8D24FD950E0077C41F /* ALTConstants.m in Sources */,
 				BFECAC8924FD950E0077C41F /* ConnectionManager.swift in Sources */,
@@ -2138,7 +2147,6 @@
 				BFECAC8B24FD950E0077C41F /* ServerProtocol.swift in Sources */,
 				BFECAC9624FD98BB0077C41F /* NSError+ALTServerError.m in Sources */,
 				BF10EB34248730750055E6DB /* main.swift in Sources */,
-				BFFCFA582488648D0077BFCE /* LocalConnectionHandler.swift in Sources */,
 				BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */,
 				BFECAC9024FD950E0077C41F /* Bundle+AltStore.swift in Sources */,
 			);
@@ -2271,6 +2279,7 @@
 				BFAECC532501B0A400528F27 /* ServerProtocol.swift in Sources */,
 				BFAECC572501B0A400528F27 /* ConnectionManager.swift in Sources */,
 				BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */,
+				BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */,
 				BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */,
 				BF66EED42501AECA007EE018 /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
 				BF66EE972501AEBC007EE018 /* ALTAppPermission.m in Sources */,
@@ -2303,6 +2312,7 @@
 				BF66EECC2501AECA007EE018 /* Source.swift in Sources */,
 				BF66EED72501AECA007EE018 /* InstalledApp.swift in Sources */,
 				BF66EECE2501AECA007EE018 /* InstalledAppPolicy.swift in Sources */,
+				BF1FE359251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */,
 				BF66EEA62501AEC5007EE018 /* PatreonAPI.swift in Sources */,
 				BF66EED02501AECA007EE018 /* AltStore6ToAltStore7.xcmappingmodel in Sources */,
 				BF66EEDC2501AECA007EE018 /* MergePolicy.swift in Sources */,

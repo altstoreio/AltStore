@@ -8,6 +8,7 @@
 
 import Foundation
 
+import AltStoreCore
 import Roxas
 
 private let ReceivedServerConnectionResponse: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void =
@@ -52,11 +53,11 @@ class FindServerOperation: ResultOperation<Server>
         
         // Prepare observers to receive callback from wired connection or background daemon (if available).
         CFNotificationCenterAddObserver(notificationCenter, observer, ReceivedServerConnectionResponse, CFNotificationName.wiredServerConnectionAvailableResponse.rawValue, nil, .deliverImmediately)
-        CFNotificationCenterAddObserver(notificationCenter, observer, ReceivedServerConnectionResponse, CFNotificationName.localServerConnectionAvailableResponse.rawValue, nil, .deliverImmediately)
         
         // Post notifications.
         CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionAvailableRequest, nil, nil, true)
-        CFNotificationCenterPostNotification(notificationCenter, .localServerConnectionAvailableRequest, nil, nil, true)
+        
+        self.discoverLocalServer()
         
         // Wait for either callback or timeout.
         DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
@@ -97,18 +98,28 @@ class FindServerOperation: ResultOperation<Server>
         let observer = Unmanaged.passUnretained(self).toOpaque()
         
         CFNotificationCenterRemoveObserver(notificationCenter, observer, .wiredServerConnectionAvailableResponse, nil)
-        CFNotificationCenterRemoveObserver(notificationCenter, observer, .localServerConnectionAvailableResponse, nil)
     }
 }
 
 fileprivate extension FindServerOperation
 {
+    func discoverLocalServer()
+    {
+        let connection = XPCConnection()
+        connection.connect { (result) in
+            switch result
+            {
+            case .failure(let error): print("Could not connect to AltDaemon XPC service.", error)
+            case .success: self.isLocalServerConnectionAvailable = true
+            }
+        }
+    }
+    
     func handle(_ notification: CFNotificationName)
     {
         switch notification
         {
         case .wiredServerConnectionAvailableResponse: self.isWiredServerConnectionAvailable = true
-        case .localServerConnectionAvailableResponse: self.isLocalServerConnectionAvailable = true
         default: break
         }
     }

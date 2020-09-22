@@ -75,7 +75,8 @@ struct AppManager
                 // Remove all inactive profiles (if active profiles are provided), and the previous profiles.
                 for fileURL in profileURLs
                 {
-                    guard let profile = ALTProvisioningProfile(url: fileURL) else { continue }
+                    // Use memory mapping to reduce peak memory usage and stay within limit.
+                    guard let profile = try? ALTProvisioningProfile(url: fileURL, options: [.mappedIfSafe]) else { continue }
                     
                     if installingBundleIDs.contains(profile.bundleIdentifier) || (activeProfiles?.contains(profile.bundleIdentifier) == false && profile.isFreeProvisioningProfile)
                     {

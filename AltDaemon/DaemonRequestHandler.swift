@@ -1,6 +1,6 @@
 //
-//  ConnectionManager.swift
-//  AltServer
+//  DaemonRequestHandler.swift
+//  AltDaemon
 //
 //  Created by Riley Testut on 6/1/20.
 //  Copyright © 2019 Riley Testut. All rights reserved.
@@ -11,7 +11,7 @@ import Foundation
 typealias DaemonConnectionManager = ConnectionManager<DaemonRequestHandler>
 
 private let connectionManager = ConnectionManager(requestHandler: DaemonRequestHandler(),
-                                                  connectionHandlers: [LocalConnectionHandler()])
+                                                  connectionHandlers: [XPCConnectionHandler()])
 
 extension DaemonConnectionManager
 {
