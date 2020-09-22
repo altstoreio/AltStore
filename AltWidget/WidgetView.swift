@@ -110,7 +110,7 @@ private extension WidgetView
     func backgroundView(icon: UIImage? = nil, tintColor: UIColor? = nil) -> some View
     {
         let icon = icon ?? UIImage(named: "AltStore")!
-        let tintColor = tintColor ?? .altPrimary
+        let tintColor = tintColor ?? .gray
         
         let imageHeight = 60 as CGFloat
         let saturation = 1.8
