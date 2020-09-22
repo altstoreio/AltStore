@@ -29,13 +29,11 @@ struct WidgetView : View
                             VStack(alignment: .leading, spacing: 5) {
                                 let imageHeight = geometry.size.height * 0.45
                                 
-                                app.icon.map {
-                                    Image(uiImage: $0)
-                                        .resizable()
-                                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                                        .frame(height: imageHeight)
-                                        .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: .continuous))
-                                }
+                                Image(uiImage: app.icon ?? UIImage())
+                                    .resizable()
+                                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                    .frame(height: imageHeight)
+                                    .mask(RoundedRectangle(cornerRadius: imageHeight / 5.0, style: .continuous))
                                 
                                 Text(app.name.uppercased())
                                     .font(.system(size: 12, weight: .semibold, design: .rounded))
