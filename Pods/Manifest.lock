@@ -9,7 +9,6 @@ PODS:
     - AppCenter/Core
   - KeychainAccess (3.2.0)
   - Nuke (7.6.3)
-  - Roxas (0.1)
   - Sparkle (1.21.3)
   - STPrivilegedTask (1.0.7)
 
@@ -17,7 +16,6 @@ DEPENDENCIES:
   - AppCenter (~> 3.1.0)
   - KeychainAccess (~> 3.2.0)
   - Nuke (~> 7.0)
-  - Roxas (from `Dependencies/Roxas`)
   - Sparkle
   - STPrivilegedTask (from `https://github.com/rileytestut/STPrivilegedTask.git`)
 
@@ -29,8 +27,6 @@ SPEC REPOS:
     - Sparkle
 
 EXTERNAL SOURCES:
-  Roxas:
-    :path: Dependencies/Roxas
   STPrivilegedTask:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
@@ -43,10 +39,9 @@ SPEC CHECKSUMS:
   AppCenter: a1c30c47b7882a04a615ffa5ab26c007326436d8
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
-  Roxas: 1990039f843f5dc284918dc82375feb80020ef62
   Sparkle: 3f75576db8b0265adef36c43249d747f22d0b708
   STPrivilegedTask: 56c3397238a1ec07720fb877a044898373cd2c68
 
-PODFILE CHECKSUM: f104466ab6ebb9c7ddd61ad9e8a4c81f84078897
+PODFILE CHECKSUM: b687e2aeec1ffc369787e92f2a2fefa460687731
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.8.4

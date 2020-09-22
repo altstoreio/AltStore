@@ -133,6 +133,10 @@ extension ServerManager
                 let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: parameters)
                 start(connection)
             }
+            else
+            {
+                finish(.failure(ALTServerError(.connectionFailed)))
+            }
         }
     }
 }

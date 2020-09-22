@@ -219,11 +219,18 @@ public extension InstalledApp
 public extension InstalledApp
 {
     class var appsDirectoryURL: URL {
-        let appsDirectoryURL = FileManager.default.applicationSupportDirectory.appendingPathComponent("Apps")
+        let baseDirectory = FileManager.default.altstoreSharedDirectory ?? FileManager.default.applicationSupportDirectory
+        let appsDirectoryURL = baseDirectory.appendingPathComponent("Apps")
         
         do { try FileManager.default.createDirectory(at: appsDirectoryURL, withIntermediateDirectories: true, attributes: nil) }
         catch { print(error) }
         
+        return appsDirectoryURL
+    }
+    
+    class var legacyAppsDirectoryURL: URL {
+        let baseDirectory = FileManager.default.applicationSupportDirectory
+        let appsDirectoryURL = baseDirectory.appendingPathComponent("Apps")
         return appsDirectoryURL
     }
     

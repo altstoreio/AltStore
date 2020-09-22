@@ -11,6 +11,24 @@ import CoreData
 import AltSign
 import Roxas
 
+fileprivate class PersistentContainer: RSTPersistentContainer
+{
+    override class func defaultDirectoryURL() -> URL
+    {
+        guard let sharedDirectoryURL = FileManager.default.altstoreSharedDirectory else { return super.defaultDirectoryURL() }
+        
+        let databaseDirectoryURL = sharedDirectoryURL.appendingPathComponent("Database")
+        try? FileManager.default.createDirectory(at: databaseDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+
+        return databaseDirectoryURL
+    }
+    
+    class func legacyDirectoryURL() -> URL
+    {
+        return super.defaultDirectoryURL()
+    }
+}
+
 public class DatabaseManager
 {
     public static let shared = DatabaseManager()
@@ -22,9 +40,12 @@ public class DatabaseManager
     private var startCompletionHandlers = [(Error?) -> Void]()
     private let dispatchQueue = DispatchQueue(label: "io.altstore.DatabaseManager")
     
+    private let coordinator = NSFileCoordinator()
+    private let coordinatorQueue = OperationQueue()
+    
     private init()
     {
-        self.persistentContainer = RSTPersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
+        self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
     }
 }
@@ -52,14 +73,21 @@ public extension DatabaseManager
             
             guard !self.isStarted else { return finish(nil) }
             
-            self.persistentContainer.loadPersistentStores { (description, error) in
-                guard error == nil else { return finish(error!) }
-                
-                self.prepareDatabase() { (result) in
-                    switch result
-                    {
-                    case .failure(let error): finish(error)
-                    case .success: finish(nil)
+            self.migrateDatabaseToAppGroupIfNeeded { (result) in
+                switch result
+                {
+                case .failure(let error): finish(error)
+                case .success:
+                    self.persistentContainer.loadPersistentStores { (description, error) in
+                        guard error == nil else { return finish(error!) }
+                        
+                        self.prepareDatabase() { (result) in
+                            switch result
+                            {
+                            case .failure(let error): finish(error)
+                            case .success: finish(nil)
+                            }
+                        }
                     }
                 }
             }
@@ -132,6 +160,8 @@ private extension DatabaseManager
 {
     func prepareDatabase(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
+        guard !Bundle.isAppExtension() else { return completionHandler(.success(())) }
+        
         let context = self.persistentContainer.newBackgroundContext()
         context.performAndWait {
             guard let localApp = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
@@ -272,6 +302,77 @@ private extension DatabaseManager
             catch
             {
                 completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func migrateDatabaseToAppGroupIfNeeded(completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        guard UserDefaults.shared.requiresAppGroupMigration else { return completion(.success(())) }
+
+        func finish(_ result: Result<Void, Error>)
+        {
+            switch result
+            {
+            case .failure(let error): completion(.failure(error))
+            case .success:
+                UserDefaults.shared.requiresAppGroupMigration = false
+                completion(.success(()))
+            }
+        }
+        
+        let previousDatabaseURL = PersistentContainer.legacyDirectoryURL().appendingPathComponent("AltStore.sqlite")
+        let databaseURL = PersistentContainer.defaultDirectoryURL().appendingPathComponent("AltStore.sqlite")
+        
+        let previousAppsDirectoryURL = InstalledApp.legacyAppsDirectoryURL
+        let appsDirectoryURL = InstalledApp.appsDirectoryURL
+        
+        let databaseIntent = NSFileAccessIntent.writingIntent(with: databaseURL, options: [.forReplacing])
+        let appsIntent = NSFileAccessIntent.writingIntent(with: appsDirectoryURL, options: [.forReplacing])
+        
+        self.coordinator.coordinate(with: [databaseIntent, appsIntent], queue: self.coordinatorQueue) { (error) in
+            do
+            {
+                if let error = error
+                {
+                    throw error
+                }
+                
+                let description = NSPersistentStoreDescription(url: previousDatabaseURL)
+                
+                // Disable WAL to remove extra files automatically during migration.
+                description.setOption(["journal_mode": "DELETE"] as NSDictionary, forKey: NSSQLitePragmasOption)
+                
+                let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.persistentContainer.managedObjectModel)
+                
+                // Migrate database
+                if FileManager.default.fileExists(atPath: previousDatabaseURL.path)
+                {
+                    if FileManager.default.fileExists(atPath: databaseURL.path, isDirectory: nil)
+                    {
+                        try FileManager.default.removeItem(at: databaseURL)
+                    }
+                    
+                    let previousDatabase = try persistentStoreCoordinator.addPersistentStore(ofType: description.type, configurationName: description.configuration, at: description.url, options: description.options)
+                    
+                    // Pass nil options to prevent later error due to self.persistentContainer using WAL.
+                    try persistentStoreCoordinator.migratePersistentStore(previousDatabase, to: databaseURL, options: nil, withType: NSSQLiteStoreType)
+                    
+                    try FileManager.default.removeItem(at: previousDatabaseURL)
+                }
+                
+                // Migrate apps
+                if FileManager.default.fileExists(atPath: previousAppsDirectoryURL.path, isDirectory: nil)
+                {
+                    _ = try FileManager.default.replaceItemAt(appsDirectoryURL, withItemAt: previousAppsDirectoryURL)
+                }
+                
+                finish(.success(()))
+            }
+            catch
+            {
+                print("Failed to migrate database to app group:", error)
+                finish(.failure(error))
             }
         }
     }

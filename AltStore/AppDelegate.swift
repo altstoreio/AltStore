@@ -33,10 +33,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    @available(iOS 14, *)
     private lazy var intentHandler = IntentHandler()
+    
+    @available(iOS 14, *)
+    private lazy var viewAppIntentHandler = ViewAppIntentHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        // Register default settings before doing anything else.
+        UserDefaults.registerDefaults()
+        
         DatabaseManager.shared.start { (error) in
             if let error = error
             {
@@ -54,9 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ServerManager.shared.startDiscovering()
         
-        SecureValueTransformer.register()
-        
-        UserDefaults.standard.registerDefaults()
+        SecureValueTransformer.register()        
         
         if UserDefaults.standard.firstLaunch == nil
         {
@@ -95,8 +100,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any?
     {
-        guard intent is RefreshAllIntent else { return nil }
-        return self.intentHandler
+        guard #available(iOS 14, *) else { return nil }
+        
+        switch intent
+        {
+        case is RefreshAllIntent: return self.intentHandler
+        case is ViewAppIntent: return self.viewAppIntentHandler
+        default: return nil
+        }
     }
 }
 
