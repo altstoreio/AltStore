@@ -105,12 +105,11 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
             
             self.startListeningForRunningApps()
             
-            // Wait for three seconds to:
+            // Wait for 3 seconds (2 now, 1 later in FindServerOperation) to:
             // a) give us time to discover AltServers
             // b) give other processes a chance to respond to requestAppState notification
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.managedObjectContext.perform {
-                    guard !ServerManager.shared.discoveredServers.isEmpty else { return self.finish(.failure(ConnectionError.serverNotFound)) }
                     
                     let filteredApps = self.installedApps.filter { !self.runningApplications.contains($0.bundleIdentifier) }
                     print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
