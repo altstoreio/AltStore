@@ -41,6 +41,8 @@ struct Server: Equatable
     
     var isPreferred = false
     var connectionType: ConnectionType = .wireless
+    
+    var machServiceName: String?
 }
 
 extension Server

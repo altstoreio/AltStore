@@ -15,7 +15,7 @@ class XPCConnectionHandler: NSObject, ConnectionHandler
     var disconnectionHandler: ((Connection) -> Void)?
     
     private let dispatchQueue = DispatchQueue(label: "io.altstore.XPCConnectionListener", qos: .utility)
-    private let listener = NSXPCListener.makeListener(machServiceName: XPCConnection.machServiceName)
+    private let listeners = XPCConnection.machServiceNames.map { NSXPCListener.makeListener(machServiceName: $0) }
     
     deinit
     {
@@ -24,13 +24,16 @@ class XPCConnectionHandler: NSObject, ConnectionHandler
         
     func startListening()
     {
-        self.listener.delegate = self
-        self.listener.resume()
+        for listener in self.listeners
+        {
+            listener.delegate = self
+            listener.resume()
+        }
     }
     
     func stopListening()
     {
-        self.listener.suspend()
+        self.listeners.forEach { $0.suspend() }
     }
 }
 

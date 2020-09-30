@@ -16,7 +16,10 @@ import Foundation
 
 extension XPCConnection
 {
-    public static let machServiceName = "cy:io.altstore.altdaemon"
+    public static let unc0verMachServiceName = "cy:io.altstore.altdaemon"
+    public static let odysseyMachServiceName = "lh:io.altstore.altdaemon"
+    
+    public static let machServiceNames = [unc0verMachServiceName, odysseyMachServiceName]
 }
 
 public class XPCConnection: NSObject, Connection
@@ -30,7 +33,7 @@ public class XPCConnection: NSObject, Connection
     
     private var error: Error?
     
-    public init(_ xpcConnection: NSXPCConnection = .makeConnection(machServiceName: XPCConnection.machServiceName))
+    public init(_ xpcConnection: NSXPCConnection)
     {
         let proxyInterface = NSXPCInterface(with: XPCConnectionProxy.self)
         xpcConnection.remoteObjectInterface = proxyInterface

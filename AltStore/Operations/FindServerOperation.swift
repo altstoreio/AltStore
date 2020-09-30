@@ -25,7 +25,7 @@ class FindServerOperation: ResultOperation<Server>
     let context: OperationContext
     
     private var isWiredServerConnectionAvailable = false
-    private var isLocalServerConnectionAvailable = false
+    private var localServerMachServiceName: String?
     
     init(context: OperationContext = OperationContext())
     {
@@ -61,10 +61,10 @@ class FindServerOperation: ResultOperation<Server>
         
         // Wait for either callback or timeout.
         DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
-            if self.isLocalServerConnectionAvailable
+            if let machServiceName = self.localServerMachServiceName
             {
                 // Prefer background daemon, if it exists and is running.
-                let server = Server(connectionType: .local)
+                let server = Server(connectionType: .local, machServiceName: machServiceName)
                 self.finish(.success(server))
             }
             else if self.isWiredServerConnectionAvailable
@@ -105,12 +105,17 @@ fileprivate extension FindServerOperation
 {
     func discoverLocalServer()
     {
-        let connection = XPCConnection()
-        connection.connect { (result) in
-            switch result
-            {
-            case .failure(let error): print("Could not connect to AltDaemon XPC service.", error)
-            case .success: self.isLocalServerConnectionAvailable = true
+        for machServiceName in XPCConnection.machServiceNames
+        {
+            let xpcConnection = NSXPCConnection.makeConnection(machServiceName: machServiceName)
+            
+            let connection = XPCConnection(xpcConnection)
+            connection.connect { (result) in
+                switch result
+                {
+                case .failure(let error): print("Could not connect to AltDaemon XPC service \(machServiceName).", error)
+                case .success: self.localServerMachServiceName = machServiceName
+                }
             }
         }
     }

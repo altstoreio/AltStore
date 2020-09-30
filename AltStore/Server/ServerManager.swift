@@ -76,7 +76,7 @@ extension ServerManager
             
             switch server.connectionType
             {
-            case .local: self.connectToLocalServer(completion: finish(_:))
+            case .local: self.connectToLocalServer(server, completion: finish(_:))
             case .wired:
                 guard let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore else { return finish(.failure(ALTServerError(.connectionFailed))) }
                 
@@ -190,14 +190,18 @@ private extension ServerManager
         connection.start(queue: self.dispatchQueue)
     }
     
-    func connectToLocalServer(completion: @escaping (Result<Connection, Error>) -> Void)
+    func connectToLocalServer(_ server: Server, completion: @escaping (Result<Connection, Error>) -> Void)
     {
-        let connection = XPCConnection()
+        guard let machServiceName = server.machServiceName else { return completion(.failure(ConnectionError.connectionFailed)) }
+        
+        let xpcConnection = NSXPCConnection.makeConnection(machServiceName: machServiceName)
+        
+        let connection = XPCConnection(xpcConnection)
         connection.connect { (result) in
             switch result
             {
             case .failure(let error):
-                print("Could not connect to AltDaemon XPC service.", error)
+                print("Could not connect to AltDaemon XPC service \(machServiceName).", error)
                 completion(.failure(error))
                 
             case .success: completion(.success(connection))
