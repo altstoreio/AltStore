@@ -51,6 +51,8 @@ class MyAppsViewController: UICollectionViewController
     private var sideloadingProgress: Progress?
     private var dropDestinationIndexPath: IndexPath?
     
+    private var _imagePickerInstalledApp: InstalledApp?
+    
     // Cache
     private var cachedUpdateSizes = [String: CGSize]()
     
@@ -361,16 +363,16 @@ private extension MyAppsViewController
             }
         }
         dataSource.prefetchHandler = { (item, indexPath, completion) in
-            let fileURL = item.fileURL
-            
-            return BlockOperation {
-                guard let application = ALTApplication(fileURL: fileURL) else {
-                    completion(nil, OperationError.invalidApp)
-                    return
+            RSTAsyncBlockOperation { (operation) in
+                item.managedObjectContext?.perform {
+                    item.loadIcon { (result) in
+                        switch result
+                        {
+                        case .failure(let error): completion(nil, error)
+                        case .success(let image): completion(image, nil)
+                        }
+                    }
                 }
-                
-                let icon = application.icon
-                completion(icon, nil)
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -435,16 +437,16 @@ private extension MyAppsViewController
             }
         }
         dataSource.prefetchHandler = { (item, indexPath, completion) in
-            let fileURL = item.fileURL
-            
-            return BlockOperation {
-                guard let application = ALTApplication(fileURL: fileURL) else {
-                    completion(nil, OperationError.invalidApp)
-                    return
+            RSTAsyncBlockOperation { (operation) in
+                item.managedObjectContext?.perform {
+                    item.loadIcon { (result) in
+                        switch result
+                        {
+                        case .failure(let error): completion(nil, error)
+                        case .success(let image): completion(image, nil)
+                        }
+                    }
                 }
-                
-                let icon = application.icon
-                completion(icon, nil)
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -1280,6 +1282,63 @@ private extension MyAppsViewController
         documentPicker.delegate = self
         self.present(documentPicker, animated: true, completion: nil)
     }
+    
+    func chooseIcon(for installedApp: InstalledApp)
+    {
+        self._imagePickerInstalledApp = installedApp
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        self.present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func changeIcon(for installedApp: InstalledApp, to image: UIImage?)
+    {
+        // Remove previous icon from cache.
+        self.activeAppsDataSource.prefetchItemCache.removeObject(forKey: installedApp)
+        self.inactiveAppsDataSource.prefetchItemCache.removeObject(forKey: installedApp)
+        
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            do
+            {
+                let tempApp = context.object(with: installedApp.objectID) as! InstalledApp
+                tempApp.needsResign = true
+                tempApp.hasAlternateIcon = (image != nil)
+                
+                if let image = image
+                {
+                    guard let icon = image.resizing(toFill: CGSize(width: 256, height: 256)),
+                          let iconData = icon.pngData()
+                    else { return }
+                    
+                    try iconData.write(to: tempApp.alternateIconURL, options: .atomic)
+                }
+                else
+                {
+                    try FileManager.default.removeItem(at: tempApp.alternateIconURL)
+                }
+                
+                try context.save()
+                
+                if tempApp.isActive
+                {
+                    DispatchQueue.main.async {
+                        self.refresh(installedApp)
+                    }
+                }
+            }
+            catch
+            {
+                print("Failed to change app icon.", error)
+                
+                DispatchQueue.main.async {
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
+                }
+            }
+        }
+    }
 }
 
 private extension MyAppsViewController
@@ -1460,9 +1519,9 @@ extension MyAppsViewController
 @available(iOS 13.0, *)
 extension MyAppsViewController
 {
-    private func actions(for installedApp: InstalledApp) -> [UIAction]
+    private func actions(for installedApp: InstalledApp) -> [UIMenuElement]
     {
-        var actions = [UIAction]()
+        var actions = [UIMenuElement]()
         
         let refreshAction = UIAction(title: NSLocalizedString("Refresh", comment: ""), image: UIImage(systemName: "arrow.clockwise")) { (action) in
             self.refresh(installedApp)
@@ -1492,8 +1551,24 @@ extension MyAppsViewController
             self.restore(installedApp)
         }
         
+        let chooseIconAction = UIAction(title: NSLocalizedString("Photos", comment: ""), image: UIImage(systemName: "photo")) { (action) in
+            self.chooseIcon(for: installedApp)
+        }
+        
+        let removeIconAction = UIAction(title: NSLocalizedString("Remove Custom Icon", comment: ""), image: UIImage(systemName: "trash"), attributes: [.destructive]) { (action) in
+            self.changeIcon(for: installedApp, to: nil)
+        }
+        
+        var changeIconActions = [chooseIconAction]
+        if installedApp.hasAlternateIcon
+        {
+            changeIconActions.append(removeIconAction)
+        }
+        
+        let changeIconMenu = UIMenu(title: NSLocalizedString("Change Icon", comment: ""), image: UIImage(systemName: "photo"), children: changeIconActions)
+        
         guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
-            return [refreshAction]
+            return [refreshAction, changeIconMenu]
         }
         
         if installedApp.isActive
@@ -1504,6 +1579,8 @@ extension MyAppsViewController
         {
             actions.append(activateAction)
         }
+        
+        actions.append(changeIconMenu)
         
         if installedApp.isActive
         {
@@ -2010,5 +2087,25 @@ extension MyAppsViewController: UIViewControllerPreviewingDelegate
         guard let indexPath = self.collectionView.indexPathForItem(at: point), let cell = self.collectionView.cellForItem(at: indexPath) else { return }
         
         self.performSegue(withIdentifier: "showUpdate", sender: cell)
+    }
+}
+
+extension MyAppsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate
+{
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any])
+    {
+        defer {
+            picker.dismiss(animated: true, completion: nil)
+            self._imagePickerInstalledApp = nil
+        }
+        
+        guard let image = info[.editedImage] as? UIImage, let installedApp = self._imagePickerInstalledApp else { return }
+        self.changeIcon(for: installedApp, to: image)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController)
+    {
+        picker.dismiss(animated: true, completion: nil)
+        self._imagePickerInstalledApp = nil
     }
 }

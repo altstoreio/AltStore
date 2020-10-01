@@ -191,6 +191,22 @@ private extension ResignAppOperation
                     }
                 }
                 
+                let iconScale = Int(UIScreen.main.scale)
+                
+                if let alternateIconURL = self.context.alternateIconURL,
+                   case let data = try Data(contentsOf: alternateIconURL),
+                   let image = UIImage(data: data),
+                   let icon = image.resizing(toFill: CGSize(width: 60 * iconScale, height: 60 * iconScale)),
+                   let iconData = icon.pngData()
+                {
+                    let iconName = "AltIcon"
+                    let iconURL = appBundleURL.appendingPathComponent(iconName + "@\(iconScale)x.png")
+                    try iconData.write(to: iconURL, options: .atomic)
+                    
+                    let iconDictionary = ["CFBundlePrimaryIcon": ["CFBundleIconFiles": [iconName]]]
+                    additionalValues["CFBundleIcons"] = iconDictionary
+                }
+                
                 // Prepare app
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
                 

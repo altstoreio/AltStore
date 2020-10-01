@@ -41,6 +41,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     
     @NSManaged public var isActive: Bool
     @NSManaged public var needsResign: Bool
+    @NSManaged public var hasAlternateIcon: Bool
     
     @NSManaged public var certificateSerialNumber: String?
     
@@ -103,6 +104,32 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
+    }
+    
+    public func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
+    {
+        let hasAlternateIcon = self.hasAlternateIcon
+        let alternateIconURL = self.alternateIconURL
+        let fileURL = self.fileURL
+        
+        DispatchQueue.global().async {
+            do
+            {
+                if hasAlternateIcon,
+                   case let data = try Data(contentsOf: alternateIconURL),
+                   let icon = UIImage(data: data)
+                {
+                    return completion(.success(icon))
+                }
+                
+                let application = ALTApplication(fileURL: fileURL)
+                completion(.success(application?.icon))
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
     }
 }
 
@@ -269,6 +296,12 @@ public extension InstalledApp
         return installedBackupAppUTI
     }
     
+    class func alternateIconURL(for app: AppProtocol) -> URL
+    {
+        let installedBackupAppUTI = self.directoryURL(for: app).appendingPathComponent("AltIcon.png")
+        return installedBackupAppUTI
+    }
+    
     var directoryURL: URL {
         return InstalledApp.directoryURL(for: self)
     }
@@ -287,5 +320,9 @@ public extension InstalledApp
     
     var installedBackupAppUTI: String {
         return InstalledApp.installedBackupAppUTI(forBundleIdentifier: self.resignedBundleIdentifier)
+    }
+    
+    var alternateIconURL: URL {
+        return InstalledApp.alternateIconURL(for: self)
     }
 }

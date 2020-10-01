@@ -766,10 +766,18 @@ private extension AppManager
         
         var downloadingApp = app
         
-        if let installedApp = app as? InstalledApp, let storeApp = installedApp.storeApp, !FileManager.default.fileExists(atPath: installedApp.fileURL.path)
+        if let installedApp = app as? InstalledApp
         {
-            // Cached app has been deleted, so we need to redownload it.
-            downloadingApp = storeApp
+            if let storeApp = installedApp.storeApp, !FileManager.default.fileExists(atPath: installedApp.fileURL.path)
+            {
+                // Cached app has been deleted, so we need to redownload it.
+                downloadingApp = storeApp
+            }
+            
+            if installedApp.hasAlternateIcon
+            {
+                context.alternateIconURL = installedApp.alternateIconURL
+            }
         }
         
         let downloadedAppURL = context.temporaryDirectory.appendingPathComponent("Cached.app")

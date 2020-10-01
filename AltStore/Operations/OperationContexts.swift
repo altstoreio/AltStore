@@ -114,4 +114,6 @@ class InstallAppOperationContext: AppOperationContext
     private var installedAppContext: NSManagedObjectContext?
     
     var beginInstallationHandler: ((InstalledApp) -> Void)?
+    
+    var alternateIconURL: URL?
 }
