@@ -106,7 +106,12 @@ private extension SourcesViewController
         }
         alertController.addAction(.cancel)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Add", comment: ""), style: .default) { (action) in
-            guard let text = alertController.textFields![0].text, let sourceURL = URL(string: text) else { return }
+            guard let text = alertController.textFields![0].text else { return }
+            guard var sourceURL = URL(string: text) else { return }
+            if sourceURL.scheme == nil {
+                guard let httpsSourceURL = URL(string: "https://" + text) else { return }
+                sourceURL = httpsSourceURL
+            }
             self.addSource(url: sourceURL)
         })
         
