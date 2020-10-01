@@ -40,6 +40,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var installedDate: Date
     
     @NSManaged public var isActive: Bool
+    @NSManaged public var needsResign: Bool
     
     @NSManaged public var certificateSerialNumber: String?
     

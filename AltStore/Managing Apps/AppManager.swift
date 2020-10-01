@@ -667,8 +667,19 @@ private extension AppManager
                 case .refresh(let app):
                     // Check if backup app is installed in place of real app.
                     let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                    
-                    if app.certificateSerialNumber == group.context.certificate?.serialNumber && uti == nil
+                    if app.certificateSerialNumber != group.context.certificate?.serialNumber || uti != nil || app.needsResign
+                    {
+                        // Resign app instead of just refreshing profiles because either:
+                        // * Refreshing using different certificate
+                        // * Backup app is still installed
+                        // * App explicitly needs resigning
+                        
+                        let installProgress = self._install(app, operation: operation, group: group) { (result) in
+                            self.finish(operation, result: result, group: group, progress: progress)
+                        }
+                        progress?.addChild(installProgress, withPendingUnitCount: 80)
+                    }
+                    else
                     {
                         // Refreshing with same certificate as last time, and backup app isn't still installed,
                         // so we can just refresh provisioning profiles.
@@ -677,16 +688,6 @@ private extension AppManager
                             self.finish(operation, result: result, group: group, progress: progress)
                         }
                         progress?.addChild(refreshProgress, withPendingUnitCount: 80)
-                    }
-                    else
-                    {
-                        // Refreshing using different certificate or backup app is still installed,
-                        // so we need to resign + install.
-                        
-                        let installProgress = self._install(app, operation: operation, group: group) { (result) in
-                            self.finish(operation, result: result, group: group, progress: progress)
-                        }
-                        progress?.addChild(installProgress, withPendingUnitCount: 80)
                     }
                     
                 case .activate(let app):
