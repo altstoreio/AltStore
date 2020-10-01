@@ -28,7 +28,7 @@ target 'AltStoreCore' do
   use_frameworks!
 
   # Pods for AltServer
-  pod 'KeychainAccess', '~> 3.2.0'
+  pod 'KeychainAccess', '~> 4.2.0'
 
 end
 
