@@ -51,7 +51,7 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
                 return [NSString stringWithFormat:NSLocalizedString(@"Error code: %@", @""), underlyingErrorCode];
             }
             
-            return NSLocalizedString(@"An internal error occured.", @"");
+            return nil;
         }
         
         case ALTServerErrorUnknown:
