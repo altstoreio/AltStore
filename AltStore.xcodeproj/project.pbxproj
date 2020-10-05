@@ -226,6 +226,7 @@
 		BFAECC5F2501B0BF00528F27 /* ALTConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BD222A06EFB000B7ED1 /* ALTConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFAECC602501B0BF00528F27 /* NSError+ALTServerError.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1E314822A060F400370A3C /* NSError+ALTServerError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
+		BFB39B5C252BC10E00D1BE50 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
 		BFB49AAA23834CF900D542D9 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
 		BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21D231870160022A802 /* NewsViewController.swift */; };
@@ -655,6 +656,7 @@
 		BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnisetteDataOperation.swift; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
 		BFB364592325985F00CD0EB1 /* FindServerOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindServerOperation.swift; sourceTree = "<group>"; };
+		BFB39B5B252BC10E00D1BE50 /* Managed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managed.swift; sourceTree = "<group>"; };
 		BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateCollectionViewCell.xib; sourceTree = "<group>"; };
 		BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALTAnisetteData.m; path = "Dependencies/AltSign/AltSign/Model/Apple API/ALTAnisetteData.m"; sourceTree = SOURCE_ROOT; };
 		BFB49AA923834CF900D542D9 /* ALTAnisetteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALTAnisetteData.h; path = "Dependencies/AltSign/AltSign/Model/Apple API/ALTAnisetteData.h"; sourceTree = SOURCE_ROOT; };
@@ -901,6 +903,7 @@
 			isa = PBXGroup;
 			children = (
 				BF41B807233433C100C593A3 /* LoadingState.swift */,
+				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -2387,6 +2390,7 @@
 				BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
+				BFB39B5C252BC10E00D1BE50 /* Managed.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */,
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
