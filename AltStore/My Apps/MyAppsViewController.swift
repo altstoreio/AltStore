@@ -1568,7 +1568,11 @@ extension MyAppsViewController
         let changeIconMenu = UIMenu(title: NSLocalizedString("Change Icon", comment: ""), image: UIImage(systemName: "photo"), children: changeIconActions)
         
         guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
+            #if BETA
             return [refreshAction, changeIconMenu]
+            #else
+            return [refreshAction]
+            #endif
         }
         
         if installedApp.isActive
@@ -1580,7 +1584,9 @@ extension MyAppsViewController
             actions.append(activateAction)
         }
         
+        #if BETA
         actions.append(changeIconMenu)
+        #endif
         
         if installedApp.isActive
         {
