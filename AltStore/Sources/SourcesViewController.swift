@@ -12,6 +12,24 @@ import CoreData
 import AltStoreCore
 import Roxas
 
+struct SourceError: LocalizedError
+{
+    enum Code
+    {
+        case unsupported
+    }
+    
+    var code: Code
+    @Managed var source: Source
+    
+    var errorDescription: String? {
+        switch self.code
+        {
+        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
+        }
+    }
+}
+
 class SourcesViewController: UICollectionViewController
 {
     var deepLinkSourceURL: URL? {
@@ -28,6 +46,11 @@ class SourcesViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.collectionView.dataSource = self.dataSource
+        
+        #if !BETA
+        // Hide "Add Source" button for public version while in beta.
+        self.navigationItem.leftBarButtonItem = nil
+        #endif
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -142,6 +165,10 @@ private extension SourcesViewController
                 let source = try result.get()
                 let sourceName = source.name
                 let managedObjectContext = source.managedObjectContext
+                
+                #if !BETA
+                guard Source.allowedIdentifiers.contains(source.identifier) else { throw SourceError(code: .unsupported, source: source) }
+                #endif
                 
                 DispatchQueue.main.async {
                     let alertController = UIAlertController(title: String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName),

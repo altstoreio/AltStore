@@ -28,6 +28,8 @@ class BrowseViewController: UICollectionViewController
     
     private var cachedItemSizes = [String: CGSize]()
     
+    @IBOutlet private var sourcesBarButtonItem: UIBarButtonItem!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -35,9 +37,6 @@ class BrowseViewController: UICollectionViewController
         #if BETA
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
         self.navigationItem.searchController = self.dataSource.searchController
-        #else
-        // Hide Sources button for public version while in beta.
-        self.navigationItem.rightBarButtonItem = nil
         #endif
         
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -58,6 +57,8 @@ class BrowseViewController: UICollectionViewController
         
         self.fetchSource()
         self.updateDataSource()
+        
+        self.update()
     }
     
     @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
@@ -241,6 +242,12 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
+        
+        #if !BETA
+        // Hide Sources button for public version if there's only 1 source.
+        let sources = Source.all(in: DatabaseManager.shared.viewContext)
+        self.navigationItem.rightBarButtonItem = (sources.count > 1) ? self.sourcesBarButtonItem : nil
+        #endif
     }
 }
 

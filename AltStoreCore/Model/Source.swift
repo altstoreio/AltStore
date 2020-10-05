@@ -33,6 +33,10 @@ public extension Source
     #endif
     
     #endif
+    
+    static let exampleIdentifier = "io.altstore.example"
+    
+    static let allowedIdentifiers: Set<String> = [exampleIdentifier]
 }
 
 @objc(Source)
