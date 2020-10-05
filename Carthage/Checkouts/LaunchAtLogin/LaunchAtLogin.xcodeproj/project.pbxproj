@@ -12,6 +12,7 @@
 		E32E9B771EB87EA3000FEEE9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32E9B761EB87EA3000FEEE9 /* main.swift */; };
 		E32E9B861EB8845E000FEEE9 /* LaunchAtLoginHelper.app in Resources */ = {isa = PBXBuildFile; fileRef = E32E9B741EB87EA3000FEEE9 /* LaunchAtLoginHelper.app */; };
 		E32E9B931EB889AE000FEEE9 /* copy-helper.sh in Resources */ = {isa = PBXBuildFile; fileRef = E32E9B921EB889AE000FEEE9 /* copy-helper.sh */; };
+		E3A6EB58249009C3004D7101 /* LaunchAtLogin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,7 @@
 		E32E9B761EB87EA3000FEEE9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = main.swift; sourceTree = "<group>"; usesTabs = 1; };
 		E32E9B7F1EB87EA3000FEEE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E32E9B921EB889AE000FEEE9 /* copy-helper.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; lineEnding = 0; path = "copy-helper.sh"; sourceTree = "<group>"; usesTabs = 1; };
+		E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LaunchAtLogin.entitlements; path = LaunchAtLogin/LaunchAtLogin.entitlements; sourceTree = "<group>"; };
 		E3B8C38A20C0003300272EC0 /* LaunchAtLoginHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LaunchAtLoginHelper.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 		E32E9B591EB87D7B000FEEE9 = {
 			isa = PBXGroup;
 			children = (
+				E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */,
 				E32E9B651EB87D7B000FEEE9 /* LaunchAtLogin */,
 				E32E9B751EB87EA3000FEEE9 /* LaunchAtLoginHelper */,
 				E32E9B641EB87D7B000FEEE9 /* Products */,
@@ -198,6 +201,7 @@
 			files = (
 				E32E9B861EB8845E000FEEE9 /* LaunchAtLoginHelper.app in Resources */,
 				E32E9B931EB889AE000FEEE9 /* copy-helper.sh in Resources */,
+				E3A6EB58249009C3004D7101 /* LaunchAtLogin.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,7 +300,6 @@
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				VALID_ARCHS = x86_64;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -352,7 +355,6 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
-				VALID_ARCHS = x86_64;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -378,7 +380,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 3.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLogin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -408,7 +410,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 3.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLogin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
