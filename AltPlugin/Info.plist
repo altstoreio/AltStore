@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSHumanReadableCopyright</key>
@@ -57,6 +57,10 @@
 		<string>A4343FAF-AE18-40D0-8A16-DFAE481AF9C1</string>
 		<string># For mail version 13.0 (3594.4.2) on OS X Version 10.15 (build 19A558d)</string>
 		<string>6EEA38FB-1A0B-469B-BB35-4C2E0EEA9053</string>
+	</array>
+	<key>Supported11.0PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
 	</array>
 </dict>
 </plist>
