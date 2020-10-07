@@ -64,6 +64,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 UserDefaults.standard.didPresentInitialNotification = true
             }
         }
+        
+        if self.pluginManager.isUpdateAvailable
+        {
+            self.installMailPlugin()
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
@@ -168,25 +173,11 @@ private extension AppDelegate
         
         if !self.pluginManager.isMailPluginInstalled || self.pluginManager.isUpdateAvailable
         {
-            self.pluginManager.installMailPlugin { (result) in
-                DispatchQueue.main.async {
-                    switch result
-                    {
-                    case .failure(PluginError.cancelled): break
-                    case .failure(let error):
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
-                        alert.informativeText = error.localizedDescription
-                        alert.runModal()
-                        
-                    case .success:
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
-                        alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
-                        alert.runModal()
-                        
-                        install()
-                    }
+            self.installMailPlugin { (result) in
+                switch result
+                {
+                case .failure: break
+                case .success: install()
                 }
             }
         }
@@ -203,47 +194,59 @@ private extension AppDelegate
     
     @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
     {
-        if self.pluginManager.isMailPluginInstalled
+        if !self.pluginManager.isMailPluginInstalled || self.pluginManager.isUpdateAvailable
         {
-            self.pluginManager.uninstallMailPlugin { (result) in
-                DispatchQueue.main.async {
-                    switch result
-                    {
-                    case .failure(PluginError.cancelled): break
-                    case .failure(let error):
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Failed to Uninstall Mail Plug-in", comment: "")
-                        alert.informativeText = error.localizedDescription
-                        alert.runModal()
-                        
-                    case .success:
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Mail Plug-in Uninstalled", comment: "")
-                        alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect. You will not be able to use AltServer until the plug-in is reinstalled.", comment: "")
-                        alert.runModal()
-                    }
-                }
-            }
+            self.installMailPlugin()
         }
         else
         {
-            self.pluginManager.installMailPlugin { (result) in
-                DispatchQueue.main.async {
-                    switch result
-                    {
-                    case .failure(PluginError.cancelled): break
-                    case .failure(let error):
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
-                        alert.informativeText = error.localizedDescription
-                        alert.runModal()
-                        
-                    case .success:
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
-                        alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
-                        alert.runModal()
-                    }
+            self.uninstallMailPlugin()
+        }
+    }
+    
+    private func installMailPlugin(completion: ((Result<Void, Error>) -> Void)? = nil)
+    {
+        self.pluginManager.installMailPlugin { (result) in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(PluginError.cancelled): break
+                case .failure(let error):
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
+                    
+                case .success:
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
+                    alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
+                    alert.runModal()
+                }
+                
+                completion?(result)
+            }
+        }
+    }
+    
+    private func uninstallMailPlugin()
+    {
+        self.pluginManager.uninstallMailPlugin { (result) in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(PluginError.cancelled): break
+                case .failure(let error):
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Failed to Uninstall Mail Plug-in", comment: "")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
+                    
+                case .success:
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Mail Plug-in Uninstalled", comment: "")
+                    alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect. You will not be able to use AltServer until the plug-in is reinstalled.", comment: "")
+                    alert.runModal()
                 }
             }
         }
@@ -262,7 +265,11 @@ extension AppDelegate: NSMenuDelegate
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
 
-        if self.pluginManager.isMailPluginInstalled
+        if self.pluginManager.isUpdateAvailable
+        {
+            self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in", comment: "")
+        }
+        else if self.pluginManager.isMailPluginInstalled
         {
             self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
         }

@@ -43,12 +43,12 @@ struct PluginVersion
     var sha256Hash: String
     var version: String
     
-    static let legacy = PluginVersion(url: URL(string: "https://f000.backblazeb2.com/file/altstore/altserver/altplugin/1_0.zip")!,
+    static let v1_0 = PluginVersion(url: URL(string: "https://f000.backblazeb2.com/file/altstore/altserver/altplugin/1_0.zip")!,
                                       sha256Hash: "070e9b7e1f74e7a6474d36253ab5a3623ff93892acc9e1043c3581f2ded12200",
                                       version: "1.0")
     
-    static let current = PluginVersion(url: URL(string: "https://f000.backblazeb2.com/file/altstore/altserver/altplugin/1_1.zip")!,
-                                       sha256Hash: "a1bc6f75fbc39c483c08898ae19792b59bf4c6efb79c225a2ec95983c13c269e",
+    static let v1_1 = PluginVersion(url: Bundle.main.url(forResource: "AltPlugin", withExtension: "zip")!,
+                                       sha256Hash: "cd1e8c85cbb1935d2874376566671f3c5823101d4933fc6ee63bab8b2a37f800",
                                        version: "1.1")
 }
 
@@ -61,7 +61,12 @@ class PluginManager
     
     var isUpdateAvailable: Bool {
         guard let bundle = Bundle(url: pluginURL) else { return false }
-        guard let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { return false }
+        
+        // Load Info.plist from disk because Bundle.infoDictionary is cached by system.
+        let infoDictionaryURL = bundle.bundleURL.appendingPathComponent("Contents/Info.plist")
+        guard let infoDictionary = NSDictionary(contentsOf: infoDictionaryURL) as? [String: Any],
+              let version = infoDictionary["CFBundleShortVersionString"] as? String
+        else { return false }
         
         let isUpdateAvailable = (version != self.preferredVersion.version)
         return isUpdateAvailable
@@ -70,11 +75,11 @@ class PluginManager
     private var preferredVersion: PluginVersion {
         if #available(macOS 11, *)
         {
-            return .current
+            return .v1_1
         }
         else
         {
-            return .legacy
+            return .v1_0
         }
     }
 }
@@ -113,13 +118,29 @@ extension PluginManager
                 do
                 {
                     let fileURL = try result.get()
-                    defer { try? FileManager.default.removeItem(at: fileURL) }
                     
                     // Ensure plug-in directory exists.
                     let authorization = try self.runAndKeepAuthorization("mkdir", arguments: ["-p", pluginDirectoryURL.path])
                     
-                    // Unzip AltPlugin to plug-ins directory.
-                    try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", pluginDirectoryURL.path], authorization: authorization)
+                    // Create temporary directory.
+                    let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                    try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                    defer { try? FileManager.default.removeItem(at: temporaryDirectoryURL) }
+                        
+                    // Unzip AltPlugin to temporary directory.
+                    try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", temporaryDirectoryURL.path], authorization: authorization)
+                    
+                    if FileManager.default.fileExists(atPath: pluginURL.path)
+                    {
+                        // Delete existing Mail plug-in.
+                        try self.runAndKeepAuthorization("rm", arguments: ["-rf", pluginURL.path], authorization: authorization)
+                    }
+                    
+                    // Copy AltPlugin to Mail plug-ins directory.
+                    // Must be separate step than unzip to prevent macOS from considering plug-in corrupted.
+                    let unzippedPluginURL = temporaryDirectoryURL.appendingPathComponent(pluginURL.lastPathComponent)
+                    try self.runAndKeepAuthorization("cp", arguments: ["-R", unzippedPluginURL.path, pluginDirectoryURL.path], authorization: authorization)
+                    
                     guard self.isMailPluginInstalled else { throw PluginError.unknown }
                     
                     // Enable Mail plug-in preferences.
@@ -180,17 +201,12 @@ private extension PluginManager
     {
         let pluginVersion = self.preferredVersion
         
-        let downloadTask = URLSession.shared.downloadTask(with: pluginVersion.url) { (fileURL, response, error) in
+        func finish(_ result: Result<URL, Error>)
+        {
             do
             {
-                if let response = response as? HTTPURLResponse
-                {
-                    guard response.statusCode != 404 else { throw PluginError.notFound }
-                }
+                let fileURL = try result.get()
                 
-                guard let fileURL = fileURL else { throw error! }
-                print("Downloaded plugin to URL:", fileURL)
-                                
                 if #available(OSX 10.15, *)
                 {
                     let data = try Data(contentsOf: fileURL)
@@ -209,7 +225,29 @@ private extension PluginManager
             }
         }
         
-        downloadTask.resume()
+        if pluginVersion.url.isFileURL
+        {
+            finish(.success(pluginVersion.url))
+        }
+        else
+        {
+            let downloadTask = URLSession.shared.downloadTask(with: pluginVersion.url) { (fileURL, response, error) in
+                if let response = response as? HTTPURLResponse
+                {
+                    guard response.statusCode != 404 else { return finish(.failure(PluginError.notFound)) }
+                }
+                
+                let result = Result(fileURL, error)
+                finish(result)
+                
+                if let fileURL = fileURL
+                {
+                    try? FileManager.default.removeItem(at: fileURL)
+                }
+            }
+            
+            downloadTask.resume()
+        }
     }
     
     func run(_ program: String, arguments: [String], authorization: AuthorizationRef? = nil) throws
