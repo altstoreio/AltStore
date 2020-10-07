@@ -22,7 +22,6 @@ extension SettingsViewController
         case account
         case patreon
         case appRefresh
-        case jailbreak
         case instructions
         case credits
         case debug
@@ -192,16 +191,6 @@ private extension SettingsViewController
                 settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
             }
             
-        case .jailbreak:
-            if isHeader
-            {
-                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("JAILBREAK", comment: "")
-            }
-            else
-            {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("AltDaemon allows AltStore to install and refresh apps without a computer. You can install AltDaemon using Filza or another file manager.", comment: "")
-            }
-            
         case .instructions:
             break
             
@@ -367,7 +356,6 @@ extension SettingsViewController
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 3
         case .appRefresh: return AppRefreshRow.allCases.count
-        case .jailbreak: return UIDevice.current.isJailbroken ? 1 : 0
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
     }
@@ -395,9 +383,7 @@ extension SettingsViewController
         {
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
-        case .jailbreak where !UIDevice.current.isJailbroken: return nil
-            
-        case .signIn, .account, .patreon, .appRefresh, .jailbreak, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
@@ -412,9 +398,7 @@ extension SettingsViewController
         switch section
         {
         case .signIn where self.activeTeam != nil: return nil
-        case .jailbreak where !UIDevice.current.isJailbroken: return nil
-            
-        case .signIn, .patreon, .appRefresh, .jailbreak:
+        case .signIn, .patreon, .appRefresh:
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(footerView, for: section, isHeader: false)
             return footerView
@@ -430,9 +414,7 @@ extension SettingsViewController
         {
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
-        case .jailbreak where !UIDevice.current.isJailbroken: return 1.0
-            
-        case .signIn, .account, .patreon, .appRefresh, .jailbreak, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
@@ -446,10 +428,8 @@ extension SettingsViewController
         switch section
         {
         case .signIn where self.activeTeam != nil: return 1.0
-        case .account where self.activeTeam == nil: return 1.0
-        case .jailbreak where !UIDevice.current.isJailbroken: return 1.0
-            
-        case .signIn, .patreon, .appRefresh, .jailbreak:
+        case .account where self.activeTeam == nil: return 1.0            
+        case .signIn, .patreon, .appRefresh:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
             return height
             
@@ -476,14 +456,6 @@ extension SettingsViewController
                 guard #available(iOS 14, *) else { return }
                 self.addRefreshAppsShortcut()
             }
-            
-        case .jailbreak:
-            let fileURL = Bundle.main.url(forResource: "AltDaemon", withExtension: "deb")!
-            
-            let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-            self.present(activityViewController, animated: true, completion: nil)
-            
-            tableView.deselectRow(at: indexPath, animated: true)
             
         case .credits:
             let row = CreditsRow.allCases[indexPath.row]

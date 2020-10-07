@@ -193,7 +193,6 @@
 		BF8CAE452489E772004D6CCE /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */; };
 		BF8CAE462489E772004D6CCE /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE432489E772004D6CCE /* AppManager.swift */; };
 		BF8CAE472489E772004D6CCE /* DaemonRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE442489E772004D6CCE /* DaemonRequestHandler.swift */; };
-		BF8CAE4C2489F637004D6CCE /* AltDaemon.deb in Resources */ = {isa = PBXBuildFile; fileRef = BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */; };
 		BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
@@ -638,7 +637,6 @@
 		BF8CAE422489E772004D6CCE /* AnisetteDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BF8CAE432489E772004D6CCE /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		BF8CAE442489E772004D6CCE /* DaemonRequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaemonRequestHandler.swift; sourceTree = "<group>"; };
-		BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = AltDaemon.deb; sourceTree = "<group>"; };
 		BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Jailbreak.swift"; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
@@ -1484,7 +1482,6 @@
 				BFB1169C22932DB100BB457C /* apps.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
-				BF8CAE4A2489F5A0004D6CCE /* AltDaemon.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1982,7 +1979,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF8CAE4C2489F637004D6CCE /* AltDaemon.deb in Resources */,
 				BFC57A702416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib in Resources */,
 				BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */,
 				BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */,
