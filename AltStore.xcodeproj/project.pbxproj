@@ -237,6 +237,7 @@
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
 		BFC57A702416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */; };
+		BFC712BB2512B9CF00AB5EBE /* PluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */; };
 		BFC712C32512D5F100AB5EBE /* XPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C12512D5F100AB5EBE /* XPCConnection.swift */; };
 		BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C12512D5F100AB5EBE /* XPCConnection.swift */; };
 		BFC712C52512D5F100AB5EBE /* XPCConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC712C22512D5F100AB5EBE /* XPCConnectionHandler.swift */; };
@@ -292,6 +293,7 @@
 		BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */; };
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
 		BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE48974238007CE003239E0 /* AnisetteDataManager.swift */; };
+		BFE4FFB6251BF7BA0018CF9B /* AltPlugin.zip in Resources */ = {isa = PBXBuildFile; fileRef = BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */; };
 		BFE60738231ADF49002B0E8E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE60737231ADF49002B0E8E /* Settings.storyboard */; };
 		BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60739231ADF82002B0E8E /* SettingsViewController.swift */; };
 		BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */; };
@@ -665,6 +667,7 @@
 		BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAppOperation.swift; sourceTree = "<group>"; };
 		BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppsCollectionHeaderView.swift; sourceTree = "<group>"; };
 		BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InstalledAppsCollectionHeaderView.xib; sourceTree = "<group>"; };
+		BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginManager.swift; sourceTree = "<group>"; };
 		BFC712C12512D5F100AB5EBE /* XPCConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPCConnection.swift; sourceTree = "<group>"; };
 		BFC712C22512D5F100AB5EBE /* XPCConnectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPCConnectionHandler.swift; sourceTree = "<group>"; };
 		BFC84A4C2421A19100853474 /* SourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesViewController.swift; sourceTree = "<group>"; };
@@ -726,6 +729,7 @@
 		BFE338DE22F0EADB002E24B9 /* FetchSourceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSourceOperation.swift; sourceTree = "<group>"; };
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BFE48974238007CE003239E0 /* AnisetteDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
+		BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = AltPlugin.zip; sourceTree = "<group>"; };
 		BFE60737231ADF49002B0E8E /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		BFE60739231ADF82002B0E8E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeaderFooterView.xib; sourceTree = "<group>"; };
@@ -919,6 +923,7 @@
 				BF45868F229872EA00BD7491 /* AppDelegate.swift */,
 				BF458695229872EA00BD7491 /* Main.storyboard */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
+				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -1249,6 +1254,7 @@
 		BF703194229F36F6006E110F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */,
 				BF458693229872EA00BD7491 /* Assets.xcassets */,
 			);
 			name = Resources;
@@ -1927,6 +1933,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFE4FFB6251BF7BA0018CF9B /* AltPlugin.zip in Resources */,
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
 			);
@@ -2162,6 +2169,7 @@
 				BFECAC8724FD950B0077C41F /* Bundle+AltStore.swift in Sources */,
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
 				BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */,
+				BFC712BB2512B9CF00AB5EBE /* PluginManager.swift in Sources */,
 				BFECAC8224FD950B0077C41F /* ServerProtocol.swift in Sources */,
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
 				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
