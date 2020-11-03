@@ -70,32 +70,45 @@ class VerifyAppOperation: ResultOperation<Void>
                 throw VerificationError.mismatchedBundleIdentifiers(app, sourceBundleID: self.context.bundleIdentifier)
             }
                         
-            // Make sure this goes last, since once user responds to alert we don't do any more app verification.
-            if let commentStart = app.entitlementsString.range(of: "<!---><!-->"), let commentEnd = app.entitlementsString.range(of: "<!-- -->")
+            if #available(iOS 13.5, *)
             {
-                // Psychic Paper private entitlements.
-                
-                let entitlementsStart = app.entitlementsString.index(after: commentStart.upperBound)
-                let rawEntitlements = String(app.entitlementsString[entitlementsStart ..< commentEnd.lowerBound])
-                
-                let plistTemplate = """
-                    <?xml version="1.0" encoding="UTF-8"?>
-                    <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-                    <plist version="1.0">
-                        <dict>
-                        %@
-                        </dict>
-                    </plist>
-                    """
-                let entitlementsPlist = String(format: plistTemplate, rawEntitlements)
-                let entitlements = try PropertyListSerialization.propertyList(from: entitlementsPlist.data(using: .utf8)!, options: [], format: nil) as! [String: Any]
-                
-                let error = VerificationError.privateEntitlements(app, entitlements: entitlements)
-                self.process(error) { (result) in
-                    self.finish(result.mapError { $0 as Error })
+                // No psychic paper, so we can ignore private entitlements
+                app.hasPrivateEntitlements = false
+            }
+            else
+            {
+                // Make sure this goes last, since once user responds to alert we don't do any more app verification.
+                if let commentStart = app.entitlementsString.range(of: "<!---><!-->"), let commentEnd = app.entitlementsString.range(of: "<!-- -->")
+                {
+                    // Psychic Paper private entitlements.
+                    
+                    let entitlementsStart = app.entitlementsString.index(after: commentStart.upperBound)
+                    let rawEntitlements = String(app.entitlementsString[entitlementsStart ..< commentEnd.lowerBound])
+                    
+                    let plistTemplate = """
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                        <plist version="1.0">
+                            <dict>
+                            %@
+                            </dict>
+                        </plist>
+                        """
+                    let entitlementsPlist = String(format: plistTemplate, rawEntitlements)
+                    let entitlements = try PropertyListSerialization.propertyList(from: entitlementsPlist.data(using: .utf8)!, options: [], format: nil) as! [String: Any]
+                    
+                    app.hasPrivateEntitlements = true
+                    let error = VerificationError.privateEntitlements(app, entitlements: entitlements)
+                    self.process(error) { (result) in
+                        self.finish(result.mapError { $0 as Error })
+                    }
+                    
+                    return
                 }
-                
-                return
+                else
+                {
+                    app.hasPrivateEntitlements = false
+                }
             }
             
             self.finish(.success(()))
