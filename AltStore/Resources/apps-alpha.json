@@ -7,10 +7,10 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4a12",
-      "versionDate": "2020-09-16T12:30:00-07:00",
-      "versionDescription": "Adds back support for iOS 14 Home Screen widgets.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/1_4_a12.ipa",
+      "version": "1.4.2a1",
+      "versionDate": "2020-11-04T15:30:00-07:00",
+      "versionDescription": "Allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/1_4_2_a1.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore allows you to install Delta as well as any app (.ipa) directly from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
@@ -98,6 +98,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "325E4QVOJs1X6YXNNd_d7tewb9gckOMqvkPCtDE8Kcc"
+    "patreonAccessToken": "Dp-XtViLDff7xd2fLhc8VVGcLNR9YxJ1L3WAlcWu_Bo"
   }
 }
