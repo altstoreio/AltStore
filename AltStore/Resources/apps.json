@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.1",
-      "versionDate": "2020-10-26T14:00:00-07:00",
-      "versionDescription": "This update fixes sideloaded apps crashing on iOS 14.2 beta 2 and later.\n\nIf you have already updated to 14.2, you can manually update AltStore by reinstalling with the latest AltServer version. You do not need to delete the app first.\n\nPREVIOUS UPDATE\n\nThe AltStore iOS 14 update is here! We've been hard at work all summer updating AltStore to support the latest iOS 14 features, and we're so excited for you all to finally try it out 🎉\n\nNEW FEATURES\n• Home screen widget that displays how long until sideloaded apps expire*\n• Refresh apps with Siri and Shortcuts by adding \"Refresh All Apps\" shortcut from Settings tab*\n• Schedule background refreshes at specific times using Shortcuts' Automations*\n• Refresh, install, and update apps on-device with AltDaemon**\n\nIMPROVEMENTS\n• Improved VoiceOver support throughout app, especially in My Apps tab\n• Improved error messages when refreshing apps***\n\nBUG FIXES\n• Fixes File Provider extensions in sideloaded apps (thanks @tbodt!)\n• Fixes iPad split view multitasking in sideloaded apps (thanks @osy86!)\n\n* Requires iOS 14.\n** Requires jailbreak.\n*** Requires latest AltServer version. Update AltServer by choosing \"Check For Updates...\" from the AltServer menu.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_1.ipa",
+      "version": "1.4.2",
+      "versionDate": "2020-11-11T12:00:00-07:00",
+      "versionDescription": "This update allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4792327,
+      "size": 4792897,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "Dp-XtViLDff7xd2fLhc8VVGcLNR9YxJ1L3WAlcWu_Bo"
+    "patreonAccessToken": "vfuSOfSYTUC8pEq6TM9r6uoL-T-uTJEI85hFescT4AM"
   }
 }
