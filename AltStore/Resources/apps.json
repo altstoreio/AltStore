@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.3.1",
-      "versionDate": "2020-05-01T13:00:00-07:00",
-      "versionDescription": "This update adds support for installing apps using private entitlements via Psychic Paper.\n\nFor more info, check out https://siguza.github.io/psychicpaper/\n\nPREVIOUS UPDATE:\n• Sideload any app (.ipa file) directly from Files.\n• Manage which apps are (in-)active at any time from the My Apps tab (optionally via drag and drop)*\n• Dramatically faster app refresh times*\n• Improved error messages when refreshing apps*\n• Improved stability when refreshing apps over WiFi*\n• Removes cached apps after they have been uninstalled.\n• Fixes peek & pop on iOS 12.\n• Fixes missing recovery suggestions for some errors.\n• Fixes secondary AltStore appearing after refresh under certain circumstances.\n\n* Requires latest AltServer version. Update AltServer by choosing \"Check For Updates...\" from the AltServer menu.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore.ipa",
+      "version": "1.4.2",
+      "versionDate": "2020-11-11T12:00:00-07:00",
+      "versionDescription": "This update allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 2530985,
+      "size": 4792897,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.3.1b",
-      "versionDate": "2020-05-01T13:00:00-07:00",
-      "versionDescription": "This update adds support for installing apps using private entitlements via Psychic Paper.\n\nFor more info, check out https://siguza.github.io/psychicpaper/",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa",
+      "version": "1.4.2b1",
+      "versionDate": "2020-11-05T13:30:00-07:00",
+      "versionDescription": "This beta allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2_b1.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 2531143,
+      "size": 4790751,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -66,14 +66,14 @@
       "bundleIdentifier": "com.rileytestut.Delta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.1.2",
-      "versionDate": "2020-02-04T15:30:00-08:00",
-      "versionDescription": "• Fixes crash when running on iOS 13.3.1",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta.ipa",
+      "version": "1.2",
+      "versionDate": "2020-10-22T11:30:00-07:00",
+      "versionDescription": "NEW FEATURES\n• Supports new Quick Save, Quick Load, and Fast Forward actions in controller skins*\n• Supports Core Image-based filters in controller skins*\n• Assign controller skins per-game\n• Export game save files by long-pressing game to reveal context menu\n• Browse all Delta files in Files app, including emulator configuration files\n• Supports 8-character NES Game Genie cheat codes\n\nBUG FIXES\n• Fixes overwriting save files when previewing games\n• Fixes incorrect cheat formatting\n\n* Requires downloading compatible Delta skin",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2.ipa",
       "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• And plenty more to come!\n\nController Support\n• Supports PS4, Xbox One S, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support for WarioWare: Twisted!\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 17542718,
+      "size": 18456868,
       "permissions": [
         {
           "type": "photos",
@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2b2",
-      "versionDate": "2020-04-27T14:30:00-07:00",
-      "versionDescription": "Delta, meet melonDS! melonDS is a modern Nintendo DS emulator that is more accurate and reliable than DeSmuME. melonDS is actively being worked on and supports many features DeSmuME does not, which is why Delta now includes a melonDS emulator core 🎉 melonDS will soon become the default, so please report any issues you find! \n\nNEW FEATURES\n• New core based on melonDS for DS emulation (will soon become the default)\n• DS settings screen to switch cores and import melonDS BIOS files\n• Fast forward DS games\n• Action Replay cheat codes for DS games (melonDS core)\n• Boot directly to Nintendo DS home screen and change system settings (melonDS core)\n• Access Delta files directory in Files > On My iPhone > Delta\n• Support for 8-character NES Game Genie cheat codes\n• Export save files for games from context menu\n\nBUG FIXES\n• Fixes graphical issues when playing DS games\n• Fixes incorrect formatting when entering cheat codes\n• Fixes incorrect game name text color after deleting a game or switching cores\n• Fixes save files being overwritten when previewing games\n\nSwitching to melonDS has been a _big_ transition, so please report any and all bugs you find using the melonDS core. Enjoy!",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-beta.ipa",
+      "version": "1.2b3",
+      "versionDate": "2020-10-12T12:30:00-07:00",
+      "versionDescription": "**Delta 1.2 GM**\n\nIMPROVEMENTS\n• Improves sync error messages when a game is missing or can’t be synced\n\nBUG FIXES\n• Fixes misplaced DS screens when using external controller\n• Fixes NES games crashing after playing an N64 game\n• Fixes various issues with controller skin filters\n• Fixes swapped DS screens\n• Fixes importing games from Files\n\nThanks for your help beta testing Delta these past few months! This should be the last beta before the public release of Delta 1.2, so please report any last-minute issues so we can have a smooth release 🙂",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2_b3.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18607156,
+      "size": 18456630,
       "beta": true,
       "permissions": [
         {
@@ -117,13 +117,37 @@
     },
     {
       "name": "Clip",
+      "bundleIdentifier": "com.rileytestut.Clip",
+      "subtitle": "Manage your clipboard history with ease.",
+      "developerName": "Riley Testut",
+      "version": "1.0",
+      "versionDate": "2020-06-17T12:30:00-07:00",
+      "versionDescription": "Initial version 🎉",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/clip/1_0.ipa",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
+      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
+      "tintColor": "EC008C",
+      "size": 445056,
+      "permissions": [
+        {
+          "type": "background-audio",
+          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
+        }
+      ],
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+      ]
+    },
+    {
+      "name": "Clip",
       "bundleIdentifier": "com.rileytestut.Clip.Beta",
       "subtitle": "Manage your clipboard history with ease.",
       "developerName": "Riley Testut",
-      "version": "1.0b",
-      "versionDate": "2019-01-24T18:20:00-08:00",
-      "versionDescription": "• Disables notification vibration when sound is disabled for notifications.\n\nAssuming all goes well, this should be the final beta before the public launch! Please report any last minute bugs you find to support@altstore.io.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/clip-beta.ipa",
+      "version": "1.1b1",
+      "versionDate": "2020-06-17T12:30:00-07:00",
+      "versionDescription": "This update adds a Custom Keyboard app extension for quick access to clippings when editing text.\n\nTo enable the keyboard, go to Settings > General > Keyboard > Keyboards > Add New Keyboard... and add \"ClipBoard\". Once added, make sure to then enable \"Allow Full Access\" for ClipBoard so it can access your clippings.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/clip/1_1_b1.ipa",
       "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
       "tintColor": "EC008C",
@@ -137,7 +161,9 @@
       ],
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
-        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
+        "https://user-images.githubusercontent.com/705880/84842227-70a80b00-aff9-11ea-8b04-bedb1f49c4a7.PNG",
+        "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
       ]
     },
     {
@@ -220,16 +246,6 @@
       "notify": false
     },
     {
-      "title": "Coming Soon: Clip",
-      "identifier": "clip-coming-soon",
-      "caption": "A clipboard manager that can run in the background. Beta available now for all Patrons.",
-      "tintColor": "EC008C",
-      "url": "https://twitter.com/altstoreio/status/1205597959699582977",
-      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
-      "date": "2019-12-16",
-      "notify": false
-    },
-    {
       "title": "Sideloading is Here!",
       "identifier": "sideloading-is-here",
       "caption": "Update to AltStore 1.3 to install any app directly from Files.",
@@ -245,9 +261,19 @@
       "tintColor": "34C759",
       "date": "2020-04-10T13:30:00-07:00",
       "notify": false
+    },
+    {
+      "title": "Clip Now Available!",
+      "identifier": "clip-now-available",
+      "caption": "Finally, a clipboard manager that can run in the background — no jailbreak required.",
+      "tintColor": "EC008C",
+      "imageURL": "https://user-images.githubusercontent.com/705880/65606598-04afdf00-df60-11e9-8f93-af6345d39557.png",
+      "appID": "com.rileytestut.Clip",
+      "date": "2020-06-17",
+      "notify": true
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "sHEBO5oFWNVqi-bVtYcJn5TXftnAnatR9TVH4C-mUGQ"
+    "patreonAccessToken": "vfuSOfSYTUC8pEq6TM9r6uoL-T-uTJEI85hFescT4AM"
   }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+import AltStoreCore
 import AltSign
 
 class RefreshGroup: NSObject
@@ -20,6 +21,10 @@ class RefreshGroup: NSObject
     var beginInstallationHandler: ((InstalledApp) -> Void)?
         
     private(set) var results = [String: Result<InstalledApp, Error>]()
+    
+    // Keep strong references to managed object contexts
+    // so they don't die out from under us.
+    private(set) var _contexts = Set<NSManagedObjectContext>()
     
     private var isFinished = false
     
@@ -33,6 +38,8 @@ class RefreshGroup: NSObject
         super.init()
     }
     
+    /// Used to keep track of which operations belong to this group.
+    /// This does _not_ add them to any operation queue.
     func add(_ operations: [Foundation.Operation])
     {
         for operation in operations
@@ -46,8 +53,8 @@ class RefreshGroup: NSObject
         
         if self.operations.isEmpty && !operations.isEmpty
         {
-            self.dispatchGroup.notify(queue: .global()) {
-                self.finish()
+            self.dispatchGroup.notify(queue: .global()) { [weak self] in
+                self?.finish()
             }
         }
         
@@ -57,6 +64,14 @@ class RefreshGroup: NSObject
     func set(_ result: Result<InstalledApp, Error>, forAppWithBundleIdentifier bundleIdentifier: String)
     {
         self.results[bundleIdentifier] = result
+        
+        switch result
+        {
+        case .failure: break
+        case .success(let installedApp):
+            guard let context = installedApp.managedObjectContext else { break }
+            self._contexts.insert(context)
+        }
     }
     
     func cancel()

@@ -1,14 +1,13 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AltSign" "${PODS_ROOT}/Headers/Public/Roxas" "$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/include" "$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/src"
-LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AltSign" "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" "${PODS_CONFIGURATION_BUILD_DIR}/Roxas" "${PODS_ROOT}/../Dependencies/AltSign/Dependencies/OpenSSL/ios/lib"
-OTHER_CFLAGS = $(inherited) -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.modulemap" -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.modulemap" -fmodule-map-file="${PODS_ROOT}/Headers/Public/AltSign/AltSign.modulemap" -fmodule-map-file="${PODS_ROOT}/Headers/Public/Roxas/Roxas.modulemap" -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/AltSign" -iframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"AltSign" -l"KeychainAccess" -l"Nuke" -l"Roxas" -l"c++" -l"crypto" -l"sqlite3" -l"ssl" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "CoreTelephony" -framework "Foundation" -framework "SystemConfiguration" -framework "UIKit"
-OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.modulemap" -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.modulemap" -Xcc -fmodule-map-file="${PODS_ROOT}/Headers/Public/AltSign/AltSign.modulemap" -Xcc -fmodule-map-file="${PODS_ROOT}/Headers/Public/Roxas/Roxas.modulemap"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers"
+LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" -iframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"c++" -l"sqlite3" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "CoreTelephony" -framework "Foundation" -framework "KeychainAccess" -framework "Nuke" -framework "SystemConfiguration" -framework "UIKit"
+OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
 PODS_ROOT = ${SRCROOT}/Pods
-SWIFT_INCLUDE_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke"
 USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES

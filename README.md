@@ -27,7 +27,7 @@ Why iOS 12.2+ and macOS 10.14.4+? Doing so allows me to distribute all AltStore 
 ## Project Overview
 
 ### AltStore
-AltStore is just a regular, sandboxed iOS application. The AltStore app target contains the vast majority of AltStore's functionality, including all the logic for downloading and updating apps through AltStore. AltStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with, such as:
+AltStore is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of AltStore's functionality, including all the logic for downloading and updating apps through AltStore. AltStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with, such as:
 * Core Data
 * Storyboards/Nibs
 * Auto Layout
@@ -61,8 +61,7 @@ AltStore and AltServer are both fairly straightforward to compile and run if you
 3. Open `AltStore.xcworkspace` and select the AltStore project in the project navigator. On the `Signing & Capabilities` tab, change the team from `Yvette Testut` to your own account.
 4. **(AltStore only)** Change the value for `ALTDeviceID` in the Info.plist to your device's UDID. Normally, AltServer embeds the device's UDID in AltStore's Info.plist during installation. When running through Xcode you'll need to set the value yourself or else AltStore won't resign (or even install) apps for the proper device.
 5. **(AltStore only)** Change the value for `ALTServerID` in the Info.plist to your AltServer's serverID. This is embedded by AltServer during installation to help AltStore distinguish between multiple AltServers on the same network, and you can find this by using a Bonjour browsing application and noting the serverID advertised by AltServer. This isn't strictly necessary, because if AltStore can't find the AltServer with the embedded serverID it still falls back to trying another AltServer. However, this will help in cases where there are multiple AltServers running (plus the error messages are more helpful).
-6. **(AltServer only)** Install Carthage (if you use Homebrew, you can do this with `brew install carthage`). Then run `carthage update` in the root directory of the repository.
-7. Build + run app! 🎉
+6. Build + run app! 🎉
 
 ## Licensing
 

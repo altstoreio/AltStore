@@ -8,31 +8,13 @@
 
 import Network
 
-import AltKit
-
-extension ALTServerError
-{
-    init<E: Error>(_ error: E)
-    {
-        switch error
-        {
-        case let error as ALTServerError: self = error
-        case is DecodingError: self = ALTServerError(.invalidResponse)
-        case is EncodingError: self = ALTServerError(.invalidRequest)
-        default:
-            assertionFailure("Caught unknown error type")
-            self = ALTServerError(.unknown)
-        }
-    }
-}
-
 enum ConnectionError: LocalizedError
 {
     case serverNotFound
     case connectionFailed
     case connectionDropped
     
-    var errorDescription: String? {
+    var failureReason: String? {
         switch self
         {
         case .serverNotFound: return NSLocalizedString("Could not find AltServer.", comment: "")
@@ -42,13 +24,25 @@ enum ConnectionError: LocalizedError
     }
 }
 
+extension Server
+{
+    enum ConnectionType
+    {
+        case wireless
+        case wired
+        case local
+    }
+}
+
 struct Server: Equatable
 {
     var identifier: String? = nil
     var service: NetService? = nil
     
     var isPreferred = false
-    var isWiredConnection = false
+    var connectionType: ConnectionType = .wireless
+    
+    var machServiceName: String?
 }
 
 extension Server

@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+import AltStoreCore
 import Roxas
 
 @objc(FetchSourceOperation)
@@ -41,12 +42,15 @@ class FetchSourceOperation: ResultOperation<Source>
         super.main()
         
         let dataTask = self.session.dataTask(with: self.sourceURL) { (data, response, error) in
-            self.managedObjectContext.perform {
+            
+            let childContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(withParent: self.managedObjectContext)
+            childContext.mergePolicy = NSOverwriteMergePolicy
+            childContext.perform {
                 do
                 {
                     let (data, _) = try Result((data, response), error).get()
                     
-                    let decoder = JSONDecoder()
+                    let decoder = AltStoreCore.JSONDecoder()
                     decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
                         let container = try decoder.singleValueContainer()
                         let text = try container.decode(String.self)
@@ -68,21 +72,35 @@ class FetchSourceOperation: ResultOperation<Source>
                         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date is in invalid format.")
                     })
                     
-                    decoder.managedObjectContext = self.managedObjectContext
+                    decoder.managedObjectContext = childContext
                     decoder.sourceURL = self.sourceURL
                     
                     let source = try decoder.decode(Source.self, from: data)
+                    let identifier = source.identifier
                     
-                    if source.identifier == Source.altStoreIdentifier, let patreonAccessToken = source.userInfo?[.patreonAccessToken]
+                    if identifier == Source.altStoreIdentifier, let patreonAccessToken = source.userInfo?[.patreonAccessToken]
                     {
                         Keychain.shared.patreonCreatorAccessToken = patreonAccessToken
                     }
                     
-                    self.finish(.success(source))
+                    try childContext.save()
+                    
+                    self.managedObjectContext.perform {
+                        if let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), identifier), in: self.managedObjectContext)
+                        {
+                            self.finish(.success(source))
+                        }
+                        else
+                        {
+                            self.finish(.failure(OperationError.noSources))
+                        }
+                    }
                 }
                 catch
                 {
-                    self.finish(.failure(error))
+                    self.managedObjectContext.perform {
+                        self.finish(.failure(error))
+                    }
                 }
             }
         }

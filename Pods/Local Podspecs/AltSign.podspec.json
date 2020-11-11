@@ -17,11 +17,18 @@
   "social_media_url": "https://twitter.com/rileytestut",
   "source_files": [
     "AltSign",
-    "AltSign/**/*.{h,m,mm,hpp,cpp}"
+    "AltSign/**/*.{h,m,mm,hpp,cpp,swift}"
   ],
   "public_header_files": "AltSign/**/*.h",
   "resources": "AltSign/Resources/apple.pem",
   "libraries": "c++",
+  "xcconfig": {
+    "OTHER_CFLAGS": "-DCORECRYPTO_DONOT_USE_TRANSPARENT_UNION=1",
+    "GCC_PREPROCESSOR_DEFINITIONS": "INCLUDE_PRIVATE_API=1 CORECRYPTO_DONOT_USE_TRANSPARENT_UNION=1",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) INCLUDE_PRIVATE_API",
+    "SWIFT_INCLUDE_PATHS": "$(PODS_ROOT)/../Dependencies/AltSign/Dependencies/corecrypto/",
+    "SYSTEM_HEADER_SEARCH_PATHS": "$(PODS_ROOT)/Headers/Private/AltSign/"
+  },
   "subspecs": [
     {
       "name": "OpenSSL",
@@ -78,8 +85,9 @@
     },
     {
       "name": "CoreCrypto",
-      "source_files": "Dependencies/corecrypto/*.h",
+      "source_files": "Dependencies/corecrypto/*.{h,m,swift,modulemap}",
       "exclude_files": "Dependencies/corecrypto/ccperf.h",
+      "private_header_files": "Dependencies/corecrypto/*.h",
       "header_mappings_dir": "Dependencies"
     }
   ]

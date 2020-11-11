@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ALTAppGroups</key>
+	<array>
+		<string>group.com.rileytestut.AltStore</string>
+	</array>
 	<key>ALTDeviceID</key>
 	<string>00008030-001948590202802E</string>
 	<key>ALTServerID</key>
@@ -49,9 +53,24 @@
 				<string>altstore</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>AltStore Backup</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>altstore-com.rileytestut.AltStore</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>RefreshAllIntent</string>
+		<string>ViewAppIntent</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>altstore-com.rileytestut.AltStore</string>
@@ -65,6 +84,38 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_altserver._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>AltStore uses the local network to find and communicate with AltServer.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>RefreshAllIntent</string>
+		<string>ViewAppIntent</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UILaunchStoryboardName</key>
+					<string>LaunchScreen</string>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

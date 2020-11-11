@@ -16,6 +16,8 @@ private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-sta
 private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
 #endif
 
+private let appGroupsLock = NSLock()
+
 enum InstallError: LocalizedError
 {
     case cancelled
@@ -115,40 +117,18 @@ extension ALTDeviceManager
                                                                 let anisetteData = try result.get()
                                                                 session.anisetteData = anisetteData
                                                                 
-                                                                self.registerAppID(name: "AltStore", identifier: "com.rileytestut.AltStore", team: team, session: session) { (result) in
+                                                                self.prepareAllProvisioningProfiles(for: application, team: team, session: session) { (result) in
                                                                     do
                                                                     {
-                                                                        let appID = try result.get()
+                                                                        let profiles = try result.get()
                                                                         
-                                                                        self.updateFeatures(for: appID, app: application, team: team, session: session) { (result) in
-                                                                            do
-                                                                            {
-                                                                                let appID = try result.get()
-                                                                                
-                                                                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
-                                                                                    do
-                                                                                    {
-                                                                                        let provisioningProfile = try result.get()
-                                                                                        
-                                                                                        self.install(application, to: device, team: team, appID: appID, certificate: certificate, profile: provisioningProfile) { (result) in
-                                                                                            finish(result.error, title: "Failed to Install AltStore")
-                                                                                        }
-                                                                                    }
-                                                                                    catch
-                                                                                    {
-                                                                                        finish(error, title: "Failed to Fetch Provisioning Profile")
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            catch
-                                                                            {
-                                                                                finish(error, title: "Failed to Update App ID")
-                                                                            }
+                                                                        self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
+                                                                            finish(result.error, title: "Failed to Install AltStore")
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(error, title: "Failed to Register App")
+                                                                        finish(error, title: "Failed to Fetch Provisioning Profiles")
                                                                     }
                                                                 }
                                                             }
@@ -427,6 +407,92 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
+    func prepareAllProvisioningProfiles(for application: ALTApplication, team: ALTTeam, session: ALTAppleAPISession,
+                                        completion: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
+    {
+        self.prepareProvisioningProfile(for: application, team: team, session: session) { (result) in
+            do
+            {
+                let profile = try result.get()
+                
+                var profiles = [application.bundleIdentifier: profile]
+                var error: Error?
+                
+                let dispatchGroup = DispatchGroup()
+                
+                for appExtension in application.appExtensions
+                {
+                    dispatchGroup.enter()
+                    
+                    self.prepareProvisioningProfile(for: appExtension, team: team, session: session) { (result) in
+                        switch result
+                        {
+                        case .failure(let e): error = e
+                        case .success(let profile): profiles[appExtension.bundleIdentifier] = profile
+                        }
+                        
+                        dispatchGroup.leave()
+                    }
+                }
+                
+                dispatchGroup.notify(queue: .global()) {
+                    if let error = error
+                    {
+                        completion(.failure(error))
+                    }
+                    else
+                    {
+                        completion(.success(profiles))
+                    }
+                }
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func prepareProvisioningProfile(for application: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    {
+        self.registerAppID(name: application.name, identifier: application.bundleIdentifier, team: team, session: session) { (result) in
+            do
+            {
+                let appID = try result.get()
+                
+                self.updateFeatures(for: appID, app: application, team: team, session: session) { (result) in
+                    do
+                    {
+                        let appID = try result.get()
+                        
+                        self.updateAppGroups(for: appID, app: application, team: team, session: session) { (result) in
+                            do
+                            {
+                                let appID = try result.get()
+                                
+                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                    completionHandler(result)
+                                }
+                            }
+                            catch
+                            {
+                                completionHandler(.failure(error))
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        completionHandler(.failure(error))
+                    }
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
     func registerAppID(name appName: String, identifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
         let bundleID = "com.\(team.identifier).\(identifier)"
@@ -468,11 +534,119 @@ To prevent this from happening, feel free to try again with another Apple ID to 
             features[.appGroups] = true
         }
         
-        let appID = appID.copy() as! ALTAppID
-        appID.features = features
+        var updateFeatures = false
         
-        ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
-            completionHandler(Result(appID, error))
+        // Determine whether the required features are already enabled for the AppID.
+        for (feature, value) in features
+        {
+            if let appIDValue = appID.features[feature] as AnyObject?, (value as AnyObject).isEqual(appIDValue)
+            {
+                // AppID already has this feature enabled and the values are the same.
+                continue
+            }
+            else
+            {
+                // AppID either doesn't have this feature enabled or the value has changed,
+                // so we need to update it to reflect new values.
+                updateFeatures = true
+                break
+            }
+        }
+        
+        if updateFeatures
+        {
+            let appID = appID.copy() as! ALTAppID
+            appID.features = features
+            
+            ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
+                completionHandler(Result(appID, error))
+            }
+        }
+        else
+        {
+            completionHandler(.success(appID))
+        }
+    }
+    
+    func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    {
+        let applicationGroups = app.entitlements[.appGroups] as? [String] ?? []
+        if applicationGroups.isEmpty
+        {
+            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
+                // No app groups, and we also haven't enabled the feature, so don't continue.
+                // For apps with no app groups but have had the feature enabled already
+                // we'll continue and assign the app ID to an empty array
+                // in case we need to explicitly remove them.
+                return completionHandler(.success(appID))
+            }
+        }
+        
+        // Dispatch onto global queue to prevent appGroupsLock deadlock.
+        DispatchQueue.global().async {
+            
+            // Ensure we're not concurrently fetching and updating app groups,
+            // which can lead to race conditions such as adding an app group twice.
+            appGroupsLock.lock()
+            
+            func finish(_ result: Result<ALTAppID, Error>)
+            {
+                appGroupsLock.unlock()
+                completionHandler(result)
+            }
+            
+            ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
+                switch Result(groups, error)
+                {
+                case .failure(let error): finish(.failure(error))
+                case .success(let fetchedGroups):
+                    let dispatchGroup = DispatchGroup()
+                    
+                    var groups = [ALTAppGroup]()
+                    var errors = [Error]()
+                    
+                    for groupIdentifier in applicationGroups
+                    {
+                        let adjustedGroupIdentifier = groupIdentifier + "." + team.identifier
+                        
+                        if let group = fetchedGroups.first(where: { $0.groupIdentifier == adjustedGroupIdentifier })
+                        {
+                            groups.append(group)
+                        }
+                        else
+                        {
+                            dispatchGroup.enter()
+                            
+                            // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
+                            let name = "AltStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                            
+                            ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
+                                switch Result(group, error)
+                                {
+                                case .success(let group): groups.append(group)
+                                case .failure(let error): errors.append(error)
+                                }
+                                
+                                dispatchGroup.leave()
+                            }
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .global()) {
+                        if let error = errors.first
+                        {
+                            finish(.failure(error))
+                        }
+                        else
+                        {
+                            ALTAppleAPI.shared.assign(appID, to: Array(groups), team: team, session: session) { (success, error) in
+                                let result = Result(success, error)
+                                finish(result.map { _ in appID })
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -508,35 +682,75 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func install(_ application: ALTApplication, to device: ALTDevice, team: ALTTeam, appID: ALTAppID, certificate: ALTCertificate, profile: ALTProvisioningProfile, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    func install(_ application: ALTApplication, to device: ALTDevice, team: ALTTeam, certificate: ALTCertificate, profiles: [String: ALTProvisioningProfile], completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
+        func prepare(_ bundle: Bundle, additionalInfoDictionaryValues: [String: Any] = [:]) throws
+        {
+            guard let identifier = bundle.bundleIdentifier else { throw ALTError(.missingAppBundle) }
+            guard let profile = profiles[identifier] else { throw ALTError(.missingProvisioningProfile) }
+            guard var infoDictionary = bundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
+            
+            infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
+            infoDictionary[Bundle.Info.altBundleID] = identifier
+
+            for (key, value) in additionalInfoDictionaryValues
+            {
+                infoDictionary[key] = value
+            }
+            
+            if let appGroups = profile.entitlements[.appGroups] as? [String]
+            {
+                infoDictionary[Bundle.Info.appGroups] = appGroups
+            }
+            
+            try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
+        }
+        
         DispatchQueue.global().async {
             do
             {
-                let infoPlistURL = application.fileURL.appendingPathComponent("Info.plist")
+                guard let appBundle = Bundle(url: application.fileURL) else { throw ALTError(.missingAppBundle) }
+                guard let infoDictionary = appBundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
                 
-                guard var infoDictionary = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else { throw ALTError(.missingInfoPlist) }
-                infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
-                infoDictionary[Bundle.Info.deviceID] = device.identifier
-                infoDictionary[Bundle.Info.serverID] = UserDefaults.standard.serverID
-                infoDictionary[Bundle.Info.certificateID] = certificate.serialNumber
-                try (infoDictionary as NSDictionary).write(to: infoPlistURL)
-                                
+                let openAppURL = URL(string: "altstore-" + application.bundleIdentifier + "://")!
+                
+                var allURLSchemes = infoDictionary[Bundle.Info.urlTypes] as? [[String: Any]] ?? []
+                
+                // Embed open URL so AltBackup can return to AltStore.
+                let altstoreURLScheme = ["CFBundleTypeRole": "Editor",
+                                         "CFBundleURLName": application.bundleIdentifier,
+                                         "CFBundleURLSchemes": [openAppURL.scheme!]] as [String : Any]
+                allURLSchemes.append(altstoreURLScheme)
+                
+                var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
+                additionalValues[Bundle.Info.deviceID] = device.identifier
+                additionalValues[Bundle.Info.serverID] = UserDefaults.standard.serverID
+                
                 if
                     let machineIdentifier = certificate.machineIdentifier,
                     let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
                 {
+                    additionalValues[Bundle.Info.certificateID] = certificate.serialNumber
+                    
                     let certificateURL = application.fileURL.appendingPathComponent("ALTCertificate.p12")
                     try encryptedData.write(to: certificateURL, options: .atomic)
                 }
                 
+                try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
+                
+                for appExtension in application.appExtensions
+                {
+                    guard let bundle = Bundle(url: appExtension.fileURL) else { throw ALTError(.missingAppBundle) }
+                    try prepare(bundle)
+                }
+                
                 let resigner = ALTSigner(team: team, certificate: certificate)
-                resigner.signApp(at: application.fileURL, provisioningProfiles: [profile]) { (success, error) in
+                resigner.signApp(at: application.fileURL, provisioningProfiles: Array(profiles.values)) { (success, error) in
                     do
                     {
                         try Result(success, error).get()
                         
-                        let activeProfiles: Set<String>? = (team.type == .free) ? [profile.bundleIdentifier] : nil
+                        let activeProfiles: Set<String>? = (team.type == .free) ? Set(profiles.values.map(\.bundleIdentifier)) : nil
                         ALTDeviceManager.shared.installApp(at: application.fileURL, toDeviceWithUDID: device.identifier, activeProvisioningProfiles: activeProfiles) { (success, error) in
                             completionHandler(Result(success, error))
                         }

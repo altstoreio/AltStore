@@ -10,6 +10,14 @@ import UIKit
 
 class PillButton: UIButton
 {
+    override var accessibilityValue: String? {
+        get {
+            guard self.progress != nil else { return super.accessibilityValue }
+            return self.progressView.accessibilityValue
+        }
+        set { super.accessibilityValue = newValue }
+    }
+    
     var progress: Progress? {
         didSet {
             self.progressView.progress = Float(self.progress?.fractionCompleted ?? 0)
@@ -78,6 +86,7 @@ class PillButton: UIButton
         super.awakeFromNib()
         
         self.layer.masksToBounds = true
+        self.accessibilityTraits.formUnion([.updatesFrequently, .button])
         
         self.activityIndicatorView.style = .white
         self.activityIndicatorView.isUserInteractionEnabled = false

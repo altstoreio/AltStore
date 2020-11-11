@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import Roxas
 
 import Nuke
@@ -81,13 +82,13 @@ class AppViewController: UIViewController
         self.bannerView.frame = CGRect(x: 0, y: 0, width: 300, height: 93)
         self.bannerView.backgroundEffectView.effect = UIBlurEffect(style: .regular)
         self.bannerView.backgroundEffectView.backgroundColor = .clear
-        self.bannerView.titleLabel.text = self.app.name
-        self.bannerView.subtitleLabel.text = self.app.developerName
         self.bannerView.iconImageView.image = nil
         self.bannerView.iconImageView.tintColor = self.app.tintColor
         self.bannerView.button.tintColor = self.app.tintColor
-        self.bannerView.betaBadgeView.isHidden = !self.app.isBeta
         self.bannerView.tintColor = self.app.tintColor
+        
+        self.bannerView.configure(for: self.app)
+        self.bannerView.accessibilityTraits.remove(.button)
         
         self.bannerView.button.addTarget(self, action: #selector(AppViewController.performAppAction(_:)), for: .primaryActionTriggered)
         

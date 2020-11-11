@@ -1,13 +1,9 @@
 # KeychainAccess
 [![CI Status](http://img.shields.io/travis/kishikawakatsumi/KeychainAccess.svg)](https://travis-ci.org/kishikawakatsumi/KeychainAccess)
-[![codecov](https://codecov.io/gh/kishikawakatsumi/KeychainAccess/branch/master/graph/badge.svg)](https://codecov.io/gh/kishikawakatsumi/KeychainAccess)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![SPM supported](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager)
 [![Version](https://img.shields.io/cocoapods/v/KeychainAccess.svg)](http://cocoadocs.org/docsets/KeychainAccess)
 [![Platform](https://img.shields.io/cocoapods/p/KeychainAccess.svg)](http://cocoadocs.org/docsets/KeychainAccess)
-[![Swift 3.x](https://img.shields.io/badge/Swift-3.x-orange.svg?style=flat)](https://swift.org/)
-[![Swift 4.0](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)](https://swift.org/)
-[![Swift 4.1](https://img.shields.io/badge/Swift-4.1-orange.svg?style=flat)](https://swift.org/)
-[![Swift 4.2](https://img.shields.io/badge/Swift-4.2-orange.svg?style=flat)](https://swift.org/)
 
 KeychainAccess is a simple Swift wrapper for Keychain that works on iOS and OS X. Makes using Keychain APIs extremely easy and much more palatable to use in Swift.
 
@@ -23,9 +19,10 @@ KeychainAccess is a simple Swift wrapper for Keychain that works on iOS and OS X
 - [Support iCloud sharing](#icloud_sharing)
 - **[Support TouchID and Keychain integration (iOS 8+)](#touch_id_integration)**
 - **[Support Shared Web Credentials (iOS 8+)](#shared_web_credentials)**
-- [Works on both iOS & OS X](#requirements)
+- [Works on both iOS & macOS](#requirements)
 - [watchOS and tvOS are supported](#requirements)
-- **[Swift 4 & Swift 3 compatible](#requirements)**
+- **[Mac Catalyst is supported](#requirements)**
+- **[Swift 3, 4 and 5 compatible](#requirements)**
 
 ## :book: Usage
 
@@ -183,7 +180,7 @@ do {
 
 ```swift
 let keychain = Keychain()
-let persistentRef = keychain[attributes: "kishikawakatsumi"].persistentRef
+let persistentRef = keychain[attributes: "kishikawakatsumi"]?.persistentRef
 ...
 ```
 
@@ -191,7 +188,7 @@ let persistentRef = keychain[attributes: "kishikawakatsumi"].persistentRef
 
 ```swift
 let keychain = Keychain()
-let creationDate = keychain[attributes: "kishikawakatsumi"].creationDate
+let creationDate = keychain[attributes: "kishikawakatsumi"]?.creationDate
 ...
 ```
 
@@ -201,9 +198,9 @@ let creationDate = keychain[attributes: "kishikawakatsumi"].creationDate
 let keychain = Keychain()
 do {
     let attributes = try keychain.get("kishikawakatsumi") { $0 }
-    print(attributes.comment)
-    print(attributes.label)
-    print(attributes.creator)
+    print(attributes?.comment)
+    print(attributes?.label)
+    print(attributes?.creator)
     ...
 } catch let error {
     print("error: \(error)")
@@ -214,10 +211,11 @@ do {
 
 ```swift
 let keychain = Keychain()
-let attributes = keychain[attributes: "kishikawakatsumi"]
-print(attributes.comment)
-print(attributes.label)
-print(attributes.creator)
+if let attributes = keychain[attributes: "kishikawakatsumi"] {
+    print(attributes.comment)
+    print(attributes.label)
+    print(attributes.creator)
+}
 ```
 
 ### :key: Configuration (Accessibility, Sharing, iCloud Sync)
@@ -320,12 +318,15 @@ do {
 }
 ```
 
-### <a name="touch_id_integration"> :fu: Touch ID integration
+### <a name="touch_id_integration"> :cyclone: Touch ID (Face ID) integration
 
 **Any Operation that require authentication must be run in the background thread.**  
 **If you run in the main thread, UI thread will lock for the system to try to display the authentication dialog.**
 
-#### :closed_lock_with_key: Adding a Touch ID protected item
+
+**To use Face ID, add `NSFaceIDUsageDescription` key to your `Info.plist`**
+
+#### :closed_lock_with_key: Adding a Touch ID (Face ID) protected item
 
 If you want to store the Touch ID protected Keychain item, specify `accessibility` and `authenticationPolicy` attributes.  
 
@@ -344,7 +345,7 @@ DispatchQueue.global().async {
 }
 ```
 
-#### :closed_lock_with_key: Updating a Touch ID protected item
+#### :closed_lock_with_key: Updating a Touch ID (Face ID) protected item
 
 The same way as when adding.  
 
@@ -370,7 +371,7 @@ DispatchQueue.global().async {
 }
 ```
 
-#### :closed_lock_with_key: Obtaining a Touch ID protected item
+#### :closed_lock_with_key: Obtaining a Touch ID (Face ID) protected item
 
 The same way as when you get a normal item. It will be displayed automatically Touch ID or passcode authentication If the item you try to get is protected.  
 If you want to show custom authentication prompt message, specify an `authenticationPrompt` attribute.
@@ -392,7 +393,7 @@ DispatchQueue.global().async {
 }
 ```
 
-#### :closed_lock_with_key: Removing a Touch ID protected item
+#### :closed_lock_with_key: Removing a Touch ID (Face ID) protected item
 
 The same way as when you remove a normal item.
 There is no way to show Touch ID or passcode authentication when removing Keychain items.
@@ -467,15 +468,15 @@ let password = Keychain.generatePassword() // => Nhu-GKm-s3n-pMx
 #### How to set up Shared Web Credentials
 
 > 1. Add a com.apple.developer.associated-domains entitlement to your app. This entitlement must include all the domains with which you want to share credentials.
-
+>
 > 2. Add an apple-app-site-association file to your website. This file must include application identifiers for all the apps with which the site wants to share credentials, and it must be properly signed.
-
+>
 > 3. When the app is installed, the system downloads and verifies the site association file for each of its associated domains. If the verification is successful, the app is associated with the domain.
 
 **More details:**  
 <https://developer.apple.com/library/ios/documentation/Security/Reference/SharedWebCredentialsRef/>
 
-### :key: Debugging
+### :mag: Debugging
 
 #### Display all stored items if print keychain object
 
@@ -529,19 +530,34 @@ item: [authenticationType: Default, key: hirohamada, server: github.com, class: 
 item: [authenticationType: Default, key: honeylemon, server: github.com, class: InternetPassword, protocol: https]
 ```
 
+## Keychain sharing capability
+
+If you encounter the error below, you need to add an `Keychain.entitlements`.
+
+```
+OSStatus error:[-34018] Internal error when a required entitlement isn't present, client has neither application-identifier nor keychain-access-groups entitlements.
+```
+
+<img alt="Screen Shot 2019-10-27 at 8 08 50" src="https://user-images.githubusercontent.com/40610/67627108-1a7f2f80-f891-11e9-97bc-7f7313cb63d1.png" width="500">
+
+<img src="https://user-images.githubusercontent.com/40610/67627072-333b1580-f890-11e9-9feb-bf507abc2724.png" width="500" />
+
 ## Requirements
 
-|            | OS                                     | Swift         |
-|------------|----------------------------------------|---------------|
-| **v1.1.x** | iOS 7+, OSX 10.9+                      | 1.1           |
-| **v1.2.x** | iOS 7+, OSX 10.9+                      | 1.2           |
-| **v2.0.x** | iOS 7+, OSX 10.9+, watchOS 2+          | 2.0           |
-| **v2.1.x** | iOS 7+, OSX 10.9+, watchOS 2+          | 2.0           |
-| **v2.2.x** | iOS 8+, OSX 10.9+, watchOS 2+, tvOS 9+ | 2.0, 2.1      |
-| **v2.3.x** | iOS 8+, OSX 10.9+, watchOS 2+, tvOS 9+ | 2.0, 2.1, 2.2 |
-| **v2.4.x** | iOS 8+, OSX 10.9+, watchOS 2+, tvOS 9+ | 2.2, 2.3      |
-| **v3.0.x** | iOS 8+, OSX 10.9+, watchOS 2+, tvOS 9+ | 3.x           |
-| **v3.1.x** | iOS 8+, OSX 10.9+, watchOS 2+, tvOS 9+ | 4.0, 4.1, 4.2 |
+|            | OS                                                         | Swift              |
+|------------|------------------------------------------------------------|--------------------|
+| **v1.1.x** | iOS 7+, macOS 10.9+                                        | 1.1                |
+| **v1.2.x** | iOS 7+, macOS 10.9+                                        | 1.2                |
+| **v2.0.x** | iOS 7+, macOS 10.9+, watchOS 2+                            | 2.0                |
+| **v2.1.x** | iOS 7+, macOS 10.9+, watchOS 2+                            | 2.0                |
+| **v2.2.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 2.0, 2.1           |
+| **v2.3.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 2.0, 2.1, 2.2      |
+| **v2.4.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 2.2, 2.3           |
+| **v3.0.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 3.x                |
+| **v3.1.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 4.0, 4.1, 4.2      |
+| **v3.2.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 4.0, 4.1, 4.2, 5.0 |
+| **v4.0.x** | iOS 8+, macOS 10.9+, watchOS 2+, tvOS 9+                   | 4.0, 4.1, 4.2, 5.1 |
+| **v4.1.x** | iOS 8+, macOS 10.9+, watchOS 3+, tvOS 9+, Mac Catalyst 13+ | 4.0, 4.1, 4.2, 5.1 |
 
 ## Installation
 
@@ -565,14 +581,31 @@ it, simply add the following line to your Cartfile:
 ### Swift Package Manager
 
 KeychainAccess is also available through [Swift Package Manager](https://github.com/apple/swift-package-manager/).
+
+#### Xcode
+
+Select `File > Swift Packages > Add Package Dependency...`,  
+
+<img src="https://user-images.githubusercontent.com/40610/67627000-2833b580-f88f-11e9-89ef-18819b1a6c67.png" width="800px" />
+
+#### CLI
+
 First, create `Package.swift` that its package declaration includes:
 
 ```swift
+// swift-tools-version:5.0
 import PackageDescription
 
 let package = Package(
+    name: "MyLibrary",
+    products: [
+        .library(name: "MyLibrary", targets: ["MyLibrary"]),
+    ],
     dependencies: [
-        .Package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", majorVersion: 2)
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "3.0.0"),
+    ],
+    targets: [
+        .target(name: "MyLibrary", dependencies: ["KeychainAccess"]),
     ]
 )
 ```

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>application-identifier</key>
+	<string>6XVY5G3U44.com.rileytestut.AltDaemon</string>
+	<key>get-task-allow</key>
+	<true/>
+	<key>platform-application</key>
+	<true/>
+	<key>com.apple.authkit.client.private</key>
+	<true/>
+	<key>com.apple.private.mobileinstall.allowedSPI</key>
+	<array>
+		<string>Install</string>
+		<string>Uninstall</string>
+		<string>InstallForLaunchServices</string>
+		<string>UninstallForLaunchServices</string>
+		<string>InstallLocalProvisioned</string>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,10 @@
+Package: com.rileytestut.altdaemon
+Name: AltDaemon
+Depends:
+Version: 1.0
+Architecture: iphoneos-arm
+Description: AltDaemon allows AltStore to install and refresh apps without a computer.
+Maintainer: Riley Testut
+Author: Riley Testut
+Homepage: https://altstore.io
+Section: System

@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import Roxas
 
 class AppIDsViewController: UICollectionViewController
@@ -78,9 +79,10 @@ private extension AppIDsViewController
                         
             cell.bannerView.iconImageView.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
-            cell.bannerView.betaBadgeView.isHidden = true
             
             cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
+            
+            let attributedAccessibilityLabel = NSMutableAttributedString(string: appID.name + ". ")
             
             if let expirationDate = appID.expirationDate
             {
@@ -92,25 +94,34 @@ private extension AppIDsViewController
                 let currentDate = Date()
                 
                 let numberOfDays = expirationDate.numberOfCalendarDays(since: currentDate)
+                let numberOfDaysText = (numberOfDays == 1) ? NSLocalizedString("1 day", comment: "") : String(format: NSLocalizedString("%@ days", comment: ""), NSNumber(value: numberOfDays))
+                cell.bannerView.button.setTitle(numberOfDaysText.uppercased(), for: .normal)
                 
-                if numberOfDays == 1
-                {
-                    cell.bannerView.button.setTitle(NSLocalizedString("1 DAY", comment: ""), for: .normal)
-                }
-                else
-                {
-                    cell.bannerView.button.setTitle(String(format: NSLocalizedString("%@ DAYS", comment: ""), NSNumber(value: numberOfDays)), for: .normal)
-                }
+                attributedAccessibilityLabel.mutableString.append(String(format: NSLocalizedString("Expires in %@.", comment: ""), numberOfDaysText) + " ")
             }
             else
             {
                 cell.bannerView.button.isHidden = true
+                cell.bannerView.button.isUserInteractionEnabled = true
+                
                 cell.bannerView.buttonLabel.isHidden = true
             }
                                                 
             cell.bannerView.titleLabel.text = appID.name
             cell.bannerView.subtitleLabel.text = appID.bundleIdentifier
             cell.bannerView.subtitleLabel.numberOfLines = 2
+            
+            let attributedBundleIdentifier = NSMutableAttributedString(string: appID.bundleIdentifier.lowercased(), attributes: [.accessibilitySpeechPunctuation: true])
+            
+            if let team = appID.team, let range = attributedBundleIdentifier.string.range(of: team.identifier.lowercased()), #available(iOS 13, *)
+            {
+                // Prefer to speak the team ID one character at a time.
+                let nsRange = NSRange(range, in: attributedBundleIdentifier.string)
+                attributedBundleIdentifier.addAttributes([.accessibilitySpeechSpellOut: true], range: nsRange)
+            }
+            
+            attributedAccessibilityLabel.append(attributedBundleIdentifier)
+            cell.bannerView.accessibilityAttributedLabel = attributedAccessibilityLabel
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()

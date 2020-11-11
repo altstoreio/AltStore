@@ -9,6 +9,7 @@
 import Foundation
 import Roxas
 
+import AltStoreCore
 import AltSign
 
 @objc(DownloadAppOperation)
@@ -23,14 +24,14 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     
     private let session = URLSession(configuration: .default)
     
-    init(app: AppProtocol, context: AppOperationContext)
+    init(app: AppProtocol, destinationURL: URL, context: AppOperationContext)
     {
         self.app = app
         self.context = context
         
         self.bundleIdentifier = app.bundleIdentifier
         self.sourceURL = app.url
-        self.destinationURL = InstalledApp.fileURL(for: app)
+        self.destinationURL = destinationURL
         
         super.init()
         
@@ -82,6 +83,19 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
                 guard ProcessInfo.processInfo.isOperatingSystemAtLeast(application.minimumiOSVersion) else { throw OperationError.iOSVersionNotSupported(application) }
                 
                 try FileManager.default.copyItem(at: appBundleURL, to: self.destinationURL, shouldReplace: true)
+                
+                if self.context.bundleIdentifier == StoreApp.dolphinAppID, self.context.bundleIdentifier != application.bundleIdentifier
+                {
+                    let infoPlistURL = self.destinationURL.appendingPathComponent("Info.plist")
+
+                    if var infoPlist = NSDictionary(contentsOf: infoPlistURL) as? [String: Any]
+                    {
+                        // Manually update the app's bundle identifier to match the one specified in the source.
+                        // This allows people who previously installed the app to still update and refresh normally.
+                        infoPlist[kCFBundleIdentifierKey as String] = StoreApp.dolphinAppID
+                        (infoPlist as NSDictionary).write(to: infoPlistURL, atomically: true)
+                    }
+                }
                 
                 guard let copiedApplication = ALTApplication(fileURL: self.destinationURL) else { throw OperationError.invalidApp }
                 self.finish(.success(copiedApplication))

@@ -8,6 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
+
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes

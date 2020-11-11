@@ -8,6 +8,14 @@
 
 import Roxas
 
+import AltStoreCore
+
+extension TimeInterval
+{
+    static let shortToastViewDuration = 4.0
+    static let longToastViewDuration = 8.0
+}
+
 class ToastView: RSTToastView
 {
     var preferredDuration: TimeInterval
@@ -16,14 +24,16 @@ class ToastView: RSTToastView
     {
         if detailedText == nil
         {
-            self.preferredDuration = 4.0
+            self.preferredDuration = .shortToastViewDuration
         }
         else
         {
-            self.preferredDuration = 8.0
+            self.preferredDuration = .longToastViewDuration
         }
         
         super.init(text: text, detailText: detailedText)
+        
+        self.isAccessibilityElement = true
         
         self.layoutMargins = UIEdgeInsets(top: 8, left: 16, bottom: 10, right: 16)
         self.setNeedsLayout()
@@ -38,7 +48,22 @@ class ToastView: RSTToastView
     
     convenience init(error: Error)
     {
-        let error = error as NSError
+        var error = error as NSError
+        var underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError
+        
+        var preferredDuration: TimeInterval?
+        
+        if
+            let unwrappedUnderlyingError = underlyingError,
+            error.domain == AltServerErrorDomain && error.code == ALTServerError.Code.underlyingError.rawValue
+        {
+            // Treat underlyingError as the primary error.
+            
+            error = unwrappedUnderlyingError
+            underlyingError = nil
+            
+            preferredDuration = .longToastViewDuration
+        }
         
         let text: String
         let detailText: String?
@@ -46,20 +71,25 @@ class ToastView: RSTToastView
         if let failure = error.localizedFailure
         {
             text = failure
-            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.localizedDescription
+            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription ?? error.localizedDescription
         }
         else if let reason = error.localizedFailureReason
         {
             text = reason
-            detailText = error.localizedRecoverySuggestion
+            detailText = error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription
         }
         else
         {
             text = error.localizedDescription
-            detailText = nil
+            detailText = underlyingError?.localizedDescription ?? error.localizedRecoverySuggestion
         }
         
         self.init(text: text, detailText: detailText)
+        
+        if let preferredDuration = preferredDuration
+        {
+            self.preferredDuration = preferredDuration
+        }
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -78,6 +108,19 @@ class ToastView: RSTToastView
     func show(in viewController: UIViewController)
     {
         self.show(in: viewController.navigationController?.view ?? viewController.view, duration: self.preferredDuration)
+    }
+    
+    override func show(in view: UIView, duration: TimeInterval)
+    {
+        super.show(in: view, duration: duration)
+        
+        let announcement = (self.textLabel.text ?? "") + ". " + (self.detailTextLabel.text ?? "")
+        self.accessibilityLabel = announcement
+        
+        // Minimum 0.75 delay to prevent announcement being cut off by VoiceOver.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
+        }
     }
     
     override func show(in view: UIView)

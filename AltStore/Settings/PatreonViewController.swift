@@ -10,6 +10,7 @@ import UIKit
 import SafariServices
 import AuthenticationServices
 
+import AltStoreCore
 import Roxas
 
 extension PatreonViewController

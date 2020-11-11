@@ -9,6 +9,10 @@
 import UIKit
 import SafariServices
 import MessageUI
+import Intents
+import IntentsUI
+
+import AltStoreCore
 
 extension SettingsViewController
 {
@@ -17,10 +21,23 @@ extension SettingsViewController
         case signIn
         case account
         case patreon
-        case backgroundRefresh
+        case appRefresh
         case instructions
         case credits
         case debug
+    }
+    
+    fileprivate enum AppRefreshRow: Int, CaseIterable
+    {
+        case backgroundRefresh
+        
+        @available(iOS 14, *)
+        case addToSiri
+        
+        static var allCases: [AppRefreshRow] {
+            guard #available(iOS 14, *) else { return [.backgroundRefresh] }
+            return [.backgroundRefresh, .addToSiri]
+        }
     }
     
     fileprivate enum CreditsRow: Int, CaseIterable
@@ -164,8 +181,15 @@ private extension SettingsViewController
             settingsHeaderFooterView.button.addTarget(self, action: #selector(SettingsViewController.signOut(_:)), for: .primaryActionTriggered)
             settingsHeaderFooterView.button.isHidden = false
             
-        case .backgroundRefresh:
-            settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
+        case .appRefresh:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("REFRESHING APPS", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
+            }
             
         case .instructions:
             break
@@ -241,6 +265,17 @@ private extension SettingsViewController
     @IBAction func toggleIsBackgroundRefreshEnabled(_ sender: UISwitch)
     {
         UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
+    }
+    
+    @available(iOS 14, *)
+    @IBAction func addRefreshAppsShortcut()
+    {
+        guard let shortcut = INShortcut(intent: INInteraction.refreshAllApps().intent) else { return }
+        
+        let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
+        viewController.delegate = self
+        viewController.modalPresentationStyle = .formSheet
+        self.present(viewController, animated: true, completion: nil)
     }
     
     @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)
@@ -320,8 +355,25 @@ extension SettingsViewController
         {
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 3
+        case .appRefresh: return AppRefreshRow.allCases.count
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        if #available(iOS 14, *) {}
+        else if let cell = cell as? InsetGroupTableViewCell,
+                indexPath.section == Section.appRefresh.rawValue,
+                indexPath.row == AppRefreshRow.backgroundRefresh.rawValue
+        {
+            // Only one row is visible pre-iOS 14.
+            cell.style = .single
+        }
+        
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
@@ -331,13 +383,12 @@ extension SettingsViewController
         {
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
-            
-        case .signIn, .account, .patreon, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
             
-        case .backgroundRefresh, .instructions: return nil
+        case .instructions: return nil
         }
     }
     
@@ -347,8 +398,7 @@ extension SettingsViewController
         switch section
         {
         case .signIn where self.activeTeam != nil: return nil
-            
-        case .signIn, .patreon, .backgroundRefresh:
+        case .signIn, .patreon, .appRefresh:
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(footerView, for: section, isHeader: false)
             return footerView
@@ -364,12 +414,11 @@ extension SettingsViewController
         {
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
-            
-        case .signIn, .account, .patreon, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
-        case .backgroundRefresh, .instructions: return 0.0
+        case .instructions: return 0.0
         }
     }
     
@@ -379,9 +428,8 @@ extension SettingsViewController
         switch section
         {
         case .signIn where self.activeTeam != nil: return 1.0
-        case .account where self.activeTeam == nil: return 1.0
-            
-        case .signIn, .patreon, .backgroundRefresh:
+        case .account where self.activeTeam == nil: return 1.0            
+        case .signIn, .patreon, .appRefresh:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
             return height
             
@@ -399,6 +447,16 @@ extension SettingsViewController
         {
         case .signIn: self.signIn()
         case .instructions: break
+        case .appRefresh:
+            let row = AppRefreshRow.allCases[indexPath.row]
+            switch row
+            {
+            case .backgroundRefresh: break
+            case .addToSiri:
+                guard #available(iOS 14, *) else { return }
+                self.addRefreshAppsShortcut()
+            }
+            
         case .credits:
             let row = CreditsRow.allCases[indexPath.row]
             switch row
@@ -463,5 +521,33 @@ extension SettingsViewController: UIGestureRecognizerDelegate
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
     {
         return true
+    }
+}
+
+extension SettingsViewController: INUIAddVoiceShortcutViewControllerDelegate
+{
+    func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController, didFinishWith voiceShortcut: INVoiceShortcut?, error: Error?)
+    {
+        if let indexPath = self.tableView.indexPathForSelectedRow
+        {
+            self.tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
+        controller.dismiss(animated: true, completion: nil)
+        
+        guard let error = error else { return }
+        
+        let toastView = ToastView(error: error)
+        toastView.show(in: self)
+    }
+    
+    func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController)
+    {
+        if let indexPath = self.tableView.indexPathForSelectedRow
+        {
+            self.tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
+        controller.dismiss(animated: true, completion: nil)
     }
 }

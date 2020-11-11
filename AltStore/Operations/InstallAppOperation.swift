@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 import AltSign
 import Roxas
 
@@ -62,7 +62,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             
             installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)
-
+            installedApp.needsResign = false
+            
             if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
             {
                 installedApp.team = team
@@ -122,10 +123,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 var activeApps = InstalledApp.fetch(fetchRequest, in: backgroundContext)
                 if !activeApps.contains(installedApp)
                 {
-                    let availableActiveApps = max(sideloadedAppsLimit - activeApps.count, 0)
-                    let requiredActiveAppSlots = 1 + installedExtensions.count // As of iOS 13.3.1, app extensions count as "apps"
+                    let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
                     
-                    if requiredActiveAppSlots <= availableActiveApps
+                    let availableActiveApps = max(sideloadedAppsLimit - activeAppsCount, 0)
+                    if installedApp.requiredActiveSlots <= availableActiveApps
                     {
                         // This app has not been explicitly activated, but there are enough slots available,
                         // so implicitly activate it.
@@ -144,7 +145,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 })
             }
             
-            let request = BeginInstallationRequest(activeProfiles: activeProfiles)
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: installedApp.resignedBundleIdentifier)
             connection.send(request) { (result) in
                 switch result
                 {
@@ -172,6 +173,21 @@ class InstallAppOperation: ResultOperation<InstalledApp>
     override func finish(_ result: Result<InstalledApp, Error>)
     {
         self.cleanUp()
+        
+        // Only remove refreshed IPA when finished.
+        if let app = self.context.app
+        {
+            let fileURL = InstalledApp.refreshedIPAURL(for: app)
+            
+            do
+            {
+                try FileManager.default.removeItem(at: fileURL)
+            }
+            catch
+            {
+                print("Failed to remove refreshed .ipa:", error)
+            }
+        }
         
         super.finish(result)
     }
@@ -223,12 +239,6 @@ private extension InstallAppOperation
         do
         {
             try FileManager.default.removeItem(at: self.context.temporaryDirectory)
-            
-            if let app = self.context.app
-            {
-                let fileURL = InstalledApp.refreshedIPAURL(for: app)
-                try FileManager.default.removeItem(at: fileURL)
-            }
         }
         catch
         {

@@ -9,14 +9,14 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 
 class ServerConnection
 {
     var server: Server
-    var connection: NWConnection
+    var connection: Connection
     
-    init(server: Server, connection: NWConnection)
+    init(server: Server, connection: Connection)
     {
         self.server = server
         self.connection = connection
@@ -37,16 +37,14 @@ class ServerConnection
                 data = try JSONEncoder().encode(payload)
             }
             
-            func process(_ error: Error?) -> Bool
+            func process<T>(_ result: Result<T, ALTServerError>) -> Bool
             {
-                if error != nil
+                switch result
                 {
-                    completionHandler(.failure(ConnectionError.connectionDropped))
+                case .success: return true
+                case .failure(let error):
+                    completionHandler(.failure(error))
                     return false
-                }
-                else
-                {
-                    return true
                 }
             }
             
@@ -55,22 +53,21 @@ class ServerConnection
                 let requestSize = Int32(data.count)
                 let requestSizeData = withUnsafeBytes(of: requestSize) { Data($0) }
                 
-                self.connection.send(content: requestSizeData, completion: .contentProcessed { (error) in
-                    guard process(error) else { return }
+                self.connection.send(requestSizeData) { (result) in
+                    guard process(result) else { return }
                     
-                    self.connection.send(content: data, completion: .contentProcessed { (error) in
-                        guard process(error) else { return }
+                    self.connection.send(data) { (result) in
+                        guard process(result) else { return }
                         completionHandler(.success(()))
-                    })
-                })
-                
+                    }
+                }
             }
             else
             {
-                connection.send(content: data, completion: .contentProcessed { (error) in
-                    guard process(error) else { return }
+                self.connection.send(data) { (result) in
+                    guard process(result) else { return }
                     completionHandler(.success(()))
-                })
+                }
             }
         }
         catch
@@ -84,18 +81,18 @@ class ServerConnection
     {
         let size = MemoryLayout<Int32>.size
         
-        self.connection.receive(minimumIncompleteLength: size, maximumLength: size) { (data, _, _, error) in
+        self.connection.receiveData(expectedSize: size) { (result) in
             do
             {
-                let data = try self.process(data: data, error: error)
+                let data = try result.get()
                 
                 let expectedBytes = Int(data.withUnsafeBytes { $0.load(as: Int32.self) })
-                self.connection.receive(minimumIncompleteLength: expectedBytes, maximumLength: expectedBytes) { (data, _, _, error) in
+                self.connection.receiveData(expectedSize: expectedBytes) { (result) in
                     do
                     {
-                        let data = try self.process(data: data, error: error)
+                        let data = try result.get()
                         
-                        let response = try JSONDecoder().decode(ServerResponse.self, from: data)
+                        let response = try AltStoreCore.JSONDecoder().decode(ServerResponse.self, from: data)
                         completionHandler(.success(response))
                     }
                     catch
@@ -108,39 +105,6 @@ class ServerConnection
             {
                 completionHandler(.failure(ALTServerError(error)))
             }
-        }
-    }
-}
-
-private extension ServerConnection
-{
-    func process(data: Data?, error: NWError?) throws -> Data
-    {
-        do
-        {
-            do
-            {
-                guard let data = data else { throw error ?? ALTServerError(.unknown) }
-                return data
-            }
-            catch let error as NWError
-            {
-                print("Error receiving data from connection \(connection)", error)
-                
-                throw ALTServerError(.lostConnection)
-            }
-            catch
-            {
-                throw error
-            }
-        }
-        catch let error as ALTServerError
-        {
-            throw error
-        }
-        catch
-        {
-            preconditionFailure("A non-ALTServerError should never be thrown from this method.")
         }
     }
 }

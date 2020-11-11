@@ -1,15 +1,4 @@
 PODS:
-  - AltSign (0.1):
-    - AltSign/CoreCrypto (= 0.1)
-    - AltSign/ldid (= 0.1)
-    - AltSign/minizip (= 0.1)
-    - AltSign/OpenSSL (= 0.1)
-    - AltSign/plist (= 0.1)
-  - AltSign/CoreCrypto (0.1)
-  - AltSign/ldid (0.1)
-  - AltSign/minizip (0.1)
-  - AltSign/OpenSSL (0.1)
-  - AltSign/plist (0.1)
   - AppCenter (3.1.0):
     - AppCenter/Analytics (= 3.1.0)
     - AppCenter/Crashes (= 3.1.0)
@@ -18,18 +7,15 @@ PODS:
   - AppCenter/Core (3.1.0)
   - AppCenter/Crashes (3.1.0):
     - AppCenter/Core
-  - KeychainAccess (3.2.0)
+  - KeychainAccess (4.2.1)
   - Nuke (7.6.3)
-  - Roxas (0.1)
   - Sparkle (1.21.3)
   - STPrivilegedTask (1.0.7)
 
 DEPENDENCIES:
-  - AltSign (from `Dependencies/AltSign`)
   - AppCenter (~> 3.1.0)
-  - KeychainAccess (~> 3.2.0)
+  - KeychainAccess (~> 4.2.0)
   - Nuke (~> 7.0)
-  - Roxas (from `Dependencies/Roxas`)
   - Sparkle
   - STPrivilegedTask (from `https://github.com/rileytestut/STPrivilegedTask.git`)
 
@@ -41,10 +27,6 @@ SPEC REPOS:
     - Sparkle
 
 EXTERNAL SOURCES:
-  AltSign:
-    :path: Dependencies/AltSign
-  Roxas:
-    :path: Dependencies/Roxas
   STPrivilegedTask:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
@@ -54,14 +36,12 @@ CHECKOUT OPTIONS:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
 SPEC CHECKSUMS:
-  AltSign: c3693fa5a4b6d0ec6bedb74a5d768fe58bd67b87
   AppCenter: a1c30c47b7882a04a615ffa5ab26c007326436d8
-  KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
+  KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
-  Roxas: 1990039f843f5dc284918dc82375feb80020ef62
   Sparkle: 3f75576db8b0265adef36c43249d747f22d0b708
   STPrivilegedTask: 56c3397238a1ec07720fb877a044898373cd2c68
 
-PODFILE CHECKSUM: 1317f1da77af3fbb8c90b0d34845d2f0068d488c
+PODFILE CHECKSUM: 6e3f9d2fc666262d43ff8079a3f9149b8f3376ee
 
 COCOAPODS: 1.8.4

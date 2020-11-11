@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import Roxas
 
 import Nuke
@@ -27,6 +28,8 @@ class BrowseViewController: UICollectionViewController
     
     private var cachedItemSizes = [String: CGSize]()
     
+    @IBOutlet private var sourcesBarButtonItem: UIBarButtonItem!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -34,9 +37,6 @@ class BrowseViewController: UICollectionViewController
         #if BETA
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
         self.navigationItem.searchController = self.dataSource.searchController
-        #else
-        // Hide Sources button for public version while in beta.
-        self.navigationItem.rightBarButtonItem = nil
         #endif
         
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -57,9 +57,11 @@ class BrowseViewController: UICollectionViewController
         
         self.fetchSource()
         self.updateDataSource()
+        
+        self.update()
     }
     
-    @IBAction private func unwindToBrowseViewController(_ segue: UIStoryboardSegue)
+    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
     {
         self.fetchSource()
     }
@@ -85,9 +87,8 @@ private extension BrowseViewController
             
             cell.subtitleLabel.text = app.subtitle
             cell.imageURLs = Array(app.screenshotURLs.prefix(2))
-            cell.bannerView.titleLabel.text = app.name
-            cell.bannerView.subtitleLabel.text = app.developerName
-            cell.bannerView.betaBadgeView.isHidden = !app.isBeta
+            
+            cell.bannerView.configure(for: app)
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -104,7 +105,10 @@ private extension BrowseViewController
             
             if app.installedApp == nil
             {
-                cell.bannerView.button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+                let buttonTitle = NSLocalizedString("Free", comment: "")
+                cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+                cell.bannerView.button.accessibilityValue = buttonTitle
                 
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
@@ -121,6 +125,8 @@ private extension BrowseViewController
             else
             {
                 cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
+                cell.bannerView.button.accessibilityValue = nil
                 cell.bannerView.button.progress = nil
                 cell.bannerView.button.countdownDate = nil
             }
@@ -178,21 +184,28 @@ private extension BrowseViewController
         AppManager.shared.fetchSources() { (result) in
             do
             {
-                let sources = try result.get()
-                try sources.first?.managedObjectContext?.save()
-                
-                DispatchQueue.main.async {
-                    self.loadingState = .finished(.success(()))
+                do
+                {
+                    let (_, context) = try result.get()
+                    try context.save()
+                    
+                    DispatchQueue.main.async {
+                        self.loadingState = .finished(.success(()))
+                    }
+                }
+                catch let error as AppManager.FetchSourcesError
+                {
+                    try error.managedObjectContext?.save()
+                    throw error
                 }
             }
-            catch let error as NSError
+            catch
             {
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
-                        let error = error.withLocalizedFailure(NSLocalizedString("Failed to Fetch Sources", comment: ""))
-                        
                         let toastView = ToastView(error: error)
+                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
                         toastView.show(in: self)
                     }
                     
@@ -229,6 +242,12 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
+        
+        #if !BETA
+        // Hide Sources button for public version if there's only 1 source.
+        let sources = Source.all(in: DatabaseManager.shared.viewContext)
+        self.navigationItem.rightBarButtonItem = (sources.count > 1) ? self.sourcesBarButtonItem : nil
+        #endif
     }
 }
 

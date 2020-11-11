@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-import AltKit
+import AltStoreCore
 
 class ServerManager: NSObject
 {
@@ -63,59 +63,51 @@ extension ServerManager
     func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
     {
         DispatchQueue.global().async {
-            func finish(_ result: Result<ServerConnection, Error>)
+            func finish(_ result: Result<Connection, Error>)
             {
-                completion(result)
-            }
-            
-            func start(_ connection: NWConnection)
-            {
-                connection.stateUpdateHandler = { [unowned connection] (state) in
-                    switch state
-                    {
-                    case .failed(let error):
-                        print("Failed to connect to service \(server.service?.name ?? "").", error)
-                        finish(.failure(ConnectionError.connectionFailed))
-                        
-                    case .cancelled:
-                        finish(.failure(OperationError.cancelled))
-                        
-                    case .ready:
-                        let connection = ServerConnection(server: server, connection: connection)
-                        finish(.success(connection))
-                        
-                    case .waiting: break
-                    case .setup: break
-                    case .preparing: break
-                    @unknown default: break
-                    }
+                switch result
+                {
+                case .failure(let error): completion(.failure(error))
+                case .success(let connection):
+                    let serverConnection = ServerConnection(server: server, connection: connection)
+                    completion(.success(serverConnection))
                 }
-                
-                connection.start(queue: self.dispatchQueue)
             }
             
-            if let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore, server.isWiredConnection
+            switch server.connectionType
             {
-                print("Waiting for new wired connection...")
+            case .local: self.connectToLocalServer(server, completion: finish(_:))
+            case .wired:
+                guard let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore else { return finish(.failure(ALTServerError(.connectionFailed))) }
+                
+                print("Waiting for incoming connection...")
                 
                 let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
-                CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
+                                
+                switch server.connectionType
+                {
+                case .wired: CFNotificationCenterPostNotification(notificationCenter, .wiredServerConnectionStartRequest, nil, nil, true)
+                case .local, .wireless: break
+                }
                 
                 _ = incomingConnectionsSemaphore.wait(timeout: .now() + 10.0)
                 
                 if let connection = self.incomingConnections?.popLast()
                 {
-                    start(connection)
+                    self.connectToRemoteServer(server, connection: connection, completion: finish(_:))
                 }
                 else
                 {
                     finish(.failure(ALTServerError(.connectionFailed)))
                 }
-            }
-            else if let service = server.service
-            {
+                
+            case .wireless:
+                guard let service = server.service else { return finish(.failure(ALTServerError(.connectionFailed))) }
+                
+                print("Connecting to service:", service)
+                
                 let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: .tcp)
-                start(connection)
+                self.connectToRemoteServer(server, connection: connection, completion: finish(_:))
             }
         }
     }
@@ -170,6 +162,51 @@ private extension ServerManager
         
         self.incomingConnections = nil
         self.incomingConnectionsSemaphore = nil
+    }
+    
+    func connectToRemoteServer(_ server: Server, connection: NWConnection, completion: @escaping (Result<Connection, Error>) -> Void)
+    {
+        connection.stateUpdateHandler = { [unowned connection] (state) in
+            switch state
+            {
+            case .failed(let error):
+                print("Failed to connect to service \(server.service?.name ?? "").", error)
+                completion(.failure(ConnectionError.connectionFailed))
+                
+            case .cancelled:
+                completion(.failure(OperationError.cancelled))
+                
+            case .ready:
+                let connection = NetworkConnection(connection)
+                completion(.success(connection))
+                
+            case .waiting: break
+            case .setup: break
+            case .preparing: break
+            @unknown default: break
+            }
+        }
+        
+        connection.start(queue: self.dispatchQueue)
+    }
+    
+    func connectToLocalServer(_ server: Server, completion: @escaping (Result<Connection, Error>) -> Void)
+    {
+        guard let machServiceName = server.machServiceName else { return completion(.failure(ConnectionError.connectionFailed)) }
+        
+        let xpcConnection = NSXPCConnection.makeConnection(machServiceName: machServiceName)
+        
+        let connection = XPCConnection(xpcConnection)
+        connection.connect { (result) in
+            switch result
+            {
+            case .failure(let error):
+                print("Could not connect to AltDaemon XPC service \(machServiceName).", error)
+                completion(.failure(error))
+                
+            case .success: completion(.success(connection))
+            }
+        }
     }
 }
 

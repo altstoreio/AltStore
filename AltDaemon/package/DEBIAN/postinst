@@ -1,0 +1,2 @@
+#!/bin/sh
+launchctl load /Library/LaunchDaemons/com.rileytestut.altdaemon.plist

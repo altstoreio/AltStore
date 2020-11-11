@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17505" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Account" representedClassName="Account" syncable="YES">
+        <attribute name="appleID" attributeType="String"/>
+        <attribute name="firstName" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isActiveAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastName" attributeType="String"/>
+        <relationship name="teams" toMany="YES" deletionRule="Cascade" destinationEntity="Team" inverseName="account" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppID" representedClassName="AppID" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="expirationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="features" attributeType="Transformable"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="appIDs" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
+        <attribute name="type" attributeType="String"/>
+        <attribute name="usageDescription" attributeType="String"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
+    </entity>
+    <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
+        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isRefreshing" transient="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="appExtensions" toMany="YES" deletionRule="Cascade" destinationEntity="InstalledExtension" inverseName="parentApp" inverseEntity="InstalledExtension"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="installedApp" inverseEntity="StoreApp"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="installedApps" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="InstalledExtension" representedClassName="InstalledExtension" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="parentApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="appExtensions" inverseEntity="InstalledApp"/>
+    </entity>
+    <entity name="NewsItem" representedClassName="NewsItem" syncable="YES">
+        <attribute name="appID" optional="YES" attributeType="String"/>
+        <attribute name="caption" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="externalURL" optional="YES" attributeType="URI"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="isSilent" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="newsItems" inverseEntity="Source"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="newsItems" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+                <constraint value="sourceIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PatreonAccount" representedClassName="PatreonAccount" syncable="YES">
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isPatron" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="errorDescription" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isSuccess" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="sourceURL" attributeType="URI"/>
+        <relationship name="apps" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StoreApp" inverseName="source" inverseEntity="StoreApp"/>
+        <relationship name="newsItems" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="NewsItem" inverseName="source" inverseEntity="NewsItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="developerName" attributeType="String"/>
+        <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="iconURL" attributeType="URI"/>
+        <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="localizedDescription" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="screenshotURLs" attributeType="Transformable"/>
+        <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable"/>
+        <attribute name="version" attributeType="String"/>
+        <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="versionDescription" optional="YES" attributeType="String"/>
+        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp"/>
+        <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
+        <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="sourceIdentifier"/>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Team" representedClassName="Team" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isActiveTeam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="teams" inverseEntity="Account"/>
+        <relationship name="appIDs" toMany="YES" deletionRule="Cascade" destinationEntity="AppID" inverseName="team" inverseEntity="AppID"/>
+        <relationship name="installedApps" toMany="YES" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="team" inverseEntity="InstalledApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
+        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
+        <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
+        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="224"/>
+        <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
+        <element name="NewsItem" positionX="-45" positionY="126" width="128" height="238"/>
+        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
+        <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
+        <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
+        <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
+        <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
+    </elements>
+</model>

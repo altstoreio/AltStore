@@ -14,6 +14,7 @@ enum OperationError: LocalizedError
     case unknown
     case unknownResult
     case cancelled
+    case timedOut
     
     case notAuthenticated
     case appNotFound
@@ -28,17 +29,23 @@ enum OperationError: LocalizedError
     
     case noSources
     
+    case openAppFailed(name: String)
+    case missingAppGroup
+    
     var failureReason: String? {
         switch self {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
+        case .timedOut: return NSLocalizedString("The operation timed out.", comment: "")
         case .notAuthenticated: return NSLocalizedString("You are not signed in.", comment: "")
         case .appNotFound: return NSLocalizedString("App not found.", comment: "")
         case .unknownUDID: return NSLocalizedString("Unknown device UDID.", comment: "")
         case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
         case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
+        case .openAppFailed(let name): return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), name)
+        case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be found.", comment: "")
         case .iOSVersionNotSupported(let app):
             let name = app.name
             

@@ -1,4 +1,4 @@
-module Nuke {
+framework module Nuke {
   umbrella header "Nuke-umbrella.h"
 
   export *
