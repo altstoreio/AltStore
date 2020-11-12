@@ -10,12 +10,6 @@ import Cocoa
 import UserNotifications
 import ObjectiveC
 
-#if STAGING
-private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
-#else
-private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
-#endif
-
 private let appGroupsLock = NSLock()
 
 enum InstallError: LocalizedError
@@ -38,21 +32,14 @@ enum InstallError: LocalizedError
 
 extension ALTDeviceManager
 {
-    func installAltStore(to device: ALTDevice, appleID: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func installApplication(at url: URL, to device: ALTDevice, appleID: String, password: String, completion: @escaping (Result<ALTApplication, Error>) -> Void)
     {
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
-        func finish(_ error: Error?, title: String = "")
+        func finish(_ result: Result<ALTApplication, Error>, title: String = "")
         {
             DispatchQueue.main.async {
-                if let error = error
-                {
-                    completion(.failure(error))
-                }
-                else
-                {
-                    completion(.success(()))
-                }
+                completion(result)
             }
             
             try? FileManager.default.removeItem(at: destinationDirectoryURL)
@@ -83,14 +70,13 @@ extension ALTDeviceManager
                                             {
                                                 let certificate = try result.get()
                                                 
-                                                let content = UNMutableNotificationContent()
-                                                content.title = String(format: NSLocalizedString("Installing AltStore to %@...", comment: ""), device.name)
-                                                content.body = NSLocalizedString("This may take a few seconds.", comment: "")
-                                                
-                                                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                                                UNUserNotificationCenter.current().add(request)
-                                                
-                                                self.downloadApp { (result) in
+                                                if !url.isFileURL
+                                                {
+                                                    // Show alert before downloading remote .ipa.
+                                                    self.showInstallationAlert(appName: NSLocalizedString("AltStore", comment: ""), deviceName: device.name)
+                                                }
+                                                                                                
+                                                self.downloadApp(from: url) { (result) in
                                                     do
                                                     {
                                                         let fileURL = try result.get()
@@ -98,17 +84,13 @@ extension ALTDeviceManager
                                                         try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
                                                         
                                                         let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
-                                                        
-                                                        do
-                                                        {
-                                                            try FileManager.default.removeItem(at: fileURL)
-                                                        }
-                                                        catch
-                                                        {
-                                                            print("Failed to remove downloaded .ipa.", error)
-                                                        }
-                                                        
                                                         guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+                                                        
+                                                        if url.isFileURL
+                                                        {
+                                                            // Show alert after "downloading" local .ipa.
+                                                            self.showInstallationAlert(appName: application.name, deviceName: device.name)
+                                                        }
                                                         
                                                         // Refresh anisette data to prevent session timeouts.
                                                         AnisetteDataManager.shared.requestAnisetteData { (result) in
@@ -123,65 +105,73 @@ extension ALTDeviceManager
                                                                         let profiles = try result.get()
                                                                         
                                                                         self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
-                                                                            finish(result.error, title: "Failed to Install AltStore")
+                                                                            finish(result.map { application }, title: "Failed to Install AltStore")
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(error, title: "Failed to Fetch Provisioning Profiles")
+                                                                        finish(.failure(error), title: "Failed to Fetch Provisioning Profiles")
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(error, title: "Failed to Refresh Anisette Data")
+                                                                finish(.failure(error), title: "Failed to Refresh Anisette Data")
                                                             }
                                                         }
                                                     }
                                                     catch
                                                     {
-                                                        finish(error, title: "Failed to Download AltStore")
+                                                        finish(.failure(error), title: "Failed to Download AltStore")
                                                     }
                                                 }
                                             }
                                             catch
                                             {
-                                                finish(error, title: "Failed to Fetch Certificate")
+                                                finish(.failure(error), title: "Failed to Fetch Certificate")
                                             }
                                         }
                                     }
                                     catch
                                     {
-                                        finish(error, title: "Failed to Register Device")
+                                        finish(.failure(error), title: "Failed to Register Device")
                                     }
                                 }
                             }
                             catch
                             {
-                                finish(error, title: "Failed to Fetch Team")
+                                finish(.failure(error), title: "Failed to Fetch Team")
                             }
                         }
                     }
                     catch
                     {
-                        finish(error, title: "Failed to Authenticate")
+                        finish(.failure(error), title: "Failed to Authenticate")
                     }
                 }
             }
             catch
             {
-                finish(error, title: "Failed to Fetch Anisette Data")
+                finish(.failure(error), title: "Failed to Fetch Anisette Data")
             }
         }
     }
-    
-    func downloadApp(completionHandler: @escaping (Result<URL, Error>) -> Void)
+}
+
+private extension ALTDeviceManager
+{
+    func downloadApp(from url: URL, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        let downloadTask = URLSession.shared.downloadTask(with: appURL) { (fileURL, response, error) in
+        guard !url.isFileURL else { return completionHandler(.success(url)) }
+        
+        let downloadTask = URLSession.shared.downloadTask(with: url) { (fileURL, response, error) in
             do
             {
                 let (fileURL, _) = try Result((fileURL, response), error).get()
                 completionHandler(.success(fileURL))
+                
+                do { try FileManager.default.removeItem(at: fileURL) }
+                catch { print("Failed to remove downloaded .ipa.", error) }
             }
             catch
             {
@@ -259,11 +249,11 @@ extension ALTDeviceManager
                 {
                     DispatchQueue.main.sync {
                         let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Installing AltStore will revoke your iOS development certificate.", comment: "")
+                        alert.messageText = NSLocalizedString("Installing this app will revoke your iOS development certificate.", comment: "")
                         alert.informativeText = NSLocalizedString("""
 This will not affect apps you've submitted to the App Store, but may cause apps you've installed to your devices with Xcode to stop working until you reinstall them.
 
-To prevent this from happening, feel free to try again with another Apple ID to install AltStore.
+To prevent this from happening, feel free to try again with another Apple ID.
 """, comment: "")
                         
                         alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
@@ -410,7 +400,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
     func prepareAllProvisioningProfiles(for application: ALTApplication, team: ALTTeam, session: ALTAppleAPISession,
                                         completion: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
     {
-        self.prepareProvisioningProfile(for: application, team: team, session: session) { (result) in
+        self.prepareProvisioningProfile(for: application, parentApp: nil, team: team, session: session) { (result) in
             do
             {
                 let profile = try result.get()
@@ -424,7 +414,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 {
                     dispatchGroup.enter()
                     
-                    self.prepareProvisioningProfile(for: appExtension, team: team, session: session) { (result) in
+                    self.prepareProvisioningProfile(for: appExtension, parentApp: application, team: team, session: session) { (result) in
                         switch result
                         {
                         case .failure(let e): error = e
@@ -453,9 +443,35 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func prepareProvisioningProfile(for application: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func prepareProvisioningProfile(for application: ALTApplication, parentApp: ALTApplication?, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        self.registerAppID(name: application.name, identifier: application.bundleIdentifier, team: team, session: session) { (result) in
+        let parentBundleID = parentApp?.bundleIdentifier ?? application.bundleIdentifier
+        let updatedParentBundleID: String
+        
+        if application.isAltStoreApp
+        {
+            // Use legacy bundle ID format for AltStore (and its extensions).
+            updatedParentBundleID = "com.\(team.identifier).\(parentBundleID)"
+        }
+        else
+        {
+            updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
+        }
+        
+        let bundleID = application.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+        
+        let preferredName: String
+        
+        if let parentApp = parentApp
+        {
+            preferredName = parentApp.name + " " + application.name
+        }
+        else
+        {
+            preferredName = application.name
+        }
+        
+        self.registerAppID(name: preferredName, bundleID: bundleID, team: team, session: session) { (result) in
             do
             {
                 let appID = try result.get()
@@ -493,10 +509,8 @@ To prevent this from happening, feel free to try again with another Apple ID to 
         }
     }
     
-    func registerAppID(name appName: String, identifier: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
+    func registerAppID(name appName: String, bundleID: String, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        let bundleID = "com.\(team.identifier).\(identifier)"
-        
         ALTAppleAPI.shared.fetchAppIDs(for: team, session: session) { (appIDs, error) in
             do
             {
@@ -723,17 +737,21 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 allURLSchemes.append(altstoreURLScheme)
                 
                 var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
-                additionalValues[Bundle.Info.deviceID] = device.identifier
-                additionalValues[Bundle.Info.serverID] = UserDefaults.standard.serverID
                 
-                if
-                    let machineIdentifier = certificate.machineIdentifier,
-                    let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
+                if application.isAltStoreApp
                 {
-                    additionalValues[Bundle.Info.certificateID] = certificate.serialNumber
+                    additionalValues[Bundle.Info.deviceID] = device.identifier
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.serverID
                     
-                    let certificateURL = application.fileURL.appendingPathComponent("ALTCertificate.p12")
-                    try encryptedData.write(to: certificateURL, options: .atomic)
+                    if
+                        let machineIdentifier = certificate.machineIdentifier,
+                        let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
+                    {
+                        additionalValues[Bundle.Info.certificateID] = certificate.serialNumber
+                        
+                        let certificateURL = application.fileURL.appendingPathComponent("ALTCertificate.p12")
+                        try encryptedData.write(to: certificateURL, options: .atomic)
+                    }
                 }
                 
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
@@ -750,7 +768,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                     {
                         try Result(success, error).get()
                         
-                        let activeProfiles: Set<String>? = (team.type == .free) ? Set(profiles.values.map(\.bundleIdentifier)) : nil
+                        let activeProfiles: Set<String>? = (team.type == .free && application.isAltStoreApp) ? Set(profiles.values.map(\.bundleIdentifier)) : nil
                         ALTDeviceManager.shared.installApp(at: application.fileURL, toDeviceWithUDID: device.identifier, activeProvisioningProfiles: activeProfiles) { (success, error) in
                             completionHandler(Result(success, error))
                         }
@@ -768,6 +786,16 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 completionHandler(.failure(error))
             }
         }
+    }
+    
+    func showInstallationAlert(appName: String, deviceName: String)
+    {
+        let content = UNMutableNotificationContent()
+        content.title = String(format: NSLocalizedString("Installing %@ to %@...", comment: ""), appName, deviceName)
+        content.body = NSLocalizedString("This may take a few seconds.", comment: "")
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
     }
 }
 

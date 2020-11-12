@@ -13,6 +13,12 @@ import AltSign
 
 import LaunchAtLogin
 
+#if STAGING
+private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
+#else
+private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
+#endif
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -26,6 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet private var appMenu: NSMenu!
     @IBOutlet private var connectedDevicesMenu: NSMenu!
+    @IBOutlet private var sideloadIPAConnectedDevicesMenu: NSMenu!
     @IBOutlet private var launchAtLoginMenuItem: NSMenuItem!
     @IBOutlet private var installMailPluginMenuItem: NSMenuItem!
     
@@ -48,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         self.appMenu.delegate = self
         self.connectedDevicesMenu.delegate = self
+        self.sideloadIPAConnectedDevicesMenu.delegate = self
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { (success, error) in
             guard success else { return }
@@ -81,8 +89,30 @@ private extension AppDelegate
 {
     @objc func installAltStore(_ item: NSMenuItem)
     {
-        guard case let index = self.connectedDevicesMenu.index(of: item), index != -1 else { return }
+        guard let index = item.menu?.index(of: item), index != -1 else { return }
         
+        let device = self.connectedDevices[index]
+        self.installApplication(at: altstoreAppURL, to: device)
+    }
+    
+    @objc func sideloadIPA(_ item: NSMenuItem)
+    {
+        guard let index = item.menu?.index(of: item), index != -1 else { return }
+
+        let device = self.connectedDevices[index]
+        
+        let openPanel = NSOpenPanel()
+        openPanel.canChooseDirectories = false
+        openPanel.allowsMultipleSelection = false
+        openPanel.allowedFileTypes = ["ipa"]
+        openPanel.begin { (response) in
+            guard let fileURL = openPanel.url, response == .OK else { return }
+            self.installApplication(at: fileURL, to: device)
+        }
+    }
+    
+    func installApplication(at url: URL, to device: ALTDevice)
+    {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
         alert.informativeText = NSLocalizedString("Your Apple ID and password are not saved and are only sent to Apple for authentication.", comment: "")
@@ -125,18 +155,16 @@ private extension AppDelegate
         
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
-        
-        let device = self.connectedDevices[index]
-        
+                
         func install()
         {
-            ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
+            ALTDeviceManager.shared.installApplication(at: url, to: device, appleID: username, password: password) { (result) in
                 switch result
                 {
-                case .success:
+                case .success(let application):
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("Installation Succeeded", comment: "")
-                    content.body = String(format: NSLocalizedString("AltStore was successfully installed on %@.", comment: ""), device.name)
+                    content.body = String(format: NSLocalizedString("%@ was successfully installed on %@.", comment: ""), application.name, device.name)
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                     UNUserNotificationCenter.current().add(request)
@@ -283,14 +311,14 @@ extension AppDelegate: NSMenuDelegate
 
     func numberOfItems(in menu: NSMenu) -> Int
     {
-        guard menu == self.connectedDevicesMenu else { return -1 }
+        guard menu == self.connectedDevicesMenu || menu == self.sideloadIPAConnectedDevicesMenu else { return -1 }
         
         return self.connectedDevices.isEmpty ? 1 : self.connectedDevices.count
     }
     
     func menu(_ menu: NSMenu, update item: NSMenuItem, at index: Int, shouldCancel: Bool) -> Bool
     {
-        guard menu == self.connectedDevicesMenu else { return false }
+        guard menu == self.connectedDevicesMenu || menu == self.sideloadIPAConnectedDevicesMenu else { return false }
         
         if self.connectedDevices.isEmpty
         {
@@ -305,7 +333,7 @@ extension AppDelegate: NSMenuDelegate
             item.title = device.name
             item.isEnabled = true
             item.target = self
-            item.action = #selector(AppDelegate.installAltStore)
+            item.action = (menu == self.connectedDevicesMenu) ? #selector(AppDelegate.installAltStore(_:)) : #selector(AppDelegate.sideloadIPA(_:))
             item.tag = index
         }
         
