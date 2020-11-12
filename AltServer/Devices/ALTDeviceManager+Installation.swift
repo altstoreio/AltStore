@@ -99,7 +99,7 @@ extension ALTDeviceManager
                                                                 let anisetteData = try result.get()
                                                                 session.anisetteData = anisetteData
                                                                 
-                                                                self.prepareAllProvisioningProfiles(for: application, team: team, session: session) { (result) in
+                                                                self.prepareAllProvisioningProfiles(for: application, device: device, team: team, session: session) { (result) in
                                                                     do
                                                                     {
                                                                         let profiles = try result.get()
@@ -397,10 +397,10 @@ To prevent this from happening, feel free to try again with another Apple ID.
         }
     }
     
-    func prepareAllProvisioningProfiles(for application: ALTApplication, team: ALTTeam, session: ALTAppleAPISession,
+    func prepareAllProvisioningProfiles(for application: ALTApplication, device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession,
                                         completion: @escaping (Result<[String: ALTProvisioningProfile], Error>) -> Void)
     {
-        self.prepareProvisioningProfile(for: application, parentApp: nil, team: team, session: session) { (result) in
+        self.prepareProvisioningProfile(for: application, parentApp: nil, device: device, team: team, session: session) { (result) in
             do
             {
                 let profile = try result.get()
@@ -414,7 +414,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
                 {
                     dispatchGroup.enter()
                     
-                    self.prepareProvisioningProfile(for: appExtension, parentApp: application, team: team, session: session) { (result) in
+                    self.prepareProvisioningProfile(for: appExtension, parentApp: application, device: device, team: team, session: session) { (result) in
                         switch result
                         {
                         case .failure(let e): error = e
@@ -443,7 +443,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
         }
     }
     
-    func prepareProvisioningProfile(for application: ALTApplication, parentApp: ALTApplication?, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func prepareProvisioningProfile(for application: ALTApplication, parentApp: ALTApplication?, device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
         let parentBundleID = parentApp?.bundleIdentifier ?? application.bundleIdentifier
         let updatedParentBundleID: String
@@ -486,7 +486,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
                             {
                                 let appID = try result.get()
                                 
-                                self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
+                                self.fetchProvisioningProfile(for: appID, device: device, team: team, session: session) { (result) in
                                     completionHandler(result)
                                 }
                             }
@@ -666,7 +666,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
     
     func register(_ device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, types: device.type, session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -677,7 +677,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, team: team, session: session) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, type: device.type, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }
@@ -689,9 +689,9 @@ To prevent this from happening, feel free to try again with another Apple ID.
         }
     }
     
-    func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
+    func fetchProvisioningProfile(for appID: ALTAppID, device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: device.type, team: team, session: session) { (profile, error) in
             completionHandler(Result(profile, error))
         }
     }

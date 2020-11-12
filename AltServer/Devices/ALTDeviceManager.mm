@@ -1113,13 +1113,51 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             continue;
         }
         
+        plist_t device_type_plist = NULL;
+        if (lockdownd_get_value(client, NULL, "ProductType", &device_type_plist) != LOCKDOWN_E_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
+            
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            continue;
+        }
+        
+        ALTDeviceType deviceType = ALTDeviceTypeiPhone;
+        
+        char *device_type_string = NULL;
+        plist_get_string_val(device_type_plist, &device_type_string);
+        
+        if ([@(device_type_string) hasPrefix:@"iPhone"])
+        {
+            deviceType = ALTDeviceTypeiPhone;
+        }
+        else if ([@(device_type_string) hasPrefix:@"iPad"])
+        {
+            deviceType = ALTDeviceTypeiPad;
+        }
+        else if ([@(device_type_string) hasPrefix:@"AppleTV"])
+        {
+            deviceType = ALTDeviceTypeAppleTV;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: Unknown device type %s for %s!\n", device_type_string, device_name);
+            
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            continue;
+        }
+        
         lockdownd_client_free(client);
         idevice_free(device);
         
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
         
-        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:ALTDeviceTypeiPhone];
+        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:deviceType];
         [connectedDevices addObject:altDevice];
         
         if (device_name != NULL)
