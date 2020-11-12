@@ -259,7 +259,7 @@ extension AppDelegate: NSMenuDelegate
     {
         guard menu == self.appMenu else { return }
 
-        self.connectedDevices = ALTDeviceManager.shared.connectedDevices
+        self.connectedDevices = ALTDeviceManager.shared.availableDevices
 
         self.launchAtLoginMenuItem.target = self
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
