@@ -1,4 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework
 ${PODS_ROOT}/Sparkle/Sparkle.framework
-${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM
