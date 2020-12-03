@@ -16,13 +16,10 @@ public extension StoreApp
 {
     #if ALPHA
     static let altstoreAppID = "com.rileytestut.AltStore.Alpha"
-    static let alternativeAltStoreAppIDs: Set<String> = ["com.rileytestut.AltStore", "com.rileytestut.AltStore.Beta"]
     #elseif BETA
     static let altstoreAppID = "com.rileytestut.AltStore.Beta"
-    static let alternativeAltStoreAppIDs: Set<String> = ["com.rileytestut.AltStore", "com.rileytestut.AltStore.Alpha"]
     #else
     static let altstoreAppID = "com.rileytestut.AltStore"
-    static let alternativeAltStoreAppIDs: Set<String> = ["com.rileytestut.AltStore.Beta", "com.rileytestut.AltStore.Alpha"]
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"

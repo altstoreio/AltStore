@@ -133,7 +133,7 @@ extension FetchProvisioningProfilesOperation
                 
                 #if DEBUG
                 
-                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
+                if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore.
                     preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
@@ -178,7 +178,7 @@ extension FetchProvisioningProfilesOperation
                 let parentBundleID = parentApp?.bundleIdentifier ?? app.bundleIdentifier
                 let updatedParentBundleID: String
                 
-                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
+                if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore (and its extensions).
                     updatedParentBundleID = "com.\(team.identifier).\(parentBundleID)"
@@ -463,7 +463,7 @@ extension FetchProvisioningProfilesOperation
     
     func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
             switch Result(profile, error)
             {
             case .failure(let error): completionHandler(.failure(error))
@@ -477,7 +477,7 @@ extension FetchProvisioningProfilesOperation
                     case .success:
                         
                         // Fetch new provisiong profile
-                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
                             completionHandler(Result(profile, error))
                         }
                     }

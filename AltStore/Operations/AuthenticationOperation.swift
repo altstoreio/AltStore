@@ -432,11 +432,11 @@ private extension AuthenticationOperation
     {
         func selectTeam(from teams: [ALTTeam])
         {
-            if let team = teams.first(where: { $0.type == .free })
+            if let team = teams.first(where: { $0.type == .individual })
             {
                 return completionHandler(.success(team))
             }
-            else if let team = teams.first(where: { $0.type == .individual })
+            else if let team = teams.first(where: { $0.type == .free })
             {
                 return completionHandler(.success(team))
             }
@@ -582,7 +582,7 @@ private extension AuthenticationOperation
             return completionHandler(.failure(OperationError.unknownUDID))
         }
         
-        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, types: [.iphone, .ipad], session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -593,7 +593,7 @@ private extension AuthenticationOperation
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, team: team, session: session) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, type: .iphone, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }
