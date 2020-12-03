@@ -173,11 +173,24 @@ private extension AppDelegate
         
         if !self.pluginManager.isMailPluginInstalled || self.pluginManager.isUpdateAvailable
         {
-            self.installMailPlugin { (result) in
-                switch result
+            AnisetteDataManager.shared.isXPCAvailable { (isAvailable) in
+                if isAvailable
                 {
-                case .failure: break
-                case .success: install()
+                    // XPC service is available, so we don't need to install/update Mail plug-in.
+                    // Users can still manually do so from the AltServer menu.
+                    install()
+                }
+                else
+                {
+                    DispatchQueue.main.async {
+                        self.installMailPlugin { (result) in
+                            switch result
+                            {
+                            case .failure: break
+                            case .success: install()
+                            }
+                        }
+                    }
                 }
             }
         }
