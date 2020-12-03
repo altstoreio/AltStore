@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3b1",
-      "versionDate": "2020-11-25T11:00:00-06:00",
-      "versionDescription": "NEW FEATURES\n• [MelonDS] DSi emulation (requires additional DSi BIOS files)\n• [MelonDS] Just-in-time (JIT) compilation on A12 devices running iOS 14.2 or newer.\n• [MelonDS] Microphone support — use your device's microphone to emulate the DS microphone.\n• [MelonDS] Emulate closing/opening lid — sleep device to \"close\" DS lid, wake to \"open\".\n\nIMPROVEMENTS\n• Dark mode support throughout app (thanks @ericlewis!)",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_3_b1.ipa",
+      "version": "1.3b2",
+      "versionDate": "2020-12-02T12:30:00-06:00",
+      "versionDescription": "BUG FIXES\n• Fixes garbled audio during emulation\n• Fixes MelonDS core crashing on devices that don't support JIT\n• Fixes audio not playing over AirPlay • Fixes crash when activating Siri\n\nPrevious update:\n\nNEW FEATURES\n• [MelonDS] DSi emulation (requires additional DSi BIOS files)\n• [MelonDS] Just-in-time (JIT) compilation on A12 devices running iOS 14.2 or newer.\n• [MelonDS] Microphone support — use your device's microphone to emulate the DS microphone.\n• [MelonDS] Emulate closing/opening lid — sleep device to \"close\" DS lid, wake to \"open\".\n\nIMPROVEMENTS\n• Dark mode support throughout app (thanks @ericlewis!)",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_3_b2.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18556391,
+      "size": 18558635,
       "beta": true,
       "permissions": [
         {
