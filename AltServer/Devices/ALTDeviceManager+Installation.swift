@@ -234,16 +234,81 @@ private extension ALTDeviceManager
     
     func fetchTeam(for account: ALTAccount, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTTeam, Error>) -> Void)
     {
-        func finish(_ result: Result<ALTTeam, Error>)
-        {
-            switch result
+        ALTAppleAPI.shared.fetchTeams(for: account, session: session) { (teams, error) in
+            do
             {
-            case .failure(let error):
-                completionHandler(.failure(error))
+                let teams = try Result(teams, error).get()
                 
-            case .success(let team):
+                if let team = teams.first(where: { $0.type == .free })
+                {
+                    return completionHandler(.success(team))
+                }
+                else if let team = teams.first(where: { $0.type == .individual })
+                {
+                    return completionHandler(.success(team))
+                }
+                else if let team = teams.first
+                {
+                    return completionHandler(.success(team))
+                }
+                else
+                {
+                    throw InstallError.noTeam
+                }
+            }
+            catch
+            {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func fetchCertificate(for team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTCertificate, Error>) -> Void)
+    {
+        ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
+            do
+            {
+                let certificates = try Result(certificates, error).get()
+                
+                let applicationSupportDirectoryURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                let altserverDirectoryURL = applicationSupportDirectoryURL.appendingPathComponent("com.rileytestut.AltServer")
+                let certificatesDirectoryURL = altserverDirectoryURL.appendingPathComponent("Certificates")
+                
+                try FileManager.default.createDirectory(at: certificatesDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                
+                let certificateFileURL = certificatesDirectoryURL.appendingPathComponent(team.identifier + ".p12")
                 
                 var isCancelled = false
+                
+                // Check if there is another AltStore certificate, which means AltStore has been installed with this Apple ID before.
+                if let previousCertificate = certificates.first(where: { $0.machineName?.starts(with: "AltStore") == true })
+                {
+                    if FileManager.default.fileExists(atPath: certificateFileURL.path),
+                       let data = try? Data(contentsOf: certificateFileURL),
+                       let certificate = ALTCertificate(p12Data: data, password: previousCertificate.machineIdentifier)
+                    {
+                        return completionHandler(.success(certificate))
+                    }
+                                        
+                    DispatchQueue.main.sync {
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Multiple AltServers Not Supported", comment: "")
+                        alert.informativeText = NSLocalizedString("Please use the same AltServer you previously used with this Apple ID, or else apps installed with other AltServers will stop working.\n\nAre you sure you want to continue?", comment: "")
+                        
+                        alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
+                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                        
+                        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                        
+                        let buttonIndex = alert.runModal()
+                        if buttonIndex == NSApplication.ModalResponse.alertSecondButtonReturn
+                        {
+                            isCancelled = true
+                        }
+                    }
+                    
+                    guard !isCancelled else { return completionHandler(.failure(InstallError.cancelled)) }
+                }
                 
                 if team.type != .free
                 {
@@ -268,78 +333,7 @@ To prevent this from happening, feel free to try again with another Apple ID.
                         }
                     }
                     
-                    if isCancelled
-                    {
-                        return completionHandler(.failure(InstallError.cancelled))
-                    }
-                }
-                
-                completionHandler(.success(team))
-            }
-        }
-        
-        ALTAppleAPI.shared.fetchTeams(for: account, session: session) { (teams, error) in
-            do
-            {
-                let teams = try Result(teams, error).get()
-                
-                if let team = teams.first(where: { $0.type == .free })
-                {
-                    return finish(.success(team))
-                }
-                else if let team = teams.first(where: { $0.type == .individual })
-                {
-                    return finish(.success(team))
-                }
-                else if let team = teams.first
-                {
-                    return finish(.success(team))
-                }
-                else
-                {
-                    throw InstallError.noTeam
-                }
-            }
-            catch
-            {
-                finish(.failure(error))
-            }
-        }
-    }
-    
-    func fetchCertificate(for team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTCertificate, Error>) -> Void)
-    {
-        ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
-            do
-            {
-                let certificates = try Result(certificates, error).get()
-                
-                // Check if there is another AltStore certificate, which means AltStore has been installed with this Apple ID before.
-                if certificates.contains(where: { $0.machineName?.starts(with: "AltStore") == true })
-                {
-                    var isCancelled = false
-                    
-                    DispatchQueue.main.sync {
-                        let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("AltStore already installed on another device.", comment: "")
-                        alert.informativeText = NSLocalizedString("Apps installed with AltStore on your other devices will stop working. Are you sure you want to continue?", comment: "")
-                        
-                        alert.addButton(withTitle: NSLocalizedString("Continue", comment: ""))
-                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-                        
-                        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-                        
-                        let buttonIndex = alert.runModal()
-                        if buttonIndex == NSApplication.ModalResponse.alertSecondButtonReturn
-                        {
-                            isCancelled = true
-                        }
-                    }
-                    
-                    if isCancelled
-                    {
-                        return completionHandler(.failure(InstallError.cancelled))
-                    }
+                    guard !isCancelled else { return completionHandler(.failure(InstallError.cancelled)) }
                 }
                 
                 if let certificate = certificates.first
@@ -376,6 +370,14 @@ To prevent this from happening, feel free to try again with another Apple ID.
                                     certificate.privateKey = privateKey
                                     
                                     completionHandler(.success(certificate))
+                                    
+                                    if let machineIdentifier = certificate.machineIdentifier,
+                                       let encryptedData = certificate.encryptedP12Data(withPassword: machineIdentifier)
+                                    {
+                                        // Cache certificate.
+                                        do { try encryptedData.write(to: certificateFileURL, options: .atomic) }
+                                        catch { print("Failed to cache certificate:", error) }
+                                    }
                                 }
                                 catch
                                 {
