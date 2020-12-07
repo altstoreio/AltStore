@@ -377,9 +377,9 @@ extension FetchProvisioningProfilesOperation
             }
         }
         
-        if app.bundleIdentifier == StoreApp.altstoreAppID
+        if app.isAltStoreApp
         {
-            // Updating app groups for this specific AltStore.
+            // Potentially updating app groups for this specific AltStore.
             // Find the (unique) AltStore app group, then replace it
             // with the correct "base" app group ID.
             // Otherwise, we may append a duplicate team identifier to the end.
