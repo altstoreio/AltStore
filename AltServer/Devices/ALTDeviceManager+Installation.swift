@@ -287,6 +287,8 @@ private extension ALTDeviceManager
                        let data = try? Data(contentsOf: certificateFileURL),
                        let certificate = ALTCertificate(p12Data: data, password: previousCertificate.machineIdentifier)
                     {
+                        // Manually set machineIdentifier so we can encrypt + embed certificate if needed.
+                        certificate.machineIdentifier = previousCertificate.machineIdentifier
                         return completionHandler(.success(certificate))
                     }
                                         
