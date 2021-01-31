@@ -432,11 +432,11 @@ private extension AuthenticationOperation
     {
         func selectTeam(from teams: [ALTTeam])
         {
-            if let team = teams.first(where: { $0.type == .individual })
+            if let team = teams.first(where: { $0.type == .free })
             {
                 return completionHandler(.success(team))
             }
-            else if let team = teams.first(where: { $0.type == .free })
+            else if let team = teams.first(where: { $0.type == .individual })
             {
                 return completionHandler(.success(team))
             }
