@@ -652,7 +652,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
     
     func register(_ device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, types: .iphone, session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -663,7 +663,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, team: team, session: session) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: device.name, identifier: device.identifier, type: .iphone, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }
@@ -677,7 +677,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
     
     func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
             completionHandler(Result(profile, error))
         }
     }
