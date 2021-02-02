@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.2",
-      "versionDate": "2020-11-11T12:00:00-07:00",
-      "versionDescription": "This update allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2.ipa",
+      "version": "1.4.3",
+      "versionDate": "2021-02-02T13:30:00-06:00",
+      "versionDescription": "This update fixes apps installed after January 28 crashing on launch.\n\n⚠️ This update must be installed manually. Update AltServer to the latest version and use it to reinstall AltStore. You do not need to delete AltStore first.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_3.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4792897,
+      "size": 4788971,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "1k_ky8bG4OUy4XxvCAE4Qnh2UX82nteez-Ljonn3-Go"
+    "patreonAccessToken": "NeHf7QSo-dVexWRxDF2JJwxZZ4fzkrHJO9sFJprsLko"
   }
 }
