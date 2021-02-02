@@ -36,10 +36,10 @@
       "bundleIdentifier": "com.rileytestut.Delta.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3a4",
-      "versionDate": "2020-11-30T20:00:00-06:00",
-      "versionDescription": "BUG FIXES\n• Fixes garbled audio during emulation\n• Fixes audio not playing over AirPlay • Fixes crash when activating Siri\n• Fixes MelonDS crashing on devices that don't support JIT",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/delta/1_3_a4.ipa",
+      "version": "1.3a7",
+      "versionDate": "2021-01-19T15:00:00-06:00",
+      "versionDescription": "• Changes default DS core to melonDS*\n• Verifies melonDS BIOS files are correct\n• Hides DS \"Home Screen\" until after BIOS files have been imported\n• Fixes missing Fast Forward option for melonDS core\n• Fixes DS games crashing on iOS 14.4\n• Fixes crash when previewing DS games before importing BIOS files\n\n* DeSmuME core will remain as an optional core in the beta versions of Delta, but the public version will only support melonDS.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/delta/1_3_a7.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
@@ -97,6 +97,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "Dp-XtViLDff7xd2fLhc8VVGcLNR9YxJ1L3WAlcWu_Bo"
+    "patreonAccessToken": "IOWAA1iug80jdx9B44sG9f0l_nnzqzse7_cIvOg6Hdk"
   }
 }
