@@ -652,7 +652,7 @@ To prevent this from happening, feel free to try again with another Apple ID to 
     
     func register(_ device: ALTDevice, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTDevice, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchDevices(for: team, types: .iphone, session: session) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, types: .all, session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
