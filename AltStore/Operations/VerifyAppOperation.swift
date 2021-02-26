@@ -24,7 +24,7 @@ enum VerificationError: ALTLocalizedError
         }
     }
     
-    var errorFailure: String? {
+    var failure: String? {
         return String(format: NSLocalizedString("“%@” could not be installed.", comment: ""), app.name)
     }
     

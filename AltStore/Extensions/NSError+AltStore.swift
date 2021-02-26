@@ -46,7 +46,7 @@ extension NSError
 
 protocol ALTLocalizedError: LocalizedError, CustomNSError
 {
-    var errorFailure: String? { get }
+    var failure: String? { get }
 }
 
 extension ALTLocalizedError
@@ -54,7 +54,7 @@ extension ALTLocalizedError
     var errorUserInfo: [String : Any] {
         let userInfo = [NSLocalizedDescriptionKey: self.errorDescription,
                         NSLocalizedFailureReasonErrorKey: self.failureReason,
-                        NSLocalizedFailureErrorKey: self.errorFailure].compactMapValues { $0 }
+                        NSLocalizedFailureErrorKey: self.failure].compactMapValues { $0 }
         return userInfo
     }
 }
