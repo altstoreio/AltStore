@@ -49,7 +49,7 @@ class ToastView: RSTToastView
     convenience init(error: Error)
     {
         var error = error as NSError
-        var underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError
+        var underlyingError = error.underlyingError
         
         var preferredDuration: TimeInterval?
         
@@ -59,7 +59,7 @@ class ToastView: RSTToastView
         {
             // Treat underlyingError as the primary error.
             
-            error = unwrappedUnderlyingError
+            error = unwrappedUnderlyingError as NSError
             underlyingError = nil
             
             preferredDuration = .longToastViewDuration

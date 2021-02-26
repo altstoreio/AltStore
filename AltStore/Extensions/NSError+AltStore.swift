@@ -44,17 +44,49 @@ extension NSError
     }
 }
 
+extension Error
+{
+    var underlyingError: Error? {
+        let underlyingError = (self as NSError).userInfo[NSUnderlyingErrorKey] as? Error
+        return underlyingError
+    }
+}
+
 protocol ALTLocalizedError: LocalizedError, CustomNSError
 {
     var failure: String? { get }
+    
+    var underlyingError: Error? { get }
 }
 
 extension ALTLocalizedError
 {
     var errorUserInfo: [String : Any] {
-        let userInfo = [NSLocalizedDescriptionKey: self.errorDescription,
-                        NSLocalizedFailureReasonErrorKey: self.failureReason,
-                        NSLocalizedFailureErrorKey: self.failure].compactMapValues { $0 }
+        let userInfo = ([
+            NSLocalizedDescriptionKey: self.errorDescription,
+            NSLocalizedFailureReasonErrorKey: self.failureReason,
+            NSLocalizedFailureErrorKey: self.failure,
+            NSUnderlyingErrorKey: self.underlyingError
+        ] as [String: Any?]).compactMapValues { $0 }
         return userInfo
     }
+    
+    var underlyingError: Error? {
+        // Error's default implementation calls errorUserInfo,
+        // but ALTLocalizedError.errorUserInfo calls underlyingError.
+        // Return nil to prevent infinite recursion.
+        return nil
+    }
+    
+    var errorDescription: String? {
+        guard let errorFailure = self.failure else { return (self.underlyingError as NSError?)?.localizedDescription }
+        guard let failureReason = self.failureReason else { return errorFailure }
+        
+        let errorDescription = errorFailure + " " + failureReason
+        return errorDescription
+    }
+    
+    var failureReason: String? { (self.underlyingError as NSError?)?.localizedFailureReason ?? (self.underlyingError as NSError?)?.localizedDescription }
+    var recoverySuggestion: String? { (self.underlyingError as NSError?)?.localizedRecoverySuggestion }
+    var helpAnchor: String? { (self.underlyingError as NSError?)?.helpAnchor }
 }
