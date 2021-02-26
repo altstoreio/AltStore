@@ -80,8 +80,6 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
                 
                 guard let application = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
                 
-                guard ProcessInfo.processInfo.isOperatingSystemAtLeast(application.minimumiOSVersion) else { throw OperationError.iOSVersionNotSupported(application) }
-                
                 try FileManager.default.copyItem(at: appBundleURL, to: self.destinationURL, shouldReplace: true)
                 
                 if self.context.bundleIdentifier == StoreApp.dolphinAppID, self.context.bundleIdentifier != application.bundleIdentifier
