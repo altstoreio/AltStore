@@ -25,22 +25,30 @@ public extension Bundle
 
 public extension Bundle
 {
-    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
-    
     var infoPlistURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("Info.plist")
         return infoPlistURL
     }
     
     var provisioningProfileURL: URL {
-        let infoPlistURL = self.bundleURL.appendingPathComponent("embedded.mobileprovision")
-        return infoPlistURL
+        let provisioningProfileURL = self.bundleURL.appendingPathComponent("embedded.mobileprovision")
+        return provisioningProfileURL
     }
     
     var certificateURL: URL {
-        let infoPlistURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
-        return infoPlistURL
+        let certificateURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
+        return certificateURL
     }
+    
+    var altstorePlistURL: URL {
+        let altstorePlistURL = self.bundleURL.appendingPathComponent("AltStore.plist")
+        return altstorePlistURL
+    }
+}
+
+public extension Bundle
+{
+    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
     
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
