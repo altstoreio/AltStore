@@ -667,12 +667,14 @@ private extension AppManager
                 case .refresh(let app):
                     // Check if backup app is installed in place of real app.
                     let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                    if app.certificateSerialNumber != group.context.certificate?.serialNumber || uti != nil || app.needsResign
+
+                    if app.certificateSerialNumber != group.context.certificate?.serialNumber || uti != nil || app.needsResign || (UIDevice.current.isJailbroken && !UserDefaults.standard.localServerSupportsRefreshing)
                     {
                         // Resign app instead of just refreshing profiles because either:
                         // * Refreshing using different certificate
                         // * Backup app is still installed
                         // * App explicitly needs resigning
+                        // * Device is jailbroken and on iOS 14.0 or later (b/c refreshing with provisioning profiles is broken)
                         
                         let installProgress = self._install(app, operation: operation, group: group) { (result) in
                             self.finish(operation, result: result, group: group, progress: progress)
