@@ -1403,12 +1403,26 @@ private extension AppManager
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
+        // Reference to previous serial operation in context used to enforce FIFO,
+        // even if the operations become ready in a different order than submitted.
+        var previousSerialOperation: Foundation.Operation? = context?.operations.allObjects.filter { self.serialOperationQueue.operations.contains($0) }.last
+        
         for operation in operations
         {
             switch operation
             {
             case _ where requiresSerialQueue: fallthrough
-            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation: self.serialOperationQueue.addOperation(operation)
+            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation:
+                if let previousOperation = previousSerialOperation
+                {
+                    // Add dependency on previous serial operation to enforce FIFO.
+                    operation.addDependency(previousOperation)
+                }
+                
+                self.serialOperationQueue.addOperation(operation)
+                
+                previousSerialOperation = operation
+                
             default: self.operationQueue.addOperation(operation)
             }
             
