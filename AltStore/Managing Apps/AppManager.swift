@@ -667,12 +667,17 @@ private extension AppManager
                 case .refresh(let app):
                     // Check if backup app is installed in place of real app.
                     let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                    if app.certificateSerialNumber != group.context.certificate?.serialNumber || uti != nil || app.needsResign
+
+                    if app.certificateSerialNumber != group.context.certificate?.serialNumber ||
+                        uti != nil ||
+                        app.needsResign ||
+                        (group.context.server?.connectionType == .local && !UserDefaults.standard.localServerSupportsRefreshing)
                     {
                         // Resign app instead of just refreshing profiles because either:
                         // * Refreshing using different certificate
                         // * Backup app is still installed
                         // * App explicitly needs resigning
+                        // * Device is jailbroken and using AltDaemon on iOS 14.0 or later (b/c refreshing with provisioning profiles is broken)
                         
                         let installProgress = self._install(app, operation: operation, group: group) { (result) in
                             self.finish(operation, result: result, group: group, progress: progress)
@@ -1398,12 +1403,26 @@ private extension AppManager
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
+        // Reference to previous serial operation in context used to enforce FIFO,
+        // even if the operations become ready in a different order than submitted.
+        var previousSerialOperation: Foundation.Operation? = context?.operations.allObjects.filter { self.serialOperationQueue.operations.contains($0) }.last
+        
         for operation in operations
         {
             switch operation
             {
             case _ where requiresSerialQueue: fallthrough
-            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation: self.serialOperationQueue.addOperation(operation)
+            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation:
+                if let previousOperation = previousSerialOperation
+                {
+                    // Add dependency on previous serial operation to enforce FIFO.
+                    operation.addDependency(previousOperation)
+                }
+                
+                self.serialOperationQueue.addOperation(operation)
+                
+                previousSerialOperation = operation
+                
             default: self.operationQueue.addOperation(operation)
             }
             
