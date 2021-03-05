@@ -16,9 +16,9 @@ import LaunchAtLogin
 #if STAGING
 private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
 #elseif BETA
-private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore-beta.ipa")!
+private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore-beta.ipa")!
 #else
-private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
+private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore.ipa")!
 #endif
 
 @NSApplicationMain
