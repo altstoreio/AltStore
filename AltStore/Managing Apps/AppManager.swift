@@ -1403,9 +1403,9 @@ private extension AppManager
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
-        // Reference to previous serial operation in context used to enforce FIFO,
-        // even if the operations become ready in a different order than submitted.
-        var previousSerialOperation: Foundation.Operation? = context?.operations.allObjects.filter { self.serialOperationQueue.operations.contains($0) }.last
+        // Find "Install AltStore" operation if it already exists in `context`
+        // so we can ensure it runs after any additional serial operations in `operations`.
+        let installAltStoreOperation = context?.operations.allObjects.lazy.compactMap { $0 as? InstallAppOperation }.first { $0.context.bundleIdentifier == StoreApp.altstoreAppID }
         
         for operation in operations
         {
@@ -1413,15 +1413,19 @@ private extension AppManager
             {
             case _ where requiresSerialQueue: fallthrough
             case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation:
-                if let previousOperation = previousSerialOperation
+                if let installAltStoreOperation = operation as? InstallAppOperation, installAltStoreOperation.context.bundleIdentifier == StoreApp.altstoreAppID
                 {
-                    // Add dependency on previous serial operation to enforce FIFO.
-                    operation.addDependency(previousOperation)
+                    // Add dependencies on previous serial operations in `context` to ensure re-installing AltStore goes last.
+                    let previousSerialOperations = context?.operations.allObjects.filter { self.serialOperationQueue.operations.contains($0) }
+                    previousSerialOperations?.forEach { installAltStoreOperation.addDependency($0) }
+                }
+                else if let installAltStoreOperation = installAltStoreOperation
+                {
+                    // Re-installing AltStore should _always_ be the last serial operation in `context`.
+                    installAltStoreOperation.addDependency(operation)
                 }
                 
                 self.serialOperationQueue.addOperation(operation)
-                
-                previousSerialOperation = operation
                 
             default: self.operationQueue.addOperation(operation)
             }
