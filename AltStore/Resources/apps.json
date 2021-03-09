@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4.4b",
-      "versionDate": "2021-03-01T14:30:00-06:00",
-      "versionDescription": "• Fixes apps not launching on iOS 14.5*\n• Fixes \"This device is already registered with this team\" error*\n• Fixes AltDaemon untrusting apps after refresh on iOS 14\n\n* Requires reinstalling AltStore with latest AltServer beta from Patreon",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_4_b.ipa",
+      "version": "1.4.5b",
+      "versionDate": "2021-03-09T14:30:00-06:00",
+      "versionDescription": "• Fixes (de-)activating apps\n• Fixes potential crash after failing to activate an app",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_5_b.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4789109,
+      "size": 4789874,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "NeHf7QSo-dVexWRxDF2JJwxZZ4fzkrHJO9sFJprsLko"
+    "patreonAccessToken": "ZNpQ7TIHU5Ut2ytH4oIhW6bBJPcX-1VxLQS7TiE80F0"
   }
 }
