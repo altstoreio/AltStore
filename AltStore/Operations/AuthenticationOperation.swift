@@ -453,23 +453,6 @@ private extension AuthenticationOperation
                     }
                 }
             }
-
-//            if let team = teams.first(where: { $0.type == .individual })
-//            {
-//                return completionHandler(.success(team))
-//            }
-//            else if let team = teams.first(where: { $0.type == .free })
-//            {
-//                return completionHandler(.success(team))
-//            }
-//            else if let team = teams.first
-//            {
-//                return completionHandler(.success(team))
-//            }
-//            else
-//            {
-//                return completionHandler(.failure(AuthenticationError.noTeam))
-//            }
         }
 
         ALTAppleAPI.shared.fetchTeams(for: account, session: session) { (teams, error) in
