@@ -2694,7 +2694,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 49;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2727,7 +2727,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
 				MARKETING_VERSION = 1.5b3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
@@ -2747,7 +2747,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 49;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2780,7 +2780,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
 				MARKETING_VERSION = 1.5b3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
@@ -2869,14 +2869,14 @@
 				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				INFOPLIST_FILE = AltBackup/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltBackup;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltBackup;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2889,14 +2889,14 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_ENTITLEMENTS = AltBackup/AltBackup.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				INFOPLIST_FILE = AltBackup/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltBackup;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltBackup;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2924,7 +2924,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = NO;
@@ -2955,7 +2955,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = NO;
@@ -2976,7 +2976,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2988,7 +2988,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -3009,7 +3009,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3021,7 +3021,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -3043,7 +3043,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/iossimulator",
@@ -3056,7 +3056,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3076,7 +3076,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/AltSign/Dependencies/OpenSSL/Frameworks/iossimulator",
@@ -3089,7 +3089,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -3235,7 +3235,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				INFOPLIST_FILE = AltStore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3243,7 +3243,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.4.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
@@ -3263,7 +3263,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				INFOPLIST_FILE = AltStore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3271,7 +3271,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.4.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
@@ -3291,7 +3291,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = AltXPC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3300,7 +3300,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltXPC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltXPC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3320,7 +3320,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = JL5AWEB2E6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = AltXPC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3329,7 +3329,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltXPC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.megarushing.AltXPC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
