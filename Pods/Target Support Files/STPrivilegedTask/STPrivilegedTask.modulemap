@@ -1,6 +1,0 @@
-framework module STPrivilegedTask {
-  umbrella header "STPrivilegedTask-umbrella.h"
-
-  export *
-  module * { export * }
-}
