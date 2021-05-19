@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3a8",
-      "versionDate": "2021-02-10T12:30:00-06:00",
-      "versionDescription": "The next console for Delta is here: this update adds initial support for playing Sega Genesis games!\n\nALSO, RTC is fixed\n\nKNOWN ISSUES\n• Controller skin is just a modified SNES controller skin for now.\n• Cheat codes are not yet supported.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/delta/1_3_a8.ipa",
+      "version": "1.3a9",
+      "versionDate": "2021-03-11T15:00:00-06:00",
+      "versionDescription": "v1.3 ALPHA RELEASE CANDIDATE\n\nIMPROVEMENTS\n• Updates portrait controller skin with bigger buttons\n• Updates Licenses screen to include melonDS and Genesis Plus GX\n• Supports custom game artwork with transparent backgrounds\n\nBUG FIXES\n• Fixes custom artwork appearing incorrectly rotated\n• Fixes game artwork not updating when choosing from Files\n• Fixes crash when playing DS games and another app is using the microphone\n• Fixes some erroneous sync errors",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/sources/alpha/delta/1_3_a9.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 21223536,
+      "size": 19728572,
       "permissions": [
         {
           "type": "photos",
@@ -70,7 +70,7 @@
       "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
       "tintColor": "EC008C",
       "size": 462771,
-      "beta": true,
+      "beta": false,
       "permissions": [
         {
           "type": "background-audio",
@@ -97,6 +97,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "IOWAA1iug80jdx9B44sG9f0l_nnzqzse7_cIvOg6Hdk"
+    "patreonAccessToken": "ZNpQ7TIHU5Ut2ytH4oIhW6bBJPcX-1VxLQS7TiE80F0"
   }
 }
