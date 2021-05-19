@@ -206,7 +206,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         }
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -544,7 +544,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     };
     
     /* Find Device */
-    if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
     {
         return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -621,7 +621,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         };
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -709,7 +709,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         };
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -995,7 +995,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     idevice_connection_t connection = NULL;
     
     /* Find Device */
-    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, IDEVICE_LOOKUP_USBMUX) != IDEVICE_E_SUCCESS)
     {
         return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -1030,7 +1030,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     np_client_t client = NULL;
     
     /* Find Device */
-    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, IDEVICE_LOOKUP_USBMUX) != IDEVICE_E_SUCCESS)
     {
         return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -1078,8 +1078,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     NSMutableSet *connectedDevices = [NSMutableSet set];
     
     int count = 0;
-    char **udids = NULL;
-    if (idevice_get_device_list(&udids, &count) < 0)
+    idevice_info_t *devices = NULL;
+    
+    if (idevice_get_device_list_extended(&devices, &count) < 0)
     {
         fprintf(stderr, "ERROR: Unable to retrieve device list!\n");
         return @[];
@@ -1087,17 +1088,46 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     
     for (int i = 0; i < count; i++)
     {
-        char *udid = udids[i];
+        idevice_info_t device_info = devices[i];
+        char *udid = device_info->udid;
         
         idevice_t device = NULL;
+        lockdownd_client_t client = NULL;
+        
+        char *device_name = NULL;
+        char *device_type_string = NULL;
+        
+        plist_t device_type_plist = NULL;
+        
+        void (^cleanUp)(void) = ^{
+            if (device_type_plist) {
+                plist_free(device_type_plist);
+            }
+            
+            if (device_type_string) {
+                free(device_type_string);
+            }
+            
+            if (device_name) {
+                free(device_name);
+            }
+            
+            if (client) {
+                lockdownd_client_free(client);
+            }
+            
+            if (device) {
+                idevice_free(device);
+            }
+        };
         
         if (includingNetworkDevices)
         {
-            idevice_new(&device, udid);
+            idevice_new_with_options(&device, udid, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX));
         }
         else
         {
-            idevice_new_ignore_network(&device, udid);
+            idevice_new_with_options(&device, udid, IDEVICE_LOOKUP_USBMUX);
         }
         
         if (!device)
@@ -1105,44 +1135,34 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             continue;
         }
         
-        lockdownd_client_t client = NULL;
         int result = lockdownd_client_new(device, &client, "altserver");
         if (result != LOCKDOWN_E_SUCCESS)
         {
             fprintf(stderr, "ERROR: Connecting to device %s failed! (%d)\n", udid, result);
             
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
         
-        char *device_name = NULL;
         if (lockdownd_get_device_name(client, &device_name) != LOCKDOWN_E_SUCCESS || device_name == NULL)
         {
             fprintf(stderr, "ERROR: Could not get device name!\n");
             
-            lockdownd_client_free(client);
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
         
-        plist_t device_type_plist = NULL;
         if (lockdownd_get_value(client, NULL, "ProductType", &device_type_plist) != LOCKDOWN_E_SUCCESS)
         {
             fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
             
-            lockdownd_client_free(client);
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
         
-        ALTDeviceType deviceType = ALTDeviceTypeiPhone;
-        
-        char *device_type_string = NULL;
         plist_get_string_val(device_type_plist, &device_type_string);
         
+        ALTDeviceType deviceType = ALTDeviceTypeiPhone;
         if ([@(device_type_string) hasPrefix:@"iPhone"])
         {
             deviceType = ALTDeviceTypeiPhone;
@@ -1159,14 +1179,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         {
             fprintf(stderr, "ERROR: Unknown device type %s for %s!\n", device_type_string, device_name);
             
-            lockdownd_client_free(client);
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
-        
-        lockdownd_client_free(client);
-        idevice_free(device);
         
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
@@ -1174,13 +1189,10 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:deviceType];
         [connectedDevices addObject:altDevice];
         
-        if (device_name != NULL)
-        {
-            free(device_name);
-        }
+        cleanUp();
     }
     
-    idevice_device_list_free(udids);
+    idevice_device_list_extended_free(devices);
     
     return connectedDevices.allObjects;
 }
