@@ -119,6 +119,7 @@
 		BF45884B2298D55000BD7491 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4588492298D55000BD7491 /* thread.h */; };
 		BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4588872298DD3F00BD7491 /* libxml2.tbd */; };
 		BF4B78FE24B3D1DB008AB4AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */; };
+		BF541C0B25E5A5FA00CD46B2 /* FileManager+URLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF541C0A25E5A5FA00CD46B2 /* FileManager+URLs.swift */; };
 		BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */; };
 		BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */; };
 		BF58047E246A28F7008AE704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF58047D246A28F7008AE704 /* AppDelegate.swift */; };
@@ -211,6 +212,7 @@
 		BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4C22DD16DE008935CF /* PillButton.swift */; };
 		BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172823C56042001B5953 /* ServerConnection.swift */; };
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
+		BFAD67A325E0854500D4C4D1 /* DeveloperDiskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */; };
 		BFAECC522501B0A400528F27 /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
 		BFAECC532501B0A400528F27 /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
 		BFAECC542501B0A400528F27 /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
@@ -562,6 +564,7 @@
 		BF4588492298D55000BD7491 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread.h; path = Dependencies/libusbmuxd/common/thread.h; sourceTree = SOURCE_ROOT; };
 		BF4588872298DD3F00BD7491 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib/libxml2.tbd; sourceTree = DEVELOPER_DIR; };
 		BF4B78FD24B3D1DB008AB4AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		BF541C0A25E5A5FA00CD46B2 /* FileManager+URLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+URLs.swift"; sourceTree = "<group>"; };
 		BF56D2AB23DF8E170006506D /* FetchAppIDsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAppIDsOperation.swift; sourceTree = "<group>"; };
 		BF56D2AE23DF9E310006506D /* AppIDsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIDsViewController.swift; sourceTree = "<group>"; };
 		BF58047B246A28F7008AE704 /* AltBackup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltBackup.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -676,6 +679,7 @@
 		BF9ABA4C22DD16DE008935CF /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
 		BFA8172823C56042001B5953 /* ServerConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConnection.swift; sourceTree = "<group>"; };
 		BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnisetteDataOperation.swift; sourceTree = "<group>"; };
+		BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperDiskManager.swift; sourceTree = "<group>"; };
 		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
 		BFB364592325985F00CD0EB1 /* FindServerOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindServerOperation.swift; sourceTree = "<group>"; };
 		BFB39B5B252BC10E00D1BE50 /* Managed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managed.swift; sourceTree = "<group>"; };
@@ -889,6 +893,7 @@
 			isa = PBXGroup;
 			children = (
 				BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */,
+				BF541C0A25E5A5FA00CD46B2 /* FileManager+URLs.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -965,6 +970,7 @@
 				BF458695229872EA00BD7491 /* Main.storyboard */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
 				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
+				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -2269,6 +2275,7 @@
 				BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */,
 				BFECAC8024FD950B0077C41F /* ConnectionManager.swift in Sources */,
 				BFECAC8324FD950B0077C41F /* NetworkConnection.swift in Sources */,
+				BF541C0B25E5A5FA00CD46B2 /* FileManager+URLs.swift in Sources */,
 				BFECAC8724FD950B0077C41F /* Bundle+AltStore.swift in Sources */,
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
 				BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */,
@@ -2287,6 +2294,7 @@
 				BF4586C52298CDB800BD7491 /* ALTDeviceManager.mm in Sources */,
 				BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */,
 				BFECAC9424FD98BA0077C41F /* NSError+ALTServerError.m in Sources */,
+				BFAD67A325E0854500D4C4D1 /* DeveloperDiskManager.swift in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
 				BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */,

@@ -12,6 +12,8 @@ import ObjectiveC
 
 private let appGroupsLock = NSLock()
 
+private let developerDiskManager = DeveloperDiskManager()
+
 enum InstallError: LocalizedError
 {
     case cancelled
@@ -32,7 +34,7 @@ enum InstallError: LocalizedError
 
 extension ALTDeviceManager
 {
-    func installApplication(at url: URL, to device: ALTDevice, appleID: String, password: String, completion: @escaping (Result<ALTApplication, Error>) -> Void)
+    func installApplication(at url: URL, to altDevice: ALTDevice, appleID: String, password: String, completion: @escaping (Result<ALTApplication, Error>) -> Void)
     {
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
@@ -60,10 +62,11 @@ extension ALTDeviceManager
                             {
                                 let team = try result.get()
                                 
-                                self.register(device, team: team, session: session) { (result) in
+                                self.register(altDevice, team: team, session: session) { (result) in
                                     do
                                     {
                                         let device = try result.get()
+                                        device.osVersion = altDevice.osVersion
                                         
                                         self.fetchCertificate(for: team, session: session) { (result) in
                                             do
@@ -75,54 +78,66 @@ extension ALTDeviceManager
                                                     // Show alert before downloading remote .ipa.
                                                     self.showInstallationAlert(appName: NSLocalizedString("AltStore", comment: ""), deviceName: device.name)
                                                 }
-                                                                                                
-                                                self.downloadApp(from: url) { (result) in
-                                                    do
+                                                
+                                                self.prepare(device) { (result) in
+                                                    switch result
                                                     {
-                                                        let fileURL = try result.get()
-                                                        
-                                                        try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-                                                        
-                                                        let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
-                                                        guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
-                                                        
-                                                        if url.isFileURL
-                                                        {
-                                                            // Show alert after "downloading" local .ipa.
-                                                            self.showInstallationAlert(appName: application.name, deviceName: device.name)
-                                                        }
-                                                        
-                                                        // Refresh anisette data to prevent session timeouts.
-                                                        AnisetteDataManager.shared.requestAnisetteData { (result) in
+                                                    case .failure(let error):
+                                                        print("Failed to install DeveloperDiskImage.dmg to \(device).", error)
+                                                        fallthrough // Continue installing app even if we couldn't install Developer disk image.
+                                                    
+                                                    case .success:
+                                                        self.downloadApp(from: url) { (result) in
                                                             do
                                                             {
-                                                                let anisetteData = try result.get()
-                                                                session.anisetteData = anisetteData
+                                                                let fileURL = try result.get()
                                                                 
-                                                                self.prepareAllProvisioningProfiles(for: application, device: device, team: team, session: session) { (result) in
+                                                                try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+                                                                
+                                                                let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
+                                                                guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+                                                                
+                                                                if url.isFileURL
+                                                                {
+                                                                    // Show alert after "downloading" local .ipa.
+                                                                    self.showInstallationAlert(appName: application.name, deviceName: device.name)
+                                                                }
+                                                                
+                                                                appName = application.name
+                                                                
+                                                                // Refresh anisette data to prevent session timeouts.
+                                                                AnisetteDataManager.shared.requestAnisetteData { (result) in
                                                                     do
                                                                     {
-                                                                        let profiles = try result.get()
+                                                                        let anisetteData = try result.get()
+                                                                        session.anisetteData = anisetteData
                                                                         
-                                                                        self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
-                                                                            finish(result.map { application }, title: "Failed to Install AltStore")
+                                                                        self.prepareAllProvisioningProfiles(for: application, device: device, team: team, session: session) { (result) in
+                                                                            do
+                                                                            {
+                                                                                let profiles = try result.get()
+                                                                                
+                                                                                self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
+                                                                                    finish(result.map { application }, title: "Failed to Install AltStore")
+                                                                                }
+                                                                            }
+                                                                            catch
+                                                                            {
+                                                                                finish(.failure(error), title: "Failed to Fetch Provisioning Profiles")
+                                                                            }
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(.failure(error), title: "Failed to Fetch Provisioning Profiles")
+                                                                        finish(.failure(error), title: "Failed to Refresh Anisette Data")
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(.failure(error), title: "Failed to Refresh Anisette Data")
+                                                                finish(.failure(error), title: "Failed to Download AltStore")
                                                             }
                                                         }
-                                                    }
-                                                    catch
-                                                    {
-                                                        finish(.failure(error), title: "Failed to Download AltStore")
                                                     }
                                                 }
                                             }
@@ -153,6 +168,35 @@ extension ALTDeviceManager
             catch
             {
                 finish(.failure(error), title: "Failed to Fetch Anisette Data")
+            }
+        }
+    }
+}
+
+extension ALTDeviceManager
+{
+    func prepare(_ device: ALTDevice, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {        
+        ALTDeviceManager.shared.isDeveloperDiskImageMounted(for: device) { (isMounted, error) in
+            switch (isMounted, error)
+            {
+            case (_, let error?): return completionHandler(.failure(error))
+            case (true, _): return completionHandler(.success(()))
+            case (false, _):
+                developerDiskManager.downloadDeveloperDisk(for: device) { (result) in
+                    switch result
+                    {
+                    case .failure(let error): completionHandler(.failure(error))
+                    case .success((let diskFileURL, let signatureFileURL)):
+                        ALTDeviceManager.shared.installDeveloperDiskImage(at: diskFileURL, signatureURL: signatureFileURL, to: device) { (success, error) in
+                            switch Result(success, error)
+                            {
+                            case .failure(let error): completionHandler(.failure(error))
+                            case .success: completionHandler(.success(()))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -270,13 +314,8 @@ private extension ALTDeviceManager
             {
                 let certificates = try Result(certificates, error).get()
                 
-                let applicationSupportDirectoryURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-                let altserverDirectoryURL = applicationSupportDirectoryURL.appendingPathComponent("com.rileytestut.AltServer")
-                let certificatesDirectoryURL = altserverDirectoryURL.appendingPathComponent("Certificates")
-                
-                try FileManager.default.createDirectory(at: certificatesDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-                
-                let certificateFileURL = certificatesDirectoryURL.appendingPathComponent(team.identifier + ".p12")
+                let certificateFileURL = FileManager.default.certificatesDirectory.appendingPathComponent(team.identifier + ".p12")
+                try FileManager.default.createDirectory(at: FileManager.default.certificatesDirectory, withIntermediateDirectories: true, attributes: nil)
                 
                 var isCancelled = false
                 
