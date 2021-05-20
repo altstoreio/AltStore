@@ -10,6 +10,7 @@
 
 #import "ALTWiredConnection+Private.h"
 #import "ALTNotificationConnection+Private.h"
+#import "ALTDebugConnection+Private.h"
 
 #import "ALTConstants.h"
 #import "NSError+ALTServerError.h"
@@ -1277,6 +1278,20 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     completionHandler(notificationConnection, nil);
 }
 
+- (void)startDebugConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTDebugConnection * _Nullable, NSError * _Nullable))completionHandler
+{
+    ALTDebugConnection *connection = [[ALTDebugConnection alloc] initWithDevice:device];
+    [connection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        if (success)
+        {
+            completionHandler(connection, nil);
+        }
+        else
+        {
+            completionHandler(nil, error);
+        }
+    }];
+}
 #pragma mark - Getters -
 
 - (NSArray<ALTDevice *> *)connectedDevices

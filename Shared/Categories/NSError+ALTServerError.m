@@ -124,6 +124,13 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             
         case ALTServerErrorAppDeletionFailed:
             return NSLocalizedString(@"An error occured while removing the app.", @"");
+            
+        case ALTServerErrorRequestedAppNotRunning:
+        {
+            NSString *appName = self.userInfo[ALTAppNameErrorKey] ?: NSLocalizedString(@"The requested app", @"");
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ is not currently running on %@.", ""), appName, deviceName];
+        }
     }
 }
 
@@ -140,6 +147,12 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             
         case ALTServerErrorMaximumFreeAppLimitReached:
             return NSLocalizedString(@"Make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");
+            
+        case ALTServerErrorRequestedAppNotRunning:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"your device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"Make sure the app is running in the foreground on %@ then try again.", @""), deviceName];
+        }
             
         default:
             return nil;

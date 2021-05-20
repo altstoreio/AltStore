@@ -46,6 +46,8 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorProfileNotFound = 15,
     
     ALTServerErrorAppDeletionFailed = 16,
+    
+    ALTServerErrorRequestedAppNotRunning = 100,
 };
 
 typedef NS_ERROR_ENUM(AltServerConnectionErrorDomain, ALTServerConnectionError)

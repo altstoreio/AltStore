@@ -11,6 +11,7 @@
 
 @class ALTWiredConnection;
 @class ALTNotificationConnection;
+@class ALTDebugConnection;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,6 +44,7 @@ extern NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification 
 /* Connections */
 - (void)startWiredConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTWiredConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
 - (void)startNotificationConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTNotificationConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
+- (void)startDebugConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTDebugConnection *_Nullable connection, NSError * _Nullable error))completionHandler;
 
 @end
 
