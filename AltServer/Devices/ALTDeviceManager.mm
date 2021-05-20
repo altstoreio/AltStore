@@ -13,6 +13,7 @@
 
 #import "ALTConstants.h"
 #import "NSError+ALTServerError.h"
+#import "NSError+libimobiledevice.h"
 
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
@@ -20,10 +21,12 @@
 #include <libimobiledevice/notification_proxy.h>
 #include <libimobiledevice/afc.h>
 #include <libimobiledevice/misagent.h>
+#include <libimobiledevice/mobile_image_mounter.h>
 
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
 void ALTDeviceManagerUpdateAppDeletionStatus(plist_t command, plist_t status, void *uuid);
 void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user_data);
+ssize_t ALTDeviceManagerUploadFile(void *buffer, size_t size, void *user_data);
 
 NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification = @"ALTDeviceManagerDeviceDidConnectNotification";
 NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALTDeviceManagerDeviceDidDisconnectNotification";
@@ -978,6 +981,219 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     return provisioningProfiles;
 }
 
+#pragma mark - Developer Disk Image -
+
+- (void)isDeveloperDiskImageMountedForDevice:(ALTDevice *)altDevice completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block mobile_image_mounter_client_t mim = NULL;
+        
+    void (^finish)(NSError *) = ^(NSError *error) {
+        if (mim) {
+            mobile_image_mounter_hangup(mim);
+            mobile_image_mounter_free(mim);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+        
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        completionHandler(error == nil, error);
+    };
+    
+    dispatch_async(self.installationQueue, ^{
+        
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                        
+        /* Connect to Mobile Image Mounter Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.mobile_image_mounter", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        mobile_image_mounter_error_t err = mobile_image_mounter_new(device, service, &mim);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        plist_t result = NULL;
+        err = mobile_image_mounter_lookup_image(mim, "Developer", &result);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        bool isMounted = false;
+                
+        plist_dict_iter it = NULL;
+        plist_dict_new_iter(result, &it);
+        
+        char* key = NULL;
+        plist_t subnode = NULL;
+        plist_dict_next_item(result, it, &key, &subnode);
+        
+        while (subnode)
+        {
+            // If the ImageSignature key in the returned plist contains a subentry the disk image is already uploaded.
+            // Hopefully this works for older iOS versions as well.
+            // (via https://github.com/Schlaubischlump/LocationSimulator/blob/fdbd93ad16be5f69111b571d71ed6151e850144b/LocationSimulator/MobileDevice/devicemount/deviceimagemounter.c)
+            plist_type type = plist_get_node_type(subnode);
+            if (strcmp(key, "ImageSignature") == 0 && PLIST_ARRAY == type)
+            {
+                isMounted = (plist_array_get_size(subnode) != 0);
+            }
+
+            free(key);
+            key = NULL;
+            
+            if (isMounted)
+            {
+                break;
+            }
+            
+            plist_dict_next_item(result, it, &key, &subnode);
+        }
+        
+        free(it);
+        
+        finish(nil);
+    });
+}
+
+- (void)installDeveloperDiskImageAtURL:(NSURL *)diskURL signatureURL:(NSURL *)signatureURL toDevice:(ALTDevice *)altDevice
+                     completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block mobile_image_mounter_client_t mim = NULL;
+        
+    void (^finish)(NSError *) = ^(NSError *error) {
+        if (mim) {
+            mobile_image_mounter_hangup(mim);
+            mobile_image_mounter_free(mim);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+        
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        completionHandler(error == nil, error);
+    };
+    
+    dispatch_async(self.installationQueue, ^{
+        
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                
+        /* Connect to Mobile Image Mounter Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.mobile_image_mounter", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                
+        mobile_image_mounter_error_t err = mobile_image_mounter_new(device, service, &mim);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+                
+        NSError *error = nil;
+        NSDictionary *diskAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:diskURL.path error:&error];
+        if (diskAttributes == nil)
+        {
+            return finish(error);
+        }
+        
+        NSDictionary *signatureAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:signatureURL.path error:&error];
+        if (signatureAttributes == nil)
+        {
+            return finish(error);
+        }
+        
+        size_t diskSize = [diskAttributes fileSize];
+        
+        NSData *signature = [[NSData alloc] initWithContentsOfURL:signatureURL options:0 error:&error];
+        if (signature == nil)
+        {
+            return finish(error);
+        }
+        
+        FILE *file = fopen(diskURL.fileSystemRepresentation, "rb");
+        err = mobile_image_mounter_upload_image(mim, "Developer", diskSize, (const char *)signature.bytes, (size_t)signature.length, ALTDeviceManagerUploadFile, file);
+        fclose(file);
+        
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        NSString *diskPath = @"/private/var/mobile/Media/PublicStaging/staging.dimage";
+
+        plist_t result = NULL;
+        err = mobile_image_mounter_mount_image(mim, diskPath.UTF8String, (const char *)signature.bytes, (size_t)signature.length, "Developer", &result);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+
+        if (result)
+        {
+            plist_free(result);
+        }
+        
+        finish(nil);
+    });
+}
+
 #pragma mark - Connections -
 
 - (void)startWiredConnectionToDevice:(ALTDevice *)altDevice completionHandler:(void (^)(ALTWiredConnection * _Nullable, NSError * _Nullable))completionHandler
@@ -1349,4 +1565,9 @@ void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user
             
         default: break;
     }
+}
+
+ssize_t ALTDeviceManagerUploadFile(void *buffer, size_t size, void *user_data)
+{
+    return fread(buffer, 1, size, (FILE*)user_data);
 }
