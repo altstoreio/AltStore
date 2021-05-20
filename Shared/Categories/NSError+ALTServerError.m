@@ -10,9 +10,13 @@
 
 NSErrorDomain const AltServerErrorDomain = @"com.rileytestut.AltServer";
 NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServer.Installation";
+NSErrorDomain const AltServerConnectionErrorDomain = @"com.rileytestut.AltServer.Connection";
 
+NSErrorUserInfoKey const ALTUnderlyingErrorDomainErrorKey = @"underlyingErrorDomain";
 NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey = @"underlyingErrorCode";
 NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdentifier";
+NSErrorUserInfoKey const ALTAppNameErrorKey = @"appName";
+NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
 
 @implementation NSError (ALTServerError)
 
@@ -23,10 +27,22 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
         {
             return [error altserver_localizedFailureReason];
         }
-        
-        if ([userInfoKey isEqualToString:NSLocalizedRecoverySuggestionErrorKey])
+        else if ([userInfoKey isEqualToString:NSLocalizedRecoverySuggestionErrorKey])
         {
             return [error altserver_localizedRecoverySuggestion];
+        }
+        
+        return nil;
+    }];
+    
+    [NSError setUserInfoValueProviderForDomain:AltServerConnectionErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
+        if ([userInfoKey isEqualToString:NSLocalizedDescriptionKey])
+        {
+            return [error altserver_connection_localizedDescription];
+        }
+        else if ([userInfoKey isEqualToString:NSLocalizedRecoverySuggestionErrorKey])
+        {
+            return [error altserver_connection_localizedRecoverySuggestion];
         }
         
         return nil;
@@ -145,6 +161,89 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
     }
     
     return localizedDescription;
+}
+
+#pragma mark - AltServerConnectionErrorDomain -
+
+- (nullable NSString *)altserver_connection_localizedDescription
+{
+    switch ((ALTServerConnectionError)self.code)
+    {
+        case ALTServerConnectionErrorUnknown:
+        {
+            NSString *underlyingErrorDomain = self.userInfo[ALTUnderlyingErrorDomainErrorKey];
+            NSString *underlyingErrorCode = self.userInfo[ALTUnderlyingErrorCodeErrorKey];
+            
+            if (underlyingErrorDomain != nil && underlyingErrorCode != nil)
+            {
+                return [NSString stringWithFormat:NSLocalizedString(@"%@ error %@.", @""), underlyingErrorDomain, underlyingErrorCode];
+            }
+            else if (underlyingErrorCode != nil)
+            {
+                return [NSString stringWithFormat:NSLocalizedString(@"Connection error code: %@", @""), underlyingErrorCode];
+            }
+            
+            return nil;
+        }
+            
+        case ALTServerConnectionErrorDeviceLocked:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"The device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ is currently locked.", @""), deviceName];
+        }
+            
+        case ALTServerConnectionErrorInvalidRequest:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"The device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ received an invalid request from AltServer.", @""), deviceName];
+        }
+            
+        case ALTServerConnectionErrorInvalidResponse:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"AltServer received an invalid response from %@.", @""), deviceName];
+        }
+            
+        case ALTServerConnectionErrorUsbmuxd:
+        {
+            return NSLocalizedString(@"There was an issue communicating with the usbmuxd daemon.", @"");
+        }
+            
+        case ALTServerConnectionErrorSSL:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"AltServer could not establish a secure connection to %@.", @""), deviceName];
+        }
+            
+        case ALTServerConnectionErrorTimedOut:
+        {
+            NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
+            return [NSString stringWithFormat:NSLocalizedString(@"AltServer's connection to %@ timed out.", @""), deviceName];
+        }
+    }
+    
+    return nil;
+}
+
+- (nullable NSString *)altserver_connection_localizedRecoverySuggestion
+{
+    switch ((ALTServerConnectionError)self.code)
+    {
+        case ALTServerConnectionErrorDeviceLocked:
+        {
+            return NSLocalizedString(@"Please unlock the device with your passcode and try again.", @"");
+        }
+            
+        case ALTServerConnectionErrorUnknown:
+        case ALTServerConnectionErrorInvalidRequest:
+        case ALTServerConnectionErrorInvalidResponse:
+        case ALTServerConnectionErrorUsbmuxd:
+        case ALTServerConnectionErrorSSL:
+        case ALTServerConnectionErrorTimedOut:
+        {
+            return nil;
+        }
+    }
 }
     
 @end

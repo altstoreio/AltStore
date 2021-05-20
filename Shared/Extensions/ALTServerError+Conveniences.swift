@@ -15,6 +15,7 @@ public extension ALTServerError
         switch error
         {
         case let error as ALTServerError: self = error
+        case let error as ALTServerConnectionError: self = ALTServerError(.connectionFailed, underlyingError: error)
         case is DecodingError: self = ALTServerError(.invalidRequest, underlyingError: error)
         case is EncodingError: self = ALTServerError(.invalidResponse, underlyingError: error)
         case let error as NSError:

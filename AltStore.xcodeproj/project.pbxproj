@@ -304,6 +304,7 @@
 		BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */; };
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
+		BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFE972E2260A8B2700D0BDAC /* NSError+libimobiledevice.mm */; };
 		BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
 		BFECAC8024FD950B0077C41F /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */; };
@@ -761,6 +762,8 @@
 		BFE60741231B07E6002B0E8E /* SettingsHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderFooterView.swift; sourceTree = "<group>"; };
 		BFE6325922A83BEB00F30809 /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationOperation.swift; sourceTree = "<group>"; };
+		BFE972E1260A8B2700D0BDAC /* NSError+libimobiledevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSError+libimobiledevice.h"; sourceTree = "<group>"; };
+		BFE972E2260A8B2700D0BDAC /* NSError+libimobiledevice.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSError+libimobiledevice.mm"; sourceTree = "<group>"; };
 		BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshAppsOperation.swift; sourceTree = "<group>"; };
 		BFF00D332501BDCF00746320 /* IntentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
@@ -965,6 +968,7 @@
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
+				BFE972E0260A8B0700D0BDAC /* Categories */,
 				BF703194229F36F6006E110F /* Resources */,
 				BF703196229F370F006E110F /* Supporting Files */,
 			);
@@ -1614,6 +1618,15 @@
 				BF6F439123644C6E00A0B879 /* RefreshAltStoreViewController.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		BFE972E0260A8B0700D0BDAC /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				BFE972E1260A8B2700D0BDAC /* NSError+libimobiledevice.h */,
+				BFE972E2260A8B2700D0BDAC /* NSError+libimobiledevice.mm */,
+			);
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		BFF00D2E2501BD4B00746320 /* Intents */ = {
@@ -2276,6 +2289,7 @@
 				BFECAC9424FD98BA0077C41F /* NSError+ALTServerError.m in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
+				BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
