@@ -1312,12 +1312,22 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         
         char *device_name = NULL;
         char *device_type_string = NULL;
+        char *device_version_string = NULL;
         
         plist_t device_type_plist = NULL;
+        plist_t device_version_plist = NULL;
         
         void (^cleanUp)(void) = ^{
+            if (device_version_plist) {
+                plist_free(device_version_plist);
+            }
+            
             if (device_type_plist) {
                 plist_free(device_type_plist);
+            }
+            
+            if (device_version_string) {
+                free(device_version_string);
             }
             
             if (device_type_string) {
@@ -1399,10 +1409,22 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             continue;
         }
         
+        if (lockdownd_get_value(client, NULL, "ProductVersion", &device_version_plist) != LOCKDOWN_E_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
+            
+            cleanUp();
+            continue;
+        }
+        
+        plist_get_string_val(device_version_plist, &device_version_string);
+        NSOperatingSystemVersion osVersion = NSOperatingSystemVersionFromString(@(device_version_string));
+        
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
         
         ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:deviceType];
+        altDevice.osVersion = osVersion;
         [connectedDevices addObject:altDevice];
         
         cleanUp();
