@@ -47,9 +47,9 @@ struct PluginVersion
                                       sha256Hash: "070e9b7e1f74e7a6474d36253ab5a3623ff93892acc9e1043c3581f2ded12200",
                                       version: "1.0")
     
-    static let v1_3 = PluginVersion(url: Bundle.main.url(forResource: "AltPlugin", withExtension: "zip")!,
-                                       sha256Hash: "6c939d6601ea9793f149e4f6dd4a154e8229a9b9cf7f4bea4a1d6bca7d433512",
-                                       version: "1.3")
+    static let v1_4 = PluginVersion(url: Bundle.main.url(forResource: "AltPlugin", withExtension: "zip")!,
+                                       sha256Hash: "0bad93932228dd8c1a53e12f6a33b7663fb1ac060bd0bd7d784bd8fe9d6ffd09",
+                                       version: "1.4")
 }
 
 class PluginManager
@@ -75,7 +75,7 @@ class PluginManager
     private var preferredVersion: PluginVersion {
         if #available(macOS 11, *)
         {
-            return .v1_3
+            return .v1_4
         }
         else
         {
