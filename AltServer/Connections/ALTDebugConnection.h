@@ -16,6 +16,7 @@ NS_SWIFT_NAME(DebugConnection)
 @property (nonatomic, copy, readonly) ALTDevice *device;
 
 - (void)enableUnsignedCodeExecutionForProcessWithName:(NSString *)processName completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
+- (void)enableUnsignedCodeExecutionForProcessWithID:(NSInteger)pid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
 
 - (void)disconnect;
 

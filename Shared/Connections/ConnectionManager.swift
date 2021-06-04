@@ -20,6 +20,8 @@ public protocol RequestHandler
                                                  completionHandler: @escaping (Result<RemoveProvisioningProfilesResponse, Error>) -> Void)
     
     func handleRemoveAppRequest(_ request: RemoveAppRequest, for connection: Connection, completionHandler: @escaping (Result<RemoveAppResponse, Error>) -> Void)
+    
+    func handleEnableUnsignedCodeExecutionRequest(_ request: EnableUnsignedCodeExecutionRequest, for connection: Connection, completionHandler: @escaping (Result<EnableUnsignedCodeExecutionResponse, Error>) -> Void)
 }
 
 public protocol ConnectionHandler: AnyObject
@@ -149,6 +151,11 @@ private extension ConnectionManager
                 
             case .success(.removeApp(let request)):
                 self.requestHandler.handleRemoveAppRequest(request, for: connection) { (result) in
+                    finish(result)
+                }
+                
+            case .success(.enableUnsignedCodeExecution(let request)):
+                self.requestHandler.handleEnableUnsignedCodeExecutionRequest(request, for: connection) { (result) in
                     finish(result)
                 }
                 

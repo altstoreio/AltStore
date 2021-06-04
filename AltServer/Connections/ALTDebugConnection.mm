@@ -97,11 +97,35 @@ char *bin2hex(const unsigned char *bin, size_t length)
 
 - (void)enableUnsignedCodeExecutionForProcessWithName:(NSString *)processName completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
 {
+    [self _enableUnsignedCodeExecutionForProcessWithName:processName pid:0 completionHandler:completionHandler];
+}
+
+- (void)enableUnsignedCodeExecutionForProcessWithID:(NSInteger)pid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+{
+    [self _enableUnsignedCodeExecutionForProcessWithName:nil pid:(int32_t)pid completionHandler:completionHandler];
+}
+
+- (void)_enableUnsignedCodeExecutionForProcessWithName:(nullable NSString *)processName pid:(int32_t)pid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+{
     dispatch_async(self.connectionQueue, ^{
-        NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"JIT could not be enabled for %@.", comment: @""), processName];
+        NSString *name = processName ?: NSLocalizedString(@"this app", @"");
+        NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"JIT could not be enabled for %@.", comment: @""), name];
         
-        NSString *encodedName = @(bin2hex((const unsigned char *)processName.UTF8String, (size_t)strlen(processName.UTF8String)));
-        NSString *attachCommand = [NSString stringWithFormat:@"vAttachName;%@", encodedName];
+        NSString *attachCommand = nil;
+        
+        if (processName)
+        {
+            NSString *encodedName = @(bin2hex((const unsigned char *)processName.UTF8String, (size_t)strlen(processName.UTF8String)));
+            attachCommand = [NSString stringWithFormat:@"vAttachName;%@", encodedName];
+        }
+        else
+        {
+            // Convert to Big-endian.
+            int32_t rawPID = CFSwapInt32HostToBig(pid);
+            
+            NSString *encodedName = @(bin2hex((const unsigned char *)&rawPID, 4));
+            attachCommand = [NSString stringWithFormat:@"vAttach;%@", encodedName];
+        }
         
         NSError *error = nil;
         if (![self sendCommand:attachCommand arguments:nil error:&error])
