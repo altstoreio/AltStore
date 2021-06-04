@@ -16,6 +16,10 @@
 #import "NSError+ALTServerError.h"
 #import "NSError+libimobiledevice.h"
 
+#import <AppKit/AppKit.h>
+#import <UserNotifications/UserNotifications.h>
+#import "AltServer-Swift.h"
+
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
 #include <libimobiledevice/installation_proxy.h>
@@ -38,7 +42,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *deletionCompletionHandlers;
 
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
+
 @property (nonatomic, readonly) dispatch_queue_t installationQueue;
+@property (nonatomic, readonly) dispatch_queue_t devicesQueue;
 
 @property (nonatomic, readonly) NSMutableSet<ALTDevice *> *cachedDevices;
 
@@ -66,7 +72,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         _deletionCompletionHandlers = [NSMutableDictionary dictionary];
         
         _installationProgress = [NSMutableDictionary dictionary];
-        _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
+        
+        _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.Installation", DISPATCH_QUEUE_SERIAL);
+        _devicesQueue = dispatch_queue_create("com.rileytestut.AltServer.Devices", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
         
         _cachedDevices = [NSMutableSet set];
     }
@@ -1192,6 +1200,113 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         }
         
         finish(nil);
+    });
+}
+
+#pragma mark - Apps -
+
+- (void)fetchInstalledAppsOnDevice:(ALTDevice *)altDevice completionHandler:(void (^)(NSSet<ALTInstalledApp *> *_Nullable installedApps, NSError *_Nullable error))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block plist_t options = NULL;
+        
+    void (^finish)(NSSet<ALTInstalledApp *> *, NSError *) = ^(NSSet<ALTInstalledApp *> *installedApps, NSError *error) {
+        if (error != nil) {
+            NSLog(@"Notification Connection Error: %@", error);
+        }
+        
+        if (options) {
+            instproxy_client_options_free(options);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+                
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        completionHandler(installedApps, error);
+    };
+    
+    // Don't use installationQueue since this operation can potentially take a very long time and will block other operations.
+    // dispatch_async(self.installationQueue, ^{
+    dispatch_async(self.devicesQueue, ^{
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        if (LOCKDOWN_E_SUCCESS != lockdownd_client_new_with_handshake(device, &client, "AltServer"))
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || !service)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        instproxy_error_t err = instproxy_client_new(device, service, &ipc);
+        if (err != INSTPROXY_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithInstallationProxyError:err device:altDevice]);
+        }
+        
+        options = instproxy_client_options_new();
+        instproxy_client_options_add(options, "ApplicationType", "User", NULL);
+        
+        plist_t plist = NULL;
+        err = instproxy_browse(ipc, options, &plist);
+        if (err != INSTPROXY_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithInstallationProxyError:err device:altDevice]);
+        }
+        
+        char *plistXML = NULL;
+        uint32_t length = 0;
+        plist_to_xml(plist, &plistXML, &length);
+        
+        NSData *plistData = [@(plistXML) dataUsingEncoding:NSUTF8StringEncoding];
+        free(plistXML);
+        plist_free(plist);
+        
+        NSError *error = nil;
+        NSArray *appDictionaries = [NSPropertyListSerialization propertyListWithData:plistData options:0 format:nil error:&error];
+        if (appDictionaries == nil)
+        {
+            return finish(nil, error);
+        }
+        
+        NSMutableSet *installedApps = [NSMutableSet set];
+        for (NSDictionary *appInfo in appDictionaries)
+        {
+            if (appInfo[@"ALTBundleIdentifier"] != nil)
+            {
+                // Only return apps installed with AltStore.
+                
+                ALTInstalledApp *installedApp = [[ALTInstalledApp alloc] initWithDictionary:appInfo];
+                if (installedApp)
+                {
+                    [installedApps addObject:installedApp];
+                }
+            }
+        }
+        
+        finish(installedApps, nil);
     });
 }
 

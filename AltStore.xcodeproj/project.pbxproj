@@ -199,6 +199,7 @@
 		BF8CAE4E248AEABA004D6CCE /* UIDevice+Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */; };
 		BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C122E659F700049BA1 /* AppContentViewController.swift */; };
 		BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F69C322E662D300049BA1 /* AppViewController.swift */; };
+		BF904DEA265DAE9A00E86C2A /* InstalledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */; };
 		BF989171250AABF4002ACF50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF989170250AABF4002ACF50 /* Assets.xcassets */; };
 		BF989177250AABF4002ACF50 /* AltWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BF98917E250AAC4F002ACF50 /* Countdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF98917C250AAC4F002ACF50 /* Countdown.swift */; };
@@ -667,6 +668,7 @@
 		BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Jailbreak.swift"; sourceTree = "<group>"; };
 		BF8F69C122E659F700049BA1 /* AppContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContentViewController.swift; sourceTree = "<group>"; };
 		BF8F69C322E662D300049BA1 /* AppViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
+		BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledApp.swift; sourceTree = "<group>"; };
 		BF989167250AABF3002ACF50 /* AltWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AltWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF989170250AABF4002ACF50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF989172250AABF4002ACF50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -978,6 +980,7 @@
 				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
 				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
 				BFF0394A25F0551600BE607D /* MenuController.swift */,
+				BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -2295,6 +2298,7 @@
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
 				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
 				BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */,
+				BF904DEA265DAE9A00E86C2A /* InstalledApp.swift in Sources */,
 				BFF435D9255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift in Sources */,
 				BF718BD523C928A300A89F2D /* ALTNotificationConnection.mm in Sources */,
 				BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */,

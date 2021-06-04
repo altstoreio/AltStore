@@ -13,6 +13,8 @@
 @class ALTNotificationConnection;
 @class ALTDebugConnection;
 
+@class ALTInstalledApp;
+
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification NS_SWIFT_NAME(deviceManagerDeviceDidConnect);
@@ -40,6 +42,9 @@ extern NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification 
                            completionHandler:(void (^)(BOOL isMounted, NSError *_Nullable error))completionHandler;
 - (void)installDeveloperDiskImageAtURL:(NSURL *)diskURL signatureURL:(NSURL *)signatureURL toDevice:(ALTDevice *)device
                      completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler;
+
+/* Apps */
+- (void)fetchInstalledAppsOnDevice:(ALTDevice *)altDevice completionHandler:(void (^)(NSSet<ALTInstalledApp *> *_Nullable installedApps, NSError *_Nullable error))completionHandler;
 
 /* Connections */
 - (void)startWiredConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTWiredConnection *_Nullable connection, NSError *_Nullable error))completionHandler;
