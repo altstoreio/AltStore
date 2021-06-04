@@ -38,10 +38,22 @@ extension ALTDeviceManager
     {
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
+        var appName = (url.isFileURL) ? url.deletingPathExtension().lastPathComponent : NSLocalizedString("AltStore", comment: "")
+        
         func finish(_ result: Result<ALTApplication, Error>, title: String = "")
         {
             DispatchQueue.main.async {
-                completion(result)
+                switch result
+                {
+                case .success(let app): completion(.success(app))
+                case .failure(var error as NSError):
+                    if error.localizedFailure == nil
+                    {
+                        error = error.withLocalizedFailure(String(format: NSLocalizedString("Could not install %@ to %@.", comment: ""), appName, altDevice.name))
+                    }
+                    
+                    completion(.failure(error))
+                }
             }
             
             try? FileManager.default.removeItem(at: destinationDirectoryURL)

@@ -75,7 +75,7 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             
         case ALTServerErrorConnectionFailed:
 #if TARGET_OS_OSX
-            return NSLocalizedString(@"Could not connect to device.", @"");
+            return NSLocalizedString(@"There was an error connecting to the device.", @"");
 #else
             return NSLocalizedString(@"Could not connect to AltServer.", @"");
 #endif
@@ -114,10 +114,10 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             return NSLocalizedString(@"Received an unknown response from AltServer.", @"");
             
         case ALTServerErrorInvalidAnisetteData:
-            return NSLocalizedString(@"Invalid anisette data.", @"");
+            return NSLocalizedString(@"The provided anisette data is invalid.", @"");
             
         case ALTServerErrorPluginNotFound:
-            return NSLocalizedString(@"Could not connect to Mail plug-in.", @"");
+            return NSLocalizedString(@"AltServer could not connect to Mail plug-in.", @"");
             
         case ALTServerErrorProfileNotFound:
             return [self profileErrorLocalizedDescriptionWithBaseDescription:NSLocalizedString(@"Could not find profile", "")];

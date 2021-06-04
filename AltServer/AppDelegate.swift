@@ -139,7 +139,7 @@ private extension AppDelegate
                 switch result
                 {
                 case .failure(let error):
-                    self.showErrorAlert(title: String(format: NSLocalizedString("JIT compilation could not be enabled for %@.", comment: ""), app.name), error: error)
+                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("JIT compilation could not be enabled for %@.", comment: ""), app.name))
                     
                 case .success:
                     let alert = NSAlert()
@@ -234,28 +234,8 @@ private extension AppDelegate
                     // Ignore
                     break
                     
-                case .failure(let error as NSError):
-                    
-                    let alert = NSAlert()
-                    alert.alertStyle = .critical
-                    alert.messageText = NSLocalizedString("Installation Failed", comment: "")
-                    
-                    if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? Error
-                    {
-                        alert.informativeText = underlyingError.localizedDescription
-                    }
-                    else if let recoverySuggestion = error.localizedRecoverySuggestion
-                    {
-                        alert.informativeText = error.localizedDescription + "\n\n" + recoverySuggestion
-                    }
-                    else
-                    {
-                        alert.informativeText = error.localizedDescription
-                    }
-                    
-                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-
-                    alert.runModal()
+                case .failure(let error):
+                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("Could not install app to %@.", comment: ""), device.name))
                 }
             }
         }
@@ -287,6 +267,67 @@ private extension AppDelegate
         {
             install()
         }
+    }
+    
+    func showErrorAlert(error: Error, localizedFailure: String)
+    {
+        let nsError = error as NSError
+        
+        let alert = NSAlert()
+        alert.alertStyle = .critical
+        alert.messageText = localizedFailure
+        
+        var messageComponents = [String]()
+        
+        if let errorFailure = nsError.localizedFailure
+        {
+            if let failureReason = nsError.localizedFailureReason
+            {
+                if nsError.localizedDescription.starts(with: errorFailure)
+                {
+                    alert.messageText = errorFailure
+                    messageComponents.append(failureReason)
+                }
+                else
+                {
+                    alert.messageText = errorFailure
+                    messageComponents.append(nsError.localizedDescription)
+                }
+            }
+            else
+            {
+                // No failure reason given.
+                
+                if nsError.localizedDescription.starts(with: errorFailure)
+                {
+                    // No need to duplicate errorFailure in both title and message.
+                    alert.messageText = localizedFailure
+                    messageComponents.append(nsError.localizedDescription)
+                }
+                else
+                {
+                    alert.messageText = errorFailure
+                    messageComponents.append(nsError.localizedDescription)
+                }
+            }
+        }
+        else
+        {
+            alert.messageText = localizedFailure
+            messageComponents.append(nsError.localizedDescription)
+        }
+        
+        if let recoverySuggestion = nsError.localizedRecoverySuggestion
+        {
+            messageComponents.append(recoverySuggestion)
+        }
+        
+        let informativeText = messageComponents.joined(separator: " ")
+        alert.informativeText = informativeText
+        
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+
+        alert.runModal()
     }
     
     @objc func toggleLaunchAtLogin(_ item: NSMenuItem)

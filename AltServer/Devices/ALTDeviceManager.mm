@@ -1126,6 +1126,11 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             idevice_free(device);
         }
         
+        if (error)
+        {
+            error = [error alt_errorWithLocalizedFailure:[NSString stringWithFormat:NSLocalizedString(@"The Developer disk image could not be installed onto %@.", @""), altDevice.name]];
+        }
+        
         completionHandler(error == nil, error);
     };
     

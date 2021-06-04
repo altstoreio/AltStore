@@ -31,6 +31,7 @@
 		BF1E312B229F474900370A3C /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3129229F474900370A3C /* RequestHandler.swift */; };
 		BF1FE358251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */; };
 		BF1FE359251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */; };
+		BF265D1925F843A000080DC9 /* NSError+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+AltStore.swift */; };
 		BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF29012E2318F6B100D88A45 /* AppBannerView.xib */; };
 		BF2901312318F7A800D88A45 /* AppBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2901302318F7A800D88A45 /* AppBannerView.swift */; };
 		BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; };
@@ -1556,7 +1557,6 @@
 			isa = PBXGroup;
 			children = (
 				BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */,
-				BF6C336124197D700034FD24 /* NSError+AltStore.swift */,
 				BF663C4E2433ED8200DAA738 /* FileManager+DirectorySize.swift */,
 				BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */,
 				BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */,
@@ -1665,6 +1665,7 @@
 				BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */,
 				BF1FE357251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift */,
 				BFF435D7255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift */,
+				BF6C336124197D700034FD24 /* NSError+AltStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2298,6 +2299,7 @@
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
 				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
 				BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */,
+				BF265D1925F843A000080DC9 /* NSError+AltStore.swift in Sources */,
 				BF904DEA265DAE9A00E86C2A /* InstalledApp.swift in Sources */,
 				BFF435D9255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift in Sources */,
 				BF718BD523C928A300A89F2D /* ALTNotificationConnection.mm in Sources */,

@@ -16,13 +16,38 @@ extension NSError
         return localizedFailure
     }
     
+    @objc(alt_errorWithLocalizedFailure:)
     func withLocalizedFailure(_ failure: String) -> NSError
     {
         var userInfo = self.userInfo
         userInfo[NSLocalizedFailureErrorKey] = failure
-        userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
-        userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
-        userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
+        
+        if let failureReason = self.localizedFailureReason
+        {
+            userInfo[NSLocalizedFailureReasonErrorKey] = failureReason
+        }
+        else if self.localizedFailure == nil && self.localizedFailureReason == nil && self.localizedDescription.contains(self.localizedErrorCode)
+        {
+            // Default localizedDescription, so replace with just the localized error code portion.
+            userInfo[NSLocalizedFailureReasonErrorKey] = "(\(self.localizedErrorCode).)"
+        }
+        else
+        {
+            userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedDescription
+        }
+        
+        if let localizedDescription = NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSLocalizedDescriptionKey) as? String
+        {
+            userInfo[NSLocalizedDescriptionKey] = localizedDescription
+        }
+        
+        // Don't accidentally remove localizedDescription from dictionary
+        // userInfo[NSLocalizedDescriptionKey] = NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSLocalizedDescriptionKey) as? String
+        
+        if let recoverySuggestion = self.localizedRecoverySuggestion
+        {
+            userInfo[NSLocalizedRecoverySuggestionErrorKey] = recoverySuggestion
+        }
         
         let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
         return error
@@ -49,6 +74,11 @@ extension Error
     var underlyingError: Error? {
         let underlyingError = (self as NSError).userInfo[NSUnderlyingErrorKey] as? Error
         return underlyingError
+    }
+    
+    var localizedErrorCode: String {
+        let localizedErrorCode = String(format: NSLocalizedString("%@ error %@", comment: ""), (self as NSError).domain, (self as NSError).code as NSNumber)
+        return localizedErrorCode
     }
 }
 
@@ -86,7 +116,7 @@ extension ALTLocalizedError
         return errorDescription
     }
     
-    var failureReason: String? { (self.underlyingError as NSError?)?.localizedFailureReason ?? (self.underlyingError as NSError?)?.localizedDescription }
+    var failureReason: String? { (self.underlyingError as NSError?)?.localizedDescription }
     var recoverySuggestion: String? { (self.underlyingError as NSError?)?.localizedRecoverySuggestion }
     var helpAnchor: String? { (self.underlyingError as NSError?)?.helpAnchor }
 }
