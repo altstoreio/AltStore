@@ -21,6 +21,8 @@ private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/alts
 private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
 #endif
 
+extension ALTDevice: MenuDisplayable {}
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -41,6 +43,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
     
+    private var connectedDevicesMenuController: MenuController<ALTDevice>!
+    private var sideloadIPAConnectedDevicesMenuController: MenuController<ALTDevice>!
+    
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         UserDefaults.standard.registerDefaults()
@@ -56,8 +61,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.statusItem = item
         
         self.appMenu.delegate = self
-        self.connectedDevicesMenu.delegate = self
-        self.sideloadIPAConnectedDevicesMenu.delegate = self
+        
+        let placeholder = NSLocalizedString("No Connected Devices", comment: "")
+        
+        self.connectedDevicesMenuController = MenuController<ALTDevice>(menu: self.connectedDevicesMenu, items: [])
+        self.connectedDevicesMenuController.placeholder = placeholder
+        self.connectedDevicesMenuController.action = { [weak self] device in
+            self?.installAltStore(to: device)
+        }
+        
+        self.sideloadIPAConnectedDevicesMenuController = MenuController<ALTDevice>(menu: self.sideloadIPAConnectedDevicesMenu, items: [])
+        self.sideloadIPAConnectedDevicesMenuController.placeholder = placeholder
+        self.sideloadIPAConnectedDevicesMenuController.action = { [weak self] device in
+            self?.sideloadIPA(to: device)
+        }
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { (success, error) in
             guard success else { return }
@@ -89,20 +106,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 private extension AppDelegate
 {
-    @objc func installAltStore(_ item: NSMenuItem)
+    @objc func installAltStore(to device: ALTDevice)
     {
-        guard let index = item.menu?.index(of: item), index != -1 else { return }
-        
-        let device = self.connectedDevices[index]
         self.installApplication(at: altstoreAppURL, to: device)
     }
     
-    @objc func sideloadIPA(_ item: NSMenuItem)
+    @objc func sideloadIPA(to device: ALTDevice)
     {
-        guard let index = item.menu?.index(of: item), index != -1 else { return }
-
-        let device = self.connectedDevices[index]
-        
         let openPanel = NSOpenPanel()
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
@@ -303,6 +313,9 @@ extension AppDelegate: NSMenuDelegate
         guard menu == self.appMenu else { return }
 
         self.connectedDevices = ALTDeviceManager.shared.availableDevices
+        
+        self.connectedDevicesMenuController.items = self.connectedDevices
+        self.sideloadIPAConnectedDevicesMenuController.items = self.connectedDevices
 
         self.launchAtLoginMenuItem.target = self
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
@@ -322,37 +335,6 @@ extension AppDelegate: NSMenuDelegate
         }
         self.installMailPluginMenuItem.target = self
         self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
-    }
-
-    func numberOfItems(in menu: NSMenu) -> Int
-    {
-        guard menu == self.connectedDevicesMenu || menu == self.sideloadIPAConnectedDevicesMenu else { return -1 }
-        
-        return self.connectedDevices.isEmpty ? 1 : self.connectedDevices.count
-    }
-    
-    func menu(_ menu: NSMenu, update item: NSMenuItem, at index: Int, shouldCancel: Bool) -> Bool
-    {
-        guard menu == self.connectedDevicesMenu || menu == self.sideloadIPAConnectedDevicesMenu else { return false }
-        
-        if self.connectedDevices.isEmpty
-        {
-            item.title = NSLocalizedString("No Connected Devices", comment: "")
-            item.isEnabled = false
-            item.target = nil
-            item.action = nil
-        }
-        else
-        {
-            let device = self.connectedDevices[index]
-            item.title = device.name
-            item.isEnabled = true
-            item.target = self
-            item.action = (menu == self.connectedDevicesMenu) ? #selector(AppDelegate.installAltStore(_:)) : #selector(AppDelegate.sideloadIPA(_:))
-            item.tag = index
-        }
-        
-        return true
     }
 }
 

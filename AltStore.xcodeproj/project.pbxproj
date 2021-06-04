@@ -332,6 +332,7 @@
 		BFF00D302501BD7D00746320 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */; };
 		BFF00D322501BDA100746320 /* BackgroundRefreshAppsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */; };
 		BFF00D342501BDCF00746320 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF00D332501BDCF00746320 /* IntentHandler.swift */; };
+		BFF0394B25F0551600BE607D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0394A25F0551600BE607D /* MenuController.swift */; };
 		BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68D23219520007A79E1 /* PatreonViewController.swift */; };
 		BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */; };
 		BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */; };
@@ -775,6 +776,7 @@
 		BFF00D2F2501BD7D00746320 /* Intents.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		BFF00D312501BDA100746320 /* BackgroundRefreshAppsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshAppsOperation.swift; sourceTree = "<group>"; };
 		BFF00D332501BDCF00746320 /* IntentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		BFF0394A25F0551600BE607D /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		BFF0B68D23219520007A79E1 /* PatreonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonViewController.swift; sourceTree = "<group>"; };
 		BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatreonComponents.swift; sourceTree = "<group>"; };
 		BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutPatreonHeaderView.xib; sourceTree = "<group>"; };
@@ -975,6 +977,7 @@
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
 				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
 				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
+				BFF0394A25F0551600BE607D /* MenuController.swift */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -2280,6 +2283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */,
+				BFF0394B25F0551600BE607D /* MenuController.swift in Sources */,
 				BFECAC8024FD950B0077C41F /* ConnectionManager.swift in Sources */,
 				BFECAC8324FD950B0077C41F /* NetworkConnection.swift in Sources */,
 				BF541C0B25E5A5FA00CD46B2 /* FileManager+URLs.swift in Sources */,

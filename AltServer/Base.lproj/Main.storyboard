@@ -93,9 +93,6 @@
                                                         </connections>
                                                     </menuItem>
                                                 </items>
-                                                <connections>
-                                                    <outlet property="delegate" destination="Voe-Tx-rLC" id="VYb-BL-Zri"/>
-                                                </connections>
                                             </menu>
                                         </menuItem>
                                         <menuItem title="Sideload .ipa" id="x0e-zI-0A2" userLabel="Install .ipa">
@@ -109,9 +106,6 @@
                                                         </connections>
                                                     </menuItem>
                                                 </items>
-                                                <connections>
-                                                    <outlet property="delegate" destination="Voe-Tx-rLC" id="N3K-su-XV6"/>
-                                                </connections>
                                             </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="1ZZ-BB-xHy"/>
