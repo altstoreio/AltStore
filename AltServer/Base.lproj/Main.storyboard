@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17503.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -62,6 +62,7 @@
                         <outlet property="authenticationAppleIDTextField" destination="zLd-d8-ghZ" id="wW5-0J-zdq"/>
                         <outlet property="authenticationPasswordTextField" destination="9rp-Vx-rvB" id="ZoC-DI-jzQ"/>
                         <outlet property="connectedDevicesMenu" destination="KJ9-WY-pW1" id="Mcv-64-iFU"/>
+                        <outlet property="enableJITMenu" destination="la4-Sa-L3C" id="YrW-hR-uA7"/>
                         <outlet property="installMailPluginMenuItem" destination="3CM-gV-X2G" id="lio-ha-z0S"/>
                         <outlet property="launchAtLoginMenuItem" destination="IyR-FQ-upe" id="Fxn-EP-hwH"/>
                         <outlet property="sideloadIPAConnectedDevicesMenu" destination="IuI-bV-fTY" id="QQw-St-HfG"/>
@@ -104,6 +105,16 @@
                                                         <connections>
                                                             <action selector="clearRecentDocuments:" target="Ady-hI-5gd" id="aUE-On-axK"/>
                                                         </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Enable JIT" id="TvL-8M-oPZ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Enable JIT" systemMenu="recentDocuments" id="la4-Sa-L3C">
+                                                <items>
+                                                    <menuItem title="No Connected Devices" id="Aya-FP-EzE">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
                                                     </menuItem>
                                                 </items>
                                             </menu>

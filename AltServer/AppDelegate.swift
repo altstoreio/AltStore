@@ -37,6 +37,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet private var appMenu: NSMenu!
     @IBOutlet private var connectedDevicesMenu: NSMenu!
     @IBOutlet private var sideloadIPAConnectedDevicesMenu: NSMenu!
+    @IBOutlet private var enableJITMenu: NSMenu!
+    
     @IBOutlet private var launchAtLoginMenuItem: NSMenuItem!
     @IBOutlet private var installMailPluginMenuItem: NSMenuItem!
     
@@ -45,6 +47,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var connectedDevicesMenuController: MenuController<ALTDevice>!
     private var sideloadIPAConnectedDevicesMenuController: MenuController<ALTDevice>!
+    private var enableJITMenuController: MenuController<ALTDevice>!
+    
+    private var _jitAppListMenuControllers = [AnyObject]()
     
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
@@ -75,6 +80,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.sideloadIPAConnectedDevicesMenuController.action = { [weak self] device in
             self?.sideloadIPA(to: device)
         }
+        
+        self.enableJITMenuController = MenuController<ALTDevice>(menu: self.enableJITMenu, items: [])
+        self.enableJITMenuController.placeholder = placeholder
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { (success, error) in
             guard success else { return }
@@ -120,6 +128,47 @@ private extension AppDelegate
         openPanel.begin { (response) in
             guard let fileURL = openPanel.url, response == .OK else { return }
             self.installApplication(at: fileURL, to: device)
+        }
+    }
+    
+    func enableJIT(for app: InstalledApp, on device: ALTDevice)
+    {
+        func finish(_ result: Result<Void, Error>)
+        {
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(let error):
+                    self.showErrorAlert(title: String(format: NSLocalizedString("JIT compilation could not be enabled for %@.", comment: ""), app.name), error: error)
+                    
+                case .success:
+                    let alert = NSAlert()
+                    alert.messageText = String(format: NSLocalizedString("Successfully enabled JIT for %@.", comment: ""), app.name)
+                    alert.informativeText = String(format: NSLocalizedString("JIT will remain enabled until you quit the app. You can now disconnect %@ from your computer.", comment: ""), device.name)
+                    alert.runModal()
+                }
+            }
+        }
+        
+        ALTDeviceManager.shared.prepare(device) { (result) in
+            switch result
+            {
+            case .failure(let error as NSError): return finish(.failure(error))
+            case .success:
+                ALTDeviceManager.shared.startDebugConnection(to: device) { (connection, error) in
+                    guard let connection = connection else {
+                        return finish(.failure(error! as NSError))
+                    }
+                    
+                    connection.enableUnsignedCodeExecutionForProcess(withName: app.executableName) { (success, error) in
+                        guard success else {
+                            return finish(.failure(error!))
+                        }
+                        
+                        finish(.success(()))
+                    }
+                }
+            }
         }
     }
     
@@ -311,11 +360,15 @@ extension AppDelegate: NSMenuDelegate
     func menuWillOpen(_ menu: NSMenu)
     {
         guard menu == self.appMenu else { return }
+        
+        // Clear any cached _jitAppListMenuControllers.
+        self._jitAppListMenuControllers.removeAll()
 
         self.connectedDevices = ALTDeviceManager.shared.availableDevices
         
         self.connectedDevicesMenuController.items = self.connectedDevices
         self.sideloadIPAConnectedDevicesMenuController.items = self.connectedDevices
+        self.enableJITMenuController.items = self.connectedDevices
 
         self.launchAtLoginMenuItem.target = self
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
@@ -335,6 +388,60 @@ extension AppDelegate: NSMenuDelegate
         }
         self.installMailPluginMenuItem.target = self
         self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
+        
+        // Need to re-set this every time menu appears so we can refresh device app list.
+        self.enableJITMenuController.submenuHandler = { [weak self] device in
+            let submenu = NSMenu(title: NSLocalizedString("Sideloaded Apps", comment: ""))
+            
+            guard let `self` = self else { return submenu }
+
+            let submenuController = MenuController<InstalledApp>(menu: submenu, items: [])
+            submenuController.placeholder = NSLocalizedString("Loading...", comment: "")
+            submenuController.action = { [weak self] (appInfo) in
+                self?.enableJIT(for: appInfo, on: device)
+            }
+            
+            // Keep strong reference
+            self._jitAppListMenuControllers.append(submenuController)
+
+            ALTDeviceManager.shared.fetchInstalledApps(on: device) { (installedApps, error) in
+                DispatchQueue.main.async {
+                    guard let installedApps = installedApps else {
+                        print("Failed to fetch installed apps from \(device).", error!)
+                        submenuController.placeholder = error?.localizedDescription
+                        return
+                    }
+                    
+                    print("Fetched \(installedApps.count) apps for \(device).")
+                    
+                    let sortedApps = installedApps.sorted { (app1, app2) in
+                        if app1.name == app2.name
+                        {
+                            return app1.bundleIdentifier < app2.bundleIdentifier
+                        }
+                        else
+                        {
+                            return app1.name < app2.name
+                        }
+                    }
+                    
+                    submenuController.items = sortedApps
+                    
+                    if submenuController.items.isEmpty
+                    {
+                        submenuController.placeholder = NSLocalizedString("No Sideloaded Apps", comment: "")
+                    }
+                }
+            }
+
+            return submenu
+        }
+    }
+    
+    func menuDidClose(_ menu: NSMenu)
+    {
+        // Clearing _jitAppListMenuControllers now prevents action handler from being called.
+        // self._jitAppListMenuControllers = []
     }
 }
 

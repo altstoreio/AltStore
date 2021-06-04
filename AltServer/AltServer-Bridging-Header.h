@@ -5,6 +5,7 @@
 #import "ALTDeviceManager.h"
 #import "ALTWiredConnection.h"
 #import "ALTNotificationConnection.h"
+#import "ALTDebugConnection.h"
 
 // Shared
 #import "ALTConstants.h"
