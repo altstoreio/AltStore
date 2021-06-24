@@ -999,6 +999,8 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     __block lockdownd_client_t client = NULL;
     __block lockdownd_service_descriptor_t service = NULL;
     __block mobile_image_mounter_client_t mim = NULL;
+    
+    __block BOOL isMounted = NO;
         
     void (^finish)(NSError *) = ^(NSError *error) {
         if (mim) {
@@ -1022,7 +1024,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             idevice_free(device);
         }
         
-        completionHandler(error == nil, error);
+        completionHandler(isMounted, error);
     };
     
     dispatch_async(self.installationQueue, ^{
@@ -1058,8 +1060,6 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
         }
         
-        bool isMounted = false;
-                
         plist_dict_iter it = NULL;
         plist_dict_new_iter(result, &it);
         
