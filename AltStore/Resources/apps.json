@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4.5b",
-      "versionDate": "2021-03-09T14:30:00-06:00",
-      "versionDescription": "• Fixes (de-)activating apps\n• Fixes potential crash after failing to activate an app",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_5_b.ipa",
+      "version": "1.4.6b",
+      "versionDate": "2021-06-14T14:30:00-07:00",
+      "versionDescription": "This update fixes sideloading apps on iOS 15.\n\n⚠️ If you have already updated to iOS 15, you must manually install this update by downloading the latest AltServer beta from Patreon and using it to re-install AltStore. You do not need to delete AltStore first.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_6_b.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4789874,
+      "size": 4788471,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -235,6 +235,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "RlvyqCxFQ7e_6cW-NFWSqjGJgiiqqyw5Ejdq2bqFu00"
+    "patreonAccessToken": "bHHK2ixBpbilNLiuRghvh-_OBkBrgkYeZ4zNzdqj9Kk"
   }
 }
