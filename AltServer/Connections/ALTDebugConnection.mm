@@ -116,7 +116,7 @@ char *bin2hex(const unsigned char *bin, size_t length)
         if (processName)
         {
             NSString *encodedName = @(bin2hex((const unsigned char *)processName.UTF8String, (size_t)strlen(processName.UTF8String)));
-            attachCommand = [NSString stringWithFormat:@"vAttachName;%@", encodedName];
+            attachCommand = [NSString stringWithFormat:@"vAttachOrWait;%@", encodedName];
         }
         else
         {
@@ -189,8 +189,9 @@ char *bin2hex(const unsigned char *bin, size_t length)
         
         return NO;
     }
-        
-    if (![self processResponse:@(response) error:error])
+    
+    NSString *rawResponse = (response != nil) ? @(response) : nil;
+    if (![self processResponse:rawResponse error:error])
     {
         return NO;
     }
@@ -200,6 +201,15 @@ char *bin2hex(const unsigned char *bin, size_t length)
 
 - (BOOL)processResponse:(NSString *)rawResponse error:(NSError **)error
 {
+    if (rawResponse == nil)
+    {
+        if (error)
+        {
+            *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorRequestedAppNotRunning userInfo:nil];
+            return NO;
+        }
+    }
+    
     if (rawResponse.length == 0 || [rawResponse isEqualToString:@"OK"])
     {
         return YES;
@@ -232,6 +242,33 @@ char *bin2hex(const unsigned char *bin, size_t length)
             // Thread Information
             
             NSLog(@"Thread stopped. Details:\n%s", response.UTF8String + 1);
+            
+            // Parse thread state to determine if app is running.
+            NSArray<NSString *> *components = [response componentsSeparatedByString:@";"];
+            if (components.count <= 1)
+            {
+                if (error)
+                {
+                    *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: response}];
+                }
+                
+                return NO;
+            }
+            
+            NSString *mainThread = components[1];
+            NSString *threadState = [[mainThread componentsSeparatedByString:@":"] lastObject];
+            
+            // If main thread state == 0, app is not running.
+            if ([threadState longLongValue] == 0)
+            {
+                if (error)
+                {
+                    *error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorRequestedAppNotRunning userInfo:nil];
+                }
+                
+                return NO;
+            }
+            
             return YES;
         }
             
