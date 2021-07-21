@@ -7,7 +7,7 @@ target 'AltStore' do
 
   # Pods for AltStore
   pod 'Nuke', '~> 7.0'
-  pod 'AppCenter', '~> 3.1.0'
+  pod 'AppCenter', '~> 4.2.0'
 
 end
 

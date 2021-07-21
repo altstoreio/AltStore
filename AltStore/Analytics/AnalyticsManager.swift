@@ -90,9 +90,9 @@ extension AnalyticsManager
 {
     func start()
     {
-        MSAppCenter.start(appCenterAppSecret, withServices:[
-            MSAnalytics.self,
-            MSCrashes.self
+        AppCenter.start(withAppSecret: appCenterAppSecret, services: [
+            Analytics.self,
+            Crashes.self
         ])
     }
     
@@ -102,6 +102,6 @@ extension AnalyticsManager
             properties[item.key.rawValue] = item.value
         }
         
-        MSAnalytics.trackEvent(event.name, withProperties: properties)
+        Analytics.trackEvent(event.name, withProperties: properties)
     }
 }

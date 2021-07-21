@@ -9,8 +9,9 @@
 /* Begin PBXAggregateTarget section */
 		A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = D0944D0DEFF9CDF0CBE6D4A41B195020 /* Build configuration list for PBXAggregateTarget "AppCenter" */;
+			buildConfigurationList = 5242D03FC5C1EAA4F817066052F80607 /* Build configuration list for PBXAggregateTarget "AppCenter" */;
 			buildPhases = (
+				AAD7D4593ED3B713FDA455F0E36487CE /* [CP] Copy XCFrameworks */,
 			);
 			dependencies = (
 			);
@@ -65,26 +66,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2EA4EDDDAEA5848C1295D67C4DDB798A /* PBXContainerItemProxy */ = {
+		3567E4665F97E6889AF0EB5590AB2976 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05327B1DB6967DBAA19D1ED734FDBD96;
+			remoteInfo = STPrivilegedTask;
+		};
+		64D630002D0AAEE7CC4BA807A38271F9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = ED77B4B88587C894E85C361023D67C53;
 			remoteInfo = Sparkle;
-		};
-		505B34BBF0BD9CE5322714B7F81FBF38 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 062A64896E847A6749F58B6BA9A931B1;
-			remoteInfo = Nuke;
-		};
-		61450B02D24261EB438DA3798764CC42 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 615C831BCE925ED486B225B87E44926D;
-			remoteInfo = KeychainAccess;
 		};
 		7AC4C92BEAB80F767E1D3BD2A6549F48 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -93,14 +87,21 @@
 			remoteGlobalIDString = A3282A5B2437E609EEB85861D7ECE717;
 			remoteInfo = AppCenter;
 		};
-		9CC77DE7F34CE47A267F06CFDB4F8140 /* PBXContainerItemProxy */ = {
+		9171572156107EE505BA2730D1360B4E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 05327B1DB6967DBAA19D1ED734FDBD96;
-			remoteInfo = STPrivilegedTask;
+			remoteGlobalIDString = 062A64896E847A6749F58B6BA9A931B1;
+			remoteInfo = Nuke;
 		};
-		CB83FFDF9C675C7BB8B5EB4436DEFC63 /* PBXContainerItemProxy */ = {
+		A603DD85ADDA29C5C939837DEF071D77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 615C831BCE925ED486B225B87E44926D;
+			remoteInfo = KeychainAccess;
+		};
+		E3407AC00A49F98BFB508824A46399C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -119,11 +120,9 @@
 		0FCE2684F80D0006CD8ED57D1127B7D6 /* SUAppcastItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUAppcastItem.h; path = Sparkle.framework/Versions/A/Headers/SUAppcastItem.h; sourceTree = "<group>"; };
 		1039F21D1F7B28216C110D5F6B8EEED3 /* STPrivilegedTask-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "STPrivilegedTask-Info.plist"; sourceTree = "<group>"; };
 		10A8A2A86D7ECFF30E4C2CA28AFEA050 /* Pods-AltStore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStore.modulemap"; sourceTree = "<group>"; };
-		11D481856836D88C3C8284C74C72CBF9 /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
 		1AC9B7CBF52BC819D06B71C0A2B8A367 /* Pods-AltStoreCore.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltStoreCore.modulemap"; sourceTree = "<group>"; };
 		1B667B4D06855E6E379D5CCFDA63534B /* ImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCache.swift; path = Sources/ImageCache.swift; sourceTree = "<group>"; };
 		1F5287A98793EB9C5CEC3668161876AF /* Pods-AltStore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltStore-umbrella.h"; sourceTree = "<group>"; };
-		22B3DAAC88B9716ED0FD20FBDEB1C64F /* AppCenterAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterAnalytics.framework; path = "AppCenter-SDK-Apple/iOS/AppCenterAnalytics.framework"; sourceTree = "<group>"; };
 		274574E44800D14033BF5E84D9A0DCEC /* ImageDecoding.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageDecoding.swift; path = Sources/ImageDecoding.swift; sourceTree = "<group>"; };
 		289DA2913B70BAC4123A36BE7B5DB854 /* ImageView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageView.swift; path = Sources/ImageView.swift; sourceTree = "<group>"; };
 		2DAD7D76FC007F48AE48F2FD15BF01BB /* Nuke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Nuke.framework; path = Nuke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,8 +132,9 @@
 		3708F938147E2EA0A2E0C4B41AC7FAFB /* Nuke-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Nuke-umbrella.h"; sourceTree = "<group>"; };
 		3B0CB9417531308D22740344089FEEFD /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
 		3DED1633B61DDB88FFF2EF9160AE78B4 /* SPUDownloaderDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUDownloaderDelegate.h; path = Sparkle.framework/Versions/A/Headers/SPUDownloaderDelegate.h; sourceTree = "<group>"; };
+		3E76193172022F9DA3BC2236D39255F4 /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
+		3EC264C0322EA7D294325E719E778C0D /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
 		403E5DC2A495655EAFFCE6EFF9F1D835 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
-		41C962B96C02BDE4AAB4BFB6B366825D /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = "AppCenter-SDK-Apple/iOS/AppCenter.framework"; sourceTree = "<group>"; };
 		477A6EFDF98B00046B4A53F8C12DE940 /* Pods-AltServer-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltServer-Info.plist"; sourceTree = "<group>"; };
 		47FD0729E1AE07F5807D70E4ABEA48F0 /* Pods-AltServer-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AltServer-umbrella.h"; sourceTree = "<group>"; };
 		49CC7623E693F5C7F50DEF8134CE6BAC /* DataLoader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataLoader.swift; path = Sources/DataLoader.swift; sourceTree = "<group>"; };
@@ -153,12 +153,13 @@
 		70F125BA30C81B0E1ED1F99CEA3389BA /* Pods-AltServer.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AltServer.modulemap"; sourceTree = "<group>"; };
 		71E0327FEA5BFACFD142FB37BC1FD0C6 /* SUErrors.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUErrors.h; path = Sparkle.framework/Versions/A/Headers/SUErrors.h; sourceTree = "<group>"; };
 		726288F5802DA2301E5D48A0D14E84B2 /* SUUpdaterDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUUpdaterDelegate.h; path = Sparkle.framework/Versions/A/Headers/SUUpdaterDelegate.h; sourceTree = "<group>"; };
+		7327F856DC1511F7F2FC7D48F0D527ED /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
 		7540408582AD7792C66E59D59C1CE8E6 /* Sparkle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Sparkle.release.xcconfig; sourceTree = "<group>"; };
 		75EF7160B8581CFF81149378273DD6A0 /* KeychainAccess-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "KeychainAccess-Info.plist"; sourceTree = "<group>"; };
+		76A8F2F82B71022E55FDEF484B6CE216 /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
 		7AC06D8ACD831E3BB90FB9DDABA13EAE /* STPrivilegedTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPrivilegedTask.release.xcconfig; sourceTree = "<group>"; };
 		7C824C7E55E5668EF6188F8482C5E2B1 /* Pods-AltStore-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AltStore-acknowledgements.markdown"; sourceTree = "<group>"; };
 		8347BD1B854FED4B2362CE4152512B4E /* Pods-AltStore-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AltStore-frameworks.sh"; sourceTree = "<group>"; };
-		83E103AA1C999B3F336343A7094912AC /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
 		8EBF5043034AFB3A6A8F28C373BF0EC0 /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltServer.framework; path = "Pods-AltServer.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9026A63464A722BDC5FABA1D5E7D6D94 /* Pods-AltStore-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AltStore-Info.plist"; sourceTree = "<group>"; };
 		9BEBBA7C80440353F3AF8ED301122C28 /* SUExport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SUExport.h; path = Sparkle.framework/Versions/A/Headers/SUExport.h; sourceTree = "<group>"; };
@@ -167,7 +168,9 @@
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A05A6067150CD1AC941487A81E57B327 /* Pods-AltServer-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AltServer-dummy.m"; sourceTree = "<group>"; };
 		A1CFC228917998470347609C970E2250 /* STPrivilegedTask.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = STPrivilegedTask.m; sourceTree = "<group>"; };
+		A369E1EAE3950C58981EBE17388E2BF9 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
 		A444C51407C51AB3AF06B6129DEC9BF4 /* Pods_AltStoreCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AltStoreCore.framework; path = "Pods-AltStoreCore.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4BCC5F27B4DCF31A5028F0902818A8F /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
 		A696D9DC947268F7CB8E503ED3D94F08 /* SPUDownloaderSession.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUDownloaderSession.h; path = Sparkle.framework/Versions/A/Headers/SPUDownloaderSession.h; sourceTree = "<group>"; };
 		A877252A18D311874262B3B2DFD173FC /* Sparkle.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Sparkle.debug.xcconfig; sourceTree = "<group>"; };
 		A8A6F643F7EF9DF00939CAD8ACD3AC04 /* Nuke.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Nuke.debug.xcconfig; sourceTree = "<group>"; };
@@ -206,7 +209,6 @@
 		F5EAE6C63FB3CBB2AD003D19B0F0F7A8 /* STPrivilegedTask-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "STPrivilegedTask-dummy.m"; sourceTree = "<group>"; };
 		F6D7232D2E51E5ED3A8B9A35A10E4147 /* Pods-AltStoreCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStoreCore.debug.xcconfig"; sourceTree = "<group>"; };
 		F7BBB22AD47C5E69FB8476205752FDAA /* SPUDownloader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SPUDownloader.h; path = Sparkle.framework/Versions/A/Headers/SPUDownloader.h; sourceTree = "<group>"; };
-		FC038632E5B347FF158FD5DA3EECDD4D /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = "AppCenter-SDK-Apple/iOS/AppCenterCrashes.framework"; sourceTree = "<group>"; };
 		FC06C26AB5F79243816DC9878A128284 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -263,16 +265,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0C662F77EC511DD2A92469CEED92FBDD /* AppCenter */ = {
+		0971F1B1E5DD3D955C00C670D51F7E78 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				7A4AE30396EC2E7C1A3ED529A2F6DABB /* Analytics */,
-				9945E901491495F6183BB940B46F8C7D /* Core */,
-				7AC5E78041B76EBBD2F7E3842E148745 /* Crashes */,
-				FEDB87B72B3D93A5C46300A3B9E7A91D /* Support Files */,
+				A3E38A6354B2256101CC3C62330F0823 /* Frameworks */,
 			);
-			name = AppCenter;
-			path = AppCenter;
+			name = Analytics;
 			sourceTree = "<group>";
 		};
 		1CB0278FF975C4E1105EC4C41689B092 /* Support Files */ = {
@@ -290,6 +288,14 @@
 			path = "../Target Support Files/KeychainAccess";
 			sourceTree = "<group>";
 		};
+		1DA1A52E4BFBED4DB804D234A44ED796 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BA92B09126EFE41671F6020596A02775 /* Frameworks */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
 		1F2756FA33ADF6C93A690B06B2893188 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -298,14 +304,6 @@
 				D9A1E15AF5ACDD9E2505B0BDD14DB108 /* Pods-AltStoreCore */,
 			);
 			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
-		2390506EC840521CF89E999BF0E844BA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				FC038632E5B347FF158FD5DA3EECDD4D /* AppCenterCrashes.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		4988D931D0AFC58813D8849F9F5EEEB3 /* Pods-AltStore */ = {
@@ -323,22 +321,6 @@
 			);
 			name = "Pods-AltStore";
 			path = "Target Support Files/Pods-AltStore";
-			sourceTree = "<group>";
-		};
-		4A64B8D34D575BA0416F29DB40BB1808 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				22B3DAAC88B9716ED0FD20FBDEB1C64F /* AppCenterAnalytics.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5182E3D9D460CED2B9832F398686EC64 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				41C962B96C02BDE4AAB4BFB6B366825D /* AppCenter.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		593D7DAC07FA8FD14F5AB883876DF3AF /* iOS */ = {
@@ -414,22 +396,6 @@
 			path = "../Target Support Files/STPrivilegedTask";
 			sourceTree = "<group>";
 		};
-		7A4AE30396EC2E7C1A3ED529A2F6DABB /* Analytics */ = {
-			isa = PBXGroup;
-			children = (
-				4A64B8D34D575BA0416F29DB40BB1808 /* Frameworks */,
-			);
-			name = Analytics;
-			sourceTree = "<group>";
-		};
-		7AC5E78041B76EBBD2F7E3842E148745 /* Crashes */ = {
-			isa = PBXGroup;
-			children = (
-				2390506EC840521CF89E999BF0E844BA /* Frameworks */,
-			);
-			name = Crashes;
-			sourceTree = "<group>";
-		};
 		84A3A17D0CF37E7B1F5A39D33A09E980 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -446,14 +412,6 @@
 			);
 			name = KeychainAccess;
 			path = KeychainAccess;
-			sourceTree = "<group>";
-		};
-		9945E901491495F6183BB940B46F8C7D /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				5182E3D9D460CED2B9832F398686EC64 /* Frameworks */,
-			);
-			name = Core;
 			sourceTree = "<group>";
 		};
 		A3CE797213FD3A029F25F79F20959332 /* Nuke */ = {
@@ -476,6 +434,14 @@
 			path = Nuke;
 			sourceTree = "<group>";
 		};
+		A3E38A6354B2256101CC3C62330F0823 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3E76193172022F9DA3BC2236D39255F4 /* AppCenterAnalytics.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A78C7CBC44986F797EC1BB49078F5A84 /* Pods-AltServer */ = {
 			isa = PBXGroup;
 			children = (
@@ -491,6 +457,25 @@
 			);
 			name = "Pods-AltServer";
 			path = "Target Support Files/Pods-AltServer";
+			sourceTree = "<group>";
+		};
+		ADD5DFADA87E4C4BD53112F50DE17F53 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				A369E1EAE3950C58981EBE17388E2BF9 /* AppCenter-xcframeworks.sh */,
+				3EC264C0322EA7D294325E719E778C0D /* AppCenter.debug.xcconfig */,
+				76A8F2F82B71022E55FDEF484B6CE216 /* AppCenter.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/AppCenter";
+			sourceTree = "<group>";
+		};
+		BA92B09126EFE41671F6020596A02775 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7327F856DC1511F7F2FC7D48F0D527ED /* AppCenter.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BDE5CABE525866F9C71E53B6CA540F6D /* STPrivilegedTask */ = {
@@ -550,6 +535,14 @@
 			path = "../Target Support Files/Sparkle";
 			sourceTree = "<group>";
 		};
+		D7DFF5FA24B2F31FCEC40F520C04276D /* Crashes */ = {
+			isa = PBXGroup;
+			children = (
+				DA94CFF017B024B7471510372C7745C7 /* Frameworks */,
+			);
+			name = Crashes;
+			sourceTree = "<group>";
+		};
 		D9A1E15AF5ACDD9E2505B0BDD14DB108 /* Pods-AltStoreCore */ = {
 			isa = PBXGroup;
 			children = (
@@ -566,26 +559,36 @@
 			path = "Target Support Files/Pods-AltStoreCore";
 			sourceTree = "<group>";
 		};
+		DA94CFF017B024B7471510372C7745C7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A4BCC5F27B4DCF31A5028F0902818A8F /* AppCenterCrashes.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E91F869B1A4DFD937480CDED6B224AC1 /* AppCenter */ = {
+			isa = PBXGroup;
+			children = (
+				0971F1B1E5DD3D955C00C670D51F7E78 /* Analytics */,
+				1DA1A52E4BFBED4DB804D234A44ED796 /* Core */,
+				D7DFF5FA24B2F31FCEC40F520C04276D /* Crashes */,
+				ADD5DFADA87E4C4BD53112F50DE17F53 /* Support Files */,
+			);
+			name = AppCenter;
+			path = AppCenter;
+			sourceTree = "<group>";
+		};
 		F0FB8585D826364405CCE3309EDB717E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0C662F77EC511DD2A92469CEED92FBDD /* AppCenter */,
+				E91F869B1A4DFD937480CDED6B224AC1 /* AppCenter */,
 				8C42D6741D3E3322387DEBA09FA29A39 /* KeychainAccess */,
 				A3CE797213FD3A029F25F79F20959332 /* Nuke */,
 				6BE188542514B1C4367A14C60F711BA1 /* Sparkle */,
 				BDE5CABE525866F9C71E53B6CA540F6D /* STPrivilegedTask */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		FEDB87B72B3D93A5C46300A3B9E7A91D /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				83E103AA1C999B3F336343A7094912AC /* AppCenter.debug.xcconfig */,
-				11D481856836D88C3C8284C74C72CBF9 /* AppCenter.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/AppCenter";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -691,7 +694,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				104A670F13CC93A9FCC856306B260F1B /* PBXTargetDependency */,
+				7C4FA8EE408E941576842BF279FB0840 /* PBXTargetDependency */,
 			);
 			name = "Pods-AltStoreCore";
 			productName = "Pods-AltStoreCore";
@@ -729,8 +732,8 @@
 			);
 			dependencies = (
 				D7A0E24FA463B3F4B572FBC9FF80618B /* PBXTargetDependency */,
-				3D57D3ACBB70D3A5F7B25BDB9966515F /* PBXTargetDependency */,
-				0741D3BDEA26B8D811967076426ED114 /* PBXTargetDependency */,
+				FFF2259EB24A6715C931248B8D877947 /* PBXTargetDependency */,
+				D10670AC0159B62AAA3308BDE653B517 /* PBXTargetDependency */,
 			);
 			name = "Pods-AltStore";
 			productName = "Pods-AltStore";
@@ -749,8 +752,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				13CC818E4B4E4E223E770AA0D7926598 /* PBXTargetDependency */,
-				F2BC063EBCB40D9989F2731257D086B2 /* PBXTargetDependency */,
+				D12D5B23C8E10F296B7C986EB29B8B0D /* PBXTargetDependency */,
+				867202E3CB62EC6FC3AD2E0BA46A74FA /* PBXTargetDependency */,
 			);
 			name = "Pods-AltServer";
 			productName = "Pods-AltServer";
@@ -854,6 +857,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Sparkle/Sparkle-copy-dsyms.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		AAD7D4593ED3B713FDA455F0E36487CE /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/AppCenter/AppCenter-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/AppCenter/AppCenter-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/AppCenter/AppCenter-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -921,29 +941,29 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0741D3BDEA26B8D811967076426ED114 /* PBXTargetDependency */ = {
+		7C4FA8EE408E941576842BF279FB0840 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KeychainAccess;
+			target = 615C831BCE925ED486B225B87E44926D /* KeychainAccess */;
+			targetProxy = E3407AC00A49F98BFB508824A46399C3 /* PBXContainerItemProxy */;
+		};
+		867202E3CB62EC6FC3AD2E0BA46A74FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Sparkle;
+			target = ED77B4B88587C894E85C361023D67C53 /* Sparkle */;
+			targetProxy = 64D630002D0AAEE7CC4BA807A38271F9 /* PBXContainerItemProxy */;
+		};
+		D10670AC0159B62AAA3308BDE653B517 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Nuke;
 			target = 062A64896E847A6749F58B6BA9A931B1 /* Nuke */;
-			targetProxy = 505B34BBF0BD9CE5322714B7F81FBF38 /* PBXContainerItemProxy */;
+			targetProxy = 9171572156107EE505BA2730D1360B4E /* PBXContainerItemProxy */;
 		};
-		104A670F13CC93A9FCC856306B260F1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = KeychainAccess;
-			target = 615C831BCE925ED486B225B87E44926D /* KeychainAccess */;
-			targetProxy = CB83FFDF9C675C7BB8B5EB4436DEFC63 /* PBXContainerItemProxy */;
-		};
-		13CC818E4B4E4E223E770AA0D7926598 /* PBXTargetDependency */ = {
+		D12D5B23C8E10F296B7C986EB29B8B0D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = STPrivilegedTask;
 			target = 05327B1DB6967DBAA19D1ED734FDBD96 /* STPrivilegedTask */;
-			targetProxy = 9CC77DE7F34CE47A267F06CFDB4F8140 /* PBXContainerItemProxy */;
-		};
-		3D57D3ACBB70D3A5F7B25BDB9966515F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = KeychainAccess;
-			target = 615C831BCE925ED486B225B87E44926D /* KeychainAccess */;
-			targetProxy = 61450B02D24261EB438DA3798764CC42 /* PBXContainerItemProxy */;
+			targetProxy = 3567E4665F97E6889AF0EB5590AB2976 /* PBXContainerItemProxy */;
 		};
 		D7A0E24FA463B3F4B572FBC9FF80618B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -951,11 +971,11 @@
 			target = A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */;
 			targetProxy = 7AC4C92BEAB80F767E1D3BD2A6549F48 /* PBXContainerItemProxy */;
 		};
-		F2BC063EBCB40D9989F2731257D086B2 /* PBXTargetDependency */ = {
+		FFF2259EB24A6715C931248B8D877947 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = Sparkle;
-			target = ED77B4B88587C894E85C361023D67C53 /* Sparkle */;
-			targetProxy = 2EA4EDDDAEA5848C1295D67C4DDB798A /* PBXContainerItemProxy */;
+			name = KeychainAccess;
+			target = 615C831BCE925ED486B225B87E44926D /* KeychainAccess */;
+			targetProxy = A603DD85ADDA29C5C939837DEF071D77 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1236,25 +1256,9 @@
 			};
 			name = Debug;
 		};
-		7C4E987198327657074EB34C2D1282C6 /* Debug */ = {
+		75015716975841C5EDFB269B50341487 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83E103AA1C999B3F336343A7094912AC /* AppCenter.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		82469784C924ACC6D9E2C596825B2E77 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11D481856836D88C3C8284C74C72CBF9 /* AppCenter.release.xcconfig */;
+			baseConfigurationReference = 76A8F2F82B71022E55FDEF484B6CE216 /* AppCenter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1599,6 +1603,22 @@
 			};
 			name = Release;
 		};
+		FEC95B7CD72F3B3708DC09E7E2EB397F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3EC264C0322EA7D294325E719E778C0D /* AppCenter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1656,20 +1676,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		5242D03FC5C1EAA4F817066052F80607 /* Build configuration list for PBXAggregateTarget "AppCenter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEC95B7CD72F3B3708DC09E7E2EB397F /* Debug */,
+				75015716975841C5EDFB269B50341487 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		54208ED19403AA500F1198EEF237E880 /* Build configuration list for PBXNativeTarget "STPrivilegedTask" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				47A867CE36294A1CAA54592349FB167B /* Debug */,
 				FA7F10435C04B6D07B3EF8C903E31A3F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D0944D0DEFF9CDF0CBE6D4A41B195020 /* Build configuration list for PBXAggregateTarget "AppCenter" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7C4E987198327657074EB34C2D1282C6 /* Debug */,
-				82469784C924ACC6D9E2C596825B2E77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
