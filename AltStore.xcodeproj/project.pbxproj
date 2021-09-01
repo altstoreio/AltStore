@@ -46,8 +46,6 @@
 		BF42345A25101C35006D1EB2 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF42345825101C1D006D1EB2 /* WidgetView.swift */; };
 		BF42345C251024B0006D1EB2 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = BF42345B251024B0006D1EB2 /* AltSign-Static */; };
 		BF42345D25102688006D1EB2 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
-		BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; };
-		BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF44EEF0246B08BA002A52F2 /* BackupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EEEF246B08BA002A52F2 /* BackupController.swift */; };
 		BF44EEF3246B3A17002A52F2 /* AltBackup.ipa in Resources */ = {isa = PBXBuildFile; fileRef = BF44EEF2246B3A17002A52F2 /* AltBackup.ipa */; };
 		BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EEFB246B4550002A52F2 /* RemoveAppOperation.swift */; };
@@ -335,6 +333,7 @@
 		BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF0B6992322D7D0007A79E1 /* UIScreen+CompactHeight.swift */; };
 		BFF615A82510042B00484D3B /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767C72489A74E0097E58C /* WirelessConnectionHandler.swift */; };
+		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -376,7 +375,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
-				BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */,
 				BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -459,7 +457,6 @@
 		BF41B805233423AE00C593A3 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		BF41B807233433C100C593A3 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		BF42345825101C1D006D1EB2 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
-		BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
 		BF44EEEF246B08BA002A52F2 /* BackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupController.swift; sourceTree = "<group>"; };
 		BF44EEF2246B3A17002A52F2 /* AltBackup.ipa */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltBackup.ipa; sourceTree = "<group>"; };
 		BF44EEFB246B4550002A52F2 /* RemoveAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppOperation.swift; sourceTree = "<group>"; };
@@ -773,9 +770,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */,
 				BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
-				BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
 				BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */,
 				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
@@ -1430,7 +1427,6 @@
 			children = (
 				BF088D322501A4FF008082D9 /* OpenSSL.xcframework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
-				BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */,
 				BF4588872298DD3F00BD7491 /* libxml2.tbd */,
 				BFD247862284BB3B00981D42 /* Roxas.framework */,
 				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
@@ -1722,6 +1718,7 @@
 			name = AltServer;
 			packageProductDependencies = (
 				BF088D352501A821008082D9 /* AltSign-Dynamic */,
+				D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */,
 			);
 			productName = AltServer;
 			productReference = BF45868D229872EA00BD7491 /* AltServer.app */;
@@ -1908,6 +1905,9 @@
 				Base,
 			);
 			mainGroup = BFD247612284B9A500981D42;
+			packageReferences = (
+				D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
+			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2063,7 +2063,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Carthage/Build/Mac/LaunchAtLogin.framework/Resources/copy-helper.sh\"\n";
+			shellScript = "\"${BUILT_PRODUCTS_DIR}/LaunchAtLogin_LaunchAtLogin.bundle/Contents/Resources/copy-helper-swiftpm.sh\"\n";
 		};
 		BF914C242383659400E713BA /* Sign Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3253,6 +3253,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		BF088D0E25019ABA008082D9 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3265,6 +3276,11 @@
 		BF42345B251024B0006D1EB2 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Static";
+		};
+		D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;
+			productName = LaunchAtLogin;
 		};
 /* End XCSwiftPackageProductDependency section */
 
