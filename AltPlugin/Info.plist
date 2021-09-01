@@ -105,6 +105,43 @@
 	<key>Supported12.0PluginCompatibilityUUIDs</key>
 	<array>
 		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.1PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.2PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.3PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.4PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.5PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.6PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.7PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.8PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+	</array>
+	<key>Supported12.9PluginCompatibilityUUIDs</key>
+	<array>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
 	</array>
 </dict>
 </plist>
