@@ -190,6 +190,11 @@ private extension ResignAppOperation
                         // The embedded certificate + certificate identifier are already in app bundle, no need to update them.
                     }
                 }
+                else if infoDictionary.keys.contains(Bundle.Info.deviceID), let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String
+                {
+                    // There is an ALTDeviceID entry, so assume the app is using AltKit and replace it with the device's UDID.
+                    additionalValues[Bundle.Info.deviceID] = udid
+                }
                 
                 let iconScale = Int(UIScreen.main.scale)
                 
