@@ -188,6 +188,13 @@ class AppViewController: UIViewController
         
         self.contentViewController = segue.destination as? AppContentViewController
         self.contentViewController.app = self.app
+        
+        if #available(iOS 15, *)
+        {
+            // Fix navigation bar + tab bar appearance on iOS 15.
+            self.setContentScrollView(self.contentViewController.tableView)
+            self.navigationItem.scrollEdgeAppearance = self.navigationController?.navigationBar.standardAppearance
+        }
     }
     
     override func viewDidLayoutSubviews()
