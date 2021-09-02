@@ -445,12 +445,14 @@ public struct EnableUnsignedCodeExecutionRequest: ServerMessageProtocol
     public var identifier = "EnableUnsignedCodeExecutionRequest"
     
     public var udid: String
-    public var processID: Int
+    public var processID: Int?
+    public var processName: String?
 
-    public init(udid: String, processID: Int)
+    public init(udid: String, processID: Int? = nil, processName: String? = nil)
     {
         self.udid = udid
         self.processID = processID
+        self.processName = processName
     }
 }
 

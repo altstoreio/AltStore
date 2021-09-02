@@ -155,20 +155,34 @@ struct ServerRequestHandler: RequestHandler
             case .success:
                 ALTDeviceManager.shared.startDebugConnection(to: device) { (connection, error) in
                     guard let connection = connection else { return completionHandler(.failure(error!)) }
-
-                    connection.enableUnsignedCodeExecutionForProcess(withID: request.processID) { (success, error) in
+                    
+                    func finish(success: Bool, error: Error?)
+                    {
                         if let error = error, !success
                         {
-                            print("Failed to enable unsigned code execution for process \(request.processID):", error)
+                            print("Failed to enable unsigned code execution for process \(request.processID?.description ?? request.processName ?? "nil"):", error)
                             completionHandler(.failure(ALTServerError(error)))
                         }
                         else
                         {
-                            print("Enabled unsigned code execution for process:", request.processID)
+                            print("Enabled unsigned code execution for process:", request.processID ?? request.processName ?? "nil")
 
                             let response = EnableUnsignedCodeExecutionResponse()
                             completionHandler(.success(response))
                         }
+                    }
+                    
+                    if let processID = request.processID
+                    {
+                        connection.enableUnsignedCodeExecutionForProcess(withID: processID, completionHandler: finish)
+                    }
+                    else if let processName = request.processName
+                    {
+                        connection.enableUnsignedCodeExecutionForProcess(withName: processName, completionHandler: finish)
+                    }
+                    else
+                    {
+                        finish(success: false, error: ALTServerError(.invalidRequest))
                     }
                 }
             }
