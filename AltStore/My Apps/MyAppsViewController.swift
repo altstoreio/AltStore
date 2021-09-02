@@ -1005,6 +1005,16 @@ private extension MyAppsViewController
 
 private extension MyAppsViewController
 {
+    func open(_ installedApp: InstalledApp)
+    {
+        UIApplication.shared.open(installedApp.openAppURL) { success in
+            guard !success else { return }
+            
+            let toastView = ToastView(error: OperationError.openAppFailed(name: installedApp.name))
+            toastView.show(in: self)
+        }
+    }
+    
     func refresh(_ installedApp: InstalledApp)
     {
         let previousProgress = AppManager.shared.refreshProgress(for: installedApp)
@@ -1523,6 +1533,12 @@ extension MyAppsViewController
     {
         var actions = [UIMenuElement]()
         
+        let openAction = UIAction(title: NSLocalizedString("Open", comment: ""), image: UIImage(systemName: "arrow.up.forward.app")) { (action) in
+            self.open(installedApp)
+        }
+        
+        let openMenu = UIMenu(title: "", options: .displayInline, children: [openAction])
+        
         let refreshAction = UIAction(title: NSLocalizedString("Refresh", comment: ""), image: UIImage(systemName: "arrow.clockwise")) { (action) in
             self.refresh(installedApp)
         }
@@ -1577,6 +1593,7 @@ extension MyAppsViewController
         
         if installedApp.isActive
         {
+            actions.append(openMenu)
             actions.append(refreshAction)
         }
         else
