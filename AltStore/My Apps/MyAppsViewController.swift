@@ -1349,6 +1349,22 @@ private extension MyAppsViewController
             }
         }
     }
+    
+    @available(iOS 14, *)
+    func enableJIT(for installedApp: InstalledApp)
+    {
+        AppManager.shared.enableJIT(for: installedApp) { result in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .success: break
+                case .failure(let error):
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
+                }
+            }
+        }
+    }
 }
 
 private extension MyAppsViewController
@@ -1555,6 +1571,11 @@ extension MyAppsViewController
             self.remove(installedApp)
         }
         
+        let jitAction = UIAction(title: NSLocalizedString("Enable JIT", comment: ""), image: UIImage(systemName: "bolt")) { (action) in
+            guard #available(iOS 14, *) else { return }
+            self.enableJIT(for: installedApp)
+        }
+        
         let backupAction = UIAction(title: NSLocalizedString("Back Up", comment: ""), image: UIImage(systemName: "doc.on.doc")) { (action) in
             self.backup(installedApp)
         }
@@ -1599,6 +1620,11 @@ extension MyAppsViewController
         else
         {
             actions.append(activateAction)
+        }
+        
+        if installedApp.isActive, #available(iOS 14, *)
+        {
+            actions.append(jitAction)
         }
         
         #if BETA

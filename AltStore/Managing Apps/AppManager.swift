@@ -23,6 +23,7 @@ extension AppManager
     static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
+    static let enableJITResultNotificationID = "altstore-enable-jit"
 }
 
 @available(iOS 13, *)
@@ -538,6 +539,28 @@ extension AppManager
         removeAppBackupOperation.addDependency(removeAppOperation)
         
         self.run([removeAppOperation, removeAppBackupOperation], context: authenticationContext)
+    }
+    
+    @available(iOS 14, *)
+    func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
+    {
+        class Context: OperationContext, EnableJITContext
+        {
+            var installedApp: InstalledApp?
+        }
+        
+        let context = Context()
+        context.installedApp = installedApp
+        
+        let findServerOperation = self.findServer(context: context) { _ in }
+        
+        let enableJITOperation = EnableJITOperation(context: context)
+        enableJITOperation.resultHandler = { (result) in
+            completionHandler(result)
+        }
+        enableJITOperation.addDependency(findServerOperation)
+        
+        self.run([enableJITOperation], context: context, requiresSerialQueue: true)
     }
     
     func installationProgress(for app: AppProtocol) -> Progress?
