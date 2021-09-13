@@ -258,8 +258,13 @@ char *bin2hex(const unsigned char *bin, size_t length)
             NSString *mainThread = components[1];
             NSString *threadState = [[mainThread componentsSeparatedByString:@":"] lastObject];
             
+            NSScanner *scanner = [NSScanner scannerWithString:threadState];
+
+            unsigned long long mainThreadState = 0;
+            [scanner scanHexLongLong:&mainThreadState];
+            
             // If main thread state == 0, app is not running.
-            if ([threadState longLongValue] == 0)
+            if (mainThreadState == 0)
             {
                 if (error)
                 {
