@@ -761,6 +761,10 @@ To prevent this from happening, feel free to try again with another Apple ID.
             
             infoDictionary[kCFBundleIdentifierKey as String] = profile.bundleIdentifier
             infoDictionary[Bundle.Info.altBundleID] = identifier
+            
+            if (infoDictionary.keys.contains(Bundle.Info.deviceID)) {
+                infoDictionary[Bundle.Info.deviceID] = device.identifier
+            }
 
             for (key, value) in additionalInfoDictionaryValues
             {
