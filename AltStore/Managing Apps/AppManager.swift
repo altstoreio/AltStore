@@ -230,6 +230,73 @@ extension AppManager
         
         return authenticationOperation
     }
+    
+    func deactivateApps(for app: ALTApplication, presentingViewController: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        guard let activeAppsLimit = UserDefaults.standard.activeAppsLimit else { return completion(.success(())) }
+        
+        DispatchQueue.main.async {
+            let activeApps = InstalledApp.fetchActiveApps(in: DatabaseManager.shared.viewContext)
+                .filter { $0.bundleIdentifier != app.bundleIdentifier } // Don't count app towards total if it matches activating app
+                .sorted { ($0.name, $0.refreshedDate) < ($1.name, $1.refreshedDate) }
+            
+            var title: String = NSLocalizedString("Cannot Activate More than 3 Apps", comment: "")
+            let message: String
+            
+            if UserDefaults.standard.activeAppLimitIncludesExtensions
+            {
+                if app.appExtensions.isEmpty
+                {
+                    message = NSLocalizedString("Non-developer Apple IDs are limited to 3 active apps and app extensions. Please choose an app to deactivate.", comment: "")
+                }
+                else
+                {
+                    title = NSLocalizedString("Cannot Activate More than 3 Apps and App Extensions", comment: "")
+                    
+                    let appExtensionText = app.appExtensions.count == 1 ? NSLocalizedString("app extension", comment: "") : NSLocalizedString("app extensions", comment: "")
+                    message = String(format: NSLocalizedString("Non-developer Apple IDs are limited to 3 active apps and app extensions, and “%@” contains %@ %@. Please choose an app to deactivate.", comment: ""), app.name, NSNumber(value: app.appExtensions.count), appExtensionText)
+                }
+            }
+            else
+            {
+                message = NSLocalizedString("Non-developer Apple IDs are limited to 3 active apps. Please choose an app to deactivate.", comment: "")
+            }
+            
+            let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
+                    
+            let availableActiveApps = max(activeAppsLimit - activeAppsCount, 0)
+            let requiredActiveSlots = UserDefaults.standard.activeAppLimitIncludesExtensions ? (1 + app.appExtensions.count) : 1
+            guard requiredActiveSlots > availableActiveApps else { return completion(.success(())) }
+            
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { (action) in
+                completion(.failure(OperationError.cancelled))
+            })
+            
+            for activeApp in activeApps where activeApp.bundleIdentifier != StoreApp.altstoreAppID
+            {
+                alertController.addAction(UIAlertAction(title: activeApp.name, style: .default) { (action) in
+                    activeApp.isActive = false
+                                    
+                    self.deactivate(activeApp, presentingViewController: presentingViewController) { (result) in
+                        switch result
+                        {
+                        case .failure(let error):
+                            activeApp.managedObjectContext?.perform {
+                                activeApp.isActive = true
+                                completion(.failure(error))
+                            }
+                            
+                        case .success:
+                            self.deactivateApps(for: app, presentingViewController: presentingViewController, completion: completion)
+                        }
+                    }
+                })
+            }
+            
+            presentingViewController.present(alertController, animated: true, completion: nil)
+        }
+    }
 }
 
 extension AppManager
@@ -770,7 +837,7 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext? = nil, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol, operation appOperation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext? = nil, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -778,7 +845,7 @@ private extension AppManager
         assert(context.authenticatedContext === group.context)
         
         context.beginInstallationHandler = { (installedApp) in
-            switch operation
+            switch appOperation
             {
             case .update where installedApp.bundleIdentifier == StoreApp.altstoreAppID:
                 // AltStore will quit before installation finishes,
@@ -843,6 +910,43 @@ private extension AppManager
         verifyOperation.addDependency(downloadOperation)
         
         
+        /* Deactivate Apps (if necessary) */
+        let deactivateAppsOperation = RSTAsyncBlockOperation { [weak self] (operation) in
+            do
+            {
+                // Only attempt to deactivate apps if we're installing a new app.
+                // We handle deactivating apps separately when activating an app.
+                guard case .install = appOperation else {
+                    operation.finish()
+                    return
+                }
+                
+                if let error = context.error
+                {
+                    throw error
+                }
+                                
+                guard let app = context.app, let presentingViewController = context.authenticatedContext.presentingViewController else { throw OperationError.invalidParameters }
+                
+                self?.deactivateApps(for: app, presentingViewController: presentingViewController) { result in
+                    switch result
+                    {
+                    case .failure(let error): group.context.error = error
+                    case .success: break
+                    }
+                    
+                    operation.finish()
+                }
+            }
+            catch
+            {
+                group.context.error = error
+                operation.finish()
+            }
+        }
+        deactivateAppsOperation.addDependency(verifyOperation)
+        
+        
         /* Refresh Anisette Data */
         let refreshAnisetteDataOperation = FetchAnisetteDataOperation(context: group.context)
         refreshAnisetteDataOperation.resultHandler = { (result) in
@@ -852,7 +956,7 @@ private extension AppManager
             case .success(let anisetteData): group.context.session?.anisetteData = anisetteData
             }
         }
-        refreshAnisetteDataOperation.addDependency(verifyOperation)
+        refreshAnisetteDataOperation.addDependency(deactivateAppsOperation)
         
         
         /* Fetch Provisioning Profiles */
@@ -921,7 +1025,7 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        let operations = [downloadOperation, verifyOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        let operations = [downloadOperation, verifyOperation, deactivateAppsOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
         self.run(operations, context: group.context)
         
