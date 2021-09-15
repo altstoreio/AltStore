@@ -1325,6 +1325,12 @@ private extension AppManager
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
+        if let error = context.error
+        {
+            completionHandler(.failure(error))
+            return progress
+        }
+        
         guard let application = ALTApplication(fileURL: app.fileURL) else {
             completionHandler(.failure(OperationError.appNotFound))
             return progress
@@ -1391,6 +1397,8 @@ private extension AppManager
                 catch
                 {
                     print(error)
+                    
+                    context.error = error
                 }
                 
                 operation.finish()
