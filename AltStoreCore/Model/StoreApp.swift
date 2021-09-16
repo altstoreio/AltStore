@@ -25,6 +25,74 @@ public extension StoreApp
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
 }
 
+@objc
+public enum Platform: UInt {
+    case ios
+    case tvos
+    case macos
+}
+
+extension Platform: Decodable {}
+
+@objc
+public final class PlatformURL: NSManagedObject, Decodable {
+    /* Properties */
+    @NSManaged public private(set) var platform: Platform
+    @NSManaged public private(set) var downloadURL: URL
+    
+    
+    private enum CodingKeys: String, CodingKey
+    {
+        case platform
+        case downloadURL
+    }
+    
+    
+    public init(from decoder: Decoder) throws
+    {
+        guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
+        
+        // Must initialize with context in order for child context saves to work correctly.
+        super.init(entity: PlatformURL.entity(), insertInto: context)
+        
+        do
+        {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.platform = try container.decode(Platform.self, forKey: .platform)
+            self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+        }
+        catch
+        {
+            if let context = self.managedObjectContext
+            {
+                context.delete(self)
+            }
+            
+            throw error
+        }
+    }
+}
+
+extension PlatformURL: Comparable {
+    public static func < (lhs: PlatformURL, rhs: PlatformURL) -> Bool {
+        return lhs.platform.rawValue < rhs.platform.rawValue
+    }
+    
+    public static func > (lhs: PlatformURL, rhs: PlatformURL) -> Bool {
+        return lhs.platform.rawValue > rhs.platform.rawValue
+    }
+    
+    public static func <= (lhs: PlatformURL, rhs: PlatformURL) -> Bool {
+        return lhs.platform.rawValue <= rhs.platform.rawValue
+    }
+    
+    public static func >= (lhs: PlatformURL, rhs: PlatformURL) -> Bool {
+        return lhs.platform.rawValue >= rhs.platform.rawValue
+    }
+}
+
+public typealias PlatformURLs = [PlatformURL]
+
 @objc(StoreApp)
 public class StoreApp: NSManagedObject, Decodable, Fetchable
 {
@@ -45,6 +113,8 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var versionDescription: String?
     
     @NSManaged public private(set) var downloadURL: URL
+    @NSManaged public private(set) var platformURLs: PlatformURLs?
+
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
     
@@ -90,6 +160,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case iconURL
         case screenshotURLs
         case downloadURL
+        case platformURLs
         case tintColor
         case subtitle
         case permissions
@@ -121,7 +192,23 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.iconURL = try container.decode(URL.self, forKey: .iconURL)
             self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
             
-            self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+            let downloadURL = try container.decodeIfPresent(URL.self, forKey: .downloadURL)
+            let platformURLs = try container.decodeIfPresent(PlatformURLs.self.self, forKey: .platformURLs)
+            if let platformURLs = platformURLs {
+                self.platformURLs = platformURLs
+                // Backwards compatibility, use the fiirst (iOS will be first since sorted that way)
+                if let first = platformURLs.sorted().first {
+                    self.downloadURL = first.downloadURL
+                } else {
+                    throw DecodingError.dataCorruptedError(forKey: .platformURLs, in: container, debugDescription: "platformURLs has no entries")
+
+                }
+                    
+            } else if let downloadURL = downloadURL {
+                self.downloadURL = downloadURL
+            } else {
+                throw DecodingError.dataCorruptedError(forKey: .downloadURL, in: container, debugDescription: "E downloadURL:String or downloadURLs:[[Platform:URL]] key required.")
+            }
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
