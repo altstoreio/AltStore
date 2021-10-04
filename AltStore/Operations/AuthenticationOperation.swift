@@ -507,7 +507,7 @@ private extension AuthenticationOperation
         
         func replaceCertificate(from certificates: [ALTCertificate])
         {
-            guard let certificate = certificates.first else { return completionHandler(.failure(AuthenticationError.noCertificate)) }
+            guard let certificate = certificates.first(where: { $0.machineName?.starts(with: "AltStore") == true }) ?? certificates.first else { return completionHandler(.failure(AuthenticationError.noCertificate)) }
             
             ALTAppleAPI.shared.revoke(certificate, for: team, session: session) { (success, error) in
                 if let error = error, !success
