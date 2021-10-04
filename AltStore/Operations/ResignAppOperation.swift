@@ -194,6 +194,7 @@ private extension ResignAppOperation
                 {
                     // There is an ALTDeviceID entry, so assume the app is using AltKit and replace it with the device's UDID.
                     additionalValues[Bundle.Info.deviceID] = udid
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.preferredServerID
                 }
                 
                 let iconScale = Int(UIScreen.main.scale)
