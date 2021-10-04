@@ -14,7 +14,7 @@ private let appGroupsLock = NSLock()
 
 private let developerDiskManager = DeveloperDiskManager()
 
-enum InstallError: LocalizedError
+enum InstallError: Int, LocalizedError, _ObjectiveCBridgeableError
 {
     case cancelled
     case noTeam
@@ -28,6 +28,20 @@ enum InstallError: LocalizedError
         case .noTeam: return "You are not a member of any developer teams."
         case .missingPrivateKey: return "The developer certificate's private key could not be found."
         case .missingCertificate: return "The developer certificate could not be found."
+        }
+    }
+    
+    init?(_bridgedNSError error: NSError)
+    {
+        guard error.domain == InstallError.cancelled._domain else { return nil }
+        
+        if let installError = InstallError(rawValue: error.code)
+        {
+            self = installError
+        }
+        else
+        {
+            return nil
         }
     }
 }
