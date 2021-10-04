@@ -1597,15 +1597,18 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         void (^completionHandler)(NSError *) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
         if (completionHandler != nil)
         {
+            NSString *localizedDescription = @(description ?: "");
+            
             if (code != 0 || name != NULL)
             {
-                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name ?: ""), @(description ?: ""));
+                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name ?: ""), localizedDescription);
                 
                 NSError *error = nil;
                 
                 if (code == 3892346913)
                 {
-                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:nil];
+                    NSDictionary *userInfo = (localizedDescription.length != 0) ? @{NSLocalizedDescriptionKey: localizedDescription} : nil;
+                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:userInfo];
                 }
                 else
                 {
@@ -1616,7 +1619,7 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
                     }
                     else
                     {
-                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description ?: "")}];
+                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: localizedDescription}];
                         error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
                     }
                 }

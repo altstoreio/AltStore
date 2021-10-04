@@ -102,7 +102,7 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             return NSLocalizedString(@"An error occured while installing the app.", @"");
             
         case ALTServerErrorMaximumFreeAppLimitReached:
-            return NSLocalizedString(@"Cannot activate more than 3 apps and app extensions.", @"");
+            return NSLocalizedString(@"Cannot activate more than 3 apps with a non-developer Apple ID.", @"");
             
         case ALTServerErrorUnsupportediOSVersion:
             return NSLocalizedString(@"Your device must be running iOS 12.2 or later to install AltStore.", @"");
@@ -146,7 +146,11 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             return NSLocalizedString(@"Make sure Mail is running and the plug-in is enabled in Mail's preferences.", @"");
             
         case ALTServerErrorMaximumFreeAppLimitReached:
-            return NSLocalizedString(@"Make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");
+#if TARGET_OS_OSX
+            return NSLocalizedString(@"Please deactivate a sideloaded app with AltStore in order to install another app.\n\nIf you're running iOS 13.5 or later, make sure 'Offload Unused Apps' is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps to prevent them from erroneously counting towards this limit.", @"");
+#else
+            return NSLocalizedString(@"Please deactivate a sideloaded app in order to install another one.\n\nIf you're running iOS 13.5 or later, make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");
+#endif
             
         case ALTServerErrorRequestedAppNotRunning:
         {

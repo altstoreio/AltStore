@@ -279,6 +279,13 @@ private extension AppDelegate
         
         var messageComponents = [String]()
         
+        let separator: String
+        switch error
+        {
+        case ALTServerError.maximumFreeAppLimitReached: separator = "\n\n"
+        default: separator = " "
+        }
+        
         if let errorFailure = nsError.localizedFailure
         {
             if let failureReason = nsError.localizedFailureReason
@@ -322,7 +329,7 @@ private extension AppDelegate
             messageComponents.append(recoverySuggestion)
         }
         
-        let informativeText = messageComponents.joined(separator: " ")
+        let informativeText = messageComponents.joined(separator: separator)
         alert.informativeText = informativeText
         
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
