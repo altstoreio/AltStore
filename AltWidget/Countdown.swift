@@ -11,15 +11,16 @@ import WidgetKit
 
 struct Countdown: View
 {
-    let startDate: Date?
-    let endDate: Date?
+    var startDate: Date?
+    var endDate: Date?
+    var currentDate: Date = Date()
     
     @Environment(\.font) private var font
     
     private var numberOfDays: Int {
         guard let date = self.endDate else { return 0 }
         
-        let numberOfDays = date.numberOfCalendarDays(since: Date())
+        let numberOfDays = date.numberOfCalendarDays(since: self.currentDate)
         return numberOfDays
     }
     
