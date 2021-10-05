@@ -85,6 +85,11 @@ struct Provider: IntentTimelineProvider
     func getTimeline(for configuration: ViewAppIntent, in context: Context, completion: @escaping (Timeline<AppEntry>) -> Void) {
         self.prepare { (result) in
             autoreleasepool {
+                let currentDate = Calendar.current.startOfDay(for: Date())
+                let nextRefreshDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate.addingTimeInterval(1 * 60 * 60 * 24)
+                
+                let timeline: Timeline<AppEntry>
+                
                 do
                 {
                     let context = try result.get()
@@ -102,46 +107,38 @@ struct Provider: IntentTimelineProvider
                         installedApp = InstalledApp.fetchAltStore(in: context)
                     }
                     
-                    let snapshot = installedApp.map(AppSnapshot.init)
-                    
-                    var entries: [AppEntry] = []
+                    guard let snapshot = installedApp.map(AppSnapshot.init) else { throw ALTError(.invalidApp) }
 
                     // Generate a timeline consisting of one entry per day.
-                                    
-                    if let snapshot = snapshot
+                    let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
+                    if numberOfDays >= 0
                     {
-                        let currentDate = Calendar.current.startOfDay(for: Date())
-                        let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
+                        let entries = (0 ..< min(numberOfDays, 7)).compactMap { dayOffset -> AppEntry? in
+                            guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { return nil }
+                            
+                            let score = Float(dayOffset + 1) / Float(numberOfDays)
+                            
+                            let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
+                            return entry
+                        }
                         
-                        if numberOfDays >= 0
-                        {
-                            for dayOffset in 0 ..< min(numberOfDays, 7)
-                            {
-                                guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
-                                
-                                let score = Float(dayOffset + 1) / Float(numberOfDays)
-                                let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
-                                entries.append(entry)
-                            }
-                        }
-                        else
-                        {
-                            let entry = AppEntry(date: Date(), app: snapshot)
-                            entries.append(entry)
-                        }
+                        timeline = Timeline(entries: entries, policy: .atEnd)
                     }
-
-                    let timeline = Timeline(entries: entries, policy: .atEnd)
-                    completion(timeline)
+                    else
+                    {
+                        let entry = AppEntry(date: Date(), app: snapshot)
+                        timeline = Timeline(entries: [entry], policy: .after(nextRefreshDate))
+                    }
                 }
                 catch
                 {
                     print("Error preparing widget timeline:", error)
                     
                     let entry = AppEntry(date: Date(), app: nil)
-                    let timeline = Timeline(entries: [entry], policy: .atEnd)
-                    completion(timeline)
+                    timeline = Timeline(entries: [entry], policy: .after(nextRefreshDate))
                 }
+                
+                completion(timeline)
             }
         }
     }
