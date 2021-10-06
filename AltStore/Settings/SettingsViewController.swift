@@ -109,6 +109,11 @@ class SettingsViewController: UITableViewController
         self.tableView.contentInset.bottom = 20
         
         self.update()
+        
+        if #available(iOS 15, *), let appearance = self.tabBarController?.tabBar.standardAppearance
+        {
+            self.navigationController?.tabBarItem.scrollEdgeAppearance = appearance
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)
