@@ -27,7 +27,7 @@ struct WidgetView : View
                     Group {
                         VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 5) {
-                                let imageHeight = geometry.size.height * 0.45
+                                let imageHeight = geometry.size.height * 0.4
                                 
                                 Image(uiImage: app.icon ?? UIImage())
                                     .resizable()
