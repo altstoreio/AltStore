@@ -2961,7 +2961,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AltPlugin/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Mail/Bundles/";
@@ -2973,7 +2973,7 @@
 					"/Users/Riley/Library/Developer/Xcode/DerivedData/AltStore-bhqnkrahfutztzeudtxhcxccgtlo/Build/Products/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2992,7 +2992,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AltPlugin/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Mail/Bundles/";
@@ -3004,7 +3004,7 @@
 					"/Users/Riley/Library/Developer/Xcode/DerivedData/AltStore-bhqnkrahfutztzeudtxhcxccgtlo/Build/Products/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltPlugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
