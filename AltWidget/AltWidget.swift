@@ -102,33 +102,43 @@ struct Provider: IntentTimelineProvider
                         installedApp = InstalledApp.fetchAltStore(in: context)
                     }
                     
-                    let snapshot = installedApp.map(AppSnapshot.init)
+                    guard let snapshot = installedApp.map(AppSnapshot.init) else { throw ALTError(.invalidApp) }
                     
-                    var entries: [AppEntry] = []
-
+                    let currentDate = Calendar.current.startOfDay(for: Date())
+                    let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
+                    
                     // Generate a timeline consisting of one entry per day.
-                                    
-                    if let snapshot = snapshot
+                    var entries: [AppEntry] = []
+                    
+                    switch numberOfDays
                     {
-                        let currentDate = Calendar.current.startOfDay(for: Date())
-                        let numberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: currentDate)
+                    case ..<0:
+                        let entry = AppEntry(date: currentDate, relevance: TimelineEntryRelevance(score: 0.0), app: snapshot)
+                        entries.append(entry)
                         
-                        if numberOfDays >= 0
-                        {
-                            for dayOffset in 0 ..< min(numberOfDays, 7)
-                            {
-                                guard let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) else { continue }
-                                
-                                let score = Float(dayOffset + 1) / Float(numberOfDays)
-                                let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
-                                entries.append(entry)
-                            }
+                    case 0:
+                        let entry = AppEntry(date: currentDate, relevance: TimelineEntryRelevance(score: 1.0), app: snapshot)
+                        entries.append(entry)
+                        
+                    default:
+                        // To reduce memory consumption, we only generate entries for the next week. This includes:
+                        // * 1 for each day the app is valid (up to 7)
+                        // * 1 "0 days remaining"
+                        // * 1 "Expired"
+                        let numberOfEntries = min(numberOfDays, 7) + 2
+                        
+                        let appEntries = (0 ..< numberOfEntries).map { (dayOffset) -> AppEntry in
+                            let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate) ?? currentDate.addingTimeInterval(Double(dayOffset) * 60 * 60 * 24)
+                            
+                            let daysSinceRefresh = entryDate.numberOfCalendarDays(since: snapshot.refreshedDate)
+                            let totalNumberOfDays = snapshot.expirationDate.numberOfCalendarDays(since: snapshot.refreshedDate)
+                            
+                            let score = (entryDate <= snapshot.expirationDate) ? Float(daysSinceRefresh + 1) / Float(totalNumberOfDays + 1) : 0 // Expired apps have a score of 0.
+                            let entry = AppEntry(date: entryDate, relevance: TimelineEntryRelevance(score: score), app: snapshot)
+                            return entry
                         }
-                        else
-                        {
-                            let entry = AppEntry(date: Date(), app: snapshot)
-                            entries.append(entry)
-                        }
+                        
+                        entries.append(contentsOf: appEntries)
                     }
 
                     let timeline = Timeline(entries: entries, policy: .atEnd)
