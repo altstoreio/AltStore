@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.5b",
-      "versionDate": "2021-09-16T13:00:00-07:00",
-      "versionDescription": "FEATURES\n• Adds \"Enable JIT\" context menu for active apps\n• Adds \"Open\" context menu action for active apps\n• Supports sideloading apps that use AltKit (such as DolphiniOS and Provenance)\n\nIMPROVEMENTS\n• Asks you to deactivate an app first when installing a new app without any free app slots\n• Improves error message when computer date & time don't match iOS device\n\nBUG FIXES\n• Fixes incorrect navigation and tab bar appearances on iOS 15",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_b.ipa",
+      "version": "1.5b2",
+      "versionDate": "2021-10-12T13:30:00-07:00",
+      "versionDescription": "FEATURES\n• Supports iOS 15.1 beta \n\nIMPROVEMENTS\n• Improves support for apps using AltKit\n• Improves \"Sideloaded App Limit Reached\" error message\n\nBUG FIXES\n• Fixes widget displaying incorrect number of days until expiration\n• Fixes widget layout on iOS 15\n• Fixes \"Refresh All Apps\" shortcut timing out\n• Fixes Settings tab bar appearance on iOS 15",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_b2.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4763126,
+      "size": 5196657,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -235,6 +235,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "lPtOw2AlJSNcg7rhQ4Gigcia9BSg1RiqS14FyP5ZJPs"
+    "patreonAccessToken": "d4tcvXx42h-Q9nEsGu1K9SdFWsou4ts2NUzvxxiSol0"
   }
 }
