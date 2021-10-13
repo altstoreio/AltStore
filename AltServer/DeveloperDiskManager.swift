@@ -85,18 +85,27 @@ class DeveloperDiskManager
     func downloadDeveloperDisk(for device: ALTDevice, completionHandler: @escaping (Result<(URL, URL), Error>) -> Void)
     {
         let osVersion = "\(device.osVersion.majorVersion).\(device.osVersion.minorVersion)"
+        
+        let osName: String
         let osKeyPath: KeyPath<FetchURLsResponse.Disks, [String: DeveloperDiskURL]?>
         
         switch device.type
         {
-        case .iphone, .ipad: osKeyPath = \FetchURLsResponse.Disks.iOS
-        case .appletv: osKeyPath = \FetchURLsResponse.Disks.tvOS
+        case .iphone, .ipad:
+            osName = "iOS"
+            osKeyPath = \FetchURLsResponse.Disks.iOS
+            
+        case .appletv:
+            osName = "tvOS"
+            osKeyPath = \FetchURLsResponse.Disks.tvOS
+            
         default: return completionHandler(.failure(DeveloperDiskError.unsupportedOperatingSystem))
         }
         
         do
         {
-            let developerDiskDirectoryURL = FileManager.default.developerDisksDirectory.appendingPathComponent(osVersion)
+            let osDirectoryURL = FileManager.default.developerDisksDirectory.appendingPathComponent(osName)
+            let developerDiskDirectoryURL = osDirectoryURL.appendingPathComponent(osVersion, isDirectory: true)
             try FileManager.default.createDirectory(at: developerDiskDirectoryURL, withIntermediateDirectories: true, attributes: nil)
             
             let developerDiskURL = developerDiskDirectoryURL.appendingPathComponent("DeveloperDiskImage.dmg")
@@ -111,10 +120,6 @@ class DeveloperDiskManager
                 do
                 {
                     let (diskFileURL, signatureFileURL) = try result.get()
-                    
-                    let developerDiskDirectoryURL = FileManager.default.developerDisksDirectory.appendingPathComponent(osVersion)
-                    try FileManager.default.createDirectory(at: developerDiskDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-                    
                     try FileManager.default.copyItem(at: diskFileURL, to: developerDiskURL)
                     try FileManager.default.copyItem(at: signatureFileURL, to: developerDiskSignatureURL)
                     
