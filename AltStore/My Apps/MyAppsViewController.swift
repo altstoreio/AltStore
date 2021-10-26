@@ -1584,10 +1584,12 @@ extension MyAppsViewController
             actions.append(activateAction)
         }
         
+        #if BETA
         if installedApp.isActive, #available(iOS 14, *)
         {
             actions.append(jitAction)
         }
+        #endif
         
         #if BETA
         actions.append(changeIconMenu)
