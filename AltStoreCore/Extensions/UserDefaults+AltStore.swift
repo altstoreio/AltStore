@@ -35,6 +35,8 @@ public extension UserDefaults
     
     @NSManaged var localServerSupportsRefreshing: Bool
     
+    @NSManaged var patchedApps: [String]?
+    
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue

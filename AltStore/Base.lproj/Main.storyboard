@@ -40,6 +40,7 @@
                         <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
                         <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="4Nf-rL-P4c"/>
                         <segue destination="Qo4-72-Hmr" kind="presentation" identifier="presentSources" id="Qd6-ba-dIo"/>
+                        <segue destination="bTL-bY-9Yq" kind="presentation" identifier="finishJailbreak" id="cIc-Ta-uNk"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -608,6 +609,14 @@ World</string>
             </objects>
             <point key="canvasLocation" x="962" y="-17"/>
         </scene>
+        <!--PatchApp-->
+        <scene sceneID="vdC-wt-hvX">
+            <objects>
+                <viewControllerPlaceholder storyboardName="PatchApp" id="bTL-bY-9Yq" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NyZ-z6-R2q" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1" y="545"/>
+        </scene>
         <!--My Apps-->
         <scene sceneID="nhh-BJ-XiT">
             <objects>
@@ -1036,7 +1045,7 @@ World</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="de9-NH-aec"/>
+        <segue reference="Qd6-ba-dIo"/>
         <segue reference="cnd-KK-o60"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Primary"/>

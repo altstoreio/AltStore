@@ -498,7 +498,7 @@ extension AppViewController
     {
         guard self.app.installedApp == nil else { return }
         
-        let progress = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
+        let group = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
             do
             {
                 _ = try result.get()
@@ -522,8 +522,8 @@ extension AppViewController
             }
         }
         
-        self.bannerView.button.progress = progress
-        self.navigationBarDownloadButton.progress = progress
+        self.bannerView.button.progress = group.progress
+        self.navigationBarDownloadButton.progress = group.progress
     }
     
     func open(_ installedApp: InstalledApp)

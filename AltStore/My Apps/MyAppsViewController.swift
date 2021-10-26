@@ -861,7 +861,7 @@ private extension MyAppsViewController
                 
                 guard let application = context.application else { throw OperationError.invalidParameters }
                 
-                let progress = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                let group = AppManager.shared.install(application, presentingViewController: self) { (result) in
                     switch result
                     {
                     case .success(let installedApp): context.installedApp = installedApp
@@ -869,7 +869,7 @@ private extension MyAppsViewController
                     }
                     operation.finish()
                 }
-                installProgress.addChild(progress, withPendingUnitCount: 100)
+                installProgress.addChild(group.progress, withPendingUnitCount: 100)
             }
             catch
             {

@@ -14,13 +14,13 @@ import AltStoreCore
 @objc(SendAppOperation)
 class SendAppOperation: ResultOperation<ServerConnection>
 {
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     
     private let dispatchQueue = DispatchQueue(label: "com.altstore.SendAppOperation")
     
     private var serverConnection: ServerConnection?
     
-    init(context: AppOperationContext)
+    init(context: InstallAppOperationContext)
     {
         self.context = context
         
@@ -39,9 +39,10 @@ class SendAppOperation: ResultOperation<ServerConnection>
             return
         }
         
-        guard let app = self.context.app, let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
+        guard let resignedApp = self.context.resignedApp, let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         // self.context.resignedApp.fileURL points to the app bundle, but we want the .ipa.
+        let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.url)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
         
         // Connect to server.
