@@ -137,9 +137,9 @@ private extension PatchAppOperation
             let osVersion = ProcessInfo.processInfo.operatingSystemVersion
             switch (osVersion.majorVersion, osVersion.minorVersion)
             {
-            #if DEBUG
-            case (14, 3): fallthrough
-            #endif
+            case (14, 3):
+                return OTAUpdate(url: URL(string: "https://updates.cdn-apple.com/2020WinterFCS/patches/001-87330/99E29969-F6B6-422A-B946-70DE2E2D73BE/com_apple_MobileAsset_SoftwareUpdate/67f9e42f5e57a20e0a87eaf81b69dd2a61311d3f.zip")!,
+                                   archivePath: "AssetData/payloadv2/payload.042")
                 
             case (14, 4):
                 return OTAUpdate(url: URL(string: "https://updates.cdn-apple.com/2021WinterFCS/patches/001-98606/43AF99A1-F286-43B1-A101-F9F856EA395A/com_apple_MobileAsset_SoftwareUpdate/c4985c32c344beb7b49c61919b4e39d1fd336c90.zip")!,
