@@ -161,13 +161,20 @@ private extension PatchAppOperation
             try FileManager.default.createDirectory(at: self.patchDirectory, withIntermediateDirectories: true, attributes: nil)
             
             let archiveURL = self.patchDirectory.appendingPathComponent("ota.archive")
-            archiveURL.withUnsafeFileSystemRepresentation { archivePath in
-                let fz = fragmentzip_open((update.url.absoluteString as NSString).utf8String!)
+            try archiveURL.withUnsafeFileSystemRepresentation { archivePath in
+                guard let fz = fragmentzip_open((update.url.absoluteString as NSString).utf8String!) else {
+                    throw URLError(.cannotConnectToHost, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("The connection failed because a connection cannot be made to the host.", comment: ""),
+                                                                                NSURLErrorKey: update.url])
+                }
                 defer { fragmentzip_close(fz) }
                 
                 self.progress.becomeCurrent(withPendingUnitCount: 100)
-                fragmentzip_download_file(fz, update.archivePath, archivePath!, ALTFragmentZipCallback)
-                self.progress.resignCurrent()
+                defer { self.progress.resignCurrent() }
+                
+                guard fragmentzip_download_file(fz, update.archivePath, archivePath!, ALTFragmentZipCallback) == 0 else {
+                    throw URLError(.networkConnectionLost, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("The connection failed because the network connection was lost.", comment: ""),
+                                                                                NSURLErrorKey: update.url])
+                }
             }
             
             print("Downloaded OTA archive.")
