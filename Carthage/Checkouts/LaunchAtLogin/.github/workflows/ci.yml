@@ -1,0 +1,10 @@
+name: CI
+on:
+  - push
+  - pull_request
+jobs:
+  build:
+    runs-on: macOS-11
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift build

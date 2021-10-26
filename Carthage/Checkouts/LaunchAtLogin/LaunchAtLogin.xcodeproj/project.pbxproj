@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D92CFD2224C5D909005B91BE /* Toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92CFD2124C5D909005B91BE /* Toggle.swift */; };
+		D9EF7E1D24BCF9E300A1E9AA /* copy-helper-swiftpm.sh in Resources */ = {isa = PBXBuildFile; fileRef = D9EF7E1C24BCF9E300A1E9AA /* copy-helper-swiftpm.sh */; };
 		E32E9B681EB87D7B000FEEE9 /* LaunchAtLogin.h in Headers */ = {isa = PBXBuildFile; fileRef = E32E9B661EB87D7B000FEEE9 /* LaunchAtLogin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E32E9B6F1EB87DC5000FEEE9 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32E9B6E1EB87DC5000FEEE9 /* LaunchAtLogin.swift */; };
 		E32E9B771EB87EA3000FEEE9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32E9B761EB87EA3000FEEE9 /* main.swift */; };
@@ -26,6 +28,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D92CFD2124C5D909005B91BE /* Toggle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Toggle.swift; sourceTree = "<group>"; usesTabs = 1; };
+		D9EF7E1C24BCF9E300A1E9AA /* copy-helper-swiftpm.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "copy-helper-swiftpm.sh"; sourceTree = "<group>"; };
 		E32E9B631EB87D7B000FEEE9 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LaunchAtLogin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E32E9B661EB87D7B000FEEE9 /* LaunchAtLogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LaunchAtLogin.h; sourceTree = "<group>"; usesTabs = 1; };
 		E32E9B671EB87D7B000FEEE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -34,7 +38,7 @@
 		E32E9B761EB87EA3000FEEE9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = main.swift; sourceTree = "<group>"; usesTabs = 1; };
 		E32E9B7F1EB87EA3000FEEE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E32E9B921EB889AE000FEEE9 /* copy-helper.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; lineEnding = 0; path = "copy-helper.sh"; sourceTree = "<group>"; usesTabs = 1; };
-		E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LaunchAtLogin.entitlements; path = LaunchAtLogin/LaunchAtLogin.entitlements; sourceTree = "<group>"; };
+		E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LaunchAtLogin.entitlements; sourceTree = "<group>"; };
 		E3B8C38A20C0003300272EC0 /* LaunchAtLoginHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LaunchAtLoginHelper.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,12 +60,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D9CFA59424C0FB5E005BC9E9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E32E9B651EB87D7B000FEEE9 /* LaunchAtLogin */,
+				E32E9B751EB87EA3000FEEE9 /* LaunchAtLoginHelper */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		E32E9B591EB87D7B000FEEE9 = {
 			isa = PBXGroup;
 			children = (
-				E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */,
-				E32E9B651EB87D7B000FEEE9 /* LaunchAtLogin */,
-				E32E9B751EB87EA3000FEEE9 /* LaunchAtLoginHelper */,
+				D9CFA59424C0FB5E005BC9E9 /* Sources */,
 				E32E9B641EB87D7B000FEEE9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,10 +90,13 @@
 		E32E9B651EB87D7B000FEEE9 /* LaunchAtLogin */ = {
 			isa = PBXGroup;
 			children = (
-				E32E9B6E1EB87DC5000FEEE9 /* LaunchAtLogin.swift */,
-				E32E9B661EB87D7B000FEEE9 /* LaunchAtLogin.h */,
+				D9EF7E1C24BCF9E300A1E9AA /* copy-helper-swiftpm.sh */,
 				E32E9B921EB889AE000FEEE9 /* copy-helper.sh */,
 				E32E9B671EB87D7B000FEEE9 /* Info.plist */,
+				E3A6EB57249009C3004D7101 /* LaunchAtLogin.entitlements */,
+				E32E9B661EB87D7B000FEEE9 /* LaunchAtLogin.h */,
+				E32E9B6E1EB87DC5000FEEE9 /* LaunchAtLogin.swift */,
+				D92CFD2124C5D909005B91BE /* Toggle.swift */,
 			);
 			path = LaunchAtLogin;
 			sourceTree = "<group>";
@@ -154,7 +168,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Sindre Sorhus";
 				TargetAttributes = {
 					E32E9B621EB87D7B000FEEE9 = {
@@ -176,7 +190,7 @@
 				};
 			};
 			buildConfigurationList = E32E9B5D1EB87D7B000FEEE9 /* Build configuration list for PBXProject "LaunchAtLogin" */;
-			compatibilityVersion = "Xcode 11.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -201,6 +215,7 @@
 			files = (
 				E32E9B861EB8845E000FEEE9 /* LaunchAtLoginHelper.app in Resources */,
 				E32E9B931EB889AE000FEEE9 /* copy-helper.sh in Resources */,
+				D9EF7E1D24BCF9E300A1E9AA /* copy-helper-swiftpm.sh in Resources */,
 				E3A6EB58249009C3004D7101 /* LaunchAtLogin.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E32E9B6F1EB87DC5000FEEE9 /* LaunchAtLogin.swift in Sources */,
+				D92CFD2224C5D909005B91BE /* Toggle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +283,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -330,6 +347,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -373,14 +391,14 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = LaunchAtLogin/Info.plist;
+				INFOPLIST_FILE = Sources/LaunchAtLogin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLogin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -403,14 +421,14 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = LaunchAtLogin/Info.plist;
+				INFOPLIST_FILE = Sources/LaunchAtLogin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLogin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -421,17 +439,19 @@
 		E32E9B811EB87EA3000FEEE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = LaunchAtLoginHelper/LaunchAtLoginHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/LaunchAtLoginHelper/LaunchAtLoginHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = LaunchAtLoginHelper/Info.plist;
+				INFOPLIST_FILE = Sources/LaunchAtLoginHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLoginHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -442,17 +462,19 @@
 		E32E9B821EB87EA3000FEEE9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = LaunchAtLoginHelper/LaunchAtLoginHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/LaunchAtLoginHelper/LaunchAtLoginHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = LaunchAtLoginHelper/Info.plist;
+				INFOPLIST_FILE = Sources/LaunchAtLoginHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sindresorhus.LaunchAtLoginHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
