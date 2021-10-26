@@ -795,6 +795,9 @@ private extension MyAppsViewController
                 }
                 
                 guard let fileURL = context.fileURL else { throw OperationError.invalidParameters }
+                defer {
+                    try? FileManager.default.removeItem(at: fileURL)
+                }
                 
                 try FileManager.default.createDirectory(at: unzippedAppDirectory, withIntermediateDirectories: true, attributes: nil)
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: unzippedAppDirectory)
