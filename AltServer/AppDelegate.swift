@@ -41,6 +41,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet private var launchAtLoginMenuItem: NSMenuItem!
     @IBOutlet private var installMailPluginMenuItem: NSMenuItem!
+    @IBOutlet private var installAltStoreMenuItem: NSMenuItem!
+    @IBOutlet private var sideloadAppMenuItem: NSMenuItem!
     
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
@@ -66,6 +68,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.statusItem = item
         
         self.appMenu.delegate = self
+        
+        self.sideloadAppMenuItem.keyEquivalentModifierMask = .option
+        self.sideloadAppMenuItem.isAlternate = true
         
         let placeholder = NSLocalizedString("No Connected Devices", comment: "")
         
@@ -490,6 +495,28 @@ extension AppDelegate: NSMenuDelegate
     {
         // Clearing _jitAppListMenuControllers now prevents action handler from being called.
         // self._jitAppListMenuControllers = []
+    }
+    
+    func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?)
+    {
+        guard menu == self.appMenu else { return }
+        
+        // The submenu won't update correctly if the user holds/releases
+        // the Option key while the submenu is visible.
+        // Workaround: temporarily set submenu to nil to dismiss it,
+        // which will then cause the correct submenu to appear.
+        
+        let previousItem: NSMenuItem
+        switch item
+        {
+        case self.sideloadAppMenuItem: previousItem = self.installAltStoreMenuItem
+        case self.installAltStoreMenuItem: previousItem = self.sideloadAppMenuItem
+        default: return
+        }
+
+        let submenu = previousItem.submenu
+        previousItem.submenu = nil
+        previousItem.submenu = submenu
     }
 }
 
