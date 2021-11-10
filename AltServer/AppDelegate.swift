@@ -126,6 +126,8 @@ private extension AppDelegate
     
     @objc func sideloadIPA(to device: ALTDevice)
     {
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+        
         let openPanel = NSOpenPanel()
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
