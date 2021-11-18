@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3rc1",
-      "versionDate": "2021-03-22T14:00:00-07:00",
-      "versionDescription": "**DELTA 1.3 RELEASE CANDIDATE**\n\nIMPROVEMENTS\n• Updates DS portrait controller skin with bigger buttons\n• Updates Licenses screen to include melonDS and Genesis Plus GX\n• Supports custom game artwork with transparent backgrounds\n\nBUG FIXES\n• Fixes custom artwork appearing incorrectly rotated\n• Fixes game artwork not updating when choosing from Files\n• Fixes crash when playing DS games and another app is using the microphone\n• Fixes some erroneous sync errors\n\nThanks to all your feedback, Delta 1.3 is finally just about ready for public release 🥳 We plan to release the update to everyone soon once we've made sure there are no major bugs left to fix, so PLEASE report any and all final bugs you find while testing this release candidate 🙏",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_rc1.ipa",
+      "version": "1.3.1b",
+      "versionDate": "2021-11-17T14:00:00-08:00",
+      "versionDescription": "• AltJIT support — Delta can now enable JIT when on the same WiFi as AltServer\n• Fixes game artwork not downloading",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_1_b.ipa",
       "localizedDescription": "The next consoles for Delta are coming: this beta version of Delta brings support for playing Nintendo DS and Sega Genesis games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 19625267,
+      "size": 19794977,
       "beta": true,
       "permissions": [
         {
@@ -243,6 +243,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "oAVS1UJTn7iqbhJfs1cItjHtV8zOEwKrbb3gsXA4wJQ"
+    "patreonAccessToken": "CCAEtgFz9FnCaAgMEmQWoKx_tsg1x_ITLioK1O8m-3g"
   }
 }
