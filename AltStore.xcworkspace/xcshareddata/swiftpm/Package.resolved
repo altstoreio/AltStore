@@ -2,12 +2,66 @@
   "object": {
     "pins": [
       {
+        "package": "AppCenter",
+        "repositoryURL": "https://github.com/microsoft/appcenter-sdk-apple.git",
+        "state": {
+          "branch": null,
+          "revision": "25f64229373de97ff3920941cd52203193e5d8be",
+          "version": "4.3.0"
+        }
+      },
+      {
+        "package": "KeychainAccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
+        "state": {
+          "branch": null,
+          "revision": "84e546727d66f1adc5439debad16270d0fdd04e7",
+          "version": "4.2.2"
+        }
+      },
+      {
         "package": "LaunchAtLogin",
         "repositoryURL": "https://github.com/sindresorhus/LaunchAtLogin.git",
         "state": {
           "branch": null,
           "revision": "e8171b3e38a2816f579f58f3dac1522aa39efe41",
           "version": "4.2.0"
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke.git",
+        "state": {
+          "branch": null,
+          "revision": "7f73ceaeacd5df75a7994cd82e165ad9ff1815db",
+          "version": "9.6.1"
+        }
+      },
+      {
+        "package": "PLCrashReporter",
+        "repositoryURL": "https://github.com/microsoft/PLCrashReporter.git",
+        "state": {
+          "branch": null,
+          "revision": "6b27393cad517c067dceea85fadf050e70c4ceaa",
+          "version": "1.10.1"
+        }
+      },
+      {
+        "package": "Sparkle",
+        "repositoryURL": "https://github.com/sparkle-project/Sparkle.git",
+        "state": {
+          "branch": null,
+          "revision": "7918c1c8fc68baa37917eeaa67286b077ad5e393",
+          "version": "1.27.1"
+        }
+      },
+      {
+        "package": "STPrivilegedTask",
+        "repositoryURL": "https://github.com/JoeMatt/STPrivilegedTask.git",
+        "state": {
+          "branch": "master",
+          "revision": "baa9a8b6b2ea146e1ec5c2b2df6a56ea5189d606",
+          "version": null
         }
       }
     ]
