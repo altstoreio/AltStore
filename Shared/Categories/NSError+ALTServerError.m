@@ -158,7 +158,7 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             return NSLocalizedString(@"Make sure you have trusted this device with your computer and Wi-Fi sync is enabled.", @"");
             
         case ALTServerErrorPluginNotFound:
-            return NSLocalizedString(@"Make sure Mail is running and the plug-in is enabled in Mail's preferences.", @"");
+            return NSLocalizedString(@"Mail has been automatically opened, try again in a moment. Otherwise, make sure plug-in is enabled in Mail's preferences.", @"");
             
         case ALTServerErrorMaximumFreeAppLimitReached:
 #if TARGET_OS_OSX
