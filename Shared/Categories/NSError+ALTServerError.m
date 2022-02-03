@@ -120,7 +120,7 @@ NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdenti
             return NSLocalizedString(@"Make sure you have trusted this device with your computer and WiFi sync is enabled.", @"");
             
         case ALTServerErrorPluginNotFound:
-            return NSLocalizedString(@"Make sure Mail is running and the plug-in is enabled in Mail's preferences.", @"");
+            return NSLocalizedString(@"Mail has been automatically opened, try again in a moment. Otherwise, make sure plug-in is enabled in Mail's preferences.", @"");
             
         case ALTServerErrorMaximumFreeAppLimitReached:
             return NSLocalizedString(@"Make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");

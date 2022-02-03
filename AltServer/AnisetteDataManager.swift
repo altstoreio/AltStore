@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AppKit
 
 class AnisetteDataManager: NSObject
 {
@@ -27,7 +28,14 @@ class AnisetteDataManager: NSObject
         let requestUUID = UUID().uuidString
         self.anisetteDataCompletionHandlers[requestUUID] = completion
         
-        let timer = Timer(timeInterval: 1.0, repeats: false) { (timer) in
+        if let mailApp = FileManager.default.urls(
+                        for: .applicationDirectory,
+                        in: .systemDomainMask
+                    ).first?.appendingPathComponent("Mail.app") {
+                        NSWorkspace.shared.open(mailApp)
+                    }
+        
+        let timer = Timer(timeInterval: 5.0, repeats: false) { (timer) in
             self.finishRequest(forUUID: requestUUID, result: .failure(ALTServerError(.pluginNotFound)))
         }
         self.anisetteDataTimers[requestUUID] = timer
