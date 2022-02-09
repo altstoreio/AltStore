@@ -12,6 +12,7 @@ import UserNotifications
 import AltSign
 
 import LaunchAtLogin
+import Sparkle
 
 #if STAGING
 private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
@@ -61,6 +62,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         ServerConnectionManager.shared.start()
         ALTDeviceManager.shared.start()
+        
+        #if STAGING
+        SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos-staging.xml")
+        #endif
         
         let item = NSStatusBar.system.statusItem(withLength: -1)
         item.menu = self.appMenu
