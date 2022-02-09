@@ -82,6 +82,8 @@ private extension DeveloperDiskManager
 
 class DeveloperDiskManager
 {
+    private let session = URLSession(configuration: .ephemeral)
+    
     func downloadDeveloperDisk(for device: ALTDevice, completionHandler: @escaping (Result<(URL, URL), Error>) -> Void)
     {
         let osVersion = "\(device.osVersion.majorVersion).\(device.osVersion.minorVersion)"
@@ -160,7 +162,7 @@ private extension DeveloperDiskManager
 {
     func fetchDeveloperDiskURLs(completionHandler: @escaping (Result<FetchURLsResponse.Disks, Error>) -> Void)
     {
-        let dataTask = URLSession.shared.dataTask(with: .developerDiskDownloadURLs) { (data, response, error) in
+        let dataTask = self.session.dataTask(with: .developerDiskDownloadURLs) { (data, response, error) in
             do
             {
                 guard let data = data else { throw error! }
