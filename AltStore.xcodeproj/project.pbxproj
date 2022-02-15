@@ -239,6 +239,7 @@
 		BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		BFBE0007250AD0E70080826E /* ViewAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF989190250AAE86002ACF50 /* ViewAppIntentHandler.swift */; };
 		BFBF331B2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = BFBF331A2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel */; };
+		BFC15ADA27BC352300ED2FB4 /* PluginVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC15AD927BC352300ED2FB4 /* PluginVersion.swift */; };
 		BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */; };
 		BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */; };
 		BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */; };
@@ -706,6 +707,7 @@
 		BFBAC8852295C90300587369 /* Result+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Conveniences.swift"; sourceTree = "<group>"; };
 		BFBF33142526754700B7B8C9 /* AltStore 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 9.xcdatamodel"; sourceTree = "<group>"; };
 		BFBF331A2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore8ToAltStore9.xcmappingmodel; sourceTree = "<group>"; };
+		BFC15AD927BC352300ED2FB4 /* PluginVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginVersion.swift; sourceTree = "<group>"; };
 		BFC1F38C22AEE3A4003AC21A /* DownloadAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAppOperation.swift; sourceTree = "<group>"; };
 		BFC57A642416C72400EB891E /* DeactivateAppOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAppOperation.swift; sourceTree = "<group>"; };
 		BFC57A6D2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledAppsCollectionHeaderView.swift; sourceTree = "<group>"; };
@@ -998,10 +1000,10 @@
 				BF45868F229872EA00BD7491 /* AppDelegate.swift */,
 				BF458695229872EA00BD7491 /* Main.storyboard */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
-				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
 				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
 				BFF0394A25F0551600BE607D /* MenuController.swift */,
 				BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */,
+				BFC15ADB27BC3AD100ED2FB4 /* Plugin */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -1429,6 +1431,15 @@
 				BFC57A6F2416FC7600EB891E /* InstalledAppsCollectionHeaderView.xib */,
 			);
 			path = "My Apps";
+			sourceTree = "<group>";
+		};
+		BFC15ADB27BC3AD100ED2FB4 /* Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				BFC15AD927BC352300ED2FB4 /* PluginVersion.swift */,
+				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
+			);
+			path = Plugin;
 			sourceTree = "<group>";
 		};
 		BFC51D7922972F1F00388324 /* Server */ = {
@@ -2332,6 +2343,7 @@
 				BFF767C82489A74E0097E58C /* WirelessConnectionHandler.swift in Sources */,
 				BFF0394B25F0551600BE607D /* MenuController.swift in Sources */,
 				BFECAC8024FD950B0077C41F /* ConnectionManager.swift in Sources */,
+				BFC15ADA27BC352300ED2FB4 /* PluginVersion.swift in Sources */,
 				BFECAC8324FD950B0077C41F /* NetworkConnection.swift in Sources */,
 				BF541C0B25E5A5FA00CD46B2 /* FileManager+URLs.swift in Sources */,
 				BFECAC8724FD950B0077C41F /* Bundle+AltStore.swift in Sources */,

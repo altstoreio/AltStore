@@ -54,6 +54,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var _jitAppListMenuControllers = [AnyObject]()
     
+    private var isAltPluginUpdateAvailable = false
+    
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         UserDefaults.standard.registerDefaults()
@@ -110,9 +112,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         
-        if self.pluginManager.isUpdateAvailable
-        {
-            self.installMailPlugin()
+        self.pluginManager.isUpdateAvailable { result in
+            guard let isUpdateAvailable = try? result.get() else { return }
+            self.isAltPluginUpdateAvailable = isUpdateAvailable
+            
+            if isUpdateAvailable
+            {
+                self.installMailPlugin()
+            }
         }
     }
 
@@ -228,56 +235,68 @@ private extension AppDelegate
         
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
-                
-        func install()
+        
+        func finish(_ result: Result<ALTApplication, Error>)
         {
-            ALTDeviceManager.shared.installApplication(at: url, to: device, appleID: username, password: password) { (result) in
-                switch result
-                {
-                case .success(let application):
-                    let content = UNMutableNotificationContent()
-                    content.title = NSLocalizedString("Installation Succeeded", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ was successfully installed on %@.", comment: ""), application.name, device.name)
-                    
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
-                    
-                case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
-                    // Ignore
-                    break
-                    
-                case .failure(let error):
+            switch result
+            {
+            case .success(let application):
+                let content = UNMutableNotificationContent()
+                content.title = NSLocalizedString("Installation Succeeded", comment: "")
+                content.body = String(format: NSLocalizedString("%@ was successfully installed on %@.", comment: ""), application.name, device.name)
+                
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(request)
+                
+            case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
+                // Ignore
+                break
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
                     self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("Could not install app to %@.", comment: ""), device.name))
                 }
             }
         }
-        
-        if !self.pluginManager.isMailPluginInstalled || self.pluginManager.isUpdateAvailable
+                
+        func install()
         {
-            AnisetteDataManager.shared.isXPCAvailable { (isAvailable) in
-                if isAvailable
-                {
-                    // XPC service is available, so we don't need to install/update Mail plug-in.
-                    // Users can still manually do so from the AltServer menu.
-                    install()
-                }
-                else
-                {
-                    DispatchQueue.main.async {
-                        self.installMailPlugin { (result) in
-                            switch result
-                            {
-                            case .failure: break
-                            case .success: install()
+            ALTDeviceManager.shared.installApplication(at: url, to: device, appleID: username, password: password, completion: finish(_:))
+        }
+        
+        AnisetteDataManager.shared.isXPCAvailable { isAvailable in
+            if isAvailable
+            {
+                // XPC service is available, so we don't need to install/update Mail plug-in.
+                // Users can still manually do so from the AltServer menu.
+                install()
+            }
+            else
+            {
+                self.pluginManager.isUpdateAvailable { result in
+                    switch result
+                    {
+                    case .failure(let error): finish(.failure(error))
+                    case .success(let isUpdateAvailable):
+                        self.isAltPluginUpdateAvailable = isUpdateAvailable
+                        
+                        if !self.pluginManager.isMailPluginInstalled || isUpdateAvailable
+                        {
+                            self.installMailPlugin { result in
+                                switch result
+                                {
+                                case .failure: break
+                                case .success: install()
+                                }
                             }
+                        }
+                        else
+                        {
+                            install()
                         }
                     }
                 }
             }
-        }
-        else
-        {
-            install()
         }
     }
     
@@ -356,7 +375,7 @@ private extension AppDelegate
     
     @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
     {
-        if !self.pluginManager.isMailPluginInstalled || self.pluginManager.isUpdateAvailable
+        if !self.pluginManager.isMailPluginInstalled || self.isAltPluginUpdateAvailable
         {
             self.installMailPlugin()
         }
@@ -384,6 +403,8 @@ private extension AppDelegate
                     alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
                     alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
                     alert.runModal()
+                    
+                    self.isAltPluginUpdateAvailable = false
                 }
                 
                 completion?(result)
@@ -434,7 +455,7 @@ extension AppDelegate: NSMenuDelegate
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
 
-        if self.pluginManager.isUpdateAvailable
+        if self.isAltPluginUpdateAvailable
         {
             self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in", comment: "")
         }
