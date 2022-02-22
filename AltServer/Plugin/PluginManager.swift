@@ -40,7 +40,7 @@ enum PluginError: LocalizedError
 private extension URL
 {
     #if STAGING
-    static let altPluginUpdateURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altserver/altplugin/altplugin2.json")!
+    static let altPluginUpdateURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altserver/altplugin/altplugin.json")!
     #else
     static let altPluginUpdateURL = URL(string: "https://cdn.altstore.io/file/altstore/altserver/altplugin/altplugin.json")!
     #endif
