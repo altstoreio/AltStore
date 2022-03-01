@@ -234,15 +234,17 @@
       "notify": true
     },
     {
-      "title": "unc0ver + Fugu14 Untethered Jailbreak Available",
-      "identifier": "unc0ver-fugu14",
-      "caption": "Update to AltStore 1.4.8 to install the first untethered jailbreak since iOS 9.",
-      "tintColor": "000000",
-      "date": "2021-10-28T14:30:00-07:00",
+      "title": "#StandWithUkraine",
+      "identifier": "support-ukraine",
+      "caption": "Find out how you can help support those impacted by the Russian invasion.",
+      "tintColor": "003e80",
+      "imageURL": "https://user-images.githubusercontent.com/705880/156053447-a158cac7-df5f-4497-8025-15c3c2e10b48.png",
+      "url": "https://linktr.ee/razomforukraine",
+      "date": "2022-03-01",
       "notify": false
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "dQMlZi6olePN1WC675Nf3eE5VEi-dFJ_PhgTchra3K0"
+    "patreonAccessToken": "_fRv5fgSrAMV32SK-urS7xIZzhIHvmqgQv3a4nZECvE"
   }
 }
