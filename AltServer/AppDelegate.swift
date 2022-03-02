@@ -534,8 +534,14 @@ extension AppDelegate: NSMenuDelegate
     
     func menuDidClose(_ menu: NSMenu)
     {
+        guard menu == self.appMenu else { return }
+        
         // Clearing _jitAppListMenuControllers now prevents action handler from being called.
         // self._jitAppListMenuControllers = []
+        
+        // Set `submenuHandler` to nil to prevent prematurely fetching installed apps in menuWillOpen(_:)
+        // when assigning self.connectedDevices to `items` (which implicitly calls `submenuHandler`)
+        self.enableJITMenuController.submenuHandler = nil
     }
     
     func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?)
