@@ -86,34 +86,32 @@ class DeveloperDiskManager
     
     func downloadDeveloperDisk(for device: ALTDevice, completionHandler: @escaping (Result<(URL, URL), Error>) -> Void)
     {
-        let osVersion = "\(device.osVersion.majorVersion).\(device.osVersion.minorVersion)"
-        
-        let osName: String
-        let osKeyPath: KeyPath<FetchURLsResponse.Disks, [String: DeveloperDiskURL]?>
-        
-        switch device.type
-        {
-        case .iphone, .ipad:
-            osName = "iOS"
-            osKeyPath = \FetchURLsResponse.Disks.iOS
-            
-        case .appletv:
-            osName = "tvOS"
-            osKeyPath = \FetchURLsResponse.Disks.tvOS
-            
-        default: return completionHandler(.failure(DeveloperDiskError.unsupportedOperatingSystem))
-        }
-        
         do
         {
+            guard let osName = device.type.osName else { throw DeveloperDiskError.unsupportedOperatingSystem }
+            
+            let osKeyPath: KeyPath<FetchURLsResponse.Disks, [String: DeveloperDiskURL]?>
+            switch device.type
+            {
+            case .iphone, .ipad: osKeyPath = \FetchURLsResponse.Disks.iOS
+            case .appletv: osKeyPath = \FetchURLsResponse.Disks.tvOS
+            default: throw DeveloperDiskError.unsupportedOperatingSystem
+            }
+            
+            var osVersion = device.osVersion
+            osVersion.patchVersion = 0 // Patch is irrelevant for developer disks
+            
             let osDirectoryURL = FileManager.default.developerDisksDirectory.appendingPathComponent(osName)
-            let developerDiskDirectoryURL = osDirectoryURL.appendingPathComponent(osVersion, isDirectory: true)
+            let developerDiskDirectoryURL = osDirectoryURL.appendingPathComponent(osVersion.stringValue, isDirectory: true)
             try FileManager.default.createDirectory(at: developerDiskDirectoryURL, withIntermediateDirectories: true, attributes: nil)
             
             let developerDiskURL = developerDiskDirectoryURL.appendingPathComponent("DeveloperDiskImage.dmg")
             let developerDiskSignatureURL = developerDiskDirectoryURL.appendingPathComponent("DeveloperDiskImage.dmg.signature")
             
-            guard !FileManager.default.fileExists(atPath: developerDiskURL.path) || !FileManager.default.fileExists(atPath: developerDiskSignatureURL.path) else {
+            let isCachedDiskCompatible = self.isDeveloperDiskCompatible(with: device)
+            if isCachedDiskCompatible && FileManager.default.fileExists(atPath: developerDiskURL.path) && FileManager.default.fileExists(atPath: developerDiskSignatureURL.path)
+            {
+                // The developer disk is cached and we've confirmed it works, so re-use it.
                 return completionHandler(.success((developerDiskURL, developerDiskSignatureURL)))
             }
             
@@ -122,6 +120,17 @@ class DeveloperDiskManager
                 do
                 {
                     let (diskFileURL, signatureFileURL) = try result.get()
+                    
+                    if FileManager.default.fileExists(atPath: developerDiskURL.path)
+                    {
+                        try FileManager.default.removeItem(at: developerDiskURL)
+                    }
+                    
+                    if FileManager.default.fileExists(atPath: developerDiskSignatureURL.path)
+                    {
+                        try FileManager.default.removeItem(at: developerDiskSignatureURL)
+                    }
+                    
                     try FileManager.default.copyItem(at: diskFileURL, to: developerDiskURL)
                     try FileManager.default.copyItem(at: signatureFileURL, to: developerDiskSignatureURL)
                     
@@ -137,7 +146,7 @@ class DeveloperDiskManager
                 do
                 {
                     let developerDiskURLs = try result.get()
-                    guard let diskURL = developerDiskURLs[keyPath: osKeyPath]?[osVersion] else { throw DeveloperDiskError.unknownDownloadURL }
+                    guard let diskURL = developerDiskURLs[keyPath: osKeyPath]?[osVersion.stringValue] else { throw DeveloperDiskError.unknownDownloadURL }
                     
                     switch diskURL
                     {
@@ -156,10 +165,35 @@ class DeveloperDiskManager
             completionHandler(.failure(error))
         }
     }
+    
+    func setDeveloperDiskCompatible(_ isCompatible: Bool, with device: ALTDevice)
+    {
+        guard let id = self.developerDiskCompatibilityID(for: device) else { return }
+        UserDefaults.standard.set(isCompatible, forKey: id)
+    }
+    
+    func isDeveloperDiskCompatible(with device: ALTDevice) -> Bool
+    {
+        guard let id = self.developerDiskCompatibilityID(for: device) else { return false }
+        
+        let isCompatible = UserDefaults.standard.bool(forKey: id)
+        return isCompatible
+    }
 }
 
 private extension DeveloperDiskManager
 {
+    func developerDiskCompatibilityID(for device: ALTDevice) -> String?
+    {
+        guard let osName = device.type.osName else { return nil }
+        
+        var osVersion = device.osVersion
+        osVersion.patchVersion = 0 // Patch is irrelevant for developer disks
+        
+        let id = ["ALTDeveloperDiskCompatible", osName, device.osVersion.stringValue].joined(separator: "_")
+        return id
+    }
+    
     func fetchDeveloperDiskURLs(completionHandler: @escaping (Result<FetchURLsResponse.Disks, Error>) -> Void)
     {
         let dataTask = self.session.dataTask(with: .developerDiskDownloadURLs) { (data, response, error) in

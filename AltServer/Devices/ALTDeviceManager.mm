@@ -1204,7 +1204,38 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             plist_free(result);
         }
         
-        finish(nil);
+        // Verify the installed developer disk is compatible with altDevice's operating system version.
+        ALTDebugConnection *testConnection = [[ALTDebugConnection alloc] initWithDevice:altDevice];
+        [testConnection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+            [testConnection disconnect];
+            
+            if (success)
+            {
+                // Connection succeeded, so we assume the developer disk is compatible.
+                finish(nil);
+            }
+            else if ([error.domain isEqualToString:AltServerConnectionErrorDomain] && error.code == ALTServerConnectionErrorUnknown)
+            {
+                // Connection failed with .unknown error code, so we assume the developer disk is NOT compatible.
+                NSMutableDictionary *userInfo = [@{
+                    ALTOperatingSystemVersionErrorKey: NSStringFromOperatingSystemVersion(altDevice.osVersion),
+                    NSUnderlyingErrorKey: error,
+                } mutableCopy];
+                
+                NSString *osName = ALTOperatingSystemNameForDeviceType(altDevice.type);
+                if (osName != nil)
+                {
+                    userInfo[ALTOperatingSystemNameErrorKey] = osName;
+                }
+                
+                NSError *returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorIncompatibleDeveloperDisk userInfo:userInfo];
+                finish(returnError);
+            }
+            else
+            {
+                finish(error);
+            }
+        }];
     });
 }
 

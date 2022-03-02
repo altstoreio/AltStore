@@ -217,8 +217,17 @@ extension ALTDeviceManager
                         ALTDeviceManager.shared.installDeveloperDiskImage(at: diskFileURL, signatureURL: signatureFileURL, to: device) { (success, error) in
                             switch Result(success, error)
                             {
-                            case .failure(let error): completionHandler(.failure(error))
-                            case .success: completionHandler(.success(()))
+                            case .failure(let error as ALTServerError) where error.code == .incompatibleDeveloperDisk:
+                                developerDiskManager.setDeveloperDiskCompatible(false, with: device)
+                                completionHandler(.failure(error))
+                                
+                            case .failure(let error):
+                                // Don't mark developer disk as incompatible because it probably failed for a different reason.
+                                completionHandler(.failure(error))
+                                
+                            case .success:
+                                developerDiskManager.setDeveloperDiskCompatible(true, with: device)
+                                completionHandler(.success(()))
                             }
                         }
                     }

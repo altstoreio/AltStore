@@ -17,6 +17,8 @@ NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey = @"underlyingErrorCode"
 NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdentifier";
 NSErrorUserInfoKey const ALTAppNameErrorKey = @"appName";
 NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
+NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey = @"ALTOperatingSystemName";
+NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSystemVersion";
 
 @implementation NSError (ALTServerError)
 
@@ -131,6 +133,13 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
             return [NSString stringWithFormat:NSLocalizedString(@"%@ is not currently running on %@.", ""), appName, deviceName];
         }
+            
+        case ALTServerErrorIncompatibleDeveloperDisk:
+        {
+            NSString *osVersion = [self altserver_osVersion] ?: NSLocalizedString(@"this device's OS version", @"");
+            NSString *failureReason = [NSString stringWithFormat:NSLocalizedString(@"The disk is incompatible with %@.", @""), osVersion];
+            return failureReason;
+        }
     }
 }
 
@@ -178,6 +187,19 @@ NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
     }
     
     return localizedDescription;
+}
+
+- (nullable NSString *)altserver_osVersion
+{
+    NSString *osName = self.userInfo[ALTOperatingSystemNameErrorKey];
+    NSString *versionString = self.userInfo[ALTOperatingSystemVersionErrorKey];
+    if (osName == nil || versionString == nil)
+    {
+        return nil;
+    }
+    
+    NSString *osVersion = [NSString stringWithFormat:@"%@ %@", osName, versionString];
+    return osVersion;
 }
 
 #pragma mark - AltServerConnectionErrorDomain -
