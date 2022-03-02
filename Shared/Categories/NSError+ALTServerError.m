@@ -33,6 +33,10 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
         {
             return [error altserver_localizedRecoverySuggestion];
         }
+        else if ([userInfoKey isEqualToString:NSDebugDescriptionErrorKey])
+        {
+            return [error altserver_localizedDebugDescription];
+        }
         
         return nil;
     }];
@@ -165,6 +169,28 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
         {
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"your device", @"");
             return [NSString stringWithFormat:NSLocalizedString(@"Make sure the app is running in the foreground on %@ then try again.", @""), deviceName];
+        }
+            
+        default:
+            return nil;
+    }
+}
+
+- (nullable NSString *)altserver_localizedDebugDescription
+{
+    switch ((ALTServerError)self.code)
+    {
+        case ALTServerErrorIncompatibleDeveloperDisk:
+        {
+            NSString *path = self.userInfo[NSFilePathErrorKey];
+            if (path == nil)
+            {
+                return nil;
+            }
+
+            NSString *osVersion = [self altserver_osVersion] ?: NSLocalizedString(@"this device's OS version", @"");
+            NSString *debugDescription = [NSString stringWithFormat:NSLocalizedString(@"The Developer disk located at\n\n%@\n\nis incompatible with %@.", @""), path, osVersion];
+            return debugDescription;
         }
             
         default:

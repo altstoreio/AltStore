@@ -1219,6 +1219,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                 // Connection failed with .unknown error code, so we assume the developer disk is NOT compatible.
                 NSMutableDictionary *userInfo = [@{
                     ALTOperatingSystemVersionErrorKey: NSStringFromOperatingSystemVersion(altDevice.osVersion),
+                    NSFilePathErrorKey: diskURL.path,
                     NSUnderlyingErrorKey: error,
                 } mutableCopy];
                 

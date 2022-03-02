@@ -319,7 +319,12 @@ private extension AppDelegate
         
         if let errorFailure = nsError.localizedFailure
         {
-            if let failureReason = nsError.localizedFailureReason
+            if let debugDescription = nsError.localizedDebugDescription
+            {
+                alert.messageText = errorFailure
+                messageComponents.append(debugDescription)
+            }
+            else if let failureReason = nsError.localizedFailureReason
             {
                 if nsError.localizedDescription.starts(with: errorFailure)
                 {
@@ -352,7 +357,15 @@ private extension AppDelegate
         else
         {
             alert.messageText = localizedFailure
-            messageComponents.append(nsError.localizedDescription)
+            
+            if let debugDescription = nsError.localizedDebugDescription
+            {
+                messageComponents.append(debugDescription)
+            }
+            else
+            {
+                messageComponents.append(nsError.localizedDescription)
+            }
         }
         
         if let recoverySuggestion = nsError.localizedRecoverySuggestion
