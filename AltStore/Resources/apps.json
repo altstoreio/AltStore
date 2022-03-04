@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.8",
-      "versionDate": "2021-10-28T13:00:00-07:00",
-      "versionDescription": "This update supports installing Fugu14-based untethered jailbreaks.\n\nPREVIOUS UPDATE\n\nFEATURES\n• Supports iOS 15.1 \n• Adds \"Open\" context menu action for active apps\n\nIMPROVEMENTS\n• Improves \"Sideloaded App Limit Reached\" error message\n• Asks you to deactivate an app first when installing a new app without any free app slots\n\nBUG FIXES\n• Fixes widget displaying incorrect number of days until expiration\n• Fixes widget layout on iOS 15\n• Fixes \"Refresh All Apps\" shortcut timing out\n\n⚠️ If you have already updated to iOS 15.1, you must manually install this update by updating AltServer to the latest version and using it to re-install AltStore. You do not need to delete AltStore first.",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_8.ipa",
+      "version": "1.4.9",
+      "versionDate": "2022-03-07T09:00:00-08:00",
+      "versionDescription": "• Fixes Patreon URL\n• Fixes app crashing on launch for devices running iOS 13 or earlier",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_9.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5405794,
+      "size": 5401042,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -109,8 +109,7 @@
       ],
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
-        "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG"
-      ,
+        "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG",
         "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
         "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG"
       ]
