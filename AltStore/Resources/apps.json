@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2b3",
-      "versionDate": "2020-10-12T12:30:00-07:00",
-      "versionDescription": "**Delta 1.2 GM**\n\nIMPROVEMENTS\n• Improves sync error messages when a game is missing or can’t be synced\n\nBUG FIXES\n• Fixes misplaced DS screens when using external controller\n• Fixes NES games crashing after playing an N64 game\n• Fixes various issues with controller skin filters\n• Fixes swapped DS screens\n• Fixes importing games from Files\n\nThanks for your help beta testing Delta these past few months! This should be the last beta before the public release of Delta 1.2, so please report any last-minute issues so we can have a smooth release 🙂",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2_b3.ipa",
-      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
+      "version": "1.3b2",
+      "versionDate": "2020-12-02T12:30:00-06:00",
+      "versionDescription": "BUG FIXES\n• Fixes garbled audio during emulation\n• Fixes MelonDS core crashing on devices that don't support JIT\n• Fixes audio not playing over AirPlay • Fixes crash when activating Siri\n\nPrevious update:\n\nNEW FEATURES\n• [MelonDS] DSi emulation (requires additional DSi BIOS files)\n• [MelonDS] Just-in-time (JIT) compilation on A12 devices running iOS 14.2 or newer.\n• [MelonDS] Microphone support — use your device's microphone to emulate the DS microphone.\n• [MelonDS] Emulate closing/opening lid — sleep device to \"close\" DS lid, wake to \"open\".\n\nIMPROVEMENTS\n• Dark mode support throughout app (thanks @ericlewis!)",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_3_b2.ipa",
+      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18456630,
+      "size": 18558635,
       "beta": true,
       "permissions": [
         {
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "vfuSOfSYTUC8pEq6TM9r6uoL-T-uTJEI85hFescT4AM"
+    "patreonAccessToken": "dRUfeocZhNq6K3LWfu2poRE9aVkSTcFp2xBviRoOlcY"
   }
 }

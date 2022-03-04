@@ -8,11 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+@class ALTAnisetteData;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ALTPluginService : NSObject
 
-+ (instancetype)sharedService;
+@property (class, nonatomic, readonly) ALTPluginService *sharedService;
+
+- (ALTAnisetteData *)requestAnisetteData;
 
 @end
 

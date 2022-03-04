@@ -297,6 +297,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         NSError *writeError = nil;
         if (![self writeDirectory:appBundleURL toDestinationURL:destinationURL client:afc progress:nil error:&writeError])
         {
+            int removeResult = afc_remove_path_and_contents(afc, stagingURL.relativePath.fileSystemRepresentation);
+            NSLog(@"Remove staging app result: %@", @(removeResult));
+            
             return finish(writeError);
         }
         
@@ -430,7 +433,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         else
         {
             NSURL *destinationFileURL = [destinationURL URLByAppendingPathComponent:fileURL.lastPathComponent isDirectory:NO];
-            if (![self writeFile:fileURL toDestinationURL:destinationFileURL client:afc error:error])
+            if (![self writeFile:fileURL toDestinationURL:destinationFileURL progress:progress client:afc error:error])
             {
                 return NO;
             }
@@ -442,7 +445,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     return YES;
 }
 
-- (BOOL)writeFile:(NSURL *)fileURL toDestinationURL:(NSURL *)destinationURL client:(afc_client_t)afc error:(NSError **)error
+- (BOOL)writeFile:(NSURL *)fileURL toDestinationURL:(NSURL *)destinationURL progress:(NSProgress *)progress client:(afc_client_t)afc error:(NSError **)error
 {
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:fileURL.path];
     if (fileHandle == nil)
@@ -458,8 +461,16 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     NSData *data = [fileHandle readDataToEndOfFile];
 
     uint64_t af = 0;
-    if ((afc_file_open(afc, destinationURL.relativePath.fileSystemRepresentation, AFC_FOPEN_WRONLY, &af) != AFC_E_SUCCESS) || af == 0)
+    
+    int openResult = afc_file_open(afc, destinationURL.relativePath.fileSystemRepresentation, AFC_FOPEN_WRONLY, &af);
+    if (openResult != AFC_E_SUCCESS || af == 0)
     {
+        if (openResult == AFC_E_OBJECT_IS_DIR)
+        {
+            NSLog(@"Treating file as directory: %@ %@", fileURL, destinationURL);
+            return [self writeDirectory:fileURL toDestinationURL:destinationURL client:afc progress:progress error:error];
+        }
+        
         if (error)
         {
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
@@ -475,10 +486,12 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     {
         uint32_t count = 0;
         
-        if (afc_file_write(afc, af, (const char *)data.bytes + bytesWritten, (uint32_t)data.length - bytesWritten, &count) != AFC_E_SUCCESS)
+        int writeResult = afc_file_write(afc, af, (const char *)data.bytes + bytesWritten, (uint32_t)data.length - bytesWritten, &count);
+        if (writeResult != AFC_E_SUCCESS)
         {
             if (error)
             {
+                NSLog(@"Failed writing file with error: %@ (%@ %@)", @(writeResult), fileURL, destinationURL);
                 *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
             }
             
@@ -493,6 +506,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     {
         if (error)
         {
+            NSLog(@"Failed writing file due to mismatched sizes: %@ vs %@ (%@ %@)", @(bytesWritten), @(data.length), fileURL, destinationURL);
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
         }
         
@@ -1113,13 +1127,51 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             continue;
         }
         
+        plist_t device_type_plist = NULL;
+        if (lockdownd_get_value(client, NULL, "ProductType", &device_type_plist) != LOCKDOWN_E_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
+            
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            continue;
+        }
+        
+        ALTDeviceType deviceType = ALTDeviceTypeiPhone;
+        
+        char *device_type_string = NULL;
+        plist_get_string_val(device_type_plist, &device_type_string);
+        
+        if ([@(device_type_string) hasPrefix:@"iPhone"])
+        {
+            deviceType = ALTDeviceTypeiPhone;
+        }
+        else if ([@(device_type_string) hasPrefix:@"iPad"])
+        {
+            deviceType = ALTDeviceTypeiPad;
+        }
+        else if ([@(device_type_string) hasPrefix:@"AppleTV"])
+        {
+            deviceType = ALTDeviceTypeAppleTV;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: Unknown device type %s for %s!\n", device_type_string, device_name);
+            
+            lockdownd_client_free(client);
+            idevice_free(device);
+            
+            continue;
+        }
+        
         lockdownd_client_free(client);
         idevice_free(device);
         
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
         
-        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:ALTDeviceTypeiPhone];
+        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:deviceType];
         [connectedDevices addObject:altDevice];
         
         if (device_name != NULL)
