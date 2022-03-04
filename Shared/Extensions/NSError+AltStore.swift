@@ -16,6 +16,12 @@ extension NSError
         return localizedFailure
     }
     
+    @objc(alt_localizedDebugDescription)
+    var localizedDebugDescription: String? {
+        let debugDescription = (self.userInfo[NSDebugDescriptionErrorKey] as? String) ?? (NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSDebugDescriptionErrorKey) as? String)
+        return debugDescription
+    }
+    
     @objc(alt_errorWithLocalizedFailure:)
     func withLocalizedFailure(_ failure: String) -> NSError
     {

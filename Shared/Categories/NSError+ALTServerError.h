@@ -17,6 +17,8 @@ extern NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey;
 extern NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey;
 extern NSErrorUserInfoKey const ALTAppNameErrorKey;
 extern NSErrorUserInfoKey const ALTDeviceNameErrorKey;
+extern NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey;
+extern NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey;
 
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
@@ -48,6 +50,7 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorAppDeletionFailed = 16,
     
     ALTServerErrorRequestedAppNotRunning = 100,
+    ALTServerErrorIncompatibleDeveloperDisk = 101
 };
 
 typedef NS_ERROR_ENUM(AltServerConnectionErrorDomain, ALTServerConnectionError)
