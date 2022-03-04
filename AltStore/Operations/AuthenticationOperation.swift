@@ -15,6 +15,7 @@ import AltSign
 
 enum AuthenticationError: LocalizedError
 {
+    case teamSelectorError
     case noTeam
     case noCertificate
     
@@ -23,6 +24,7 @@ enum AuthenticationError: LocalizedError
     
     var errorDescription: String? {
         switch self {
+        case .teamSelectorError: return NSLocalizedString("Error presenting team selector view.", comment: "")
         case .noTeam: return NSLocalizedString("Developer team could not be found.", comment: "")
         case .noCertificate: return NSLocalizedString("Developer certificate could not be found.", comment: "")
         case .missingPrivateKey: return NSLocalizedString("The certificate's private key could not be found.", comment: "")
@@ -432,21 +434,24 @@ private extension AuthenticationOperation
     {
         func selectTeam(from teams: [ALTTeam])
         {
-            if let team = teams.first(where: { $0.type == .free })
-            {
-                return completionHandler(.success(team))
-            }
-            else if let team = teams.first(where: { $0.type == .individual })
-            {
-                return completionHandler(.success(team))
-            }
-            else if let team = teams.first
-            {
-                return completionHandler(.success(team))
-            }
-            else
-            {
-                return completionHandler(.failure(AuthenticationError.noTeam))
+            if teams.count <= 1 {
+                if let team = teams.first {
+                    return completionHandler(.success(team))
+                } else {
+                    return completionHandler(.failure(AuthenticationError.noTeam))
+                }
+            } else {
+                DispatchQueue.main.async {
+                    let selectTeamViewController = self.storyboard.instantiateViewController(withIdentifier: "selectTeamViewController") as! SelectTeamViewController
+                    
+                    selectTeamViewController.teams = teams
+                    selectTeamViewController.completionHandler = completionHandler
+                    
+                    if !self.present(selectTeamViewController)
+                    {
+                        return completionHandler(.failure(AuthenticationError.noTeam))
+                    }
+                }
             }
         }
 
@@ -582,7 +587,7 @@ private extension AuthenticationOperation
             return completionHandler(.failure(OperationError.unknownUDID))
         }
         
-        ALTAppleAPI.shared.fetchDevices(for: team, session: session) { (devices, error) in
+        ALTAppleAPI.shared.fetchDevices(for: team, types: [.iphone, .ipad], session: session) { (devices, error) in
             do
             {
                 let devices = try Result(devices, error).get()
@@ -593,7 +598,7 @@ private extension AuthenticationOperation
                 }
                 else
                 {
-                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, team: team, session: session) { (device, error) in
+                    ALTAppleAPI.shared.registerDevice(name: UIDevice.current.name, identifier: udid, type: .iphone, team: team, session: session) { (device, error) in
                         completionHandler(Result(device, error))
                     }
                 }

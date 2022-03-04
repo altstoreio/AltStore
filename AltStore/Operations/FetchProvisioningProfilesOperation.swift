@@ -133,7 +133,7 @@ extension FetchProvisioningProfilesOperation
                 
                 #if DEBUG
                 
-                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
+                if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore.
                     preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
@@ -178,7 +178,7 @@ extension FetchProvisioningProfilesOperation
                 let parentBundleID = parentApp?.bundleIdentifier ?? app.bundleIdentifier
                 let updatedParentBundleID: String
                 
-                if app.bundleIdentifier.hasPrefix(StoreApp.altstoreAppID) || StoreApp.alternativeAltStoreAppIDs.contains(where: app.bundleIdentifier.hasPrefix)
+                if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore (and its extensions).
                     updatedParentBundleID = "com.\(team.identifier).\(parentBundleID)"
@@ -365,21 +365,15 @@ extension FetchProvisioningProfilesOperation
             entitlements[key] = value
         }
                 
-        var applicationGroups = entitlements[.appGroups] as? [String] ?? []
-        if applicationGroups.isEmpty
-        {
-            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
-                // No app groups, and we also haven't enabled the feature, so don't continue.
-                // For apps with no app groups but have had the feature enabled already
-                // we'll continue and assign the app ID to an empty array
-                // in case we need to explicitly remove them.
-                return completionHandler(.success(appID))
-            }
+        guard var applicationGroups = entitlements[.appGroups] as? [String], !applicationGroups.isEmpty else {
+            // Assigning an App ID to an empty app group array fails,
+            // so just do nothing if there are no app groups.
+            return completionHandler(.success(appID))
         }
         
-        if app.bundleIdentifier == StoreApp.altstoreAppID
+        if app.isAltStoreApp
         {
-            // Updating app groups for this specific AltStore.
+            // Potentially updating app groups for this specific AltStore.
             // Find the (unique) AltStore app group, then replace it
             // with the correct "base" app group ID.
             // Otherwise, we may append a duplicate team identifier to the end.
@@ -463,7 +457,7 @@ extension FetchProvisioningProfilesOperation
     
     func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
-        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
             switch Result(profile, error)
             {
             case .failure(let error): completionHandler(.failure(error))
@@ -477,7 +471,7 @@ extension FetchProvisioningProfilesOperation
                     case .success:
                         
                         // Fetch new provisiong profile
-                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, team: team, session: session) { (profile, error) in
+                        ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
                             completionHandler(Result(profile, error))
                         }
                     }

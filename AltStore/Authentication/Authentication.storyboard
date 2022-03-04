@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -57,13 +57,13 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="67.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to AltStore." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EI2-V3-zQZ">
-                                                                <rect key="frame" x="0.0" y="0.0" width="333.5" height="41"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="332.5" height="41"/>
                                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign in with your Apple ID to get started." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="SNU-tv-8Au">
-                                                                <rect key="frame" x="0.0" y="47" width="308.5" height="20.5"/>
+                                                                <rect key="frame" x="0.0" y="47" width="306.5" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <color key="textColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
@@ -160,7 +160,7 @@
                                                                     </stackView>
                                                                 </subviews>
                                                             </stackView>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2N5-zd-fUj">
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2N5-zd-fUj">
                                                                 <rect key="frame" x="0.0" y="191" width="343" height="51"/>
                                                                 <color key="backgroundColor" name="SettingsHighlighted"/>
                                                                 <constraints>
@@ -210,6 +210,7 @@
                                 </constraints>
                             </scrollView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="zMn-DV-fpy"/>
                         <color key="backgroundColor" name="SettingsBackground"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="WXx-hX-AXv" secondAttribute="bottom" id="0jL-Ky-ju6"/>
@@ -229,7 +230,6 @@
                             <constraint firstItem="YmX-7v-pxh" firstAttribute="top" secondItem="2wp-qG-f0Z" secondAttribute="top" constant="6" id="iUr-Nd-tkt"/>
                             <constraint firstItem="2wp-qG-f0Z" firstAttribute="width" secondItem="oyW-Fd-ojD" secondAttribute="width" id="rYO-GN-0Lk"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="zMn-DV-fpy"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="jCf-N4-xVD">
@@ -393,7 +393,7 @@
                                 </subviews>
                                 <edgeInsets key="layoutMargins" top="35" left="0.0" bottom="35" right="0.0"/>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZ9-AR-2zK">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZ9-AR-2zK">
                                 <rect key="frame" x="16" y="608" width="343" height="51"/>
                                 <color key="backgroundColor" name="SettingsHighlighted"/>
                                 <constraints>
@@ -408,6 +408,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="Zek-aC-HOO"/>
                         <color key="backgroundColor" name="SettingsBackground"/>
                         <constraints>
                             <constraint firstItem="qZ9-AR-2zK" firstAttribute="top" secondItem="bp6-55-IG2" secondAttribute="bottom" id="3yt-cr-swd"/>
@@ -418,7 +419,6 @@
                             <constraint firstAttribute="bottomMargin" secondItem="qZ9-AR-2zK" secondAttribute="bottom" id="e8e-9l-Mkt"/>
                             <constraint firstItem="qZ9-AR-2zK" firstAttribute="leading" secondItem="Otz-hn-WGS" secondAttribute="leadingMargin" id="t2b-3e-6ld"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Zek-aC-HOO"/>
                     </view>
                     <navigationItem key="navigationItem" title="How it works" largeTitleDisplayMode="always" id="bCq-Jq-gf1"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
@@ -429,7 +429,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Q4-ya-qhc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1353" y="736"/>
+            <point key="canvasLocation" x="2202" y="736"/>
         </scene>
         <!--Refresh AltStore-->
         <scene sceneID="9Vh-dM-OqX">
@@ -445,7 +445,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="tDQ-ao-1Jg">
                                 <rect key="frame" x="16" y="570" width="343" height="89"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcg-hT-tDe" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcg-hT-tDe" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="51"/>
                                         <color key="backgroundColor" name="SettingsHighlighted"/>
                                         <constraints>
@@ -460,7 +460,7 @@
                                             <action selector="refreshAltStore:" destination="aoK-yE-UVT" eventType="primaryActionTriggered" id="WQu-9b-Zgg"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qua-VA-asJ">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qua-VA-asJ">
                                         <rect key="frame" x="0.0" y="59" width="343" height="30"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal" title="Refresh Later">
@@ -473,6 +473,7 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="iwE-xE-ziz"/>
                         <color key="backgroundColor" name="SettingsBackground"/>
                         <constraints>
                             <constraint firstItem="fpO-Bf-gFY" firstAttribute="leading" secondItem="iwE-xE-ziz" secondAttribute="leading" id="A77-nX-Wg2"/>
@@ -483,7 +484,6 @@
                             <constraint firstItem="fpO-Bf-gFY" firstAttribute="top" secondItem="R83-kV-365" secondAttribute="top" id="oKo-10-7kD"/>
                             <constraint firstItem="tDQ-ao-1Jg" firstAttribute="leading" secondItem="R83-kV-365" secondAttribute="leadingMargin" id="zEt-Xr-kJx"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="iwE-xE-ziz"/>
                     </view>
                     <navigationItem key="navigationItem" title="Refresh AltStore" largeTitleDisplayMode="always" id="5nk-NR-jtV"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
@@ -493,10 +493,71 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Chr-7g-qEw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2101.5999999999999" y="733.5832083958021"/>
+            <point key="canvasLocation" x="2967" y="736"/>
+        </scene>
+        <!--Select a Team-->
+        <scene sceneID="ioQ-WB-CLJ">
+            <objects>
+                <viewController storyboardIdentifier="selectTeamViewController" hidesBottomBarWhenPushed="YES" id="kOD-4P-a6L" customClass="SelectTeamViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="60" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="fWW-kX-ifH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="TeamCell" textLabel="6ip-34-gmM" detailTextLabel="knk-Wf-PKf" style="IBUITableViewCellStyleSubtitle" id="qeQ-eb-2SC" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qeQ-eb-2SC" id="bT4-Fc-u6I">
+                                    <rect key="frame" x="0.0" y="0.0" width="334" height="60"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Team 1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6ip-34-gmM">
+                                            <rect key="frame" x="30" y="10" width="56.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="knk-Wf-PKf">
+                                            <rect key="frame" x="30" y="33.5" width="70" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                        <integer key="value" value="0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="kOD-4P-a6L" id="OLE-fk-1MD"/>
+                            <outlet property="delegate" destination="kOD-4P-a6L" id="t9T-jO-TrR"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Select a Team" largeTitleDisplayMode="always" id="qxJ-Go-OPq"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yH5-jU-aez" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1401" y="734"/>
         </scene>
     </scenes>
+    <color key="tintColor" name="Primary"/>
     <resources>
+        <namedColor name="Primary">
+            <color red="0.0040000001899898052" green="0.50199997425079346" blue="0.51800000667572021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="SettingsBackground">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
@@ -504,5 +565,4 @@
             <color red="0.0080000003799796104" green="0.32199999690055847" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
-    <color key="tintColor" name="Primary"/>
 </document>

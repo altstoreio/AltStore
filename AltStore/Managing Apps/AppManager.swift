@@ -667,12 +667,17 @@ private extension AppManager
                 case .refresh(let app):
                     // Check if backup app is installed in place of real app.
                     let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
-                    if app.certificateSerialNumber != group.context.certificate?.serialNumber || uti != nil || app.needsResign
+
+                    if app.certificateSerialNumber != group.context.certificate?.serialNumber ||
+                        uti != nil ||
+                        app.needsResign ||
+                        (group.context.server?.connectionType == .local && !UserDefaults.standard.localServerSupportsRefreshing)
                     {
                         // Resign app instead of just refreshing profiles because either:
                         // * Refreshing using different certificate
                         // * Backup app is still installed
                         // * App explicitly needs resigning
+                        // * Device is jailbroken and using AltDaemon on iOS 14.0 or later (b/c refreshing with provisioning profiles is broken)
                         
                         let installProgress = self._install(app, operation: operation, group: group) { (result) in
                             self.finish(operation, result: result, group: group, progress: progress)
@@ -1398,12 +1403,30 @@ private extension AppManager
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
+        // Find "Install AltStore" operation if it already exists in `context`
+        // so we can ensure it runs after any additional serial operations in `operations`.
+        let installAltStoreOperation = context?.operations.allObjects.lazy.compactMap { $0 as? InstallAppOperation }.first { $0.context.bundleIdentifier == StoreApp.altstoreAppID }
+        
         for operation in operations
         {
             switch operation
             {
             case _ where requiresSerialQueue: fallthrough
-            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation: self.serialOperationQueue.addOperation(operation)
+            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation:
+                if let installAltStoreOperation = operation as? InstallAppOperation, installAltStoreOperation.context.bundleIdentifier == StoreApp.altstoreAppID
+                {
+                    // Add dependencies on previous serial operations in `context` to ensure re-installing AltStore goes last.
+                    let previousSerialOperations = context?.operations.allObjects.filter { self.serialOperationQueue.operations.contains($0) }
+                    previousSerialOperations?.forEach { installAltStoreOperation.addDependency($0) }
+                }
+                else if let installAltStoreOperation = installAltStoreOperation
+                {
+                    // Re-installing AltStore should _always_ be the last serial operation in `context`.
+                    installAltStoreOperation.addDependency(operation)
+                }
+                
+                self.serialOperationQueue.addOperation(operation)
+                
             default: self.operationQueue.addOperation(operation)
             }
             

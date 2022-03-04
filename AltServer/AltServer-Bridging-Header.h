@@ -9,5 +9,6 @@
 // Shared
 #import "ALTConstants.h"
 #import "ALTConnection.h"
+#import "AltXPCProtocol.h"
 #import "NSError+ALTServerError.h"
 #import "CFNotificationName+AltStore.h"

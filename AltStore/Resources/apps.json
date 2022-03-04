@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.2",
-      "versionDate": "2020-11-11T12:00:00-07:00",
-      "versionDescription": "This update allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2.ipa",
+      "version": "1.4.3",
+      "versionDate": "2021-02-02T13:30:00-06:00",
+      "versionDescription": "This update fixes apps installed after January 28 crashing on launch.\n\n⚠️ This update must be installed manually. Update AltServer to the latest version and use it to reinstall AltStore. You do not need to delete AltStore first.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_3.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4792897,
+      "size": 4788971,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4.2b1",
-      "versionDate": "2020-11-05T13:30:00-07:00",
-      "versionDescription": "This beta allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2_b1.ipa",
+      "version": "1.4.4b",
+      "versionDate": "2021-03-01T14:30:00-06:00",
+      "versionDescription": "• Fixes apps not launching on iOS 14.5*\n• Fixes \"This device is already registered with this team\" error*\n• Fixes AltDaemon untrusting apps after refresh on iOS 14\n\n* Requires reinstalling AltStore with latest AltServer beta from Patreon",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_4_b.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4790751,
+      "size": 4789109,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2b3",
-      "versionDate": "2020-10-12T12:30:00-07:00",
-      "versionDescription": "**Delta 1.2 GM**\n\nIMPROVEMENTS\n• Improves sync error messages when a game is missing or can’t be synced\n\nBUG FIXES\n• Fixes misplaced DS screens when using external controller\n• Fixes NES games crashing after playing an N64 game\n• Fixes various issues with controller skin filters\n• Fixes swapped DS screens\n• Fixes importing games from Files\n\nThanks for your help beta testing Delta these past few months! This should be the last beta before the public release of Delta 1.2, so please report any last-minute issues so we can have a smooth release 🙂",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2_b3.ipa",
-      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
+      "version": "1.3b3",
+      "versionDate": "2021-01-21T13:00:00-06:00",
+      "versionDescription": "NEW\n• Adds setting to disable previews when using context menus\n• Displays DS screens side-by-side in landscape when external controller is connected\n• Verifies melonDS BIOS files are correct when importing from Files\n• Hides DS \"Home Screen\" until after BIOS files have been imported\n• Increases melonDS Fast Forward speed to 3x on devices that support JIT\n• Changes default DS core to melonDS*\n\nBUG FIXES\n• Fixes DS touch screen not working when external controller is connected\n• Fixes audio stuttering when previewing games + save states\n• Fixes DS games crashing on iOS 14.4\n• Fixes crash when previewing DS games before importing BIOS files\n• Fixes missing \"Home Screen Shortcuts\" setting on newer devices without 3D touch\n\n* DeSmuME core will remain as an optional core in the beta versions of Delta, but the public version will only support melonDS.",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_3_b3.ipa",
+      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18456630,
+      "size": 18600474,
       "beta": true,
       "permissions": [
         {
@@ -274,6 +274,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "vfuSOfSYTUC8pEq6TM9r6uoL-T-uTJEI85hFescT4AM"
+    "patreonAccessToken": "NeHf7QSo-dVexWRxDF2JJwxZZ4fzkrHJO9sFJprsLko"
   }
 }
