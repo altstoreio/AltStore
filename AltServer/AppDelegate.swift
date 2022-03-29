@@ -470,15 +470,15 @@ extension AppDelegate: NSMenuDelegate
 
         if self.isAltPluginUpdateAvailable
         {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in", comment: "")
+            self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in…", comment: "")
         }
         else if self.pluginManager.isMailPluginInstalled
         {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
+            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in…", comment: "")
         }
         else
         {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in", comment: "")
+            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in…", comment: "")
         }
         self.installMailPluginMenuItem.target = self
         self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
