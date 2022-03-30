@@ -841,6 +841,12 @@ private extension ALTDeviceManager
                         try encryptedData.write(to: certificateURL, options: .atomic)
                     }
                 }
+                else if infoDictionary.keys.contains(Bundle.Info.deviceID)
+                {
+                    // There is an ALTDeviceID entry, so assume the app is using AltKit and replace it with the device's UDID.
+                    additionalValues[Bundle.Info.deviceID] = device.identifier
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.serverID
+                }
                 
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
                 
