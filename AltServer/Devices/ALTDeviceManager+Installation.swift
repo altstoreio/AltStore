@@ -10,7 +10,7 @@ import Cocoa
 import UserNotifications
 import ObjectiveC
 
-private let appGroupsLock = NSLock()
+private let appGroupsSemaphore = DispatchSemaphore(value: 1)
 
 private let developerDiskManager = DeveloperDiskManager()
 
@@ -680,16 +680,16 @@ private extension ALTDeviceManager
             }
         }
         
-        // Dispatch onto global queue to prevent appGroupsLock deadlock.
+        // Dispatch onto global queue to prevent appGroupsSemaphore deadlock.
         DispatchQueue.global().async {
             
             // Ensure we're not concurrently fetching and updating app groups,
             // which can lead to race conditions such as adding an app group twice.
-            appGroupsLock.lock()
+            appGroupsSemaphore.wait()
             
             func finish(_ result: Result<ALTAppID, Error>)
             {
-                appGroupsLock.unlock()
+                appGroupsSemaphore.signal()
                 completionHandler(result)
             }
             
