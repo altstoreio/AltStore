@@ -668,16 +668,10 @@ private extension ALTDeviceManager
     
     func updateAppGroups(for appID: ALTAppID, app: ALTApplication, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTAppID, Error>) -> Void)
     {
-        let applicationGroups = app.entitlements[.appGroups] as? [String] ?? []
-        if applicationGroups.isEmpty
-        {
-            guard let isAppGroupsEnabled = appID.features[.appGroups] as? Bool, isAppGroupsEnabled else {
-                // No app groups, and we also haven't enabled the feature, so don't continue.
-                // For apps with no app groups but have had the feature enabled already
-                // we'll continue and assign the app ID to an empty array
-                // in case we need to explicitly remove them.
-                return completionHandler(.success(appID))
-            }
+        guard let applicationGroups = app.entitlements[.appGroups] as? [String], !applicationGroups.isEmpty else {
+            // Assigning an App ID to an empty app group array fails,
+            // so just do nothing if there are no app groups.
+            return completionHandler(.success(appID))
         }
         
         // Dispatch onto global queue to prevent appGroupsSemaphore deadlock.
