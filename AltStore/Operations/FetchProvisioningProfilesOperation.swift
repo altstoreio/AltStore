@@ -320,7 +320,13 @@ extension FetchProvisioningProfilesOperation
         
         if let applicationGroups = entitlements[.appGroups] as? [String], !applicationGroups.isEmpty
         {
+            // App uses app groups, so assign `true` to enable the feature.
             features[.appGroups] = true
+        }
+        else
+        {
+            // App has no app groups, so assign `false` to disable the feature.
+            features[.appGroups] = false
         }
         
         var updateFeatures = false
@@ -331,6 +337,11 @@ extension FetchProvisioningProfilesOperation
             if let appIDValue = appID.features[feature] as AnyObject?, (value as AnyObject).isEqual(appIDValue)
             {
                 // AppID already has this feature enabled and the values are the same.
+                continue
+            }
+            else if appID.features[feature] == nil, let shouldEnableFeature = value as? Bool, !shouldEnableFeature
+            {
+                // AppID doesn't already have this feature enabled, but we want it disabled anyway.
                 continue
             }
             else
