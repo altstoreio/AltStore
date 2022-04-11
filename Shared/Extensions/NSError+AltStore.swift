@@ -67,8 +67,23 @@ extension NSError
         userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
         userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
         
-        // Remove non-ObjC-compliant userInfo values.
-        userInfo["NSCodingPath"] = nil
+        // Remove userInfo values that don't conform to NSSecureEncoding.
+        userInfo = userInfo.filter { (key, value) in
+            return (value as AnyObject) is NSSecureCoding
+        }
+        
+        // Sanitize underlying errors.
+        if let underlyingError = userInfo[NSUnderlyingErrorKey] as? Error
+        {
+            let sanitizedError = (underlyingError as NSError).sanitizedForCoreData()
+            userInfo[NSUnderlyingErrorKey] = sanitizedError
+        }
+        
+        if #available(iOS 14.5, *), let underlyingErrors = userInfo[NSMultipleUnderlyingErrorsKey] as? [Error]
+        {
+            let sanitizedErrors = underlyingErrors.map { ($0 as NSError).sanitizedForCoreData() }
+            userInfo[NSMultipleUnderlyingErrorsKey] = sanitizedErrors
+        }
         
         let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
         return error
