@@ -357,6 +357,7 @@
 		D57F2C9426E01BC700B9FA39 /* UIDevice+Vibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */; };
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
+		D5DAE0942804B0B80034D8D4 /* ScreenshotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */; };
 		D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -816,6 +817,7 @@
 		D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableJITOperation.swift; sourceTree = "<group>"; };
 		D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Vibration.swift"; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
+		D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotProcessor.swift; sourceTree = "<group>"; };
 		D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchViewController.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -979,6 +981,7 @@
 			children = (
 				BF41B807233433C100C593A3 /* LoadingState.swift */,
 				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
+				D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -2559,6 +2562,7 @@
 				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
 				BFF00D302501BD7D00746320 /* Intents.intentdefinition in Sources */,
 				BF6C336224197D700034FD24 /* NSError+AltStore.swift in Sources */,
+				D5DAE0942804B0B80034D8D4 /* ScreenshotProcessor.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
 				BFE00A202503097F00EB4D0C /* INInteraction+AltStore.swift in Sources */,
