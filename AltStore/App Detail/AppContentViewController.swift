@@ -209,10 +209,19 @@ extension AppContentViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        guard indexPath.row == Row.screenshots.rawValue else { return super.tableView(tableView, heightForRowAt: indexPath) }
-        
-        guard let size = self.preferredScreenshotSize else { return 0.0 }
-        return size.height
+        switch Row.allCases[indexPath.row]
+        {
+        case .screenshots:
+            guard let size = self.preferredScreenshotSize else { return 0.0 }
+            return size.height
+            
+        case .permissions:
+            guard !self.app.permissions.isEmpty else { return 0.0 }
+            return super.tableView(tableView, heightForRowAt: indexPath)
+            
+        default:
+            return super.tableView(tableView, heightForRowAt: indexPath)
+        }
     }
 }
 

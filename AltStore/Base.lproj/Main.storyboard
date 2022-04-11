@@ -412,7 +412,7 @@
                                                             <rect key="frame" x="0.0" y="41" width="375" height="88"/>
                                                             <color key="backgroundColor" name="Background"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="88" id="6Lk-OO-MsA"/>
+                                                                <constraint firstAttribute="height" priority="999" constant="88" id="6Lk-OO-MsA"/>
                                                             </constraints>
                                                             <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="2HF-4d-3Im">
                                                                 <size key="itemSize" width="60" height="88"/>
