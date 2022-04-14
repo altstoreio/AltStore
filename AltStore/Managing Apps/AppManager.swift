@@ -312,9 +312,12 @@ extension AppManager
 
 extension AppManager
 {
-    func fetchSource(sourceURL: URL, completionHandler: @escaping (Result<Source, Error>) -> Void)
+    func fetchSource(sourceURL: URL,
+                     managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
+                     dependencies: [Foundation.Operation] = [],
+                     completionHandler: @escaping (Result<Source, Error>) -> Void)
     {
-        let fetchSourceOperation = FetchSourceOperation(sourceURL: sourceURL)
+        let fetchSourceOperation = FetchSourceOperation(sourceURL: sourceURL, managedObjectContext: managedObjectContext)
         fetchSourceOperation.resultHandler = { (result) in
             switch result
             {
@@ -324,6 +327,11 @@ extension AppManager
             case .success(let source):
                 completionHandler(.success(source))
             }
+        }
+        
+        for dependency in dependencies
+        {
+            fetchSourceOperation.addDependency(dependency)
         }
         
         self.run([fetchSourceOperation], context: nil)

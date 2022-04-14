@@ -37,6 +37,8 @@ public extension UserDefaults
     
     @NSManaged var patchedApps: [String]?
     
+    @NSManaged var trustedSourceIDs: [String]?
+    
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue
