@@ -395,6 +395,16 @@ extension AppManager
     }
     
     @discardableResult
+    func fetchTrustedSources(completionHandler: @escaping (Result<[FetchTrustedSourcesOperation.TrustedSource], Error>) -> Void) -> FetchTrustedSourcesOperation
+    {
+        let fetchTrustedSourcesOperation = FetchTrustedSourcesOperation()
+        fetchTrustedSourcesOperation.resultHandler = completionHandler
+        self.run([fetchTrustedSourcesOperation], context: nil)
+        
+        return fetchTrustedSourcesOperation
+    }
+    
+    @discardableResult
     func install<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
     {
         let group = RefreshGroup(context: context)
