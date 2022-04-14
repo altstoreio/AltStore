@@ -158,6 +158,10 @@ private extension PatchAppOperation
     func downloadArchive(from update: OTAUpdate) -> AnyPublisher<URL, Error>
     {
         Just(()).tryMap {
+            #if targetEnvironment(simulator)
+            throw PatchAppError.unsupportedOperatingSystemVersion(ProcessInfo.processInfo.operatingSystemVersion)
+            #else
+            
             try FileManager.default.createDirectory(at: self.patchDirectory, withIntermediateDirectories: true, attributes: nil)
             
             let archiveURL = self.patchDirectory.appendingPathComponent("ota.archive")
@@ -179,6 +183,8 @@ private extension PatchAppOperation
             
             print("Downloaded OTA archive.")
             return archiveURL
+            
+            #endif
         }
         .mapError { ($0 as NSError).withLocalizedFailure(NSLocalizedString("Could not download OTA archive.", comment: "")) }
         .eraseToAnyPublisher()
@@ -187,6 +193,10 @@ private extension PatchAppOperation
     func extractSpotlightFromArchive(at archiveURL: URL) -> AnyPublisher<URL, Error>
     {
         Just(()).tryMap {
+            #if targetEnvironment(simulator)
+            throw PatchAppError.unsupportedOperatingSystemVersion(ProcessInfo.processInfo.operatingSystemVersion)
+            #else
+            
             let spotlightPath = "Applications/Spotlight.app/Spotlight"
             let spotlightFileURL = self.patchDirectory.appendingPathComponent(spotlightPath)
             
@@ -203,6 +213,8 @@ private extension PatchAppOperation
             
             print("Extracted Spotlight from OTA archive.")
             return spotlightFileURL
+            
+            #endif
         }
         .mapError { ($0 as NSError).withLocalizedFailure(NSLocalizedString("Could not extract Spotlight from OTA archive.", comment: "")) }
         .eraseToAnyPublisher()
