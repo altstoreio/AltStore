@@ -115,19 +115,19 @@ private extension PatreonViewController
         let defaultText = NSLocalizedString("""
         Hey y'all,
         
-        You can support future development of my apps by donating to me on Patreon. In return, you'll receive access to the beta versions of my apps and be among the first to try the latest features.
+        You can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.
         
         Thanks for all your support 💜
-        Riley
+        Riley & Shane
         """, comment: "")
         
         let isPatronText = NSLocalizedString("""
         Hey ,
         
-        You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of my apps. You can find them all in the Browse tab.
+        You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.
         
         Thanks for all of your support. Enjoy!
-        Riley
+        Riley & Shane
         """, comment: "")
         
         if let account = DatabaseManager.shared.patreonAccount(), PatreonAPI.shared.isAuthenticated
