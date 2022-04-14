@@ -43,6 +43,7 @@ extension SettingsViewController
     fileprivate enum CreditsRow: Int, CaseIterable
     {
         case developer
+        case operations
         case designer
         case softwareLicenses
     }
@@ -468,6 +469,7 @@ extension SettingsViewController
             switch row
             {
             case .developer: self.openTwitter(username: "rileytestut")
+            case .operations: self.openTwitter(username: "shanegillio")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
             }
