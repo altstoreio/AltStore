@@ -151,8 +151,12 @@ public extension DatabaseManager
     
     func patreonAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> PatreonAccount?
     {
-        let patronAccount = PatreonAccount.first(in: context)
-        return patronAccount
+        guard let patreonAccountID = Keychain.shared.patreonAccountID else { return nil }
+            
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(PatreonAccount.identifier), patreonAccountID)
+        
+        let patreonAccount = PatreonAccount.first(satisfying: predicate, in: context)
+        return patreonAccount
     }
 }
 

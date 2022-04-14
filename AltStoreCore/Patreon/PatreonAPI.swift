@@ -120,7 +120,15 @@ public extension PatreonAPI
                         Keychain.shared.patreonAccessToken = accessToken
                         Keychain.shared.patreonRefreshToken = refreshToken
                         
-                        self.fetchAccount(completion: completion)
+                        self.fetchAccount { (result) in
+                            switch result
+                            {
+                            case .success(let account): Keychain.shared.patreonAccountID = account.identifier
+                            case .failure: break
+                            }
+                            
+                            completion(result)
+                        }
                     }
                 }
             }
@@ -238,8 +246,10 @@ public extension PatreonAPI
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             do
             {
-                let accounts = PatreonAccount.all(in: context, requestProperties: [\FetchRequest.returnsObjectsAsFaults: true])
-                accounts.forEach(context.delete(_:))
+                if let account = DatabaseManager.shared.patreonAccount(in: context)
+                {
+                    context.delete(account)
+                }
                 
                 self.deactivateBetaApps(in: context)
                 
@@ -247,6 +257,7 @@ public extension PatreonAPI
                 
                 Keychain.shared.patreonAccessToken = nil
                 Keychain.shared.patreonRefreshToken = nil
+                Keychain.shared.patreonAccountID = nil
                 
                 completion(.success(()))
             }
