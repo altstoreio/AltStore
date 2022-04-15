@@ -49,6 +49,7 @@ class UpdatePatronsOperation: ResultOperation<Void>
                 guard let data = data else { throw error! }
                 
                 let response = try AltStoreCore.JSONDecoder().decode(Response.self, from: data)
+                Keychain.shared.patreonCreatorAccessToken = response.accessToken
                 
                 let previousRefreshID = UserDefaults.shared.patronsRefreshID
                 guard response.refreshID != previousRefreshID else {
