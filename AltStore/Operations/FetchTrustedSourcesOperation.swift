@@ -41,6 +41,14 @@ class FetchTrustedSourcesOperation: ResultOperation<[FetchTrustedSourcesOperatio
         let dataTask = URLSession.shared.dataTask(with: .trustedSources) { (data, response, error) in
             do
             {
+                if let response = response as? HTTPURLResponse
+                {
+                    guard response.statusCode != 404 else {
+                        self.finish(.failure(URLError(.fileDoesNotExist, userInfo: [NSURLErrorKey: URL.trustedSources])))
+                        return
+                    }
+                }
+                
                 guard let data = data else { throw error! }
                 
                 let response = try Foundation.JSONDecoder().decode(Response.self, from: data)

@@ -46,6 +46,14 @@ class UpdatePatronsOperation: ResultOperation<Void>
         let dataTask = URLSession.shared.dataTask(with: .patreonInfo) { (data, response, error) in
             do
             {
+                if let response = response as? HTTPURLResponse
+                {
+                    guard response.statusCode != 404 else {
+                        self.finish(.failure(URLError(.fileDoesNotExist, userInfo: [NSURLErrorKey: URL.patreonInfo])))
+                        return
+                    }
+                }
+                
                 guard let data = data else { throw error! }
                 
                 let response = try AltStoreCore.JSONDecoder().decode(Response.self, from: data)
