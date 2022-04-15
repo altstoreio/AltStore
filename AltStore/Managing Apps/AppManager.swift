@@ -20,7 +20,8 @@ import Roxas
 
 extension AppManager
 {
-    static let didFetchSourceNotification = Notification.Name("com.altstore.AppManager.didFetchSource")
+    static let didFetchSourceNotification = Notification.Name("io.altstore.AppManager.didFetchSource")
+    static let didUpdatePatronsNotification = Notification.Name("io.altstore.AppManager.didUpdatePatrons")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
@@ -47,6 +48,8 @@ class AppManager
     
     @available(iOS 13, *)
     private(set) lazy var publisher: AppManagerPublisher = AppManagerPublisher()
+    
+    private(set) var updatePatronsResult: Result<Void, Error>?
     
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
@@ -410,6 +413,34 @@ extension AppManager
         self.run([fetchTrustedSourcesOperation], context: nil)
         
         return fetchTrustedSourcesOperation
+    }
+    
+    func updatePatronsIfNeeded()
+    {
+        guard self.operationQueue.operations.allSatisfy({ !($0 is UpdatePatronsOperation) }) else {
+            // There's already an UpdatePatronsOperation running.
+            return
+        }
+        
+        self.updatePatronsResult = nil
+        
+        let updatePatronsOperation = UpdatePatronsOperation()
+        updatePatronsOperation.resultHandler = { (result) in
+            do
+            {
+                try result.get()
+                self.updatePatronsResult = .success(())
+            }
+            catch
+            {
+                print("Error updating Friend Zone Patrons:", error)
+                self.updatePatronsResult = .failure(error)
+            }
+            
+            NotificationCenter.default.post(name: AppManager.didUpdatePatronsNotification, object: self)
+        }
+        
+        self.run([updatePatronsOperation], context: nil)
     }
     
     @discardableResult

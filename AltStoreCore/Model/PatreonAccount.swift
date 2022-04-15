@@ -38,6 +38,7 @@ public class PatreonAccount: NSManagedObject, Fetchable
     @NSManaged public var firstName: String?
     
     @NSManaged public var isPatron: Bool
+    @NSManaged public var isFriendZonePatron: NSNumber?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -61,6 +62,16 @@ public class PatreonAccount: NSManagedObject, Fetchable
         {
             self.isPatron = false
         }
+    }
+    
+    public init(patron: Patron, context: NSManagedObjectContext)
+    {
+        super.init(entity: PatreonAccount.entity(), insertInto: context)
+        
+        self.identifier = patron.identifier
+        self.name = patron.name
+        self.firstName = nil
+        self.isPatron = (patron.status == .active)
     }
 }
 
