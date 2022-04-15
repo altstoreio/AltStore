@@ -242,12 +242,6 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
-        
-        #if !BETA
-        // Hide Sources button for public version if there's only 1 source.
-        let sources = Source.all(in: DatabaseManager.shared.viewContext)
-        self.navigationItem.rightBarButtonItem = (sources.count > 1) ? self.sourcesBarButtonItem : nil
-        #endif
     }
 }
 
