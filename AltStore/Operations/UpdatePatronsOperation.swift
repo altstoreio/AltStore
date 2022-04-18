@@ -70,24 +70,15 @@ class UpdatePatronsOperation: ResultOperation<Void>
                         do
                         {
                             let patrons = try result.get()
-                            let managedPatrons = patrons.map { (patron) -> PatreonAccount in
-                                let account = PatreonAccount(patron: patron, context: self.context)
-                                account.isFriendZonePatron = true
-                                return account
-                            }
+                            let managedPatrons = patrons.map { ManagedPatron(patron: $0, context: self.context) }
                             
-                            var patronIDs = Set(managedPatrons.map { $0.identifier })
-                            if let userAccountID = Keychain.shared.patreonAccountID
+                            let patronIDs = Set(managedPatrons.map { $0.identifier })
+                            let nonFriendZonePredicate = NSPredicate(format: "NOT (%K IN %@)", #keyPath(ManagedPatron.identifier), patronIDs)
+                            
+                            let nonFriendZonePatrons = ManagedPatron.all(satisfying: nonFriendZonePredicate, in: self.context)
+                            for managedPatron in nonFriendZonePatrons
                             {
-                                // Insert userAccountID into patronIDs to prevent it from being deleted.
-                                patronIDs.insert(userAccountID)
-                            }
-                                                
-                            let removedPredicate = NSPredicate(format: "NOT (%K IN %@)", #keyPath(PatreonAccount.identifier), patronIDs)
-                            let removedPatrons = PatreonAccount.all(satisfying: removedPredicate, in: self.context)
-                            for patreonAccount in removedPatrons
-                            {
-                                self.context.delete(patreonAccount)
+                                self.context.delete(managedPatron)
                             }
                             
                             try self.context.save()

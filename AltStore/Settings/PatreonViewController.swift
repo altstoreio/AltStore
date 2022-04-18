@@ -75,24 +75,23 @@ class PatreonViewController: UICollectionViewController
 
 private extension PatreonViewController
 {
-    func makeDataSource() -> RSTCompositeCollectionViewDataSource<PatreonAccount>
+    func makeDataSource() -> RSTCompositeCollectionViewDataSource<ManagedPatron>
     {
-        let aboutDataSource = RSTDynamicCollectionViewDataSource<PatreonAccount>()
+        let aboutDataSource = RSTDynamicCollectionViewDataSource<ManagedPatron>()
         aboutDataSource.numberOfSectionsHandler = { 1 }
         aboutDataSource.numberOfItemsHandler = { _ in 0 }
         
-        let dataSource = RSTCompositeCollectionViewDataSource<PatreonAccount>(dataSources: [aboutDataSource, self.patronsDataSource])
+        let dataSource = RSTCompositeCollectionViewDataSource<ManagedPatron>(dataSources: [aboutDataSource, self.patronsDataSource])
         dataSource.proxy = self
         return dataSource
     }
     
-    func makePatronsDataSource() -> RSTFetchedResultsCollectionViewDataSource<PatreonAccount>
+    func makePatronsDataSource() -> RSTFetchedResultsCollectionViewDataSource<ManagedPatron>
     {
-        let fetchRequest: NSFetchRequest<PatreonAccount> = PatreonAccount.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(PatreonAccount.isFriendZonePatron))
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(PatreonAccount.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+        let fetchRequest: NSFetchRequest<ManagedPatron> = ManagedPatron.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(ManagedPatron.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
         
-        let patronsDataSource = RSTFetchedResultsCollectionViewDataSource<PatreonAccount>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let patronsDataSource = RSTFetchedResultsCollectionViewDataSource<ManagedPatron>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         patronsDataSource.cellConfigurationHandler = { (cell, patron, indexPath) in
             let cell = cell as! PatronCollectionViewCell
             cell.textLabel.text = patron.name

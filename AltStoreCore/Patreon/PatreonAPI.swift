@@ -246,10 +246,8 @@ public extension PatreonAPI
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             do
             {
-                if let account = DatabaseManager.shared.patreonAccount(in: context)
-                {
-                    context.delete(account)
-                }
+                let accounts = PatreonAccount.all(in: context, requestProperties: [\.returnsObjectsAsFaults: true])
+                accounts.forEach(context.delete(_:))
                 
                 self.deactivateBetaApps(in: context)
                 

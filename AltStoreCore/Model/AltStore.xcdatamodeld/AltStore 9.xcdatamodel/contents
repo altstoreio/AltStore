@@ -87,7 +87,6 @@
     <entity name="PatreonAccount" representedClassName="PatreonAccount" syncable="YES">
         <attribute name="firstName" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
-        <attribute name="isFriendZonePatron" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isPatron" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <uniquenessConstraints>
@@ -178,7 +177,7 @@
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="268"/>
         <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
         <element name="NewsItem" positionX="-45" positionY="126" width="128" height="238"/>
-        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="104"/>
+        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="89"/>
         <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
         <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
