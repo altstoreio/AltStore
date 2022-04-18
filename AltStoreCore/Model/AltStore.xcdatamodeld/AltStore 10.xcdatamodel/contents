@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17505" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E230" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -95,6 +95,15 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="Patron" representedClassName="ManagedPatron" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="errorDescription" optional="YES" attributeType="String"/>
@@ -168,7 +177,8 @@
         <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="268"/>
         <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
         <element name="NewsItem" positionX="-45" positionY="126" width="128" height="238"/>
-        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="105"/>
+        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="89"/>
+        <element name="Patron" positionX="-36" positionY="153" width="128" height="59"/>
         <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
         <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
