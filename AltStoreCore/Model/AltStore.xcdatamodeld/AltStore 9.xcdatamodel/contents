@@ -96,6 +96,15 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="Patron" representedClassName="ManagedPatron" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="errorDescription" optional="YES" attributeType="String"/>
@@ -174,5 +183,6 @@
         <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
         <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
         <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
+        <element name="Patron" positionX="-36" positionY="153" width="128" height="59"/>
     </elements>
 </model>
