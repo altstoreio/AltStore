@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 extern NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification NS_SWIFT_NAME(deviceManagerDeviceDidConnect);
 extern NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification NS_SWIFT_NAME(deviceManagerDeviceDidDisconnect);
+extern NSNotificationName const ALTInstallationStatusNotification NS_SWIFT_NAME(installationStatusNotification);
 
 @interface ALTDeviceManager : NSObject
 

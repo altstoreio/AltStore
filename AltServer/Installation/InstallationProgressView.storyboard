@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="bxU-R0-OAJ">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <capability name="NSView safe area layout guides" minToolsVersion="12.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller-->
+        <scene sceneID="BR3-No-N2z">
+            <objects>
+                <windowController id="bxU-R0-OAJ" sceneMemberID="viewController">
+                    <window key="window" title="AltServer" separatorStyle="none" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" toolbarStyle="unified" id="gsc-va-bcA">
+                        <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
+                        <windowCollectionBehavior key="collectionBehavior" fullScreenDisallowsTiling="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="1250" y="800" width="400" height="197"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+                        <view key="contentView" id="amN-SX-V4c">
+                            <rect key="frame" x="0.0" y="0.0" width="400" height="197"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="bxU-R0-OAJ" id="r9F-DU-2Eu"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="xuA-sa-XrU" kind="relationship" relationship="window.shadowedContentViewController" id="B1G-p1-6z5"/>
+                    </connections>
+                </windowController>
+                <customObject id="7xI-MV-f6h" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5" y="-116"/>
+        </scene>
+        <!--Installation Progress View Controller-->
+        <scene sceneID="N7e-za-oZg">
+            <objects>
+                <viewController id="xuA-sa-XrU" customClass="InstallationProgressViewController" customModule="AltServer" customModuleProvider="target" sceneMemberID="viewController">
+                    <visualEffectView key="view" blendingMode="behindWindow" material="underWindowBackground" state="followsWindowActiveState" id="Lyt-lY-vRd">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="197"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="zKf-WD-Wlc" userLabel="Start Label" customClass="InstallationProgressViewStatusLabel" customModule="AltServer" customModuleProvider="target">
+                                <rect key="frame" x="20" y="110" width="360" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="Ku1-fA-Zm2"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="string" value="Start"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="DHh-9t-6Rm" userLabel="Provision Label" customClass="InstallationProgressViewStatusLabel" customModule="AltServer" customModuleProvider="target">
+                                <rect key="frame" x="20" y="85" width="360" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="nJk-WO-qKt"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="string" value="Provision"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="KwU-pC-3e7" userLabel="IPA Label" customClass="InstallationProgressViewStatusLabel" customModule="AltServer" customModuleProvider="target">
+                                <rect key="frame" x="20" y="60" width="360" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="WlZ-xQ-b8z"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="string" value="Prepare .ipa"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="2Gc-6g-zNv" userLabel="Sign Label" customClass="InstallationProgressViewStatusLabel" customModule="AltServer" customModuleProvider="target">
+                                <rect key="frame" x="20" y="35" width="360" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="fTo-nI-5wd"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="string" value="Sign"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="20p-K0-sB2" userLabel="Install Label" customClass="InstallationProgressViewStatusLabel" customModule="AltServer" customModuleProvider="target">
+                                <rect key="frame" x="20" y="10" width="360" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="IuC-9h-Xrc"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="string" value="Install"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="2Gc-6g-zNv" firstAttribute="top" secondItem="KwU-pC-3e7" secondAttribute="bottom" id="Ato-Gl-JCf"/>
+                            <constraint firstItem="zKf-WD-Wlc" firstAttribute="top" secondItem="zWu-Iw-k1a" secondAttribute="top" constant="10" id="BNu-ZB-3Gl"/>
+                            <constraint firstItem="KwU-pC-3e7" firstAttribute="trailing" secondItem="GGD-lL-XWX" secondAttribute="trailing" id="CsV-DP-wBd"/>
+                            <constraint firstItem="zKf-WD-Wlc" firstAttribute="leading" secondItem="GGD-lL-XWX" secondAttribute="leading" id="DfH-Od-3ee"/>
+                            <constraint firstItem="zWu-Iw-k1a" firstAttribute="bottom" secondItem="20p-K0-sB2" secondAttribute="bottom" constant="10" id="HFn-9p-9zn"/>
+                            <constraint firstItem="20p-K0-sB2" firstAttribute="top" secondItem="2Gc-6g-zNv" secondAttribute="bottom" id="MFg-oq-dm0"/>
+                            <constraint firstItem="20p-K0-sB2" firstAttribute="trailing" secondItem="GGD-lL-XWX" secondAttribute="trailing" id="Ncc-hj-fHy"/>
+                            <constraint firstItem="DHh-9t-6Rm" firstAttribute="leading" secondItem="GGD-lL-XWX" secondAttribute="leading" id="QAM-Xm-Kfa"/>
+                            <constraint firstItem="GGD-lL-XWX" firstAttribute="trailing" secondItem="zKf-WD-Wlc" secondAttribute="trailing" id="R4u-wX-qjQ"/>
+                            <constraint firstItem="DHh-9t-6Rm" firstAttribute="trailing" secondItem="GGD-lL-XWX" secondAttribute="trailing" id="W1n-OY-i7c"/>
+                            <constraint firstItem="2Gc-6g-zNv" firstAttribute="leading" secondItem="GGD-lL-XWX" secondAttribute="leading" id="XTd-pe-sc6"/>
+                            <constraint firstItem="20p-K0-sB2" firstAttribute="leading" secondItem="GGD-lL-XWX" secondAttribute="leading" id="eD4-vO-4x1"/>
+                            <constraint firstItem="DHh-9t-6Rm" firstAttribute="top" secondItem="zKf-WD-Wlc" secondAttribute="bottom" id="ege-Jb-akt"/>
+                            <constraint firstItem="2Gc-6g-zNv" firstAttribute="trailing" secondItem="GGD-lL-XWX" secondAttribute="trailing" id="erQ-qn-BY7"/>
+                            <constraint firstItem="KwU-pC-3e7" firstAttribute="leading" secondItem="GGD-lL-XWX" secondAttribute="leading" id="pgq-cn-0XC"/>
+                            <constraint firstItem="KwU-pC-3e7" firstAttribute="top" secondItem="DHh-9t-6Rm" secondAttribute="bottom" id="zAZ-K6-9dP"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zWu-Iw-k1a"/>
+                        <viewLayoutGuide key="layoutMargins" id="GGD-lL-XWX"/>
+                    </visualEffectView>
+                    <connections>
+                        <outlet property="installLabel" destination="20p-K0-sB2" id="ljK-Ce-xg7"/>
+                        <outlet property="ipaLabel" destination="KwU-pC-3e7" id="XLW-tC-lkg"/>
+                        <outlet property="provisionLabel" destination="DHh-9t-6Rm" id="NtW-Uh-YeW"/>
+                        <outlet property="signLabel" destination="2Gc-6g-zNv" id="2EG-Rc-ngN"/>
+                        <outlet property="startLabel" destination="zKf-WD-Wlc" id="mD1-yl-y54"/>
+                    </connections>
+                </viewController>
+                <customObject id="jsa-WH-URe" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5" y="349"/>
+        </scene>
+    </scenes>
+</document>

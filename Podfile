@@ -19,6 +19,7 @@ target 'AltServer' do
   # Pods for AltServer
   pod 'STPrivilegedTask', :git => 'https://github.com/rileytestut/STPrivilegedTask.git'
   pod 'Sparkle'
+  pod 'KeychainAccess', '~> 4.2.0'
 
 end
 

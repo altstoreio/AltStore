@@ -1,5 +1,5 @@
 framework module KeychainAccess {
-  umbrella header "KeychainAccess-umbrella.h"
+  umbrella header "KeychainAccess-macOS-umbrella.h"
 
   export *
   module * { export * }

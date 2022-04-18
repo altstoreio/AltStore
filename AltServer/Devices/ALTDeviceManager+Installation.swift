@@ -73,6 +73,11 @@ extension ALTDeviceManager
             try? FileManager.default.removeItem(at: destinationDirectoryURL)
         }
         
+        let userInfo: [String: Any] = [
+            "status": InstallationManager.InstallationStatus.provisioning.rawValue
+        ]
+        NotificationCenter.default.post(name: .installationStatusNotification, object: nil, userInfo: userInfo)
+	    
         AnisetteDataManager.shared.requestAnisetteData { (result) in
             do
             {
@@ -131,6 +136,11 @@ extension ALTDeviceManager
                                                                 
                                                                 appName = application.name
                                                                 
+																let userInfo = [
+																	"status": InstallationManager.InstallationStatus.signing.rawValue
+																]
+																NotificationCenter.default.post(name: .installationStatusNotification, object: nil, userInfo: userInfo)
+
                                                                 // Refresh anisette data to prevent session timeouts.
                                                                 AnisetteDataManager.shared.requestAnisetteData { (result) in
                                                                     do
@@ -233,10 +243,17 @@ private extension ALTDeviceManager
     func downloadApp(from url: URL, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
         guard !url.isFileURL else { return completionHandler(.success(url)) }
-        
-        let downloadTask = URLSession.shared.downloadTask(with: url) { (fileURL, response, error) in
-            do
-            {
+
+        let userInfo = [
+            "status": InstallationManager.InstallationStatus.preparingIpa.rawValue,
+            "url": url.absoluteString
+        ]
+        NotificationCenter.default.post(name: .installationStatusNotification, object: nil, userInfo: userInfo)
+
+        let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+
+        let downloadTask = session.downloadTask(with: url) { (fileURL, response, error) in
+            do {
                 let (fileURL, _) = try Result((fileURL, response), error).get()
                 completionHandler(.success(fileURL))
                 
@@ -917,5 +934,19 @@ extension ALTDeviceManager: NSTextFieldDelegate
         }
         
         self.securityCodeAlert?.layout()
+    }
+}
+
+extension ALTDeviceManager: URLSessionDownloadDelegate {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) { }
+
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        let percentDownloaded = totalBytesWritten / totalBytesExpectedToWrite
+        let userInfo: [String: Any?] = [
+            "status": InstallationManager.InstallationStatus.preparingIpa.rawValue,
+            "url": downloadTask.originalRequest?.url?.absoluteString,
+            "progress": percentDownloaded
+        ]
+        NotificationCenter.default.post(name: .installationStatusNotification, object: nil, userInfo: userInfo as [AnyHashable: Any])
     }
 }

@@ -357,6 +357,11 @@
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
 		D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */; };
+		E73F7ADF278BA714007938E4 /* InstallationProgressViewStatusLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E73F7ADE278BA714007938E4 /* InstallationProgressViewStatusLabel.swift */; };
+		E79AECC1278B1E1100579F8E /* InstallationProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79AECBF278B1E1100579F8E /* InstallationProgressViewController.swift */; };
+		E79AECC4278B1FE100579F8E /* InstallationProgressView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E79AECC3278B1FE100579F8E /* InstallationProgressView.storyboard */; };
+		E7CC23BB27890D5500E288A0 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE8B2501AEB1007EE018 /* Keychain.swift */; };
+		E7D09699278B10F50085970D /* InstallationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D09698278B10F50085970D /* InstallationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -815,6 +820,10 @@
 		D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Vibration.swift"; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
 		D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchViewController.swift; sourceTree = "<group>"; };
+		E73F7ADE278BA714007938E4 /* InstallationProgressViewStatusLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationProgressViewStatusLabel.swift; sourceTree = "<group>"; };
+		E79AECBF278B1E1100579F8E /* InstallationProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationProgressViewController.swift; sourceTree = "<group>"; };
+		E79AECC3278B1FE100579F8E /* InstallationProgressView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InstallationProgressView.storyboard; sourceTree = "<group>"; };
+		E7D09698278B10F50085970D /* InstallationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationManager.swift; sourceTree = "<group>"; };
 		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
 		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -963,6 +972,7 @@
 			children = (
 				BFD52BD222A06EFB000B7ED1 /* ALTConstants.h */,
 				BF718BD723C93DB700A89F2D /* ALTConstants.m */,
+				BF66EE8A2501AEB1007EE018 /* Components */,
 				BF18BFFF2485A75F00DD5981 /* Server Protocol */,
 				BFF767CF2489AC240097E58C /* Connections */,
 				BFF7C92D2578464D00E55F36 /* XPC */,
@@ -996,12 +1006,13 @@
 			isa = PBXGroup;
 			children = (
 				BF45868F229872EA00BD7491 /* AppDelegate.swift */,
-				BF458695229872EA00BD7491 /* Main.storyboard */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
 				BFC712BA2512B9CF00AB5EBE /* PluginManager.swift */,
 				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
 				BFF0394A25F0551600BE607D /* MenuController.swift */,
 				BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */,
+				BF458695229872EA00BD7491 /* Main.storyboard */,
+				E79AECBC278B1AEF00579F8E /* Installation */,
 				BF703195229F36FF006E110F /* Devices */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -1190,7 +1201,6 @@
 			isa = PBXGroup;
 			children = (
 				BF66EE802501AE50007EE018 /* AltStoreCore.h */,
-				BF66EE8A2501AEB1007EE018 /* Components */,
 				BF66EEE32501AED0007EE018 /* Extensions */,
 				BF66EEAA2501AECA007EE018 /* Model */,
 				BF66EE9F2501AEC5007EE018 /* Patreon */,
@@ -1751,6 +1761,17 @@
 			path = XPC;
 			sourceTree = "<group>";
 		};
+		E79AECBC278B1AEF00579F8E /* Installation */ = {
+			isa = PBXGroup;
+			children = (
+				E7D09698278B10F50085970D /* InstallationManager.swift */,
+				E79AECBF278B1E1100579F8E /* InstallationProgressViewController.swift */,
+				E79AECC3278B1FE100579F8E /* InstallationProgressView.storyboard */,
+				E73F7ADE278BA714007938E4 /* InstallationProgressViewStatusLabel.swift */,
+			);
+			path = Installation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2095,6 +2116,7 @@
 				BFE4FFB6251BF7BA0018CF9B /* AltPlugin.zip in Resources */,
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
+				E79AECC4278B1FE100579F8E /* InstallationProgressView.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2336,12 +2358,16 @@
 				BF541C0B25E5A5FA00CD46B2 /* FileManager+URLs.swift in Sources */,
 				BFECAC8724FD950B0077C41F /* Bundle+AltStore.swift in Sources */,
 				BF3F786422CAA41E008FBD20 /* ALTDeviceManager+Installation.swift in Sources */,
+				E7D09699278B10F50085970D /* InstallationManager.swift in Sources */,
 				BF18BFFD2485A1E400DD5981 /* WiredConnectionHandler.swift in Sources */,
 				BFC712BB2512B9CF00AB5EBE /* PluginManager.swift in Sources */,
+				E79AECC1278B1E1100579F8E /* InstallationProgressViewController.swift in Sources */,
 				BFECAC8224FD950B0077C41F /* ServerProtocol.swift in Sources */,
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
+				E7CC23BB27890D5500E288A0 /* Keychain.swift in Sources */,
 				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
 				BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */,
+				E73F7ADF278BA714007938E4 /* InstallationProgressViewStatusLabel.swift in Sources */,
 				BF265D1925F843A000080DC9 /* NSError+AltStore.swift in Sources */,
 				BF904DEA265DAE9A00E86C2A /* InstalledApp.swift in Sources */,
 				BFF435D9255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift in Sources */,

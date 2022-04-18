@@ -54,6 +54,8 @@ struct PluginVersion
 
 class PluginManager
 {
+	static let shared = PluginManager()
+	
     var isMailPluginInstalled: Bool {
         let isMailPluginInstalled = FileManager.default.fileExists(atPath: pluginURL.path)
         return isMailPluginInstalled
@@ -82,6 +84,8 @@ class PluginManager
             return .v1_0
         }
     }
+	
+	private init() {}
 }
 
 extension PluginManager

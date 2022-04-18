@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import UserNotifications
 
 public protocol RequestHandler
 {
@@ -122,9 +123,15 @@ private extension ConnectionManager
         
         connection.receiveRequest() { (result) in
             print("Received request with result:", result)
-            
-            switch result
-            {
+    	    
+    	    let content = UNMutableNotificationContent()
+    	    content.title = "Received request!"
+    	    content.body = String(describing: result)
+    	    
+    	    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+    	    UNUserNotificationCenter.current().add(request)
+
+            switch result {
             case .failure(let error): finish(Result<ErrorResponse, Error>.failure(error))
                 
             case .success(.anisetteData(let request)):

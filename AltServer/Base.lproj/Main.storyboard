@@ -1,71 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
-        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
     </dependencies>
     <scenes>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
             <objects>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
-                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" id="urc-xw-Dhc">
-                    <rect key="frame" x="0.0" y="0.0" width="300" height="46"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <subviews>
-                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zLd-d8-ghZ">
-                            <rect key="frame" x="0.0" y="25" width="300" height="21"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Apple ID" drawsBackground="YES" id="BXa-Re-rs3">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <outlet property="delegate" destination="Voe-Tx-rLC" id="QtW-r2-Vuh"/>
-                                <outlet property="nextKeyView" destination="9rp-Vx-rvB" id="bQY-qj-Sej"/>
-                            </connections>
-                        </textField>
-                        <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9rp-Vx-rvB">
-                            <rect key="frame" x="0.0" y="0.0" width="300" height="21"/>
-                            <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Password" drawsBackground="YES" usesSingleLineMode="YES" id="xqJ-wt-DlP">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <allowedInputSourceLocales>
-                                    <string>NSAllRomanInputSourcesLocaleIdentifier</string>
-                                </allowedInputSourceLocales>
-                            </secureTextFieldCell>
-                            <connections>
-                                <outlet property="delegate" destination="Voe-Tx-rLC" id="qav-xj-izy"/>
-                            </connections>
-                        </secureTextField>
-                    </subviews>
-                    <constraints>
-                        <constraint firstItem="9rp-Vx-rvB" firstAttribute="width" secondItem="urc-xw-Dhc" secondAttribute="width" id="Eht-pU-Gyh"/>
-                        <constraint firstItem="zLd-d8-ghZ" firstAttribute="width" secondItem="urc-xw-Dhc" secondAttribute="width" id="mg7-Kq-abL"/>
-                        <constraint firstAttribute="width" constant="300" id="zqf-x6-BET"/>
-                    </constraints>
-                    <visibilityPriorities>
-                        <integer value="1000"/>
-                        <integer value="1000"/>
-                    </visibilityPriorities>
-                    <customSpacing>
-                        <real value="3.4028234663852886e+38"/>
-                        <real value="3.4028234663852886e+38"/>
-                    </customSpacing>
-                </stackView>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="AltServer" customModuleProvider="target">
                     <connections>
                         <outlet property="appMenu" destination="uQy-DD-JDr" id="7cY-Ov-AOW"/>
-                        <outlet property="authenticationAppleIDTextField" destination="zLd-d8-ghZ" id="wW5-0J-zdq"/>
-                        <outlet property="authenticationPasswordTextField" destination="9rp-Vx-rvB" id="ZoC-DI-jzQ"/>
                         <outlet property="connectedDevicesMenu" destination="KJ9-WY-pW1" id="Mcv-64-iFU"/>
                         <outlet property="enableJITMenu" destination="la4-Sa-L3C" id="YrW-hR-uA7"/>
                         <outlet property="installAltStoreMenuItem" destination="MJ8-Lt-SSV" id="KYp-c5-8Ru"/>
                         <outlet property="installMailPluginMenuItem" destination="3CM-gV-X2G" id="lio-ha-z0S"/>
                         <outlet property="launchAtLoginMenuItem" destination="IyR-FQ-upe" id="Fxn-EP-hwH"/>
+                        <outlet property="logOutMenuItem" destination="Tnq-gD-Eic" id="DKk-nW-bbV"/>
                         <outlet property="sideloadAppMenuItem" destination="x0e-zI-0A2" id="GJo-FY-1GO"/>
                         <outlet property="sideloadIPAConnectedDevicesMenu" destination="IuI-bV-fTY" id="QQw-St-HfG"/>
                     </connections>
@@ -129,13 +81,17 @@
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="mVM-Nm-Zi9"/>
-                                        <menuItem title="Check for Updates..." id="Tnq-gD-Eic" userLabel="Check for Updates">
+                                        <menuItem title="Log out" id="Tnq-gD-Eic" userLabel="Check for Updates">
                                             <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="checkForUpdates:" target="Arf-IC-5eb" id="7JG-du-nr4"/>
-                                            </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hmG-xg-qgm"/>
+                                        <menuItem title="Check for Updates..." id="liN-NK-uLP" userLabel="Check for Updates">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="checkForUpdates:" target="Arf-IC-5eb" id="vEn-Ph-DJv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="2dN-EQ-HZM"/>
                                         <menuItem title="Quit AltServer" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>

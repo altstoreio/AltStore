@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import UserNotifications
 
 extension WirelessConnectionHandler
 {
@@ -110,6 +111,15 @@ private extension WirelessConnectionHandler
     {
         print("Preparing:", nwConnection)
         
+		#if DEBUG
+        let content = UNMutableNotificationContent()
+        content.title = "Incoming connection"
+        content.body = nwConnection.debugDescription
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
+		#endif
+
         // Use same instance for all callbacks.
         let connection = NetworkConnection(nwConnection)
         

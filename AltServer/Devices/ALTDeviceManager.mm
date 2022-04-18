@@ -35,6 +35,7 @@ ssize_t ALTDeviceManagerUploadFile(void *buffer, size_t size, void *user_data);
 
 NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification = @"ALTDeviceManagerDeviceDidConnectNotification";
 NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALTDeviceManagerDeviceDidDisconnectNotification";
+NSNotificationName const ALTInstallationStatusNotification = @"ALTInstallationStatusNotification";
 
 @interface ALTDeviceManager ()
 
@@ -92,6 +93,11 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 - (NSProgress *)installAppAtURL:(NSURL *)fileURL toDeviceWithUDID:(NSString *)udid activeProvisioningProfiles:(nullable NSSet<NSString *> *)activeProvisioningProfiles completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
 {
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:4];
+	
+	NSDictionary *userInfo = @{
+		@"status" : @"installing"
+	};
+	[[NSNotificationCenter defaultCenter] postNotificationName:ALTInstallationStatusNotification object:NULL userInfo:userInfo];
     
     dispatch_async(self.installationQueue, ^{
         NSUUID *UUID = [NSUUID UUID];
@@ -1641,6 +1647,12 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         progress.completedUnitCount = percent;
         
         NSLog(@"Installation Progress: %@", @(percent));
+		
+		NSDictionary *userInfo = @{
+			@"status" : @"installing",
+			@"progress" : @(progress.fractionCompleted)
+		};
+		[[NSNotificationCenter defaultCenter] postNotificationName:ALTInstallationStatusNotification object:NULL userInfo:userInfo];
     }
 }
 

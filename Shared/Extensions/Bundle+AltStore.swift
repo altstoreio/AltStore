@@ -53,19 +53,24 @@ public extension Bundle
 
 public extension Bundle
 {
-    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
-    
+    static var baseAltStoreAppID = "com.rileytestut.AltStore"
+    static var baseAltStoreAppGroupID = "group.\(baseAltStoreAppID)"
+
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
     }
-    
-    var altstoreAppGroup: String? {        
-        let appGroup = self.appGroups.first { $0.contains(Bundle.baseAltStoreAppGroupID) }
+
+    var altstoreAppGroup: String? {
+        let appGroup = self.appGroups.first { $0.contains("group.\(Bundle.baseAltStoreAppID)") }
         return appGroup
     }
     
     var completeInfoDictionary: [String : Any]? {
         let infoPlistURL = self.infoPlistURL
         return NSDictionary(contentsOf: infoPlistURL) as? [String : Any]
+    }
+
+    var teamIdentifierPrefix: String {
+        self.infoDictionary?["TeamIdentifierPrefix"] as? String ?? ""
     }
 }
