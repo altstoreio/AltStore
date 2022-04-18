@@ -120,15 +120,7 @@ public extension PatreonAPI
                         Keychain.shared.patreonAccessToken = accessToken
                         Keychain.shared.patreonRefreshToken = refreshToken
                         
-                        self.fetchAccount { (result) in
-                            switch result
-                            {
-                            case .success(let account): Keychain.shared.patreonAccountID = account.identifier
-                            case .failure: break
-                            }
-                            
-                            completion(result)
-                        }
+                        self.fetchAccount(completion: completion)
                     }
                 }
             }
@@ -168,6 +160,7 @@ public extension PatreonAPI
             case .success(let response):
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                     let account = PatreonAccount(response: response, context: context)
+                    Keychain.shared.patreonAccountID = account.identifier
                     completion(.success(account))
                 }
             }
