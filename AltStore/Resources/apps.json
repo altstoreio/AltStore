@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.5b4",
-      "versionDate": "2022-03-01T13:00:00-08:00",
-      "versionDescription": "This beta fixes the app crashing on launch for devices running iOS 13 or earlier.",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_b4.ipa",
+      "version": "1.5rc",
+      "versionDate": "2022-04-19T13:00:00-07:00",
+      "versionDescription": "**AltStore 1.5 Release Candidate**\n\nTRUSTED SOURCES*\nTrusted Sources are sources that we've personally reviewed to make sure they meet our safety standards. You can view all Trusted Sources from the Sources page and add them with a single tap.\n\nIMPROVEMENTS\n• Loads “Friend Tier” Patrons much faster on Patreon screen.\n\n*Adding “untrusted” sources via the + button is still supported.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_rc.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5394344,
+      "size": 5458029,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -244,6 +244,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "_fRv5fgSrAMV32SK-urS7xIZzhIHvmqgQv3a4nZECvE"
+    "patreonAccessToken": "uuUjUWAIfqx0jrBQXoPXbuA7llw4f11KlQbFKW8M33g"
   }
 }
