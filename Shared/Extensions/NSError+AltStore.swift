@@ -79,7 +79,7 @@ extension NSError
             userInfo[NSUnderlyingErrorKey] = sanitizedError
         }
         
-        if #available(iOS 14.5, *), let underlyingErrors = userInfo[NSMultipleUnderlyingErrorsKey] as? [Error]
+        if #available(iOS 14.5, macOS 11.3, *), let underlyingErrors = userInfo[NSMultipleUnderlyingErrorsKey] as? [Error]
         {
             let sanitizedErrors = underlyingErrors.map { ($0 as NSError).sanitizedForCoreData() }
             userInfo[NSMultipleUnderlyingErrorsKey] = sanitizedErrors
