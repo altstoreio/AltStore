@@ -3371,7 +3371,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.5rc;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3405,7 +3405,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.5rc;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
