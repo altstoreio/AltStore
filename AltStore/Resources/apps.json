@@ -241,9 +241,19 @@
       "url": "https://linktr.ee/razomforukraine",
       "date": "2022-03-01",
       "notify": false
+    },
+    {
+      "title": "The Biggest AltServer Update Yet!",
+      "identifier": "altserver-1-5",
+      "caption": "Update to AltServer 1.5 to use AltJIT and other exciting new features.",
+      "tintColor": "018084",
+      "imageURL": "https://user-images.githubusercontent.com/705880/166509576-744be578-6868-4b7d-b4fd-b9418c084327.png",
+      "url": "https://faq.altstore.io/release-notes/altserver",
+      "date": "2022-05-03",
+      "notify": true
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "uuUjUWAIfqx0jrBQXoPXbuA7llw4f11KlQbFKW8M33g"
+    "patreonAccessToken": "uqoDoTxH8dY1ImE8tK76wxrzKk67gjyjBAcK8sD3RLU"
   }
 }
