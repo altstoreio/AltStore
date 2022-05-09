@@ -10,12 +10,10 @@ import SwiftUI
 import WidgetKit
 import UIKit
 import CoreData
-
 import AltStoreCore
 import AltSign
 
-struct AppEntry: TimelineEntry
-{
+struct AppEntry: TimelineEntry {
     var date: Date
     var relevance: TimelineEntryRelevance?
     
@@ -23,8 +21,7 @@ struct AppEntry: TimelineEntry
     var isPlaceholder: Bool = false
 }
 
-struct AppSnapshot
-{
+struct AppSnapshot {
     var name: String
     var bundleIdentifier: String
     var expirationDate: Date
@@ -34,16 +31,13 @@ struct AppSnapshot
     var icon: UIImage?
 }
 
-extension AppSnapshot
-{
+extension AppSnapshot {
     // Declared in extension so we retain synthesized initializer.
-    init(installedApp: InstalledApp)
-    {
+    init(installedApp: InstalledApp) {
         self.name = installedApp.name
         self.bundleIdentifier = installedApp.bundleIdentifier
         self.expirationDate = installedApp.expirationDate
         self.refreshedDate = installedApp.refreshedDate
-        
         self.tintColor = installedApp.storeApp?.tintColor
         
         let application = ALTApplication(fileURL: installedApp.fileURL)
@@ -51,29 +45,23 @@ extension AppSnapshot
     }
 }
 
-struct Provider: IntentTimelineProvider
-{
+struct Provider: IntentTimelineProvider {
     typealias Intent = ViewAppIntent
     typealias Entry = AppEntry
     
-    func placeholder(in context: Context) -> AppEntry
-    {
+    func placeholder(in context: Context) -> AppEntry {
         return AppEntry(date: Date(), app: nil, isPlaceholder: true)
     }
     
-    func getSnapshot(for configuration: ViewAppIntent, in context: Context, completion: @escaping (AppEntry) -> Void)
-    {
+    func getSnapshot(for configuration: ViewAppIntent, in context: Context, completion: @escaping (AppEntry) -> Void) {
         self.prepare { (result) in
-            do
-            {
+            do {
                 let context = try result.get()
                 let snapshot = InstalledApp.fetchAltStore(in: context).map(AppSnapshot.init)
 
                 let entry = AppEntry(date: Date(), app: snapshot)
                 completion(entry)
-            }
-            catch
-            {
+            }catch {
                 print("Error preparing widget snapshot:", error)
                 
                 let entry = AppEntry(date: Date(), app: nil)
@@ -149,12 +137,9 @@ struct Provider: IntentTimelineProvider
     private func prepare(completion: @escaping (Result<NSManagedObjectContext, Error>) -> Void)
     {
         DatabaseManager.shared.start { (error) in
-            if let error = error
-            {
+            if let error = error {
                 completion(.failure(error))
-            }
-            else
-            {
+            } else {
                 DatabaseManager.shared.viewContext.perform {
                     completion(.success(DatabaseManager.shared.viewContext))
                 }
