@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension UserDefaults
-{
+extension UserDefaults {
+    
     var serverID: String? {
         get {
             return self.string(forKey: "serverID")
@@ -28,10 +28,8 @@ extension UserDefaults
         }
     }
     
-    func registerDefaults()
-    {
-        if self.serverID == nil
-        {
+    func registerDefaults() {
+        if self.serverID == nil {
             self.serverID = UUID().uuidString
         }
     }
