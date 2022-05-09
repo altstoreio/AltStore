@@ -7,23 +7,19 @@
 //
 
 import UIKit
-
 import AltStoreCore
 import Roxas
-
 import Nuke
 
-extension AppContentViewController
-{
-    private enum Row: Int, CaseIterable
-    {
-        case subtitle
-        case screenshots
-        case description
-        case versionDescription
-        case permissions
-    }
-}
+   @IBOutlet private var subtitleLabel: UILabel!
+   @IBOutlet private var descriptionTextView: CollapsingTextView!
+   @IBOutlet private var versionDescriptionTextView: CollapsingTextView!
+   @IBOutlet private var versionLabel: UILabel!
+   @IBOutlet private var versionDateLabel: UILabel!
+   @IBOutlet private var sizeLabel: UILabel!
+    
+   @IBOutlet private var screenshotsCollectionView: UICollectionView!
+   @IBOutlet private var permissionsCollectionView: UICollectionView!
 
 class AppContentViewController: UITableViewController
 {
@@ -43,16 +39,6 @@ class AppContentViewController: UITableViewController
         let formatter = ByteCountFormatter()
         return formatter
     }()
-    
-    @IBOutlet private var subtitleLabel: UILabel!
-    @IBOutlet private var descriptionTextView: CollapsingTextView!
-    @IBOutlet private var versionDescriptionTextView: CollapsingTextView!
-    @IBOutlet private var versionLabel: UILabel!
-    @IBOutlet private var versionDateLabel: UILabel!
-    @IBOutlet private var sizeLabel: UILabel!
-    
-    @IBOutlet private var screenshotsCollectionView: UICollectionView!
-    @IBOutlet private var permissionsCollectionView: UICollectionView!
     
     var preferredScreenshotSize: CGSize? {        
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
@@ -196,6 +182,16 @@ private extension AppContentViewController
         UIView.performWithoutAnimation {
             self.tableView.reloadRows(at: [indexPath], with: .none)
         }
+    }
+}
+
+extension AppContentViewController {
+    private enum Row: Int, CaseIterable {
+        case subtitle
+        case screenshots
+        case description
+        case versionDescription
+        case permissions
     }
 }
 
