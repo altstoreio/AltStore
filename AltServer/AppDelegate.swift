@@ -67,6 +67,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         #if STAGING
         SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos-staging.xml")
+        #else
+        SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos.xml")
         #endif
         
         let item = NSStatusBar.system.statusItem(withLength: -1)
