@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.9",
-      "versionDate": "2022-03-07T07:00:00-08:00",
-      "versionDescription": "This update fixes the app crashing on launch for devices running iOS 13 or earlier.\n\n⚠️ If you are currently on iOS 13, you can manually update by re-installing AltStore with AltServer. You do not need to delete AltStore first.",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_4_9.ipa",
+      "version": "1.5",
+      "versionDate": "2022-05-06T08:00:00-07:00",
+      "versionDescription": "TRUSTED SOURCES\n• Download and update certain third party apps entirely through AltStore\n• Add Trusted Sources directly from the new Sources page\n• Trusted Sources are sources we’ve explicitly approved that meet our safety standards\n• You can still sideload any .ipa you want via the \"+\" button in My Apps \n• Support for adding any source by URL will be coming later\n\nALTJIT\n• Allows sideloaded apps to use Just-in-Time (JIT) compilation\n• Long-press an app in My Apps, then choose “Enable JIT”\n• JIT will remain enabled until the app is quit\n• Requires iOS 14 or later\n• Requires AltServer 1.5 or later\n\nIMPROVED\n• Adds Shane to credits and Patreon screen\n• Loads “Friend Tier” Patrons much faster on Patreon screen\n\nFIXED\n• Fixed a potential crash when sideloading certain apps\n• Fixed some apps having access to AltStore’s app group after being (de-)activated\n• Fixed Core Data error when not connected to internet",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5401042,
+      "size": 5459395,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -250,6 +250,16 @@
       "imageURL": "https://user-images.githubusercontent.com/705880/166509576-744be578-6868-4b7d-b4fd-b9418c084327.png",
       "url": "https://faq.altstore.io/release-notes/altserver",
       "date": "2022-05-03",
+      "notify": true
+    },
+    {
+      "title": "More Apps in AltStore!",
+      "identifier": "trusted-sources",
+      "caption": "Update to AltStore 1.5 to easily download some of our favorite apps.",
+      "tintColor": "00CAB3",
+      "imageURL": "https://user-images.githubusercontent.com/705880/167026375-ddcb004f-7160-405c-b3e3-87a6795d2f43.png",
+      "url": "https://faq.altstore.io/release-notes/altstore",
+      "date": "2022-05-05",
       "notify": true
     }
   ],
