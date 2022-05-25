@@ -66,10 +66,11 @@ class PluginManager
         do
         {
             // If Mail plug-in is not yet installed, then there is no update available.
-            guard let bundle = Bundle(url: pluginURL) else { return completionHandler(.success(false)) }
+            var isDirectory: ObjCBool = false
+            guard FileManager.default.fileExists(atPath: pluginURL.path, isDirectory: &isDirectory), isDirectory.boolValue else { return completionHandler(.success(false)) }
             
             // Load Info.plist from disk because Bundle.infoDictionary is cached by system.
-            let infoDictionaryURL = bundle.bundleURL.appendingPathComponent("Contents/Info.plist")
+            let infoDictionaryURL = pluginURL.appendingPathComponent("Contents/Info.plist")
             guard let infoDictionary = NSDictionary(contentsOf: infoDictionaryURL) as? [String: Any],
                   let localVersion = infoDictionary["CFBundleShortVersionString"] as? String
             else { throw CocoaError(.fileReadCorruptFile, userInfo: [NSURLErrorKey: infoDictionaryURL]) }
