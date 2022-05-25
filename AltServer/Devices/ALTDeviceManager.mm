@@ -1198,29 +1198,36 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         {
             return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
         }
-
-        if (result)
+                
+        plist_t errorDescriptionNode = plist_dict_get_item(result, "DetailedError");
+        if (errorDescriptionNode != NULL)
         {
-            plist_free(result);
-        }
-        
-        // Verify the installed developer disk is compatible with altDevice's operating system version.
-        ALTDebugConnection *testConnection = [[ALTDebugConnection alloc] initWithDevice:altDevice];
-        [testConnection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-            [testConnection disconnect];
+            char *errorDescription = NULL;
+            plist_get_string_val(errorDescriptionNode, &errorDescription);
             
-            if (success)
+            NSString *nsErrorDescription = @(errorDescription);
+            plist_free(result);
+            
+            NSError *returnError = nil;
+            
+            if ([nsErrorDescription containsString:@"Failed to verify"])
             {
-                // Connection succeeded, so we assume the developer disk is compatible.
-                finish(nil);
+                // iOS device needs to be rebooted in order to mount disk to /Developer.
+                NSString *recoverySuggestion = [NSString stringWithFormat:NSLocalizedString(@"Please reboot %@ and try again.", @""), altDevice.name];
+                
+                // ALTServerErrorUnderlyingError uses its underlying error's failure reason as its error description (if one exists),
+                // so assign our recovery suggestion to NSLocalizedFailureReasonErrorKey to make sure it's always displayed on client.
+                NSError *underlyingError = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: recoverySuggestion}];
+                
+                returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnderlyingError userInfo:@{NSUnderlyingErrorKey: underlyingError}];
             }
-            else if ([error.domain isEqualToString:AltServerConnectionErrorDomain] && error.code == ALTServerConnectionErrorUnknown)
+            else
             {
-                // Connection failed with .unknown error code, so we assume the developer disk is NOT compatible.
+                // Installation failed, so we assume the developer disk is NOT compatible with this iOS version.
+
                 NSMutableDictionary *userInfo = [@{
                     ALTOperatingSystemVersionErrorKey: NSStringFromOperatingSystemVersion(altDevice.osVersion),
                     NSFilePathErrorKey: diskURL.path,
-                    NSUnderlyingErrorKey: error,
                 } mutableCopy];
                 
                 NSString *osName = ALTOperatingSystemNameForDeviceType(altDevice.type);
@@ -1229,8 +1236,22 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                     userInfo[ALTOperatingSystemNameErrorKey] = osName;
                 }
                 
-                NSError *returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorIncompatibleDeveloperDisk userInfo:userInfo];
-                finish(returnError);
+                returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorIncompatibleDeveloperDisk userInfo:userInfo];
+            }
+            
+            return finish(returnError);
+        }
+        
+        plist_free(result);
+        
+        // Verify that the developer disk has been successfully installed.
+        ALTDebugConnection *testConnection = [[ALTDebugConnection alloc] initWithDevice:altDevice];
+        [testConnection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+            [testConnection disconnect];
+            
+            if (success)
+            {
+                finish(nil);
             }
             else
             {
