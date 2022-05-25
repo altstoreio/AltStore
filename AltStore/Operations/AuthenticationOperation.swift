@@ -49,6 +49,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
     
     private lazy var storyboard = UIStoryboard(name: "Authentication", bundle: nil)
     
+    private var appleIDEmailAddress: String?
     private var appleIDPassword: String?
     private var shouldShowInstructions = false
     
@@ -174,6 +175,13 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 }
                 
                 account.update(account: altTeam.account)
+                
+                if let providedEmailAddress = self.appleIDEmailAddress
+                {
+                    // Save the user's provided email address instead of the one associated with their account (which may be outdated).
+                    account.appleID = providedEmailAddress
+                }
+                
                 team.update(team: altTeam)
                                 
                 try context.save()
@@ -242,7 +250,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 try context.save()
                 
                 // Update keychain
-                Keychain.shared.appleIDEmailAddress = altTeam.account.appleID
+                Keychain.shared.appleIDEmailAddress = self.appleIDEmailAddress ?? altTeam.account.appleID // Prefer the user's provided email address over the one associated with their account (which may be outdated).
                 Keychain.shared.appleIDPassword = self.appleIDPassword
                 
                 Keychain.shared.signingCertificate = altCertificate.p12Data()
@@ -359,6 +367,8 @@ private extension AuthenticationOperation
     
     func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Swift.Error>) -> Void)
     {
+        self.appleIDEmailAddress = appleID
+        
         let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: self.context)
         fetchAnisetteDataOperation.resultHandler = { (result) in
             switch result
