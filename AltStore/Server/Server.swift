@@ -31,6 +31,7 @@ extension Server
         case wireless
         case wired
         case local
+        case manual
     }
 }
 
@@ -48,12 +49,23 @@ struct Server: Equatable
 extension Server
 {
     // Defined in extension so we can still use the automatically synthesized initializer.
-    init?(service: NetService, txtData: Data)
+    init?(service: NetService, txtData: Data) // TODO: this is all that's needed for a server connection
     {
         let txtDictionary = NetService.dictionary(fromTXTRecord: txtData)
-        guard let identifierData = txtDictionary["serverID"], let identifier = String(data: identifierData, encoding: .utf8) else { return nil }
+        guard let identifierData = txtDictionary["serverID"], let identifier = String(data: identifierData, encoding: .utf8) else { 
+            NSLog("Ahh, no serverID in TXT record for service: \(service)")
+            return nil 
+        }
         
         self.service = service
         self.identifier = identifier
     }
+
+    init?(service: NetService)
+    {
+        self.service = service
+        self.connectionType = .manual
+        self.identifier = String(data: "yolo".data(using: .utf8)!, encoding: .utf8)
+    }
 }
+
