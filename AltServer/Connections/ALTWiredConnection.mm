@@ -20,6 +20,8 @@
     {
         _device = [device copy];
         _connection = connection;
+        
+        self.connected = YES;
     }
     
     return self;

@@ -145,6 +145,8 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             return failureReason;
         }
     }
+    
+    return nil;
 }
 
 - (nullable NSString *)altserver_localizedRecoverySuggestion
