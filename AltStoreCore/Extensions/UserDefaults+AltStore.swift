@@ -33,6 +33,14 @@ public extension UserDefaults
     @NSManaged var isLegacyDeactivationSupported: Bool
     @NSManaged var activeAppLimitIncludesExtensions: Bool
     
+    @NSManaged var localServerSupportsRefreshing: Bool
+    
+    @NSManaged var patchedApps: [String]?
+    
+    @NSManaged var patronsRefreshID: String?
+    
+    @NSManaged var trustedSourceIDs: [String]?
+    
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue
@@ -56,10 +64,14 @@ public extension UserDefaults
         let isLegacyDeactivationSupported = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
         let activeAppLimitIncludesExtensions = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios13_5)
         
+        let ios14 = OperatingSystemVersion(majorVersion: 14, minorVersion: 0, patchVersion: 0)
+        let localServerSupportsRefreshing = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios14)
+        
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
             #keyPath(UserDefaults.activeAppLimitIncludesExtensions): activeAppLimitIncludesExtensions,
+            #keyPath(UserDefaults.localServerSupportsRefreshing): localServerSupportsRefreshing,
             #keyPath(UserDefaults.requiresAppGroupMigration): true
         ]
         

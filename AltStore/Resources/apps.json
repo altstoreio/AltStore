@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.4.2",
-      "versionDate": "2020-11-11T12:00:00-07:00",
-      "versionDescription": "This update allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2.ipa",
+      "version": "1.5",
+      "versionDate": "2022-05-06T08:00:00-07:00",
+      "versionDescription": "TRUSTED SOURCES\n• Download and update certain third party apps entirely through AltStore\n• Add Trusted Sources directly from the new Sources page\n• Trusted Sources are sources we’ve explicitly approved that meet our safety standards\n• You can still sideload any .ipa you want via the \"+\" button in My Apps \n• Support for adding any source by URL will be coming later\n\nALTJIT\n• Allows sideloaded apps to use Just-in-Time (JIT) compilation\n• Long-press an app in My Apps, then choose “Enable JIT”\n• JIT will remain enabled until the app is quit\n• Requires iOS 14 or later\n• Requires AltServer 1.5 or later\n\nIMPROVED\n• Adds Shane to credits and Patreon screen\n• Loads “Friend Tier” Patrons much faster on Patreon screen\n\nFIXED\n• Fixed a potential crash when sideloading certain apps\n• Fixed some apps having access to AltStore’s app group after being (de-)activated\n• Fixed Core Data error when not connected to internet",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4792897,
+      "size": 5459395,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.4.2b1",
-      "versionDate": "2020-11-05T13:30:00-07:00",
-      "versionDescription": "This beta allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later (thanks @osy86!).",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/altstore/1_4_2_b1.ipa",
+      "version": "1.5rc",
+      "versionDate": "2022-04-19T13:00:00-07:00",
+      "versionDescription": "**AltStore 1.5 Release Candidate**\n\nTRUSTED SOURCES*\nTrusted Sources are sources that we've personally reviewed to make sure they meet our safety standards. You can view all Trusted Sources from the Sources page and add them with a single tap.\n\nIMPROVEMENTS\n• Loads “Friend Tier” Patrons much faster on Patreon screen.\n\n*Adding “untrusted” sources via the + button is still supported.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_rc.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 4790751,
+      "size": 5458029,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -66,14 +66,14 @@
       "bundleIdentifier": "com.rileytestut.Delta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2",
-      "versionDate": "2020-10-22T11:30:00-07:00",
-      "versionDescription": "NEW FEATURES\n• Supports new Quick Save, Quick Load, and Fast Forward actions in controller skins*\n• Supports Core Image-based filters in controller skins*\n• Assign controller skins per-game\n• Export game save files by long-pressing game to reveal context menu\n• Browse all Delta files in Files app, including emulator configuration files\n• Supports 8-character NES Game Genie cheat codes\n\nBUG FIXES\n• Fixes overwriting save files when previewing games\n• Fixes incorrect cheat formatting\n\n* Requires downloading compatible Delta skin",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2.ipa",
-      "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• And plenty more to come!\n\nController Support\n• Supports PS4, Xbox One S, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support for WarioWare: Twisted!\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
+      "version": "1.3.1",
+      "versionDate": "2021-12-02T13:30:00-08:00",
+      "versionDescription": "• Fixes game artwork not loading\n• Fixes using deprecated DeSmuME core over melonDS core for some users",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_1.ipa",
+      "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• Nintendo DS\n• And plenty more to come!\n\nController Support\n• Supports PS4, PS5, Xbox One S, Xbox Series X, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n• DS: Action Replay\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support (WarioWare: Twisted! only)\n• Microphone support (DS only)\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18456868,
+      "size": 19739373,
       "permissions": [
         {
           "type": "photos",
@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.2b3",
-      "versionDate": "2020-10-12T12:30:00-07:00",
-      "versionDescription": "**Delta 1.2 GM**\n\nIMPROVEMENTS\n• Improves sync error messages when a game is missing or can’t be synced\n\nBUG FIXES\n• Fixes misplaced DS screens when using external controller\n• Fixes NES games crashing after playing an N64 game\n• Fixes various issues with controller skin filters\n• Fixes swapped DS screens\n• Fixes importing games from Files\n\nThanks for your help beta testing Delta these past few months! This should be the last beta before the public release of Delta 1.2, so please report any last-minute issues so we can have a smooth release 🙂",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/apps/delta/1_2_b3.ipa",
-      "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
+      "version": "1.3.1b",
+      "versionDate": "2021-11-17T14:00:00-08:00",
+      "versionDescription": "• AltJIT support — Delta can now enable JIT when on the same WiFi as AltServer\n• Fixes game artwork not downloading",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_1_b.ipa",
+      "localizedDescription": "The next consoles for Delta are coming: this beta version of Delta brings support for playing Nintendo DS and Sega Genesis games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18456630,
+      "size": 19794977,
       "beta": true,
       "permissions": [
         {
@@ -109,8 +109,7 @@
       ],
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
-        "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG"
-      ,
+        "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG",
         "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
         "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG"
       ]
@@ -164,55 +163,6 @@
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
         "https://user-images.githubusercontent.com/705880/84842227-70a80b00-aff9-11ea-8b04-bedb1f49c4a7.PNG",
         "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
-      ]
-    },
-    {
-      "name": "Delta Lite",
-      "bundleIdentifier": "com.rileytestut.Delta.Lite",
-      "developerName": "Riley Testut",
-      "subtitle": "The 80s in your pocket.",
-      "version": "1.0",
-      "versionDate": "2019-09-25",
-      "versionDescription": "Initial version.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-lite.ipa",
-      "localizedDescription": "Delta Lite brings NES games to iOS.",
-      "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
-      "tintColor": "8A28F7",
-      "size": 15256861,
-      "permissions": [
-        {
-          "type": "photos",
-          "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
-        }
-      ],
-      "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/65599574-07580780-df53-11e9-97a3-b27141c8cae8.PNG",
-        "https://user-images.githubusercontent.com/705880/65599570-04f5ad80-df53-11e9-914a-8c42ac4805b0.PNG"
-      ]
-    },
-    {
-      "name": "Delta Lite",
-      "bundleIdentifier": "com.rileytestut.Delta.Lite.Beta",
-      "developerName": "Riley Testut",
-      "subtitle": "The 80s (and 90s) in your pocket.",
-      "version": "1.0b",
-      "versionDate": "2019-09-25",
-      "versionDescription": "Adds support for GBC games in addition to NES.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/delta-lite-beta.ipa",
-      "localizedDescription": "Delta Lite brings NES and GBC games to iOS.",
-      "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
-      "tintColor": "8A28F7",
-      "size": 16509767,
-      "beta": true,
-      "permissions": [
-        {
-          "type": "photos",
-          "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
-        }
-      ],
-      "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/65599562-fe673600-df52-11e9-9cfb-b60a11568baf.PNG",
-        "https://user-images.githubusercontent.com/705880/65599567-01fabd00-df53-11e9-8654-f075c0f32c59.PNG"
       ]
     }
   ],
@@ -271,9 +221,49 @@
       "appID": "com.rileytestut.Clip",
       "date": "2020-06-17",
       "notify": true
+    },
+    {
+      "title": "Delta, Meet Nintendo DS",
+      "identifier": "delta-meet-ds",
+      "caption": "Update to Delta 1.3 to relive all your favorite Nintendo DS games.",
+      "tintColor": "8A28F7",
+      "imageURL": "https://user-images.githubusercontent.com/705880/115617602-6ce2b600-a2a6-11eb-984e-2197a30c71e2.png",
+      "appID": "com.rileytestut.Delta",
+      "date": "2021-04-21",
+      "notify": true
+    },
+    {
+      "title": "#StandWithUkraine",
+      "identifier": "support-ukraine",
+      "caption": "Find out how you can help support those impacted by the Russian invasion.",
+      "tintColor": "003e80",
+      "imageURL": "https://user-images.githubusercontent.com/705880/156053447-a158cac7-df5f-4497-8025-15c3c2e10b48.png",
+      "url": "https://linktr.ee/razomforukraine",
+      "date": "2022-03-01",
+      "notify": false
+    },
+    {
+      "title": "The Biggest AltServer Update Yet!",
+      "identifier": "altserver-1-5",
+      "caption": "Update to AltServer 1.5 to use AltJIT and other exciting new features.",
+      "tintColor": "018084",
+      "imageURL": "https://user-images.githubusercontent.com/705880/166509576-744be578-6868-4b7d-b4fd-b9418c084327.png",
+      "url": "https://faq.altstore.io/release-notes/altserver",
+      "date": "2022-05-03",
+      "notify": true
+    },
+    {
+      "title": "More Apps in AltStore!",
+      "identifier": "trusted-sources",
+      "caption": "Update to AltStore 1.5 to easily download some of our favorite apps.",
+      "tintColor": "00CAB3",
+      "imageURL": "https://user-images.githubusercontent.com/705880/167026375-ddcb004f-7160-405c-b3e3-87a6795d2f43.png",
+      "url": "https://faq.altstore.io/release-notes/altstore",
+      "date": "2022-05-05",
+      "notify": true
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "vfuSOfSYTUC8pEq6TM9r6uoL-T-uTJEI85hFescT4AM"
+    "patreonAccessToken": "uqoDoTxH8dY1ImE8tK76wxrzKk67gjyjBAcK8sD3RLU"
   }
 }

@@ -8,12 +8,41 @@
 
 import Foundation
 
+private extension Bundle
+{
+    struct ID
+    {
+        static let mail = "com.apple.mail"
+        static let altXPC = "com.rileytestut.AltXPC"
+    }
+}
+
+private extension ALTAnisetteData
+{
+    func sanitize(byReplacingBundleID bundleID: String)
+    {
+        guard let range = self.deviceDescription.lowercased().range(of: "(" + bundleID.lowercased()) else { return }
+        
+        var adjustedDescription = self.deviceDescription[..<range.lowerBound]
+        adjustedDescription += "(com.apple.dt.Xcode/3594.4.19)>"
+        
+        self.deviceDescription = String(adjustedDescription)
+    }
+}
+
 class AnisetteDataManager: NSObject
 {
     static let shared = AnisetteDataManager()
     
     private var anisetteDataCompletionHandlers: [String: (Result<ALTAnisetteData, Error>) -> Void] = [:]
     private var anisetteDataTimers: [String: Timer] = [:]
+    
+    private lazy var xpcConnection: NSXPCConnection = {
+        let connection = NSXPCConnection(serviceName: Bundle.ID.altXPC)
+        connection.remoteObjectInterface = NSXPCInterface(with: AltXPCProtocol.self)
+        connection.resume()
+        return connection
+    }()
     
     private override init()
     {
@@ -23,6 +52,65 @@ class AnisetteDataManager: NSObject
     }
     
     func requestAnisetteData(_ completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        if #available(macOS 10.15, *)
+        {
+            self.requestAnisetteDataFromXPCService { (result) in
+                do
+                {
+                    let anisetteData = try result.get()
+                    completion(.success(anisetteData))
+                }
+                catch CocoaError.xpcConnectionInterrupted
+                {
+                    // SIP and/or AMFI are not disabled, so fall back to Mail plug-in.
+                    self.requestAnisetteDataFromPlugin { (result) in
+                        completion(result)
+                    }
+                }
+                catch
+                {
+                    completion(.failure(error))
+                }
+            }
+        }
+        else
+        {
+            self.requestAnisetteDataFromPlugin { (result) in
+                completion(result)
+            }
+        }
+    }
+    
+    func isXPCAvailable(completion: @escaping (Bool) -> Void)
+    {
+        guard let proxy = self.xpcConnection.remoteObjectProxyWithErrorHandler({ (error) in
+            completion(false)
+        }) as? AltXPCProtocol else { return }
+        
+        proxy.ping {
+            completion(true)
+        }
+    }
+}
+
+private extension AnisetteDataManager
+{
+    @available(macOS 10.15, *)
+    func requestAnisetteDataFromXPCService(completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        guard let proxy = self.xpcConnection.remoteObjectProxyWithErrorHandler({ (error) in
+            print("Anisette XPC Error:", error)
+            completion(.failure(error))
+        }) as? AltXPCProtocol else { return }
+        
+        proxy.requestAnisetteData { (anisetteData, error) in
+            anisetteData?.sanitize(byReplacingBundleID: Bundle.ID.altXPC)
+            completion(Result(anisetteData, error))
+        }
+    }
+    
+    func requestAnisetteDataFromPlugin(completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
         let requestUUID = UUID().uuidString
         self.anisetteDataCompletionHandlers[requestUUID] = completion
@@ -36,10 +124,7 @@ class AnisetteDataManager: NSObject
         
         DistributedNotificationCenter.default().postNotificationName(Notification.Name("com.rileytestut.AltServer.FetchAnisetteData"), object: nil, userInfo: ["requestUUID": requestUUID], options: .deliverImmediately)
     }
-}
-
-private extension AnisetteDataManager
-{
+    
     @objc func handleAnisetteDataResponse(_ notification: Notification)
     {
         guard let userInfo = notification.userInfo, let requestUUID = userInfo["requestUUID"] as? String else { return }
@@ -48,14 +133,7 @@ private extension AnisetteDataManager
             let archivedAnisetteData = userInfo["anisetteData"] as? Data,
             let anisetteData = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ALTAnisetteData.self, from: archivedAnisetteData)
         {
-            if let range = anisetteData.deviceDescription.lowercased().range(of: "(com.apple.mail")
-            {
-                var adjustedDescription = anisetteData.deviceDescription[..<range.lowerBound]
-                adjustedDescription += "(com.apple.dt.Xcode/3594.4.19)>"
-                
-                anisetteData.deviceDescription = String(adjustedDescription)
-            }
-            
+            anisetteData.sanitize(byReplacingBundleID: Bundle.ID.mail)
             self.finishRequest(forUUID: requestUUID, result: .success(anisetteData))
         }
         else

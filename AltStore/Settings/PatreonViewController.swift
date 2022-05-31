@@ -29,8 +29,6 @@ class PatreonViewController: UICollectionViewController
     
     private var prototypeAboutHeader: AboutPatreonHeaderView!
     
-    private var patronsResult: Result<[Patron], Error>?
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -47,6 +45,8 @@ class PatreonViewController: UICollectionViewController
         self.collectionView.register(aboutHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeader")
         self.collectionView.register(PatronsHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "PatronsHeader")
         self.collectionView.register(PatronsFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "PatronsFooter")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(PatreonViewController.didUpdatePatrons(_:)), name: AppManager.didUpdatePatronsNotification, object: nil)
         
         self.update()
     }
@@ -75,20 +75,23 @@ class PatreonViewController: UICollectionViewController
 
 private extension PatreonViewController
 {
-    func makeDataSource() -> RSTCompositeCollectionViewDataSource<Patron>
+    func makeDataSource() -> RSTCompositeCollectionViewDataSource<ManagedPatron>
     {
-        let aboutDataSource = RSTDynamicCollectionViewDataSource<Patron>()
+        let aboutDataSource = RSTDynamicCollectionViewDataSource<ManagedPatron>()
         aboutDataSource.numberOfSectionsHandler = { 1 }
         aboutDataSource.numberOfItemsHandler = { _ in 0 }
         
-        let dataSource = RSTCompositeCollectionViewDataSource<Patron>(dataSources: [aboutDataSource, self.patronsDataSource])
+        let dataSource = RSTCompositeCollectionViewDataSource<ManagedPatron>(dataSources: [aboutDataSource, self.patronsDataSource])
         dataSource.proxy = self
         return dataSource
     }
     
-    func makePatronsDataSource() -> RSTArrayCollectionViewDataSource<Patron>
+    func makePatronsDataSource() -> RSTFetchedResultsCollectionViewDataSource<ManagedPatron>
     {
-        let patronsDataSource = RSTArrayCollectionViewDataSource<Patron>(items: [])
+        let fetchRequest: NSFetchRequest<ManagedPatron> = ManagedPatron.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(ManagedPatron.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+        
+        let patronsDataSource = RSTFetchedResultsCollectionViewDataSource<ManagedPatron>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         patronsDataSource.cellConfigurationHandler = { (cell, patron, indexPath) in
             let cell = cell as! PatronCollectionViewCell
             cell.textLabel.text = patron.name
@@ -115,19 +118,19 @@ private extension PatreonViewController
         let defaultText = NSLocalizedString("""
         Hey y'all,
         
-        You can support future development of my apps by donating to me on Patreon. In return, you'll receive access to the beta versions of my apps and be among the first to try the latest features.
+        You can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.
         
         Thanks for all your support 💜
-        Riley
+        Riley & Shane
         """, comment: "")
         
         let isPatronText = NSLocalizedString("""
         Hey ,
         
-        You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of my apps. You can find them all in the Browse tab.
+        You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.
         
         Thanks for all of your support. Enjoy!
-        Riley
+        Riley & Shane
         """, comment: "")
         
         if let account = DatabaseManager.shared.patreonAccount(), PatreonAPI.shared.isAuthenticated
@@ -173,36 +176,13 @@ private extension PatreonViewController
 {
     @objc func fetchPatrons()
     {
-        if let result = self.patronsResult, case .failure = result
-        {
-            self.patronsResult = nil
-            self.collectionView.reloadData()
-        }
-        
-        PatreonAPI.shared.fetchPatrons { (result) in
-            self.patronsResult = result
-            
-            do
-            {
-                let patrons = try result.get()
-                let sortedPatrons = patrons.sorted { $0.name < $1.name  }
-                
-                self.patronsDataSource.items = sortedPatrons
-            }
-            catch
-            {
-                print("Failed to fetch patrons:", error)
-                
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            }
-        }
+        AppManager.shared.updatePatronsIfNeeded()
+        self.update()
     }
     
     @objc func openPatreonURL(_ sender: UIButton)
     {
-        let patreonURL = URL(string: "https://www.patreon.com/rileytestut")!
+        let patreonURL = URL(string: "https://altstore.io/patreon")!
         
         let safariViewController = SFSafariViewController(url: patreonURL)
         safariViewController.preferredControlTintColor = self.view.tintColor
@@ -263,6 +243,13 @@ private extension PatreonViewController
         alertController.addAction(.cancel)
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    @objc func didUpdatePatrons(_ notification: Notification)
+    {
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
 }
 
 extension PatreonViewController
@@ -291,11 +278,18 @@ extension PatreonViewController
                 footerView.button.isHidden = false
                 footerView.button.addTarget(self, action: #selector(PatreonViewController.fetchPatrons), for: .primaryActionTriggered)
                 
-                switch self.patronsResult
+                if self.patronsDataSource.itemCount > 0
                 {
-                case .none: footerView.button.isIndicatingActivity = true
-                case .success?: footerView.button.isHidden = true
-                case .failure?: footerView.button.setTitle(NSLocalizedString("Error Loading Patrons", comment: ""), for: .normal)
+                    footerView.button.isHidden = true
+                }
+                else
+                {
+                    switch AppManager.shared.updatePatronsResult
+                    {
+                    case .none: footerView.button.isIndicatingActivity = true
+                    case .success?: footerView.button.isHidden = true
+                    case .failure?: footerView.button.setTitle(NSLocalizedString("Error Loading Patrons", comment: ""), for: .normal)
+                    }
                 }
                 
                 return footerView

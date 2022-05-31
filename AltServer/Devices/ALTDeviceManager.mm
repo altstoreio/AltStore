@@ -10,9 +10,15 @@
 
 #import "ALTWiredConnection+Private.h"
 #import "ALTNotificationConnection+Private.h"
+#import "ALTDebugConnection+Private.h"
 
 #import "ALTConstants.h"
 #import "NSError+ALTServerError.h"
+#import "NSError+libimobiledevice.h"
+
+#import <AppKit/AppKit.h>
+#import <UserNotifications/UserNotifications.h>
+#import "AltServer-Swift.h"
 
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
@@ -20,10 +26,12 @@
 #include <libimobiledevice/notification_proxy.h>
 #include <libimobiledevice/afc.h>
 #include <libimobiledevice/misagent.h>
+#include <libimobiledevice/mobile_image_mounter.h>
 
 void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *udid);
 void ALTDeviceManagerUpdateAppDeletionStatus(plist_t command, plist_t status, void *uuid);
 void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user_data);
+ssize_t ALTDeviceManagerUploadFile(void *buffer, size_t size, void *user_data);
 
 NSNotificationName const ALTDeviceManagerDeviceDidConnectNotification = @"ALTDeviceManagerDeviceDidConnectNotification";
 NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALTDeviceManagerDeviceDidDisconnectNotification";
@@ -34,7 +42,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, void (^)(NSError *)> *deletionCompletionHandlers;
 
 @property (nonatomic, readonly) NSMutableDictionary<NSUUID *, NSProgress *> *installationProgress;
+
 @property (nonatomic, readonly) dispatch_queue_t installationQueue;
+@property (nonatomic, readonly) dispatch_queue_t devicesQueue;
 
 @property (nonatomic, readonly) NSMutableSet<ALTDevice *> *cachedDevices;
 
@@ -62,7 +72,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         _deletionCompletionHandlers = [NSMutableDictionary dictionary];
         
         _installationProgress = [NSMutableDictionary dictionary];
-        _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.InstallationQueue", DISPATCH_QUEUE_SERIAL);
+        
+        _installationQueue = dispatch_queue_create("com.rileytestut.AltServer.Installation", DISPATCH_QUEUE_SERIAL);
+        _devicesQueue = dispatch_queue_create("com.rileytestut.AltServer.Devices", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
         
         _cachedDevices = [NSMutableSet set];
     }
@@ -206,7 +218,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         }
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -297,6 +309,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         NSError *writeError = nil;
         if (![self writeDirectory:appBundleURL toDestinationURL:destinationURL client:afc progress:nil error:&writeError])
         {
+            int removeResult = afc_remove_path_and_contents(afc, stagingURL.relativePath.fileSystemRepresentation);
+            NSLog(@"Remove staging app result: %@", @(removeResult));
+            
             return finish(writeError);
         }
         
@@ -430,7 +445,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         else
         {
             NSURL *destinationFileURL = [destinationURL URLByAppendingPathComponent:fileURL.lastPathComponent isDirectory:NO];
-            if (![self writeFile:fileURL toDestinationURL:destinationFileURL client:afc error:error])
+            if (![self writeFile:fileURL toDestinationURL:destinationFileURL progress:progress client:afc error:error])
             {
                 return NO;
             }
@@ -442,7 +457,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     return YES;
 }
 
-- (BOOL)writeFile:(NSURL *)fileURL toDestinationURL:(NSURL *)destinationURL client:(afc_client_t)afc error:(NSError **)error
+- (BOOL)writeFile:(NSURL *)fileURL toDestinationURL:(NSURL *)destinationURL progress:(NSProgress *)progress client:(afc_client_t)afc error:(NSError **)error
 {
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:fileURL.path];
     if (fileHandle == nil)
@@ -458,8 +473,16 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     NSData *data = [fileHandle readDataToEndOfFile];
 
     uint64_t af = 0;
-    if ((afc_file_open(afc, destinationURL.relativePath.fileSystemRepresentation, AFC_FOPEN_WRONLY, &af) != AFC_E_SUCCESS) || af == 0)
+    
+    int openResult = afc_file_open(afc, destinationURL.relativePath.fileSystemRepresentation, AFC_FOPEN_WRONLY, &af);
+    if (openResult != AFC_E_SUCCESS || af == 0)
     {
+        if (openResult == AFC_E_OBJECT_IS_DIR)
+        {
+            NSLog(@"Treating file as directory: %@ %@", fileURL, destinationURL);
+            return [self writeDirectory:fileURL toDestinationURL:destinationURL client:afc progress:progress error:error];
+        }
+        
         if (error)
         {
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
@@ -475,10 +498,12 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     {
         uint32_t count = 0;
         
-        if (afc_file_write(afc, af, (const char *)data.bytes + bytesWritten, (uint32_t)data.length - bytesWritten, &count) != AFC_E_SUCCESS)
+        int writeResult = afc_file_write(afc, af, (const char *)data.bytes + bytesWritten, (uint32_t)data.length - bytesWritten, &count);
+        if (writeResult != AFC_E_SUCCESS)
         {
             if (error)
             {
+                NSLog(@"Failed writing file with error: %@ (%@ %@)", @(writeResult), fileURL, destinationURL);
                 *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
             }
             
@@ -493,6 +518,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     {
         if (error)
         {
+            NSLog(@"Failed writing file due to mismatched sizes: %@ vs %@ (%@ %@)", @(bytesWritten), @(data.length), fileURL, destinationURL);
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:@{NSURLErrorKey: destinationURL}];
         }
         
@@ -530,7 +556,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     };
     
     /* Find Device */
-    if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
     {
         return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -607,7 +633,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         };
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -695,7 +721,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         };
         
         /* Find Device */
-        if (idevice_new(&device, udid.UTF8String) != IDEVICE_E_SUCCESS)
+        if (idevice_new_with_options(&device, udid.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
         {
             return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
         }
@@ -964,6 +990,363 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     return provisioningProfiles;
 }
 
+#pragma mark - Developer Disk Image -
+
+- (void)isDeveloperDiskImageMountedForDevice:(ALTDevice *)altDevice completionHandler:(void (^)(BOOL, NSError * _Nullable))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block mobile_image_mounter_client_t mim = NULL;
+    
+    __block BOOL isMounted = NO;
+        
+    void (^finish)(NSError *) = ^(NSError *error) {
+        if (mim) {
+            mobile_image_mounter_hangup(mim);
+            mobile_image_mounter_free(mim);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+        
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        completionHandler(isMounted, error);
+    };
+    
+    dispatch_async(self.installationQueue, ^{
+        
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                        
+        /* Connect to Mobile Image Mounter Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.mobile_image_mounter", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        mobile_image_mounter_error_t err = mobile_image_mounter_new(device, service, &mim);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        plist_t result = NULL;
+        err = mobile_image_mounter_lookup_image(mim, "Developer", &result);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        plist_dict_iter it = NULL;
+        plist_dict_new_iter(result, &it);
+        
+        char* key = NULL;
+        plist_t subnode = NULL;
+        plist_dict_next_item(result, it, &key, &subnode);
+        
+        while (subnode)
+        {
+            // If the ImageSignature key in the returned plist contains a subentry the disk image is already uploaded.
+            // Hopefully this works for older iOS versions as well.
+            // (via https://github.com/Schlaubischlump/LocationSimulator/blob/fdbd93ad16be5f69111b571d71ed6151e850144b/LocationSimulator/MobileDevice/devicemount/deviceimagemounter.c)
+            plist_type type = plist_get_node_type(subnode);
+            if (strcmp(key, "ImageSignature") == 0 && PLIST_ARRAY == type)
+            {
+                isMounted = (plist_array_get_size(subnode) != 0);
+            }
+
+            free(key);
+            key = NULL;
+            
+            if (isMounted)
+            {
+                break;
+            }
+            
+            plist_dict_next_item(result, it, &key, &subnode);
+        }
+        
+        free(it);
+        
+        finish(nil);
+    });
+}
+
+- (void)installDeveloperDiskImageAtURL:(NSURL *)diskURL signatureURL:(NSURL *)signatureURL toDevice:(ALTDevice *)altDevice
+                     completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block mobile_image_mounter_client_t mim = NULL;
+        
+    void (^finish)(NSError *) = ^(NSError *error) {
+        if (mim) {
+            mobile_image_mounter_hangup(mim);
+            mobile_image_mounter_free(mim);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+        
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        if (error)
+        {
+            error = [error alt_errorWithLocalizedFailure:[NSString stringWithFormat:NSLocalizedString(@"The Developer disk image could not be installed onto %@.", @""), altDevice.name]];
+        }
+        
+        completionHandler(error == nil, error);
+    };
+    
+    dispatch_async(self.installationQueue, ^{
+        
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        /* Connect to Device */
+        if (lockdownd_client_new_with_handshake(device, &client, "altserver") != LOCKDOWN_E_SUCCESS)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                
+        /* Connect to Mobile Image Mounter Proxy */
+        if ((lockdownd_start_service(client, "com.apple.mobile.mobile_image_mounter", &service) != LOCKDOWN_E_SUCCESS) || service == NULL)
+        {
+            return finish([NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+                
+        mobile_image_mounter_error_t err = mobile_image_mounter_new(device, service, &mim);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+                
+        NSError *error = nil;
+        NSDictionary *diskAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:diskURL.path error:&error];
+        if (diskAttributes == nil)
+        {
+            return finish(error);
+        }
+        
+        NSDictionary *signatureAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:signatureURL.path error:&error];
+        if (signatureAttributes == nil)
+        {
+            return finish(error);
+        }
+        
+        size_t diskSize = [diskAttributes fileSize];
+        
+        NSData *signature = [[NSData alloc] initWithContentsOfURL:signatureURL options:0 error:&error];
+        if (signature == nil)
+        {
+            return finish(error);
+        }
+        
+        FILE *file = fopen(diskURL.fileSystemRepresentation, "rb");
+        err = mobile_image_mounter_upload_image(mim, "Developer", diskSize, (const char *)signature.bytes, (size_t)signature.length, ALTDeviceManagerUploadFile, file);
+        fclose(file);
+        
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+        
+        NSString *diskPath = @"/private/var/mobile/Media/PublicStaging/staging.dimage";
+
+        plist_t result = NULL;
+        err = mobile_image_mounter_mount_image(mim, diskPath.UTF8String, (const char *)signature.bytes, (size_t)signature.length, "Developer", &result);
+        if (err != MOBILE_IMAGE_MOUNTER_E_SUCCESS)
+        {
+            return finish([NSError errorWithMobileImageMounterError:err device:altDevice]);
+        }
+
+        if (result)
+        {
+            plist_free(result);
+        }
+        
+        // Verify the installed developer disk is compatible with altDevice's operating system version.
+        ALTDebugConnection *testConnection = [[ALTDebugConnection alloc] initWithDevice:altDevice];
+        [testConnection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+            [testConnection disconnect];
+            
+            if (success)
+            {
+                // Connection succeeded, so we assume the developer disk is compatible.
+                finish(nil);
+            }
+            else if ([error.domain isEqualToString:AltServerConnectionErrorDomain] && error.code == ALTServerConnectionErrorUnknown)
+            {
+                // Connection failed with .unknown error code, so we assume the developer disk is NOT compatible.
+                NSMutableDictionary *userInfo = [@{
+                    ALTOperatingSystemVersionErrorKey: NSStringFromOperatingSystemVersion(altDevice.osVersion),
+                    NSFilePathErrorKey: diskURL.path,
+                    NSUnderlyingErrorKey: error,
+                } mutableCopy];
+                
+                NSString *osName = ALTOperatingSystemNameForDeviceType(altDevice.type);
+                if (osName != nil)
+                {
+                    userInfo[ALTOperatingSystemNameErrorKey] = osName;
+                }
+                
+                NSError *returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorIncompatibleDeveloperDisk userInfo:userInfo];
+                finish(returnError);
+            }
+            else
+            {
+                finish(error);
+            }
+        }];
+    });
+}
+
+#pragma mark - Apps -
+
+- (void)fetchInstalledAppsOnDevice:(ALTDevice *)altDevice completionHandler:(void (^)(NSSet<ALTInstalledApp *> *_Nullable installedApps, NSError *_Nullable error))completionHandler
+{
+    __block idevice_t device = NULL;
+    __block instproxy_client_t ipc = NULL;
+    __block lockdownd_client_t client = NULL;
+    __block lockdownd_service_descriptor_t service = NULL;
+    __block plist_t options = NULL;
+        
+    void (^finish)(NSSet<ALTInstalledApp *> *, NSError *) = ^(NSSet<ALTInstalledApp *> *installedApps, NSError *error) {
+        if (error != nil) {
+            NSLog(@"Notification Connection Error: %@", error);
+        }
+        
+        if (options) {
+            instproxy_client_options_free(options);
+        }
+        
+        if (service) {
+            lockdownd_service_descriptor_free(service);
+        }
+        
+        if (client) {
+            lockdownd_client_free(client);
+        }
+                
+        if (ipc) {
+            instproxy_client_free(ipc);
+        }
+        
+        if (device) {
+            idevice_free(device);
+        }
+        
+        completionHandler(installedApps, error);
+    };
+    
+    // Don't use installationQueue since this operation can potentially take a very long time and will block other operations.
+    // dispatch_async(self.installationQueue, ^{
+    dispatch_async(self.devicesQueue, ^{
+        /* Find Device */
+        if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX)) != IDEVICE_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
+        }
+        
+        if (LOCKDOWN_E_SUCCESS != lockdownd_client_new_with_handshake(device, &client, "AltServer"))
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        if ((lockdownd_start_service(client, "com.apple.mobile.installation_proxy", &service) != LOCKDOWN_E_SUCCESS) || !service)
+        {
+            return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorConnectionFailed userInfo:nil]);
+        }
+        
+        instproxy_error_t err = instproxy_client_new(device, service, &ipc);
+        if (err != INSTPROXY_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithInstallationProxyError:err device:altDevice]);
+        }
+        
+        options = instproxy_client_options_new();
+        instproxy_client_options_add(options, "ApplicationType", "User", NULL);
+        
+        plist_t plist = NULL;
+        err = instproxy_browse(ipc, options, &plist);
+        if (err != INSTPROXY_E_SUCCESS)
+        {
+            return finish(nil, [NSError errorWithInstallationProxyError:err device:altDevice]);
+        }
+        
+        char *plistXML = NULL;
+        uint32_t length = 0;
+        plist_to_xml(plist, &plistXML, &length);
+        
+        NSData *plistData = [@(plistXML) dataUsingEncoding:NSUTF8StringEncoding];
+        free(plistXML);
+        plist_free(plist);
+        
+        NSError *error = nil;
+        NSArray *appDictionaries = [NSPropertyListSerialization propertyListWithData:plistData options:0 format:nil error:&error];
+        if (appDictionaries == nil)
+        {
+            return finish(nil, error);
+        }
+        
+        NSMutableSet *installedApps = [NSMutableSet set];
+        for (NSDictionary *appInfo in appDictionaries)
+        {
+            if (appInfo[@"ALTBundleIdentifier"] != nil)
+            {
+                // Only return apps installed with AltStore.
+                
+                ALTInstalledApp *installedApp = [[ALTInstalledApp alloc] initWithDictionary:appInfo];
+                if (installedApp)
+                {
+                    [installedApps addObject:installedApp];
+                }
+            }
+        }
+        
+        finish(installedApps, nil);
+    });
+}
+
 #pragma mark - Connections -
 
 - (void)startWiredConnectionToDevice:(ALTDevice *)altDevice completionHandler:(void (^)(ALTWiredConnection * _Nullable, NSError * _Nullable))completionHandler
@@ -981,7 +1364,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     idevice_connection_t connection = NULL;
     
     /* Find Device */
-    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, IDEVICE_LOOKUP_USBMUX) != IDEVICE_E_SUCCESS)
     {
         return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -1016,7 +1399,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     np_client_t client = NULL;
     
     /* Find Device */
-    if (idevice_new_ignore_network(&device, altDevice.identifier.UTF8String) != IDEVICE_E_SUCCESS)
+    if (idevice_new_with_options(&device, altDevice.identifier.UTF8String, IDEVICE_LOOKUP_USBMUX) != IDEVICE_E_SUCCESS)
     {
         return finish(nil, [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorDeviceNotFound userInfo:nil]);
     }
@@ -1047,6 +1430,20 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     completionHandler(notificationConnection, nil);
 }
 
+- (void)startDebugConnectionToDevice:(ALTDevice *)device completionHandler:(void (^)(ALTDebugConnection * _Nullable, NSError * _Nullable))completionHandler
+{
+    ALTDebugConnection *connection = [[ALTDebugConnection alloc] initWithDevice:device];
+    [connection connectWithCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        if (success)
+        {
+            completionHandler(connection, nil);
+        }
+        else
+        {
+            completionHandler(nil, error);
+        }
+    }];
+}
 #pragma mark - Getters -
 
 - (NSArray<ALTDevice *> *)connectedDevices
@@ -1064,8 +1461,9 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     NSMutableSet *connectedDevices = [NSMutableSet set];
     
     int count = 0;
-    char **udids = NULL;
-    if (idevice_get_device_list(&udids, &count) < 0)
+    idevice_info_t *devices = NULL;
+    
+    if (idevice_get_device_list_extended(&devices, &count) < 0)
     {
         fprintf(stderr, "ERROR: Unable to retrieve device list!\n");
         return @[];
@@ -1073,17 +1471,56 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     
     for (int i = 0; i < count; i++)
     {
-        char *udid = udids[i];
+        idevice_info_t device_info = devices[i];
+        char *udid = device_info->udid;
         
         idevice_t device = NULL;
+        lockdownd_client_t client = NULL;
+        
+        char *device_name = NULL;
+        char *device_type_string = NULL;
+        char *device_version_string = NULL;
+        
+        plist_t device_type_plist = NULL;
+        plist_t device_version_plist = NULL;
+        
+        void (^cleanUp)(void) = ^{
+            if (device_version_plist) {
+                plist_free(device_version_plist);
+            }
+            
+            if (device_type_plist) {
+                plist_free(device_type_plist);
+            }
+            
+            if (device_version_string) {
+                free(device_version_string);
+            }
+            
+            if (device_type_string) {
+                free(device_type_string);
+            }
+            
+            if (device_name) {
+                free(device_name);
+            }
+            
+            if (client) {
+                lockdownd_client_free(client);
+            }
+            
+            if (device) {
+                idevice_free(device);
+            }
+        };
         
         if (includingNetworkDevices)
         {
-            idevice_new(&device, udid);
+            idevice_new_with_options(&device, udid, (enum idevice_options)((int)IDEVICE_LOOKUP_NETWORK | (int)IDEVICE_LOOKUP_USBMUX));
         }
         else
         {
-            idevice_new_ignore_network(&device, udid);
+            idevice_new_with_options(&device, udid, IDEVICE_LOOKUP_USBMUX);
         }
         
         if (!device)
@@ -1091,44 +1528,76 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             continue;
         }
         
-        lockdownd_client_t client = NULL;
         int result = lockdownd_client_new(device, &client, "altserver");
         if (result != LOCKDOWN_E_SUCCESS)
         {
             fprintf(stderr, "ERROR: Connecting to device %s failed! (%d)\n", udid, result);
             
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
         
-        char *device_name = NULL;
         if (lockdownd_get_device_name(client, &device_name) != LOCKDOWN_E_SUCCESS || device_name == NULL)
         {
             fprintf(stderr, "ERROR: Could not get device name!\n");
             
-            lockdownd_client_free(client);
-            idevice_free(device);
-            
+            cleanUp();
             continue;
         }
         
-        lockdownd_client_free(client);
-        idevice_free(device);
+        if (lockdownd_get_value(client, NULL, "ProductType", &device_type_plist) != LOCKDOWN_E_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
+            
+            cleanUp();
+            continue;
+        }
+        
+        plist_get_string_val(device_type_plist, &device_type_string);
+        
+        ALTDeviceType deviceType = ALTDeviceTypeiPhone;
+        if ([@(device_type_string) hasPrefix:@"iPhone"])
+        {
+            deviceType = ALTDeviceTypeiPhone;
+        }
+        else if ([@(device_type_string) hasPrefix:@"iPad"])
+        {
+            deviceType = ALTDeviceTypeiPad;
+        }
+        else if ([@(device_type_string) hasPrefix:@"AppleTV"])
+        {
+            deviceType = ALTDeviceTypeAppleTV;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: Unknown device type %s for %s!\n", device_type_string, device_name);
+            
+            cleanUp();
+            continue;
+        }
+        
+        if (lockdownd_get_value(client, NULL, "ProductVersion", &device_version_plist) != LOCKDOWN_E_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: Could not get device type for %s!\n", device_name);
+            
+            cleanUp();
+            continue;
+        }
+        
+        plist_get_string_val(device_version_plist, &device_version_string);
+        NSOperatingSystemVersion osVersion = NSOperatingSystemVersionFromString(@(device_version_string));
         
         NSString *name = [NSString stringWithCString:device_name encoding:NSUTF8StringEncoding];
         NSString *identifier = [NSString stringWithCString:udid encoding:NSUTF8StringEncoding];
         
-        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:ALTDeviceTypeiPhone];
+        ALTDevice *altDevice = [[ALTDevice alloc] initWithName:name identifier:identifier type:deviceType];
+        altDevice.osVersion = osVersion;
         [connectedDevices addObject:altDevice];
         
-        if (device_name != NULL)
-        {
-            free(device_name);
-        }
+        cleanUp();
     }
     
-    idevice_device_list_free(udids);
+    idevice_device_list_extended_free(devices);
     
     return connectedDevices.allObjects;
 }
@@ -1160,15 +1629,18 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
         void (^completionHandler)(NSError *) = ALTDeviceManager.sharedManager.installationCompletionHandlers[UUID];
         if (completionHandler != nil)
         {
+            NSString *localizedDescription = @(description ?: "");
+            
             if (code != 0 || name != NULL)
             {
-                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name ?: ""), @(description ?: ""));
+                NSLog(@"Error installing app. %@ (%@). %@", @(code), @(name ?: ""), localizedDescription);
                 
                 NSError *error = nil;
                 
                 if (code == 3892346913)
                 {
-                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:nil];
+                    NSDictionary *userInfo = (localizedDescription.length != 0) ? @{NSLocalizedDescriptionKey: localizedDescription} : nil;
+                    error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorMaximumFreeAppLimitReached userInfo:userInfo];
                 }
                 else
                 {
@@ -1179,7 +1651,7 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
                     }
                     else
                     {
-                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: @(description ?: "")}];
+                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: localizedDescription}];
                         error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorInstallationFailed userInfo:@{NSUnderlyingErrorKey: underlyingError}];
                     }
                 }
@@ -1285,4 +1757,9 @@ void ALTDeviceDidChangeConnectionStatus(const idevice_event_t *event, void *user
             
         default: break;
     }
+}
+
+ssize_t ALTDeviceManagerUploadFile(void *buffer, size_t size, void *user_data)
+{
+    return fread(buffer, 1, size, (FILE*)user_data);
 }

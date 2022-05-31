@@ -78,11 +78,6 @@ class FetchSourceOperation: ResultOperation<Source>
                     let source = try decoder.decode(Source.self, from: data)
                     let identifier = source.identifier
                     
-                    if identifier == Source.altStoreIdentifier, let patreonAccessToken = source.userInfo?[.patreonAccessToken]
-                    {
-                        Keychain.shared.patreonCreatorAccessToken = patreonAccessToken
-                    }
-                    
                     try childContext.save()
                     
                     self.managedObjectContext.perform {

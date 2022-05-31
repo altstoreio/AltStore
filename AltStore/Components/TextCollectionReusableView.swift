@@ -11,4 +11,9 @@ import UIKit
 class TextCollectionReusableView: UICollectionReusableView
 {
     @IBOutlet var textLabel: UILabel!
+    
+    @IBOutlet var topLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet var leadingLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet var trailingLayoutConstraint: NSLayoutConstraint!
 }

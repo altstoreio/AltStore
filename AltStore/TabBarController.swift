@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AltStoreCore
 
 extension TabBarController
 {
@@ -45,18 +46,44 @@ class TabBarController: UITabBarController
             self.initialSegue = nil
             self.performSegue(withIdentifier: identifier, sender: sender)
         }
+        else if let patchedApps = UserDefaults.standard.patchedApps, !patchedApps.isEmpty
+        {
+            // Check if we need to finish installing untethered jailbreak.
+            let activeApps = InstalledApp.fetchActiveApps(in: DatabaseManager.shared.viewContext)
+            guard let patchedApp = activeApps.first(where: { patchedApps.contains($0.bundleIdentifier) }) else { return }
+            
+            self.performSegue(withIdentifier: "finishJailbreak", sender: patchedApp)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
-        guard segue.identifier == "presentSources",
-              let notification = sender as? Notification,
-              let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
-        else { return }
+        guard let identifier = segue.identifier else { return }
         
-        let navigationController = segue.destination as! UINavigationController
-        let sourcesViewController = navigationController.viewControllers.first as! SourcesViewController
-        sourcesViewController.deepLinkSourceURL = sourceURL
+        switch identifier
+        {
+        case "presentSources":
+            guard let notification = sender as? Notification,
+                  let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
+            else { return }
+            
+            let navigationController = segue.destination as! UINavigationController
+            let sourcesViewController = navigationController.viewControllers.first as! SourcesViewController
+            sourcesViewController.deepLinkSourceURL = sourceURL
+            
+        case "finishJailbreak":
+            guard let installedApp = sender as? InstalledApp, #available(iOS 14, *) else { return }
+            
+            let navigationController = segue.destination as! UINavigationController
+            
+            let patchViewController = navigationController.viewControllers.first as! PatchViewController
+            patchViewController.installedApp = installedApp
+            patchViewController.completionHandler = { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
+            }
+            
+        default: break
+        }
     }
     
     override func performSegue(withIdentifier identifier: String, sender: Any?)

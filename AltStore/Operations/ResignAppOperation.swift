@@ -169,7 +169,7 @@ private extension ResignAppOperation
                 
                 var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
 
-                if self.context.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(self.context.bundleIdentifier)
+                if app.isAltStoreApp
                 {
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid
@@ -189,6 +189,12 @@ private extension ResignAppOperation
                     {
                         // The embedded certificate + certificate identifier are already in app bundle, no need to update them.
                     }
+                }
+                else if infoDictionary.keys.contains(Bundle.Info.deviceID), let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String
+                {
+                    // There is an ALTDeviceID entry, so assume the app is using AltKit and replace it with the device's UDID.
+                    additionalValues[Bundle.Info.deviceID] = udid
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.preferredServerID
                 }
                 
                 let iconScale = Int(UIScreen.main.scale)

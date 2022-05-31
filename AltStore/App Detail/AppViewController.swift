@@ -188,6 +188,13 @@ class AppViewController: UIViewController
         
         self.contentViewController = segue.destination as? AppContentViewController
         self.contentViewController.app = self.app
+        
+        if #available(iOS 15, *)
+        {
+            // Fix navigation bar + tab bar appearance on iOS 15.
+            self.setContentScrollView(self.scrollView)
+            self.navigationItem.scrollEdgeAppearance = self.navigationController?.navigationBar.standardAppearance
+        }
     }
     
     override func viewDidLayoutSubviews()
@@ -491,7 +498,7 @@ extension AppViewController
     {
         guard self.app.installedApp == nil else { return }
         
-        let progress = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
+        let group = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
             do
             {
                 _ = try result.get()
@@ -515,8 +522,8 @@ extension AppViewController
             }
         }
         
-        self.bannerView.button.progress = progress
-        self.navigationBarDownloadButton.progress = progress
+        self.bannerView.button.progress = group.progress
+        self.navigationBarDownloadButton.progress = group.progress
     }
     
     func open(_ installedApp: InstalledApp)

@@ -24,7 +24,6 @@ enum OperationError: LocalizedError
     case invalidApp
     case invalidParameters
     
-    case iOSVersionNotSupported(ALTApplication)
     case maximumAppIDLimitReached(application: ALTApplication, requiredAppIDs: Int, availableAppIDs: Int, nextExpirationDate: Date)
     
     case noSources
@@ -46,18 +45,6 @@ enum OperationError: LocalizedError
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
         case .openAppFailed(let name): return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), name)
         case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be found.", comment: "")
-        case .iOSVersionNotSupported(let app):
-            let name = app.name
-            
-            var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
-            if app.minimumiOSVersion.patchVersion > 0
-            {
-                version += ".\(app.minimumiOSVersion.patchVersion)"
-            }
-            
-            let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
-            return localizedDescription
-            
         case .maximumAppIDLimitReached: return NSLocalizedString("Cannot register more than 10 App IDs.", comment: "")
         }
     }

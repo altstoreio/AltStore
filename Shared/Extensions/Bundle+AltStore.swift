@@ -20,27 +20,40 @@ public extension Bundle
         
         public static let urlTypes = "CFBundleURLTypes"
         public static let exportedUTIs = "UTExportedTypeDeclarations"
+        
+        public static let untetherURL = "ALTFugu14UntetherURL"
+        public static let untetherRequired = "ALTFugu14UntetherRequired"
+        public static let untetherMinimumiOSVersion = "ALTFugu14UntetherMinimumVersion"
+        public static let untetherMaximumiOSVersion = "ALTFugu14UntetherMaximumVersion"
     }
 }
 
 public extension Bundle
 {
-    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
-    
     var infoPlistURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("Info.plist")
         return infoPlistURL
     }
     
     var provisioningProfileURL: URL {
-        let infoPlistURL = self.bundleURL.appendingPathComponent("embedded.mobileprovision")
-        return infoPlistURL
+        let provisioningProfileURL = self.bundleURL.appendingPathComponent("embedded.mobileprovision")
+        return provisioningProfileURL
     }
     
     var certificateURL: URL {
-        let infoPlistURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
-        return infoPlistURL
+        let certificateURL = self.bundleURL.appendingPathComponent("ALTCertificate.p12")
+        return certificateURL
     }
+    
+    var altstorePlistURL: URL {
+        let altstorePlistURL = self.bundleURL.appendingPathComponent("AltStore.plist")
+        return altstorePlistURL
+    }
+}
+
+public extension Bundle
+{
+    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
     
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []

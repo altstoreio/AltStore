@@ -59,18 +59,25 @@ class AboutPatreonHeaderView: UICollectionReusableView
     @IBOutlet var accountButton: UIButton!
     @IBOutlet var textView: UITextView!
     
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var rileyLabel: UILabel!
+    @IBOutlet private var shaneLabel: UILabel!
+    
+    @IBOutlet private var rileyImageView: UIImageView!
+    @IBOutlet private var shaneImageView: UIImageView!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        self.imageView.clipsToBounds = true
-        self.imageView.layer.cornerRadius = self.imageView.bounds.midY
-        
         self.textView.clipsToBounds = true
         self.textView.layer.cornerRadius = 20
         self.textView.textContainer.lineFragmentPadding = 0
+        
+        for imageView in [self.rileyImageView!, self.shaneImageView!]
+        {
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = imageView.bounds.midY
+        }
         
         for button in [self.supportButton!, self.accountButton!]
         {

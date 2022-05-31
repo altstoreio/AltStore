@@ -17,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2019 Riley Testut. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
@@ -61,6 +61,104 @@
 	<key>Supported11.0PluginCompatibilityUUIDs</key>
 	<array>
 		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.10PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.1PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.2PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.3PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.4PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.5PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.6PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.7PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.8PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported11.9PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+	</array>
+	<key>Supported12.0PluginCompatibilityUUIDs</key>
+	<array>
+		<string>D985F0E4-3BBC-4B95-BBA1-12056AC4A531</string>
+		<string>224E7F96-2099-499C-A501-63FB68C79CD2</string>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+	</array>
+	<key>Supported12.1PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+	</array>
+	<key>Supported12.2PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+	</array>
+	<key>Supported12.3PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.4PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.5PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.6PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.7PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.8PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
+	</array>
+	<key>Supported12.9PluginCompatibilityUUIDs</key>
+	<array>
+		<string>25288CEF-7D9B-49A8-BE6B-E41DA6277CF3</string>
+		<string>6FF8B077-81FA-45A4-BD57-17CDE79F13A5</string>
+		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
 	</array>
 </dict>
 </plist>
