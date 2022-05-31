@@ -1,6 +1,6 @@
 inhibit_all_warnings!
 
-target 'AltStore' do
+target 'SideStore' do
   platform :ios, '12.0'
 
   use_frameworks!
@@ -22,7 +22,7 @@ target 'AltServer' do
 
 end
 
-target 'AltStoreCore' do
+target 'SideStoreCore' do
   platform :ios, '12.0'
 
   use_frameworks!
