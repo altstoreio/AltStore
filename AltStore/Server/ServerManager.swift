@@ -140,7 +140,7 @@ private extension ServerManager
     func addDiscoveredServer(_ server: Server)
     {
         var server = server
-        server.isPreferred = (server.identifier == UserDefaults.standard.preferredServerID)
+        server.isPreferred = true
         
         guard !self.discoveredServers.contains(server) else { return }
         
