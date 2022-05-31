@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:SideStore.xcodeproj">
+      location = "container:AltStore.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Dependencies/AltSign">
