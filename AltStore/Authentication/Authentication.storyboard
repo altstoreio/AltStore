@@ -493,14 +493,72 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Chr-7g-qEw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2101.5999999999999" y="733.5832083958021"/>
+            <point key="canvasLocation" x="2967" y="736"/>
         </scene>
-    </scenes>
-    <color key="tintColor" name="Primary"/>
-    <resources>
-        <namedColor name="Primary">
-            <color red="0.0040000001899898052" green="0.50199997425079346" blue="0.51800000667572021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
+        <!--Select a Team-->
+        <scene sceneID="ioQ-WB-CLJ">
+            <objects>
+                <viewController storyboardIdentifier="selectTeamViewController" hidesBottomBarWhenPushed="YES" id="kOD-4P-a6L" customClass="SelectTeamViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="60" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="fWW-kX-ifH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="TeamCell" textLabel="6ip-34-gmM" detailTextLabel="knk-Wf-PKf" style="IBUITableViewCellStyleSubtitle" id="qeQ-eb-2SC" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qeQ-eb-2SC" id="bT4-Fc-u6I">
+                                    <rect key="frame" x="0.0" y="0.0" width="334" height="60"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Team 1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6ip-34-gmM">
+                                            <rect key="frame" x="30" y="10" width="56.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="knk-Wf-PKf">
+                                            <rect key="frame" x="30" y="33.5" width="70" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                        <integer key="value" value="0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="kOD-4P-a6L" id="OLE-fk-1MD"/>
+                            <outlet property="delegate" destination="kOD-4P-a6L" id="t9T-jO-TrR"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Select a Team" largeTitleDisplayMode="always" id="qxJ-Go-OPq"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yH5-jU-aez" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1401" y="734"/>
+
+        </scene>
+</scenes>
+<color key="tintColor" name="Primary"/>
+<resources>
+    <namedColor name="Primary">
+        <color red="0.0040000001899898052" green="0.50199997425079346" blue="0.51800000667572021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    </namedColor>
         <namedColor name="SettingsBackground">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

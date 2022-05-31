@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0E33F94B8D78AB969FD309A3 /* Pods_AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08F67C18350C7990753F03F /* Pods_AltStoreCore.framework */; };
+		195EA4C92845E15500F25835 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195EA4C82845E15500F25835 /* SelectTeamViewController.swift */; };
 		2A77E3D272F3D92436FAC272 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
