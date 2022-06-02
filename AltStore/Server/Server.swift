@@ -59,6 +59,7 @@ extension Server
         
         self.service = service
         self.identifier = identifier
+        self.isPreferred = true
     }
 
     init?(service: NetService)
@@ -66,6 +67,7 @@ extension Server
         self.service = service
         self.connectionType = .manual
         self.identifier = String(data: "yolo".data(using: .utf8)!, encoding: .utf8)
+        self.isPreferred = false
     }
 }
 

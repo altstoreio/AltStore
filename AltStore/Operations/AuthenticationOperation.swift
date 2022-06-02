@@ -17,6 +17,7 @@ enum AuthenticationError: LocalizedError
 {
     case noTeam
     case noCertificate
+    case teamSelectorError
     
     case missingPrivateKey
     case missingCertificate
@@ -24,6 +25,7 @@ enum AuthenticationError: LocalizedError
     var errorDescription: String? {
         switch self {
         case .noTeam: return NSLocalizedString("Developer team could not be found.", comment: "")
+        case .teamSelectorError: return NSLocalizedString("Error presenting team selector view.", comment: "")
         case .noCertificate: return NSLocalizedString("Developer certificate could not be found.", comment: "")
         case .missingPrivateKey: return NSLocalizedString("The certificate's private key could not be found.", comment: "")
         case .missingCertificate: return NSLocalizedString("The certificate could not be found.", comment: "")
@@ -441,24 +443,27 @@ private extension AuthenticationOperation
     func fetchTeam(for account: ALTAccount, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTTeam, Swift.Error>) -> Void)
     {
         func selectTeam(from teams: [ALTTeam])
-        {
-            if let team = teams.first(where: { $0.type == .individual })
-            {
-                return completionHandler(.success(team))
-            }
-            else if let team = teams.first(where: { $0.type == .free })
-            {
-                return completionHandler(.success(team))
-            }
-            else if let team = teams.first
-            {
-                return completionHandler(.success(team))
-            }
-            else
-            {
-                return completionHandler(.failure(AuthenticationError.noTeam))
-            }
-        }
+         {
+             if teams.count <= 1 {
+                 if let team = teams.first {
+                     return completionHandler(.success(team))
+                 } else {
+                     return completionHandler(.failure(AuthenticationError.noTeam))
+                 }
+             } else {
+                 DispatchQueue.main.async {
+                     let selectTeamViewController = self.storyboard.instantiateViewController(withIdentifier: "selectTeamViewController") as! SelectTeamViewController
+
+                     selectTeamViewController.teams = teams
+                     selectTeamViewController.completionHandler = completionHandler
+
+                     if !self.present(selectTeamViewController)
+                     {
+                         return completionHandler(.failure(AuthenticationError.noTeam))
+                     }
+                 }
+             }
+         }
 
         ALTAppleAPI.shared.fetchTeams(for: account, session: session) { (teams, error) in
             switch Result(teams, error)
