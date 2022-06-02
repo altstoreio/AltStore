@@ -28,3 +28,6 @@ xcuserdata
 
 ## Obj-C/Swift specific
 *.hmap
+/newrelic_agent.log
+/CodeSigning.xcconfig
+/.vscode
