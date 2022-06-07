@@ -3,7 +3,7 @@
 	url = https://github.com/rileytestut/Roxas.git
 [submodule "Dependencies/AltSign"]
 	path = Dependencies/AltSign
-	url = https://github.com/rileytestut/AltSign.git
+	url = https://github.com/SideStore/AltSign.git
 [submodule "Dependencies/libimobiledevice"]
 	path = Dependencies/libimobiledevice
 	url = https://github.com/SideStore/libimobiledevice.git
