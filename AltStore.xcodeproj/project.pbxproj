@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E33F94B8D78AB969FD309A3 /* Pods_AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08F67C18350C7990753F03F /* Pods_AltStoreCore.framework */; };
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
-		2A77E3D272F3D92436FAC272 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */; };
-		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
+		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
+		B3C395F1284F2DE700DA9E2F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F0284F2DE700DA9E2F /* KeychainAccess */; };
+		B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F3284F35DD00DA9E2F /* Nuke */; };
+		B3C395F7284F362400DA9E2F /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F6284F362400DA9E2F /* AppCenterAnalytics */; };
+		B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F8284F362400DA9E2F /* AppCenterCrashes */; };
+		B3C395FC284F3B2400DA9E2F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395FB284F3B2400DA9E2F /* Sparkle */; };
+		B3C395FF284F3C0900DA9E2F /* STPrivilegedTask in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395FE284F3C0900DA9E2F /* STPrivilegedTask */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
@@ -464,13 +468,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
-		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
-		A08F67C18350C7990753F03F /* Pods_AltStoreCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStoreCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
-		B39BC452F0753C2C33A2D43B /* Pods-AltStoreCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.debug.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.debug.xcconfig"; sourceTree = "<group>"; };
-		BC373DB2C2B6CB739CCBFB5F /* Pods-AltStoreCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStoreCore.release.xcconfig"; path = "Target Support Files/Pods-AltStoreCore/Pods-AltStoreCore.release.xcconfig"; sourceTree = "<group>"; };
+		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttemptsViewController.swift; sourceTree = "<group>"; };
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
@@ -812,7 +811,6 @@
 		BFF7C93B257849C600E55F36 /* AltXPC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltXPC.entitlements; sourceTree = "<group>"; };
 		BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 8.xcdatamodel"; sourceTree = "<group>"; };
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
-		C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D533E8B62727841800A9B5DD /* libAppleArchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libAppleArchive.tbd; path = usr/lib/libAppleArchive.tbd; sourceTree = SDKROOT; };
 		D533E8B82727B61400A9B5DD /* fragmentzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fragmentzip.h; sourceTree = "<group>"; };
 		D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dependencies/fragmentzip/libfragmentzip.a; sourceTree = SOURCE_ROOT; };
@@ -830,8 +828,6 @@
 		D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePatronsOperation.swift; sourceTree = "<group>"; };
 		D5E1E7C028077DE90016FC96 /* FetchTrustedSourcesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTrustedSourcesOperation.swift; sourceTree = "<group>"; };
 		D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchViewController.swift; sourceTree = "<group>"; };
-		EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.debug.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.debug.xcconfig"; sourceTree = "<group>"; };
-		FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -855,11 +851,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */,
+				B3C395FF284F3C0900DA9E2F /* STPrivilegedTask in Frameworks */,
 				BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
+				B3C395FC284F3B2400DA9E2F /* Sparkle in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
 				BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */,
-				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -882,9 +879,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3C395F1284F2DE700DA9E2F /* KeychainAccess in Frameworks */,
 				BF42345D25102688006D1EB2 /* OpenSSL.xcframework in Frameworks */,
+				B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */,
 				BF42345C251024B0006D1EB2 /* AltSign-Static in Frameworks */,
-				0E33F94B8D78AB969FD309A3 /* Pods_AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -901,12 +899,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */,
+				B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */,
 				D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */,
+				B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */,
 				BF1614F1250822F100767AEA /* Roxas.framework in Frameworks */,
+				B3C395F7284F362400DA9E2F /* AppCenterAnalytics in Frameworks */,
 				BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */,
 				D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */,
 				BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */,
-				2A77E3D272F3D92436FAC272 /* Pods_AltStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,19 +920,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4460E048E3AC1C9708C4FA33 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */,
-				A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */,
-				11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */,
-				589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */,
-				B39BC452F0753C2C33A2D43B /* Pods-AltStoreCore.debug.xcconfig */,
-				BC373DB2C2B6CB739CCBFB5F /* Pods-AltStoreCore.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		BF055B4A233B528B0086DEA9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1499,7 +1486,6 @@
 				BFF7C905257844C900E55F36 /* AltXPC */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
-				4460E048E3AC1C9708C4FA33 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1554,14 +1540,12 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B39575F4284F29E20080B4FF /* Roxas.framework */,
 				D533E8B62727841800A9B5DD /* libAppleArchive.tbd */,
 				BF088D322501A4FF008082D9 /* OpenSSL.xcframework */,
 				BF580497246A3D19008AE704 /* UIKit.framework */,
 				BF4588872298DD3F00BD7491 /* libxml2.tbd */,
 				BFD247862284BB3B00981D42 /* Roxas.framework */,
-				FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */,
-				C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */,
-				A08F67C18350C7990753F03F /* Pods_AltStoreCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1870,13 +1854,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF45869A229872EA00BD7491 /* Build configuration list for PBXNativeTarget "AltServer" */;
 			buildPhases = (
-				FACBF95CCAAAB7121E1D92C8 /* [CP] Check Pods Manifest.lock */,
 				BF458689229872EA00BD7491 /* Sources */,
 				BF45868B229872EA00BD7491 /* Resources */,
 				BF4588462298D4AA00BD7491 /* Frameworks */,
 				BF0201BC22C2EFA3000B93E4 /* Embed Frameworks */,
 				BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */,
-				98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */,
 				BF914C242383659400E713BA /* Sign Frameworks */,
 				BFF7C910257844C900E55F36 /* Embed XPC Services */,
 			);
@@ -1890,6 +1872,8 @@
 			packageProductDependencies = (
 				BF088D352501A821008082D9 /* AltSign-Dynamic */,
 				D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */,
+				B3C395FB284F3B2400DA9E2F /* Sparkle */,
+				B3C395FE284F3C0900DA9E2F /* STPrivilegedTask */,
 			);
 			productName = AltServer;
 			productReference = BF45868D229872EA00BD7491 /* AltServer.app */;
@@ -1951,7 +1935,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF66EE892501AE50007EE018 /* Build configuration list for PBXNativeTarget "AltStoreCore" */;
 			buildPhases = (
-				702C290C354EA165FF645858 /* [CP] Check Pods Manifest.lock */,
 				BF66EE792501AE50007EE018 /* Headers */,
 				BF66EE7A2501AE50007EE018 /* Sources */,
 				BF66EE7B2501AE50007EE018 /* Frameworks */,
@@ -1964,6 +1947,7 @@
 			name = AltStoreCore;
 			packageProductDependencies = (
 				BF42345B251024B0006D1EB2 /* AltSign-Static */,
+				B3C395F0284F2DE700DA9E2F /* KeychainAccess */,
 			);
 			productName = AltStoreCore;
 			productReference = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */;
@@ -1991,12 +1975,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFD2477E2284B9A700981D42 /* Build configuration list for PBXNativeTarget "AltStore" */;
 			buildPhases = (
-				FFB93342C7EB2021A1FFFB6A /* [CP] Check Pods Manifest.lock */,
 				BFD247662284B9A500981D42 /* Sources */,
 				BFD247672284B9A500981D42 /* Frameworks */,
 				BFD247682284B9A500981D42 /* Resources */,
 				BF088D2B2501A087008082D9 /* Embed Frameworks */,
-				744AE3B03F6BF664FC5705C5 /* [CP] Embed Pods Frameworks */,
 				BF98917B250AABF4002ACF50 /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -2006,6 +1988,11 @@
 				BF989176250AABF4002ACF50 /* PBXTargetDependency */,
 			);
 			name = AltStore;
+			packageProductDependencies = (
+				B3C395F3284F35DD00DA9E2F /* Nuke */,
+				B3C395F6284F362400DA9E2F /* AppCenterAnalytics */,
+				B3C395F8284F362400DA9E2F /* AppCenterCrashes */,
+			);
 			productName = AltStore;
 			productReference = BFD2476A2284B9A500981D42 /* AltStore.app */;
 			productType = "com.apple.product-type.application";
@@ -2099,6 +2086,11 @@
 			mainGroup = BFD247612284B9A500981D42;
 			packageReferences = (
 				D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
+				B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */,
+				B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				B3C395FA284F3B2400DA9E2F /* XCRemoteSwiftPackageReference "Sparkle" */,
+				B3C395FD284F3C0900DA9E2F /* XCRemoteSwiftPackageReference "STPrivilegedTask" */,
 			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
@@ -2192,62 +2184,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		702C290C354EA165FF645858 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AltStoreCore-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		744AE3B03F6BF664FC5705C5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltServer/Pods-AltServer-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2282,51 +2218,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\nIDENTITY=${EXPANDED_CODE_SIGN_IDENTITY_NAME}\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n";
-		};
-		FACBF95CCAAAB7121E1D92C8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AltServer-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FFB93342C7EB2021A1FFFB6A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AltStore-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "#LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n#IDENTITY=${EXPANDED_CODE_SIGN_IDENTITY_NAME}\n#\n#codesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\n#codesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2810,7 +2702,6 @@
 		};
 		BF45869B229872EA00BD7491 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2855,6 +2746,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2863,7 +2755,6 @@
 		};
 		BF45869C229872EA00BD7491 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2908,6 +2799,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
@@ -3093,17 +2985,16 @@
 		};
 		BF66EE872501AE50007EE018 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B39BC452F0753C2C33A2D43B /* Pods-AltStoreCore.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3117,7 +3008,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3127,16 +3021,15 @@
 		};
 		BF66EE882501AE50007EE018 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC373DB2C2B6CB739CCBFB5F /* Pods-AltStoreCore.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3150,7 +3043,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStoreCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3354,7 +3250,6 @@
 		};
 		BFD2477F2284B9A700981D42 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EA79A60285C6AF5848AA16E9 /* Pods-AltStore.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -3379,6 +3274,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -3388,7 +3284,6 @@
 		};
 		BFD247802284B9A700981D42 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -3413,6 +3308,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3573,6 +3469,46 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
+		B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+		B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
+		B3C395FA284F3B2400DA9E2F /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
+		B3C395FD284F3C0900DA9E2F /* XCRemoteSwiftPackageReference "STPrivilegedTask" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JoeMatt/STPrivilegedTask.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin.git";
@@ -3584,6 +3520,36 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B3C395F0284F2DE700DA9E2F /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		B3C395F3284F35DD00DA9E2F /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		B3C395F6284F362400DA9E2F /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
+		};
+		B3C395F8284F362400DA9E2F /* AppCenterCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
+		};
+		B3C395FB284F3B2400DA9E2F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395FA284F3B2400DA9E2F /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		B3C395FE284F3C0900DA9E2F /* STPrivilegedTask */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395FD284F3C0900DA9E2F /* XCRemoteSwiftPackageReference "STPrivilegedTask" */;
+			productName = STPrivilegedTask;
+		};
 		BF088D0E25019ABA008082D9 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Static";

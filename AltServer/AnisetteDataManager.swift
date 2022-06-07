@@ -116,7 +116,7 @@ private extension AnisetteDataManager
         let requestUUID = UUID().uuidString
         self.anisetteDataCompletionHandlers[requestUUID] = completion
         
-        let isMailRunning = NSWorkspace.shared.runningApplications.map { $0.bundleIdentifier }.contains { "com.apple.mail" }
+        let isMailRunning = NSWorkspace.shared.runningApplications.map { $0.bundleIdentifier }.contains { $0 == "com.apple.mail" }
         
         if !isMailRunning, let mailApp = FileManager.default.urls(for: .applicationDirectory,in: .systemDomainMask).first?.appendingPathComponent("Mail.app") {
             NSWorkspace.shared.open(mailApp)

@@ -10,7 +10,4 @@
    <FileRef
       location = "group:Dependencies/Roxas/Roxas.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
 </Workspace>
