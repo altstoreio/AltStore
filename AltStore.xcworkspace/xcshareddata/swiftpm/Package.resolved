@@ -45,6 +45,24 @@
           "revision": "6b27393cad517c067dceea85fadf050e70c4ceaa",
           "version": "1.10.1"
         }
+      },
+      {
+        "package": "Sparkle",
+        "repositoryURL": "https://github.com/sparkle-project/Sparkle.git",
+        "state": {
+          "branch": null,
+          "revision": "286edd1fa22505a9e54d170e9fd07d775ea233f2",
+          "version": "2.1.0"
+        }
+      },
+      {
+        "package": "STPrivilegedTask",
+        "repositoryURL": "https://github.com/JoeMatt/STPrivilegedTask.git",
+        "state": {
+          "branch": "master",
+          "revision": "10a9150ef32d444af326beba76356ae9af95a3e7",
+          "version": null
+        }
       }
     ]
   },
