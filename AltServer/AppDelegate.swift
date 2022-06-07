@@ -66,11 +66,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ALTDeviceManager.shared.start()
         
         #if STAGING
-        SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos-staging.xml")
+        let feedURL: String = Bundle.main.infoDictionary!["SUFeedURL"]! as! String
         #else
-        SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos.xml")
+        let feedURL: String  = Bundle.main.infoDictionary!["SUFeedURL"]! as! String
         #endif
         
+        SUUpdater.shared().feedURL = URL(string: feedURL)
+
         let item = NSStatusBar.system.statusItem(withLength: -1)
         item.menu = self.appMenu
         item.button?.image = NSImage(named: "MenuBarIcon") 
