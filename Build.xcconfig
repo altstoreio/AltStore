@@ -1,0 +1,23 @@
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+MARKETING_VERSION = 1.5.1b
+CURRENT_PROJECT_VERSION = 2780
+
+// Vars to be overwritten by `CodeSigning.xcconfig` if exists
+DEVELOPMENT_TEAM = S32Z3HMYVQ
+ORG_IDENTIFIER = com.joemattiello
+
+// Codesigning settings defined optionally, see `CodeSigning.xcconfig.example`
+#include? "CodeSigning.xcconfig"
+
+ORG_PREFIX = $(ORG_IDENTIFIER)
+
+PRODUCT_NAME = AltStore
+//PRODUCT_NAME[configuration=Debug] = Prov Debug
+
+PRODUCT_BUNDLE_IDENTIFIER   = $(ORG_PREFIX).$(PROJECT_NAME)
+//PRODUCT_BUNDLE_IDENTIFIER[configuration=Debug] = $(ORG_PREFIX).$(PROJECT_NAME:lower)-debug
+
+APP_GROUP_IDENTIFIER        = $(ORG_PREFIX).$(PROJECT_NAME)
+ICLOUD_CONTAINER_IDENTIFIER = iCloud.$(ORG_PREFIX).$(PROJECT_NAME)
