@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
+		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
+		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
 		B3C395F1284F2DE700DA9E2F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F0284F2DE700DA9E2F /* KeychainAccess */; };
 		B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F3284F35DD00DA9E2F /* Nuke */; };
@@ -371,6 +373,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B3146ECC284F580500BBC3FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BFADAFF819AE7BB70050CF31;
+			remoteInfo = Roxas;
+		};
+		B3146ECE284F580500BBC3FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF8624801BB742E700C12EEE;
+			remoteInfo = RoxasTV;
+		};
+		B3146ED0284F580500BBC3FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BFADB00319AE7BB80050CF31;
+			remoteInfo = RoxasTests;
+		};
 		BF4588442298D48B00BD7491 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
@@ -427,6 +450,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */,
 				BF1614F2250822F100767AEA /* Roxas.framework in Embed Frameworks */,
 				BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
 				BF66EE862501AE50007EE018 /* AltStoreCore.framework in Embed Frameworks */,
@@ -469,6 +493,8 @@
 
 /* Begin PBXFileReference section */
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
+		B3146EC5284F57EF00BBC3FD /* AltSign */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AltSign; path = Dependencies/AltSign; sourceTree = "<group>"; };
+		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3C39606284F4C8400DA9E2F /* CodeSigning.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CodeSigning.xcconfig; sourceTree = "<group>"; };
 		B3C39607284F4C8400DA9E2F /* Build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Build.xcconfig; sourceTree = "<group>"; };
@@ -907,6 +933,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */,
 				D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */,
 				B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */,
 				D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */,
@@ -929,6 +956,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B3146EC4284F57EF00BBC3FD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				B3146EC5284F57EF00BBC3FD /* AltSign */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		B3146EC7284F580500BBC3FD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B3146ECD284F580500BBC3FD /* Roxas.framework */,
+				B3146ECF284F580500BBC3FD /* Roxas.framework */,
+				B3146ED1284F580500BBC3FD /* RoxasTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		BF055B4A233B528B0086DEA9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1503,6 +1548,8 @@
 				BF98916C250AABF3002ACF50 /* AltWidget */,
 				BFF7C905257844C900E55F36 /* AltXPC */,
 				BFD247852284BB3300981D42 /* Frameworks */,
+				B3146EC4284F57EF00BBC3FD /* Packages */,
+				B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */,
 				BFD2476B2284B9A500981D42 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -2112,6 +2159,12 @@
 			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B3146EC7284F580500BBC3FD /* Products */;
+					ProjectRef = B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				BFD247692284B9A500981D42 /* AltStore */,
@@ -2126,6 +2179,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B3146ECD284F580500BBC3FD /* Roxas.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Roxas.framework;
+			remoteRef = B3146ECC284F580500BBC3FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B3146ECF284F580500BBC3FD /* Roxas.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Roxas.framework;
+			remoteRef = B3146ECE284F580500BBC3FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B3146ED1284F580500BBC3FD /* RoxasTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RoxasTests.xctest;
+			remoteRef = B3146ED0284F580500BBC3FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		BF45868B229872EA00BD7491 /* Resources */ = {
