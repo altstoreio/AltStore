@@ -5,6 +5,7 @@
 	<key>ALTAppGroups</key>
 	<array>
 		<string>group.com.rileytestut.AltStore</string>
+		<string>$(APP_GROUP_IDENTIFIER)</string>
 	</array>
 	<key>ALTDeviceID</key>
 	<string>00008110-000A68390A82801E</string>
