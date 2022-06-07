@@ -10,6 +10,9 @@
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
 		B3C395F1284F2DE700DA9E2F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F0284F2DE700DA9E2F /* KeychainAccess */; };
+		B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F3284F35DD00DA9E2F /* Nuke */; };
+		B3C395F7284F362400DA9E2F /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F6284F362400DA9E2F /* AppCenterAnalytics */; };
+		B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F8284F362400DA9E2F /* AppCenterCrashes */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
@@ -892,8 +895,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */,
+				B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */,
 				D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */,
+				B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */,
 				BF1614F1250822F100767AEA /* Roxas.framework in Frameworks */,
+				B3C395F7284F362400DA9E2F /* AppCenterAnalytics in Frameworks */,
 				BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */,
 				D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */,
 				BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */,
@@ -1976,6 +1982,11 @@
 				BF989176250AABF4002ACF50 /* PBXTargetDependency */,
 			);
 			name = AltStore;
+			packageProductDependencies = (
+				B3C395F3284F35DD00DA9E2F /* Nuke */,
+				B3C395F6284F362400DA9E2F /* AppCenterAnalytics */,
+				B3C395F8284F362400DA9E2F /* AppCenterCrashes */,
+			);
 			productName = AltStore;
 			productReference = BFD2476A2284B9A500981D42 /* AltStore.app */;
 			productType = "com.apple.product-type.application";
@@ -2070,6 +2081,8 @@
 			packageReferences = (
 				D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */,
+				B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
@@ -3456,6 +3469,22 @@
 				minimumVersion = 4.2.0;
 			};
 		};
+		B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+		B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
 		D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin.git";
@@ -3471,6 +3500,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		B3C395F3284F35DD00DA9E2F /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F2284F35DD00DA9E2F /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		B3C395F6284F362400DA9E2F /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
+		};
+		B3C395F8284F362400DA9E2F /* AppCenterCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3C395F5284F362400DA9E2F /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
 		};
 		BF088D0E25019ABA008082D9 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
