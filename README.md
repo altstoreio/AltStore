@@ -37,7 +37,7 @@ AltStore and AltServer are both fairly straightforward to compile and run if you
 	```
 	git clone https://github.com/SideStore/SideStore.git --recurse-submodules
 	```
-2. Open `AltStore.xcworkspace` and select the AltStore project in the project navigator. On the `Signing & Capabilities` tab, change the team from to your own account.
+2. Open `AltStore.xcodeproj` and select the AltStore project in the project navigator. On the `Signing & Capabilities` tab, change the team from to your own account.
 3. **(Development only)** Change the value for `ALTDeviceID` in the Info.plist to your device's UDID. Normally, SideServer embeds the device's UDID in SideStore's Info.plist during installation. When running through Xcode you'll need to set the value yourself or else SideStore won't resign (or even install) apps for the proper device. You can achieve this by changing a few things to be able to build and use SideStore.
 5. Copy `CodeSigning.xcconfig.sample` to `CodeSigning.xcconfig`
 6. Fill out all of the properties in `CodeSigning.xcconfig` to match your account.
