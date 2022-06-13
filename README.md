@@ -28,7 +28,7 @@ SideStore is a alternative to AltStore and is a sandboxed iOS application like A
 [Netmuxd](https://github.com/jkcoxson/netmuxd) is a program that replaces Usbmuxd to be able to connect over a VPN reliably.  It is programmed in the Rust programming language and it is open source.
 
 ### Roxas
-Roxas is Riley Testut's internal framework from AltStore used across many of their iOS projects, developed to simplify a variety of common tasks used in iOS development. For more info, check the [Roxas repo](https://github.com/rileytestut/roxas).
+[Roxas](https://github.com/rileytestut/roxas) is Riley Testut's internal framework from AltStore used across many of their iOS projects, developed to simplify a variety of common tasks used in iOS development.
 
 ## Compilation Instructions
 AltStore and AltServer are both fairly straightforward to compile and run if you're already an iOS or macOS developer. To compile AltStore and/or AltServer:
