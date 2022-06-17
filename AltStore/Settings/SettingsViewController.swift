@@ -43,6 +43,7 @@ extension SettingsViewController
     fileprivate enum CreditsRow: Int, CaseIterable
     {
         case developer
+        case operations
         case designer
         case softwareLicenses
     }
@@ -109,6 +110,12 @@ class SettingsViewController: UITableViewController
         self.tableView.contentInset.bottom = 20
         
         self.update()
+        
+        if #available(iOS 15, *), let appearance = self.tabBarController?.tabBar.standardAppearance
+        {
+            appearance.stackedLayoutAppearance.normal.badgeBackgroundColor = .altPrimary
+            self.navigationController?.tabBarItem.scrollEdgeAppearance = appearance
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -462,6 +469,7 @@ extension SettingsViewController
             switch row
             {
             case .developer: self.openTwitter(username: "rileytestut")
+            case .operations: self.openTwitter(username: "shanegillio")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
             }

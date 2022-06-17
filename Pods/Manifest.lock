@@ -1,19 +1,19 @@
 PODS:
-  - AppCenter (3.1.0):
-    - AppCenter/Analytics (= 3.1.0)
-    - AppCenter/Crashes (= 3.1.0)
-  - AppCenter/Analytics (3.1.0):
+  - AppCenter (4.2.0):
+    - AppCenter/Analytics (= 4.2.0)
+    - AppCenter/Crashes (= 4.2.0)
+  - AppCenter/Analytics (4.2.0):
     - AppCenter/Core
-  - AppCenter/Core (3.1.0)
-  - AppCenter/Crashes (3.1.0):
+  - AppCenter/Core (4.2.0)
+  - AppCenter/Crashes (4.2.0):
     - AppCenter/Core
   - KeychainAccess (4.2.1)
   - Nuke (7.6.3)
-  - Sparkle (1.21.3)
+  - Sparkle (1.24.0)
   - STPrivilegedTask (1.0.7)
 
 DEPENDENCIES:
-  - AppCenter (~> 3.1.0)
+  - AppCenter (~> 4.2.0)
   - KeychainAccess (~> 4.2.0)
   - Nuke (~> 7.0)
   - Sparkle
@@ -32,16 +32,16 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   STPrivilegedTask:
-    :commit: c8dd3e41b23666d4010c86b052a921a8e5a320d0
+    :commit: 6ca513d0dcb2aefb0e5a95915b77bbbbd8a6d942
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
 SPEC CHECKSUMS:
-  AppCenter: a1c30c47b7882a04a615ffa5ab26c007326436d8
+  AppCenter: 87ef6eefd8ade4df59e88951288587429f3dd2a5
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Nuke: 44130e95e09463f8773ae4b96b90de1eba6b3350
-  Sparkle: 3f75576db8b0265adef36c43249d747f22d0b708
+  Sparkle: 270cd27377bf04e9c128af06e3a22d0f572d6ee3
   STPrivilegedTask: 56c3397238a1ec07720fb877a044898373cd2c68
 
-PODFILE CHECKSUM: 6e3f9d2fc666262d43ff8079a3f9149b8f3376ee
+PODFILE CHECKSUM: ab4f64a189ce4136fef92ee4057edd44e3266b69
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.10.1

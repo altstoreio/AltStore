@@ -14,6 +14,7 @@ class WiredConnectionHandler: ConnectionHandler
     var disconnectionHandler: ((Connection) -> Void)?
     
     private var notificationConnections = [ALTDevice: NotificationConnection]()
+    private let queue = DispatchQueue(label: "WiredConnectionHandler", autoreleaseFrequency: .workItem, target: .global(qos: .utility))
     
     func startListening()
     {
@@ -32,29 +33,35 @@ private extension WiredConnectionHandler
 {
     func startNotificationConnection(to device: ALTDevice)
     {
-        ALTDeviceManager.shared.startNotificationConnection(to: device) { (connection, error) in
-            guard let connection = connection else { return }
+        self.queue.async {
+            ALTDeviceManager.shared.startNotificationConnection(to: device) { (connection, error) in
+                guard let connection = connection else { return }
 
-            let notifications: [CFNotificationName] = [.wiredServerConnectionAvailableRequest, .wiredServerConnectionStartRequest]
-            connection.startListening(forNotifications: notifications.map { String($0.rawValue) }) { (success, error) in
-                guard success else { return }
+                let notifications: [CFNotificationName] = [.wiredServerConnectionAvailableRequest, .wiredServerConnectionStartRequest]
+                connection.startListening(forNotifications: notifications.map { String($0.rawValue) }) { (success, error) in
+                    guard success else { return }
 
-                connection.receivedNotificationHandler = { [weak self, weak connection] (notification) in
-                    guard let self = self, let connection = connection else { return }
-                    self.handle(notification, for: connection)
+                    self.queue.async {
+                        connection.receivedNotificationHandler = { [weak self, weak connection] (notification) in
+                            guard let self = self, let connection = connection else { return }
+                            self.handle(notification, for: connection)
+                        }
+                        
+                        self.notificationConnections[device] = connection
+                    }
                 }
-
-                self.notificationConnections[device] = connection
             }
         }
     }
 
     func stopNotificationConnection(to device: ALTDevice)
     {
-        guard let connection = self.notificationConnections[device] else { return }
-        connection.disconnect()
+        self.queue.async {
+            guard let connection = self.notificationConnections[device] else { return }
+            connection.disconnect()
 
-        self.notificationConnections[device] = nil
+            self.notificationConnections[device] = nil
+        }
     }
 
     func handle(_ notification: CFNotificationName, for connection: NotificationConnection)

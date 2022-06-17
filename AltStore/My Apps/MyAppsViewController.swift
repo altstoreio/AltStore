@@ -9,6 +9,7 @@
 import UIKit
 import MobileCoreServices
 import Intents
+import Combine
 
 import AltStoreCore
 import AltSign
@@ -794,6 +795,9 @@ private extension MyAppsViewController
                 }
                 
                 guard let fileURL = context.fileURL else { throw OperationError.invalidParameters }
+                defer {
+                    try? FileManager.default.removeItem(at: fileURL)
+                }
                 
                 try FileManager.default.createDirectory(at: unzippedAppDirectory, withIntermediateDirectories: true, attributes: nil)
                 let unzippedApplicationURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: unzippedAppDirectory)
@@ -857,7 +861,7 @@ private extension MyAppsViewController
                 
                 guard let application = context.application else { throw OperationError.invalidParameters }
                 
-                let progress = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                let group = AppManager.shared.install(application, presentingViewController: self) { (result) in
                     switch result
                     {
                     case .success(let installedApp): context.installedApp = installedApp
@@ -865,7 +869,7 @@ private extension MyAppsViewController
                     }
                     operation.finish()
                 }
-                installProgress.addChild(progress, withPendingUnitCount: 100)
+                installProgress.addChild(group.progress, withPendingUnitCount: 100)
             }
             catch
             {
@@ -937,11 +941,11 @@ private extension MyAppsViewController
         
         if UserDefaults.standard.activeAppLimitIncludesExtensions
         {
-            message = NSLocalizedString("Free developer accounts are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated.", comment: "")
+            message = NSLocalizedString("Non-developer Apple IDs are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated.", comment: "")
         }
         else
         {
-            message = NSLocalizedString("Free developer accounts are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again.", comment: "")
+            message = NSLocalizedString("Non-developer Apple IDs are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again.", comment: "")
         }
                 
         let alertController = UIAlertController(title: NSLocalizedString("What are inactive apps?", comment: ""), message: message, preferredStyle: .alert)
@@ -967,11 +971,11 @@ private extension MyAppsViewController
         
         if UserDefaults.standard.activeAppLimitIncludesExtensions
         {
-            firstSentence = NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions.", comment: "")
+            firstSentence = NSLocalizedString("Non-developer Apple IDs are limited to 3 active apps and app extensions.", comment: "")
         }
         else
         {
-            firstSentence = NSLocalizedString("Free developer accounts are limited to creating 10 App IDs per week.", comment: "")
+            firstSentence = NSLocalizedString("Non-developer Apple IDs are limited to creating 10 App IDs per week.", comment: "")
         }
         
         let message = firstSentence + " " + NSLocalizedString("Would you like to remove this app's extensions so they don't count towards your limit?", comment: "")
@@ -1005,6 +1009,16 @@ private extension MyAppsViewController
 
 private extension MyAppsViewController
 {
+    func open(_ installedApp: InstalledApp)
+    {
+        UIApplication.shared.open(installedApp.openAppURL) { success in
+            guard !success else { return }
+            
+            let toastView = ToastView(error: OperationError.openAppFailed(name: installedApp.name))
+            toastView.show(in: self)
+        }
+    }
+    
     func refresh(_ installedApp: InstalledApp)
     {
         let previousProgress = AppManager.shared.refreshProgress(for: installedApp)
@@ -1028,46 +1042,76 @@ private extension MyAppsViewController
     
     func activate(_ installedApp: InstalledApp)
     {
-        func activate()
+        func finish(_ result: Result<InstalledApp, Error>)
         {
-            installedApp.isActive = true
-            
-            AppManager.shared.activate(installedApp, presentingViewController: self) { (result) in
-                do
-                {
-                    let app = try result.get()
+            do
+            {
+                let app = try result.get()
+                app.managedObjectContext?.perform {
                     try? app.managedObjectContext?.save()
                 }
-                catch
-                {
-                    print("Failed to activate app:", error)
+            }
+            catch OperationError.cancelled
+            {
+                // Ignore
+            }
+            catch
+            {
+                print("Failed to activate app:", error)
+                
+                DispatchQueue.main.async {
+                    installedApp.isActive = false
                     
-                    DispatchQueue.main.async {
-                        installedApp.isActive = false
-                        
-                        let toastView = ToastView(error: error)
-                        toastView.show(in: self)
-                    }
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
                 }
             }
         }
-        
-        if UserDefaults.standard.activeAppsLimit != nil
+                
+        if UserDefaults.standard.activeAppsLimit != nil, #available(iOS 13, *)
         {
-            self.deactivateApps(for: installedApp) { (shouldContinue) in
-                if shouldContinue
-                {
-                    activate()
+            // UserDefaults.standard.activeAppsLimit is only non-nil on iOS 13.3.1 or later, so the #available check is just so we can use Combine.
+            
+            guard let app = ALTApplication(fileURL: installedApp.fileURL) else { return finish(.failure(OperationError.invalidApp)) }
+            
+            var cancellable: AnyCancellable?
+            cancellable = DatabaseManager.shared.viewContext.registeredObjects.publisher
+                .compactMap { $0 as? InstalledApp }
+                .filter(\.isActive)
+                .map { $0.publisher(for: \.isActive) }
+                .collect()
+                .flatMap { publishers in
+                    Publishers.MergeMany(publishers)
                 }
-                else
-                {
-                    installedApp.isActive = false
+                .first { isActive in !isActive }
+                .sink { _ in
+                    // A previously active app is now inactive,
+                    // which means there are now enough slots to activate the app,
+                    // so pre-emptively mark it as active to provide visual feedback sooner.
+                    installedApp.isActive = true
+                    cancellable?.cancel()
+                }
+            
+            AppManager.shared.deactivateApps(for: app, presentingViewController: self) { result in
+                cancellable?.cancel()
+                installedApp.managedObjectContext?.perform {
+                    switch result
+                    {
+                    case .failure(let error):
+                        installedApp.isActive = false
+                        finish(.failure(error))
+                        
+                    case .success:
+                        installedApp.isActive = true
+                        AppManager.shared.activate(installedApp, presentingViewController: self, completionHandler: finish(_:))
+                    }
                 }
             }
         }
         else
         {
-            activate()
+            installedApp.isActive = true
+            AppManager.shared.activate(installedApp, presentingViewController: self, completionHandler: finish(_:))
         }
     }
     
@@ -1098,75 +1142,6 @@ private extension MyAppsViewController
             
             completionHandler?(result)
         }
-    }
-    
-    func deactivateApps(for installedApp: InstalledApp, completion: @escaping (Bool) -> Void)
-    {
-        guard let activeAppsLimit = UserDefaults.standard.activeAppsLimit else { return completion(true) }
-        
-        let activeApps = InstalledApp.fetchActiveApps(in: DatabaseManager.shared.viewContext)
-            .filter { $0.bundleIdentifier != installedApp.bundleIdentifier } // Don't count app towards total if it matches activating app
-        
-        var title: String = NSLocalizedString("Cannot Activate More than 3 Apps", comment: "")
-        let message: String
-        
-        if UserDefaults.standard.activeAppLimitIncludesExtensions
-        {
-            if installedApp.appExtensions.isEmpty
-            {
-                message = NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions. Please choose an app to deactivate.", comment: "")
-            }
-            else
-            {
-                title = NSLocalizedString("Cannot Activate More than 3 Apps and App Extensions", comment: "")
-                
-                let appExtensionText = installedApp.appExtensions.count == 1 ? NSLocalizedString("app extension", comment: "") : NSLocalizedString("app extensions", comment: "")
-                message = String(format: NSLocalizedString("Free developer accounts are limited to 3 active apps and app extensions, and “%@” contains %@ %@. Please choose an app to deactivate.", comment: ""), installedApp.name, NSNumber(value: installedApp.appExtensions.count), appExtensionText)
-            }
-        }
-        else
-        {
-            message = NSLocalizedString("Free developer accounts are limited to 3 active apps. Please choose an app to deactivate.", comment: "")
-        }
-        
-        let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
-                
-        let availableActiveApps = max(activeAppsLimit - activeAppsCount, 0)
-        guard installedApp.requiredActiveSlots > availableActiveApps else { return completion(true) }
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { (action) in
-            completion(false)
-        })
-        
-        for app in activeApps where app.bundleIdentifier != StoreApp.altstoreAppID
-        {
-            alertController.addAction(UIAlertAction(title: app.name, style: .default) { (action) in
-                let availableActiveApps = availableActiveApps + app.requiredActiveSlots
-                if availableActiveApps >= installedApp.requiredActiveSlots
-                {
-                    // There are enough slots now to activate the app, so pre-emptively
-                    // mark it as active to provide visual feedback sooner.
-                    installedApp.isActive = true
-                }
-                                
-                self.deactivate(app) { (result) in
-                    installedApp.managedObjectContext?.perform {
-                        switch result
-                        {
-                        case .failure:
-                            installedApp.isActive = false
-                            completion(false)
-                            
-                        case .success:
-                            self.deactivateApps(for: installedApp, completion: completion)
-                        }
-                    }
-                }
-            })
-        }
-        
-        self.present(alertController, animated: true, completion: nil)
     }
     
     func remove(_ installedApp: InstalledApp)
@@ -1333,6 +1308,22 @@ private extension MyAppsViewController
                 print("Failed to change app icon.", error)
                 
                 DispatchQueue.main.async {
+                    let toastView = ToastView(error: error)
+                    toastView.show(in: self)
+                }
+            }
+        }
+    }
+    
+    @available(iOS 14, *)
+    func enableJIT(for installedApp: InstalledApp)
+    {
+        AppManager.shared.enableJIT(for: installedApp) { result in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .success: break
+                case .failure(let error):
                     let toastView = ToastView(error: error)
                     toastView.show(in: self)
                 }
@@ -1523,6 +1514,12 @@ extension MyAppsViewController
     {
         var actions = [UIMenuElement]()
         
+        let openAction = UIAction(title: NSLocalizedString("Open", comment: ""), image: UIImage(systemName: "arrow.up.forward.app")) { (action) in
+            self.open(installedApp)
+        }
+        
+        let openMenu = UIMenu(title: "", options: .displayInline, children: [openAction])
+        
         let refreshAction = UIAction(title: NSLocalizedString("Refresh", comment: ""), image: UIImage(systemName: "arrow.clockwise")) { (action) in
             self.refresh(installedApp)
         }
@@ -1537,6 +1534,11 @@ extension MyAppsViewController
         
         let removeAction = UIAction(title: NSLocalizedString("Remove", comment: ""), image: UIImage(systemName: "trash"), attributes: .destructive) { (action) in
             self.remove(installedApp)
+        }
+        
+        let jitAction = UIAction(title: NSLocalizedString("Enable JIT", comment: ""), image: UIImage(systemName: "bolt")) { (action) in
+            guard #available(iOS 14, *) else { return }
+            self.enableJIT(for: installedApp)
         }
         
         let backupAction = UIAction(title: NSLocalizedString("Back Up", comment: ""), image: UIImage(systemName: "doc.on.doc")) { (action) in
@@ -1577,11 +1579,17 @@ extension MyAppsViewController
         
         if installedApp.isActive
         {
+            actions.append(openMenu)
             actions.append(refreshAction)
         }
         else
         {
             actions.append(activateAction)
+        }
+        
+        if installedApp.isActive, #available(iOS 14, *)
+        {
+            actions.append(jitAction)
         }
         
         #if BETA

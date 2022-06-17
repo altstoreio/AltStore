@@ -107,10 +107,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             
             installedApp.appExtensions = installedExtensions
             
+            self.context.beginInstallationHandler?(installedApp)
+            
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
-            
-            self.context.beginInstallationHandler?(installedApp)
             
             var activeProfiles: Set<String>?
             if let sideloadedAppsLimit = UserDefaults.standard.activeAppsLimit

@@ -15,16 +15,18 @@ enum VerificationError: ALTLocalizedError
 {
     case privateEntitlements(ALTApplication, entitlements: [String: Any])
     case mismatchedBundleIdentifiers(ALTApplication, sourceBundleID: String)
+    case iOSVersionNotSupported(ALTApplication)
     
     var app: ALTApplication {
         switch self
         {
         case .privateEntitlements(let app, _): return app
         case .mismatchedBundleIdentifiers(let app, _): return app
+        case .iOSVersionNotSupported(let app): return app
         }
     }
     
-    var errorFailure: String? {
+    var failure: String? {
         return String(format: NSLocalizedString("“%@” could not be installed.", comment: ""), app.name)
     }
     
@@ -36,6 +38,18 @@ enum VerificationError: ALTLocalizedError
             
         case .mismatchedBundleIdentifiers(let app, let sourceBundleID):
             return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), app.bundleIdentifier, sourceBundleID)
+            
+        case .iOSVersionNotSupported(let app):
+            let name = app.name
+            
+            var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
+            if app.minimumiOSVersion.patchVersion > 0
+            {
+                version += ".\(app.minimumiOSVersion.patchVersion)"
+            }
+            
+            let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
+            return localizedDescription
         }
     }
 }
@@ -69,7 +83,11 @@ class VerifyAppOperation: ResultOperation<Void>
             guard app.bundleIdentifier == self.context.bundleIdentifier else {
                 throw VerificationError.mismatchedBundleIdentifiers(app, sourceBundleID: self.context.bundleIdentifier)
             }
-                        
+            
+            guard ProcessInfo.processInfo.isOperatingSystemAtLeast(app.minimumiOSVersion) else {
+                throw VerificationError.iOSVersionNotSupported(app)
+            }
+            
             if #available(iOS 13.5, *)
             {
                 // No psychic paper, so we can ignore private entitlements
@@ -149,6 +167,7 @@ private extension VerifyAppOperation
                 presentingViewController.present(alertController, animated: true, completion: nil)
                 
             case .mismatchedBundleIdentifiers: return completion(.failure(error))
+            case .iOSVersionNotSupported: return completion(.failure(error))
             }
         }
     }

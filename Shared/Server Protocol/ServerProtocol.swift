@@ -25,6 +25,7 @@ public enum ServerRequest: Decodable
     case installProvisioningProfiles(InstallProvisioningProfilesRequest)
     case removeProvisioningProfiles(RemoveProvisioningProfilesRequest)
     case removeApp(RemoveAppRequest)
+    case enableUnsignedCodeExecution(EnableUnsignedCodeExecutionRequest)
     case unknown(identifier: String, version: Int)
     
     var identifier: String {
@@ -36,6 +37,7 @@ public enum ServerRequest: Decodable
         case .installProvisioningProfiles(let request): return request.identifier
         case .removeProvisioningProfiles(let request): return request.identifier
         case .removeApp(let request): return request.identifier
+        case .enableUnsignedCodeExecution(let request): return request.identifier
         case .unknown(let identifier, _): return identifier
         }
     }
@@ -49,6 +51,7 @@ public enum ServerRequest: Decodable
         case .installProvisioningProfiles(let request): return request.version
         case .removeProvisioningProfiles(let request): return request.version
         case .removeApp(let request): return request.version
+        case .enableUnsignedCodeExecution(let request): return request.version
         case .unknown(_, let version): return version
         }
     }
@@ -92,6 +95,10 @@ public enum ServerRequest: Decodable
             let request = try RemoveAppRequest(from: decoder)
             self = .removeApp(request)
             
+        case "EnableUnsignedCodeExecutionRequest":
+            let request = try EnableUnsignedCodeExecutionRequest(from: decoder)
+            self = .enableUnsignedCodeExecution(request)
+            
         default:
             self = .unknown(identifier: identifier, version: version)
         }
@@ -105,6 +112,7 @@ public enum ServerResponse: Decodable
     case installProvisioningProfiles(InstallProvisioningProfilesResponse)
     case removeProvisioningProfiles(RemoveProvisioningProfilesResponse)
     case removeApp(RemoveAppResponse)
+    case enableUnsignedCodeExecution(EnableUnsignedCodeExecutionResponse)
     case error(ErrorResponse)
     case unknown(identifier: String, version: Int)
     
@@ -116,6 +124,7 @@ public enum ServerResponse: Decodable
         case .installProvisioningProfiles(let response): return response.identifier
         case .removeProvisioningProfiles(let response): return response.identifier
         case .removeApp(let response): return response.identifier
+        case .enableUnsignedCodeExecution(let response): return response.identifier
         case .error(let response): return response.identifier
         case .unknown(let identifier, _): return identifier
         }
@@ -129,6 +138,7 @@ public enum ServerResponse: Decodable
         case .installProvisioningProfiles(let response): return response.version
         case .removeProvisioningProfiles(let response): return response.version
         case .removeApp(let response): return response.version
+        case .enableUnsignedCodeExecution(let response): return response.version
         case .error(let response): return response.version
         case .unknown(_, let version): return version
         }
@@ -168,6 +178,10 @@ public enum ServerResponse: Decodable
         case "RemoveAppResponse":
             let response = try RemoveAppResponse(from: decoder)
             self = .removeApp(response)
+            
+        case "EnableUnsignedCodeExecutionResponse":
+            let response = try EnableUnsignedCodeExecutionResponse(from: decoder)
+            self = .enableUnsignedCodeExecution(response)
             
         case "ErrorResponse":
             let response = try ErrorResponse(from: decoder)
@@ -419,6 +433,33 @@ public struct RemoveAppResponse: ServerMessageProtocol
 {
     public var version = 1
     public var identifier = "RemoveAppResponse"
+    
+    public init()
+    {
+    }
+}
+
+public struct EnableUnsignedCodeExecutionRequest: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "EnableUnsignedCodeExecutionRequest"
+    
+    public var udid: String
+    public var processID: Int?
+    public var processName: String?
+
+    public init(udid: String, processID: Int? = nil, processName: String? = nil)
+    {
+        self.udid = udid
+        self.processID = processID
+        self.processName = processName
+    }
+}
+
+public struct EnableUnsignedCodeExecutionResponse: ServerMessageProtocol
+{
+    public var version = 1
+    public var identifier = "EnableUnsignedCodeExecutionResponse"
     
     public init()
     {

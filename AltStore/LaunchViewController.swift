@@ -69,6 +69,7 @@ extension LaunchViewController
         guard !self.didFinishLaunching else { return }
         
         AppManager.shared.update()
+        AppManager.shared.updatePatronsIfNeeded()        
         PatreonAPI.shared.refreshPatreonAccount()
         
         // Add view controller as child (rather than presenting modally)

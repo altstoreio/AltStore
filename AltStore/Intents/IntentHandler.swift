@@ -18,6 +18,8 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
     private var completionHandlers = [RefreshAllIntent: (RefreshAllIntentResponse) -> Void]()
     private var queuedResponses = [RefreshAllIntent: RefreshAllIntentResponse]()
     
+    private var operations = [RefreshAllIntent: BackgroundRefreshAppsOperation]()
+    
     func confirm(intent: RefreshAllIntent, completion: @escaping (RefreshAllIntentResponse) -> Void)
     {
         // Refreshing apps usually, but not always, completes within alotted time.
@@ -73,6 +75,19 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
             self.queuedResponses[intent] = nil
             self.finish(intent, response: response)
         }
+        else
+        {
+            self.queue.asyncAfter(deadline: .now() + 7.0) {
+                if let operation = self.operations[intent]
+                {
+                    // We took too long to finish and return the final result,
+                    // so we'll now present a normal notification when finished.
+                    operation.presentsFinishedNotification = true
+                }
+                
+                self.finish(intent, response: RefreshAllIntentResponse(code: .inProgress, userActivity: nil))
+            }
+        }
     }
 }
 
@@ -82,10 +97,16 @@ private extension IntentHandler
     func finish(_ intent: RefreshAllIntent, response: RefreshAllIntentResponse)
     {
         self.queue.async {
-            guard let completionHandler = self.completionHandlers[intent] else { return }
-            self.completionHandlers[intent] = nil
-            
-            completionHandler(response)
+            if let completionHandler = self.completionHandlers[intent]
+            {
+                self.completionHandlers[intent] = nil
+                completionHandler(response)
+            }
+            else if response.code != .ready && response.code != .inProgress
+            {
+                // Queue response in case refreshing finishes after confirm() but before handle().
+                self.queuedResponses[intent] = response
+            }
         }
     }
     
@@ -93,7 +114,7 @@ private extension IntentHandler
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             let installedApps = InstalledApp.fetchActiveApps(in: context)
-            AppManager.shared.backgroundRefresh(installedApps, presentsNotifications: false) { (result) in
+            let operation = AppManager.shared.backgroundRefresh(installedApps, presentsNotifications: false) { (result) in
                 do
                 {
                     let results = try result.get()
@@ -115,7 +136,11 @@ private extension IntentHandler
                     print("Failed to refresh apps in background.", error)
                     self.finish(intent, response: RefreshAllIntentResponse.failure(localizedDescription: error.localizedFailureReason ?? error.localizedDescription))
                 }
+                
+                self.operations[intent] = nil
             }
+            
+            self.operations[intent] = operation
         }
     }
 }

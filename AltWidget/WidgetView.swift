@@ -21,13 +21,13 @@ struct WidgetView : View
         Group {
             if let app = self.entry.app
             {
-                let daysRemaining = app.expirationDate.numberOfCalendarDays(since: Date())
+                let daysRemaining = app.expirationDate.numberOfCalendarDays(since: self.entry.date)
                     
                 GeometryReader { (geometry) in
                     Group {
-                        VStack(alignment: .leading) {                            
+                        VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 5) {
-                                let imageHeight = geometry.size.height * 0.45
+                                let imageHeight = geometry.size.height * 0.4
                                 
                                 Image(uiImage: app.icon ?? UIImage())
                                     .resizable()
@@ -41,8 +41,11 @@ struct WidgetView : View
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.5)
                             }
+                            .fixedSize(horizontal: false, vertical: true)
                             
-                            HStack(alignment: .bottom) {
+                            Spacer(minLength: 0)
+                            
+                            HStack(alignment: .center) {
                                 let expirationText: Text = {
                                     switch daysRemaining
                                     {
@@ -56,7 +59,7 @@ struct WidgetView : View
                                     Text("Expires in\n")
                                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                                         .foregroundColor(Color.white.opacity(0.45)) +
-                                        
+                                    
                                     expirationText
                                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .foregroundColor(.white)
@@ -70,7 +73,8 @@ struct WidgetView : View
                                 if daysRemaining >= 0
                                 {
                                     Countdown(startDate: app.refreshedDate,
-                                              endDate: app.expirationDate)
+                                              endDate: app.expirationDate,
+                                              currentDate: self.entry.date)
                                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                                         .foregroundColor(Color.white)
                                         .opacity(0.8)
@@ -78,11 +82,10 @@ struct WidgetView : View
                                         .offset(x: 5)
                                 }
                             }
-                            .offset(y: 5) // Offset so we don't affect layout, but still leave space between app name and Countdown.
+                            .fixedSize(horizontal: false, vertical: true)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding()
                     }
-                    .padding()
                 }
             }
             else
@@ -146,6 +149,7 @@ struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
         let shortRefreshedDate = Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date()
         let shortExpirationDate = Calendar.current.date(byAdding: .day, value: 7, to: shortRefreshedDate) ?? Date()
+        let expiredExpirationDate = Calendar.current.date(byAdding: .day, value: -155, to: Date()) ?? Date()
         
         let longRefreshedDate = Calendar.current.date(byAdding: .day, value: -100, to: Date()) ?? Date()
         let longExpirationDate = Calendar.current.date(byAdding: .day, value: 365, to: longRefreshedDate) ?? Date()
@@ -164,11 +168,21 @@ struct WidgetView_Previews: PreviewProvider {
                               tintColor: .deltaPrimary,
                               icon: UIImage(named: "Delta"))
         
+        let expiredDelta = AppSnapshot(name: "Delta",
+                                       bundleIdentifier: "com.rileytestut.Delta",
+                                       expirationDate: expiredExpirationDate,
+                                       refreshedDate: shortRefreshedDate,
+                                       tintColor: .deltaPrimary,
+                                       icon: UIImage(named: "Delta"))
+        
         return Group {
             WidgetView(entry: AppEntry(date: Date(), app: altstore))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
             WidgetView(entry: AppEntry(date: Date(), app: delta))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            
+            WidgetView(entry: AppEntry(date: Date(), app: expiredDelta))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
             WidgetView(entry: AppEntry(date: Date(), app: nil))

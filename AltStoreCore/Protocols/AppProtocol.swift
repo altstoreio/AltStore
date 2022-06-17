@@ -16,6 +16,20 @@ public protocol AppProtocol
     var url: URL { get }
 }
 
+public struct AnyApp: AppProtocol
+{
+    public var name: String
+    public var bundleIdentifier: String
+    public var url: URL
+    
+    public init(name: String, bundleIdentifier: String, url: URL)
+    {
+        self.name = name
+        self.bundleIdentifier = bundleIdentifier
+        self.url = url
+    }
+}
+
 extension ALTApplication: AppProtocol
 {
     public var url: URL {

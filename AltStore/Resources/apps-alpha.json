@@ -36,14 +36,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3a2",
-      "versionDate": "2020-10-26T14:00:00-07:00",
-      "versionDescription": "This alpha fixes incorrect inputs when playing DS games with melonDS core.",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/delta/1_3_a2.ipa",
+      "version": "1.3a9",
+      "versionDate": "2021-03-11T15:00:00-06:00",
+      "versionDescription": "v1.3 ALPHA RELEASE CANDIDATE\n\nIMPROVEMENTS\n• Updates portrait controller skin with bigger buttons\n• Updates Licenses screen to include melonDS and Genesis Plus GX\n• Supports custom game artwork with transparent backgrounds\n\nBUG FIXES\n• Fixes custom artwork appearing incorrectly rotated\n• Fixes game artwork not updating when choosing from Files\n• Fixes crash when playing DS games and another app is using the microphone\n• Fixes some erroneous sync errors",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/sources/alpha/delta/1_3_a9.ipa",
       "localizedDescription": "The next console for Delta is coming: this beta version of Delta brings support for playing DS games!\n\nDS support currently includes:\n• Playing DS games\n• Save States\n• Hold Button\n\nFeatures I'm still working on:\n• Fast Forward\n• Cheats\n• Controller skin (using placeholder controller skin for now)\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 18587500,
+      "size": 19728572,
       "permissions": [
         {
           "type": "photos",
@@ -58,31 +58,30 @@
       ]
     },
     {
-      "name": "AltStore (Stable)",
-      "bundleIdentifier": "com.rileytestut.AltStore",
+      "name": "Clip (Alpha)",
+      "bundleIdentifier": "com.rileytestut.Clip.Beta",
+      "subtitle": "Manage your clipboard history with ease.",
       "developerName": "Riley Testut",
-      "version": "1.3",
-      "versionDate": "2020-04-09T17:00:00-07:00",
-      "versionDescription": "Still haven't written update notes yet...",
-      "downloadURL": "https://f000.backblazeb2.com/file/altstore/alpha/altstore/1_3.ipa",
-      "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
-      "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
-      "tintColor": "018084",
-      "size": 2532661,
-      "screenshotURLs": [
-        "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
-        "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
-        "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG"
-      ],
+      "version": "1.1a1",
+      "versionDate": "2020-12-07T13:00:00-06:00",
+      "versionDescription": "NEW FEATURES\n• Uses background location monitoring to run in background instead of playing silent audio\n• Adds \"Copy Clipping\" and \"Save to Clip\" intents for use in Shortcuts app",
+      "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/clip/1_1_a1.ipa",
+      "localizedDescription": "Clip is a simple clipboard manager for iOS. \n\nUnlike other clipboard managers, Clip can continue monitoring your clipboard while in the background. No longer do you need to remember to manually open or share to an app to save your clipboard; just copy and paste as you would normally do, and Clip will have your back.\n\nIn addition to background monitoring, Clip also has these features:\n\n• Save text, URLs, and images copied to the clipboard.\n• Copy, delete, or share any clippings saved to Clip.\n• Customizable history limit.\n\nDownload Clip today, and never worry about losing your clipboard again!",
+      "iconURL": "https://user-images.githubusercontent.com/705880/63391981-5326f800-c37a-11e9-99d8-760fd06bb601.png",
+      "tintColor": "EC008C",
+      "size": 462771,
+      "beta": false,
       "permissions": [
         {
-          "type": "background-fetch",
-          "usageDescription": "AltStore periodically refreshes apps in the background to prevent them from expiring."
-        },
-        {
           "type": "background-audio",
-          "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
+          "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
         }
+      ],
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
+        "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
+        "https://user-images.githubusercontent.com/705880/84842227-70a80b00-aff9-11ea-8b04-bedb1f49c4a7.PNG",
+        "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
       ]
     }
   ],
@@ -98,6 +97,6 @@
     }
   ],
   "userInfo": {
-    "patreonAccessToken": "Dp-XtViLDff7xd2fLhc8VVGcLNR9YxJ1L3WAlcWu_Bo"
+    "patreonAccessToken": "ZNpQ7TIHU5Ut2ytH4oIhW6bBJPcX-1VxLQS7TiE80F0"
   }
 }

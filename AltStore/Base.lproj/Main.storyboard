@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -40,6 +40,7 @@
                         <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
                         <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="4Nf-rL-P4c"/>
                         <segue destination="Qo4-72-Hmr" kind="presentation" identifier="presentSources" id="Qd6-ba-dIo"/>
+                        <segue destination="bTL-bY-9Yq" kind="presentation" identifier="finishJailbreak" id="cIc-Ta-uNk"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -313,8 +314,8 @@
                                                 </textView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="Pyt-8D-BZA" firstAttribute="top" secondItem="D1G-nK-G0Z" secondAttribute="top" constant="20" id="Lm9-lx-kJ8"/>
-                                                <constraint firstAttribute="bottom" secondItem="Pyt-8D-BZA" secondAttribute="bottom" constant="44" id="TSS-Au-gYx"/>
+                                                <constraint firstItem="Pyt-8D-BZA" firstAttribute="top" secondItem="D1G-nK-G0Z" secondAttribute="top" priority="999" constant="20" id="Lm9-lx-kJ8"/>
+                                                <constraint firstAttribute="bottom" secondItem="Pyt-8D-BZA" secondAttribute="bottom" priority="999" constant="44" id="TSS-Au-gYx"/>
                                                 <constraint firstItem="Pyt-8D-BZA" firstAttribute="leading" secondItem="D1G-nK-G0Z" secondAttribute="leading" constant="20" id="UlS-ct-L9Y"/>
                                                 <constraint firstAttribute="trailing" secondItem="Pyt-8D-BZA" secondAttribute="trailing" constant="20" id="Wq4-Ql-wvN"/>
                                             </constraints>
@@ -411,7 +412,7 @@
                                                             <rect key="frame" x="0.0" y="41" width="375" height="88"/>
                                                             <color key="backgroundColor" name="Background"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="88" id="6Lk-OO-MsA"/>
+                                                                <constraint firstAttribute="height" priority="999" constant="88" id="6Lk-OO-MsA"/>
                                                             </constraints>
                                                             <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="2HF-4d-3Im">
                                                                 <size key="itemSize" width="60" height="88"/>
@@ -607,6 +608,14 @@ World</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OkH-49-O0J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="962" y="-17"/>
+        </scene>
+        <!--PatchApp-->
+        <scene sceneID="vdC-wt-hvX">
+            <objects>
+                <viewControllerPlaceholder storyboardName="PatchApp" id="bTL-bY-9Yq" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NyZ-z6-R2q" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1" y="545"/>
         </scene>
         <!--My Apps-->
         <scene sceneID="nhh-BJ-XiT">
@@ -935,15 +944,15 @@ World</string>
         <scene sceneID="0S1-zn-9KZ">
             <objects>
                 <collectionViewController title="Sources" id="cHC-TX-KzQ" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" dataMode="prototypes" id="S36-hD-vu2">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="S36-hD-vu2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="X20-b5-XEP">
                             <size key="itemSize" width="375" height="80"/>
                             <size key="headerReferenceSize" width="50" height="200"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="20"/>
+                            <size key="footerReferenceSize" width="50" height="50"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XcN-o4-9qm" customClass="BannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
@@ -990,7 +999,46 @@ World</string>
                                 <constraint firstAttribute="leadingMargin" secondItem="TZv-TM-uJj" secondAttribute="leading" id="aS5-6Y-rMd"/>
                             </constraints>
                             <connections>
+                                <outlet property="bottomLayoutConstraint" destination="Aml-PC-dko" id="I1s-ae-C8A"/>
+                                <outlet property="leadingLayoutConstraint" destination="aS5-6Y-rMd" id="An8-KN-xfb"/>
                                 <outlet property="textLabel" destination="TZv-TM-uJj" id="kWV-Wv-5gz"/>
+                                <outlet property="topLayoutConstraint" destination="2zE-UV-24S" id="mjq-yH-v8J"/>
+                                <outlet property="trailingLayoutConstraint" destination="V0U-al-5eb" id="z8b-2G-SgY"/>
+                            </connections>
+                        </collectionReusableView>
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="X5B-Kp-w1p" customClass="SourcesFooterView">
+                            <rect key="frame" x="0.0" y="280" width="375" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="j0O-xE-gyd">
+                                    <rect key="frame" x="8" y="0.0" width="359" height="50"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="PNx-uR-y2F">
+                                            <rect key="frame" x="0.0" y="0.0" width="359" height="3"/>
+                                        </activityIndicatorView>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="800" scrollEnabled="NO" contentInsetAdjustmentBehavior="never" editable="NO" text="Test" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="66c-H8-KJx">
+                                            <rect key="frame" x="0.0" y="18" width="359" height="32"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="j0O-xE-gyd" secondAttribute="bottom" id="BQ5-11-BzK"/>
+                                <constraint firstItem="j0O-xE-gyd" firstAttribute="top" secondItem="X5B-Kp-w1p" secondAttribute="top" id="KZg-fd-8Cp" propertyAccessControl="none"/>
+                                <constraint firstItem="j0O-xE-gyd" firstAttribute="leading" secondItem="X5B-Kp-w1p" secondAttribute="leadingMargin" id="R2x-Io-bXD"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="j0O-xE-gyd" secondAttribute="trailing" id="aBK-Bq-P9O"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="activityIndicatorView" destination="PNx-uR-y2F" id="7Le-VW-GYK"/>
+                                <outlet property="bottomLayoutConstraint" destination="BQ5-11-BzK" id="iJR-4o-u9l"/>
+                                <outlet property="leadingLayoutConstraint" destination="R2x-Io-bXD" id="plZ-Yj-zTc"/>
+                                <outlet property="textView" destination="66c-H8-KJx" id="kwc-OH-U6i"/>
+                                <outlet property="topLayoutConstraint" destination="KZg-fd-8Cp" id="zNM-UU-feF"/>
+                                <outlet property="trailingLayoutConstraint" destination="aBK-Bq-P9O" id="L2r-VL-ruT"/>
                             </connections>
                         </collectionReusableView>
                         <connections>
@@ -1036,7 +1084,7 @@ World</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="de9-NH-aec"/>
+        <segue reference="Qd6-ba-dIo"/>
         <segue reference="cnd-KK-o60"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Primary"/>

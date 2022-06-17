@@ -38,7 +38,7 @@ struct BackupError: ALTLocalizedError
     let sourceFile: String
     let sourceFileLine: Int
     
-    var errorFailure: String?
+    var failure: String?
 
     var failureReason: String? {
         switch self.code
@@ -60,7 +60,7 @@ struct BackupError: ALTLocalizedError
     var errorUserInfo: [String : Any] {
         let userInfo: [String: Any?] = [NSLocalizedDescriptionKey: self.errorDescription,
                                         NSLocalizedFailureReasonErrorKey: self.failureReason,
-                                        NSLocalizedFailureErrorKey: self.errorFailure,
+                                        NSLocalizedFailureErrorKey: self.failure,
                                         ErrorUserInfoKey.sourceFile: self.sourceFile,
                                         ErrorUserInfoKey.sourceFileLine: self.sourceFileLine]
         return userInfo.compactMapValues { $0 }
@@ -69,7 +69,7 @@ struct BackupError: ALTLocalizedError
     init(_ code: Code, description: String? = nil, file: String = #file, line: Int = #line)
     {
         self.code = code
-        self.errorFailure = description
+        self.failure = description
         self.sourceFile = file
         self.sourceFileLine = line
     }

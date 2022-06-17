@@ -53,7 +53,8 @@ private extension BrowseCollectionViewCell
         }
         dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: imageURL as URL, progress: nil, completion: { (response, error) in
+                let request = ImageRequest(url: imageURL as URL, processor: .screenshot)
+                ImagePipeline.shared.loadImage(with: request, progress: nil, completion: { (response, error) in
                     guard !operation.isCancelled else { return operation.finish() }
                     
                     if let image = response?.image
