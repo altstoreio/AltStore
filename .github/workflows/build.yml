@@ -1,0 +1,26 @@
+name: Build and Upload SideStore
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build and upload SideStore
+    runs-on: macos-12
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build SideStore
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData/
+          xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO | xcpretty && exit ${PIPESTATUS[0]}
+      - name: Convert to IPA
+        run: | 
+          mkdir Payload
+          mkdir Payload/AltStore.app
+          cp -R archive.xcarchive/Products/Applications/AltStore.app/ Payload/AltStore.app/
+          zip -r SideStore.ipa Payload
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SideStore.ipa
+          path: SideStore.ipa
