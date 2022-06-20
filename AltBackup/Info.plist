@@ -4,6 +4,7 @@
 <dict>
 	<key>ALTAppGroups</key>
 	<array>
+		<string>group.$(APP_GROUP_IDENTIFIER)</string>
 		<string>group.com.rileytestut.AltStore</string>
 	</array>
 	<key>ALTBundleIdentifier</key>

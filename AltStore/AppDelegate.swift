@@ -33,10 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    @available(iOS 14, *)
-    private lazy var intentHandler = IntentHandler()
-    
-    @available(iOS 14, *)
+    private lazy var intentHandler = IntentHandler()    
     private lazy var viewAppIntentHandler = ViewAppIntentHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool

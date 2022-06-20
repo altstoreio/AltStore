@@ -44,7 +44,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet private var installMailPluginMenuItem: NSMenuItem!
     @IBOutlet private var installAltStoreMenuItem: NSMenuItem!
     @IBOutlet private var sideloadAppMenuItem: NSMenuItem!
-    
+    @IBOutlet private var checkForUpdatesMenuItem: NSMenuItem!
+
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
     
@@ -56,23 +57,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var isAltPluginUpdateAvailable = false
     
-    func applicationDidFinishLaunching(_ aNotification: Notification)
-    {
+    @IBOutlet private var updaterController: SPUStandardUpdaterController! = {
+        return SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    }()
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         UserDefaults.standard.registerDefaults()
         
         UNUserNotificationCenter.current().delegate = self
         
         ServerConnectionManager.shared.start()
         ALTDeviceManager.shared.start()
-        
-        #if STAGING
-        let feedURL: String = Bundle.main.infoDictionary!["SUFeedURL"]! as! String
-        #else
-        let feedURL: String  = Bundle.main.infoDictionary!["SUFeedURL"]! as! String
-        #endif
-        
-        SUUpdater.shared().feedURL = URL(string: feedURL)
-
+                
         let item = NSStatusBar.system.statusItem(withLength: -1)
         item.menu = self.appMenu
         item.button?.image = NSImage(named: "MenuBarIcon") 
@@ -610,3 +606,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate
         completionHandler([.alert, .sound, .badge])
     }
 }
+
+// MARK: - Sparkle
+//extension AppDelegate: SPUUpdaterDelegate {
+//
+//}
+//
+//extension AppDelegate: SPUStandardUserDriverDelegate {
+//
+//}
