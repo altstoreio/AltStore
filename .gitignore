@@ -31,3 +31,6 @@ xcuserdata
 /newrelic_agent.log
 /CodeSigning.xcconfig
 /.vscode
+
+## AppCode specific
+.idea/
