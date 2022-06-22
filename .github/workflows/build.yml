@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   build:
     name: Build and upload SideStore
-    runs-on: macos-12
+    runs-on: macos-11
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
