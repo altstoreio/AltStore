@@ -12,6 +12,7 @@ jobs:
       - name: Build SideStore
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/
+          rm ./AltStore.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO | xcpretty && exit ${PIPESTATUS[0]}
       - name: Convert to IPA
         run: | 
