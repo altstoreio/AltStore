@@ -4,7 +4,8 @@
 
 [![Swift Version](https://img.shields.io/badge/swift-5.0-orange.svg)](https://swift.org/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
+[![Build and Upload SideStore](https://github.com/SideStore/SideStore/actions/workflows/build.yml/badge.svg)](https://github.com/SideStore/SideStore/actions/workflows/build.yml)
 
 SideStore is an iOS application that allows you to sideload other apps (.ipa files) onto your iOS device with just your Apple ID. SideStore resigns apps with your personal development certificate and sends them to a desktop app called AltServer or use the SideStore VPN, which installs the resigned apps back to your device using iTunes WiFi sync or using the SideStore VPN where you can sideload at any place over wifi that supports zerotier that has internet. To prevent apps from expiring, SideStore just like AltStore will also periodically refresh your apps in the background when on the same WiFi as AltServer or using SideStore VPN over wifi on any network that includes a internet connection.
 
