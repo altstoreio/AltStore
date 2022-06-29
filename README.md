@@ -6,14 +6,14 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-AltStore is an iOS application that allows you to sideload other apps (.ipa files) onto your iOS device with just your Apple ID. AltStore resigns apps with your personal development certificate and sends them to a desktop app, AltServer, which installs the resigned apps back to your device using iTunes WiFi sync. To prevent apps from expiring, AltStore will also periodically refresh your apps in the background when on the same WiFi as AltServer.
+AltStore is an iOS application that allows you to sideload other apps (.ipa files) onto your iOS device with just your Apple ID. AltStore resigns apps with your personal development certificate and sends them to a desktop app, AltServer, which installs the resigned apps back to your device using iTunes Wi-Fi sync. To prevent apps from expiring, AltStore will also periodically refresh your apps in the background when on the same Wi-Fi as AltServer.
 
 For the initial release, I focused on building a solid foundation for distributing my own apps — primarily Delta, [my all-in-one emulator for iOS](https://github.com/rileytestut/Delta). Now that Delta has been released, however, I'm beginning work on adding support for *anyone* to list and distribute their apps through AltStore (contributions welcome! 🙂).
 
 ## Features
-- Installs apps over WiFi using AltServer
+- Installs apps over Wi-Fi using AltServer
 - Resigns and installs any app with your Apple ID
-- Refreshes apps periodically in the background to prevent them from expiring (when on same WiFi as AltServer)
+- Refreshes apps periodically in the background to prevent them from expiring (when on same Wi-Fi as AltServer)
 - Handles app updates directly through AltStore 
 
 ## Requirements

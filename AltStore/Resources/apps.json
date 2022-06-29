@@ -94,7 +94,7 @@
       "subtitle": "Classic games in your pocket.",
       "version": "1.3.1b",
       "versionDate": "2021-11-17T14:00:00-08:00",
-      "versionDescription": "• AltJIT support — Delta can now enable JIT when on the same WiFi as AltServer\n• Fixes game artwork not downloading",
+      "versionDescription": "• AltJIT support — Delta can now enable JIT when on the same Wi-Fi as AltServer\n• Fixes game artwork not downloading",
       "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_1_b.ipa",
       "localizedDescription": "The next consoles for Delta are coming: this beta version of Delta brings support for playing Nintendo DS and Sega Genesis games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
