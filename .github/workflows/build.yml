@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   build:
     name: Build and upload SideStore
-    runs-on: macos-12
+    runs-on: macos-11
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -12,6 +12,7 @@ jobs:
       - name: Build SideStore
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/
+          rm ./AltStore.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO | xcpretty && exit ${PIPESTATUS[0]}
       - name: Convert to IPA
         run: | 
