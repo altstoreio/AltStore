@@ -9,11 +9,16 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Install dependencies
+        run: brew install ldid
       - name: Build SideStore
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/
           rm ./AltStore.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO | xcpretty && exit ${PIPESTATUS[0]}
+      - name: Fakesign app
+        run: | 
+          ldid -SAltStore/Resources/tempEnt.plist archive.xcarchive/Products/Applications/AltStore.app/AltStore
       - name: Convert to IPA
         run: | 
           mkdir Payload
