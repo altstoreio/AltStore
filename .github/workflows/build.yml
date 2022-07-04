@@ -14,10 +14,11 @@ jobs:
       - name: Build SideStore
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/
-          rm ./AltStore.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO | xcpretty && exit ${PIPESTATUS[0]}
+          rm ./AltStore.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved 
+          xcodebuild -project AltStore.xcodeproj -scheme AltStore -sdk iphoneos archive -archivePath ./archive CODE_SIGNING_REQUIRED=NO AD_HOC_CODE_SIGNING_ALLOWED=YES CODE_SIGNING_ALLOWED=NO DEVELOPMENT_TEAM=XYZ0123456 ORG_IDENTIFIER=com.SideStore | xcpretty && exit ${PIPESTATUS[0]}
       - name: Fakesign app
         run: | 
+          rm -rf archive.xcarchive/Products/Applications/AltStore.app/Frameworks/AltStoreCore.framework/Frameworks/
           ldid -SAltStore/Resources/tempEnt.plist archive.xcarchive/Products/Applications/AltStore.app/AltStore
       - name: Convert to IPA
         run: | 
