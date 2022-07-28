@@ -187,15 +187,6 @@
       "notify": true
     },
     {
-      "title": "Welcome to AltStore",
-      "identifier": "welcome-to-altstore",
-      "caption": "Please read the FAQ for help with installing apps.",
-      "tintColor": "018084",
-      "url": "https://altstore.io/faq/",
-      "date": "2019-09-28",
-      "notify": false
-    },
-    {
       "title": "Sideloading is Here!",
       "identifier": "sideloading-is-here",
       "caption": "Update to AltStore 1.3 to install any app directly from Files.",
@@ -261,6 +252,15 @@
       "url": "https://faq.altstore.io/release-notes/altstore",
       "date": "2022-05-05",
       "notify": true
+    },
+    {
+      "title": "New to AltStore?",
+      "identifier": "updated-faq",
+      "caption": "Check out our updated guide to learn how to sideload apps!",
+      "tintColor": "018084",
+      "url": "https://faq.altstore.io",
+      "date": "2022-07-28",
+      "notify": false
     }
   ],
   "userInfo": {
