@@ -7,14 +7,14 @@
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
-      "version": "1.5",
-      "versionDate": "2022-05-06T08:00:00-07:00",
-      "versionDescription": "TRUSTED SOURCES\n• Download and update certain third party apps entirely through AltStore\n• Add Trusted Sources directly from the new Sources page\n• Trusted Sources are sources we’ve explicitly approved that meet our safety standards\n• You can still sideload any .ipa you want via the \"+\" button in My Apps \n• Support for adding any source by URL will be coming later\n\nALTJIT\n• Allows sideloaded apps to use Just-in-Time (JIT) compilation\n• Long-press an app in My Apps, then choose “Enable JIT”\n• JIT will remain enabled until the app is quit\n• Requires iOS 14 or later\n• Requires AltServer 1.5 or later\n\nIMPROVED\n• Adds Shane to credits and Patreon screen\n• Loads “Friend Tier” Patrons much faster on Patreon screen\n\nFIXED\n• Fixed a potential crash when sideloading certain apps\n• Fixed some apps having access to AltStore’s app group after being (de-)activated\n• Fixed Core Data error when not connected to internet",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5.ipa",
+      "version": "1.5.1",
+      "versionDate": "2022-07-14T12:00:00-05:00",
+      "versionDescription": "This update fixes the following issues:\n\n• Using Apple IDs that contain capital letters\n• Using Apple IDs with 2FA enabled without any trusted devices\n• Repeatedly asking some users to sign in every refresh\n• \"Incorrect Apple ID or password\" error after changing Apple ID email address\n• “Application is missing application-identifier” error when sideloading or (de-)activating certain apps\n• Potential crash when receiving unknown error codes from AltServer",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_1.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5459395,
+      "size": 5465976,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -92,14 +92,14 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.4b1",
-      "versionDate": "2022-06-02T09:00:00-07:00",
-      "versionDescription": "NEW\n• iPad-optimized UI\n• Redesigned iPad controller skins for NES, SNES, and DS games\n• Temporary iPad controller skins for GBC, GBA, Genesis, and N64 games\n\nIMPROVED\n• Modern menu UI when importing games\n• Updated \"Copy Deep Link\" icon when sharing a game\n\nFIXED\n• Fixed keyboard support on iOS 15+\n• Fixed invisible \"Games\" navigation bar and toolbar on iOS 15+\n• Fixed error sharing games via certain share methods\n• Fixed exporting save files for games with names containing special characters\n• Fixed UI bug where previous game controller would remaining selected after switching\n• Fixed game controller input mapping UI on iPad\n• Fixed crash importing games on iPad\n• Fixed crash sharing games on iPad",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_b1.ipa",
+      "version": "1.4b2",
+      "versionDate": "2022-08-16T08:00:00-05:00",
+      "versionDescription": "NEW\n• Supports Split View and Stage Manager multitasking on iPad\n• Automatically pauses + resumes emulation when switching between foreground apps with Stage Manager\n• Optimized full screen-width controller skins when using Split View, Slide Over, or Stage Manager\n• Supports controller skins with new `placement` parameter\n• Supports controller skins with custom screens that don’t have explicit `outputFrame`\n\nFIXED\n• Fixed not detecting keyboard presses when remapping inputs\n• Fixed potential crash rendering game screen after changing EAGLContext\n• Fixed incorrect game screen frame when software keyboard appears on iOS 16\n• Fixed software keyboard sometimes appearing when not emulating anything",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_b2.ipa",
       "localizedDescription": "The next consoles for Delta are coming: this beta version of Delta brings support for playing Nintendo DS and Sega Genesis games!\n\nPlease report any issues you find to support@altstore.io. Thanks!",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 38346715,
+      "size": 42968657,
       "beta": true,
       "permissions": [
         {
@@ -187,15 +187,6 @@
       "notify": true
     },
     {
-      "title": "Welcome to AltStore",
-      "identifier": "welcome-to-altstore",
-      "caption": "Please read the FAQ for help with installing apps.",
-      "tintColor": "018084",
-      "url": "https://altstore.io/faq/",
-      "date": "2019-09-28",
-      "notify": false
-    },
-    {
       "title": "Sideloading is Here!",
       "identifier": "sideloading-is-here",
       "caption": "Update to AltStore 1.3 to install any app directly from Files.",
@@ -261,6 +252,15 @@
       "url": "https://faq.altstore.io/release-notes/altstore",
       "date": "2022-05-05",
       "notify": true
+    },
+    {
+      "title": "New to AltStore?",
+      "identifier": "updated-faq",
+      "caption": "Check out our updated guide to learn how to sideload apps!",
+      "tintColor": "018084",
+      "url": "https://faq.altstore.io",
+      "date": "2022-07-28",
+      "notify": false
     }
   ],
   "userInfo": {
