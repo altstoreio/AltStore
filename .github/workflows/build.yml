@@ -1,9 +1,26 @@
 name: Build and Upload SideStore
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+  
 jobs:
   build:
     name: Build and upload SideStore
-    runs-on: macos-11
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: 'macos-12'
+            version: '14.0-beta'
+          - os: 'macos-12'
+            version: '13.4.1'
+          - os: 'macos-11'
+            version: '13.2.1'
+        
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -11,6 +28,10 @@ jobs:
           submodules: recursive
       - name: Install dependencies
         run: brew install ldid
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1.4.1
+        with:
+          xcode-version: ${{ matrix.version }}
       - name: Build SideStore
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/

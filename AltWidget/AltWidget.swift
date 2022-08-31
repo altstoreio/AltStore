@@ -173,8 +173,7 @@ struct Provider: IntentTimelineProvider
     }
 }
 
-@main
-struct AltWidget: Widget
+struct HomeScreenWidget: Widget
 {
     private let kind: String = "AppDetail"
     
@@ -187,5 +186,37 @@ struct AltWidget: Widget
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("AltWidget")
         .description("View remaining days until your sideloaded apps expire.")
+    }
+}
+
+struct LockScreenWidget: Widget
+{
+    private let kind: String = "LockAppDetail"
+    
+    public var body: some WidgetConfiguration {
+        if #available(iOSApplicationExtension 16, *)
+        {
+            return IntentConfiguration(kind: kind,
+                                       intent: ViewAppIntent.self,
+                                       provider: Provider()) { (entry) in
+                ComplicationView(entry: entry)
+            }
+            .supportedFamilies([.accessoryCircular])
+            .configurationDisplayName("AltWidget")
+            .description("View remaining days until AltStore expires.")
+        }
+        else
+        {
+            return EmptyWidgetConfiguration()
+        }
+    }
+}
+
+@main
+struct AltWidgets: WidgetBundle
+{
+    var body: some Widget {
+        HomeScreenWidget()
+        LockScreenWidget()
     }
 }

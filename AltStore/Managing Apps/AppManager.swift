@@ -46,9 +46,6 @@ class AppManager
 {
     static let shared = AppManager()
     
-    @available(iOS 13, *)
-    private(set) lazy var publisher: AppManagerPublisher = AppManagerPublisher()
-    
     private(set) var updatePatronsResult: Result<Void, Error>?
     
     private let operationQueue = OperationQueue()
@@ -67,8 +64,27 @@ class AppManager
         }
     }
     
-    @available(iOS 13.0, *)
-    private lazy var cancellables = Set<AnyCancellable>()
+    @available(iOS 13, *)
+    private(set) var publisher: AppManagerPublisher {
+        get { _publisher as! AppManagerPublisher }
+        set { _publisher = newValue }
+    }
+    
+    @available(iOS 13, *)
+    private(set) var cancellables: Set<AnyCancellable> {
+        get { _cancellables as! Set<AnyCancellable> }
+        set { _cancellables = newValue }
+    }
+    
+    private lazy var _publisher: Any = {
+        guard #available(iOS 13, *) else { fatalError() }
+        return AppManagerPublisher()
+    }()
+    
+    private lazy var _cancellables: Any = {
+        guard #available(iOS 13, *) else { fatalError() }
+        return Set<AnyCancellable>()
+    }()
     
     private init()
     {
