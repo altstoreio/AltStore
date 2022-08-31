@@ -3272,6 +3272,7 @@
 				);
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG BETA";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SYSTEM_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Dependencies/AltSign/Dependencies\"";
