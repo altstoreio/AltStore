@@ -14,7 +14,7 @@ The goal of this project is to allow easy and a mostly computerless experience t
 
 
 ## Requirements
-- Xcode 11
+- Xcode 14
 - iOS 12.2+ (SideStore)
 - macOS 10.14.4+ (TBD)
 - Swift 5+
