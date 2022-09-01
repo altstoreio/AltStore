@@ -15,11 +15,7 @@ jobs:
         include:
           - os: 'macos-12'
             version: '14.0-beta'
-          - os: 'macos-12'
-            version: '13.4.1'
-          - os: 'macos-11'
-            version: '13.2.1'
-        
+    
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
