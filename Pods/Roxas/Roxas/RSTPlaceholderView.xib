@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSTPlaceholderView">
+            <connections>
+                <outlet property="activityIndicatorView" destination="kZV-Kk-xG2" id="bXz-o3-mq5"/>
+                <outlet property="detailTextLabel" destination="dyq-zR-r9I" id="ic7-ZE-52I"/>
+                <outlet property="imageView" destination="fwG-VP-Zpz" id="Kj2-e7-LLT"/>
+                <outlet property="stackView" destination="pdE-pw-1vw" id="XAD-G4-dwh"/>
+                <outlet property="textLabel" destination="mcl-R8-rKy" id="EQc-wS-s6s"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="gIm-tE-8w8">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="pdE-pw-1vw">
+                    <rect key="frame" x="32" y="213.5" width="310.5" height="239"/>
+                    <subviews>
+                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="100" translatesAutoresizingMaskIntoConstraints="NO" id="fwG-VP-Zpz">
+                            <rect key="frame" x="105.5" y="0.0" width="100" height="100"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Games" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mcl-R8-rKy">
+                            <rect key="frame" x="91.5" y="108" width="127.5" height="33.5"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                            <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="kZV-Kk-xG2">
+                            <rect key="frame" x="145.5" y="149.5" width="20" height="20"/>
+                        </activityIndicatorView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="If you expected this to display something, there might have been an issue. Please try again." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dyq-zR-r9I">
+                            <rect key="frame" x="0.0" y="177.5" width="310.5" height="61.5"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                            <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="pdE-pw-1vw" firstAttribute="centerX" secondItem="gIm-tE-8w8" secondAttribute="centerX" id="9aj-fk-LVb"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pdE-pw-1vw" secondAttribute="trailing" constant="20" id="Ak7-nm-Cg0"/>
+                <constraint firstItem="pdE-pw-1vw" firstAttribute="centerY" secondItem="gIm-tE-8w8" secondAttribute="centerY" id="hlm-SQ-Hl7"/>
+                <constraint firstItem="pdE-pw-1vw" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="gIm-tE-8w8" secondAttribute="leading" constant="20" id="qFg-sP-W7j"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <point key="canvasLocation" x="22" y="685"/>
+        </view>
+    </objects>
+</document>

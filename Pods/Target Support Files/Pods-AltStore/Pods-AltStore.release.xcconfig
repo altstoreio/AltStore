@@ -1,11 +1,12 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenterAnalytics" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenterCrashes"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" "${PODS_CONFIGURATION_BUILD_DIR}/Roxas" "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers"
-LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" -iframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenterAnalytics" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenterCrashes" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess"
-OTHER_LDFLAGS = $(inherited) -l"c++" -l"sqlite3" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "CoreTelephony" -framework "Foundation" -framework "KeychainAccess" -framework "Nuke" -framework "SystemConfiguration" -framework "UIKit"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Roxas/Roxas.framework/Headers"
+LD_RUNPATH_SEARCH_PATHS = $(inherited) /usr/lib/swift '@executable_path/Frameworks' '@loader_path/Frameworks'
+LIBRARY_SEARCH_PATHS = $(inherited) "${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}" /usr/lib/swift
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Nuke/Nuke.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Roxas/Roxas.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess/KeychainAccess.framework/Headers" -iframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core" -iframework "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Nuke" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Roxas" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/KeychainAccess"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"c++" -l"sqlite3" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "CoreTelephony" -framework "Foundation" -framework "KeychainAccess" -framework "Nuke" -framework "Roxas" -framework "SystemConfiguration" -framework "UIKit"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

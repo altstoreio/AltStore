@@ -1,9 +1,15 @@
 inhibit_all_warnings!
 
+def common_pods
+    pod 'Roxas', :git => 'https://github.com/rileytestut/Roxas.git'
+end
+
 target 'AltStore' do
   platform :ios, '12.0'
 
   use_frameworks!
+
+  common_pods
 
   # Pods for AltStore
   pod 'Nuke', '~> 7.0'
@@ -26,7 +32,8 @@ target 'AltStoreCore' do
   platform :ios, '12.0'
 
   use_frameworks!
-
+  common_pods
+  
   # Pods for AltServer
   pod 'KeychainAccess', '~> 4.2.0'
 
