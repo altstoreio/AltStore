@@ -53,6 +53,8 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var team: Team?
     @NSManaged public var appExtensions: Set<InstalledExtension>
     
+    @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
+    
     public var isSideloaded: Bool {
         return self.storeApp == nil
     }
