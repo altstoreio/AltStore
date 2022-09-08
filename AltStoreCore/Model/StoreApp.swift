@@ -59,6 +59,8 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(source) public var _source: Source?
     @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
+    @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
+    
     @nonobjc public var source: Source? {
         set {
             self._source = newValue
