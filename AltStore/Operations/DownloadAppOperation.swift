@@ -36,7 +36,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     let context: AppOperationContext
     
     private let bundleIdentifier: String
-    private let sourceURL: URL
+    private var sourceURL: URL?
     private let destinationURL: URL
     
     private let session = URLSession(configuration: .default)
@@ -69,7 +69,9 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         
         print("Downloading App:", self.bundleIdentifier)
         
-        self.downloadApp(from: self.sourceURL) { result in
+        guard let sourceURL = self.sourceURL else { return self.finish(.failure(OperationError.appNotFound)) }
+        
+        self.downloadApp(from: sourceURL) { result in
             do
             {
                 let application = try result.get()
@@ -165,7 +167,7 @@ private extension DownloadAppOperation
             }
         }
         
-        if self.sourceURL.isFileURL
+        if sourceURL.isFileURL
         {
             finishOperation(.success(sourceURL))
             
