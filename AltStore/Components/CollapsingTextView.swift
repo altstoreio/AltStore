@@ -71,8 +71,10 @@ class CollapsingTextView: UITextView
         {
             self.textContainer.maximumNumberOfLines = self.maximumNumberOfLines
             
-            let maximumCollapsedHeight = font.lineHeight * CGFloat(self.maximumNumberOfLines)
-            if self.intrinsicContentSize.height > maximumCollapsedHeight
+            let boundingSize = self.attributedText.boundingRect(with: CGSize(width: self.textContainer.size.width, height: .infinity), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            let maximumCollapsedHeight = font.lineHeight * Double(self.maximumNumberOfLines)
+            
+            if boundingSize.height.rounded() > maximumCollapsedHeight.rounded()
             {
                 var exclusionFrame = moreButtonFrame
                 exclusionFrame.origin.y += self.moreButton.bounds.midY
