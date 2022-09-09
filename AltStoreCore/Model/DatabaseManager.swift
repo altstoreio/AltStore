@@ -122,6 +122,27 @@ public extension DatabaseManager
             }
         }
     }
+    
+    func purgeLoggedErrors(before date: Date? = nil, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.persistentContainer.performBackgroundTask { context in
+            do
+            {
+                let predicate = date.map { NSPredicate(format: "%K <= %@", #keyPath(LoggedError.date), $0 as NSDate) }
+                
+                let loggedErrors = LoggedError.all(satisfying: predicate, in: context, requestProperties: [\.returnsObjectsAsFaults: true])
+                loggedErrors.forEach { context.delete($0) }
+                
+                try context.save()
+                
+                completion(.success(()))
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 public extension DatabaseManager
@@ -129,10 +150,7 @@ public extension DatabaseManager
     var viewContext: NSManagedObjectContext {
         return self.persistentContainer.viewContext
     }
-}
-
-public extension DatabaseManager
-{
+    
     func activeAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> Account?
     {
         let predicate = NSPredicate(format: "%K == YES", #keyPath(Account.isActiveAccount))

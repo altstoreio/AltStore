@@ -52,6 +52,7 @@ extension SettingsViewController
     {
         case sendFeedback
         case refreshAttempts
+        case errorLog
     }
 }
 
@@ -502,7 +503,7 @@ extension SettingsViewController
                     toastView.show(in: self)
                 }
                 
-            case .refreshAttempts: break
+            case .refreshAttempts, .errorLog: break
             }
             
         default: break

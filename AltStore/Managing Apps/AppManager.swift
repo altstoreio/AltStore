@@ -1677,6 +1677,8 @@ private extension AppManager
         catch
         {
             group.set(.failure(error), forAppWithBundleIdentifier: operation.bundleIdentifier)
+            
+            self.log(error, for: operation)
         }
     }
     
@@ -1699,6 +1701,43 @@ private extension AppManager
         
         let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
+    }
+    
+    func log(_ error: Error, for operation: AppOperation)
+    {
+        // Sanitize NSError on same thread before performing background task.
+        let sanitizedError = (error as NSError).sanitizedForCoreData()
+        
+        let loggedErrorOperation: LoggedError.Operation = {
+            switch operation
+            {
+            case .install: return .install
+            case .update: return .update
+            case .refresh: return .refresh
+            case .activate: return .activate
+            case .deactivate: return .deactivate
+            case .backup: return .backup
+            case .restore: return .restore
+            }
+        }()
+                    
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+            var app = operation.app
+            if let managedApp = app as? NSManagedObject, let tempApp = context.object(with: managedApp.objectID) as? AppProtocol
+            {
+                app = tempApp
+            }
+            
+            do
+            {
+                _ = LoggedError(error: sanitizedError, app: app, operation: loggedErrorOperation, context: context)
+                try context.save()
+            }
+            catch let saveError
+            {
+                print("[ALTLog] Failed to log error \(sanitizedError.domain) code \(sanitizedError.code) for \(app.bundleIdentifier):", saveError)
+            }
+        }
     }
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
