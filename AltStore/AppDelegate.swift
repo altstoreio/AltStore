@@ -98,7 +98,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidEnterBackground(_ application: UIApplication)
     {
+        // Make sure to update SceneDelegate.sceneDidEnterBackground() as well.
+        
         ServerManager.shared.stopDiscovering()
+                
+        guard let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) else { return }
+        
+        let midnightOneMonthAgo = Calendar.current.startOfDay(for: oneMonthAgo)
+        DatabaseManager.shared.purgeLoggedErrors(before: midnightOneMonthAgo) { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("[ALTLog] Failed to purge logged errors before \(midnightOneMonthAgo).", error)
+            }
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication)
