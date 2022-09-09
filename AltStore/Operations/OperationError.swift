@@ -11,6 +11,8 @@ import AltSign
 
 enum OperationError: LocalizedError
 {
+    static let domain = OperationError.unknown._domain
+    
     case unknown
     case unknownResult
     case cancelled
