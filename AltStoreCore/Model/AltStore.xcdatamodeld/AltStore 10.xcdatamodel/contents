@@ -31,6 +31,26 @@
         <attribute name="usageDescription" attributeType="String"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
     </entity>
+    <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="localizedDescription" optional="YES" attributeType="String"/>
+        <attribute name="maxOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="minOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="size" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceID" optional="YES" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="versions" inverseEntity="StoreApp"/>
+        <relationship name="latestVersionApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="latestVersion" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="version"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
         <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
@@ -158,10 +178,12 @@
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="versionDescription" optional="YES" attributeType="String"/>
         <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp"/>
+        <relationship name="latestVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppVersion" inverseName="latestVersionApp" inverseEntity="AppVersion"/>
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
+        <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="sourceIdentifier"/>
