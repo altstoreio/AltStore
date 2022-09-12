@@ -129,6 +129,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(source) public var _source: Source?
     @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
+    @NSManaged public private(set) var latestVersion: AppVersion?
+    @NSManaged @objc(versions) public private(set) var _versions: NSOrderedSet
+    
     @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
     
     @nonobjc public var source: Source? {
@@ -143,6 +146,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @nonobjc public var permissions: [AppPermission] {
         return self._permissions.array as! [AppPermission]
+    }
+    
+    @nonobjc public var versions: [AppVersion] {
+        return self._versions.array as! [AppVersion]
     }
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
