@@ -39,6 +39,18 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         }
                     }
                     
+                case is AppVersion where conflict.conflictingObjects.count == 2:
+                    // Occurs first time fetching sources after migrating from pre-AppVersion database model.
+                    let conflictingAppVersions = conflict.conflictingObjects.lazy.compactMap { $0 as? AppVersion }
+                    
+                    // Primary AppVersion == AppVersion whose latestVersionApp.latestVersion points back to itself.
+                    if let primaryAppVersion = conflictingAppVersions.first(where: { $0.latestVersionApp?.latestVersion == $0 }),
+                       let secondaryAppVersion = conflictingAppVersions.first(where: { $0 != primaryAppVersion })
+                    {
+                        secondaryAppVersion.managedObjectContext?.delete(secondaryAppVersion)
+                        print("[ALTLog] Resolving AppVersion context-level conflict. Most likely due to migrating from pre-AppVersion model version.", primaryAppVersion)
+                    }
+                    
                 default:
                     // Unknown context-level conflict.
                     assertionFailure("MergePolicy is only intended to work with database-level conflicts.")
