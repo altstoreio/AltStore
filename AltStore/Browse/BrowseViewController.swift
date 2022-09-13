@@ -113,7 +113,7 @@ private extension BrowseViewController
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
                 
-                if Date() < app.versionDate
+                if let versionDate = app.latestVersion?.date, versionDate > Date()
                 {
                     cell.bannerView.button.countdownDate = app.versionDate
                 }

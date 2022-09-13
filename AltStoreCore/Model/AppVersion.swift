@@ -47,7 +47,6 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    
     private enum CodingKeys: String, CodingKey
     {
         case version
@@ -55,31 +54,34 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         case localizedDescription
         case downloadURL
         case size
-        case _minOSVersion
-        case _maxOSVersion
-        case appBundleID
-        case sourceID
     }
     
     public required init(from decoder: Decoder) throws
     {
         guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
         
-        super.init(entity: NewsItem.entity(), insertInto: context)
+        super.init(entity: AppVersion.entity(), insertInto: context)
         
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.version = try container.decode(String.self, forKey: .version)
-        self.date = try container.decode(Date.self, forKey: .date)
-        
-        self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
-        self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
-        self.size = try container.decode(Int64.self, forKey: .size)
-
-        self._minOSVersion = try container.decodeIfPresent(String.self, forKey: ._minOSVersion)
-        self._maxOSVersion = try container.decodeIfPresent(String.self, forKey: ._maxOSVersion)
-
-        self.appBundleID = try container.decode(String.self, forKey: .appBundleID)
-        self.sourceID = try container.decodeIfPresent(String.self, forKey: .sourceID)
+        do
+        {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            self.version = try container.decode(String.self, forKey: .version)
+            self.date = try container.decode(Date.self, forKey: .date)
+            self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
+            
+            self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+            self.size = try container.decode(Int64.self, forKey: .size)
+        }
+        catch
+        {
+            if let context = self.managedObjectContext
+            {
+                context.delete(self)
+            }
+            
+            throw error
+        }
     }
 }
 
@@ -88,5 +90,27 @@ public extension AppVersion
     @nonobjc class func fetchRequest() -> NSFetchRequest<AppVersion>
     {
         return NSFetchRequest<AppVersion>(entityName: "AppVersion")
+    }
+    
+    class func makeAppVersion(
+        version: String,
+        date: Date,
+        localizedDescription: String? = nil,
+        downloadURL: URL,
+        size: Int64,
+        appBundleID: String,
+        sourceID: String? = nil,
+        in context: NSManagedObjectContext) -> AppVersion
+    {
+        let appVersion = AppVersion(context: context)
+        appVersion.version = version
+        appVersion.date = date
+        appVersion.localizedDescription = localizedDescription
+        appVersion.downloadURL = downloadURL
+        appVersion.size = size
+        appVersion.appBundleID = appBundleID
+        appVersion.sourceID = sourceID
+
+        return appVersion
     }
 }

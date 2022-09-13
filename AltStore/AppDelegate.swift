@@ -380,11 +380,11 @@ private extension AppDelegate
                 for update in updates
                 {
                     guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
-                    guard let storeApp = update.storeApp else { continue }
+                    guard let storeApp = update.storeApp, let version = storeApp.version else { continue }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, version)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)

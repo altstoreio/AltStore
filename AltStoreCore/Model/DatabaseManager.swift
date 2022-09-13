@@ -211,7 +211,7 @@ private extension DatabaseManager
             else
             {
                 storeApp = StoreApp.makeAltStoreApp(in: context)
-                storeApp.version = localApp.version
+                storeApp.latestVersion?.version = localApp.version
                 storeApp.source = altStoreSource
             }
                         

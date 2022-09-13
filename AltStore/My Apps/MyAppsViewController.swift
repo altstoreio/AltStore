@@ -186,7 +186,7 @@ private extension MyAppsViewController
     func makeUpdatesDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
         let fetchRequest = InstalledApp.updatesFetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.storeApp?.versionDate, ascending: true),
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.storeApp?.latestVersion?.date, ascending: true),
                                         NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
@@ -195,7 +195,7 @@ private extension MyAppsViewController
         dataSource.cellIdentifierHandler = { _ in "UpdateCell" }
         dataSource.cellConfigurationHandler = { [weak self] (cell, installedApp, indexPath) in
             guard let self = self else { return }
-            guard let app = installedApp.storeApp else { return }
+            guard let app = installedApp.storeApp, let latestVersion = app.latestVersion else { return }
             
             let cell = cell as! UpdateCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
@@ -209,7 +209,7 @@ private extension MyAppsViewController
             
             cell.bannerView.configure(for: app)
             
-            let versionDate = Date().relativeDateString(since: app.versionDate, dateFormatter: self.dateFormatter)
+            let versionDate = Date().relativeDateString(since: latestVersion.date, dateFormatter: self.dateFormatter)
             cell.bannerView.subtitleLabel.text = versionDate
             
             let appName: String
@@ -223,7 +223,7 @@ private extension MyAppsViewController
                 appName = app.name
             }
             
-            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, app.version, versionDate)
+            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestVersion.version, versionDate)
             
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
