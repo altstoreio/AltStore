@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E230" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -31,6 +31,26 @@
         <attribute name="usageDescription" attributeType="String"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
     </entity>
+    <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="localizedDescription" optional="YES" attributeType="String"/>
+        <attribute name="maxOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="minOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="size" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceID" optional="YES" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="versions" inverseEntity="StoreApp"/>
+        <relationship name="latestVersionApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="latestVersion" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="version"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
         <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
@@ -45,6 +65,7 @@
         <attribute name="resignedBundleIdentifier" attributeType="String"/>
         <attribute name="version" attributeType="String"/>
         <relationship name="appExtensions" toMany="YES" deletionRule="Cascade" destinationEntity="InstalledExtension" inverseName="parentApp" inverseEntity="InstalledExtension"/>
+        <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="installedApp" inverseEntity="LoggedError"/>
         <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="installedApp" inverseEntity="StoreApp"/>
         <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="installedApps" inverseEntity="Team"/>
         <uniquenessConstraints>
@@ -62,6 +83,17 @@
         <attribute name="resignedBundleIdentifier" attributeType="String"/>
         <attribute name="version" attributeType="String"/>
         <relationship name="parentApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="appExtensions" inverseEntity="InstalledApp"/>
+    </entity>
+    <entity name="LoggedError" representedClassName="LoggedError" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="appName" attributeType="String"/>
+        <attribute name="code" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="domain" attributeType="String"/>
+        <attribute name="operation" optional="YES" attributeType="String"/>
+        <attribute name="userInfo" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="loggedErrors" inverseEntity="InstalledApp"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="loggedErrors" inverseEntity="StoreApp"/>
     </entity>
     <entity name="NewsItem" representedClassName="NewsItem" syncable="YES">
         <attribute name="appID" optional="YES" attributeType="String"/>
@@ -146,9 +178,12 @@
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="versionDescription" optional="YES" attributeType="String"/>
         <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp"/>
+        <relationship name="latestVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppVersion" inverseName="latestVersionApp" inverseEntity="AppVersion"/>
+        <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
+        <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="sourceIdentifier"/>
@@ -170,18 +205,4 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <elements>
-        <element name="Account" positionX="-36" positionY="90" width="128" height="135"/>
-        <element name="AppID" positionX="-27" positionY="153" width="128" height="133"/>
-        <element name="AppPermission" positionX="-45" positionY="90" width="128" height="90"/>
-        <element name="InstalledApp" positionX="-63" positionY="0" width="128" height="268"/>
-        <element name="InstalledExtension" positionX="-45" positionY="135" width="128" height="163"/>
-        <element name="NewsItem" positionX="-45" positionY="126" width="128" height="238"/>
-        <element name="PatreonAccount" positionX="-45" positionY="117" width="128" height="89"/>
-        <element name="Patron" positionX="-36" positionY="153" width="128" height="59"/>
-        <element name="RefreshAttempt" positionX="-45" positionY="117" width="128" height="105"/>
-        <element name="Source" positionX="-45" positionY="99" width="128" height="133"/>
-        <element name="StoreApp" positionX="-63" positionY="-18" width="128" height="343"/>
-        <element name="Team" positionX="-45" positionY="81" width="128" height="148"/>
-    </elements>
 </model>

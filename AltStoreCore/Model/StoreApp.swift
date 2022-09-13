@@ -35,16 +35,16 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public private(set) var developerName: String
     @NSManaged public private(set) var localizedDescription: String
-    @NSManaged @objc(size) private var _size: Int32
+    @NSManaged @objc(size) internal var _size: Int32
     
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged @objc(version) private var _version: String
-    @NSManaged @objc(versionDate) private var _versionDate: Date
-    @NSManaged @objc(versionDescription) private var _versionDescription: String?
+    @NSManaged @objc(version) internal var _version: String
+    @NSManaged @objc(versionDate) internal var _versionDate: Date
+    @NSManaged @objc(versionDescription) internal var _versionDescription: String?
     
-    @NSManaged @objc(downloadURL) private var _downloadURL: URL
+    @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
     
