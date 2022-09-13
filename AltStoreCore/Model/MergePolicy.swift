@@ -31,6 +31,12 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         {
                             permission.managedObjectContext?.delete(permission)
                         }
+                        
+                        // Delete previous versions (different than below).
+                        for case let appVersion as AppVersion in previousApp._versions where appVersion.app == nil
+                        {
+                            appVersion.managedObjectContext?.delete(appVersion)
+                        }
                     }
                     
                 default:
@@ -53,6 +59,16 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 for permission in databaseObject.permissions
                 {
                     permission.managedObjectContext?.delete(permission)
+                }
+                
+                if let contextApp = conflict.conflictingObjects.first as? StoreApp
+                {
+                    let contextVersions = Set(contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
+                    for case let appVersion as AppVersion in databaseObject._versions where !contextVersions.contains(appVersion.version)
+                    {
+                        print("[ALTLog] Deleting cached app version: \(appVersion.appBundleID + "_" + appVersion.version), not in:", contextApp.versions.map { $0.appBundleID + "_" + $0.version })
+                        appVersion.managedObjectContext?.delete(appVersion)
+                    }
                 }
                 
             case let databaseObject as Source:

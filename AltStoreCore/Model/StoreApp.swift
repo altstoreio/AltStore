@@ -35,20 +35,39 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public private(set) var developerName: String
     @NSManaged public private(set) var localizedDescription: String
-    @NSManaged public private(set) var size: Int32
+    @NSManaged @objc(size) private var _size: Int32
     
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged public var version: String
-    @NSManaged public private(set) var versionDate: Date
-    @NSManaged public private(set) var versionDescription: String?
+    @NSManaged @objc(version) private var _version: String
+    @NSManaged @objc(versionDate) private var _versionDate: Date
+    @NSManaged @objc(versionDescription) private var _versionDescription: String?
     
-    @NSManaged public private(set) var downloadURL: URL
+    @NSManaged @objc(downloadURL) private var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
     
-    @NSManaged public var sourceIdentifier: String?
+    @objc public internal(set) var sourceIdentifier: String? {
+        get {
+            self.willAccessValue(forKey: #keyPath(sourceIdentifier))
+            defer { self.didAccessValue(forKey: #keyPath(sourceIdentifier)) }
+            
+            let sourceIdentifier = self.primitiveSourceIdentifier
+            return sourceIdentifier
+        }
+        set {
+            self.willChangeValue(forKey: #keyPath(sourceIdentifier))
+            self.primitiveSourceIdentifier = newValue
+            self.didChangeValue(forKey: #keyPath(sourceIdentifier))
+            
+            for version in self.versions
+            {
+                version.sourceID = newValue
+            }
+        }
+    }
+    @NSManaged private var primitiveSourceIdentifier: String?
     
     @NSManaged public var sortIndex: Int32
     
@@ -82,6 +101,31 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
+    @nonobjc public var size: Int64? {
+        guard let version = self.latestVersion else { return nil }
+        return version.size
+    }
+    
+    @nonobjc public var version: String? {
+        guard let version = self.latestVersion else { return nil }
+        return version.version
+    }
+    
+    @nonobjc public var versionDescription: String? {
+        guard let version = self.latestVersion else { return nil }
+        return version.localizedDescription
+    }
+    
+    @nonobjc public var versionDate: Date? {
+        guard let version = self.latestVersion else { return nil }
+        return version.date
+    }
+    
+    @nonobjc public var downloadURL: URL? {
+        guard let version = self.latestVersion else { return nil }
+        return version.downloadURL
+    }
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -104,6 +148,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case permissions
         case size
         case isBeta = "beta"
+        case versions
     }
     
     public required init(from decoder: Decoder) throws
@@ -123,14 +168,8 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             
-            self.version = try container.decode(String.self, forKey: .version)
-            self.versionDate = try container.decode(Date.self, forKey: .versionDate)
-            self.versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
-            
             self.iconURL = try container.decode(URL.self, forKey: .iconURL)
             self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
-            
-            self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -141,11 +180,40 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 self.tintColor = tintColor
             }
             
-            self.size = try container.decode(Int32.self, forKey: .size)
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
             let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
             self._permissions = NSOrderedSet(array: permissions)
+            
+            if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
+            {
+                //TODO: Throw error if there isn't at least one version.
+                
+                for version in versions
+                {
+                    version.appBundleID = self.bundleIdentifier
+                }
+                
+                self.setVersions(versions)
+            }
+            else
+            {
+                let version = try container.decode(String.self, forKey: .version)
+                let versionDate = try container.decode(Date.self, forKey: .versionDate)
+                let versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
+                
+                let downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+                let size = try container.decode(Int32.self, forKey: .size)
+                
+                let appVersion = AppVersion.makeAppVersion(version: version,
+                                                           date: versionDate,
+                                                           localizedDescription: versionDescription,
+                                                           downloadURL: downloadURL,
+                                                           size: Int64(size),
+                                                           appBundleID: self.bundleIdentifier,
+                                                           in: context)
+                self.setVersions([appVersion])
+            }
         }
         catch
         {
@@ -156,6 +224,24 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             throw error
         }
+    }
+}
+
+private extension StoreApp
+{
+    func setVersions(_ versions: [AppVersion])
+    {
+        guard let latestVersion = versions.first else { preconditionFailure("StoreApp must have at least one AppVersion.") }
+        
+        self.latestVersion = latestVersion
+        self._versions = NSOrderedSet(array: versions)
+        
+        // Preserve backwards compatibility by assigning legacy property values.
+        self._version = latestVersion.version
+        self._versionDate = latestVersion.date
+        self._versionDescription = latestVersion.localizedDescription
+        self._downloadURL = latestVersion.downloadURL
+        self._size = Int32(latestVersion.size)
     }
 }
 
@@ -175,9 +261,16 @@ public extension StoreApp
         app.localizedDescription = "AltStore is an alternative App Store."
         app.iconURL = URL(string: "https://user-images.githubusercontent.com/705880/63392210-540c5980-c37b-11e9-968c-8742fc68ab2e.png")!
         app.screenshotURLs = []
-        app.version = "1.0"
-        app.versionDate = Date()
-        app.downloadURL = URL(string: "http://rileytestut.com")!
+        app.sourceIdentifier = Source.altStoreIdentifier
+        
+        let appVersion = AppVersion.makeAppVersion(version: "1.0",
+                                                   date: Date(),
+                                                   downloadURL: URL(string: "http://rileytestut.com")!,
+                                                   size: 0,
+                                                   appBundleID: app.bundleIdentifier,
+                                                   sourceID: Source.altStoreIdentifier,
+                                                   in: context)
+        app.setVersions([appVersion])
         
         #if BETA
         app.isBeta = true
