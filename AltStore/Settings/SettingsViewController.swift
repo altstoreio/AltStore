@@ -100,11 +100,11 @@ class SettingsViewController: UITableViewController
         
         if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         {
-            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
+            self.versionLabel.text = NSLocalizedString(String(format: "SideStore %@", version), comment: "SideStore Version")
         }
         else
         {
-            self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
+            self.versionLabel.text = NSLocalizedString("SideStore", comment: "")
         }
         
         self.tableView.contentInset.bottom = 20
@@ -168,7 +168,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from AltStore.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from SideStore.", comment: "")
             }
             
         case .patreon:
@@ -180,7 +180,7 @@ private extension SettingsViewController
             {
                 settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Receive access to beta versions of AltStore, Delta, and more by becoming a patron.", comment: "")
             }
-            
+
         case .account:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
             
@@ -195,7 +195,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as AltServer.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as SideServer.", comment: "")
             }
             
         case .instructions:
@@ -468,7 +468,7 @@ extension SettingsViewController
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer: self.openTwitter(username: "rileytestut")
+            case .developer: self.openTwitter(username: "SideTeam")
             case .operations: self.openTwitter(username: "shanegillio")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
