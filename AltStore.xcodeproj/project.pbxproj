@@ -349,6 +349,7 @@
 		BFF7C920257844FA00E55F36 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BFF7C9342578492100E55F36 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
 		D504F42628AD72C50014BB5D /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D504F42528AD72C50014BB5D /* ProgressRing.swift */; };
+		D51A66CD28D2918900976BAF /* AltStore10ToAltStore11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D51A66CC28D2918900976BAF /* AltStore10ToAltStore11.xcmappingmodel */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
@@ -817,6 +818,8 @@
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
 		C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D504F42528AD72C50014BB5D /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		D51A66CB28D2908300976BAF /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
+		D51A66CC28D2918900976BAF /* AltStore10ToAltStore11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore10ToAltStore11.xcmappingmodel; sourceTree = "<group>"; };
 		D533E8B62727841800A9B5DD /* libAppleArchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libAppleArchive.tbd; path = usr/lib/libAppleArchive.tbd; sourceTree = SDKROOT; };
 		D533E8B82727B61400A9B5DD /* fragmentzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fragmentzip.h; sourceTree = "<group>"; };
 		D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dependencies/fragmentzip/libfragmentzip.a; sourceTree = SOURCE_ROOT; };
@@ -1323,6 +1326,7 @@
 				BF66EEB62501AECA007EE018 /* AltStore5ToAltStore6.xcmappingmodel */,
 				BFBF331A2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel */,
 				D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */,
+				D51A66CC28D2918900976BAF /* AltStore10ToAltStore11.xcmappingmodel */,
 			);
 			path = "Mapping Models";
 			sourceTree = "<group>";
@@ -2536,6 +2540,7 @@
 				BF66EED92501AECA007EE018 /* Team.swift in Sources */,
 				BF66EED12501AECA007EE018 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
 				BFAECC5C2501B0A400528F27 /* CFNotificationName+AltStore.m in Sources */,
+				D51A66CD28D2918900976BAF /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
 				BF66EED82501AECA007EE018 /* SecureValueTransformer.swift in Sources */,
 				BF8B17EB250AC40000F8157F /* FileManager+SharedDirectories.swift in Sources */,
 				BF66EEE02501AECA007EE018 /* Account.swift in Sources */,
@@ -3631,6 +3636,7 @@
 		BF66EEB72501AECA007EE018 /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D51A66CB28D2908300976BAF /* AltStore 11.xcdatamodel */,
 				D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */,
 				BFBF33142526754700B7B8C9 /* AltStore 9.xcdatamodel */,
 				BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */,
@@ -3642,7 +3648,7 @@
 				BF66EEBD2501AECA007EE018 /* AltStore 2.xcdatamodel */,
 				BF66EEBE2501AECA007EE018 /* AltStore 4.xcdatamodel */,
 			);
-			currentVersion = D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */;
+			currentVersion = D51A66CB28D2908300976BAF /* AltStore 11.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
