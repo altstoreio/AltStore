@@ -176,10 +176,6 @@ private extension SettingsViewController
             {
                 settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("PATREON", comment: "")
             }
-            else
-            {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Don't Touch this button above =) ", comment: "")
-            }
             
         case .account:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
