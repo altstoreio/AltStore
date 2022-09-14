@@ -11,9 +11,9 @@ import Foundation
 private extension URL
 {
     #if STAGING
-    static let trustedSources = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore/trustedsources.json")!
+    static let trustedSources = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/trustedapps.json")!
     #else
-    static let trustedSources = URL(string: "https://cdn.altstore.io/file/altstore/altstore/trustedsources.json")!
+    static let trustedSources = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/trustedapps.json")!
     #endif
 }
 

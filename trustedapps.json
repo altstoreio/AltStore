@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "identifier": "io.altstore.example"
+    },
+    {
+      "identifier": "com.utmapp.repos.UTM",
+      "sourceURL": "https://alt.getutm.app"
+    },
+    {
+      "identifier": "com.flyinghead.source",
+      "sourceURL": "https://flyinghead.github.io/flycast-builds/altstore.json"
+    },
+    {
+      "identifier": "me.oatmealdome.altstore",
+      "sourceURL": "https://altstore.oatmealdome.me"
+    },
+    {
+      "identifier": "org.provenance-emu.provenance",
+      "sourceURL": "https://provenance-emu.com/apps.json"
+    }
+  ]
+}
