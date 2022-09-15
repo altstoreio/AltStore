@@ -10,9 +10,20 @@ import SwiftUI
 import WidgetKit
 
 @available(iOS 16, *)
+extension ComplicationView
+{
+    enum Style
+    {
+        case text
+        case icon
+    }
+}
+
+@available(iOS 16, *)
 struct ComplicationView: View
 {
     let entry: AppEntry
+    let style: Style
     
     var body: some View {
         let refreshedDate = self.entry.app?.refreshedDate ?? .now
@@ -31,16 +42,42 @@ struct ComplicationView: View
             }
             else
             {
-                VStack(spacing: -1) {
-                    let fontSize = daysRemaining > 99 ? 18.0 : 20.0
-                    Text("\(daysRemaining)")
-                        .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                switch self.style
+                {
+                case .text:
+                    VStack(spacing: -1) {
+                        let fontSize = daysRemaining > 99 ? 18.0 : 20.0
+                        Text("\(daysRemaining)")
+                            .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                        
+                        Text(daysRemaining == 1 ? "DAY" : "DAYS")
+                            .font(.caption)
+                    }
+                    .fixedSize()
+                    .offset(y: -1)
                     
-                    Text(daysRemaining == 1 ? "DAY" : "DAYS")
-                        .font(.caption)
+                case .icon:
+                    ZStack {
+                        // Destination
+                        Image("SmallIcon")
+                            .resizable()
+                            .aspectRatio(1.0, contentMode: .fill)
+                            .scaleEffect(x: 0.8, y: 0.8)
+                        
+                        // Source
+                        (
+                            daysRemaining > 7 ?
+                            Text("7+")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .kerning(-2) :
+                                
+                            Text("\(daysRemaining)")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                         )
+                        .foregroundColor(Color.black)
+                        .blendMode(.destinationOut) // Clip text out of image.
+                    }
                 }
-                .fixedSize()
-                .offset(y: -1)
             }
         }
         .gaugeStyle(.accessoryCircularCapacity)
@@ -74,14 +111,23 @@ struct ComplicationView_Previews: PreviewProvider {
                               icon: UIImage(named: "AltStore"))
         
         return Group {
-            ComplicationView(entry: AppEntry(date: Date(), app: weekAltstore))
+            ComplicationView(entry: AppEntry(date: Date(), app: weekAltstore), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: expiredDate, app: weekAltstore))
+            ComplicationView(entry: AppEntry(date: expiredDate, app: weekAltstore), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: longRefreshedDate, app: yearAltstore))
+            ComplicationView(entry: AppEntry(date: longRefreshedDate, app: yearAltstore), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            
+            ComplicationView(entry: AppEntry(date: Date(), app: weekAltstore), style: .text)
+                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            
+            ComplicationView(entry: AppEntry(date: expiredDate, app: weekAltstore), style: .text)
+                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            
+            ComplicationView(entry: AppEntry(date: longRefreshedDate, app: yearAltstore), style: .text)
+                .previewContext(WidgetPreviewContext(family: .accessoryCircular))            
         }
     }
 }
