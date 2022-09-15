@@ -37,7 +37,6 @@
 		B343F885295F7C5D002B1159 /* tlv.c in Sources */ = {isa = PBXBuildFile; fileRef = B343F87B295F7C5D002B1159 /* tlv.c */; };
 		B343F895295F7FAC002B1159 /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F894295F7F9B002B1159 /* libfragmentzip.a */; };
 		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
-		B3919A52292DBE5400519575 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D504F42528AD72C50014BB5D /* ProgressRing.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
 		B39F16132918D7C5002E9404 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16122918D7C5002E9404 /* Consts.swift */; };
 		B39F16152918D7DA002E9404 /* Consts+Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16142918D7DA002E9404 /* Consts+Proxy.swift */; };
@@ -820,7 +819,6 @@
 		BFF7C906257844C900E55F36 /* AltXPCProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltXPCProtocol.h; sourceTree = "<group>"; };
 		BFF7EC4C25081E9300BDE521 /* AltStore 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 8.xcdatamodel"; sourceTree = "<group>"; };
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
-		D504F42528AD72C50014BB5D /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D533E8B62727841800A9B5DD /* libAppleArchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libAppleArchive.tbd; path = usr/lib/libAppleArchive.tbd; sourceTree = SDKROOT; };
@@ -976,6 +974,13 @@
 				B3146ED1284F580500BBC3FD /* RoxasTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B33FFB8F295F8CF2002259E6 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		B343F848295F6321002B1159 /* Products */ = {
@@ -1414,7 +1419,6 @@
 				BF42345825101C1D006D1EB2 /* WidgetView.swift */,
 				BF98917C250AAC4F002ACF50 /* Countdown.swift */,
 				D55E163528776CB000A627A1 /* ComplicationView.swift */,
-				D504F42528AD72C50014BB5D /* ProgressRing.swift */,
 				BF989170250AABF4002ACF50 /* Assets.xcassets */,
 				BF989172250AABF4002ACF50 /* Info.plist */,
 			);
@@ -1503,6 +1507,7 @@
 				BFD247852284BB3300981D42 /* Frameworks */,
 				B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */,
 				BFD2476B2284B9A500981D42 /* Products */,
+				B33FFB8F295F8CF2002259E6 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2407,7 +2412,6 @@
 				BF42345A25101C35006D1EB2 /* WidgetView.swift in Sources */,
 				D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */,
 				BF98917F250AAC4F002ACF50 /* AltWidget.swift in Sources */,
-				B3919A52292DBE5400519575 /* ProgressRing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
