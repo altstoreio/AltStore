@@ -23,26 +23,27 @@ struct ComplicationView: View
         
         let progress = Double(daysRemaining) / Double(totalDays)
         
-        ZStack(alignment: .center) {
-            ProgressRing(progress: progress) {
-                if daysRemaining < 0
-                {
-                    Text("Expired")
-                        .font(.system(size: 10, weight: .bold))
+        Gauge(value: progress) {
+            if daysRemaining < 0
+            {
+                Text("Expired")
+                    .font(.system(size: 10, weight: .bold))
+            }
+            else
+            {
+                VStack(spacing: -1) {
+                    let fontSize = daysRemaining > 99 ? 18.0 : 20.0
+                    Text("\(daysRemaining)")
+                        .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                    
+                    Text(daysRemaining == 1 ? "DAY" : "DAYS")
+                        .font(.caption)
                 }
-                else
-                {
-                    VStack(spacing: -1) {
-                        Text("\(daysRemaining)")
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                        
-                        Text(daysRemaining == 1 ? "DAY" : "DAYS")
-                            .font(.caption)
-                    }
-                    .offset(y: -1)
-                }
+                .fixedSize()
+                .offset(y: -1)
             }
         }
+        .gaugeStyle(.accessoryCircularCapacity)
         .unredacted()
     }
 }
