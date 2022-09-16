@@ -21,7 +21,7 @@ public extension UserDefaults
     
     @NSManaged var firstLaunch: Date?
     @NSManaged var requiresAppGroupMigration: Bool
-    
+    @NSManaged var customAnisetteURL: String?
     @NSManaged var preferredServerID: String?
     
     @NSManaged var isBackgroundRefreshEnabled: Bool

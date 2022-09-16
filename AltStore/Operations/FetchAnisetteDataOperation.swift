@@ -32,39 +32,33 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
             return
         }
         
-        guard let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
-        
-        ServerManager.shared.connect(to: server) { (result) in
-            switch result
-            {
-            case .failure(let error):
-                self.finish(.failure(error))
-            case .success(let connection):
-                print("Sending anisette data request...")
-                
-                let request = AnisetteDataRequest()
-                connection.send(request) { (result) in
-                    print("Sent anisette data request!")
-                    
-                    switch result
-                    {
-                    case .failure(let error): self.finish(.failure(error))
-                    case .success:
-                        print("Waiting for anisette data...")
-                        connection.receiveResponse() { (result) in
-                            print("Receiving anisette data:", result.error?.localizedDescription ?? "success")
-                            
-                            switch result
-                            {
-                            case .failure(let error): self.finish(.failure(error))
-                            case .success(.error(let response)): self.finish(.failure(response.error))
-                            case .success(.anisetteData(let response)): self.finish(.success(response.anisetteData))
-                            case .success: self.finish(.failure(ALTServerError(.unknownRequest)))
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        let urlString = UserDefaults.standard.string(forKey: "customAnisetteURL") ?? "https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx"
+        guard let url = URL(string: urlString) else { return }
+
+           let task = URLSession.shared.dataTask(with: url) { data, response, error in
+
+               guard let data = data, error == nil else { return }
+
+               do {
+                   // make sure this JSON is in the format we expect
+                   // convert data to json
+                   if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String] {
+                       // try to read out a dictionary
+                           //for some reason serial number isn't needed but it doesn't work unless it has a value
+                       let formattedJSON: [String: String] = ["machineID": json["X-Apple-I-MD-M"]!, "oneTimePassword": json["X-Apple-I-MD"]!, "localUserID": json["X-Apple-I-MD-LU"]!, "routingInfo": json["X-Apple-I-MD-RINFO"]!, "deviceUniqueIdentifier": json["X-Mme-Device-Id"]!, "deviceDescription": json["X-MMe-Client-Info"]!, "date": json["X-Apple-I-Client-Time"]!, "locale": json["X-Apple-Locale"]!, "timeZone": json["X-Apple-I-TimeZone"]!, "deviceSerialNumber": "1"]
+                       
+                       if let anisette = ALTAnisetteData(json: formattedJSON) {
+                           self.finish(.success(anisette))
+                       }
+                   }
+               } catch let error as NSError {
+                   print("Failed to load: \(error.localizedDescription)")
+                   self.finish(.failure(error))
+               }
+
+           }
+
+           task.resume()
+
     }
 }
