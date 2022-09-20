@@ -16,6 +16,11 @@ fileprivate extension NSManagedObject
         return bundleID
     }
     
+    var storeAppSourceID: String? {
+        let sourceID = self.value(forKey: #keyPath(StoreApp.sourceIdentifier)) as? String
+        return sourceID
+    }
+    
     var storeAppVersion: String? {
         let version = self.value(forKey: #keyPath(StoreApp._version)) as? String
         return version
@@ -55,6 +60,7 @@ fileprivate extension NSManagedObject
                               downloadURL: URL,
                               size: Int64,
                               appBundleID: String,
+                              sourceID: String,
                               in context: NSManagedObjectContext) -> NSManagedObject
     {
         let appVersion = NSEntityDescription.insertNewObject(forEntityName: AppVersion.entity().name!, into: context)
@@ -64,6 +70,7 @@ fileprivate extension NSManagedObject
         appVersion.setValue(downloadURL, forKey: #keyPath(AppVersion.downloadURL))
         appVersion.setValue(size, forKey: #keyPath(AppVersion.size))
         appVersion.setValue(appBundleID, forKey: #keyPath(AppVersion.appBundleID))
+        appVersion.setValue(sourceID, forKey: #keyPath(AppVersion.sourceID))
         return appVersion
     }
 }
@@ -76,6 +83,7 @@ class StoreApp10ToStoreApp11Policy: NSEntityMigrationPolicy
         try super.createDestinationInstances(forSource: sInstance, in: mapping, manager: manager)
         
         guard let appBundleID = sInstance.storeAppBundleID,
+              let sourceID = sInstance.storeAppSourceID,
               let version = sInstance.storeAppVersion,
               let versionDate = sInstance.storeAppVersionDate,
               // let versionDescription = sInstance.storeAppVersionDescription, // Optional
@@ -95,6 +103,7 @@ class StoreApp10ToStoreApp11Policy: NSEntityMigrationPolicy
             downloadURL: downloadURL,
             size: Int64(size),
             appBundleID: appBundleID,
+            sourceID: sourceID,
             in: context)
         
         destinationStoreApp.setStoreAppLatestVersion(appVersion)
