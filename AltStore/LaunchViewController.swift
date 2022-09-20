@@ -54,7 +54,19 @@ extension LaunchViewController
         {
             let title = error.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch AltStore", comment: "")
             
-            let alertController = UIAlertController(title: title, message: error.localizedDescription, preferredStyle: .alert)
+            let errorDescription: String
+            
+            if #available(iOS 14.5, *)
+            {
+                let errorMessages = [error.debugDescription] + error.underlyingErrors.map { ($0 as NSError).debugDescription }
+                errorDescription = errorMessages.joined(separator: "\n\n")
+            }
+            else
+            {
+                errorDescription = error.debugDescription
+            }
+            
+            let alertController = UIAlertController(title: title, message: errorDescription, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: ""), style: .default, handler: { (action) in
                 self.handleLaunchConditions()
             }))
