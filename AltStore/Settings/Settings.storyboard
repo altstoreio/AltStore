@@ -916,7 +916,7 @@ Settings by i cons from the Noun Project</string>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Success" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Na7-uj-XYZ">
                                                                             <rect key="frame" x="0.0" y="0.0" width="60" height="18"/>
                                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                                                            <color key="textColor" systemColor="darkTextColor"/>
+                                                                            <nil key="textColor"/>
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGf-pP-RL0">
@@ -939,7 +939,6 @@ Settings by i cons from the Noun Project</string>
                                                 </stackView>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Error Description" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1df-ri-hKN" customClass="CollapsingTextView" customModule="AltStore" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="51.5" width="311" height="34"/>
-                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <accessibility key="accessibilityConfiguration">
                                                         <accessibilityTraits key="traits" staticText="YES"/>
                                                         <bool key="isElement" value="NO"/>
@@ -1009,9 +1008,6 @@ Settings by i cons from the Noun Project</string>
         </systemColor>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>
