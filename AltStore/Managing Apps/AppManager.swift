@@ -1121,7 +1121,7 @@ private extension AppManager
                             presentingViewController?.dismiss(animated: true, completion: nil)
                         }
                     }
-                    presentingViewController.present(navigationController, animated: true, completion: nil)
+                    presentingViewController.present(navigationController, animated: true, completion: nil)                    
                 }
             }
             catch
@@ -1662,13 +1662,8 @@ private extension AppManager
             }
             
             if #available(iOS 14, *)
-            {
-                WidgetCenter.shared.getCurrentConfigurations { (result) in
-                    guard case .success(let widgets) = result else { return }
-                    
-                    guard let widget = widgets.first(where: { $0.configuration is ViewAppIntent }) else { return }
-                    WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
-                }
+            {                
+                WidgetCenter.shared.reloadAllTimelines()
             }
             
             do { try installedApp.managedObjectContext?.save() }
