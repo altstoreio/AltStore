@@ -32,7 +32,7 @@ SideStore is a alternative to AltStore and is a sandboxed iOS application like A
 [Roxas](https://github.com/rileytestut/roxas) is Riley Testut's internal framework from AltStore used across many of their iOS projects, developed to simplify a variety of common tasks used in iOS development.
 
 ## Compilation Instructions
-AltStore and AltServer are both fairly straightforward to compile and run if you're already an iOS or macOS developer. To compile AltStore and/or AltServer:
+SideStore and SideServer are both fairly straightforward to compile and run if you're already an iOS or macOS developer. To compile Sidestore and/or SideServer:
 
 1. Clone the repository 
 	```
