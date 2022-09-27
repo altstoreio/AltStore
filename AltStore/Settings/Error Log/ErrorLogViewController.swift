@@ -287,8 +287,15 @@ extension ErrorLogViewController
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
         let indexPath = IndexPath(row: 0, section: section)
-        
         let loggedError = self.dataSource.item(at: indexPath)
-        return loggedError.localizedDateString
+        
+        if Calendar.current.isDateInToday(loggedError.date)
+        {
+            return NSLocalizedString("Today", comment: "")
+        }
+        else
+        {
+            return loggedError.localizedDateString
+        }
     }
 }
