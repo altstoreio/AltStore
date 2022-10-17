@@ -47,12 +47,6 @@ public extension ALTLocalizedError
             return nil
         }
         
-        if let altLocalizedDescription = (self as NSError).userInfo[ALTLocalizedDescriptionKey] as? String
-        {
-            // Use cached localized description, since this is only called if error code is unrecognized.
-            return altLocalizedDescription
-        }
-        
         // Otherwise, return failureReason for localizedDescription to avoid system prepending "Operation Failed" message.
         return self.failureReason
     }
