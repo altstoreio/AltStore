@@ -8,33 +8,72 @@
 
 import Foundation
 import AltSign
+import AltStoreCore
 
-enum OperationError: LocalizedError
+extension OperationError
 {
-    static let domain = OperationError.unknown._domain
+    enum Code: Int, ALTErrorCode, CaseIterable
+    {
+        typealias Error = OperationError
+        
+        case unknown
+        case unknownResult
+        case cancelled
+        case timedOut
+        case notAuthenticated
+        case appNotFound
+        case unknownUDID
+        case invalidApp
+        case invalidParameters
+        case maximumAppIDLimitReached
+        case noSources
+        case openAppFailed
+        case missingAppGroup
+    }
     
-    case unknown
-    case unknownResult
-    case cancelled
-    case timedOut
+    static let unknown: OperationError = .init(code: .unknown)
+    static let unknownResult: OperationError = .init(code: .unknownResult)
+    static let cancelled: OperationError = .init(code: .cancelled)
+    static let timedOut: OperationError = .init(code: .timedOut)
+    static let notAuthenticated: OperationError = .init(code: .notAuthenticated)
+    static let unknownUDID: OperationError = .init(code: .unknownUDID)
+    static let invalidApp: OperationError = .init(code: .invalidApp)
+    static let invalidParameters: OperationError = .init(code: .invalidParameters)
+    static let noSources: OperationError = .init(code: .noSources)
+    static let missingAppGroup: OperationError = .init(code: .missingAppGroup)
     
-    case notAuthenticated
-    case appNotFound
+    static func appNotFound(name: String?) -> OperationError { OperationError(code: .appNotFound, appName: name) }
+    static func openAppFailed(name: String) -> OperationError { OperationError(code: .openAppFailed, appName: name) }
     
-    case unknownUDID
+    static func maximumAppIDLimitReached(appName: String, requiredAppIDs: Int, availableAppIDs: Int, expirationDate: Date) -> OperationError {
+        OperationError(code: .maximumAppIDLimitReached, appName: appName, requiredAppIDs: requiredAppIDs, availableAppIDs: availableAppIDs, expirationDate: expirationDate)
+    }
+}
+
+struct OperationError: ALTLocalizedError
+{
+    let code: Code
     
-    case invalidApp
-    case invalidParameters
+    var errorTitle: String?
+    var errorFailure: String?
     
-    case maximumAppIDLimitReached(application: ALTApplication, requiredAppIDs: Int, availableAppIDs: Int, nextExpirationDate: Date)
+    var appName: String?
+    var requiredAppIDs: Int?
+    var availableAppIDs: Int?
+    var expirationDate: Date?
     
-    case noSources
+    private init(code: Code, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil)
+    {
+        self.code = code
+        self.appName = appName
+        self.requiredAppIDs = requiredAppIDs
+        self.availableAppIDs = availableAppIDs
+        self.expirationDate = expirationDate
+    }
     
-    case openAppFailed(name: String)
-    case missingAppGroup
-    
-    var failureReason: String? {
-        switch self {
+    var errorFailureReason: String {
+        switch self.code
+        {
         case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
@@ -45,17 +84,22 @@ enum OperationError: LocalizedError
         case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
         case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
-        case .openAppFailed(let name): return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), name)
+        case .openAppFailed:
+            let appName = self.appName ?? NSLocalizedString("the app", comment: "")
+            return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), appName)
+            
         case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be found.", comment: "")
         case .maximumAppIDLimitReached: return NSLocalizedString("Cannot register more than 10 App IDs.", comment: "")
         }
     }
     
     var recoverySuggestion: String? {
-        switch self
+        switch self.code
         {
-        case .maximumAppIDLimitReached(let application, let requiredAppIDs, let availableAppIDs, let date):
+        case .maximumAppIDLimitReached:
             let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")
+            guard let appName = self.appName, let requiredAppIDs = self.requiredAppIDs, let availableAppIDs = self.availableAppIDs, let date = self.expirationDate else { return baseMessage }
+            
             let message: String
             
             if requiredAppIDs > 1
@@ -69,7 +113,7 @@ enum OperationError: LocalizedError
                 default: availableText = String(format: NSLocalizedString("only %@ are available", comment: ""), NSNumber(value: availableAppIDs))
                 }
                 
-                let prefixMessage = String(format: NSLocalizedString("%@ requires %@ App IDs, but %@.", comment: ""), application.name, NSNumber(value: requiredAppIDs), availableText)
+                let prefixMessage = String(format: NSLocalizedString("%@ requires %@ App IDs, but %@.", comment: ""), appName, NSNumber(value: requiredAppIDs), availableText)
                 message = prefixMessage + " " + baseMessage
             }
             else

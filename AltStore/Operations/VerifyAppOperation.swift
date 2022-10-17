@@ -8,48 +8,88 @@
 
 import Foundation
 
+import AltStoreCore
 import AltSign
 import Roxas
 
-enum VerificationError: ALTLocalizedError
+extension VerificationError
 {
-    case privateEntitlements(ALTApplication, entitlements: [String: Any])
-    case mismatchedBundleIdentifiers(ALTApplication, sourceBundleID: String)
-    case iOSVersionNotSupported(ALTApplication)
-    
-    var app: ALTApplication {
-        switch self
-        {
-        case .privateEntitlements(let app, _): return app
-        case .mismatchedBundleIdentifiers(let app, _): return app
-        case .iOSVersionNotSupported(let app): return app
-        }
+    enum Code: Int, ALTErrorCode, CaseIterable
+    {
+        typealias Error = VerificationError
+        
+        case privateEntitlements
+        case mismatchedBundleIdentifiers
+        case iOSVersionNotSupported
     }
     
-    var failure: String? {
-        return String(format: NSLocalizedString("“%@” could not be installed.", comment: ""), app.name)
-    }
+    static func privateEntitlements(_ entitlements: [String: Any], app: ALTApplication) -> VerificationError { VerificationError(code: .privateEntitlements, app: app, entitlements: entitlements) }
+    static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError  { VerificationError(code: .mismatchedBundleIdentifiers, app: app, sourceBundleID: sourceBundleID) }
+    static func iOSVersionNotSupported(app: ALTApplication) -> VerificationError  { VerificationError(code: .iOSVersionNotSupported, app: app) }
+}
+
+struct VerificationError: ALTLocalizedError
+{
+    let code: Code
     
-    var failureReason: String? {
-        switch self
-        {
-        case .privateEntitlements(let app, _):
-            return String(format: NSLocalizedString("“%@” requires private permissions.", comment: ""), app.name)
-            
-        case .mismatchedBundleIdentifiers(let app, let sourceBundleID):
-            return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), app.bundleIdentifier, sourceBundleID)
-            
-        case .iOSVersionNotSupported(let app):
-            let name = app.name
-            
-            var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
-            if app.minimumiOSVersion.patchVersion > 0
+    var errorTitle: String?
+    
+    var app: ALTApplication?
+    var entitlements: [String: Any]?
+    var sourceBundleID: String?
+    
+    var errorFailure: String? {
+        get {
+            if let errorFailure = _errorFailure
             {
-                version += ".\(app.minimumiOSVersion.patchVersion)"
+                return errorFailure
             }
             
-            let localizedDescription = String(format: NSLocalizedString("%@ requires %@.", comment: ""), name, version)
-            return localizedDescription
+            let appName = (self.app?.name as String?).map { String(format: NSLocalizedString("“%@”", comment: ""), $0) } ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ could not be installed.", comment: ""), appName)
+        }
+        set {
+            _errorFailure = newValue
+        }
+    }
+    private var _errorFailure: String?
+    
+    var errorFailureReason: String {
+        switch self.code
+        {
+        case .privateEntitlements:
+            let appName = (self.app?.name as String?).map { String(format: NSLocalizedString("“%@”", comment: ""), $0) } ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ requires private permissions.", comment: ""), appName)
+            
+        case .mismatchedBundleIdentifiers:
+            if let app = self.app, let bundleID = self.sourceBundleID
+            {
+                return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), app.bundleIdentifier, bundleID)
+            }
+            else
+            {
+                return NSLocalizedString("The bundle ID does not match the one specified by the source.", comment: "")
+            }
+            
+        case .iOSVersionNotSupported:
+            if let app = self.app
+            {
+                var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
+                if app.minimumiOSVersion.patchVersion > 0
+                {
+                    version += ".\(app.minimumiOSVersion.patchVersion)"
+                }
+                
+                let failureReason = String(format: NSLocalizedString("%@ requires %@.", comment: ""), app.name, version)
+                return failureReason
+            }
+            else
+            {
+                let version = ProcessInfo.processInfo.operatingSystemVersion.stringValue
+                
+                let failureReason = String(format: NSLocalizedString("This app does not support iOS %@.", comment: ""), version)
+                return failureReason
+            }
         }
     }
 }
@@ -81,11 +121,11 @@ class VerifyAppOperation: ResultOperation<Void>
             guard let app = self.context.app else { throw OperationError.invalidParameters }
             
             guard app.bundleIdentifier == self.context.bundleIdentifier else {
-                throw VerificationError.mismatchedBundleIdentifiers(app, sourceBundleID: self.context.bundleIdentifier)
+                throw VerificationError.mismatchedBundleIdentifiers(sourceBundleID: self.context.bundleIdentifier, app: app)
             }
             
             guard ProcessInfo.processInfo.isOperatingSystemAtLeast(app.minimumiOSVersion) else {
-                throw VerificationError.iOSVersionNotSupported(app)
+                throw VerificationError.iOSVersionNotSupported(app: app)
             }
             
             if #available(iOS 13.5, *)
@@ -116,7 +156,7 @@ class VerifyAppOperation: ResultOperation<Void>
                     let entitlements = try PropertyListSerialization.propertyList(from: entitlementsPlist.data(using: .utf8)!, options: [], format: nil) as! [String: Any]
                     
                     app.hasPrivateEntitlements = true
-                    let error = VerificationError.privateEntitlements(app, entitlements: entitlements)
+                    let error = VerificationError.privateEntitlements(entitlements, app: app)
                     self.process(error) { (result) in
                         self.finish(result.mapError { $0 as Error })
                     }
@@ -145,15 +185,16 @@ private extension VerifyAppOperation
         guard let presentingViewController = self.context.presentingViewController else { return completion(.failure(error)) }
         
         DispatchQueue.main.async {
-            switch error
+            switch error.code
             {
-            case .privateEntitlements(_, let entitlements):
+            case .privateEntitlements:
+                guard let entitlements = error.entitlements else { return completion(.failure(error)) }
                 let permissions = entitlements.keys.sorted().joined(separator: "\n")
                 let message = String(format: NSLocalizedString("""
                     You must allow access to these private permissions before continuing:
-
+                    
                     %@
-
+                    
                     Private permissions allow apps to do more than normally allowed by iOS, including potentially accessing sensitive private data. Make sure to only install apps from sources you trust.
                     """, comment: ""), permissions)
                 

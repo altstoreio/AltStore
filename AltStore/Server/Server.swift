@@ -8,13 +8,16 @@
 
 import Network
 
-enum ConnectionError: LocalizedError
+import AltStoreCore
+
+typealias ConnectionError = ConnectionErrorCode.Error
+enum ConnectionErrorCode: Int, ALTErrorEnum
 {
     case serverNotFound
     case connectionFailed
     case connectionDropped
     
-    var failureReason: String? {
+    var errorFailureReason: String {
         switch self
         {
         case .serverNotFound: return NSLocalizedString("Could not find AltServer.", comment: "")

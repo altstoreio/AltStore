@@ -22,43 +22,35 @@ extension AppManager
         
         var managedObjectContext: NSManagedObjectContext?
         
+        var localizedTitle: String? {
+            var localizedTitle: String?
+            self.managedObjectContext?.performAndWait {
+                if self.sources?.count == 1
+                {
+                    localizedTitle = NSLocalizedString("Failed to Refresh Store", comment: "")
+                }
+                else if self.errors.count == 1
+                {
+                    guard let source = self.errors.keys.first else { return }
+                    localizedTitle = String(format: NSLocalizedString("Failed to Refresh Source “%@”", comment: ""), source.name)
+                }
+                else
+                {
+                    localizedTitle = String(format: NSLocalizedString("Failed to Refresh %@ Sources", comment: ""), NSNumber(value: self.errors.count))
+                }
+            }
+            
+            return localizedTitle
+        }
+        
         var errorDescription: String? {
             if let error = self.primaryError
             {
                 return error.localizedDescription
             }
-            else
+            else if let error = self.errors.values.first, self.errors.count == 1
             {
-                var localizedDescription: String?
-                
-                self.managedObjectContext?.performAndWait {
-                    if self.sources?.count == 1
-                    {
-                        localizedDescription = NSLocalizedString("Could not refresh store.", comment: "")
-                    }
-                    else if self.errors.count == 1
-                    {
-                        guard let source = self.errors.keys.first else { return }
-                        localizedDescription = String(format: NSLocalizedString("Could not refresh source “%@”.", comment: ""), source.name)
-                    }
-                    else
-                    {
-                        localizedDescription = String(format: NSLocalizedString("Could not refresh %@ sources.", comment: ""), NSNumber(value: self.errors.count))
-                    }
-                }
-                
-                return localizedDescription
-            }
-        }
-        
-        var recoverySuggestion: String? {
-            if let error = self.primaryError as NSError?
-            {
-                return error.localizedRecoverySuggestion
-            }
-            else if self.errors.count == 1
-            {
-                return nil
+                return error.localizedDescription
             }
             else
             {
@@ -67,8 +59,18 @@ extension AppManager
         }
         
         var errorUserInfo: [String : Any] {
-            guard let error = self.errors.values.first, self.errors.count == 1 else { return [:] }
-            return [NSUnderlyingErrorKey: error]
+            let errors = Array(self.errors.values)
+            
+            var userInfo = [String: Any]()
+            userInfo[ALTLocalizedTitleErrorKey] = self.localizedTitle
+            userInfo[NSUnderlyingErrorKey] = self.primaryError
+            
+            if #available(iOS 14.5, *), !errors.isEmpty
+            {
+                userInfo[NSMultipleUnderlyingErrorsKey] = errors
+            }
+            
+            return userInfo
         }
         
         init(_ error: Error)

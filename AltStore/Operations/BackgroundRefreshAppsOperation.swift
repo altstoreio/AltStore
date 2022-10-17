@@ -11,11 +11,12 @@ import CoreData
 
 import AltStoreCore
 
-enum RefreshError: LocalizedError
+typealias RefreshError = RefreshErrorCode.Error
+enum RefreshErrorCode: Int, ALTErrorEnum, CaseIterable
 {
     case noInstalledApps
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self
         {
         case .noInstalledApps: return NSLocalizedString("No active apps require refreshing.", comment: "")
@@ -91,7 +92,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
         super.main()
         
         guard !self.installedApps.isEmpty else {
-            self.finish(.failure(RefreshError.noInstalledApps))
+            self.finish(.failure(RefreshError(.noInstalledApps)))
             return
         }
         
@@ -207,11 +208,11 @@ private extension BackgroundRefreshAppsOperation
                 content.title = NSLocalizedString("Refreshed Apps", comment: "")
                 content.body = NSLocalizedString("All apps have been refreshed.", comment: "")
             }
-            catch ConnectionError.serverNotFound
+            catch ~ConnectionErrorCode.serverNotFound
             {
                 shouldPresentAlert = false
             }
-            catch RefreshError.noInstalledApps
+            catch ~RefreshErrorCode.noInstalledApps
             {
                 shouldPresentAlert = false
             }

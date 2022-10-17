@@ -12,29 +12,13 @@ import Roxas
 import AltStoreCore
 import AltSign
 
-private extension DownloadAppOperation
-{
-    struct DependencyError: ALTLocalizedError
-    {
-        let dependency: Dependency
-        let error: Error
-        
-        var failure: String? {
-            return String(format: NSLocalizedString("Could not download “%@”.", comment: ""), self.dependency.preferredFilename)
-        }
-        
-        var underlyingError: Error? {
-            return self.error
-        }
-    }
-}
-
 @objc(DownloadAppOperation)
 class DownloadAppOperation: ResultOperation<ALTApplication>
 {
     let app: AppProtocol
     let context: AppOperationContext
     
+    private let appName: String
     private let bundleIdentifier: String
     private var sourceURL: URL?
     private let destinationURL: URL
@@ -47,6 +31,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         self.app = app
         self.context = context
         
+        self.appName = app.name
         self.bundleIdentifier = app.bundleIdentifier
         self.sourceURL = app.url
         self.destinationURL = destinationURL
@@ -69,7 +54,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         
         print("Downloading App:", self.bundleIdentifier)
         
-        guard let sourceURL = self.sourceURL else { return self.finish(.failure(OperationError.appNotFound)) }
+        guard let sourceURL = self.sourceURL else { return self.finish(.failure(OperationError.appNotFound(name: self.appName))) }
         
         self.downloadApp(from: sourceURL) { result in
             do
@@ -138,7 +123,7 @@ private extension DownloadAppOperation
                 let fileURL = try result.get()
                 
                 var isDirectory: ObjCBool = false
-                guard FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory) else { throw OperationError.appNotFound }
+                guard FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory) else { throw OperationError.appNotFound(name: self.appName) }
                 
                 try FileManager.default.createDirectory(at: self.temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
                 
@@ -252,7 +237,7 @@ private extension DownloadAppOperation
             let altstorePlist = try PropertyListDecoder().decode(AltStorePlist.self, from: data)
                         
             var dependencyURLs = Set<URL>()
-            var dependencyError: DependencyError?
+            var dependencyError: Error?
             
             let dispatchGroup = DispatchGroup()
             let progress = Progress(totalUnitCount: Int64(altstorePlist.dependencies.count), parent: self.progress, pendingUnitCount: 1)
@@ -285,7 +270,7 @@ private extension DownloadAppOperation
         }
         catch let error as DecodingError
         {
-            let nsError = (error as NSError).withLocalizedFailure(String(format: NSLocalizedString("Could not download dependencies for %@.", comment: ""), application.name))
+            let nsError = (error as NSError).withLocalizedFailure(String(format: NSLocalizedString("The dependencies for %@ could not be determined.", comment: ""), application.name))
             completionHandler(.failure(nsError))
         }
         catch
@@ -294,7 +279,7 @@ private extension DownloadAppOperation
         }
     }
     
-    func download(_ dependency: Dependency, for application: ALTApplication, progress: Progress, completionHandler: @escaping (Result<URL, DependencyError>) -> Void)
+    func download(_ dependency: Dependency, for application: ALTApplication, progress: Progress, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
         let downloadTask = self.session.downloadTask(with: dependency.downloadURL) { (fileURL, response, error) in
             do
@@ -315,9 +300,10 @@ private extension DownloadAppOperation
                 
                 completionHandler(.success(destinationURL))
             }
-            catch
+            catch let error as NSError
             {
-                completionHandler(.failure(DependencyError(dependency: dependency, error: error)))
+                let localizedFailure = String(format: NSLocalizedString("The dependency “%@” could not be downloaded.", comment: ""), dependency.preferredFilename)
+                completionHandler(.failure(error.withLocalizedFailure(localizedFailure)))
             }
         }
         progress.addChild(downloadTask.progress, withPendingUnitCount: 1)
