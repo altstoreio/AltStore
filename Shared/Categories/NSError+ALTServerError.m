@@ -8,6 +8,12 @@
 
 #import "NSError+ALTServerError.h"
 
+#if TARGET_OS_OSX
+#import "AltServer-Swift.h"
+#else
+#import <AltStoreCore/AltStoreCore-Swift.h>
+#endif
+
 NSErrorDomain const AltServerErrorDomain = @"com.rileytestut.AltServer";
 NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServer.Installation";
 NSErrorDomain const AltServerConnectionErrorDomain = @"com.rileytestut.AltServer.Connection";
@@ -24,7 +30,7 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
 
 + (void)load
 {
-    [NSError setUserInfoValueProviderForDomain:AltServerErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
+    [NSError alt_setUserInfoValueProviderForDomain:AltServerErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
         if ([userInfoKey isEqualToString:NSLocalizedFailureReasonErrorKey])
         {
             return [error altserver_localizedFailureReason];
@@ -41,10 +47,10 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
         return nil;
     }];
     
-    [NSError setUserInfoValueProviderForDomain:AltServerConnectionErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
-        if ([userInfoKey isEqualToString:NSLocalizedDescriptionKey])
+    [NSError alt_setUserInfoValueProviderForDomain:AltServerConnectionErrorDomain provider:^id _Nullable(NSError * _Nonnull error, NSErrorUserInfoKey  _Nonnull userInfoKey) {
+        if ([userInfoKey isEqualToString:NSLocalizedFailureReasonErrorKey])
         {
-            return [error altserver_connection_localizedDescription];
+            return [error altserver_connection_localizedFailureReason];
         }
         else if ([userInfoKey isEqualToString:NSLocalizedRecoverySuggestionErrorKey])
         {
@@ -232,7 +238,7 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
 
 #pragma mark - AltServerConnectionErrorDomain -
 
-- (nullable NSString *)altserver_connection_localizedDescription
+- (nullable NSString *)altserver_connection_localizedFailureReason
 {
     switch ((ALTServerConnectionError)self.code)
     {

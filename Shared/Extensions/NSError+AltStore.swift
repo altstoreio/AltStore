@@ -90,6 +90,42 @@ public extension NSError
     }
 }
 
+public extension NSError
+{
+    typealias UserInfoProvider = (Error, String) -> Any?
+    
+    @objc
+    class func alt_setUserInfoValueProvider(forDomain domain: String, provider: UserInfoProvider?)
+    {
+        NSError.setUserInfoValueProvider(forDomain: domain) { (error, key) in
+            let nsError = error as NSError
+            
+            switch key
+            {
+            case NSLocalizedDescriptionKey:
+                if nsError.localizedFailure != nil
+                {
+                    // Error has localizedFailure, so return nil to construct localizedDescription from it + localizedFailureReason.
+                    return nil
+                }
+                else if let localizedDescription = provider?(error, NSLocalizedDescriptionKey) as? String
+                {
+                    // Only call provider() if there is no localizedFailure.
+                    return localizedDescription
+                }
+                
+                // Otherwise, return failureReason for localizedDescription to avoid system prepending "Operation Failed" message.
+                // Do NOT return provider(NSLocalizedFailureReason), which might be unexpectedly nil if unrecognized error code.
+                return nsError.localizedFailureReason
+                
+            default:
+                let value = provider?(error, key)
+                return value
+            }
+        }
+    }
+}
+
 public extension Error
 {
     var underlyingError: Error? {
