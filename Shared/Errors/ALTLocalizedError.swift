@@ -8,6 +8,9 @@
 
 import Foundation
 
+public let ALTLocalizedTitleErrorKey = "ALTLocalizedTitle"
+public let ALTLocalizedDescriptionKey = "ALTLocalizedDescription"
+
 public protocol ALTLocalizedError<Code>: LocalizedError, CustomNSError
 {
     associatedtype Code: ALTErrorCode
@@ -44,7 +47,7 @@ public extension ALTLocalizedError
             return nil
         }
         
-        if let altLocalizedDescription = (self as NSError).userInfo[ErrorUserInfoKey.altLocalizedDescription] as? String
+        if let altLocalizedDescription = (self as NSError).userInfo[ALTLocalizedDescriptionKey] as? String
         {
             // Use cached localized description, since this is only called if error code is unrecognized.
             return altLocalizedDescription
