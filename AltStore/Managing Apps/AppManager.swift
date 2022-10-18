@@ -379,7 +379,7 @@ extension AppManager
                     case .success(let source): fetchedSources.insert(source)
                     case .failure(let error):
                         let source = managedObjectContext.object(with: source.objectID) as! Source
-                        source.error = (error as NSError).sanitizedForCoreData()
+                        source.error = (error as NSError).sanitizedForSerialization()
                         errors[source] = error
                     }
                     
@@ -1748,7 +1748,7 @@ private extension AppManager
     func log(_ error: Error, for operation: AppOperation)
     {
         // Sanitize NSError on same thread before performing background task.
-        let sanitizedError = (error as NSError).sanitizedForCoreData()
+        let sanitizedError = (error as NSError).sanitizedForSerialization()
         
         let loggedErrorOperation: LoggedError.Operation = {
             switch operation

@@ -64,13 +64,14 @@ public extension NSError
         }
     }
     
-    func sanitizedForCoreData() -> NSError
+    func sanitizedForSerialization() -> NSError
     {
         var userInfo = self.userInfo
-        userInfo[NSLocalizedFailureErrorKey] = self.localizedFailure
         userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
+        userInfo[NSLocalizedFailureErrorKey] = self.localizedFailure
         userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
         userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
+        userInfo[NSDebugDescriptionErrorKey] = self.localizedDebugDescription
         
         // Remove userInfo values that don't conform to NSSecureEncoding.
         userInfo = userInfo.filter { (key, value) in
@@ -80,13 +81,13 @@ public extension NSError
         // Sanitize underlying errors.
         if let underlyingError = userInfo[NSUnderlyingErrorKey] as? Error
         {
-            let sanitizedError = (underlyingError as NSError).sanitizedForCoreData()
+            let sanitizedError = (underlyingError as NSError).sanitizedForSerialization()
             userInfo[NSUnderlyingErrorKey] = sanitizedError
         }
         
         if #available(iOS 14.5, macOS 11.3, *), let underlyingErrors = userInfo[NSMultipleUnderlyingErrorsKey] as? [Error]
         {
-            let sanitizedErrors = underlyingErrors.map { ($0 as NSError).sanitizedForCoreData() }
+            let sanitizedErrors = underlyingErrors.map { ($0 as NSError).sanitizedForSerialization() }
             userInfo[NSMultipleUnderlyingErrorsKey] = sanitizedErrors
         }
         
