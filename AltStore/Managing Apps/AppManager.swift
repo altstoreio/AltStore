@@ -466,7 +466,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw context.error ?? OperationError.unknown }
+                guard let result = results.values.first else { throw context.error ?? OperationError.unknown() }
                 completionHandler(result)
             }
             catch
@@ -493,7 +493,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 completionHandler(result)
             }
             catch
@@ -529,7 +529,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)
@@ -571,7 +571,7 @@ extension AppManager
             group.completionHandler = { (results) in
                 do
                 {
-                    guard let result = results.values.first else { throw OperationError.unknown }
+                    guard let result = results.values.first else { throw OperationError.unknown() }
 
                     let installedApp = try result.get()
                     assert(installedApp.managedObjectContext != nil)
@@ -597,7 +597,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)
@@ -622,7 +622,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)

@@ -37,7 +37,6 @@ extension OperationError
         case connectionDropped
     }
     
-    static let unknown: OperationError = .init(code: .unknown)
     static let unknownResult: OperationError = .init(code: .unknownResult)
     static let cancelled: OperationError = .init(code: .cancelled)
     static let timedOut: OperationError = .init(code: .timedOut)
@@ -51,6 +50,10 @@ extension OperationError
     static let serverNotFound: OperationError = .init(code: .serverNotFound)
     static let connectionFailed: OperationError = .init(code: .connectionFailed)
     static let connectionDropped: OperationError = .init(code: .connectionDropped)
+    
+    static func unknown(file: String = #fileID, line: UInt = #line, function: String = #function) -> OperationError {
+        OperationError(code: .unknown, sourceFile: file, sourceLine: line, sourceFunction: function)
+    }
     
     static func appNotFound(name: String?) -> OperationError { OperationError(code: .appNotFound, appName: name) }
     static func openAppFailed(name: String) -> OperationError { OperationError(code: .openAppFailed, appName: name) }
@@ -72,19 +75,33 @@ struct OperationError: ALTLocalizedError
     var availableAppIDs: Int?
     var expirationDate: Date?
     
-    private init(code: Code, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil)
+    var sourceFile: String?
+    var sourceLine: UInt?
+    var sourceFunction: String?
+    
+    private init(code: Code, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil,
+                 sourceFile: String? = nil, sourceLine: UInt? = nil, sourceFunction: String? = nil)
     {
         self.code = code
         self.appName = appName
         self.requiredAppIDs = requiredAppIDs
         self.availableAppIDs = availableAppIDs
         self.expirationDate = expirationDate
+        self.sourceFile = sourceFile
+        self.sourceLine = sourceLine
+        self.sourceFunction = sourceFunction
     }
     
     var errorFailureReason: String {
         switch self.code
         {
-        case .unknown: return NSLocalizedString("An unknown error occured.", comment: "")
+        case .unknown:
+            var failureReason = NSLocalizedString("An unknown error occured.", comment: "")
+            guard let sourceFile, let sourceLine, let sourceFunction else { return failureReason }
+            
+            failureReason += " (\(sourceFile) \(sourceFunction) line \(sourceLine))"
+            return failureReason
+            
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
         case .timedOut: return NSLocalizedString("The operation timed out.", comment: "")
