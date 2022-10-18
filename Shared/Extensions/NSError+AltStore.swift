@@ -22,6 +22,12 @@ public extension NSError
         return debugDescription
     }
     
+    @objc(alt_localizedTitle)
+    var localizedTitle: String? {
+        let localizedTitle = self.userInfo[ALTLocalizedTitleErrorKey] as? String
+        return localizedTitle
+    }
+    
     @objc(alt_errorWithLocalizedFailure:)
     func withLocalizedFailure(_ failure: String) -> NSError
     {
@@ -35,6 +41,24 @@ public extension NSError
             var userInfo = self.userInfo
             userInfo[NSLocalizedFailureErrorKey] = failure
             
+            let error = ALTWrappedError(error: self, userInfo: userInfo)
+            return error
+        }
+    }
+    
+    @objc(alt_errorWithLocalizedTitle:)
+    func withLocalizedTitle(_ title: String) -> NSError
+    {
+        switch self
+        {
+        case var error as any ALTLocalizedError:
+            error.errorTitle = title
+            return error as NSError
+            
+        default:
+            var userInfo = self.userInfo
+            userInfo[ALTLocalizedTitleErrorKey] = title
+
             let error = ALTWrappedError(error: self, userInfo: userInfo)
             return error
         }
