@@ -68,6 +68,10 @@ public extension ALTLocalizedError
 /// Default Implementations
 public extension ALTLocalizedError where Code: ALTErrorEnum
 {
+    static var errorDomain: String {
+        return Code.errorDomain
+    }
+    
     // ALTErrorEnum Codes provide their failure reason directly.
     var errorFailureReason: String {
         return self.code.errorFailureReason
