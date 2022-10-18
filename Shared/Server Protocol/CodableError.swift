@@ -1,5 +1,5 @@
 //
-//  CodableServerError.swift
+//  CodableError.swift
 //  AltKit
 //
 //  Created by Riley Testut on 3/5/20.

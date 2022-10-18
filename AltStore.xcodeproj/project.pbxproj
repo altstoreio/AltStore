@@ -212,7 +212,7 @@
 		BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8172A23C5633D001B5953 /* FetchAnisetteDataOperation.swift */; };
 		BFAD678E25E0649500D4C4D1 /* ALTDebugConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFAD678D25E0649500D4C4D1 /* ALTDebugConnection.mm */; };
 		BFAD67A325E0854500D4C4D1 /* DeveloperDiskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */; };
-		BFAECC522501B0A400528F27 /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
+		BFAECC522501B0A400528F27 /* CodableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableError.swift */; };
 		BFAECC532501B0A400528F27 /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
 		BFAECC542501B0A400528F27 /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
 		BFAECC552501B0A400528F27 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
@@ -307,7 +307,7 @@
 		BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFE6325922A83BEB00F30809 /* Authentication.storyboard */; };
 		BFE6326C22A86FF300F30809 /* AuthenticationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6326B22A86FF300F30809 /* AuthenticationOperation.swift */; };
 		BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFE972E2260A8B2700D0BDAC /* NSError+libimobiledevice.mm */; };
-		BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
+		BFECAC7F24FD950B0077C41F /* CodableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableError.swift */; };
 		BFECAC8024FD950B0077C41F /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */; };
 		BFECAC8224FD950B0077C41F /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
@@ -316,7 +316,7 @@
 		BFECAC8524FD950B0077C41F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF624858BDE00DD5981 /* Connection.swift */; };
 		BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBAC8852295C90300587369 /* Result+Conveniences.swift */; };
 		BFECAC8724FD950B0077C41F /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
-		BFECAC8824FD950E0077C41F /* CodableServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableServerError.swift */; };
+		BFECAC8824FD950E0077C41F /* CodableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD44605241188C300EAB90A /* CodableError.swift */; };
 		BFECAC8924FD950E0077C41F /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18BFF22485828200DD5981 /* ConnectionManager.swift */; };
 		BFECAC8A24FD950E0077C41F /* ALTServerError+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF767CB2489AB5C0097E58C /* ALTServerError+Conveniences.swift */; };
 		BFECAC8B24FD950E0077C41F /* ServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E3128229F474900370A3C /* ServerProtocol.swift */; };
@@ -744,7 +744,7 @@
 		BFD2478B2284C4C300981D42 /* AppIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageView.swift; sourceTree = "<group>"; };
 		BFD2478E2284C8F900981D42 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
-		BFD44605241188C300EAB90A /* CodableServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableServerError.swift; sourceTree = "<group>"; };
+		BFD44605241188C300EAB90A /* CodableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableError.swift; sourceTree = "<group>"; };
 		BFD52BD222A06EFB000B7ED1 /* ALTConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTConstants.h; sourceTree = "<group>"; };
 		BFD52BD322A0800A000B7ED1 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
 		BFD52BE522A1A9CA000B7ED1 /* ptrarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptrarray.c; path = Dependencies/libplist/src/ptrarray.c; sourceTree = SOURCE_ROOT; };
@@ -987,7 +987,7 @@
 			isa = PBXGroup;
 			children = (
 				BF1E3128229F474900370A3C /* ServerProtocol.swift */,
-				BFD44605241188C300EAB90A /* CodableServerError.swift */,
+				BFD44605241188C300EAB90A /* CodableError.swift */,
 			);
 			path = "Server Protocol";
 			sourceTree = "<group>";
@@ -2382,7 +2382,7 @@
 				BF1FE358251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */,
 				BFECAC8F24FD950E0077C41F /* Result+Conveniences.swift in Sources */,
 				BF8CAE472489E772004D6CCE /* DaemonRequestHandler.swift in Sources */,
-				BFECAC8824FD950E0077C41F /* CodableServerError.swift in Sources */,
+				BFECAC8824FD950E0077C41F /* CodableError.swift in Sources */,
 				BFC712C32512D5F100AB5EBE /* XPCConnection.swift in Sources */,
 				BFC712C52512D5F100AB5EBE /* XPCConnectionHandler.swift in Sources */,
 				BFECAC8A24FD950E0077C41F /* ALTServerError+Conveniences.swift in Sources */,
@@ -2414,7 +2414,7 @@
 				BFC712BB2512B9CF00AB5EBE /* PluginManager.swift in Sources */,
 				BFECAC8224FD950B0077C41F /* ServerProtocol.swift in Sources */,
 				BFECAC8124FD950B0077C41F /* ALTServerError+Conveniences.swift in Sources */,
-				BFECAC7F24FD950B0077C41F /* CodableServerError.swift in Sources */,
+				BFECAC7F24FD950B0077C41F /* CodableError.swift in Sources */,
 				BFECAC8624FD950B0077C41F /* Result+Conveniences.swift in Sources */,
 				BF265D1925F843A000080DC9 /* NSError+AltStore.swift in Sources */,
 				BF904DEA265DAE9A00E86C2A /* InstalledApp.swift in Sources */,
@@ -2530,7 +2530,7 @@
 				BF66EECD2501AECA007EE018 /* StoreAppPolicy.swift in Sources */,
 				BF66EEE82501AED0007EE018 /* UserDefaults+AltStore.swift in Sources */,
 				BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */,
-				BFAECC522501B0A400528F27 /* CodableServerError.swift in Sources */,
+				BFAECC522501B0A400528F27 /* CodableError.swift in Sources */,
 				BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */,
 				BF66EEDF2501AECA007EE018 /* PatreonAccount.swift in Sources */,
 				BFAECC532501B0A400528F27 /* ServerProtocol.swift in Sources */,
