@@ -10,7 +10,7 @@ import AltSign
 
 extension ALTApplication
 {
-    static let altstoreBundleID = "com.rileytestut.AltStore"
+    static let altstoreBundleID = "com.SideStore.AltStore"
     
     var isAltStoreApp: Bool {
         let isAltStoreApp = self.bundleIdentifier.contains(ALTApplication.altstoreBundleID)

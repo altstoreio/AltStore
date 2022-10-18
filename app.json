@@ -1,0 +1,79 @@
+{
+  "name": "SideStore Offical",
+  "identifier": "com.SideStore.AltStore",
+  "sourceURL": "https://raw.githubusercontent.com/Spidy123222/apps.json/main/app.json",
+  "apps": [
+    {
+      "name": "Altstore",
+      "bundleIdentifier": "com.SideStore.AltStore",
+      "developerName": "Side Team",
+      "version": "1.5.2b",
+      "versionDate": "2022-07-14T12:00:00-05:00",
+      "versionDescription": "Welcome to the pacer test.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_5_1.ipa",
+      "localizedDescription": "SideStore is an alternative app store for non-jailbroken devices. \n\nSideStore allows you to sideload other .ipa files and apps from the Files app or via the SideStore Library",
+      "iconURL": "https://raw.githubusercontent.com/SideStore/apps.json/main/105070799.jpeg",
+      "tintColor": "8043FF",
+      "size": 5465976,
+      "screenshotURLs": [
+        "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
+        "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
+        "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG"
+      ],
+      "permissions": [
+        {
+          "type": "background-fetch",
+          "usageDescription": "SideStore periodically refreshes apps in the background to prevent them from expiring."
+        },
+        {
+          "type": "background-audio",
+          "usageDescription": "Allows SideStore to run longer than 30 seconds when refreshing apps in background."
+        }
+      ]
+    }
+  ],
+  "news": [
+    {
+      "title": "Rick on the rocks",
+      "identifier": "rick",
+      "caption": "never gonna give ya rocks",
+      "tintColor": "912F8D",
+      "imageURL": "https://variety.com/wp-content/uploads/2021/07/Rick-Astley-Never-Gonna-Give-You-Up.png?w=681&h=383&crop=1",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "date": "2022-05-06",
+      "notify": false
+    },
+    {
+      "title": "Rick waves his arms around",
+      "identifier": "no",
+      "caption": "never gonna",
+      "tintColor": "912F8D",
+      "imageURL": "https://variety.com/wp-content/uploads/2021/07/Rick-Astley-Never-Gonna-Give-You-Up.png?w=681&h=383&crop=1",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "date": "2022-05-05",
+      "notify": false
+    },
+    {
+      "title": "#StandWithUkraine",
+      "identifier": "support-ukraine",
+      "caption": "Find out how you can help support those impacted by the Russian invasion.",
+      "tintColor": "003e80",
+      "imageURL": "https://user-images.githubusercontent.com/705880/156053447-a158cac7-df5f-4497-8025-15c3c2e10b48.png",
+      "url": "https://linktr.ee/razomforukraine",
+      "date": "2022-03-01",
+      "notify": false
+    },
+    {
+      "title": "New to SideStore?",
+      "identifier": "updated-faq",
+      "caption": "Check out our updated guide to learn how to sideload apps!",
+      "tintColor": "8043FF",
+      "url": "https://faq.altstore.io",
+      "date": "2050-07-28",
+      "notify": false
+    }
+  ],
+  "userInfo": {
+    "patreonAccessToken": "uqoDoTxH8dY1ImE8tK76wxrzKk67gjyjBAcK8sD3RLU"
+  }
+}

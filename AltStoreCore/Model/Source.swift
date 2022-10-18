@@ -11,25 +11,25 @@ import CoreData
 public extension Source
 {
     #if ALPHA
-    static let altStoreIdentifier = "com.rileytestut.AltStore.Alpha"
+    static let altStoreIdentifier = "com.SideStore.AltStore"
     #else
-    static let altStoreIdentifier = "com.rileytestut.AltStore"
+    static let altStoreIdentifier = "com.SideStore.AltStore"
     #endif
     
     #if STAGING
     
     #if ALPHA
-    static let altStoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/sources/alpha/apps-alpha-staging.json")!
+    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
     #else
-    static let altStoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/apps-staging.json")!
+    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
     #endif
     
     #else
     
     #if ALPHA
-    static let altStoreSourceURL = URL(string: "https://alpha.altstore.io/")!
+    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
     #else
-    static let altStoreSourceURL = URL(string: "https://apps.altstore.io/")!
+    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
     #endif
     
     #endif
@@ -157,7 +157,7 @@ public extension Source
     class func makeAltStoreSource(in context: NSManagedObjectContext) -> Source
     {
         let source = Source(context: context)
-        source.name = "AltStore"
+        source.name = "SideStore Offical"
         source.identifier = Source.altStoreIdentifier
         source.sourceURL = Source.altStoreSourceURL
         
