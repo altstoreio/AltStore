@@ -208,7 +208,7 @@ private extension BackgroundRefreshAppsOperation
                 content.title = NSLocalizedString("Refreshed Apps", comment: "")
                 content.body = NSLocalizedString("All apps have been refreshed.", comment: "")
             }
-            catch ~ConnectionErrorCode.serverNotFound
+            catch ~OperationError.Code.serverNotFound
             {
                 shouldPresentAlert = false
             }
