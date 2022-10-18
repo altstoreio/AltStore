@@ -25,38 +25,19 @@ public extension NSError
     @objc(alt_errorWithLocalizedFailure:)
     func withLocalizedFailure(_ failure: String) -> NSError
     {
-        var userInfo = self.userInfo
-        userInfo[NSLocalizedFailureErrorKey] = failure
-        
-        if let failureReason = self.localizedFailureReason
+        switch self
         {
-            userInfo[NSLocalizedFailureReasonErrorKey] = failureReason
+        case var error as any ALTLocalizedError:
+            error.errorFailure = failure
+            return error as NSError
+            
+        default:
+            var userInfo = self.userInfo
+            userInfo[NSLocalizedFailureErrorKey] = failure
+            
+            let error = ALTWrappedError(error: self, userInfo: userInfo)
+            return error
         }
-        else if self.localizedFailure == nil && self.localizedFailureReason == nil && self.localizedDescription.contains(self.localizedErrorCode)
-        {
-            // Default localizedDescription, so replace with just the localized error code portion.
-            userInfo[NSLocalizedFailureReasonErrorKey] = "(\(self.localizedErrorCode).)"
-        }
-        else
-        {
-            userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedDescription
-        }
-        
-        if let localizedDescription = NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSLocalizedDescriptionKey) as? String
-        {
-            userInfo[NSLocalizedDescriptionKey] = localizedDescription
-        }
-        
-        // Don't accidentally remove localizedDescription from dictionary
-        // userInfo[NSLocalizedDescriptionKey] = NSError.userInfoValueProvider(forDomain: self.domain)?(self, NSLocalizedDescriptionKey) as? String
-        
-        if let recoverySuggestion = self.localizedRecoverySuggestion
-        {
-            userInfo[NSLocalizedRecoverySuggestionErrorKey] = recoverySuggestion
-        }
-        
-        let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
-        return error
     }
     
     func sanitizedForCoreData() -> NSError

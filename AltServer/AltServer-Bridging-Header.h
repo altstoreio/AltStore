@@ -13,3 +13,4 @@
 #import "AltXPCProtocol.h"
 #import "NSError+ALTServerError.h"
 #import "CFNotificationName+AltStore.h"
+#import "ALTWrappedError.h"
