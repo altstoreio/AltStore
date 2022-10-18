@@ -29,11 +29,6 @@ public class ALTWrappedError: NSError
     }
     
     override public var localizedDescription: String {
-        if let localizedDescription = self.userInfo[NSLocalizedDescriptionKey] as? String
-        {
-            return localizedDescription
-        }
-        
         if let localizedFailure = self.userInfo[NSLocalizedFailureErrorKey] as? String
         {
             let localizedFailureReason = self.wrappedNSError.localizedFailureReason ?? self.wrappedError.localizedDescription
