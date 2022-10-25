@@ -37,6 +37,13 @@ public extension NSError
             error.errorFailure = failure
             return error as NSError
             
+        case let wrappedError as ALTWrappedError:
+            var userInfo = self.userInfo
+            userInfo[NSLocalizedFailureErrorKey] = failure
+
+            let error = ALTWrappedError(error: wrappedError.wrappedError, userInfo: userInfo)
+            return error
+            
         default:
             var userInfo = self.userInfo
             userInfo[NSLocalizedFailureErrorKey] = failure
@@ -54,6 +61,13 @@ public extension NSError
         case var error as any ALTLocalizedError:
             error.errorTitle = title
             return error as NSError
+            
+        case let wrappedError as ALTWrappedError:
+            var userInfo = self.userInfo
+            userInfo[ALTLocalizedTitleErrorKey] = title
+
+            let error = ALTWrappedError(error: wrappedError.wrappedError, userInfo: userInfo)
+            return error
             
         default:
             var userInfo = self.userInfo
