@@ -128,6 +128,8 @@ private extension ErrorLogViewController
                 {
                     cell.menuButton.showsMenuAsPrimaryAction = true
                 }
+                
+                cell.selectionStyle = .none
             }
             
             // Include errorDescriptionTextView's text in cell summary.
@@ -275,6 +277,8 @@ extension ErrorLogViewController
 {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        guard #unavailable(iOS 14) else { return }
+        
         let loggedError = self.dataSource.item(at: indexPath)
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
