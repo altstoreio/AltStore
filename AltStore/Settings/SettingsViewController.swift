@@ -82,6 +82,7 @@ class SettingsViewController: UITableViewController
         super.init(coder: aDecoder)
         
         NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.openPatreonSettings(_:)), name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.openErrorLog(_:)), name: ToastView.openErrorLogNotification, object: nil)
     }
     
     override func viewDidLoad()
@@ -338,6 +339,17 @@ private extension SettingsViewController
         UIView.performWithoutAnimation {
             self.navigationController?.popViewController(animated: false)
             self.performSegue(withIdentifier: "showPatreon", sender: nil)
+        }
+    }
+    
+    @objc func openErrorLog(_ notification: Notification)
+    {
+        guard self.presentedViewController == nil else { return }
+        
+        self.navigationController?.popViewController(animated: false)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.performSegue(withIdentifier: "showErrorLog", sender: nil)
         }
     }
 }

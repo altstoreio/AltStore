@@ -555,6 +555,8 @@ private extension MyAppsViewController
                     toastView.preferredDuration = 4.0
                 }
                 
+                toastView.opensErrorLog = true
+                
                 toastView.show(in: self)
             }
             
@@ -690,6 +692,7 @@ private extension MyAppsViewController
                     
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                     
                     self.collectionView.reloadItems(at: [indexPath])
@@ -899,6 +902,7 @@ private extension MyAppsViewController
                     
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                     
                     completion(.failure(error))
@@ -1063,6 +1067,7 @@ private extension MyAppsViewController
                     installedApp.isActive = false
                     
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 }
             }
@@ -1136,6 +1141,7 @@ private extension MyAppsViewController
                     installedApp.isActive = true
                     
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 }
             }
@@ -1168,6 +1174,7 @@ private extension MyAppsViewController
                 case .failure(let error):
                     DispatchQueue.main.async {
                         let toastView = ToastView(error: error)
+                        toastView.opensErrorLog = true
                         toastView.show(in: self)
                     }
                 }
@@ -1201,6 +1208,7 @@ private extension MyAppsViewController
                     
                     DispatchQueue.main.async {
                         let toastView = ToastView(error: error)
+                        toastView.opensErrorLog = true
                         toastView.show(in: self)
                         
                         self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
@@ -1236,6 +1244,7 @@ private extension MyAppsViewController
                     
                     DispatchQueue.main.async {
                         let toastView = ToastView(error: error)
+                        toastView.opensErrorLog = true
                         toastView.show(in: self)
                     }
                 }
@@ -1325,6 +1334,7 @@ private extension MyAppsViewController
                 case .success: break
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 }
             }

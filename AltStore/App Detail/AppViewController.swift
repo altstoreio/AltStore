@@ -511,6 +511,7 @@ extension AppViewController
             {
                 DispatchQueue.main.async {
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 }
             }
