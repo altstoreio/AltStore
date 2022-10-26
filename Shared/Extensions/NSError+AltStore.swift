@@ -195,6 +195,16 @@ public extension NSError
             detailedDescription.append(attributedString)
         }
         
+        // Support dark mode
+        #if canImport(UIKit)
+        if #available(iOS 13, *)
+        {
+            detailedDescription.addAttribute(.foregroundColor, value: UIColor.label, range: NSMakeRange(0, detailedDescription.length))
+        }
+        #else
+        detailedDescription.addAttribute(.foregroundColor, value: NSColor.labelColor, range: NSMakeRange(0, detailedDescription.length))
+        #endif
+        
         return detailedDescription
     }
 }
