@@ -37,6 +37,20 @@ class ErrorLogViewController: UITableViewController
         self.tableView.dataSource = self.dataSource
         self.tableView.prefetchDataSource = self.dataSource
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        guard let loggedError = sender as? LoggedError, segue.identifier == "showErrorDetails" else { return }
+        
+        let navigationController = segue.destination as! UINavigationController
+        
+        let errorDetailsViewController = navigationController.viewControllers.first as! ErrorDetailsViewController
+        errorDetailsViewController.loggedError = loggedError
+    }
+    
+    @IBAction private func unwindFromErrorDetails(_ segue: UIStoryboardSegue)
+    {
+    }
 }
 
 private extension ErrorLogViewController
@@ -91,7 +105,10 @@ private extension ErrorLogViewController
                     },
                     UIAction(title: NSLocalizedString("Search FAQ", comment: ""), image: UIImage(systemName: "magnifyingglass")) { [weak self] _ in
                         self?.searchFAQ(for: loggedError)
-                    }
+                    },
+                    UIAction(title: NSLocalizedString("View More Details", comment: ""), image: UIImage(systemName: "ellipsis.circle")) { [weak self] _ in
+                        self?.viewMoreDetails(for: loggedError)
+                    },
                 ])
 
                 cell.menuButton.menu = menu
@@ -230,6 +247,11 @@ private extension ErrorLogViewController
         let safariViewController = SFSafariViewController(url: components.url ?? baseURL)
         safariViewController.preferredControlTintColor = .altPrimary
         self.present(safariViewController, animated: true)
+    }
+    
+    func viewMoreDetails(for loggedError: LoggedError)
+    {
+        self.performSegue(withIdentifier: "showErrorDetails", sender: loggedError)
     }
 }
 

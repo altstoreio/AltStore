@@ -350,6 +350,7 @@
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
+		D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */; };
 		D54DED1428CBC44B008B27A0 /* ErrorLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */; };
 		D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E163528776CB000A627A1 /* ComplicationView.swift */; };
 		D56F6FDA28FF44B5006DCA2C /* ALTWrappedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56F6FD928FF44B5006DCA2C /* ALTWrappedError.swift */; };
@@ -828,6 +829,7 @@
 		D533E8B82727B61400A9B5DD /* fragmentzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fragmentzip.h; sourceTree = "<group>"; };
 		D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dependencies/fragmentzip/libfragmentzip.a; sourceTree = SOURCE_ROOT; };
 		D533E8BD2727BBF800A9B5DD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = Dependencies/libcurl/libcurl.a; sourceTree = SOURCE_ROOT; };
+		D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D55E163528776CB000A627A1 /* ComplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationView.swift; sourceTree = "<group>"; };
 		D56F6FD928FF44B5006DCA2C /* ALTWrappedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTWrappedError.swift; sourceTree = "<group>"; };
@@ -1811,6 +1813,7 @@
 			children = (
 				D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */,
 				D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */,
+				D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */,
 			);
 			path = "Error Log";
 			sourceTree = "<group>";
@@ -2612,6 +2615,7 @@
 				BF3D649D22E7AC1B00E9056B /* PermissionPopoverViewController.swift in Sources */,
 				D57F2C9426E01BC700B9FA39 /* UIDevice+Vibration.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
+				D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */,
 				BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
