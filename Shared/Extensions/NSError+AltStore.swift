@@ -8,6 +8,14 @@
 
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+public typealias ALTFont = UIFont
+#elseif canImport(AppKit)
+import AppKit
+public typealias ALTFont = NSFont
+#endif
+
 public extension NSError
 {
     @objc(alt_localizedFailure)
@@ -107,6 +115,87 @@ public extension NSError
         
         let error = NSError(domain: self.domain, code: self.code, userInfo: userInfo)
         return error
+    }
+    
+    func formattedDetailedDescription(with font: ALTFont) -> NSAttributedString
+    {
+        #if canImport(UIKit)
+        let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold) ?? font.fontDescriptor
+        let boldFont = ALTFont(descriptor: boldFontDescriptor, size: font.pointSize)
+        #else
+        let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.bold)
+        let boldFont = ALTFont(descriptor: boldFontDescriptor, size: font.pointSize) ?? font
+        #endif
+        
+        var preferredKeyOrder = [
+            NSDebugDescriptionErrorKey,
+            NSLocalizedDescriptionKey,
+            NSLocalizedFailureErrorKey,
+            NSLocalizedFailureReasonErrorKey,
+            NSLocalizedRecoverySuggestionErrorKey,
+            ALTLocalizedTitleErrorKey,
+            NSUnderlyingErrorKey
+        ]
+        
+        if #available(iOS 14.5, macOS 11.3, *)
+        {
+            preferredKeyOrder.append(NSMultipleUnderlyingErrorsKey)
+        }
+        
+        let sortedUserInfo = self.userInfo.sorted { (a, b) in
+            let indexA = preferredKeyOrder.firstIndex(of: a.key)
+            let indexB = preferredKeyOrder.firstIndex(of: b.key)
+            
+            switch (indexA, indexB)
+            {
+            case (let indexA?, let indexB?): return indexA < indexB
+            case (_?, nil): return true // indexA exists, indexB is nil, so A should come first.
+            case (nil, _?): return false  // indexA is nil, indexB exists, so B should come first.
+            case (nil, nil): return a.key < b.key // both indexes are nil, so sort alphabetically.
+            }
+        }
+        
+        let detailedDescription = NSMutableAttributedString()
+        
+        for (key, value) in sortedUserInfo
+        {
+            let keyName: String
+            switch key
+            {
+            case NSDebugDescriptionErrorKey: keyName = NSLocalizedString("Debug Description", comment: "")
+            case NSLocalizedDescriptionKey: keyName = NSLocalizedString("Error Description", comment: "")
+            case NSLocalizedFailureErrorKey: keyName = NSLocalizedString("Failure", comment: "")
+            case NSLocalizedFailureReasonErrorKey: keyName = NSLocalizedString("Failure Reason", comment: "")
+            case NSLocalizedRecoverySuggestionErrorKey: keyName = NSLocalizedString("Recovery Suggestion", comment: "")
+            case ALTLocalizedTitleErrorKey: keyName = NSLocalizedString("Title", comment: "")
+            case NSUnderlyingErrorKey: keyName = NSLocalizedString("Underlying Error", comment: "")
+            default:
+                if #available(iOS 14.5, macOS 11.3, *), key == NSMultipleUnderlyingErrorsKey
+                {
+                    keyName = NSLocalizedString("Underlying Errors", comment: "")
+                }
+                else
+                {
+                    keyName = key
+                }
+            }
+            
+            let attributedKey = NSAttributedString(string: keyName, attributes: [.font: boldFont])
+            let attributedValue = NSAttributedString(string: String(describing: value), attributes: [.font: font])
+            
+            let attributedString = NSMutableAttributedString(attributedString: attributedKey)
+            attributedString.mutableString.append("\n")
+            attributedString.append(attributedValue)
+            
+            if !detailedDescription.string.isEmpty
+            {
+                detailedDescription.mutableString.append("\n\n")
+            }
+            
+            detailedDescription.append(attributedString)
+        }
+        
+        return detailedDescription
     }
 }
 
