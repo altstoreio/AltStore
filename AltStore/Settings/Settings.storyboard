@@ -991,10 +991,72 @@ Settings by i cons from the Noun Project</string>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="7gm-d1-zWK" kind="presentation" identifier="showErrorDetails" id="9vz-y6-evp"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rU1-TZ-TD8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1697" y="1774"/>
+        </scene>
+        <!--Error Details View Controller-->
+        <scene sceneID="XNO-Yg-I7t">
+            <objects>
+                <viewController id="xB2-Se-VVg" customClass="ErrorDetailsViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eBQ-se-VIy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ctd-NB-4ov">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Nm8-69-Ngi"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ctd-NB-4ov" firstAttribute="leading" secondItem="eBQ-se-VIy" secondAttribute="leading" id="Cv1-Te-gBH"/>
+                            <constraint firstItem="ctd-NB-4ov" firstAttribute="top" secondItem="eBQ-se-VIy" secondAttribute="top" id="HRY-Rg-iMI"/>
+                            <constraint firstAttribute="trailing" secondItem="ctd-NB-4ov" secondAttribute="trailing" id="Lc1-K7-iuq"/>
+                            <constraint firstAttribute="bottom" secondItem="ctd-NB-4ov" secondAttribute="bottom" id="zCz-Cy-Y5z"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="XpE-V9-EaY">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="rnr-dX-4Ev">
+                            <connections>
+                                <segue destination="ZSp-1n-UJ9" kind="unwind" unwindAction="unwindFromErrorDetails:" id="TFu-zD-QyF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="textView" destination="ctd-NB-4ov" id="x2C-9R-Xz1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8AM-Vx-XTN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="ZSp-1n-UJ9" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="3389.5999999999999" y="1772.5637181409297"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4LJ-Od-dCK">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7gm-d1-zWK" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dI0-sh-yGf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="xB2-Se-VVg" kind="relationship" relationship="rootViewController" id="RpP-UM-JfJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OXW-bf-HIj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2554" y="1773"/>
         </scene>
     </scenes>
     <resources>
@@ -1008,6 +1070,9 @@ Settings by i cons from the Noun Project</string>
         </systemColor>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>
