@@ -254,7 +254,7 @@ private extension ErrorLogViewController
     
     func searchFAQ(for loggedError: LoggedError)
     {
-        let baseURL = URL(string: "https://faq.altstore.io/getting-started/troubleshooting-guide")!
+        let baseURL = URL(string: "https://faq.altstore.io/getting-started/error-codes")!
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
         
         let query = [loggedError.domain, "\(loggedError.code)"].joined(separator: "+")
