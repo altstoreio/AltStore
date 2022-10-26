@@ -1135,7 +1135,7 @@ private extension MyAppsViewController
             }
             catch
             {
-                print("Failed to activate app:", error)
+                print("Failed to deactivate app:", error)
                 
                 DispatchQueue.main.async {
                     installedApp.isActive = true
