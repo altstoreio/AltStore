@@ -11,7 +11,7 @@ import Foundation
 public let ALTLocalizedTitleErrorKey = "ALTLocalizedTitle"
 public let ALTLocalizedDescriptionKey = "ALTLocalizedDescription"
 
-public protocol ALTLocalizedError<Code>: LocalizedError, CustomNSError
+public protocol ALTLocalizedError<Code>: LocalizedError, CustomNSError, CustomStringConvertible
 {
     associatedtype Code: ALTErrorCode
 
@@ -36,7 +36,7 @@ public protocol ALTErrorEnum: ALTErrorCode
     var errorFailureReason: String { get }
 }
 
-/// LocalizedError & CustomNSError
+/// LocalizedError & CustomNSError & CustomStringConvertible
 public extension ALTLocalizedError
 {
     var errorCode: Int { self.code.rawValue }
@@ -62,6 +62,11 @@ public extension ALTLocalizedError
         ].compactMapValues { $0 }
         
         return userInfo
+    }
+    
+    var description: String {
+        let description = "\(self.localizedErrorCode) “\(self.localizedDescription)”"
+        return description
     }
 }
 
