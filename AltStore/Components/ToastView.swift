@@ -51,45 +51,32 @@ class ToastView: RSTToastView
         var error = error as NSError
         var underlyingError = error.underlyingError
         
-        var preferredDuration: TimeInterval?
-        
         if
             let unwrappedUnderlyingError = underlyingError,
             error.domain == AltServerErrorDomain && error.code == ALTServerError.Code.underlyingError.rawValue
         {
-            // Treat underlyingError as the primary error.
+            // Treat underlyingError as the primary error, but keep localized title + failure.
             
-            error = unwrappedUnderlyingError as NSError
+            let nsError = (error as NSError)
+            error = (unwrappedUnderlyingError as NSError)
+            
+            if let localizedTitle = nsError.localizedTitle
+            {
+                error = error.withLocalizedTitle(localizedTitle)
+            }
+            
+            if let localizedFailure = nsError.localizedFailure
+            {
+                error = error.withLocalizedFailure(localizedFailure)
+            }
+            
             underlyingError = nil
-            
-            preferredDuration = .longToastViewDuration
         }
         
-        let text: String
-        let detailText: String?
-        
-        if let failure = error.localizedFailure
-        {
-            text = failure
-            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription ?? error.localizedDescription
-        }
-        else if let reason = error.localizedFailureReason
-        {
-            text = reason
-            detailText = error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription
-        }
-        else
-        {
-            text = error.localizedDescription
-            detailText = underlyingError?.localizedDescription ?? error.localizedRecoverySuggestion
-        }
+        let text = error.localizedTitle ?? NSLocalizedString("Operation Failed", comment: "")
+        let detailText = error.localizedDescription
         
         self.init(text: text, detailText: detailText)
-        
-        if let preferredDuration = preferredDuration
-        {
-            self.preferredDuration = preferredDuration
-        }
     }
     
     required init(coder aDecoder: NSCoder) {
