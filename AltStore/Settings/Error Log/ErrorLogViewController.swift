@@ -131,6 +131,11 @@ private extension ErrorLogViewController
                 
                 cell.selectionStyle = .none
             }
+            else
+            {
+                // Allow table view selections
+                cell.menuButton.isUserInteractionEnabled = false
+            }
             
             // Include errorDescriptionTextView's text in cell summary.
             cell.accessibilityLabel = [cell.errorFailureLabel.text, cell.dateLabel.text, cell.errorCodeLabel.text, cell.errorDescriptionTextView.text].compactMap { $0 }.joined(separator: ". ")
