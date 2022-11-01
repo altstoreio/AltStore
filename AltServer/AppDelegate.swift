@@ -159,8 +159,9 @@ private extension AppDelegate
             DispatchQueue.main.async {
                 switch result
                 {
-                case .failure(let error):
-                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("JIT compilation could not be enabled for %@.", comment: ""), app.name))
+                case .failure(let error as NSError):
+                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
+                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
                     
                 case .success:
                     let alert = NSAlert()
@@ -256,7 +257,7 @@ private extension AppDelegate
                 
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("Could not install app to %@.", comment: ""), device.name))
+                    self.showErrorAlert(error: error)
                 }
             }
         }
@@ -278,7 +279,10 @@ private extension AppDelegate
                 self.pluginManager.isUpdateAvailable { result in
                     switch result
                     {
-                    case .failure(let error): finish(.failure(error))
+                    case .failure(let error):
+                        let error = (error as NSError).withLocalizedTitle(NSLocalizedString("Could not check for Mail plug-in updates.", comment: ""))
+                        finish(.failure(error))
+                        
                     case .success(let isUpdateAvailable):
                         self.isAltPluginUpdateAvailable = isUpdateAvailable
                         
@@ -302,84 +306,27 @@ private extension AppDelegate
         }
     }
     
-    func showErrorAlert(error: Error, localizedFailure: String)
+    func showErrorAlert(error: Error)
     {
         let nsError = error as NSError
         
-        let alert = NSAlert()
-        alert.alertStyle = .critical
-        alert.messageText = localizedFailure
-        
-        var messageComponents = [String]()
-        
-        let separator: String
-        switch error
-        {
-        case ALTServerError.maximumFreeAppLimitReached: separator = "\n\n"
-        default: separator = " "
-        }
-        
-        if let errorFailure = nsError.localizedFailure
-        {
-            if let debugDescription = nsError.localizedDebugDescription
-            {
-                alert.messageText = errorFailure
-                messageComponents.append(debugDescription)
-            }
-            else if let failureReason = nsError.localizedFailureReason
-            {
-                if nsError.localizedDescription.starts(with: errorFailure)
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(failureReason)
-                }
-                else
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-            }
-            else
-            {
-                // No failure reason given.
-                
-                if nsError.localizedDescription.starts(with: errorFailure)
-                {
-                    // No need to duplicate errorFailure in both title and message.
-                    alert.messageText = localizedFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-                else
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-            }
-        }
-        else
-        {
-            alert.messageText = localizedFailure
-            
-            if let debugDescription = nsError.localizedDebugDescription
-            {
-                messageComponents.append(debugDescription)
-            }
-            else
-            {
-                messageComponents.append(nsError.localizedDescription)
-            }
-        }
-        
+        var messageComponents = [error.localizedDescription]
         if let recoverySuggestion = nsError.localizedRecoverySuggestion
         {
             messageComponents.append(recoverySuggestion)
         }
         
-        let informativeText = messageComponents.joined(separator: separator)
-        alert.informativeText = informativeText
+        let title = nsError.localizedTitle ?? NSLocalizedString("Operation Failed", comment: "")
+        let message = messageComponents.joined(separator: "\n\n")
+        
+        let alert = NSAlert()
+        alert.alertStyle = .critical
+        alert.messageText = title
+        alert.informativeText = message
+        alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
         
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-
+        
         alert.runModal()
     }
     
