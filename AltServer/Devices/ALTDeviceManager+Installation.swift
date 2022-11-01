@@ -61,11 +61,7 @@ extension ALTDeviceManager
                 {
                 case .success(let app): completion(.success(app))
                 case .failure(var error as NSError):
-                    if error.localizedFailure == nil
-                    {
-                        error = error.withLocalizedFailure(String(format: NSLocalizedString("Could not install %@ to %@.", comment: ""), appName, altDevice.name))
-                    }
-                    
+                    error = error.withLocalizedTitle(String(format: NSLocalizedString("%@ could not be installed onto %@.", comment: ""), appName, altDevice.name))
                     completion(.failure(error))
                 }
             }
