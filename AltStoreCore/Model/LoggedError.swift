@@ -67,7 +67,16 @@ public class LoggedError: NSManagedObject, Fetchable
         self.date = date
         self._operation = operation?.rawValue
         
-        let nsError = error as NSError
+        let nsError: NSError
+        if let error = error as? ALTServerError, error.code == .underlyingError, let underlyingError = error.underlyingError
+        {
+            nsError = underlyingError as NSError
+        }
+        else
+        {
+            nsError = error as NSError
+        }
+        
         self.domain = nsError.domain
         self.code = Int32(nsError.code)
         self.userInfo = nsError.userInfo
