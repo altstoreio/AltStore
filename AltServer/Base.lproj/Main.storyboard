@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -383,6 +383,60 @@
                 </application>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
+        </scene>
+        <!--Error Details View Controller-->
+        <scene sceneID="IpC-sd-lPu">
+            <objects>
+                <viewController storyboardIdentifier="errorDetailsViewController" id="vPa-1q-slD" customClass="ErrorDetailsViewController" customModule="AltServer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="umL-zC-zP8">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="88"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="16" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aUr-m2-nXm">
+                                <rect key="frame" x="20" y="20" width="410" height="48"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8GZ-nV-XXA">
+                                        <rect key="frame" x="-2" y="32" width="40" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" selectable="YES" title="Label" id="V5D-v5-MVX">
+                                            <font key="font" metaFont="systemBold"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="j2o-2b-63k">
+                                        <rect key="frame" x="-2" y="0.0" width="92" height="16"/>
+                                        <textFieldCell key="cell" selectable="YES" title="Multiline Label" id="3jf-Z7-88l">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="aUr-m2-nXm" secondAttribute="trailing" constant="20" id="RnW-JC-q92"/>
+                            <constraint firstAttribute="bottom" secondItem="aUr-m2-nXm" secondAttribute="bottom" constant="20" id="eGe-BS-TFJ"/>
+                            <constraint firstItem="aUr-m2-nXm" firstAttribute="top" secondItem="umL-zC-zP8" secondAttribute="top" constant="20" id="fel-H8-WFO"/>
+                            <constraint firstItem="aUr-m2-nXm" firstAttribute="leading" secondItem="umL-zC-zP8" secondAttribute="leading" constant="20" id="tcH-p8-4QH"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="detailedDescriptionLabel" destination="j2o-2b-63k" id="de3-yf-oTt"/>
+                        <outlet property="errorCodeLabel" destination="8GZ-nV-XXA" id="cXZ-11-wrJ"/>
+                    </connections>
+                </viewController>
+                <customObject id="wrv-m0-8zg" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="537" y="17"/>
         </scene>
     </scenes>
 </document>

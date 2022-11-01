@@ -56,6 +56,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var isAltPluginUpdateAvailable = false
     
+    private var popoverController: NSPopover?
+    private var popoverError: NSError?
+    private var errorAlert: NSAlert?
+    
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         UserDefaults.standard.registerDefaults()
@@ -308,6 +312,8 @@ private extension AppDelegate
     
     func showErrorAlert(error: Error)
     {
+        self.popoverError = error as NSError
+        
         let nsError = error as NSError
         
         var messageComponents = [error.localizedDescription]
@@ -324,10 +330,41 @@ private extension AppDelegate
         alert.messageText = title
         alert.informativeText = message
         alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("View More Details", comment: ""))
+        
+        if let viewMoreButton = alert.buttons.last
+        {
+            viewMoreButton.target = self
+            viewMoreButton.action = #selector(AppDelegate.showDetailedErrorDescription)
+            
+            self.errorAlert = alert
+        }
         
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
         
         alert.runModal()
+        
+        self.popoverController = nil
+        self.errorAlert = nil
+        self.popoverError = nil
+    }
+    
+    @objc func showDetailedErrorDescription()
+    {
+        guard let errorAlert, let contentView = errorAlert.window.contentView else { return }
+        
+        let errorDetailsViewController = NSStoryboard(name: "Main", bundle: .main).instantiateController(withIdentifier: "errorDetailsViewController") as! ErrorDetailsViewController
+        errorDetailsViewController.error = self.popoverError
+        
+        let fittingSize = errorDetailsViewController.view.fittingSize
+        errorDetailsViewController.view.frame.size = fittingSize
+        
+        let popoverController = NSPopover()
+        popoverController.contentViewController = errorDetailsViewController
+        popoverController.contentSize = fittingSize
+        popoverController.behavior = .transient
+        popoverController.show(relativeTo: contentView.bounds, of: contentView, preferredEdge: .maxX)
+        self.popoverController = popoverController
     }
     
     @objc func toggleLaunchAtLogin(_ item: NSMenuItem)
