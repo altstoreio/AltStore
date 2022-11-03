@@ -30,9 +30,9 @@ extension PluginError
     }
     
     static let cancelled = PluginError(code: .cancelled)
-    static let unknown = PluginError(code: .unknown)
     static let notFound = PluginError(code: .notFound)
     
+    static func unknown(file: String = #fileID, line: UInt = #line) -> PluginError { PluginError(code: .unknown, sourceFile: file, sourceLine: line) }
     static func mismatchedHash(hash: String, expectedHash: String) -> PluginError { PluginError(code: .mismatchedHash, hash: hash, expectedHash: expectedHash) }
     static func taskError(output: String) -> PluginError { PluginError(code: .taskError, taskErrorOutput: output) }
     static func taskErrorCode(_ code: Int) -> PluginError { PluginError(code: .taskErrorCode, taskErrorCode: code) }
@@ -44,6 +44,8 @@ struct PluginError: ALTLocalizedError
     
     var errorTitle: String?
     var errorFailure: String?
+    var sourceFile: String?
+    var sourceLine: UInt?
     
     var hash: String?
     var expectedHash: String?
@@ -205,7 +207,7 @@ extension PluginManager
                             let unzippedPluginURL = temporaryDirectoryURL.appendingPathComponent(pluginURL.lastPathComponent)
                             try self.runAndKeepAuthorization("cp", arguments: ["-R", unzippedPluginURL.path, pluginDirectoryURL.path], authorization: authorization)
                             
-                            guard self.isMailPluginInstalled else { throw PluginError.unknown }
+                            guard self.isMailPluginInstalled else { throw PluginError.unknown() }
                             
                             // Enable Mail plug-in preferences.
                             try self.run("defaults", arguments: ["write", "/Library/Preferences/com.apple.mail", "EnableBundles", "-bool", "YES"], authorization: authorization)
@@ -411,7 +413,7 @@ private extension PluginManager
             throw PluginError.taskErrorCode(Int(task.terminationStatus))
         }
         
-        guard let authorization = task.authorization else { throw PluginError.unknown }
+        guard let authorization = task.authorization else { throw PluginError.unknown() }
         return authorization
     }
 }
