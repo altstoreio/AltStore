@@ -218,31 +218,12 @@ extension AppManager
     }
     
     @discardableResult
-    func findServer(context: OperationContext = OperationContext(), completionHandler: @escaping (Result<Server, Error>) -> Void) -> FindServerOperation
-    {
-        let findServerOperation = FindServerOperation(context: context)
-        findServerOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): context.error = error
-            case .success(let server): context.server = server
-            }
-        }
-        
-        self.run([findServerOperation], context: context)
-        
-        return findServerOperation
-    }
-    
-    @discardableResult
     func authenticate(presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<(ALTTeam, ALTCertificate, ALTAppleAPISession), Error>) -> Void) -> AuthenticationOperation
     {
         if let operation = context.authenticationOperation
         {
             return operation
         }
-        
-        let findServerOperation = self.findServer(context: context) { _ in }
         
         let authenticationOperation = AuthenticationOperation(context: context, presentingViewController: presentingViewController)
         authenticationOperation.resultHandler = { (result) in
@@ -254,7 +235,6 @@ extension AppManager
             
             completionHandler(result)
         }
-        authenticationOperation.addDependency(findServerOperation)
         
         self.run([authenticationOperation], context: context)
         
@@ -555,13 +535,10 @@ extension AppManager
             // authentication, so we keep it separate.
             let context = OperationContext()
             
-            let findServerOperation = self.findServer(context: context) { _ in }
-            
             let deactivateAppOperation = DeactivateAppOperation(app: installedApp, context: context)
             deactivateAppOperation.resultHandler = { (result) in
                 completionHandler(result)
             }
-            deactivateAppOperation.addDependency(findServerOperation)
             
             self.run([deactivateAppOperation], context: context, requiresSerialQueue: true)
         }
@@ -695,13 +672,11 @@ extension AppManager
         let context = Context()
         context.installedApp = installedApp
         
-        let findServerOperation = self.findServer(context: context) { _ in }
         
         let enableJITOperation = EnableJITOperation(context: context)
         enableJITOperation.resultHandler = { (result) in
             completionHandler(result)
         }
-        enableJITOperation.addDependency(findServerOperation)
         
         self.run([enableJITOperation], context: context, requiresSerialQueue: true)
     }
@@ -747,7 +722,7 @@ extension AppManager
             switch result
             {
             case .failure(let error): context.error = error
-            case .success(let installationConnection): context.installationConnection = installationConnection
+            case .success(_): print("App sent over AFC")
             }
         }
         sendAppOperation.addDependency(patchAppOperation)
@@ -900,8 +875,7 @@ private extension AppManager
 
                     if app.certificateSerialNumber != group.context.certificate?.serialNumber ||
                         uti != nil ||
-                        app.needsResign ||
-                        (group.context.server?.connectionType == .local && !UserDefaults.standard.localServerSupportsRefreshing)
+                        app.needsResign
                     {
                         // Resign app instead of just refreshing profiles because either:
                         // * Refreshing using different certificate
@@ -1147,7 +1121,7 @@ private extension AppManager
                             presentingViewController?.dismiss(animated: true, completion: nil)
                         }
                     }
-                    presentingViewController.present(navigationController, animated: true, completion: nil)                    
+                    presentingViewController.present(navigationController, animated: true, completion: nil)
                 }
             }
             catch
@@ -1204,7 +1178,7 @@ private extension AppManager
             switch result
             {
             case .failure(let error): context.error = error
-            case .success(let installationConnection): context.installationConnection = installationConnection
+            case .success(_): print("App reported as installed")
             }
         }
         sendAppOperation.addDependency(resignAppOperation)
@@ -1649,27 +1623,6 @@ private extension AppManager
     
     func finish(_ operation: AppOperation, result: Result<InstalledApp, Error>, group: RefreshGroup, progress: Progress?)
     {
-        let result = result.mapError { (resultError) -> Error in
-            guard let error = resultError as? ALTServerError else { return resultError }
-            
-            switch error.code
-            {
-            case .deviceNotFound, .lostConnection:
-                if let server = group.context.server, server.isPreferred || server.connectionType != .wireless
-                {
-                    // Preferred server (or not random wireless connection), so report errors normally.
-                    return error
-                }
-                else
-                {
-                    // Not preferred server, so ignore these specific errors and throw serverNotFound instead.
-                    return ConnectionError.serverNotFound
-                }
-                
-            default: return error
-            }
-        }
-        
         // Must remove before saving installedApp.
         if let currentProgress = self.progress(for: operation), currentProgress == progress
         {
@@ -1709,7 +1662,7 @@ private extension AppManager
             }
             
             if #available(iOS 14, *)
-            {                
+            {
                 WidgetCenter.shared.getCurrentConfigurations { (result) in
                     guard case .success(let widgets) = result else { return }
                     

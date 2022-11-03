@@ -9,6 +9,7 @@
 import Foundation
 
 import AltStoreCore
+import minimuxer
 
 @objc(RemoveAppOperation)
 class RemoveAppOperation: ResultOperation<InstalledApp>
@@ -32,50 +33,27 @@ class RemoveAppOperation: ResultOperation<InstalledApp>
             return
         }
         
-        guard let server = self.context.server, let installedApp = self.context.installedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
-        guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { return self.finish(.failure(OperationError.unknownUDID)) }
+        guard let installedApp = self.context.installedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         installedApp.managedObjectContext?.perform {
             let resignedBundleIdentifier = installedApp.resignedBundleIdentifier
             
-            ServerManager.shared.connect(to: server) { (result) in
-                switch result
-                {
-                case .failure(let error): self.finish(.failure(error))
-                case .success(let connection):
-                    print("Sending remove app request...")
-                    
-                    let request = RemoveAppRequest(udid: udid, bundleIdentifier: resignedBundleIdentifier)
-                    connection.send(request) { (result) in
-                        print("Sent remove app request!")
-                        
-                        switch result
-                        {
-                        case .failure(let error): self.finish(.failure(error))
-                        case .success:
-                            print("Waiting for remove app response...")
-                            connection.receiveResponse() { (result) in
-                                print("Receiving remove app response:", result)
-                                
-                                switch result
-                                {
-                                case .failure(let error): self.finish(.failure(error))
-                                case .success(.error(let response)): self.finish(.failure(response.error))
-                                case .success(.removeApp):
-                                    DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                                        self.progress.completedUnitCount += 1
-                                        
-                                        let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
-                                        installedApp.isActive = false
-                                        self.finish(.success(installedApp))
-                                    }
-                                    
-                                case .success: self.finish(.failure(ALTServerError(.unknownResponse)))
-                                }
-                            }
-                        }
-                    }
+            do {
+                let res = try remove_app(app_id: resignedBundleIdentifier)
+                if case Uhoh.Bad(let code) = res {
+                    self.finish(.failure(minimuxer_to_operation(code: code)))
                 }
+            } catch Uhoh.Bad(let code) {
+                self.finish(.failure(minimuxer_to_operation(code: code)))
+            } catch {
+                self.finish(.failure(ALTServerError(.appDeletionFailed)))
+            }
+            DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+                self.progress.completedUnitCount += 1
+                
+                let installedApp = context.object(with: installedApp.objectID) as! InstalledApp
+                installedApp.isActive = false
+                self.finish(.success(installedApp))
             }
         }
     }

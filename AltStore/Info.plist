@@ -11,6 +11,8 @@
 	<string>00008101-000129D63698001E</string>
 	<key>ALTServerID</key>
 	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
+	<key>ALTPairingFile</key>
+	<string>&lt;insert pairing file here&gt;</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>

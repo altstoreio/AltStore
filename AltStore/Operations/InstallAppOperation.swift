@@ -5,7 +5,6 @@
 //  Created by Riley Testut on 6/19/19.
 //  Copyright © 2019 Riley Testut. All rights reserved.
 //
-
 import Foundation
 import Network
 
@@ -41,8 +40,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
         
         guard
             let certificate = self.context.certificate,
-            let resignedApp = self.context.resignedApp,
-            let connection = self.context.installationConnection
+            let resignedApp = self.context.resignedApp
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
@@ -145,27 +143,16 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 })
             }
             
-            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: installedApp.resignedBundleIdentifier)
-            connection.send(request) { (result) in
-                switch result
-                {
-                case .failure(let error): self.finish(.failure(error))
-                case .success:
-                    
-                    self.receive(from: connection) { (result) in
-                        switch result
-                        {
-                        case .success:
-                            backgroundContext.perform {
-                                installedApp.refreshedDate = Date()
-                                self.finish(.success(installedApp))
-                            }
-                            
-                        case .failure(let error):
-                            self.finish(.failure(error))
-                        }
-                    }
-                }
+            let ns_bundle = NSString(string: installedApp.bundleIdentifier)
+            let ns_bundle_ptr = UnsafeMutablePointer<CChar>(mutating: ns_bundle.utf8String)
+            
+            let res = minimuxer_install_ipa(ns_bundle_ptr)
+            if res == 0 {
+                installedApp.refreshedDate = Date()
+                self.finish(.success(installedApp))
+
+            } else {
+                self.finish(.failure(minimuxer_to_operation(code: res)))
             }
         }
     }
@@ -195,42 +182,6 @@ class InstallAppOperation: ResultOperation<InstalledApp>
 
 private extension InstallAppOperation
 {
-    func receive(from connection: ServerConnection, completionHandler: @escaping (Result<Void, Error>) -> Void)
-    {
-        connection.receiveResponse() { (result) in
-            do
-            {
-                let response = try result.get()
-                print(response)
-                
-                switch response
-                {
-                case .installationProgress(let response):
-                    if response.progress == 1.0
-                    {
-                        self.progress.completedUnitCount = self.progress.totalUnitCount
-                        completionHandler(.success(()))
-                    }
-                    else
-                    {
-                        self.progress.completedUnitCount = Int64(response.progress * 100)
-                        self.receive(from: connection, completionHandler: completionHandler)
-                    }
-                    
-                case .error(let response):
-                    completionHandler(.failure(response.error))
-                    
-                default:
-                    completionHandler(.failure(ALTServerError(.unknownRequest)))
-                }
-            }
-            catch
-            {
-                completionHandler(.failure(ALTServerError(error)))
-            }
-        }
-    }
-    
     func cleanUp()
     {
         guard !self.didCleanUp else { return }

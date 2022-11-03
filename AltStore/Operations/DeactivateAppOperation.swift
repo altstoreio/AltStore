@@ -11,6 +11,7 @@ import Foundation
 import AltStoreCore
 import AltSign
 import Roxas
+import minimuxer
 
 @objc(DeactivateAppOperation)
 class DeactivateAppOperation: ResultOperation<InstalledApp>
@@ -36,54 +37,27 @@ class DeactivateAppOperation: ResultOperation<InstalledApp>
             return
         }
         
-        guard let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
-        guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { return self.finish(.failure(OperationError.unknownUDID)) }
-        
-        ServerManager.shared.connect(to: server) { (result) in
-            switch result
-            {
-            case .failure(let error): self.finish(.failure(error))
-            case .success(let connection):
-                print("Sending deactivate app request...")
-                
-                DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                    let installedApp = context.object(with: self.app.objectID) as! InstalledApp
-                    
-                    let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
-                    let allIdentifiers = [installedApp.resignedBundleIdentifier] + appExtensionProfiles
-                    
-                    let request = RemoveProvisioningProfilesRequest(udid: udid, bundleIdentifiers: Set(allIdentifiers))
-                    connection.send(request) { (result) in
-                        print("Sent deactive app request!")
-                        
-                        switch result
-                        {
-                        case .failure(let error): self.finish(.failure(error))
-                        case .success:
-                            print("Waiting for deactivate app response...")
-                            connection.receiveResponse() { (result) in
-                                print("Receiving deactivate app response:", result)
-                                
-                                switch result
-                                {
-                                case .failure(let error): self.finish(.failure(error))
-                                case .success(.error(let response)): self.finish(.failure(response.error))
-                                case .success(.removeProvisioningProfiles):
-                                    DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                                        self.progress.completedUnitCount += 1
-                                        
-                                        let installedApp = context.object(with: self.app.objectID) as! InstalledApp
-                                        installedApp.isActive = false
-                                        self.finish(.success(installedApp))
-                                    }
-                                    
-                                case .success: self.finish(.failure(ALTServerError(.unknownResponse)))
-                                }
-                            }
-                        }
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
+            let installedApp = context.object(with: self.app.objectID) as! InstalledApp
+            let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
+            let allIdentifiers = [installedApp.resignedBundleIdentifier] + appExtensionProfiles
+            
+            for profile in allIdentifiers {
+                do {
+                    let res = try remove_provisioning_profile(id: profile)
+                    if case Uhoh.Bad(let code) = res {
+                        self.finish(.failure(minimuxer_to_operation(code: code)))
                     }
+                } catch Uhoh.Bad(let code) {
+                    self.finish(.failure(minimuxer_to_operation(code: code)))
+                } catch {
+                    self.finish(.failure(ALTServerError(.unknownResponse)))
                 }
             }
+            
+            self.progress.completedUnitCount += 1
+            installedApp.isActive = false
+            self.finish(.success(installedApp))
         }
     }
 }

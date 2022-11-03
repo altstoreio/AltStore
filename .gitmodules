@@ -3,7 +3,7 @@
 	url = https://github.com/rileytestut/Roxas.git
 [submodule "Dependencies/libimobiledevice"]
 	path = Dependencies/libimobiledevice
-	url = https://github.com/SideStore/libimobiledevice.git
+	url = https://github.com/libimobiledevice/libimobiledevice
 [submodule "Dependencies/libusbmuxd"]
 	path = Dependencies/libusbmuxd
 	url = https://github.com/libimobiledevice/libusbmuxd.git
@@ -13,3 +13,12 @@
 [submodule "Dependencies/MarkdownAttributedString"]
 	path = Dependencies/MarkdownAttributedString
 	url = https://github.com/chockenberry/MarkdownAttributedString.git
+[submodule "Dependencies/em_proxy"]
+	path = Dependencies/em_proxy
+	url = https://github.com/jkcoxson/em_proxy
+[submodule "Dependencies/libimobiledevice-glue"]
+	path = Dependencies/libimobiledevice-glue
+	url = https://github.com/libimobiledevice/libimobiledevice-glue
+[submodule "Dependencies/minimuxer"]
+	path = Dependencies/minimuxer
+	url = https://github.com/jkcoxson/minimuxer

@@ -8,6 +8,8 @@
 
 import UIKit
 import Roxas
+import EmotionalDamage
+import minimuxer
 
 import AltStoreCore
 
@@ -36,6 +38,12 @@ class LaunchViewController: RSTLaunchViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        start_em_proxy(bind_addr: "127.0.0.1:51820")
+        
+        let pf = Bundle.main.object(forInfoDictionaryKey: "ALTPairingFile") as? String
+        set_usbmuxd_socket()
+        start_minimuxer(pairing_file: pf.unsafelyUnwrapped)
+        auto_mount_dev_image()
         
         // Create destinationViewController now so view controllers can register for receiving Notifications.
         self.destinationViewController = self.storyboard!.instantiateViewController(withIdentifier: "tabBarController") as! TabBarController

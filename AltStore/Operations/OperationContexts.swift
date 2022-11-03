@@ -15,16 +15,14 @@ import AltSign
 
 class OperationContext
 {
-    var server: Server?
     var error: Error?
     
     var presentingViewController: UIViewController?
     
     let operations: NSHashTable<Foundation.Operation>
     
-    init(server: Server? = nil, error: Error? = nil, operations: [Foundation.Operation] = [])
+    init(error: Error? = nil, operations: [Foundation.Operation] = [])
     {
-        self.server = server
         self.error = error
         
         self.operations = NSHashTable<Foundation.Operation>.weakObjects()
@@ -36,7 +34,7 @@ class OperationContext
     
     convenience init(context: OperationContext)
     {
-        self.init(server: context.server, error: context.error, operations: context.operations.allObjects)
+        self.init(error: context.error, operations: context.operations.allObjects)
     }
 }
 
@@ -51,7 +49,7 @@ class AuthenticatedOperationContext: OperationContext
     
     convenience init(context: AuthenticatedOperationContext)
     {
-        self.init(server: context.server, error: context.error, operations: context.operations.allObjects)
+        self.init(error: context.error, operations: context.operations.allObjects)
         
         self.session = context.session
         self.team = context.team
@@ -105,7 +103,6 @@ class InstallAppOperationContext: AppOperationContext
     }()
     
     var resignedApp: ALTApplication?
-    var installationConnection: ServerConnection?
     var installedApp: InstalledApp? {
         didSet {
             self.installedAppContext = self.installedApp?.managedObjectContext
