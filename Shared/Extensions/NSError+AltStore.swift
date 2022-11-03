@@ -16,6 +16,8 @@ import AppKit
 public typealias ALTFont = NSFont
 #endif
 
+import AltSign
+
 public extension NSError
 {
     @objc(alt_localizedFailure)
@@ -134,6 +136,8 @@ public extension NSError
             NSLocalizedFailureReasonErrorKey,
             NSLocalizedRecoverySuggestionErrorKey,
             ALTLocalizedTitleErrorKey,
+            ALTSourceFileErrorKey,
+            ALTSourceLineErrorKey,
             NSUnderlyingErrorKey
         ]
         
@@ -175,6 +179,8 @@ public extension NSError
             case NSLocalizedFailureReasonErrorKey: keyName = NSLocalizedString("Failure Reason", comment: "")
             case NSLocalizedRecoverySuggestionErrorKey: keyName = NSLocalizedString("Recovery Suggestion", comment: "")
             case ALTLocalizedTitleErrorKey: keyName = NSLocalizedString("Title", comment: "")
+            case ALTSourceFileErrorKey: keyName = NSLocalizedString("Source File", comment: "")
+            case ALTSourceLineErrorKey: keyName = NSLocalizedString("Source Line", comment: "")
             case NSUnderlyingErrorKey: keyName = NSLocalizedString("Underlying Error", comment: "")
             default:
                 if #available(iOS 14.5, macOS 11.3, *), key == NSMultipleUnderlyingErrorsKey

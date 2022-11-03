@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AltSign
 
 public let ALTLocalizedTitleErrorKey = "ALTLocalizedTitle"
 public let ALTLocalizedDescriptionKey = "ALTLocalizedDescription"
@@ -20,6 +21,22 @@ public protocol ALTLocalizedError<Code>: LocalizedError, CustomNSError, CustomSt
     
     var errorTitle: String? { get set }
     var errorFailure: String? { get set }
+    
+    var sourceFile: String? { get set }
+    var sourceLine: UInt? { get set }
+}
+
+public extension ALTLocalizedError
+{
+    var sourceFile: String? {
+        get { nil }
+        set {}
+    }
+    
+    var sourceLine: UInt? {
+        get { nil }
+        set {}
+    }
 }
 
 public protocol ALTErrorCode: RawRepresentable where RawValue == Int
@@ -56,12 +73,14 @@ public extension ALTLocalizedError
     }
     
     var errorUserInfo: [String : Any] {
-        let userInfo: [String: Any] = [
+        let userInfo: [String: Any?] = [
             NSLocalizedFailureErrorKey: self.errorFailure,
-            ALTLocalizedTitleErrorKey: self.errorTitle
-        ].compactMapValues { $0 }
+            ALTLocalizedTitleErrorKey: self.errorTitle,
+            ALTSourceFileErrorKey: self.sourceFile,
+            ALTSourceLineErrorKey: self.sourceLine,
+        ]
         
-        return userInfo
+        return userInfo.compactMapValues { $0 }
     }
     
     var description: String {
@@ -119,12 +138,16 @@ public struct DefaultLocalizedError<Code: ALTErrorEnum>: ALTLocalizedError
 
     public var errorTitle: String?
     public var errorFailure: String?
+    public var sourceFile: String?
+    public var sourceLine: UInt?
 
-    public init(_ code: Code, localizedTitle: String? = nil, localizedFailure: String? = nil)
+    public init(_ code: Code, localizedTitle: String? = nil, localizedFailure: String? = nil, sourceFile: String? = #fileID, sourceLine: UInt? = #line)
     {
         self.code = code
         self.errorTitle = localizedTitle
         self.errorFailure = localizedFailure
+        self.sourceFile = sourceFile
+        self.sourceLine = sourceLine
     }
 }
 
