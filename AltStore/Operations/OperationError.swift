@@ -51,8 +51,8 @@ extension OperationError
     static let connectionFailed: OperationError = .init(code: .connectionFailed)
     static let connectionDropped: OperationError = .init(code: .connectionDropped)
     
-    static func unknown(file: String = #fileID, line: UInt = #line, function: String = #function) -> OperationError {
-        OperationError(code: .unknown, sourceFile: file, sourceLine: line, sourceFunction: function)
+    static func unknown(file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .unknown, sourceFile: file, sourceLine: line)
     }
     
     static func appNotFound(name: String?) -> OperationError { OperationError(code: .appNotFound, appName: name) }
@@ -77,10 +77,9 @@ struct OperationError: ALTLocalizedError
     
     var sourceFile: String?
     var sourceLine: UInt?
-    var sourceFunction: String?
     
     private init(code: Code, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil,
-                 sourceFile: String? = nil, sourceLine: UInt? = nil, sourceFunction: String? = nil)
+                 sourceFile: String? = nil, sourceLine: UInt? = nil)
     {
         self.code = code
         self.appName = appName
@@ -89,7 +88,6 @@ struct OperationError: ALTLocalizedError
         self.expirationDate = expirationDate
         self.sourceFile = sourceFile
         self.sourceLine = sourceLine
-        self.sourceFunction = sourceFunction
     }
     
     var errorFailureReason: String {
@@ -97,9 +95,9 @@ struct OperationError: ALTLocalizedError
         {
         case .unknown:
             var failureReason = NSLocalizedString("An unknown error occured.", comment: "")
-            guard let sourceFile, let sourceLine, let sourceFunction else { return failureReason }
+            guard let sourceFile, let sourceLine else { return failureReason }
             
-            failureReason += " (\(sourceFile) \(sourceFunction) line \(sourceLine))"
+            failureReason += " (\(sourceFile) line \(sourceLine))"
             return failureReason
             
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
