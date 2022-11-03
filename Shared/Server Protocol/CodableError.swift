@@ -26,7 +26,6 @@ extension CodableError
         case unknown
         case string(String)
         case number(Int)
-        case date(Date)
         case error(NSError)
         case codableError(CodableError)
         indirect case array([UserInfoValue])
@@ -38,7 +37,6 @@ extension CodableError
             case .unknown: return nil
             case .string(let string): return string
             case .number(let number): return number
-            case .date(let date): return date
             case .error(let error): return error
             case .codableError(let error): return error.error
             case .array(let array): return array
@@ -52,7 +50,6 @@ extension CodableError
             {
             case let string as String: self = .string(string)
             case let number as Int: self = .number(number)
-            case let date as Date: self = .date(date)
             case let error as NSError: self = .codableError(CodableError(error: error))
             case let array as [Any]: self = .array(array.compactMap(UserInfoValue.init))
             case let dictionary as [String: Any]: self = .dictionary(dictionary.compactMapValues(UserInfoValue.init))
@@ -81,10 +78,6 @@ extension CodableError
             else if let number = try? container.decode(Int.self)
             {
                 self = .number(number)
-            }
-            else if let date = try? container.decode(Date.self)
-            {
-                self = .date(date)
             }
             else if let array = try? container.decode([UserInfoValue].self)
             {
