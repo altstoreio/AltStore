@@ -289,7 +289,7 @@ private extension ALTDeviceManager
             }
             else
             {
-                completionHandler(.failure(error ?? ALTAppleAPIError(.unknown)))
+                completionHandler(.failure(error ?? ALTAppleAPIError.unknown()))
             }
         }
     }

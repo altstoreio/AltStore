@@ -249,7 +249,11 @@ char *bin2hex(const unsigned char *bin, size_t length)
             {
                 if (error)
                 {
-                    *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: response}];
+                    *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{
+                        NSLocalizedFailureReasonErrorKey: response,
+                        ALTSourceFileErrorKey: @(__FILE__).lastPathComponent,
+                        ALTSourceLineErrorKey: @(__LINE__)
+                    }];
                 }
                 
                 return NO;
@@ -292,7 +296,11 @@ char *bin2hex(const unsigned char *bin, size_t length)
                         break;
                         
                     default:
-                        *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: response}];
+                        *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{
+                            NSLocalizedFailureReasonErrorKey: response,
+                            ALTSourceFileErrorKey: @(__FILE__).lastPathComponent,
+                            ALTSourceLineErrorKey: @(__LINE__)
+                        }];
                         break;
                 }
             }
