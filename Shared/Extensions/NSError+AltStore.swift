@@ -142,7 +142,14 @@ public extension NSError
             preferredKeyOrder.append(NSMultipleUnderlyingErrorsKey)
         }
         
-        let sortedUserInfo = self.userInfo.sorted { (a, b) in
+        var userInfo = self.userInfo
+        userInfo[NSDebugDescriptionErrorKey] = self.localizedDebugDescription
+        userInfo[NSLocalizedDescriptionKey] = self.localizedDescription
+        userInfo[NSLocalizedFailureErrorKey] = self.localizedFailure
+        userInfo[NSLocalizedFailureReasonErrorKey] = self.localizedFailureReason
+        userInfo[NSLocalizedRecoverySuggestionErrorKey] = self.localizedRecoverySuggestion
+        
+        let sortedUserInfo = userInfo.sorted { (a, b) in
             let indexA = preferredKeyOrder.firstIndex(of: a.key)
             let indexB = preferredKeyOrder.firstIndex(of: b.key)
             
