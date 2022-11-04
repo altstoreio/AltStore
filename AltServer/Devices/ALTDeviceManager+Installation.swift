@@ -41,7 +41,7 @@ extension ALTDeviceManager
         
         var appName = (url.isFileURL) ? url.deletingPathExtension().lastPathComponent : NSLocalizedString("AltStore", comment: "")
         
-        func finish(_ result: Result<ALTApplication, Error>, title: String = "")
+        func finish(_ result: Result<ALTApplication, Error>, failure: String? = nil)
         {
             DispatchQueue.main.async {
                 switch result
@@ -49,6 +49,12 @@ extension ALTDeviceManager
                 case .success(let app): completion(.success(app))
                 case .failure(var error as NSError):
                     error = error.withLocalizedTitle(String(format: NSLocalizedString("%@ could not be installed onto %@.", comment: ""), appName, altDevice.name))
+                    
+                    if let failure, error.localizedFailure == nil
+                    {
+                        error = error.withLocalizedFailure(failure)
+                    }
+                    
                     completion(.failure(error))
                 }
             }
@@ -127,24 +133,25 @@ extension ALTDeviceManager
                                                                                 let profiles = try result.get()
                                                                                 
                                                                                 self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
-                                                                                    finish(result.map { application }, title: "Failed to Install AltStore")
+                                                                                    finish(result.map { application })
                                                                                 }
                                                                             }
                                                                             catch
                                                                             {
-                                                                                finish(.failure(error), title: "Failed to Fetch Provisioning Profiles")
+                                                                                finish(.failure(error), failure: NSLocalizedString("AltServer could not fetch new provisioning profiles.", comment: ""))
                                                                             }
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(.failure(error), title: "Failed to Refresh Anisette Data")
+                                                                        finish(.failure(error))
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(.failure(error), title: "Failed to Download AltStore")
+                                                                let failure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), appName)
+                                                                finish(.failure(error), failure: failure)
                                                             }
                                                         }
                                                     }
@@ -152,31 +159,31 @@ extension ALTDeviceManager
                                             }
                                             catch
                                             {
-                                                finish(.failure(error), title: "Failed to Fetch Certificate")
+                                                finish(.failure(error), failure: NSLocalizedString("A valid signing certificate could not be created.", comment: ""))
                                             }
                                         }
                                     }
                                     catch
                                     {
-                                        finish(.failure(error), title: "Failed to Register Device")
+                                        finish(.failure(error), failure: NSLocalizedString("Your device could not be registered with your development team.", comment: ""))
                                     }
                                 }
                             }
                             catch
                             {
-                                finish(.failure(error), title: "Failed to Fetch Team")
+                                finish(.failure(error))
                             }
                         }
                     }
                     catch
                     {
-                        finish(.failure(error), title: "Failed to Authenticate")
+                        finish(.failure(error), failure: NSLocalizedString("AltServer could not sign in with your Apple ID.", comment: ""))
                     }
                 }
             }
             catch
             {
-                finish(.failure(error), title: "Failed to Fetch Anisette Data")
+                finish(.failure(error))
             }
         }
     }
