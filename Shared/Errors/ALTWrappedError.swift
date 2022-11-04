@@ -18,7 +18,14 @@ public class ALTWrappedError: NSError
     
     public init(error: Error, userInfo: [String: Any])
     {
-        self.wrappedError = error
+        if let wrappedError = error as? ALTWrappedError
+        {
+            self.wrappedError = wrappedError.wrappedError
+        }
+        else
+        {
+            self.wrappedError = error
+        }        
         
         super.init(domain: error._domain, code: error._code, userInfo: userInfo)
     }
