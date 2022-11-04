@@ -17,7 +17,7 @@ extension OperationError
         typealias Error = OperationError
         
         /* General */
-        case unknown
+        case unknown = 1000
         case unknownResult
         case cancelled
         case timedOut
@@ -32,7 +32,7 @@ extension OperationError
         case missingAppGroup
         
         /* Connection */
-        case serverNotFound
+        case serverNotFound = 1200
         case connectionFailed
         case connectionDropped
     }
