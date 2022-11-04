@@ -82,8 +82,7 @@ private extension ErrorLogViewController
             
             switch loggedError.domain
             {
-            case AltServerErrorDomain: cell.errorCodeLabel?.text = String(format: NSLocalizedString("AltServer Error %@", comment: ""), NSNumber(value: loggedError.code))
-            case OperationError.errorDomain: cell.errorCodeLabel?.text = String(format: NSLocalizedString("AltStore Error %@", comment: ""), NSNumber(value: loggedError.code))
+            case AltServerErrorDomain: cell.errorCodeLabel?.text = String(format: NSLocalizedString("AltServer.Error %@", comment: ""), NSNumber(value: loggedError.code))
             default: cell.errorCodeLabel?.text = loggedError.error.localizedErrorCode
             }
             
