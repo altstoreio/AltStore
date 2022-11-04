@@ -106,7 +106,7 @@ public extension ALTLocalizedError where Code: ALTErrorEnum
 public extension ALTErrorCode
 {
     static var errorDomain: String {
-        let typeName = "\(Self.self)"
+        let typeName = String(reflecting: Self.self) // "\(Self.self)" doesn't include module name, but String(reflecting:) does.
         let errorDomain = typeName.replacingOccurrences(of: "ErrorCode", with: "Error")
         return errorDomain
     }
