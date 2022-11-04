@@ -104,20 +104,23 @@ struct OperationError: ALTLocalizedError
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
         case .timedOut: return NSLocalizedString("The operation timed out.", comment: "")
         case .notAuthenticated: return NSLocalizedString("You are not signed in.", comment: "")
-        case .appNotFound: return NSLocalizedString("App not found.", comment: "")
-        case .unknownUDID: return NSLocalizedString("Unknown device UDID.", comment: "")
-        case .invalidApp: return NSLocalizedString("The app is invalid.", comment: "")
+        case .unknownUDID: return NSLocalizedString("AltStore could not determine this device's UDID.", comment: "")
+        case .invalidApp: return NSLocalizedString("The app is in an invalid format.", comment: "")
         case .invalidParameters: return NSLocalizedString("Invalid parameters.", comment: "")
+        case .maximumAppIDLimitReached: return NSLocalizedString("You cannot register more than 10 App IDs within a 7 day period.", comment: "")
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
+        case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be accessed.", comment: "")
+
+        case .appNotFound:
+            let appName = self.appName ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ could not be found.", comment: ""), appName)
+
         case .openAppFailed:
             let appName = self.appName ?? NSLocalizedString("the app", comment: "")
             return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), appName)
-            
-        case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be found.", comment: "")
-        case .maximumAppIDLimitReached: return NSLocalizedString("Cannot register more than 10 App IDs.", comment: "")
 
-        case .serverNotFound: return NSLocalizedString("Could not find AltServer.", comment: "")
-        case .connectionFailed: return NSLocalizedString("Could not connect to AltServer.", comment: "")
+        case .serverNotFound: return NSLocalizedString("AltServer could not be found.", comment: "")
+        case .connectionFailed: return NSLocalizedString("A connection to AltServer could not be established.", comment: "")
         case .connectionDropped: return NSLocalizedString("The connection to AltServer was dropped.", comment: "")
         }
     }
@@ -125,11 +128,12 @@ struct OperationError: ALTLocalizedError
     var recoverySuggestion: String? {
         switch self.code
         {
+        case .serverNotFound: return NSLocalizedString("Make sure you're on the same WiFi network as a computer running AltServer, or try connecting this device to your computer via USB.", comment: "")
         case .maximumAppIDLimitReached:
             let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")
             guard let appName = self.appName, let requiredAppIDs = self.requiredAppIDs, let availableAppIDs = self.availableAppIDs, let date = self.expirationDate else { return baseMessage }
             
-            let message: String
+            var message: String = ""
             
             if requiredAppIDs > 1
             {
@@ -143,21 +147,23 @@ struct OperationError: ALTLocalizedError
                 }
                 
                 let prefixMessage = String(format: NSLocalizedString("%@ requires %@ App IDs, but %@.", comment: ""), appName, NSNumber(value: requiredAppIDs), availableText)
-                message = prefixMessage + " " + baseMessage
+                message = prefixMessage + " " + baseMessage + "\n\n"
             }
             else
             {
-                let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute], from: Date(), to: date)
-                
-                let dateComponentsFormatter = DateComponentsFormatter()
-                dateComponentsFormatter.maximumUnitCount = 1
-                dateComponentsFormatter.unitsStyle = .full
-                
-                let remainingTime = dateComponentsFormatter.string(from: dateComponents)!
-                
-                let remainingTimeMessage = String(format: NSLocalizedString("You can register another App ID in %@.", comment: ""), remainingTime)
-                message = baseMessage + " " + remainingTimeMessage
+                message = baseMessage + " "
             }
+            
+            let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute], from: Date(), to: date)
+            
+            let dateComponentsFormatter = DateComponentsFormatter()
+            dateComponentsFormatter.maximumUnitCount = 1
+            dateComponentsFormatter.unitsStyle = .full
+            
+            let remainingTime = dateComponentsFormatter.string(from: dateComponents)!
+            
+            let remainingTimeMessage = String(format: NSLocalizedString("You can register another App ID in %@.", comment: ""), remainingTime)
+            message += remainingTimeMessage
             
             return message
             
