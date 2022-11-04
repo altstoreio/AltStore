@@ -15,8 +15,8 @@
 #endif
 
 NSErrorDomain const AltServerErrorDomain = @"com.rileytestut.AltServer";
-NSErrorDomain const AltServerInstallationErrorDomain = @"com.rileytestut.AltServer.Installation";
-NSErrorDomain const AltServerConnectionErrorDomain = @"com.rileytestut.AltServer.Connection";
+NSErrorDomain const AltServerInstallationErrorDomain = @"Apple.InstallationError";
+NSErrorDomain const AltServerConnectionErrorDomain = @"AltServer.ConnectionError";
 
 NSErrorUserInfoKey const ALTUnderlyingErrorDomainErrorKey = @"underlyingErrorDomain";
 NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey = @"underlyingErrorCode";
