@@ -3099,7 +3099,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				MARKETING_VERSION = 1.5.1b;
+				MARKETING_VERSION = 1.0.0b;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3149,7 +3149,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
-				MARKETING_VERSION = 1.5.1b;
+				MARKETING_VERSION = 1.0.0b;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3632,7 +3632,7 @@
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/debug",
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/release",
 				);
-				MARKETING_VERSION = 1.5.1b;
+				MARKETING_VERSION = 1.0.0b;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3669,7 +3669,7 @@
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/debug",
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/release",
 				);
-				MARKETING_VERSION = 1.5.1b;
+				MARKETING_VERSION = 1.0.0b;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
