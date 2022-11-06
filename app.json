@@ -1,11 +1,11 @@
 {
   "name": "SideStore Offical",
-  "identifier": "com.SideStore.AltStore",
+  "identifier": "com.SideStore.SideStore",
   "sourceURL": "https://raw.githubusercontent.com/Spidy123222/apps.json/main/app.json",
   "apps": [
     {
-      "name": "Altstore",
-      "bundleIdentifier": "com.SideStore.AltStore",
+      "name": "SideStore",
+      "bundleIdentifier": "com.SideStore.SideStore",
       "developerName": "Side Team",
       "version": "1.5.2b",
       "versionDate": "2022-07-14T12:00:00-05:00",
@@ -68,7 +68,7 @@
       "identifier": "updated-faq",
       "caption": "Check out our updated guide to learn how to sideload apps!",
       "tintColor": "8043FF",
-      "url": "https://faq.altstore.io",
+      "url": "https://faq.sidestore.io",
       "date": "2050-07-28",
       "notify": false
     }

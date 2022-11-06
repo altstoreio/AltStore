@@ -91,8 +91,6 @@
 	<array>
 		<string>_altserver._tcp</string>
 	</array>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>SideStore uses the local network to find and communicate with SideServer.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>RefreshAllIntent</string>

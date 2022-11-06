@@ -203,7 +203,7 @@ struct LockScreenWidget: Widget
             }
             .supportedFamilies([.accessoryCircular])
             .configurationDisplayName("AltWidget")
-            .description("View remaining days until AltStore expires.")
+            .description("View remaining days until SideStore expires.")
         }
         else
         {

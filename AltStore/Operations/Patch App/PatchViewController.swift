@@ -114,12 +114,12 @@ private extension PatchViewController
             if UIDevice.current.isUntetheredJailbreakRequired
             {
                 self.placeholderView.textLabel.text = NSLocalizedString("Jailbreak Requires Untethering", comment: "")
-                self.placeholderView.detailTextLabel.text = String(format: NSLocalizedString("This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ", comment: ""), app.name)
+                self.placeholderView.detailTextLabel.text = String(format: NSLocalizedString("This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but SideStore will walk you through the process.\n\nWould you like to continue? ", comment: ""), app.name)
             }
             else
             {
                 self.placeholderView.textLabel.text = NSLocalizedString("Jailbreak Supports Untethering", comment: "")
-                self.placeholderView.detailTextLabel.text = String(format: NSLocalizedString("This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ", comment: ""), app.name)
+                self.placeholderView.detailTextLabel.text = String(format: NSLocalizedString("This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but SideStore will walk you through the process.\n\nWould you like to continue? ", comment: ""), app.name)
             }
             
             self.pillButton.setTitle(NSLocalizedString("Install Untethered Jailbreak", comment: ""), for: .normal)

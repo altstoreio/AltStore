@@ -178,7 +178,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Receive access to beta versions of AltStore, Delta, and more by becoming a patron.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Support the SideStore Team by becoming a patron!", comment: "")
             }
 
         case .account:
@@ -195,7 +195,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as SideServer.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to Wi-Fi.", comment: "")
             }
             
         case .instructions:
@@ -468,8 +468,8 @@ extension SettingsViewController
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer: self.openTwitter(username: "SideTeam")
-            case .operations: self.openTwitter(username: "shanegillio")
+            case .developer: self.openTwitter(username: "sidestore_io")
+            case .operations: self.openTwitter(username: "sidestore_io")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
             }
@@ -483,15 +483,15 @@ extension SettingsViewController
                 {
                     let mailViewController = MFMailComposeViewController()
                     mailViewController.mailComposeDelegate = self
-                    mailViewController.setToRecipients(["support@altstore.io"])
+                    mailViewController.setToRecipients(["support@sidestore.io"])
                     
                     if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
                     {
-                        mailViewController.setSubject("AltStore Beta \(version) Feedback")
+                        mailViewController.setSubject("SideStore Beta \(version) Feedback")
                     }
                     else
                     {
-                        mailViewController.setSubject("AltStore Beta Feedback")
+                        mailViewController.setSubject("SideStore Beta Feedback")
                     }
                     
                     self.present(mailViewController, animated: true, completion: nil)

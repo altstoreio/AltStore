@@ -83,23 +83,23 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
 #if TARGET_OS_OSX
             return NSLocalizedString(@"There was an error connecting to the device.", @"");
 #else
-            return NSLocalizedString(@"Could not connect to AltServer.", @"");
+            return NSLocalizedString(@"Could not connect to SideStore.", @"");
 #endif
             
         case ALTServerErrorLostConnection:
-            return NSLocalizedString(@"Lost connection to AltServer.", @"");
+            return NSLocalizedString(@"Lost connection to SideStore.", @"");
             
         case ALTServerErrorDeviceNotFound:
-            return NSLocalizedString(@"AltServer could not find this device.", @"");
+            return NSLocalizedString(@"SideStore could not find this device.", @"");
             
         case ALTServerErrorDeviceWriteFailed:
             return NSLocalizedString(@"Failed to write app data to device.", @"");
             
         case ALTServerErrorInvalidRequest:
-            return NSLocalizedString(@"AltServer received an invalid request.", @"");
+            return NSLocalizedString(@"SideStore received an invalid request.", @"");
             
         case ALTServerErrorInvalidResponse:
-            return NSLocalizedString(@"AltServer sent an invalid response.", @"");
+            return NSLocalizedString(@"SideStore sent an invalid response.", @"");
             
         case ALTServerErrorInvalidApp:
             return NSLocalizedString(@"The app is invalid.", @"");
@@ -111,13 +111,13 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             return NSLocalizedString(@"Cannot activate more than 3 apps with a non-developer Apple ID.", @"");
             
         case ALTServerErrorUnsupportediOSVersion:
-            return NSLocalizedString(@"Your device must be running iOS 12.2 or later to install AltStore.", @"");
+            return NSLocalizedString(@"Your device must be running iOS 12.2 or later to install SideStore.", @"");
             
         case ALTServerErrorUnknownRequest:
-            return NSLocalizedString(@"AltServer does not support this request.", @"");
+            return NSLocalizedString(@"SideStore does not support this request.", @"");
             
         case ALTServerErrorUnknownResponse:
-            return NSLocalizedString(@"Received an unknown response from AltServer.", @"");
+            return NSLocalizedString(@"Received an unknown response from SideStore.", @"");
             
         case ALTServerErrorInvalidAnisetteData:
             return NSLocalizedString(@"The provided anisette data is invalid.", @"");
@@ -162,7 +162,7 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             
         case ALTServerErrorMaximumFreeAppLimitReached:
 #if TARGET_OS_OSX
-            return NSLocalizedString(@"Please deactivate a sideloaded app with AltStore in order to install another app.\n\nIf you're running iOS 13.5 or later, make sure 'Offload Unused Apps' is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps to prevent them from erroneously counting towards this limit.", @"");
+            return NSLocalizedString(@"Please deactivate a sideloaded app with SideStore in order to install another app.\n\nIf you're running iOS 13.5 or later, make sure 'Offload Unused Apps' is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps to prevent them from erroneously counting towards this limit.", @"");
 #else
             return NSLocalizedString(@"Please deactivate a sideloaded app in order to install another one.\n\nIf you're running iOS 13.5 or later, make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps.", @"");
 #endif
@@ -262,13 +262,13 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
         case ALTServerConnectionErrorInvalidRequest:
         {
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"The device", @"");
-            return [NSString stringWithFormat:NSLocalizedString(@"%@ received an invalid request from AltServer.", @""), deviceName];
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ received an invalid request from SideStore.", @""), deviceName];
         }
             
         case ALTServerConnectionErrorInvalidResponse:
         {
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
-            return [NSString stringWithFormat:NSLocalizedString(@"AltServer received an invalid response from %@.", @""), deviceName];
+            return [NSString stringWithFormat:NSLocalizedString(@"SideStore received an invalid response from %@.", @""), deviceName];
         }
             
         case ALTServerConnectionErrorUsbmuxd:
@@ -279,13 +279,13 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
         case ALTServerConnectionErrorSSL:
         {
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
-            return [NSString stringWithFormat:NSLocalizedString(@"AltServer could not establish a secure connection to %@.", @""), deviceName];
+            return [NSString stringWithFormat:NSLocalizedString(@"SideStore could not establish a secure connection to %@.", @""), deviceName];
         }
             
         case ALTServerConnectionErrorTimedOut:
         {
             NSString *deviceName = self.userInfo[ALTDeviceNameErrorKey] ?: NSLocalizedString(@"the device", @"");
-            return [NSString stringWithFormat:NSLocalizedString(@"AltServer's connection to %@ timed out.", @""), deviceName];
+            return [NSString stringWithFormat:NSLocalizedString(@"SideStore's connection to %@ timed out.", @""), deviceName];
         }
     }
     

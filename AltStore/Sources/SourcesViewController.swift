@@ -25,7 +25,7 @@ struct SourceError: LocalizedError
     var errorDescription: String? {
         switch self.code
         {
-        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
+        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of SideStore.", comment: ""), self.$source.name)
         }
     }
 }
@@ -506,7 +506,7 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
             switch Section.allCases[indexPath.section]
             {
             case .added:
-                headerView.textLabel.text = NSLocalizedString("Sources control what apps are available to download through AltStore.", comment: "")
+                headerView.textLabel.text = NSLocalizedString("Sources control what apps are available to download through SideStore.", comment: "")
                 headerView.textLabel.font = UIFont.preferredFont(forTextStyle: .callout)
                 headerView.textLabel.textAlignment = .natural
                 
@@ -546,13 +546,13 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
                 footerView.textView.delegate = self
                 
                 let attributedText = NSMutableAttributedString(
-                    string: NSLocalizedString("AltStore has reviewed these sources to make sure they meet our safety standards.\n\nSupport for untrusted sources is currently in beta, but you can help test them out by", comment: ""),
+                    string: NSLocalizedString("SideStore has reviewed these sources to make sure they meet our safety standards.\n\nSupport for untrusted sources is currently in beta, but you can help test them out by", comment: ""),
                     attributes: [.font: font, .foregroundColor: UIColor.gray]
                 )
                 attributedText.mutableString.append(" ")
                 
                 let boldedFont = UIFont(descriptor: font.fontDescriptor.withSymbolicTraits(.traitBold)!, size: font.pointSize)
-                let openPatreonURL = URL(string: "https://altstore.io/patreon")!
+                let openPatreonURL = URL(string: "https://SideStore.io/patreon")!
                 
                 let joinPatreonText = NSAttributedString(
                     string: NSLocalizedString("joining our Patreon.", comment: ""),

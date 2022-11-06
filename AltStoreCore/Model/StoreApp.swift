@@ -15,11 +15,11 @@ import AltSign
 public extension StoreApp
 {
     #if ALPHA
-    static let altstoreAppID = "com.SideStore.AltStore"
+    static let altstoreAppID = "com.SideStore.SideStore"
     #elseif BETA
-    static let altstoreAppID = "com.SideStore.AltStore"
+    static let altstoreAppID = "com.SideStore.SideStore"
     #else
-    static let altstoreAppID = "com.SideStore.AltStore"
+    static let altstoreAppID = "com.SideStore.SideStore"
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
@@ -247,10 +247,10 @@ public extension StoreApp
     class func makeAltStoreApp(in context: NSManagedObjectContext) -> StoreApp
     {
         let app = StoreApp(context: context)
-        app.name = "AltStore"
+        app.name = "SideStore"
         app.bundleIdentifier = StoreApp.altstoreAppID
         app.developerName = "Side Team"
-        app.localizedDescription = "AltStore is an alternative App Store."
+        app.localizedDescription = "SideStore is an alternative App Store."
         app.iconURL = URL(string: "https://user-images.githubusercontent.com/705880/63392210-540c5980-c37b-11e9-968c-8742fc68ab2e.png")!
         app.screenshotURLs = []
         app.version = "1.0"

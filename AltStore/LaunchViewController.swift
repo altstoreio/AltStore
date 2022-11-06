@@ -60,7 +60,7 @@ extension LaunchViewController
         }
         catch let error as NSError
         {
-            let title = error.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch AltStore", comment: "")
+            let title = error.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch SideStore", comment: "")
             
             let alertController = UIAlertController(title: title, message: error.localizedDescription, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: ""), style: .default, handler: { (action) in

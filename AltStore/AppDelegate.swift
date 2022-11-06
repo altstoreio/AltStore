@@ -264,7 +264,7 @@ extension AppDelegate
 
             let content = UNMutableNotificationContent()
             content.title = NSLocalizedString("App Refresh Tip", comment: "")
-            content.body = NSLocalizedString("The more you open AltStore, the more chances it's given to refresh apps in the background.", comment: "")
+            content.body = NSLocalizedString("The more you open SideStore, the more chances it's given to refresh apps in the background.", comment: "")
 
             let request = UNNotificationRequest(identifier: "background-refresh-reminder5", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
@@ -392,7 +392,7 @@ private extension AppDelegate
                     }
                     else
                     {
-                        content.title = NSLocalizedString("AltStore News", comment: "")
+                        content.title = NSLocalizedString("SideStore News", comment: "")
                     }
 
                     content.body = newsItem.title

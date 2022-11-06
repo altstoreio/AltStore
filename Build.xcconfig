@@ -13,7 +13,7 @@ ORG_IDENTIFIER = com.joemattiello
 
 ORG_PREFIX = $(ORG_IDENTIFIER)
 
-PRODUCT_NAME = AltStore
+PRODUCT_NAME = SideStore
 //PRODUCT_NAME[configuration=Debug] = Prov Debug
 
 PRODUCT_BUNDLE_IDENTIFIER   = $(ORG_PREFIX).$(PROJECT_NAME)
