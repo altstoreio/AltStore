@@ -13,11 +13,11 @@ import Roxas
 
 extension CFNotificationName
 {
-    fileprivate static let willAccessDatabase = CFNotificationName("com.rileytestut.AltStore.WillAccessDatabase" as CFString)
+    fileprivate static let willMigrateDatabase = CFNotificationName("com.rileytestut.AltStore.WillMigrateDatabase" as CFString)
 }
 
-private let ReceivedWillAccessDatabaseNotification: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void = { (center, observer, name, object, userInfo) in
-    DatabaseManager.shared.receivedWillAccessDatabaseNotification()
+private let ReceivedWillMigrateDatabaseNotification: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void = { (center, observer, name, object, userInfo) in
+    DatabaseManager.shared.receivedWillMigrateDatabaseNotification()
 }
 
 fileprivate class PersistentContainer: RSTPersistentContainer
@@ -52,7 +52,7 @@ public class DatabaseManager
     private let coordinator = NSFileCoordinator()
     private let coordinatorQueue = OperationQueue()
     
-    private var ignoreWillAccessDatabaseNotification = false
+    private var ignoreWillMigrateDatabaseNotification = false
     
     private init()
     {
@@ -60,7 +60,7 @@ public class DatabaseManager
         self.persistentContainer.preferredMergePolicy = MergePolicy()
         
         let observer = Unmanaged.passUnretained(self).toOpaque()
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), observer, ReceivedWillAccessDatabaseNotification, CFNotificationName.willAccessDatabase.rawValue, nil, .deliverImmediately)
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), observer, ReceivedWillMigrateDatabaseNotification, CFNotificationName.willMigrateDatabase.rawValue, nil, .deliverImmediately)
     }
 }
 
@@ -87,9 +87,12 @@ public extension DatabaseManager
             
             guard !self.isStarted else { return finish(nil) }
             
-            // Quit any other running AltStore processes to prevent concurrent database access during and after migration.
-            self.ignoreWillAccessDatabaseNotification = true
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .willAccessDatabase, nil, nil, true)
+            if self.persistentContainer.isMigrationRequired
+            {
+                // Quit any other running AltStore processes to prevent concurrent database access during and after migration.
+                self.ignoreWillMigrateDatabaseNotification = true
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .willMigrateDatabase, nil, nil, true)
+            }
             
             self.migrateDatabaseToAppGroupIfNeeded { (result) in
                 switch result
@@ -417,12 +420,12 @@ private extension DatabaseManager
         }
     }
     
-    func receivedWillAccessDatabaseNotification()
+    func receivedWillMigrateDatabaseNotification()
     {
-        defer { self.ignoreWillAccessDatabaseNotification = false }
+        defer { self.ignoreWillMigrateDatabaseNotification = false }
         
         // Ignore notifications sent by the current process.
-        guard !self.ignoreWillAccessDatabaseNotification else { return }
+        guard !self.ignoreWillMigrateDatabaseNotification else { return }
         
         exit(104)
     }
