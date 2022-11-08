@@ -96,7 +96,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
             self.finish(.failure(RefreshError.noInstalledApps))
             return
         }
-        start_em_proxy(bind_addr: "127.0.0.1:51820")
+        start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         self.managedObjectContext.perform {
             print("Apps to refresh:", self.installedApps.map(\.bundleIdentifier))

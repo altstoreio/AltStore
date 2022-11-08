@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication)
     {
         AppManager.shared.update()
-        start_em_proxy(bind_addr: "127.0.0.1:51820")
+        start_em_proxy(bind_addr: Consts.Proxy.serverURL)
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool

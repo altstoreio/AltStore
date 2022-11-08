@@ -40,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         guard DatabaseManager.shared.isStarted else { return }
         
         AppManager.shared.update()
-        start_em_proxy(bind_addr: "127.0.0.1:51820")
+        start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         PatreonAPI.shared.refreshPatreonAccount()
     }
