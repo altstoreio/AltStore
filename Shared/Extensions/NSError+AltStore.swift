@@ -252,7 +252,7 @@ public extension Error
     }
     
     var localizedErrorCode: String {
-        let localizedErrorCode = String(format: NSLocalizedString("%@ code %@", comment: ""), (self as NSError).domain, (self as NSError).code as NSNumber)
+        let localizedErrorCode = String(format: NSLocalizedString("%@ %@", comment: ""), (self as NSError).domain, (self as NSError).code as NSNumber)
         return localizedErrorCode
     }
 }
