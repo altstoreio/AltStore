@@ -47,6 +47,7 @@ class LaunchViewController: RSTLaunchViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
+        setAnisetteServer()
         
         guard let pf = fetchPairingFile() else {
             displayError("Device pairing file not found.")
@@ -80,6 +81,14 @@ class LaunchViewController: RSTLaunchViewController
             return plistString
         } else {
             return nil
+        }
+    }
+    
+    func setAnisetteServer() {
+        if let anisetteUrl = Bundle.main.object(forInfoDictionaryKey: "customAnisetteURL") as? String {
+            UserDefaults.standard.set(anisetteUrl, forKey: "customAnisetteURL")
+        } else {
+            UserDefaults.standard.set("https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx", forKey: "customAnisetteURL")
         }
     }
     
