@@ -252,7 +252,22 @@ public extension Error
     }
     
     var localizedErrorCode: String {
-        let localizedErrorCode = String(format: NSLocalizedString("%@ %@", comment: ""), (self as NSError).domain, (self as NSError).code as NSNumber)
+        let nsError = self as NSError
+        let localizedErrorCode = String(format: NSLocalizedString("%@ %@", comment: ""), nsError.domain, self.displayCode as NSNumber)
         return localizedErrorCode
+    }
+    
+    var displayCode: Int {
+        guard let serverError = self as? ALTServerError else {
+            // Not ALTServerError, so display regular code.
+            return (self as NSError).code
+        }
+        
+        // We want ALTServerError codes to start at 2000,
+        // but we can't change them without breaking AltServer compatibility.
+        // Instead, we just add 2000 when displaying code to user
+        // to make it appear as if codes start at 2000 normally.
+        let code = 2000 + serverError.code.rawValue
+        return code
     }
 }
