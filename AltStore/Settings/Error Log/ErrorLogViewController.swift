@@ -72,12 +72,7 @@ private extension ErrorLogViewController
             let cell = cell as! ErrorLogTableViewCell
             cell.dateLabel.text = self.timeFormatter.string(from: loggedError.date)
             cell.errorFailureLabel.text = loggedError.localizedFailure ?? NSLocalizedString("Operation Failed", comment: "")
-            
-            switch loggedError.domain
-            {
-            case AltServerErrorDomain: cell.errorCodeLabel?.text = String(format: NSLocalizedString("AltServer.Error %@", comment: ""), NSNumber(value: loggedError.code))
-            default: cell.errorCodeLabel?.text = loggedError.error.localizedErrorCode
-            }
+            cell.errorCodeLabel.text = loggedError.error.localizedErrorCode
             
             let nsError = loggedError.error as NSError
             let errorDescription = [nsError.localizedDescription, nsError.localizedRecoverySuggestion].compactMap { $0 }.joined(separator: "\n\n")
@@ -240,7 +235,7 @@ private extension ErrorLogViewController
         let baseURL = URL(string: "https://faq.altstore.io/getting-started/troubleshooting-guide")!
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
         
-        let query = [loggedError.domain, "\(loggedError.code)"].joined(separator: "+")
+        let query = [loggedError.domain, "\(loggedError.error.displayCode)"].joined(separator: "+")
         components.queryItems = [URLQueryItem(name: "q", value: query)]
         
         let safariViewController = SFSafariViewController(url: components.url ?? baseURL)
