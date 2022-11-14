@@ -12,12 +12,12 @@ public enum Uhoh: Error {
     case Bad(code: Int32)
 }
 
-public func start_minimuxer(pairing_file: String) {
+public func start_minimuxer(pairing_file: String) -> Int32 {
     let pf = NSString(string: pairing_file)
     let pf_pointer = UnsafeMutablePointer<CChar>(mutating: pf.utf8String)
     let u = NSString(string: getDocumentsDirectory().absoluteString)
     let u_ptr = UnsafeMutablePointer<CChar>(mutating: u.utf8String)
-    minimuxer_c_start(pf_pointer, u_ptr)
+    return minimuxer_c_start(pf_pointer, u_ptr)
 }
 
 public func set_usbmuxd_socket() {

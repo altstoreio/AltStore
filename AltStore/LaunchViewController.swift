@@ -42,14 +42,21 @@ class LaunchViewController: RSTLaunchViewController
             self.destinationViewController = self.storyboard!.instantiateViewController(withIdentifier: "tabBarController") as! TabBarController
         }
         super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         guard let pf = fetchPairingFile() else {
-            displayError("ALTPairingFile not found.")
+            displayError("Device pairing file not found.")
             return
         }
         set_usbmuxd_socket()
-        start_minimuxer(pairing_file: pf)
+        let res = start_minimuxer(pairing_file: pf)
+        if res != 0 {
+            displayError("minimuxer failed to start. Incorrect arguments were passed.")
+        }
         auto_mount_dev_image()
     }
     
@@ -77,17 +84,12 @@ class LaunchViewController: RSTLaunchViewController
     }
     
     func displayError(_ msg: String) {
-        let label = UILabel()
-        label.text = msg
-        label.textColor = .refreshRed
-        label.sizeToFit()
-        
-        self.view.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        print(msg)
+        // Create a new alert
+        let dialogMessage = UIAlertController(title: "Error launching SideStore", message: msg, preferredStyle: .alert)
+
+        // Present alert to user
+        self.present(dialogMessage, animated: true, completion: nil)
     }
 }
 
