@@ -12,7 +12,7 @@ import AltStoreCore
 @available(iOS 14, *)
 public class ViewAppIntentHandler: NSObject, ViewAppIntentHandling
 {
-    public func provideAppOptionsCollection(for intent: ViewAppIntent, with completion: @escaping (INObjectCollection<App>?, Error?) -> Void)
+    public func provideAppOptionsCollection(for intent: AltStoreCore.ViewAppIntent, with completion: @escaping (INObjectCollection<AltStoreCore.App>?, Error?) -> Void)
     {        
         DatabaseManager.shared.start { (error) in
             if let error = error
@@ -22,7 +22,7 @@ public class ViewAppIntentHandler: NSObject, ViewAppIntentHandling
             
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                 let apps = InstalledApp.all(in: context).map { (installedApp) in
-                    return App(identifier: installedApp.bundleIdentifier, display: installedApp.name)
+                    return AltStoreCore.App(identifier: installedApp.bundleIdentifier, display: installedApp.name)
                 }
                 
                 let collection = INObjectCollection(items: apps)
