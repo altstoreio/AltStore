@@ -101,31 +101,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
-    @nonobjc public var size: Int64? {
-        guard let version = self.latestVersion else { return nil }
-        return version.size
-    }
-    
-    @nonobjc public var version: String? {
-        guard let version = self.latestVersion else { return nil }
-        return version.version
-    }
-    
-    @nonobjc public var versionDescription: String? {
-        guard let version = self.latestVersion else { return nil }
-        return version.localizedDescription
-    }
-    
-    @nonobjc public var versionDate: Date? {
-        guard let version = self.latestVersion else { return nil }
-        return version.date
-    }
-    
-    @nonobjc public var downloadURL: URL? {
-        guard let version = self.latestVersion else { return nil }
-        return version.downloadURL
-    }
-    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)

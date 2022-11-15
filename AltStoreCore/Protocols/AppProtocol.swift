@@ -40,7 +40,7 @@ extension ALTApplication: AppProtocol
 extension StoreApp: AppProtocol
 {
     public var url: URL? {
-        return self.downloadURL
+        return self.latestAvailableVersion?.downloadURL
     }
 }
 
