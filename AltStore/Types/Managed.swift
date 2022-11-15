@@ -10,23 +10,27 @@ import Foundation
 import CoreData
 
 @propertyWrapper @dynamicMemberLookup
-struct Managed<ManagedObject: NSManagedObject>
+struct Managed<ManagedObject>
 {
     var wrappedValue: ManagedObject {
         didSet {
-            self.managedObjectContext = self.wrappedValue.managedObjectContext
+            self.managedObjectContext = self.managedObject?.managedObjectContext
         }
     }
-    private var managedObjectContext: NSManagedObjectContext?
     
     var projectedValue: Managed<ManagedObject> {
         return self
     }
     
+    private var managedObjectContext: NSManagedObjectContext?
+    private var managedObject: NSManagedObject? {
+        return self.wrappedValue as? NSManagedObject
+    }
+    
     init(wrappedValue: ManagedObject)
     {
         self.wrappedValue = wrappedValue
-        self.managedObjectContext = wrappedValue.managedObjectContext
+        self.managedObjectContext = self.managedObject?.managedObjectContext
     }
     
     subscript<T>(dynamicMember keyPath: KeyPath<ManagedObject, T>) -> T
