@@ -81,7 +81,7 @@ class AppContentViewController: UITableViewController
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
         
-        if let version = self.app.latestVersion
+        if let version = self.app.latestAvailableVersion
         {
             self.versionDescriptionTextView.text = version.localizedDescription
             self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.version)

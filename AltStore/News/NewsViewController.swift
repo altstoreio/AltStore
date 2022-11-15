@@ -392,9 +392,9 @@ extension NewsViewController
             let progress = AppManager.shared.installationProgress(for: storeApp)
             footerView.bannerView.button.progress = progress
             
-            if let versionDate = storeApp.latestVersion?.date, versionDate > Date()
+            if let versionDate = storeApp.latestSupportedVersion?.date, versionDate > Date()
             {
-                footerView.bannerView.button.countdownDate = storeApp.versionDate
+                footerView.bannerView.button.countdownDate = versionDate
             }
             else
             {

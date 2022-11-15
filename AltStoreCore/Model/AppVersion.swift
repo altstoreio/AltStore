@@ -40,7 +40,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
     
     /* Relationships */
     @NSManaged public private(set) var app: StoreApp?
-    @NSManaged public private(set) var latestVersionApp: StoreApp?
+    @NSManaged @objc(latestVersionApp) public internal(set) var latestSupportedVersionApp: StoreApp?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -112,5 +112,9 @@ public extension AppVersion
         appVersion.sourceID = sourceID
 
         return appVersion
+    }
+    
+    var isSupported: Bool {
+        return true
     }
 }

@@ -384,7 +384,7 @@ private extension AppDelegate
                 for update in updates
                 {
                     guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
-                    guard let storeApp = update.storeApp, let version = storeApp.version else { continue }
+                    guard let storeApp = update.storeApp, let version = storeApp.latestSupportedVersion else { continue }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")

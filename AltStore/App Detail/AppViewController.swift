@@ -384,7 +384,7 @@ private extension AppViewController
             button.progress = progress
         }
         
-        if let versionDate = self.app.latestVersion?.date, versionDate > Date()
+        if let versionDate = self.app.latestAvailableVersion?.date, versionDate > Date()
         {
             self.bannerView.button.countdownDate = versionDate
             self.navigationBarDownloadButton.countdownDate = versionDate
