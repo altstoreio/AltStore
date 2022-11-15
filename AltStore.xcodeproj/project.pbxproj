@@ -355,6 +355,7 @@
 		D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E163528776CB000A627A1 /* ComplicationView.swift */; };
 		D56F6FDA28FF44B5006DCA2C /* ALTWrappedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56F6FD928FF44B5006DCA2C /* ALTWrappedError.swift */; };
 		D56F6FDB28FF44B5006DCA2C /* ALTWrappedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56F6FD928FF44B5006DCA2C /* ALTWrappedError.swift */; };
+		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
 		D57DF63F271E51E400677701 /* ALTAppPatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D57DF63E271E51E400677701 /* ALTAppPatcher.m */; };
 		D57F2C9126E0070200B9FA39 /* EnableJITOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */; };
@@ -833,6 +834,7 @@
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D55E163528776CB000A627A1 /* ComplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationView.swift; sourceTree = "<group>"; };
 		D56F6FD928FF44B5006DCA2C /* ALTWrappedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTWrappedError.swift; sourceTree = "<group>"; };
+		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
 		D57DF637271E32F000677701 /* PatchApp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PatchApp.storyboard; sourceTree = "<group>"; };
 		D57DF63D271E51E400677701 /* ALTAppPatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPatcher.h; sourceTree = "<group>"; };
 		D57DF63E271E51E400677701 /* ALTAppPatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTAppPatcher.m; sourceTree = "<group>"; };
@@ -1356,6 +1358,7 @@
 				BF66EEE62501AED0007EE018 /* UIColor+Hex.swift */,
 				BF66EEE42501AED0007EE018 /* UserDefaults+AltStore.swift */,
 				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
+				D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2544,6 +2547,7 @@
 				BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */,
 				BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */,
 				D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */,
+				D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */,
 				BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */,
 				BF66EED42501AECA007EE018 /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
 				BF66EE972501AEBC007EE018 /* ALTAppPermission.m in Sources */,
