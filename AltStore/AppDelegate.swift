@@ -34,8 +34,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     @available(iOS 14, *)
-    private var intentHandler: IntentHandler {
-        get { _intentHandler as! IntentHandler }
+    private var intentHandler: RefreshAllIntentHandler {
+        get { _intentHandler as! RefreshAllIntentHandler }
+        set { _intentHandler = newValue }
+    }
+    
+    @available(iOS 14, *)
+    private var enableJITIntentHandler: EnableJITIntentHandler {
+        get { _intentHandler as! EnableJITIntentHandler }
         set { _intentHandler = newValue }
     }
     
@@ -47,7 +53,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private lazy var _intentHandler: Any = {
         guard #available(iOS 14, *) else { fatalError() }
-        return IntentHandler()
+        return RefreshAllIntentHandler()
+    }()
+    
+    private lazy var _enableJITIntentHandler: Any = {
+        guard #available(iOS 14, *) else { fatalError() }
+        return EnableJITIntentHandler()
     }()
     
     private lazy var _viewAppIntentHandler: Any = {
@@ -134,6 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch intent
         {
         case is RefreshAllIntent: return self.intentHandler
+        case is EnableJITIntent: return self.enableJITIntentHandler
         case is ViewAppIntent: return self.viewAppIntentHandler
         default: return nil
         }
