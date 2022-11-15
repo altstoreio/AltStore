@@ -51,8 +51,8 @@ extension OperationError
     static let connectionFailed: OperationError = .init(code: .connectionFailed)
     static let connectionDropped: OperationError = .init(code: .connectionDropped)
     
-    static func unknown(file: String = #fileID, line: UInt = #line) -> OperationError {
-        OperationError(code: .unknown, sourceFile: file, sourceLine: line)
+    static func unknown(failureReason: String? = nil, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .unknown, failureReason: failureReason, sourceFile: file, sourceLine: line)
     }
     
     static func appNotFound(name: String?) -> OperationError { OperationError(code: .appNotFound, appName: name) }
@@ -78,10 +78,12 @@ struct OperationError: ALTLocalizedError
     var sourceFile: String?
     var sourceLine: UInt?
     
-    private init(code: Code, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil,
+    private init(code: Code, failureReason: String? = nil, appName: String? = nil, requiredAppIDs: Int? = nil, availableAppIDs: Int? = nil, expirationDate: Date? = nil,
                  sourceFile: String? = nil, sourceLine: UInt? = nil)
     {
         self.code = code
+        self._failureReason = failureReason
+        
         self.appName = appName
         self.requiredAppIDs = requiredAppIDs
         self.availableAppIDs = availableAppIDs
@@ -94,7 +96,7 @@ struct OperationError: ALTLocalizedError
         switch self.code
         {
         case .unknown:
-            var failureReason = NSLocalizedString("An unknown error occured.", comment: "")
+            var failureReason = self._failureReason ?? NSLocalizedString("An unknown error occured.", comment: "")
             guard let sourceFile, let sourceLine else { return failureReason }
             
             failureReason += " (\(sourceFile) line \(sourceLine))"
@@ -124,6 +126,7 @@ struct OperationError: ALTLocalizedError
         case .connectionDropped: return NSLocalizedString("The connection to AltServer was dropped.", comment: "")
         }
     }
+    private var _failureReason: String?
     
     var recoverySuggestion: String? {
         switch self.code
