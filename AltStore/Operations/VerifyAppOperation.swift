@@ -25,7 +25,10 @@ extension VerificationError
     
     static func privateEntitlements(_ entitlements: [String: Any], app: ALTApplication) -> VerificationError { VerificationError(code: .privateEntitlements, app: app, entitlements: entitlements) }
     static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError  { VerificationError(code: .mismatchedBundleIdentifiers, app: app, sourceBundleID: sourceBundleID) }
-    static func iOSVersionNotSupported(app: ALTApplication) -> VerificationError  { VerificationError(code: .iOSVersionNotSupported, app: app) }
+    
+    static func iOSVersionNotSupported(app: AppProtocol, osVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion, requiredOSVersion: OperatingSystemVersion?) -> VerificationError {
+        VerificationError(code: .iOSVersionNotSupported, app: app, deviceOSVersion: osVersion, requiredOSVersion: requiredOSVersion)
+    }
 }
 
 struct VerificationError: ALTLocalizedError
@@ -35,22 +38,44 @@ struct VerificationError: ALTLocalizedError
     var errorTitle: String?
     var errorFailure: String?
     
-    var app: ALTApplication?
+    @Managed var app: AppProtocol?
     var entitlements: [String: Any]?
     var sourceBundleID: String?
+    var deviceOSVersion: OperatingSystemVersion?
+    var requiredOSVersion: OperatingSystemVersion?
     
+    var errorDescription: String? {
+        switch self.code
+        {
+        case .iOSVersionNotSupported:
+            guard let deviceOSVersion else { return nil }
+            
+            var failureReason = self.errorFailureReason
+            if self.app == nil
+            {
+                // failureReason does not start with app name, so make first letter lowercase.
+                let firstLetter = failureReason.prefix(1).lowercased()
+                failureReason = firstLetter + failureReason.dropFirst()
+            }
+            
+            let localizedDescription = String(format: NSLocalizedString("This device is running iOS %@, but %@", comment: ""), deviceOSVersion.stringValue, failureReason)
+            return localizedDescription
+            
+        default: return nil
+        }
+    }
     
     var errorFailureReason: String {
         switch self.code
         {
         case .privateEntitlements:
-            let appName = (self.app?.name as String?).map { String(format: NSLocalizedString("“%@”", comment: ""), $0) } ?? NSLocalizedString("The app", comment: "")
+            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
             return String(format: NSLocalizedString("%@ requires private permissions.", comment: ""), appName)
             
         case .mismatchedBundleIdentifiers:
-            if let app = self.app, let bundleID = self.sourceBundleID
+            if let appBundleID = self.$app.bundleIdentifier, let bundleID = self.sourceBundleID
             {
-                return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), app.bundleIdentifier, bundleID)
+                return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), appBundleID, bundleID)
             }
             else
             {
@@ -58,22 +83,25 @@ struct VerificationError: ALTLocalizedError
             }
             
         case .iOSVersionNotSupported:
-            if let app = self.app
+            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
+            let deviceOSVersion = self.deviceOSVersion ?? ProcessInfo.processInfo.operatingSystemVersion
+            
+            guard let requiredOSVersion else {
+                return String(format: NSLocalizedString("%@ does not support iOS %@.", comment: ""), appName, deviceOSVersion.stringValue)
+            }
+            
+            if deviceOSVersion > requiredOSVersion
             {
-                var version = "iOS \(app.minimumiOSVersion.majorVersion).\(app.minimumiOSVersion.minorVersion)"
-                if app.minimumiOSVersion.patchVersion > 0
-                {
-                    version += ".\(app.minimumiOSVersion.patchVersion)"
-                }
+                // Device OS version is higher than maximum supported OS version.
                 
-                let failureReason = String(format: NSLocalizedString("%@ requires %@.", comment: ""), app.name, version)
+                let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or earlier.", comment: ""), appName, requiredOSVersion.stringValue)
                 return failureReason
             }
             else
             {
-                let version = ProcessInfo.processInfo.operatingSystemVersion.stringValue
+                // Device OS version is lower than minimum supported OS version.
                 
-                let failureReason = String(format: NSLocalizedString("This app does not support iOS %@.", comment: ""), version)
+                let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or later.", comment: ""), appName, requiredOSVersion.stringValue)
                 return failureReason
             }
         }
@@ -114,7 +142,7 @@ class VerifyAppOperation: ResultOperation<Void>
             }
             
             guard ProcessInfo.processInfo.isOperatingSystemAtLeast(app.minimumiOSVersion) else {
-                throw VerificationError.iOSVersionNotSupported(app: app)
+                throw VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: app.minimumiOSVersion)
             }
             
             if #available(iOS 13.5, *)
@@ -196,8 +224,7 @@ private extension VerifyAppOperation
                 }))
                 presentingViewController.present(alertController, animated: true, completion: nil)
                 
-            case .mismatchedBundleIdentifiers: return completion(.failure(error))
-            case .iOSVersionNotSupported: return completion(.failure(error))
+            case .mismatchedBundleIdentifiers, .iOSVersionNotSupported: return completion(.failure(error))
             }
         }
     }

@@ -20,7 +20,6 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     
     private let appName: String
     private let bundleIdentifier: String
-    private var sourceURL: URL?
     private let destinationURL: URL
     
     private let session = URLSession(configuration: .default)
@@ -33,7 +32,6 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         
         self.appName = app.name
         self.bundleIdentifier = app.bundleIdentifier
-        self.sourceURL = app.url
         self.destinationURL = destinationURL
         
         super.init()
@@ -54,9 +52,88 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         
         print("Downloading App:", self.bundleIdentifier)
         
-        guard let sourceURL = self.sourceURL else { return self.finish(.failure(OperationError.appNotFound(name: self.appName))) }
+        // Set _after_ checking self.context.error to prevent overwriting localized failure for previous errors.
+        self.localizedFailure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), self.appName)
         
-        self.downloadApp(from: sourceURL) { result in
+        guard let storeApp = self.app as? StoreApp else {
+            return self.download(self.app)
+        }
+        
+        // Verify storeApp
+        storeApp.managedObjectContext?.perform {
+            do
+            {
+                let latestVersion = try self.verify(storeApp)
+                self.download(latestVersion)
+            }
+            catch let error as VerificationError where error.code == .iOSVersionNotSupported
+            {
+                guard let presentingViewController = self.context.presentingViewController,
+                      let latestSupportedVersion = storeApp.latestSupportedVersion, case let version = latestSupportedVersion.version, version != storeApp.installedApp?.version
+                else { return self.finish(.failure(error)) }
+                
+                let title = NSLocalizedString("Unsupported iOS Version", comment: "")
+                let message = error.localizedDescription + "\n\n" + NSLocalizedString("Would you like to download the last version compatible with this device instead?", comment: "")
+                                
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
+                        self.finish(.failure(OperationError.cancelled))
+                    })
+                    alertController.addAction(UIAlertAction(title: String(format: NSLocalizedString("Download %@ %@", comment: ""), self.appName, version), style: .default) { _ in
+                        self.download(latestSupportedVersion)
+                    })
+                    presentingViewController.present(alertController, animated: true)
+                }
+            }
+            catch
+            {
+                self.finish(.failure(error))
+            }
+        }
+    }
+    
+    override func finish(_ result: Result<ALTApplication, Error>)
+    {
+        do
+        {
+            try FileManager.default.removeItem(at: self.temporaryDirectory)
+        }
+        catch
+        {
+            print("Failed to remove DownloadAppOperation temporary directory: \(self.temporaryDirectory).", error)
+        }
+        
+        super.finish(result)
+    }
+}
+
+private extension DownloadAppOperation
+{
+    func verify(_ storeApp: StoreApp) throws -> AppVersion
+    {
+        guard let version = storeApp.latestAvailableVersion else {
+            let failureReason = String(format: NSLocalizedString("The latest version of %@ could not be determined.", comment: ""), self.appName)
+            throw OperationError.unknown(failureReason: failureReason)
+        }
+        
+        if let minOSVersion = version.minOSVersion, !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion)
+        {
+            throw VerificationError.iOSVersionNotSupported(app: storeApp, requiredOSVersion: minOSVersion)
+        }
+        else if let maxOSVersion = version.maxOSVersion, ProcessInfo.processInfo.operatingSystemVersion > maxOSVersion
+        {
+            throw VerificationError.iOSVersionNotSupported(app: storeApp, requiredOSVersion: maxOSVersion)
+        }
+        
+        return version
+    }
+    
+    func download(@Managed _ app: AppProtocol)
+    {
+        guard let sourceURL = $app.url else { return self.finish(.failure(OperationError.appNotFound(name: self.appName))) }
+        
+        self.downloadIPA(from: sourceURL) { result in
             do
             {
                 let application = try result.get()
@@ -97,24 +174,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         }
     }
     
-    override func finish(_ result: Result<ALTApplication, Error>)
-    {
-        do
-        {
-            try FileManager.default.removeItem(at: self.temporaryDirectory)
-        }
-        catch
-        {
-            print("Failed to remove DownloadAppOperation temporary directory: \(self.temporaryDirectory).", error)
-        }
-        
-        super.finish(result)
-    }
-}
-
-private extension DownloadAppOperation
-{
-    func downloadApp(from sourceURL: URL, completionHandler: @escaping (Result<ALTApplication, Error>) -> Void)
+    func downloadIPA(from sourceURL: URL, completionHandler: @escaping (Result<ALTApplication, Error>) -> Void)
     {
         func finishOperation(_ result: Result<URL, Error>)
         {
