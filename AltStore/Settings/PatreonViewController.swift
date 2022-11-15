@@ -44,9 +44,9 @@ class PatreonViewController: UICollectionViewController
         
         self.collectionView.register(aboutHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeader")
         self.collectionView.register(PatronsHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "PatronsHeader")
-        self.collectionView.register(PatronsFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "PatronsFooter")
+        //self.collectionView.register(PatronsFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "PatronsFooter")
         
-        NotificationCenter.default.addObserver(self, selector: #selector(PatreonViewController.didUpdatePatrons(_:)), name: AppManager.didUpdatePatronsNotification, object: nil)
+        //NotificationCenter.default.addObserver(self, selector: #selector(PatreonViewController.didUpdatePatrons(_:)), name: AppManager.didUpdatePatronsNotification, object: nil)
         
         self.update()
     }
@@ -55,7 +55,7 @@ class PatreonViewController: UICollectionViewController
     {
         super.viewWillAppear(animated)
         
-        self.fetchPatrons()
+        //self.fetchPatrons()
         
         self.update()
     }
@@ -69,7 +69,7 @@ class PatreonViewController: UICollectionViewController
         var itemWidth = (self.collectionView.bounds.width - (layout.sectionInset.left + layout.sectionInset.right + layout.minimumInteritemSpacing)) / 2
         itemWidth.round(.down)
         
-        layout.itemSize = CGSize(width: itemWidth, height: layout.itemSize.height)
+        layout.itemSize = CGSize(width: 0, height: 0)
     }
 }
 
@@ -110,18 +110,16 @@ private extension PatreonViewController
         headerView.layoutMargins = self.view.layoutMargins
         
         headerView.supportButton.addTarget(self, action: #selector(PatreonViewController.openPatreonURL(_:)), for: .primaryActionTriggered)
-        headerView.accountButton.removeTarget(self, action: nil, for: .primaryActionTriggered)
         
         let defaultSupportButtonTitle = NSLocalizedString("Become a patron", comment: "")
         let isPatronSupportButtonTitle = NSLocalizedString("View Patreon", comment: "")
         
         let defaultText = NSLocalizedString("""
-        Hey y'all,
+        Hello, thank you for using SideStore!
         
-        You can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.
+        If you would subscribe to the patreon that would support us and make sure we can continue developing SideStore for you.
         
-        Thanks for all your support 💜
-        Riley & Shane
+        -SideTeam
         """, comment: "")
         
         let isPatronText = NSLocalizedString("""
@@ -160,15 +158,7 @@ private extension PatreonViewController
                 headerView.textView.text = defaultText
             }
         }
-        else
-        {
-            headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.authenticate(_:)), for: .primaryActionTriggered)
-            
-            headerView.supportButton.setTitle(defaultSupportButtonTitle, for: .normal)
-            headerView.accountButton.setTitle(NSLocalizedString("Link Patreon account", comment: ""), for: .normal)
-            
-            headerView.textView.text = defaultText
-        }
+        
     }
 }
 
@@ -182,7 +172,7 @@ private extension PatreonViewController
     
     @objc func openPatreonURL(_ sender: UIButton)
     {
-        let patreonURL = URL(string: "https://altstore.io/patreon")!
+        let patreonURL = URL(string: "https://www.patreon.com/JitStreamer")!
         
         let safariViewController = SFSafariViewController(url: patreonURL)
         safariViewController.preferredControlTintColor = self.view.tintColor
@@ -276,7 +266,7 @@ extension PatreonViewController
                 let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "PatronsFooter", for: indexPath) as! PatronsFooterView
                 footerView.button.isIndicatingActivity = false
                 footerView.button.isHidden = false
-                footerView.button.addTarget(self, action: #selector(PatreonViewController.fetchPatrons), for: .primaryActionTriggered)
+                //footerView.button.addTarget(self, action: #selector(PatreonViewController.fetchPatrons), for: .primaryActionTriggered)
                 
                 if self.patronsDataSource.itemCount > 0
                 {
@@ -316,7 +306,7 @@ extension PatreonViewController: UICollectionViewDelegateFlowLayout
             return size
             
         case .patrons:
-            return CGSize(width: 320, height: 20)
+            return CGSize(width: 0, height: 0)
         }
     }
     
@@ -326,7 +316,7 @@ extension PatreonViewController: UICollectionViewDelegateFlowLayout
         switch section
         {
         case .about: return .zero
-        case .patrons: return CGSize(width: 320, height: 20)
+        case .patrons: return CGSize(width: 0, height: 0)
         }
     }
 }
