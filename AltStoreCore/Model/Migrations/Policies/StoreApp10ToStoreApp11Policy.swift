@@ -48,7 +48,7 @@ fileprivate extension NSManagedObject
     
     func setStoreAppLatestVersion(_ appVersion: NSManagedObject)
     {
-        self.setValue(appVersion, forKey: #keyPath(StoreApp.latestVersion))
+        self.setValue(appVersion, forKey: #keyPath(StoreApp.latestSupportedVersion))
         
         let versions = NSOrderedSet(array: [appVersion])
         self.setValue(versions, forKey: #keyPath(StoreApp._versions))

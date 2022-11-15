@@ -44,7 +44,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     let conflictingAppVersions = conflict.conflictingObjects.lazy.compactMap { $0 as? AppVersion }
                     
                     // Primary AppVersion == AppVersion whose latestVersionApp.latestVersion points back to itself.
-                    if let primaryAppVersion = conflictingAppVersions.first(where: { $0.latestVersionApp?.latestVersion == $0 }),
+                    if let primaryAppVersion = conflictingAppVersions.first(where: { $0.latestSupportedVersionApp?.latestSupportedVersion == $0 }),
                        let secondaryAppVersion = conflictingAppVersions.first(where: { $0 != primaryAppVersion })
                     {
                         secondaryAppVersion.managedObjectContext?.delete(secondaryAppVersion)
