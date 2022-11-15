@@ -50,4 +50,23 @@ struct Managed<ManagedObject>
         
         return result
     }
+    
+    // Optionals
+    subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T? where ManagedObject == Optional<Wrapped>
+    {
+        var result: T?
+        
+        if let context = self.managedObjectContext
+        {
+            context.performAndWait {
+                result = self.wrappedValue?[keyPath: keyPath] as? T
+            }
+        }
+        else
+        {
+            result = self.wrappedValue?[keyPath: keyPath] as? T
+        }
+        
+        return result
+    }
 }
