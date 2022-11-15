@@ -33,26 +33,12 @@ struct VerificationError: ALTLocalizedError
     let code: Code
     
     var errorTitle: String?
+    var errorFailure: String?
     
     var app: ALTApplication?
     var entitlements: [String: Any]?
     var sourceBundleID: String?
     
-    var errorFailure: String? {
-        get {
-            if let errorFailure = _errorFailure
-            {
-                return errorFailure
-            }
-            
-            let appName = (self.app?.name as String?).map { String(format: NSLocalizedString("“%@”", comment: ""), $0) } ?? NSLocalizedString("The app", comment: "")
-            return String(format: NSLocalizedString("%@ could not be installed.", comment: ""), appName)
-        }
-        set {
-            _errorFailure = newValue
-        }
-    }
-    private var _errorFailure: String?
     
     var errorFailureReason: String {
         switch self.code
@@ -117,6 +103,9 @@ class VerifyAppOperation: ResultOperation<Void>
             {
                 throw error
             }
+            
+            let appName = self.context.app?.name ?? NSLocalizedString("The app", comment: "")
+            self.localizedFailure = String(format: NSLocalizedString("%@ could not be installed.", comment: ""), appName)
             
             guard let app = self.context.app else { throw OperationError.invalidParameters }
             
