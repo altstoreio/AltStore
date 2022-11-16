@@ -16,6 +16,7 @@ SideStore's goal is to provide an untethered sideloading experience. It's a comm
 ## Requirements
 - Xcode 14
 - iOS 14+
+- Rustup (`brew install rustup`)
 
 Why iOS 14? Targeting such a recent version of iOS allows us to accelerate development, especially since not many developers have older devices to test on. This is corrobated by the fact that SwiftUI support is much better, allowing us to transistion to a more modern UI codebase.
 ## Project Overview
@@ -41,6 +42,8 @@ SideStore is fairly straightforward to compile and run if you're already an iOS 
 	```
 	git clone https://github.com/SideStore/SideStore.git --recurse-submodules
 	```
+2. After installing Rustup, run `rustup target add aarch64-apple-ios`
+12. Within the Dependencies/em_proxy and Dependencies/minimuxer directories, run `cargo build --release --target aarch64-apple-ios`
 2. Open `AltStore.xcodeproj` and select the AltStore project in the project navigator. On the `Signing & Capabilities` tab, change the team from to your own account.
 3. **(Development only)** Change the value for `ALTDeviceID` in the Info.plist to your device's UDID. Normally, SideServer embeds the device's UDID in SideStore's Info.plist during installation. When running through Xcode you'll need to set the value yourself or else SideStore won't resign (or even install) apps for the proper device. You can achieve this by changing a few things to be able to build and use SideStore.
 5. Copy `CodeSigning.xcconfig.sample` to `CodeSigning.xcconfig`
