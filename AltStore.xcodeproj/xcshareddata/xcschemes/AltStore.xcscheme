@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BFD247692284B9A500981D42"
-               BuildableName = "AltStore.app"
-               BlueprintName = "AltStore"
+               BuildableName = "SideStore.app"
+               BlueprintName = "SideStore"
                ReferencedContainer = "container:AltStore.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BFD247692284B9A500981D42"
-            BuildableName = "AltStore.app"
-            BlueprintName = "AltStore"
+            BuildableName = "SideStore.app"
+            BlueprintName = "SideStore"
             ReferencedContainer = "container:AltStore.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -68,8 +68,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BFD247692284B9A500981D42"
-            BuildableName = "AltStore.app"
-            BlueprintName = "AltStore"
+            BuildableName = "SideStore.app"
+            BlueprintName = "SideStore"
             ReferencedContainer = "container:AltStore.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
