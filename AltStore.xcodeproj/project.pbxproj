@@ -2257,7 +2257,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = "Riley Testut";
+				ORGANIZATIONNAME = SideStore;
 				TargetAttributes = {
 					19104DB12909C06C00C49C7B = {
 						CreatedOnToolsVersion = 14.0;
