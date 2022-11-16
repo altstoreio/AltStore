@@ -12,8 +12,9 @@ import EmotionalDamage
 import minimuxer
 
 import AltStoreCore
+import UniformTypeIdentifiers
 
-class LaunchViewController: RSTLaunchViewController
+class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
 {
     private var didFinishLaunching = false
     
@@ -53,12 +54,7 @@ class LaunchViewController: RSTLaunchViewController
             displayError("Device pairing file not found.")
             return
         }
-        set_usbmuxd_socket()
-        let res = start_minimuxer(pairing_file: pf)
-        if res != 0 {
-            displayError("minimuxer failed to start. Incorrect arguments were passed.")
-        }
-        auto_mount_dev_image()
+        start_minimuxer_threads(pf)
     }
     
     func fetchPairingFile() -> String? {
@@ -80,6 +76,26 @@ class LaunchViewController: RSTLaunchViewController
             print("Loaded ALTPairingFile from Info.plist")
             return plistString
         } else {
+            // Show an alert explaining the pairing file
+            // Create new Alert
+            var dialogMessage = UIAlertController(title: "Pairing File", message: "Select the pairing file for your device. For more information, go to https://youtu.be/dQw4w9WgXcQ", preferredStyle: .alert)
+            
+            // Create OK button with action handler
+            let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                // Try to load it from a file picker
+                var types = UTType.types(tag: "plist", tagClass: UTTagClass.filenameExtension, conformingTo: nil)
+                types.append(contentsOf: UTType.types(tag: "mobiledevicepairing", tagClass: UTTagClass.filenameExtension, conformingTo: nil))
+                let documentPickerController = UIDocumentPickerViewController(forOpeningContentTypes: types)
+                documentPickerController.delegate = self
+                self.present(documentPickerController, animated: true, completion: nil)
+             })
+            
+            //Add OK button to a dialog message
+            dialogMessage.addAction(ok)
+
+            // Present Alert to
+            self.present(dialogMessage, animated: true, completion: nil)
+
             return nil
         }
     }
@@ -97,6 +113,50 @@ class LaunchViewController: RSTLaunchViewController
 
         // Present alert to user
         self.present(dialogMessage, animated: true, completion: nil)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        let url = urls[0]
+        let isSecuredURL = url.startAccessingSecurityScopedResource() == true
+
+        do {
+            // Read to a string
+            let data1 = try Data(contentsOf: urls[0])
+            let pairing_string = String(bytes: data1, encoding: .utf8)
+            if pairing_string == nil {
+                displayError("Unable to read pairing file")
+            }
+            
+            // Save to a file for next launch
+            let filename = "ALTPairingFile.mobiledevicepairing"
+            let fm = FileManager.default
+            let documentsPath = fm.documentsDirectory.appendingPathComponent("/\(filename)")
+            try pairing_string?.write(to: documentsPath, atomically: true, encoding: String.Encoding.utf8)
+            
+            // Start minimuxer now that we have a file
+            start_minimuxer_threads(pairing_string!)
+            
+        } catch {
+            displayError("Unable to read pairing file")
+        }
+        
+        if (isSecuredURL) {
+            url.stopAccessingSecurityScopedResource()
+        }
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        displayError("Choosing a pairing file was cancelled")
+    }
+    
+    func start_minimuxer_threads(_ pairing_file: String) {
+        set_usbmuxd_socket()
+        let res = start_minimuxer(pairing_file: pairing_file)
+        if res != 0 {
+            displayError("minimuxer failed to start. Incorrect arguments were passed.")
+        }
+        auto_mount_dev_image()
     }
 }
 
