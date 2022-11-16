@@ -35,6 +35,7 @@
 		4879A9622861049C00FC1BBD /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A9612861049C00FC1BBD /* OpenSSL */; };
 		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
 		B39F16132918D7C5002E9404 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16122918D7C5002E9404 /* Consts.swift */; };
 		B39F16152918D7DA002E9404 /* Consts+Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16142918D7DA002E9404 /* Consts+Proxy.swift */; };
@@ -564,6 +565,7 @@
 		1920B04E2924AC8300744F60 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
+		B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+SideStore.swift"; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39F16122918D7C5002E9404 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		B39F16142918D7DA002E9404 /* Consts+Proxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Consts+Proxy.swift"; sourceTree = "<group>"; };
@@ -1795,6 +1797,7 @@
 				BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */,
 				BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */,
 				D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */,
+				B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2764,6 +2767,7 @@
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
 				BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */,
+				B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,

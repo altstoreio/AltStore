@@ -13,6 +13,33 @@ import minimuxer
 
 import AltStoreCore
 import UniformTypeIdentifiers
+import OSLog
+
+public struct AnisetteManager {
+    
+    /// User defined URL from Settings/UserDefaults
+    static var userURL: String? {
+        guard let urlString = UserDefaults.shared.customAnisetteURL else { return nil }
+        // Test it's a valid URL
+        guard URL(string: urlString) != nil else {
+            ELOG("UserDefaults has invalid `customAnisetteURL`")
+            assertionFailure("UserDefaults has invalid `customAnisetteURL`")
+            return nil
+        }
+        return urlString
+    }
+    static var defaultURL: String {
+        guard let url = Bundle.main.object(forInfoDictionaryKey: "ALTAnisetteURL") as? String else {
+            assertionFailure("Info.plist has invalid `ALTAnisetteURL`")
+        }
+        return url
+    }
+    static var currentURLString: String { userURL ?? defaultURL }
+    // Force unwrap is safe here since we check validity before hand -- @JoeMatt
+    
+    /// User url or default from plist if none specified
+    static var currentURL: URL { URL(string: currentURLString)! }
+}
 
 class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
 {
@@ -48,7 +75,6 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
-        setAnisetteServer()
         
         guard let pf = fetchPairingFile() else {
             displayError("Device pairing file not found.")
@@ -78,7 +104,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
         } else {
             // Show an alert explaining the pairing file
             // Create new Alert
-            var dialogMessage = UIAlertController(title: "Pairing File", message: "Select the pairing file for your device. For more information, go to https://youtu.be/dQw4w9WgXcQ", preferredStyle: .alert)
+            let dialogMessage = UIAlertController(title: "Pairing File", message: "Select the pairing file for your device. For more information, go to https://youtu.be/dQw4w9WgXcQ", preferredStyle: .alert)
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
@@ -99,13 +125,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
             return nil
         }
     }
-    
-    func setAnisetteServer() {
-        if let anisetteUrl = Bundle.main.object(forInfoDictionaryKey: "customAnisetteURL") as? String {
-            UserDefaults.standard.set(anisetteUrl, forKey: "customAnisetteURL")
-        }
-    }
-    
+
     func displayError(_ msg: String) {
         print(msg)
         // Create a new alert

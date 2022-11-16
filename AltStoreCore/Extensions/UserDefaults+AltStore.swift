@@ -3,7 +3,7 @@
 //  AltStore
 //
 //  Created by Riley Testut on 6/4/19.
-//  Copyright © 2019 Riley Testut. All rights reserved.
+//  Copyright © 2019 SideStore. All rights reserved.
 //
 
 import Foundation
