@@ -40,6 +40,7 @@ class MyAppsViewController: UICollectionViewController
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
     private lazy var activeAppsDataSource = self.makeActiveAppsDataSource()
     private lazy var inactiveAppsDataSource = self.makeInactiveAppsDataSource()
+    private lazy var hiddenUpdatesFetchedResultsController = self.makeHiddenUpdatesFetchedResultsController()
     
     private var prototypeUpdateCell: UpdateCollectionViewCell!
     private var sideloadingProgressView: UIProgressView!
@@ -78,6 +79,7 @@ class MyAppsViewController: UICollectionViewController
         
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
+        self.hiddenUpdatesFetchedResultsController.delegate = self
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -178,6 +180,19 @@ private extension MyAppsViewController
             cell.blurView.layer.cornerRadius = 20
             cell.blurView.layer.masksToBounds = true
             cell.blurView.backgroundColor = .altPrimary
+            
+            cell.button.addTarget(self, action: #selector(MyAppsViewController.showHiddenUpdatesAlert(_:)), for: .primaryActionTriggered)
+            
+            if let fetchedObjects = self.hiddenUpdatesFetchedResultsController.fetchedObjects, !fetchedObjects.isEmpty
+            {
+                cell.textLabel.text = NSLocalizedString("Unsupported Updates Available", comment: "")
+                cell.button.isHidden = false
+            }
+            else
+            {
+                cell.textLabel.text = NSLocalizedString("No Updates Available", comment: "")
+                cell.button.isHidden = true
+            }
         }
         
         return dynamicDataSource
@@ -459,8 +474,35 @@ private extension MyAppsViewController
         return dataSource
     }
     
+    func makeHiddenUpdatesFetchedResultsController() -> NSFetchedResultsController<InstalledApp>
+    {
+        let fetchRequest = InstalledApp.updatesFetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.bundleIdentifier, ascending: true),
+                                        NSSortDescriptor(keyPath: \InstalledApp.storeApp?.sourceIdentifier, ascending: true)] // Sorting doesn't matter as long as it's stable.
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        return fetchedResultsController
+    }
+    
     func updateDataSource()
     {
+        do
+        {
+            if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
+            {
+                try self.updatesDataSource.fetchedResultsController.performFetch()
+            }
+            
+            if self.hiddenUpdatesFetchedResultsController.fetchedObjects == nil
+            {
+                try self.hiddenUpdatesFetchedResultsController.performFetch()
+            }
+        }
+        catch
+        {
+            print("[ALTLog] Failed to fetch updates:", error)
+        }
+        
         if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
         {
             self.dataSource.predicate = nil
@@ -481,6 +523,7 @@ private extension MyAppsViewController
     {
         do
         {
+            try self.hiddenUpdatesFetchedResultsController.performFetch()
             try self.updatesDataSource.fetchedResultsController.performFetch()
         }
         catch
@@ -1011,6 +1054,50 @@ private extension MyAppsViewController
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    @objc func showHiddenUpdatesAlert(_ sender: UIButton)
+    {
+        guard let installedApps = self.hiddenUpdatesFetchedResultsController.fetchedObjects, !installedApps.isEmpty, self.updatesDataSource.itemCount == 0 else { return }
+        
+        let numberOfHiddenUpdates = installedApps.count
+        
+        let title = numberOfHiddenUpdates == 1 ? NSLocalizedString("Unsupported Update Available", comment: "") : String(format: NSLocalizedString("%@ Unsupported Updates Available", comment: ""), numberOfHiddenUpdates as NSNumber)
+        var message = String(format: NSLocalizedString("These updates don't support iOS %@. Please update your device to the latest iOS version to install them.", comment: ""), ProcessInfo.processInfo.operatingSystemVersion.stringValue)
+        message += "\n"
+        
+        for installedApp in installedApps
+        {
+            guard let storeApp = installedApp.storeApp else { continue }
+            
+            var title = storeApp.name
+            if let appVersion = storeApp.latestAvailableVersion
+            {
+                title += " " + appVersion.version
+                
+                var osVersion: String? = nil
+                if let minOSVersion = appVersion.minOSVersion, !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion)
+                {
+                    osVersion = String(format: NSLocalizedString("iOS %@ or later", comment: ""), minOSVersion.stringValue)
+                }
+                else if let maxOSVersion = appVersion.maxOSVersion, ProcessInfo.processInfo.operatingSystemVersion > maxOSVersion
+                {
+                    osVersion = String(format: NSLocalizedString("iOS %@ or earlier", comment: ""), maxOSVersion.stringValue)
+                }
+                
+                if let osVersion
+                {
+                    title += " (" + osVersion + ")"
+                }
+            }
+            
+            message += "\n" + title
+        }
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(.ok)
+        
+        self.present(alertController, animated: true)
+    }
 }
 
 private extension MyAppsViewController
@@ -1349,12 +1436,6 @@ private extension MyAppsViewController
     @objc func didFetchSource(_ notification: Notification)
     {
         DispatchQueue.main.async {
-            if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
-            {
-                do { try self.updatesDataSource.fetchedResultsController.performFetch() }
-                catch { print("Error fetching:", error) }
-            }
-            
             self.update()
         }
     }
@@ -2028,38 +2109,54 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
         // an accurate pre-update item count.
         self.collectionView.performBatchUpdates(nil, completion: nil)
         
-        self.updatesDataSource.controllerWillChangeContent(controller)
+        if controller == self.updatesDataSource.fetchedResultsController
+        {
+            self.updatesDataSource.controllerWillChangeContent(controller)
+        }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType)
     {
+        guard controller == self.updatesDataSource.fetchedResultsController else { return }
+        
         self.updatesDataSource.controller(controller, didChange: sectionInfo, atSectionIndex: UInt(sectionIndex), for: type)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?)
     {
+        guard controller == self.updatesDataSource.fetchedResultsController else { return }
+        
         self.updatesDataSource.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
-        let previousUpdateCount = self.collectionView.numberOfItems(inSection: Section.updates.rawValue)
-        let updateCount = Int(self.updatesDataSource.itemCount)
-        
-        if previousUpdateCount == 0 && updateCount > 0
+        if controller == self.hiddenUpdatesFetchedResultsController && self.updatesDataSource.itemCount == 0
         {
-            // Remove "No Updates Available" cell.
-            let change = RSTCellContentChange(type: .delete, currentIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue), destinationIndexPath: nil)
-            self.collectionView.add(change)
+            // Reload noUpdates section whenever hiddenUpdatesFetchedResultsController changes (and there are no supported updates).
+            // This ensures the cell correctly switches between "No Updates Available" and "Unsupported Updates Available".
+            self.collectionView.reloadSections([Section.noUpdates.rawValue])
         }
-        else if previousUpdateCount > 0 && updateCount == 0
+        else if controller == self.updatesDataSource.fetchedResultsController
         {
-            // Insert "No Updates Available" cell.
-            let change = RSTCellContentChange(type: .insert, currentIndexPath: nil, destinationIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue))
-            self.collectionView.add(change)
+            let previousUpdateCount = self.collectionView.numberOfItems(inSection: Section.updates.rawValue)
+            let updateCount = Int(self.updatesDataSource.itemCount)
+            
+            if previousUpdateCount == 0 && updateCount > 0
+            {
+                // Remove "No Updates Available" cell.
+                let change = RSTCellContentChange(type: .delete, currentIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue), destinationIndexPath: nil)
+                self.collectionView.add(change)
+            }
+            else if previousUpdateCount > 0 && updateCount == 0
+            {
+                // Insert "No Updates Available" cell.
+                let change = RSTCellContentChange(type: .insert, currentIndexPath: nil, destinationIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue))
+                self.collectionView.add(change)
+            }
+            
+            self.updatesDataSource.controllerDidChangeContent(controller)
         }
-        
-        self.updatesDataSource.controllerDidChangeContent(controller)
     }
 }
 

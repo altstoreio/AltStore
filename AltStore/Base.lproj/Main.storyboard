@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -704,12 +704,19 @@ World</string>
                                                                     <color key="textColor" name="Primary"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Who-nd-jyt">
+                                                                    <rect key="frame" x="313" y="13" width="38" height="34.5"/>
+                                                                    <state key="normal" title="Button"/>
+                                                                    <buttonConfiguration key="configuration" style="plain" title="..."/>
+                                                                </button>
                                                             </subviews>
                                                             <constraints>
+                                                                <constraint firstItem="Who-nd-jyt" firstAttribute="trailing" secondItem="F8U-ab-fOM" secondAttribute="trailingMargin" id="0Fe-FJ-P3p"/>
                                                                 <constraint firstItem="z04-yg-x1t" firstAttribute="centerY" secondItem="F8U-ab-fOM" secondAttribute="centerY" id="9w9-Z0-jZl"/>
                                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="z04-yg-x1t" secondAttribute="bottom" constant="10" id="IWL-Ei-QC2"/>
                                                                 <constraint firstItem="z04-yg-x1t" firstAttribute="top" relation="greaterThanOrEqual" secondItem="F8U-ab-fOM" secondAttribute="top" constant="10" id="fLp-au-PLf"/>
                                                                 <constraint firstItem="z04-yg-x1t" firstAttribute="centerX" secondItem="F8U-ab-fOM" secondAttribute="centerX" id="fiy-Zt-GmB"/>
+                                                                <constraint firstItem="Who-nd-jyt" firstAttribute="centerY" secondItem="F8U-ab-fOM" secondAttribute="centerY" id="tV3-4W-6Ha"/>
                                                             </constraints>
                                                         </view>
                                                         <vibrancyEffect style="secondaryLabel">
@@ -737,6 +744,8 @@ World</string>
                                 </constraints>
                                 <connections>
                                     <outlet property="blurView" destination="7iO-O4-Mr9" id="kQ4-9N-nnv"/>
+                                    <outlet property="button" destination="Who-nd-jyt" id="EA8-Jn-NJs"/>
+                                    <outlet property="textLabel" destination="z04-yg-x1t" id="njE-fn-vxd"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
