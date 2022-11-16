@@ -4,6 +4,8 @@
 <dict>
 	<key>StringsTable</key>
 	<string>Root</string>
+	<key>ApplicationGroupContainerIdentifier</key>
+	<string>group.$(APP_GROUP_IDENTIFIER)</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
@@ -15,6 +17,14 @@
 			<string>customAnisetteURL</string>
 			<key>DefaultValue</key>
 			<string></string>
+			<key>IsSecure</key>
+			<string>Alphabet</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>KeyboardType</key>
+			<string>URL</string>
 		</dict>
 	</array>
 </dict>
