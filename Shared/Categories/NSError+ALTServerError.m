@@ -14,7 +14,7 @@
 #import <AltStoreCore/AltStoreCore-Swift.h>
 #endif
 
-NSErrorDomain const AltServerErrorDomain = @"AltServer.Error";
+NSErrorDomain const AltServerErrorDomain = @"AltServer.ServerError";
 NSErrorDomain const AltServerInstallationErrorDomain = @"Apple.InstallationError";
 NSErrorDomain const AltServerConnectionErrorDomain = @"AltServer.ConnectionError";
 
