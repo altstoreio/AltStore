@@ -3,7 +3,7 @@
 //  SideStore
 //
 //  Created by Joseph Mattiello on 11/16/22.
-//  Copyright © 2022 Riley Testut. All rights reserved.
+//  Copyright © 2022 SideStore. All rights reserved.
 //
 
 import Foundation
