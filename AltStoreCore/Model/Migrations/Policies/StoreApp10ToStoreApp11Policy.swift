@@ -22,7 +22,7 @@ fileprivate extension NSManagedObject
     }
     
     var storeAppVersion: String? {
-        let version = self.value(forKey: #keyPath(StoreApp._version)) as? String
+        let version = self.value(forKey: #keyPath(StoreApp.latestVersionString)) as? String
         return version
     }
     

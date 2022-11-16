@@ -395,9 +395,9 @@ extension AppManager
                     {
                         completionHandler(.success((fetchedSources, managedObjectContext)))
                     }
+                    
+                    NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
                 }
-                
-                NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
             }
             
             self.run(operations, context: nil)
