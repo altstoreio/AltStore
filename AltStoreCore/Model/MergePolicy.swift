@@ -75,12 +75,40 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 
                 if let contextApp = conflict.conflictingObjects.first as? StoreApp
                 {
-                    let contextVersions = Set(contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
-                    for case let appVersion as AppVersion in databaseObject._versions where !contextVersions.contains(appVersion.version)
+                    let databaseVersions = Set(databaseObject._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
+                    let sortIndexesByVersion = contextApp._versions.lazy.compactMap { $0 as? AppVersion }.reduce(into: [:]) { $0[$1.version] = contextApp._versions.index(of: $1)  }
+                    let contextVersions = sortIndexesByVersion.keys
+                    
+                    var mergedVersions = Set<AppVersion>()
+                    
+                    for case let appVersion as AppVersion in databaseObject._versions
                     {
-                        print("[ALTLog] Deleting cached app version: \(appVersion.appBundleID + "_" + appVersion.version), not in:", contextApp.versions.map { $0.appBundleID + "_" + $0.version })
-                        appVersion.managedObjectContext?.delete(appVersion)
+                        if contextVersions.contains(appVersion.version)
+                        {
+                            // Version # exists in context, so add existing appVersion to mergedVersions.
+                            mergedVersions.insert(appVersion)
+                        }
+                        else
+                        {
+                            // Version # does NOT exist in context, so delete existing appVersion.
+                            appVersion.managedObjectContext?.delete(appVersion)
+                        }
                     }
+                    
+                    for case let appVersion as AppVersion in contextApp._versions where !databaseVersions.contains(appVersion.version)
+                    {
+                        // Add context appVersion only if version # doesn't already exist in databaseVersions.
+                        mergedVersions.insert(appVersion)
+                    }
+                    
+                    // Make sure versions are sorted in correct order.
+                    let sortedVersions = mergedVersions.sorted { (versionA, versionB) in
+                        let indexA = sortIndexesByVersion[versionA.version] ?? .max
+                        let indexB = sortIndexesByVersion[versionB.version] ?? .max
+                        return indexA < indexB
+                    }
+                    
+                    databaseObject.setVersions(sortedVersions)
                 }
                 
             case let databaseObject as Source:
@@ -112,5 +140,17 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
         }
         
         try super.resolve(constraintConflicts: conflicts)
+        
+        for conflict in conflicts
+        {
+            switch conflict.databaseObject
+            {
+            case let databaseObject as StoreApp:
+                // Update versions post-merging to make sure latestSupportedVersion is correct.
+                databaseObject.setVersions(databaseObject.versions)
+                
+            default: break
+            }
+        }
     }
 }
