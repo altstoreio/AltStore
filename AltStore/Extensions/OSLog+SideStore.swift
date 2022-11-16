@@ -10,7 +10,7 @@ import Foundation
 import OSLog
 
 let customLog = OSLog(subsystem: "org.sidestore.sidestore",
-                             category: "ios")
+                      category: "ios")
 
 
 public extension OSLog {
@@ -39,11 +39,13 @@ public extension OSLog {
     }
 }
 
+// TODO: Add file,line,function to messages? -- @JoeMatt
+
 /// Error logger convenience method for SideStore logging
 /// - Parameters:
 ///   - message: String or format string
 ///   - args: optional args for format string
-public func ELOG(_ message: StaticString, _ args: CVarArg...) {
+public func ELOG(_ message: StaticString, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, _ args: CVarArg...) {
     OSLog.error(message, args)
 }
 
@@ -51,15 +53,17 @@ public func ELOG(_ message: StaticString, _ args: CVarArg...) {
 /// - Parameters:
 ///   - message: String or format string
 ///   - args: optional args for format string
-public func ILOG(_ message: StaticString, _ args: CVarArg...) {
+public func ILOG(_ message: StaticString, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, _ args: CVarArg...) {
     OSLog.info(message, args)
 }
-
 
 /// Debug logger convenience method for SideStore logging
 /// - Parameters:
 ///   - message: String or format string
 ///   - args: optional args for format string
-public func DLOG(_ message: StaticString, _ args: CVarArg...) {
+@inlinable
+public func DLOG(_ message: StaticString, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, _ args: CVarArg...) {
     OSLog.debug(message, args)
 }
+
+// mark: Helpers
