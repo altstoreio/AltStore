@@ -360,10 +360,10 @@ private extension AppDelegate
             {
                 let (sources, context) = try result.get()
                 
-                let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
+                let previousUpdatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
-                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier)]
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version)]
                 
                 let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
                 previousNewsItemsFetchRequest.includesPendingChanges = false
@@ -375,7 +375,7 @@ private extension AppDelegate
                 
                 try context.save()
                 
-                let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                let updatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest()
                 let newsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
                 
                 let updates = try context.fetch(updatesFetchRequest)
@@ -383,12 +383,17 @@ private extension AppDelegate
                 
                 for update in updates
                 {
-                    guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
-                    guard let storeApp = update.storeApp, let version = storeApp.latestSupportedVersion else { continue }
+                    guard let storeApp = update.storeApp, let latestSupportedVersion = storeApp.latestSupportedVersion, latestSupportedVersion.isSupported else { continue }
+                    
+                    if let previousUpdate = previousUpdates.first(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier })
+                    {
+                        // An update for this app was already available, so check whether the version # is different.
+                        guard let version = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)], version != latestSupportedVersion.version else { continue }
+                    }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.version)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
