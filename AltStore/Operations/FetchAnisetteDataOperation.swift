@@ -32,7 +32,7 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
             return
         }
         
-        let urlString = UserDefaults.standard.string(forKey: "customAnisetteURL") ?? "https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx"
+        let urlString = UserDefaults.standard.string(forKey: "customAnisetteURL")!
         print("Anisette URL: " + urlString)
         guard let url = URL(string: urlString) else { return }
 

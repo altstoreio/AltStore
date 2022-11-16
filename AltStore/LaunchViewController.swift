@@ -87,8 +87,6 @@ class LaunchViewController: RSTLaunchViewController
     func setAnisetteServer() {
         if let anisetteUrl = Bundle.main.object(forInfoDictionaryKey: "customAnisetteURL") as? String {
             UserDefaults.standard.set(anisetteUrl, forKey: "customAnisetteURL")
-        } else {
-            UserDefaults.standard.set("https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx", forKey: "customAnisetteURL")
         }
     }
     

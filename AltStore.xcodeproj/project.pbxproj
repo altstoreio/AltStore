@@ -29,6 +29,7 @@
 		191E607D290B2EA5001A3B7C /* jsmn.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E5FD0290A651D001A3B7C /* jsmn.c */; };
 		191E607E290B2EA7001A3B7C /* jplist.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E5FCF290A651D001A3B7C /* jplist.c */; };
 		191E6087290C7B50001A3B7C /* libminimuxer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 191E5FB5290A5E1F001A3B7C /* libminimuxer.a */; };
+		1920B04F2924AC8300744F60 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1920B04E2924AC8300744F60 /* Settings.bundle */; };
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
 		4879A95F2861046500FC1BBD /* AltSign in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A95E2861046500FC1BBD /* AltSign */; };
 		4879A9622861049C00FC1BBD /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A9612861049C00FC1BBD /* OpenSSL */; };
@@ -560,6 +561,7 @@
 		191E6065290B2D6B001A3B7C /* termcolors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = termcolors.c; path = "../Dependencies/libimobiledevice-glue/src/termcolors.c"; sourceTree = "<group>"; };
 		191E6073290B2E02001A3B7C /* companion_proxy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = companion_proxy.c; path = ../Dependencies/libimobiledevice/src/companion_proxy.c; sourceTree = "<group>"; };
 		191E6074290B2E02001A3B7C /* preboard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = preboard.c; path = ../Dependencies/libimobiledevice/src/preboard.c; sourceTree = "<group>"; };
+		1920B04E2924AC8300744F60 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1717,6 +1719,7 @@
 				BFD247962284D7C100981D42 /* Resources */,
 				BF6C8FA8242935CA00125131 /* Dependencies */,
 				BFD247972284D7D800981D42 /* Supporting Files */,
+				1920B04E2924AC8300744F60 /* Settings.bundle */,
 			);
 			path = AltStore;
 			sourceTree = "<group>";
@@ -2433,6 +2436,7 @@
 				BF44EEF3246B3A17002A52F2 /* AltBackup.ipa in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
+				1920B04F2924AC8300744F60 /* Settings.bundle in Resources */,
 				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
