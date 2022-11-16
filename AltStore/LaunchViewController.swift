@@ -31,6 +31,7 @@ public struct AnisetteManager {
     static var defaultURL: String {
         guard let url = Bundle.main.object(forInfoDictionaryKey: "ALTAnisetteURL") as? String else {
             assertionFailure("Info.plist has invalid `ALTAnisetteURL`")
+            abort()
         }
         return url
     }
