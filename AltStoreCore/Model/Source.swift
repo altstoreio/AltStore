@@ -19,17 +19,17 @@ public extension Source
     #if STAGING
     
     #if ALPHA
-    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
     #else
-    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
     #endif
     
     #else
     
     #if ALPHA
-    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
     #else
-    static let altStoreSourceURL = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/app.json")!
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
     #endif
     
     #endif
