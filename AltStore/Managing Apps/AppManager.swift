@@ -25,6 +25,12 @@ extension AppManager
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
+    
+    enum PreferredAppVersion
+    {
+        case latestSupportedVersion
+        case latestAvailableVersionWithFallback
+    }
 }
 
 @available(iOS 13, *)
@@ -477,10 +483,17 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ app: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, to preferredAppVersion: PreferredAppVersion = .latestSupportedVersion, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        guard let storeApp = app.storeApp else {
-            completionHandler(.failure(OperationError.appNotFound(name: app.name)))
+        let preferredApp: AppProtocol?
+        switch preferredAppVersion
+        {
+        case .latestSupportedVersion: preferredApp = installedApp.storeApp?.latestSupportedVersion
+        case .latestAvailableVersionWithFallback: preferredApp = installedApp.storeApp // Use StoreApp directly to correctly handle min/max OS versions in DownloadAppOperation.
+        }
+        
+        guard let app = preferredApp else {
+            completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
         
@@ -497,8 +510,8 @@ extension AppManager
             }
         }
         
-        let operation = AppOperation.update(storeApp)
-        assert(operation.app as AnyObject === storeApp) // Make sure we never accidentally "update" to already installed app.
+        let operation = AppOperation.update(app)
+        assert(operation.app as AnyObject !== installedApp) // Make sure we never accidentally "update" to already installed app.
         
         self.perform([operation], presentingViewController: presentingViewController, group: group)
         
