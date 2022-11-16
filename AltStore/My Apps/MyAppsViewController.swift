@@ -52,6 +52,7 @@ class MyAppsViewController: UICollectionViewController
     private var refreshGroup: RefreshGroup?
     private var sideloadingProgress: Progress?
     private var dropDestinationIndexPath: IndexPath?
+    private var isCheckingForUpdates = false
     
     private var _imagePickerInstalledApp: InstalledApp?
     
@@ -94,6 +95,10 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.register(UpdatesCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ActiveAppsHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InactiveAppsHeader")
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(MyAppsViewController.checkForUpdates(_:)), for: .primaryActionTriggered)
+        self.collectionView.refreshControl = refreshControl
         
         self.sideloadingProgressView = UIProgressView(progressViewStyle: .bar)
         self.sideloadingProgressView.translatesAutoresizingMaskIntoConstraints = false
@@ -1457,6 +1462,44 @@ private extension MyAppsViewController
             catch
             {
                 print("Unable to remove imported .ipa.", error)
+            }
+        }
+    }
+    
+    @objc func checkForUpdates(_ sender: UIRefreshControl)
+    {
+        guard !self.isCheckingForUpdates else { return }
+        self.isCheckingForUpdates = true
+        
+        AppManager.shared.fetchSources() { (result) in
+            do
+            {
+                do
+                {
+                    defer {
+                        DispatchQueue.main.async {
+                            self.isCheckingForUpdates = false
+                            sender.endRefreshing()
+                        }
+                    }
+                    
+                    let (_, context) = try result.get()
+                    try context.save()
+                    
+                }
+                catch let error as AppManager.FetchSourcesError
+                {
+                    try error.managedObjectContext?.save()
+                    throw error
+                }
+            }
+            catch let error as NSError
+            {
+                DispatchQueue.main.async {
+                    let toastView = ToastView(error: error.withLocalizedTitle(NSLocalizedString("Failed to Check for Updates", comment: "")))
+                    toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+                    toastView.show(in: self)
+                }
             }
         }
     }
