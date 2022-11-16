@@ -40,9 +40,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged @objc(version) internal var _version: String
-    @NSManaged @objc(versionDate) internal var _versionDate: Date
-    @NSManaged @objc(versionDescription) internal var _versionDescription: String?
+    @NSManaged @objc(version) public private(set) var latestVersionString: String
+    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
+    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
     
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
@@ -226,7 +226,7 @@ internal extension StoreApp
                 
         // Preserve backwards compatibility by assigning legacy property values.
         guard let latestVersion = versions.first else { preconditionFailure("StoreApp must have at least one AppVersion.") }
-        self._version = latestVersion.version
+        self.latestVersionString = latestVersion.version
         self._versionDate = latestVersion.date
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL

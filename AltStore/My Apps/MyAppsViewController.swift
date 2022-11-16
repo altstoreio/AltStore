@@ -185,7 +185,7 @@ private extension MyAppsViewController
     
     func makeUpdatesDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
-        let fetchRequest = InstalledApp.updatesFetchRequest()
+        let fetchRequest = InstalledApp.supportedUpdatesFetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.storeApp?.latestSupportedVersion?.date, ascending: false),
                                         NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
@@ -479,6 +479,15 @@ private extension MyAppsViewController
 {
     func update()
     {
+        do
+        {
+            try self.updatesDataSource.fetchedResultsController.performFetch()
+        }
+        catch
+        {
+            print("[ALTLog] Failed to fetch updates:", error)
+        }
+        
         if self.updatesDataSource.itemCount > 0
         {
             self.navigationController?.tabBarItem.badgeValue = String(describing: self.updatesDataSource.itemCount)
@@ -489,13 +498,6 @@ private extension MyAppsViewController
             self.navigationController?.tabBarItem.badgeValue = nil
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
-        
-        if self.isViewLoaded
-        {
-            UIView.performWithoutAnimation {
-                self.collectionView.reloadSections(IndexSet(integer: Section.updates.rawValue))
-            }
-        }        
     }
     
     func fetchAppIDs()
