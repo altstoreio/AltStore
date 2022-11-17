@@ -88,6 +88,16 @@ public class LoggedError: NSManagedObject, Fetchable
         {
         case let storeApp as StoreApp: self.storeApp = storeApp
         case let installedApp as InstalledApp: self.installedApp = installedApp
+        case let appVersion as AppVersion:
+            if let installedApp = appVersion.app?.installedApp
+            {
+                self.installedApp = installedApp
+            }
+            else
+            {
+                self.storeApp = appVersion.app
+            }
+        
         default: break
         }
     }
