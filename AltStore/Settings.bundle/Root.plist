@@ -15,8 +15,6 @@
 			<string>Anisette URL</string>
 			<key>Key</key>
 			<string>customAnisetteURL</string>
-			<key>DefaultValue</key>
-			<string></string>
 			<key>IsSecure</key>
 			<string>Alphabet</string>
 			<key>AutocapitalizationType</key>
