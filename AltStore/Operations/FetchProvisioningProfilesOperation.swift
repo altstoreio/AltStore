@@ -136,7 +136,7 @@ extension FetchProvisioningProfilesOperation
                 if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore.
-                    preferredBundleID = "com.\(team.identifier).\(app.bundleIdentifier)"
+                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
                 }
                 else
                 {
@@ -181,7 +181,7 @@ extension FetchProvisioningProfilesOperation
                 if app.isAltStoreApp
                 {
                     // Use legacy bundle ID format for AltStore (and its extensions).
-                    updatedParentBundleID = "com.\(team.identifier).\(parentBundleID)"
+                    updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
                 }
                 else
                 {
