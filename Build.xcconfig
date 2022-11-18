@@ -6,7 +6,7 @@ CURRENT_PROJECT_VERSION = 3001
 
 // Vars to be overwritten by `CodeSigning.xcconfig` if exists
 DEVELOPMENT_TEAM = S32Z3HMYVQ
-ORG_IDENTIFIER = com.joemattiello
+ORG_IDENTIFIER = com.SideStore
 
 // Codesigning settings defined optionally, see `CodeSigning.xcconfig.example`
 #include? "CodeSigning.xcconfig"
@@ -16,8 +16,8 @@ ORG_PREFIX = $(ORG_IDENTIFIER)
 PRODUCT_NAME = SideStore
 //PRODUCT_NAME[configuration=Debug] = Prov Debug
 
-PRODUCT_BUNDLE_IDENTIFIER   = $(ORG_PREFIX).$(PROJECT_NAME)
+PRODUCT_BUNDLE_IDENTIFIER   = $(ORG_PREFIX).SideStore
 //PRODUCT_BUNDLE_IDENTIFIER[configuration=Debug] = $(ORG_PREFIX).$(PROJECT_NAME:lower)-debug
 
-APP_GROUP_IDENTIFIER        = $(ORG_PREFIX).$(PROJECT_NAME)
+APP_GROUP_IDENTIFIER        = $(ORG_PREFIX).SideStore
 ICLOUD_CONTAINER_IDENTIFIER = iCloud.$(ORG_PREFIX).$(PROJECT_NAME)
