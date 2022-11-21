@@ -77,6 +77,13 @@ class AppOperationContext
         }
         set {
             _error = newValue
+            
+            if self.authenticatedContext.error == nil
+            {
+                // Assign newValue to authenticatedContext.error if the latter is nil.
+                // This fixes some operations continuing even after an error has occured.
+                self.authenticatedContext.error = newValue
+            }
         }
     }
     private var _error: Error?
