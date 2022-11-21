@@ -21,7 +21,6 @@ NSErrorDomain const AltServerConnectionErrorDomain = @"AltServer.ConnectionError
 NSErrorUserInfoKey const ALTUnderlyingErrorDomainErrorKey = @"underlyingErrorDomain";
 NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey = @"underlyingErrorCode";
 NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey = @"bundleIdentifier";
-NSErrorUserInfoKey const ALTAppNameErrorKey = @"appName";
 NSErrorUserInfoKey const ALTDeviceNameErrorKey = @"deviceName";
 NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey = @"ALTOperatingSystemName";
 NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSystemVersion";
