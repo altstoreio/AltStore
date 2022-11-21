@@ -255,7 +255,7 @@ private extension AppDelegate
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
                 
-            case .failure(~OperationErrorCode.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
+            case .failure(OperationError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
                 // Ignore
                 break
                 

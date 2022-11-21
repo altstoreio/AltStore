@@ -10,26 +10,102 @@ import Cocoa
 import UserNotifications
 import ObjectiveC
 
-private let appGroupsSemaphore = DispatchSemaphore(value: 1)
+#if STAGING
+let altstoreSourceURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/apps-staging.json")!
+#else
+let altstoreSourceURL = URL(string: "https://apps.altstore.io")!
+#endif
 
+#if BETA
+let altstoreBundleID = "com.rileytestut.AltStore.Beta"
+#else
+let altstoreBundleID = "com.rileytestut.AltStore"
+#endif
+
+private let appGroupsSemaphore = DispatchSemaphore(value: 1)
 private let developerDiskManager = DeveloperDiskManager()
 
-typealias OperationError = OperationErrorCode.Error
-enum OperationErrorCode: Int, ALTErrorEnum
+private let session: URLSession = {
+    let configuration = URLSessionConfiguration.default
+    configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+    configuration.urlCache = nil
+    
+    let session = URLSession(configuration: configuration)
+    return session
+}()
+
+extension OperationError
 {
-    case cancelled
-    case noTeam
-    case missingPrivateKey
-    case missingCertificate
+    enum Code: Int, ALTErrorCode
+    {
+        typealias Error = OperationError
+        
+        case cancelled
+        case noTeam
+        case missingPrivateKey
+        case missingCertificate
+        
+        // Source JSON
+        case appNotFound
+    }
+    
+    static let cancelled = OperationError(code: .cancelled)
+    static let noTeam = OperationError(code: .noTeam)
+    static let missingPrivateKey = OperationError(code: .missingPrivateKey)
+    static let missingCertificate = OperationError(code: .missingCertificate)
+    
+    static func appNotFound(bundleID: String) -> OperationError { OperationError(code: .appNotFound, bundleID: bundleID) }
+}
+
+struct OperationError: ALTLocalizedError
+{
+    var code: Code
+    var errorTitle: String?
+    var errorFailure: String?
+    
+    var bundleID: String?
     
     var errorFailureReason: String {
-        switch self
+        switch self.code
         {
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
         case .noTeam: return NSLocalizedString("You are not a member of any developer teams.", comment: "")
         case .missingPrivateKey: return NSLocalizedString("The developer certificate's private key could not be found.", comment: "")
         case .missingCertificate: return NSLocalizedString("The developer certificate could not be found.", comment: "")
+        case .appNotFound:
+            let appBundleID = self.bundleID.map { "“\($0)”" } ?? "AltStore"
+            return String(format: NSLocalizedString("%@ could not be located in the source JSON.", comment: ""), appBundleID)
         }
+    }
+}
+
+private extension ALTDeviceManager
+{
+    struct Source: Decodable
+    {
+        struct App: Decodable
+        {
+            struct Version: Decodable
+            {
+                var version: String
+                var downloadURL: URL
+                
+                var minimumOSVersion: OperatingSystemVersion? {
+                    return self.minOSVersion.map { OperatingSystemVersion(string: $0) }
+                }
+                private var minOSVersion: String?
+            }
+            
+            var name: String
+            var bundleIdentifier: String
+            
+            var versions: [Version]?
+        }
+        
+        var name: String
+        var identifier: String
+        
+        var apps: [App]
     }
 }
 
@@ -102,7 +178,7 @@ extension ALTDeviceManager
                                                         fallthrough // Continue installing app even if we couldn't install Developer disk image.
                                                     
                                                     case .success:
-                                                        self.downloadApp(from: url) { (result) in
+                                                        self.downloadApp(from: url, for: altDevice) { (result) in
                                                             do
                                                             {
                                                                 let fileURL = try result.get()
@@ -229,26 +305,111 @@ extension ALTDeviceManager
 
 private extension ALTDeviceManager
 {
-    func downloadApp(from url: URL, completionHandler: @escaping (Result<URL, Error>) -> Void)
+    func downloadApp(from url: URL, for device: ALTDevice, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
         guard !url.isFileURL else { return completionHandler(.success(url)) }
         
-        let downloadTask = URLSession.shared.downloadTask(with: url) { (fileURL, response, error) in
+        self.fetchAltStoreDownloadURL(for: device) { result in
+            switch result
+            {
+            case .failure(let error): completionHandler(.failure(error))
+            case .success(let url):
+                let downloadTask = URLSession.shared.downloadTask(with: url) { (fileURL, response, error) in
+                    do
+                    {
+                        if let response = response as? HTTPURLResponse
+                        {
+                            guard response.statusCode != 404 else { throw CocoaError(.fileNoSuchFile, userInfo: [NSURLErrorKey: url]) }
+                        }
+                        
+                        let (fileURL, _) = try Result((fileURL, response), error).get()
+                        completionHandler(.success(fileURL))
+                        
+                        do { try FileManager.default.removeItem(at: fileURL) }
+                        catch { print("Failed to remove downloaded .ipa.", error) }
+                    }
+                    catch
+                    {
+                        completionHandler(.failure(error))
+                    }
+                }
+                
+                downloadTask.resume()
+            }
+        }
+    }
+    
+    func fetchAltStoreDownloadURL(for device: ALTDevice, completion: @escaping (Result<URL, Error>) -> Void)
+    {
+        let dataTask = session.dataTask(with: altstoreSourceURL) { (data, response, error) in
+            
             do
             {
-                let (fileURL, _) = try Result((fileURL, response), error).get()
-                completionHandler(.success(fileURL))
+                if let response = response as? HTTPURLResponse
+                {
+                    guard response.statusCode != 404 else { throw CocoaError(.fileNoSuchFile, userInfo: [NSURLErrorKey: altstoreSourceURL]) }
+                }
                 
-                do { try FileManager.default.removeItem(at: fileURL) }
-                catch { print("Failed to remove downloaded .ipa.", error) }
+                let (data, _) = try Result((data, response), error).get()
+                let source = try Foundation.JSONDecoder().decode(Source.self, from: data)
+                
+                let osName = device.type.osName ?? "iOS"
+                
+                guard let altstore = source.apps.first(where: { $0.bundleIdentifier == altstoreBundleID }) else { throw OperationError.appNotFound(bundleID: altstoreBundleID) }
+                guard let latestVersion = altstore.versions?.first else { throw ALTServerError(.unsupportediOSVersion, userInfo: [ALTAppNameErrorKey: "AltStore",
+                                                                                                                      ALTOperatingSystemNameErrorKey: osName,
+                                                                                                                   ALTOperatingSystemVersionErrorKey: "12.2"]) }
+                
+                let minOSVersionString = latestVersion.minimumOSVersion?.stringValue ?? "12.2"
+                
+                guard let latestSupportedVersion = altstore.versions?.first(where: { appVersion in
+                    if let minOSVersion = appVersion.minimumOSVersion, device.osVersion < minOSVersion
+                    {
+                        return false
+                    }
+                    
+                    return true
+                }) else { throw ALTServerError(.unsupportediOSVersion, userInfo: [ALTAppNameErrorKey: "AltStore",
+                                                                      ALTOperatingSystemNameErrorKey: osName,
+                                                                   ALTOperatingSystemVersionErrorKey: minOSVersionString]) }
+                
+                guard latestSupportedVersion.version != latestVersion.version else {
+                    // The newest version is also the newest compatible version, so return its downloadURL.
+                    return completion(.success(latestVersion.downloadURL))
+                }
+                
+                DispatchQueue.main.async {
+                    var message = String(format: NSLocalizedString("%@ is running %@ %@, but AltStore requires %@ %@ or later.", comment: ""), device.name, osName, device.osVersion.stringValue, osName, minOSVersionString)
+                    message += "\n\n"
+                    message += NSLocalizedString("Would you like to download the last version compatible with your device instead?", comment: "")
+                    
+                    let alert = NSAlert()
+                    alert.messageText = String(format: NSLocalizedString("Unsupported %@ Version", comment: ""), osName)
+                    alert.informativeText = message
+                    
+                    let buttonTitle = String(format: NSLocalizedString("Download %@ %@", comment: ""), altstore.name, latestSupportedVersion.version)
+                    alert.addButton(withTitle: buttonTitle)
+                    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                    
+                    let index = alert.runModal()
+                    if index == .alertFirstButtonReturn
+                    {
+                        completion(.success(latestSupportedVersion.downloadURL))
+                    }
+                    else
+                    {
+                        completion(.failure(OperationError.cancelled))
+                    }
+                }
+                
             }
             catch
             {
-                completionHandler(.failure(error))
+                completion(.failure(error))
             }
         }
         
-        downloadTask.resume()
+        dataTask.resume()
     }
     
     func authenticate(appleID: String, password: String, anisetteData: ALTAnisetteData, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Error>) -> Void)
