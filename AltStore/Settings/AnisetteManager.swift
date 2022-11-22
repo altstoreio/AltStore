@@ -12,7 +12,7 @@ public struct AnisetteManager {
     
     /// User defined URL from Settings/UserDefaults
     static var userURL: String? {
-        guard let urlString = UserDefaults.shared.customAnisetteURL, !urlString.isEmpty else { return nil }
+        guard let urlString = UserDefaults.standard.customAnisetteURL, !urlString.isEmpty else { return nil }
         // Test it's a valid URL
         guard URL(string: urlString) != nil else {
             ELOG("UserDefaults has invalid `customAnisetteURL`")
