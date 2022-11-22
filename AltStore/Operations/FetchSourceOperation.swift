@@ -12,6 +12,41 @@ import CoreData
 import AltStoreCore
 import Roxas
 
+extension SourceError
+{
+    enum Code: Int, ALTErrorCode
+    {
+        typealias Error = SourceError
+        
+        case unsupported
+        case duplicateBundleID
+    }
+    
+    static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
+    static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, duplicateBundleID: bundleID) }
+}
+
+struct SourceError: ALTLocalizedError
+{
+    var code: Code
+    var errorTitle: String?
+    var errorFailure: String?
+    
+    @Managed var source: Source
+    var duplicateBundleID: String?
+    
+    var errorFailureReason: String {
+        switch self.code
+        {
+        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
+        case .duplicateBundleID:
+            let bundleIDFragment = self.duplicateBundleID.map { String(format: NSLocalizedString("the bundle identifier %@", comment: ""), $0) } ?? NSLocalizedString("the same bundle identifier", comment: "")
+            let failureReason = String(format: NSLocalizedString("The source “%@” contains multiple apps with %@.", comment: ""), self.$source.name, bundleIDFragment)
+            return failureReason
+        }
+    }
+}
+
 @objc(FetchSourceOperation)
 class FetchSourceOperation: ResultOperation<Source>
 {
@@ -78,6 +113,8 @@ class FetchSourceOperation: ResultOperation<Source>
                     let source = try decoder.decode(Source.self, from: data)
                     let identifier = source.identifier
                     
+                    try self.verify(source)
+                    
                     try childContext.save()
                     
                     self.managedObjectContext.perform {
@@ -103,5 +140,25 @@ class FetchSourceOperation: ResultOperation<Source>
         self.progress.addChild(dataTask.progress, withPendingUnitCount: 1)
         
         dataTask.resume()
+    }
+}
+
+private extension FetchSourceOperation
+{
+    func verify(_ source: Source) throws
+    {
+        #if !BETA
+        if let trustedSourceIDs = UserDefaults.shared.trustedSourceIDs
+        {
+            guard trustedSourceIDs.contains(source.identifier) || source.identifier == Source.altStoreIdentifier else { throw SourceError(code: .unsupported, source: source) }
+        }
+        #endif
+        
+        var bundleIDs = Set<String>()
+        for app in source.apps
+        {
+            guard !bundleIDs.contains(app.bundleIdentifier) else { throw SourceError.duplicateBundleID(app.bundleIdentifier, source: source) }
+            bundleIDs.insert(app.bundleIdentifier)
+        }
     }
 }

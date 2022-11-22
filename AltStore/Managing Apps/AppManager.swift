@@ -394,10 +394,13 @@ extension AppManager
                     switch result
                     {
                     case .success(let source): fetchedSources.insert(source)
-                    case .failure(let error):
+                    case .failure(let nsError as NSError):
                         let source = managedObjectContext.object(with: source.objectID) as! Source
-                        source.error = (error as NSError).sanitizedForSerialization()
+                        let title = String(format: NSLocalizedString("Unable to Refresh “%@” Source", comment: ""), source.name)
+                        
+                        let error = nsError.withLocalizedTitle(title)
                         errors[source] = error
+                        source.error = error.sanitizedForSerialization()
                     }
                     
                     dispatchGroup.leave()
