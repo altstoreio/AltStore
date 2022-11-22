@@ -29,11 +29,13 @@
 		191E607D290B2EA5001A3B7C /* jsmn.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E5FD0290A651D001A3B7C /* jsmn.c */; };
 		191E607E290B2EA7001A3B7C /* jplist.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E5FCF290A651D001A3B7C /* jplist.c */; };
 		191E6087290C7B50001A3B7C /* libminimuxer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 191E5FB5290A5E1F001A3B7C /* libminimuxer.a */; };
+		1920B04F2924AC8300744F60 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1920B04E2924AC8300744F60 /* Settings.bundle */; };
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
 		4879A95F2861046500FC1BBD /* AltSign in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A95E2861046500FC1BBD /* AltSign */; };
 		4879A9622861049C00FC1BBD /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A9612861049C00FC1BBD /* OpenSSL */; };
 		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
 		B39F16132918D7C5002E9404 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16122918D7C5002E9404 /* Consts.swift */; };
 		B39F16152918D7DA002E9404 /* Consts+Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39F16142918D7DA002E9404 /* Consts+Proxy.swift */; };
@@ -43,6 +45,7 @@
 		B3C395F9284F362400DA9E2F /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395F8284F362400DA9E2F /* AppCenterCrashes */; };
 		B3C395FC284F3B2400DA9E2F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395FB284F3B2400DA9E2F /* Sparkle */; };
 		B3C395FF284F3C0900DA9E2F /* STPrivilegedTask in Frameworks */ = {isa = PBXBuildFile; productRef = B3C395FE284F3C0900DA9E2F /* STPrivilegedTask */; };
+		B3EE16B62925E27D00B3B1F5 /* AnisetteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE16B52925E27D00B3B1F5 /* AnisetteManager.swift */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
 		BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08858222DE795100DE9F1E /* MyAppsViewController.swift */; };
@@ -560,8 +563,10 @@
 		191E6065290B2D6B001A3B7C /* termcolors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = termcolors.c; path = "../Dependencies/libimobiledevice-glue/src/termcolors.c"; sourceTree = "<group>"; };
 		191E6073290B2E02001A3B7C /* companion_proxy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = companion_proxy.c; path = ../Dependencies/libimobiledevice/src/companion_proxy.c; sourceTree = "<group>"; };
 		191E6074290B2E02001A3B7C /* preboard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = preboard.c; path = ../Dependencies/libimobiledevice/src/preboard.c; sourceTree = "<group>"; };
+		1920B04E2924AC8300744F60 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
+		B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+SideStore.swift"; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39F16122918D7C5002E9404 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		B39F16142918D7DA002E9404 /* Consts+Proxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Consts+Proxy.swift"; sourceTree = "<group>"; };
@@ -574,6 +579,7 @@
 		B3C3960D284F4E4B00DA9E2F /* AltWidgetExtension.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AltWidgetExtension.xcconfig; sourceTree = "<group>"; };
 		B3C3960E284F4F9100DA9E2F /* AltStoreCore.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AltStoreCore.xcconfig; sourceTree = "<group>"; };
 		B3C3960F284F53E900DA9E2F /* AltBackup.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AltBackup.xcconfig; sourceTree = "<group>"; };
+		B3EE16B52925E27D00B3B1F5 /* AnisetteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteManager.swift; sourceTree = "<group>"; };
 		BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttemptsViewController.swift; sourceTree = "<group>"; };
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
@@ -1717,6 +1723,7 @@
 				BFD247962284D7C100981D42 /* Resources */,
 				BF6C8FA8242935CA00125131 /* Dependencies */,
 				BFD247972284D7D800981D42 /* Supporting Files */,
+				1920B04E2924AC8300744F60 /* Settings.bundle */,
 			);
 			path = AltStore;
 			sourceTree = "<group>";
@@ -1792,6 +1799,7 @@
 				BF8CAE4D248AEABA004D6CCE /* UIDevice+Jailbreak.swift */,
 				BFE00A1F2503097F00EB4D0C /* INInteraction+AltStore.swift */,
 				D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */,
+				B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1828,6 +1836,7 @@
 				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
+				B3EE16B52925E27D00B3B1F5 /* AnisetteManager.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2251,7 +2260,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = "Riley Testut";
+				ORGANIZATIONNAME = SideStore;
 				TargetAttributes = {
 					19104DB12909C06C00C49C7B = {
 						CreatedOnToolsVersion = 14.0;
@@ -2433,6 +2442,7 @@
 				BF44EEF3246B3A17002A52F2 /* AltBackup.ipa in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
+				1920B04F2924AC8300744F60 /* Settings.bundle in Resources */,
 				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
@@ -2739,6 +2749,7 @@
 				BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */,
+				B3EE16B62925E27D00B3B1F5 /* AnisetteManager.swift in Sources */,
 				BF88F97224F8727D00BB75DF /* AppManagerErrors.swift in Sources */,
 				B39F16152918D7DA002E9404 /* Consts+Proxy.swift in Sources */,
 				BF6C8FAE2429597900125131 /* BannerCollectionViewCell.swift in Sources */,
@@ -2760,6 +2771,7 @@
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
 				BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */,
+				B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */,
 				BF08858322DE795100DE9F1E /* MyAppsViewController.swift in Sources */,
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
