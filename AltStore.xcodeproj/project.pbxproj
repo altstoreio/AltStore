@@ -3006,7 +3006,6 @@
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/debug",
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/release",
 				);
-				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3043,7 +3042,6 @@
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/debug",
 					"$(PROJECT_DIR)/Dependencies/minimuxer/target/aarch64-apple-ios/release",
 				);
-				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
