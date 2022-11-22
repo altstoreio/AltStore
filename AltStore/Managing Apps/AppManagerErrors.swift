@@ -27,16 +27,16 @@ extension AppManager
             self.managedObjectContext?.performAndWait {
                 if self.sources?.count == 1
                 {
-                    localizedTitle = NSLocalizedString("Failed to Refresh Store", comment: "")
+                    localizedTitle = NSLocalizedString("Unable to Refresh Store", comment: "")
                 }
                 else if self.errors.count == 1
                 {
                     guard let source = self.errors.keys.first else { return }
-                    localizedTitle = String(format: NSLocalizedString("Failed to Refresh Source “%@”", comment: ""), source.name)
+                    localizedTitle = String(format: NSLocalizedString("Unable to Refresh “%@” Source", comment: ""), source.name)
                 }
                 else
                 {
-                    localizedTitle = String(format: NSLocalizedString("Failed to Refresh %@ Sources", comment: ""), NSNumber(value: self.errors.count))
+                    localizedTitle = String(format: NSLocalizedString("Unable to Refresh %@ Sources", comment: ""), NSNumber(value: self.errors.count))
                 }
             }
             
