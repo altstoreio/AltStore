@@ -178,6 +178,25 @@
 				<string>ipa</string>
 			</dict>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.plist</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Mobile Device Pairing</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>org.sidestore.mobiledevicepairing</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mobiledevicepairing</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>
