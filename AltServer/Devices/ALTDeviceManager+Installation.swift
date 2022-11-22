@@ -111,11 +111,11 @@ private extension ALTDeviceManager
 
 extension ALTDeviceManager
 {
-    func installApplication(at url: URL, to altDevice: ALTDevice, appleID: String, password: String, completion: @escaping (Result<ALTApplication, Error>) -> Void)
+    func installApplication(at ipaFileURL: URL?, to altDevice: ALTDevice, appleID: String, password: String, completion: @escaping (Result<ALTApplication, Error>) -> Void)
     {
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
-        var appName = (url.isFileURL) ? url.deletingPathExtension().lastPathComponent : NSLocalizedString("AltStore", comment: "")
+        var appName = ipaFileURL?.deletingPathExtension().lastPathComponent ?? NSLocalizedString("AltStore", comment: "")
         
         func finish(_ result: Result<ALTApplication, Error>, failure: String? = nil)
         {
@@ -164,7 +164,7 @@ extension ALTDeviceManager
                                             {
                                                 let certificate = try result.get()
                                                 
-                                                if !url.isFileURL
+                                                if ipaFileURL == nil
                                                 {
                                                     // Show alert before downloading remote .ipa.
                                                     self.showInstallationAlert(appName: NSLocalizedString("AltStore", comment: ""), deviceName: device.name)
@@ -178,7 +178,7 @@ extension ALTDeviceManager
                                                         fallthrough // Continue installing app even if we couldn't install Developer disk image.
                                                     
                                                     case .success:
-                                                        self.downloadApp(from: url, for: altDevice) { (result) in
+                                                        self.downloadApp(from: ipaFileURL, for: altDevice) { (result) in
                                                             do
                                                             {
                                                                 let fileURL = try result.get()
@@ -188,7 +188,7 @@ extension ALTDeviceManager
                                                                 let appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: destinationDirectoryURL)
                                                                 guard let application = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
                                                                 
-                                                                if url.isFileURL
+                                                                if ipaFileURL != nil
                                                                 {
                                                                     // Show alert after "downloading" local .ipa.
                                                                     self.showInstallationAlert(appName: application.name, deviceName: device.name)
@@ -305,9 +305,12 @@ extension ALTDeviceManager
 
 private extension ALTDeviceManager
 {
-    func downloadApp(from url: URL, for device: ALTDevice, completionHandler: @escaping (Result<URL, Error>) -> Void)
+    func downloadApp(from url: URL?, for device: ALTDevice, completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        guard !url.isFileURL else { return completionHandler(.success(url)) }
+        if let url, url.isFileURL
+        {
+            return completionHandler(.success(url))
+        }
         
         self.fetchAltStoreDownloadURL(for: device) { result in
             switch result

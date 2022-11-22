@@ -14,14 +14,6 @@ import AltSign
 import LaunchAtLogin
 import Sparkle
 
-#if STAGING
-private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
-#elseif BETA
-private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore-beta.ipa")!
-#else
-private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore.ipa")!
-#endif
-
 extension ALTDevice: MenuDisplayable {}
 
 @NSApplicationMain
@@ -139,7 +131,7 @@ private extension AppDelegate
 {
     @objc func installAltStore(to device: ALTDevice)
     {
-        self.installApplication(at: altstoreAppURL, to: device)
+        self.installApplication(at: nil, to: device)
     }
     
     @objc func sideloadIPA(to device: ALTDevice)
@@ -198,7 +190,7 @@ private extension AppDelegate
         }
     }
     
-    func installApplication(at url: URL, to device: ALTDevice)
+    func installApplication(at fileURL: URL?, to device: ALTDevice)
     {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
@@ -268,7 +260,7 @@ private extension AppDelegate
                 
         func install()
         {
-            ALTDeviceManager.shared.installApplication(at: url, to: device, appleID: username, password: password, completion: finish(_:))
+            ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password, completion: finish(_:))
         }
         
         AnisetteDataManager.shared.isXPCAvailable { isAvailable in
