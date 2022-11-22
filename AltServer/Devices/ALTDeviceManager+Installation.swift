@@ -167,7 +167,7 @@ extension ALTDeviceManager
                                                 if ipaFileURL == nil
                                                 {
                                                     // Show alert before downloading remote .ipa.
-                                                    self.showInstallationAlert(appName: NSLocalizedString("AltStore", comment: ""), deviceName: device.name)
+                                                    self.showInstallationAlert(appName: NSLocalizedString("AltStore", comment: ""), deviceName: altDevice.name)
                                                 }
                                                 
                                                 self.prepare(device) { (result) in
@@ -191,7 +191,7 @@ extension ALTDeviceManager
                                                                 if ipaFileURL != nil
                                                                 {
                                                                     // Show alert after "downloading" local .ipa.
-                                                                    self.showInstallationAlert(appName: application.name, deviceName: device.name)
+                                                                    self.showInstallationAlert(appName: application.name, deviceName: altDevice.name)
                                                                 }
                                                                 
                                                                 appName = application.name
