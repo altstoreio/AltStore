@@ -69,6 +69,7 @@ class PatreonViewController: UICollectionViewController
         var itemWidth = (self.collectionView.bounds.width - (layout.sectionInset.left + layout.sectionInset.right + layout.minimumInteritemSpacing)) / 2
         itemWidth.round(.down)
         
+        // TODO: if the intention here is to hide the cells, we should just modify the data source. @JoeMatt
         layout.itemSize = CGSize(width: 0, height: 0)
     }
 }
@@ -128,7 +129,7 @@ private extension PatreonViewController
         You’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.
         
         Thanks for all of your support. Enjoy!
-        Riley & Shane
+        - SideTeam
         """, comment: "")
         
         if let account = DatabaseManager.shared.patreonAccount(), PatreonAPI.shared.isAuthenticated
@@ -172,6 +173,7 @@ private extension PatreonViewController
     
     @objc func openPatreonURL(_ sender: UIButton)
     {
+        // TODO: Is this the final URL? @JoeMatt
         let patreonURL = URL(string: "https://www.patreon.com/JitStreamer")!
         
         let safariViewController = SFSafariViewController(url: patreonURL)
