@@ -10,7 +10,7 @@
       "version": "0.1.1",
       "versionDate": "2022-010-15T12:00:00-05:00",
       "versionDescription": "If you see this then please sideload the new version of SideStore via AltServer!",
-      "downloadURL": "https://nythepegasus.com/SideStore.ipa",
+      "downloadURL": "https://github.com/SideStore/SideStore/releases/download/0.1.1/SideStore.ipa",
       "localizedDescription": "SideStore is an alternative app store for non-jailbroken devices. \n\nSideStore allows you to sideload other .ipa files and apps from the Files app or via the SideStore Library",
       "iconURL": "https://raw.githubusercontent.com/SideStore/apps.json/main/105070799.jpeg",
       "tintColor": "8043FF",
