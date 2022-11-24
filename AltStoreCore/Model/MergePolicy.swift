@@ -10,6 +10,60 @@ import CoreData
 
 import Roxas
 
+extension MergeError
+{
+    enum Code: Int, ALTErrorCode
+    {
+        typealias Error = MergeError
+        
+        case noVersions
+    }
+    
+    static func noVersions(for app: AppProtocol) -> MergeError { .init(code: .noVersions, appName: app.name, appBundleID: app.bundleIdentifier) }
+}
+
+struct MergeError: ALTLocalizedError
+{
+    static var errorDomain: String { "AltStore.MergeError" }
+    
+    let code: Code
+    var errorTitle: String?
+    var errorFailure: String?
+    
+    var appName: String?
+    var appBundleID: String?
+    
+    var errorFailureReason: String {
+        switch self.code
+        {
+        case .noVersions:
+            var appName = NSLocalizedString("At least one app", comment: "")
+            if let name = self.appName, let bundleID = self.appBundleID
+            {
+                appName = name + " (\(bundleID))"
+            }
+            
+            return String(format: NSLocalizedString("%@ does not have any app versions.", comment: ""), appName)
+        }
+    }
+}
+
+private extension Error
+{
+    func serialized(withFailure failure: String) -> NSError
+    {
+        // We need to serialize Swift errors thrown during merge conflict to preserve error messages.
+        
+        let serializedError = (self as NSError).withLocalizedFailure(failure).sanitizedForSerialization()
+        
+        var userInfo = serializedError.userInfo
+        userInfo[NSLocalizedDescriptionKey] = nil // Remove NSLocalizedDescriptionKey value to prevent duplicating localized failure in localized description.
+        
+        let error = NSError(domain: serializedError.domain, code: serializedError.code, userInfo: userInfo)
+        return error
+    }
+}
+
 open class MergePolicy: RSTRelationshipPreservingMergePolicy
 {
     open override func resolve(constraintConflicts conflicts: [NSConstraintConflict]) throws
@@ -108,7 +162,15 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         return indexA < indexB
                     }
                     
-                    databaseObject.setVersions(sortedVersions)
+                    do
+                    {
+                        try databaseObject.setVersions(sortedVersions)
+                    }
+                    catch
+                    {
+                        let nsError = error.serialized(withFailure: NSLocalizedString("AltStore's database could not be saved.", comment: ""))
+                        throw nsError
+                    }
                 }
                 
             case let databaseObject as Source:
@@ -146,8 +208,16 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             switch conflict.databaseObject
             {
             case let databaseObject as StoreApp:
-                // Update versions post-merging to make sure latestSupportedVersion is correct.
-                databaseObject.setVersions(databaseObject.versions)
+                do
+                {
+                    // Update versions post-merging to make sure latestSupportedVersion is correct.
+                    try databaseObject.setVersions(databaseObject.versions)
+                }
+                catch
+                {
+                    let nsError = error.serialized(withFailure: NSLocalizedString("AltStore's database could not be saved.", comment: ""))
+                    throw nsError
+                }
                 
             default: break
             }
