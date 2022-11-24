@@ -1485,7 +1485,6 @@ private extension MyAppsViewController
                     
                     let (_, context) = try result.get()
                     try context.save()
-                    
                 }
                 catch let error as AppManager.FetchSourcesError
                 {
@@ -1496,7 +1495,7 @@ private extension MyAppsViewController
             catch let error as NSError
             {
                 DispatchQueue.main.async {
-                    let toastView = ToastView(error: error.withLocalizedTitle(NSLocalizedString("Failed to Check for Updates", comment: "")))
+                    let toastView = ToastView(error: error.withLocalizedTitle(NSLocalizedString("Unable to Check for Updates", comment: "")))
                     toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
                     toastView.show(in: self)
                 }
