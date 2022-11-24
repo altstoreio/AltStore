@@ -20,28 +20,52 @@ extension SourceError
         
         case unsupported
         case duplicateBundleID
+        case duplicateVersion
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
-    static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, duplicateBundleID: bundleID) }
+    static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, bundleID: bundleID) }
+    static func duplicateVersion(_ version: String, for app: StoreApp, source: Source) -> SourceError { SourceError(code: .duplicateVersion, source: source, app: app, version: version) }
 }
 
 struct SourceError: ALTLocalizedError
 {
-    var code: Code
+    let code: Code
     var errorTitle: String?
     var errorFailure: String?
     
     @Managed var source: Source
-    var duplicateBundleID: String?
+    @Managed var app: StoreApp?
+    var bundleID: String?
+    var version: String?
     
     var errorFailureReason: String {
         switch self.code
         {
         case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
         case .duplicateBundleID:
-            let bundleIDFragment = self.duplicateBundleID.map { String(format: NSLocalizedString("the bundle identifier %@", comment: ""), $0) } ?? NSLocalizedString("the same bundle identifier", comment: "")
+            let bundleIDFragment = self.bundleID.map { String(format: NSLocalizedString("the bundle identifier %@", comment: ""), $0) } ?? NSLocalizedString("the same bundle identifier", comment: "")
             let failureReason = String(format: NSLocalizedString("The source “%@” contains multiple apps with %@.", comment: ""), self.$source.name, bundleIDFragment)
+            return failureReason
+            
+        case .duplicateVersion:
+            var versionFragment = NSLocalizedString("duplicate versions", comment: "")
+            if let version
+            {
+                versionFragment += " (\(version))"
+            }
+            
+            let appFragment: String
+            if let name = self.$app.name, let bundleID = self.$app.bundleIdentifier
+            {
+                appFragment = name + " (\(bundleID))"
+            }
+            else
+            {
+                appFragment = NSLocalizedString("one or more apps", comment: "")
+            }
+                        
+            let failureReason = String(format: NSLocalizedString("The source “%@” contains %@ for %@.", comment: ""), self.$source.name, versionFragment, appFragment)
             return failureReason
         }
     }
@@ -159,6 +183,13 @@ private extension FetchSourceOperation
         {
             guard !bundleIDs.contains(app.bundleIdentifier) else { throw SourceError.duplicateBundleID(app.bundleIdentifier, source: source) }
             bundleIDs.insert(app.bundleIdentifier)
+
+            var versions = Set<String>()
+            for version in app.versions
+            {
+                guard !versions.contains(version.version) else { throw SourceError.duplicateVersion(version.version, for: app, source: source) }
+                versions.insert(version.version)
+            }
         }
     }
 }
