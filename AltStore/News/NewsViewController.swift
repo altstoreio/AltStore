@@ -210,8 +210,13 @@ private extension NewsViewController
                     throw error
                 }
             }
-            catch
+            catch var error as NSError
             {
+                if error.localizedTitle == nil
+                {
+                    error = error.withLocalizedTitle(NSLocalizedString("Unable to Refresh Store", comment: ""))
+                }
+                
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
