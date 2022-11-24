@@ -228,7 +228,6 @@
 		BFAECC5F2501B0BF00528F27 /* ALTConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD52BD222A06EFB000B7ED1 /* ALTConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFAECC602501B0BF00528F27 /* NSError+ALTServerError.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1E314822A060F400370A3C /* NSError+ALTServerError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB364592325985F00CD0EB1 /* FindServerOperation.swift */; };
-		BFB39B5C252BC10E00D1BE50 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		BFB4323F22DE852000B7F8BC /* UpdateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */; };
 		BFB49AAA23834CF900D542D9 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
 		BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6B21D231870160022A802 /* NewsViewController.swift */; };
@@ -349,6 +348,7 @@
 		D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */ = {isa = PBXBuildFile; fileRef = D51AD27C29356B7B00967AAA /* ALTWrappedError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
+		D519AD46292D665B004B12F9 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
@@ -1019,7 +1019,6 @@
 			isa = PBXGroup;
 			children = (
 				BF41B807233433C100C593A3 /* LoadingState.swift */,
-				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 				D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */,
 			);
 			path = Types;
@@ -1259,6 +1258,7 @@
 		BF66EE8D2501AEBC007EE018 /* Types */ = {
 			isa = PBXGroup;
 			children = (
+				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermission.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermission.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
@@ -2551,6 +2551,7 @@
 				BFAECC532501B0A400528F27 /* ServerProtocol.swift in Sources */,
 				BFAECC572501B0A400528F27 /* ConnectionManager.swift in Sources */,
 				BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */,
+				D519AD46292D665B004B12F9 /* Managed.swift in Sources */,
 				BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */,
 				D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */,
 				D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */,
@@ -2672,7 +2673,6 @@
 				D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
-				BFB39B5C252BC10E00D1BE50 /* Managed.swift in Sources */,
 				BF770E5822BC3D0F002A40FE /* RefreshGroup.swift in Sources */,
 				BF18B0F122E25DF9005C4CF5 /* ToastView.swift in Sources */,
 				BF3D649F22E7B24C00E9056B /* CollapsingTextView.swift in Sources */,
