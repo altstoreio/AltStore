@@ -1021,6 +1021,25 @@ private extension MyAppsViewController
     {
         guard !application.appExtensions.isEmpty else { return completion(.success(())) }
         
+        func removeAppExtensions() throws
+        {
+            for appExtension in application.appExtensions
+            {
+                try FileManager.default.removeItem(at: appExtension.fileURL)
+            }
+            
+            let scInfoURL = application.fileURL.appendingPathComponent("SC_Info")
+            let manifestPlistURL = scInfoURL.appendingPathComponent("Manifest.plist")
+            
+            if let manifestPlist = NSMutableDictionary(contentsOf: manifestPlistURL),
+               let sinfReplicationPaths = manifestPlist["SinfReplicationPaths"] as? [String]
+            {
+                let replacementPaths = sinfReplicationPaths.filter { !$0.starts(with: "PlugIns/") } // Filter out app extension paths.
+                manifestPlist["SinfReplicationPaths"] = replacementPaths
+                try manifestPlist.write(to: manifestPlistURL)
+            }
+        }
+        
         let firstSentence: String
         
         if UserDefaults.standard.activeAppLimitIncludesExtensions
@@ -1042,19 +1061,8 @@ private extension MyAppsViewController
             completion(.success(()))
         })
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Remove App Extensions", comment: ""), style: .destructive) { (action) in
-            do
-            {
-                for appExtension in application.appExtensions
-                {
-                    try FileManager.default.removeItem(at: appExtension.fileURL)
-                }
-                
-                completion(.success(()))
-            }
-            catch
-            {
-                completion(.failure(error))
-            }
+            let result = Result { try removeAppExtensions() }
+            completion(result)
         })
         
         self.present(alertController, animated: true, completion: nil)
