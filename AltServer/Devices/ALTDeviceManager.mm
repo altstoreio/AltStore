@@ -109,8 +109,29 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
         NSMutableDictionary<NSString *, ALTProvisioningProfile *> *cachedProfiles = [NSMutableDictionary dictionary];
         NSMutableSet<ALTProvisioningProfile *> *installedProfiles = [NSMutableSet set];
         
+        __block ALTApplication *application = nil;
+        
         void (^finish)(NSError *error) = ^(NSError *e) {
             __block NSError *error = e;
+            
+            if (application != nil && [error.domain isEqualToString:AltServerErrorDomain] && error.code == ALTServerErrorUnsupportediOSVersion)
+            {
+                // Add relevant userInfo values for ALTServerErrorUnsupportediOSVersion.
+                
+                ALTDeviceType deviceType = ALTDeviceTypeiPhone;
+                if (application.supportedDeviceTypes & ALTDeviceTypeAppleTV)
+                {
+                    // App supports tvOS, so assume we're installing to Apple TV (because there are no "universal" tvOS binaries).
+                    deviceType = ALTDeviceTypeAppleTV;
+                }
+                
+                NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
+                userInfo[ALTAppNameErrorKey] = application.name;
+                userInfo[ALTOperatingSystemNameErrorKey] = ALTOperatingSystemNameForDeviceType(deviceType) ?: @"iOS";
+                userInfo[ALTOperatingSystemVersionErrorKey] = NSStringFromOperatingSystemVersion(application.minimumiOSVersion);
+                
+                error = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
+            }
             
             if (activeProvisioningProfiles != nil)
             {
@@ -203,7 +224,7 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
             return finish([NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSURLErrorKey: fileURL}]);
         }
         
-        ALTApplication *application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
+        application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
         if (application.provisioningProfile)
         {
             [installedProfiles addObject:application.provisioningProfile];
@@ -1672,7 +1693,8 @@ void ALTDeviceManagerUpdateStatus(plist_t command, plist_t status, void *uuid)
                     NSString *errorName = [NSString stringWithCString:name ?: "" encoding:NSUTF8StringEncoding];
                     if ([errorName isEqualToString:@"DeviceOSVersionTooLow"])
                     {
-                        error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnsupportediOSVersion userInfo:nil];
+                        NSError *underlyingError = [NSError errorWithDomain:AltServerInstallationErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: localizedDescription}];
+                        error = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnsupportediOSVersion userInfo:@{NSUnderlyingErrorKey: underlyingError}];
                     }
                     else
                     {
