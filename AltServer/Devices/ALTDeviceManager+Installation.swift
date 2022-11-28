@@ -44,17 +44,12 @@ extension OperationError
         case noTeam
         case missingPrivateKey
         case missingCertificate
-        
-        // Source JSON
-        case appNotFound
     }
     
     static let cancelled = OperationError(code: .cancelled)
     static let noTeam = OperationError(code: .noTeam)
     static let missingPrivateKey = OperationError(code: .missingPrivateKey)
     static let missingCertificate = OperationError(code: .missingCertificate)
-    
-    static func appNotFound(bundleID: String) -> OperationError { OperationError(code: .appNotFound, bundleID: bundleID) }
 }
 
 struct OperationError: ALTLocalizedError
@@ -63,8 +58,6 @@ struct OperationError: ALTLocalizedError
     var errorTitle: String?
     var errorFailure: String?
     
-    var bundleID: String?
-    
     var errorFailureReason: String {
         switch self.code
         {
@@ -72,9 +65,6 @@ struct OperationError: ALTLocalizedError
         case .noTeam: return NSLocalizedString("You are not a member of any developer teams.", comment: "")
         case .missingPrivateKey: return NSLocalizedString("The developer certificate's private key could not be found.", comment: "")
         case .missingCertificate: return NSLocalizedString("The developer certificate could not be found.", comment: "")
-        case .appNotFound:
-            let appBundleID = self.bundleID.map { "“\($0)”" } ?? "AltStore"
-            return String(format: NSLocalizedString("%@ could not be located in the source JSON.", comment: ""), appBundleID)
         }
     }
 }
@@ -356,13 +346,20 @@ private extension ALTDeviceManager
                 let (data, _) = try Result((data, response), error).get()
                 let source = try Foundation.JSONDecoder().decode(Source.self, from: data)
                 
+                guard let altstore = source.apps.first(where: { $0.bundleIdentifier == altstoreBundleID }) else {
+                    let debugDescription = String(format: NSLocalizedString("App with bundle ID '%@' does not exist in source JSON.", comment: ""), altstoreBundleID)
+                    throw CocoaError(.coderValueNotFound, userInfo: [NSDebugDescriptionErrorKey: debugDescription])
+                }
+                guard let versions = altstore.versions else {
+                    let debugDescription = String(format: NSLocalizedString("There is no 'versions' key for %@.", comment: ""), altstore.bundleIdentifier)
+                    throw CocoaError(.coderReadCorrupt, userInfo: [NSDebugDescriptionErrorKey: debugDescription])
+                }
+                guard let latestVersion = versions.first else {
+                    let debugDescription = String(format: NSLocalizedString("The 'versions' array is empty for %@.", comment: ""), altstore.bundleIdentifier)
+                    throw CocoaError(.coderValueNotFound, userInfo: [NSDebugDescriptionErrorKey: debugDescription])
+                }
+                
                 let osName = device.type.osName ?? "iOS"
-                
-                guard let altstore = source.apps.first(where: { $0.bundleIdentifier == altstoreBundleID }) else { throw OperationError.appNotFound(bundleID: altstoreBundleID) }
-                guard let latestVersion = altstore.versions?.first else { throw ALTServerError(.unsupportediOSVersion, userInfo: [ALTAppNameErrorKey: "AltStore",
-                                                                                                                      ALTOperatingSystemNameErrorKey: osName,
-                                                                                                                   ALTOperatingSystemVersionErrorKey: "12.2"]) }
-                
                 let minOSVersionString = latestVersion.minimumOSVersion?.stringValue ?? "12.2"
                 
                 guard let latestSupportedVersion = altstore.versions?.first(where: { appVersion in
@@ -406,9 +403,14 @@ private extension ALTDeviceManager
                 }
                 
             }
-            catch
+            catch let serverError as ALTServerError where serverError.code == .unsupportediOSVersion
             {
-                completion(.failure(error))
+                // Don't add localized failure for unsupported iOS version errors.
+                completion(.failure(serverError))
+            }
+            catch let error as NSError
+            {
+                completion(.failure(error.withLocalizedFailure("The download URL could not be determined.")))
             }
         }
         
