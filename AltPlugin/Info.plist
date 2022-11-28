@@ -167,5 +167,41 @@
 		<string>A4B49485-0377-4FAB-8D8E-E3B8018CFC21</string>
 		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
 	</array>
+	<key>Supported13.1PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.2PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.3PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.4PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.5PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.6PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.7PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.8PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
+	<key>Supported13.9PluginCompatibilityUUIDs</key>
+	<array>
+		<string>890E3F5B-9490-4828-8F3F-B6561E513FCC</string>
+	</array>
 </dict>
 </plist>
