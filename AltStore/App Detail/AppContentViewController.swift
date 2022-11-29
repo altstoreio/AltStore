@@ -173,7 +173,8 @@ private extension AppContentViewController
         dataSource.cellConfigurationHandler = { (cell, permission, indexPath) in
             let cell = cell as! PermissionCollectionViewCell
             cell.button.setImage(permission.type.icon, for: .normal)
-            cell.textLabel.text = permission.type.localizedShortName
+            cell.button.tintColor = .label
+            cell.textLabel.text = permission.type.localizedShortName ?? permission.type.localizedName
         }
         
         return dataSource

@@ -25,8 +25,22 @@ public extension ALTAppPermissionType
         switch self
         {
         case .photos: return NSLocalizedString("Photos", comment: "")
+        case .camera: return NSLocalizedString("Camera", comment: "")
+        case .location: return NSLocalizedString("Location", comment: "")
+        case .contacts: return NSLocalizedString("Contacts", comment: "")
+        case .reminders: return NSLocalizedString("Reminders", comment: "")
+        case .appleMusic: return NSLocalizedString("Apple Music", comment: "")
+        case .microphone: return NSLocalizedString("Microphone", comment: "")
+        case .speechRecognition: return NSLocalizedString("Speech Recognition", comment: "")
         case .backgroundAudio: return NSLocalizedString("Background Audio", comment: "")
         case .backgroundFetch: return NSLocalizedString("Background Fetch", comment: "")
+        case .bluetooth: return NSLocalizedString("Bluetooth", comment: "")
+        case .network: return NSLocalizedString("Network", comment: "")
+        case .calendars: return NSLocalizedString("Calendars", comment: "")
+        case .touchID: return NSLocalizedString("Touch ID", comment: "")
+        case .faceID: return NSLocalizedString("Face ID", comment: "")
+        case .siri: return NSLocalizedString("Siri", comment: "")
+        case .motion: return NSLocalizedString("Motion", comment: "")
         default: return nil
         }
     }
@@ -34,10 +48,25 @@ public extension ALTAppPermissionType
     var icon: UIImage? {
         switch self
         {
-        case .photos: return UIImage(named: "PhotosPermission")
-        case .backgroundAudio: return UIImage(named: "BackgroundAudioPermission")
-        case .backgroundFetch: return UIImage(named: "BackgroundFetchPermission")
-        default: return nil
+        case .photos: return UIImage(systemName: "photo.on.rectangle.angled")
+        case .camera: return UIImage(systemName: "camera.fill")
+        case .location: return UIImage(systemName: "location.fill")
+        case .contacts: return UIImage(systemName: "person.2.fill")
+        case .reminders: return UIImage(systemName: "checklist")
+        case .appleMusic: return UIImage(systemName: "music.note")
+        case .microphone: return UIImage(systemName: "mic.fill")
+        case .speechRecognition: return UIImage(systemName: "waveform.and.mic")
+        case .backgroundAudio: return UIImage(systemName: "speaker.fill")
+        case .backgroundFetch: return UIImage(systemName: "square.and.arrow.down")
+        case .bluetooth: return UIImage(systemName: "wave.3.right")
+        case .network: return UIImage(systemName: "network")
+        case .calendars: return UIImage(systemName: "calendar")
+        case .touchID: return UIImage(systemName: "touchid")
+        case .faceID: return UIImage(systemName: "faceid")
+        case .siri: return UIImage(systemName: "mic.and.signal.meter.fill")
+        case .motion: return UIImage(systemName: "figure.walk.motion")
+        default:
+            return nil
         }
     }
 }
