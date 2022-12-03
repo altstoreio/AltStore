@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ALTAnisetteURL</key>
+	<string>http://ani.sidestore.io/</string>
 	<key>ALTAppGroups</key>
 	<array>
 		<string>group.$(APP_GROUP_IDENTIFIER)</string>
@@ -9,12 +11,10 @@
 	</array>
 	<key>ALTDeviceID</key>
 	<string>00008101-000129D63698001E</string>
-	<key>ALTServerID</key>
-	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
 	<key>ALTPairingFile</key>
 	<string>&lt;insert pairing file here&gt;</string>
-	<key>ALTAnisetteURL</key>
-	<string>https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx</string>
+	<key>ALTServerID</key>
+	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
@@ -93,6 +93,11 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_altserver._tcp</string>
@@ -133,11 +138,6 @@
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
