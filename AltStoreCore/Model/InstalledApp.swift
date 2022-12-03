@@ -79,6 +79,8 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.bundleIdentifier = originalBundleIdentifier
         
+        print("InstalledApp `self.bundleIdentifier`: \(self.bundleIdentifier)")
+        
         self.refreshedDate = Date()
         self.installedDate = Date()
         
@@ -154,13 +156,14 @@ public extension InstalledApp
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(InstalledApp.isActive))
+        print("Active Apps Fetch Request: \(String(describing: fetchRequest.predicate))")
         return fetchRequest
     }
     
     class func fetchAltStore(in context: NSManagedObjectContext) -> InstalledApp?
     {
         let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        
+        print("Fetch 'AltStore' Predicate: \(String(describing: predicate))")
         let altStore = InstalledApp.first(satisfying: predicate, in: context)
         return altStore
     }
@@ -174,6 +177,7 @@ public extension InstalledApp
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
         var predicate = NSPredicate(format: "%K == YES AND %K != %@", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        print("Fetch Apps for Refreshing All 'AltStore' predicate: \(String(describing: predicate))")
         
 //        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
 //        {
@@ -207,6 +211,7 @@ public extension InstalledApp
                                     #keyPath(InstalledApp.isActive),
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
                                     #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        print("Active Apps For Background Refresh 'AltStore' predicate: \(String(describing: predicate))")
         
 //        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
 //        {
@@ -253,14 +258,15 @@ public extension InstalledApp
         let appsDirectoryURL = baseDirectory.appendingPathComponent("Apps")
         
         do { try FileManager.default.createDirectory(at: appsDirectoryURL, withIntermediateDirectories: true, attributes: nil) }
-        catch { print(error) }
-        
+        catch { print("Creating App Directory Error: \(error)") }
+        print("`appsDirectoryURL` is set to: \(appsDirectoryURL.absoluteString)")
         return appsDirectoryURL
     }
     
     class var legacyAppsDirectoryURL: URL {
         let baseDirectory = FileManager.default.applicationSupportDirectory
         let appsDirectoryURL = baseDirectory.appendingPathComponent("Apps")
+        print("legacy `appsDirectoryURL` is set to: \(appsDirectoryURL.absoluteString)")
         return appsDirectoryURL
     }
     
@@ -273,6 +279,7 @@ public extension InstalledApp
     class func refreshedIPAURL(for app: AppProtocol) -> URL
     {
         let ipaURL = self.directoryURL(for: app).appendingPathComponent("Refreshed.ipa")
+        print("`ipaURL`: \(ipaURL.absoluteString)")
         return ipaURL
     }
     

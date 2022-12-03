@@ -305,6 +305,8 @@ public struct BeginInstallationRequest: ServerMessageProtocol
     {
         self.activeProfiles = activeProfiles
         self.bundleIdentifier = bundleIdentifier
+        print("BeginInstallationRequest `activeProfiles`: \(String(describing: activeProfiles))")
+        print("BeginInstallationRequest `bundleIdentifier`: \(String(describing: bundleIdentifier))")
     }
 }
 
@@ -346,6 +348,9 @@ public struct InstallProvisioningProfilesRequest: ServerMessageProtocol
         self.udid = udid
         self.provisioningProfiles = provisioningProfiles
         self.activeProfiles = activeProfiles
+        print("InstallProvisioningProfilesRequest `self.udid`: \(self.udid)")
+        print("InstallProvisioningProfilesRequest `self.provisioningProfiles`: \(self.provisioningProfiles)")
+        print("InstallProvisioningProfilesRequest `self.activeProfiles`: \(String(describing: self.activeProfiles))")
     }
     
     public init(from decoder: Decoder) throws

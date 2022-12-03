@@ -361,6 +361,8 @@ public extension StoreApp
                                                    in: context)
         app.setVersions([appVersion])
         
+        print("makeAltStoreApp StoreApp: \(String(describing: app))")
+        
         #if BETA
         app.isBeta = true
         #endif

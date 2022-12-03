@@ -47,6 +47,7 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
                     let formattedJSON: [String: String] = ["machineID": json["X-Apple-I-MD-M"]!, "oneTimePassword": json["X-Apple-I-MD"]!, "localUserID": json["X-Apple-I-MD-LU"]!, "routingInfo": json["X-Apple-I-MD-RINFO"]!, "deviceUniqueIdentifier": json["X-Mme-Device-Id"]!, "deviceDescription": json["X-MMe-Client-Info"]!, "date": json["X-Apple-I-Client-Time"]!, "locale": json["X-Apple-Locale"]!, "timeZone": json["X-Apple-I-TimeZone"]!, "deviceSerialNumber": "1"]
                     
                     if let anisette = ALTAnisetteData(json: formattedJSON) {
+                        DLOG("Anisette used: %@", formattedJSON)
                         self.finish(.success(anisette))
                     }
                 }
