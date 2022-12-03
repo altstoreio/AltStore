@@ -12,12 +12,26 @@ public struct AnisetteManager {
     
     /// User defined URL from Settings/UserDefaults
     static var userURL: String? {
-        guard let urlString = UserDefaults.standard.customAnisetteURL, !urlString.isEmpty else { return nil }
+        var urlString: String?
+        
+        if UserDefaults.standard.textServer == false {
+            urlString = UserDefaults.standard.textInputAnisetteURL
+        }
+        else {
+            urlString = UserDefaults.standard.customAnisetteURL
+        }
+            
+        
+        // guard let urlString = UserDefaults.standard.customAnisetteURL, !urlString.isEmpty else { return nil }
+        
         // Test it's a valid URL
-        guard URL(string: urlString) != nil else {
+        
+        if let urlString = urlString {
+            guard URL(string: urlString) != nil else {
             ELOG("UserDefaults has invalid `customAnisetteURL`")
             assertionFailure("UserDefaults has invalid `customAnisetteURL`")
             return nil
+            }
         }
         return urlString
     }
