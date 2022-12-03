@@ -352,7 +352,7 @@ public extension StoreApp
         app.screenshotURLs = []
         app.sourceIdentifier = Source.altStoreIdentifier
         
-        let appVersion = AppVersion.makeAppVersion(version: "1.0",
+        let appVersion = AppVersion.makeAppVersion(version: "0.1.2",
                                                    date: Date(),
                                                    downloadURL: URL(string: "http://rileytestut.com")!,
                                                    size: 0,
