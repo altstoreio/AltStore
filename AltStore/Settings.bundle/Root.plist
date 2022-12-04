@@ -45,6 +45,8 @@
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Danger Zone</string>
+			<key>FooterText</key>
+			<string>If you disable the toggle then app will use the server you input into the &quot;Anisette URL&quot; box rather than one selected from the above selector.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -55,6 +57,8 @@
 			<string>textServer</string>
 			<key>DefaultValue</key>
 			<true/>
+			<key>FooterText</key>
+			<string>chicken</string>
 		</dict>
 		<dict>
 			<key>Type</key>
