@@ -10,13 +10,65 @@
 	<array>
 		<dict>
 			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Anisette Server</string>
+			<key>Key</key>
+			<string>customAnisetteURL</string>
+			<key>DefaultValue</key>
+			<string>http://191.101.206.188:6969</string>
+			<key>Titles</key>
+			<array>
+				<string>Macley (US)</string>
+				<string>Macley (DE)</string>
+				<string>DrPudding</string>
+				<string>jkcoxson (AltServer)</string>
+				<string>jkcoxson (Provision)</string>
+				<string>Sideloadly</string>
+				<string>Nick</string>
+				<string>Jawshoeadan</string>
+				<string>crystall1nedev</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>http://us1.sternserv.tech</string>
+				<string>http://de1.sternserv.tech</string>
+				<string>https://sign.rheaa.xyz</string>
+				<string>http://jkcoxson.com:2095</string>
+				<string>http://jkcoxson.com:2052</string>
+				<string>https://sideloadly.io/anisette/irGb3Quww8zrhgqnzmrx</string>
+				<string>http://45.33.29.114</string>
+				<string>https://anisette.jawshoeadan.me</string>
+				<string>https://anisette.crystall1ne.software/</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Danger Zone</string>
+			<key>FooterText</key>
+			<string>If you disable the toggle then app will use the server you input into the &quot;Anisette URL&quot; box rather than one selected from the above selector.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Use preferred servers</string>
+			<key>Key</key>
+			<string>textServer</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>FooterText</key>
+			<string>chicken</string>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
 			<string>Anisette URL</string>
 			<key>Key</key>
-			<string>customAnisetteURL</string>
-			<key>IsSecure</key>
-			<string>Alphabet</string>
+			<string>textInputAnisetteURL</string>
 			<key>AutocapitalizationType</key>
 			<string>None</string>
 			<key>AutocorrectionType</key>
