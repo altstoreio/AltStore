@@ -167,14 +167,7 @@ private extension BrowseViewController
     
     func updateDataSource()
     {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
             self.dataSource.predicate = nil
-        }
-        else
-        {
-            self.dataSource.predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isBeta))
-        }
     }
     
     func fetchSource()
