@@ -23,6 +23,10 @@
     {
       "identifier": "dev.crystall1ne.repos.PojavLauncher",
       "sourceURL": "https://alt.crystall1ne.software/"
+    },
+    {
+      "identifier": "eu.pokemmo.altstore",
+      "sourceURL": "https://pokemmo.eu/altstore/"
     }
   ]
 }
