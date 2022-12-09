@@ -131,19 +131,19 @@ extension FetchProvisioningProfilesOperation
                 // or if installedApp.team is nil but resignedBundleIdentifier contains the team's identifier.
                 let teamsMatch = installedApp.team?.identifier == team.identifier || (installedApp.team == nil && installedApp.resignedBundleIdentifier.contains(team.identifier))
                 
-                #if DEBUG
-                
-                if app.isAltStoreApp
-                {
-                    // Use legacy bundle ID format for AltStore.
-                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
-                }
-                else
-                {
-                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
-                }
-                
-                #else
+//                #if DEBUG
+//
+//                if app.isAltStoreApp
+//                {
+//                    // Use legacy bundle ID format for AltStore.
+//                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
+//                }
+//                else
+//                {
+//                    preferredBundleID = teamsMatch ? installedApp.resignedBundleIdentifier : nil
+//                }
+//
+//                #else
                 
                 if teamsMatch
                 {
@@ -157,7 +157,7 @@ extension FetchProvisioningProfilesOperation
                     preferredBundleID = nil
                 }
                 
-                #endif
+               // #endif
             }
             else
             {
