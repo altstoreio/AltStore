@@ -470,7 +470,7 @@ extension SettingsViewController
             {
             case .developer: self.openTwitter(username: "sidestore_io")
             case .operations: self.openTwitter(username: "sidestore_io")
-            case .designer: self.openTwitter(username: "1carolinemoore")
+            case .designer: self.openTwitter(username: "lit_ritt")
             case .softwareLicenses: break
             }
             
