@@ -461,17 +461,10 @@ private extension MyAppsViewController
     
     func updateDataSource()
     {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
+        
             self.dataSource.predicate = nil
-        }
-        else
-        {
-            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO OR %K == %@",
-                                                    #keyPath(InstalledApp.storeApp),
-                                                    #keyPath(InstalledApp.storeApp.isBeta),
-                                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        }
+        
+        
     }
 }
 
