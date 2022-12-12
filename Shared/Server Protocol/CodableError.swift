@@ -39,6 +39,22 @@ extension CodableError
             case .number(let number): return number
             case .error(let error): return error
             case .codableError(let error): return error.error
+            case .array(let array): return array.compactMap { $0.value } // .compactMap instead of .map to ensure nil values are removed.
+            case .dictionary(let dictionary): return dictionary.compactMapValues { $0.value } // .compactMapValues instead of .mapValues to ensure nil values are removed.
+            }
+        }
+        
+        var codableValue: Codable? {
+            switch self
+            {
+            case .unknown, .string, .number: return self.value as? Codable
+            case .codableError(let error): return error
+            case .error(let nsError):
+                // Ignore error because we don't want to fail completely if error contains invalid user info value.
+                let sanitizedError = nsError.sanitizedForSerialization()
+                let data = try? NSKeyedArchiver.archivedData(withRootObject: sanitizedError, requiringSecureCoding: true)
+                return data
+                
             case .array(let array): return array
             case .dictionary(let dictionary): return dictionary
             }
@@ -97,22 +113,14 @@ extension CodableError
         {
             var container = encoder.singleValueContainer()
             
-            let codableValue: Codable?
-            
-            switch self
+            if let value = self.codableValue
             {
-            case .codableError(let codableError): codableValue = codableError
-            case .error(let error):
-                // Sanitize error to ensure it can be encoded correctly.
-                let sanitizedError = error.sanitizedForSerialization()
-                let data = try NSKeyedArchiver.archivedData(withRootObject: sanitizedError, requiringSecureCoding: true)
-                codableValue = data
-                
-            default: codableValue = self.value as? Codable
+                try container.encode(value)
             }
-            
-            guard let value = codableValue else { return }
-            try container.encode(value)
+            else
+            {
+                try container.encodeNil()
+            }
         }
     }
 }
