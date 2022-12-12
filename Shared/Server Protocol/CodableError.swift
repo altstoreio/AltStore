@@ -23,7 +23,7 @@ extension CodableError
 {
     enum UserInfoValue: Codable
     {
-        case unknown
+        case unknown(Any?)
         case string(String)
         case number(Int)
         case error(NSError)
@@ -34,7 +34,7 @@ extension CodableError
         var value: Any? {
             switch self
             {
-            case .unknown: return nil
+            case .unknown(let value): return value
             case .string(let string): return string
             case .number(let number): return number
             case .error(let error): return error
@@ -70,7 +70,7 @@ extension CodableError
             case let error as NSError: self = .codableError(CodableError(error: error))
             case let array as [Any]: self = .array(array.compactMap(UserInfoValue.init))
             case let dictionary as [String: Any]: self = .dictionary(dictionary.compactMapValues(UserInfoValue.init))
-            default: self = .unknown
+            default: self = .unknown(rawValue)
             }
         }
         
@@ -106,7 +106,7 @@ extension CodableError
             }
             else
             {
-                self = .unknown
+                self = .unknown(nil)
             }
         }
         
