@@ -36,14 +36,23 @@
       "bundleIdentifier": "com.rileytestut.AltStore.Beta",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
-      "version": "1.6b3",
-      "versionDate": "2022-11-08T12:00:00-06:00",
-      "versionDescription": "NEW\n• Completely revamped error handling to make debugging issues as easy as possible\n• Revised error messages to be more descriptive and provide more suggestions\n• “View More Details” button in Error Log to view detailed error information\n\nFIXED\n• Fixed incorrect Error Log appearance in Dark Mode\n• Fixed widgets sometimes not updating\n\nPREVIOUS VERSIONS\n\nLock Screen Widget (iOS 16+)\n• Counts down days until AltStore expires\n• Comes in 2 different styles: “icon” and “text”\n\nError Log\n• View past errors in more detail\n• Tap an error to copy the error message or error code\n• Search for error code directly in AltStore FAQ",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_b3.ipa",
+      "versions": [
+        {
+          "version": "1.6b4",
+          "date": "2022-11-30T12:00:00-06:00",
+          "localizedDescription": "• Checks iOS compatibility for updates and installs \n• Asks user to install latest compatible version if not supported\n• View unsupported updates from My Apps tab\n• Pull-to-refresh to check for updates",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_b4.ipa",
+          "size": 5608964
+        }
+      ],
+      "version": "1.6b4",
+      "versionDate": "2022-11-30T12:00:00-06:00",
+      "versionDescription": "• Checks iOS compatibility for updates and installs \n• Asks user to install latest compatible version if not supported\n• View unsupported updates from My Apps tab\n• Pull-to-refresh to check for updates",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_b4.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5531843,
+      "size": 5608964,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
