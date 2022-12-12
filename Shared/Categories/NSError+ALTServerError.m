@@ -81,6 +81,16 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             return underlyingError.localizedDescription;
         }
             
+        case ALTServerErrorInvalidRequest:
+        case ALTServerErrorInvalidResponse:
+        {
+            NSError *underlyingError = self.userInfo[NSUnderlyingErrorKey];
+            if (underlyingError != nil)
+            {
+                return underlyingError.localizedDescription;
+            }
+        }
+            
         default:
             return nil;
     }
@@ -169,10 +179,26 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
             return NSLocalizedString(@"AltServer could not write data to this device.", @"");
             
         case ALTServerErrorInvalidRequest:
+        {
+            NSError *underlyingError = self.userInfo[NSUnderlyingErrorKey];
+            if (underlyingError.localizedFailureReason != nil)
+            {
+                return underlyingError.localizedFailureReason;
+            }
+            
             return NSLocalizedString(@"AltServer received an invalid request.", @"");
+        }
             
         case ALTServerErrorInvalidResponse:
+        {
+            NSError *underlyingError = self.userInfo[NSUnderlyingErrorKey];
+            if (underlyingError.localizedFailureReason != nil)
+            {
+                return underlyingError.localizedFailureReason;
+            }
+            
             return NSLocalizedString(@"AltServer sent an invalid response.", @"");
+        }
             
         case ALTServerErrorInvalidApp:
             return NSLocalizedString(@"The app is in an invalid format.", @"");
@@ -291,6 +317,8 @@ NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey = @"ALTOperatingSyste
     switch ((ALTServerError)self.code)
     {
         case ALTServerErrorUnderlyingError:
+        case ALTServerErrorInvalidRequest:
+        case ALTServerErrorInvalidResponse:
         {
             NSError *underlyingError = self.userInfo[NSUnderlyingErrorKey];
             return underlyingError.alt_localizedDebugDescription;
