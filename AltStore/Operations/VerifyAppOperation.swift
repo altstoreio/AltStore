@@ -45,10 +45,13 @@ struct VerificationError: ALTLocalizedError
     var requiredOSVersion: OperatingSystemVersion?
     
     var errorDescription: String? {
+        //TODO: Make this automatic somehow with ALTLocalizedError
+        guard self.errorFailure == nil else { return nil }
+        
         switch self.code
         {
         case .iOSVersionNotSupported:
-            guard let deviceOSVersion else { return nil }
+            guard let deviceOSVersion else { break }
             
             var failureReason = self.errorFailureReason
             if self.app == nil
@@ -61,8 +64,10 @@ struct VerificationError: ALTLocalizedError
             let localizedDescription = String(format: NSLocalizedString("This device is running iOS %@, but %@", comment: ""), deviceOSVersion.stringValue, failureReason)
             return localizedDescription
             
-        default: return nil
+        default: break
         }
+        
+        return self.errorFailureReason
     }
     
     var errorFailureReason: String {
