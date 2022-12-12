@@ -270,6 +270,15 @@
       "url": "https://faq.altstore.io",
       "date": "2022-07-28",
       "notify": false
+    },
+    {
+      "title": "More Trusted Sources!",
+      "identifier": "welcome-provenance-pojavlauncher",
+      "caption": "Please welcome Provenance and PojavLauncher to AltStore 🎉",
+      "tintColor": "00A2FF",
+      "date": "2022-12-12",
+      "notify": true,
+      "imageURL": "https://user-images.githubusercontent.com/705880/207133455-1e851fd0-89ae-48f0-906f-8f86f4e394db.png"
     }
   ],
   "userInfo": {
