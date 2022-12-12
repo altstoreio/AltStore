@@ -75,7 +75,7 @@ extension VerificationError
             {
             case .privateEntitlements: return VerificationError.privateEntitlements(["dynamic-codesigning": true], app: app)
             case .mismatchedBundleIdentifiers: return VerificationError.mismatchedBundleIdentifiers(sourceBundleID: "com.rileytestut.App", app: app)
-            case .iOSVersionNotSupported: return VerificationError.iOSVersionNotSupported(app: app)
+            case .iOSVersionNotSupported: return VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: OperatingSystemVersion(majorVersion: 21, minorVersion: 1, patchVersion: 0))
             }
         }
     }
@@ -109,10 +109,7 @@ extension AltTests
     }
     
     static var allRemoteErrors: [any Error] {
-        let errors = [
-            ALTAppleAPIError.testErrors
-        ].flatMap { $0 }
-        
+        let errors: [any Error] = ALTServerError.testErrors + ALTAppleAPIError.testErrors
         return errors
     }
     
