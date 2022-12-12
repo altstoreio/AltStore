@@ -66,6 +66,7 @@ extension CodableError
             {
             case let string as String: self = .string(string)
             case let number as Int: self = .number(number)
+            case let number as UInt: self = .number(Int(number)) // No idea why this is necessary, but some values fail above cast (despite being in range). And appears to be random :(
             case let error as NSError: self = .codableError(CodableError(error: error))
             case let array as [Any]: self = .array(array.compactMap(UserInfoValue.init))
             case let dictionary as [String: Any]: self = .dictionary(dictionary.compactMapValues(UserInfoValue.init))
