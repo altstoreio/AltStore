@@ -24,6 +24,7 @@ extension String
     static let testUnrecognizedFailureReason = "The alien invasion has begun."
     static let testUnrecognizedRecoverySuggestion = "Find your loved ones and pray the aliens are merciful."
     
+    static let testDescription = "The operation could not be completed because an error occured."
     static let testDebugDescription = "The very specific operation could not be completed because a detailed error occured. Code=101."
 }
 
@@ -471,6 +472,44 @@ extension AltTests
             // Test remainder
             ALTAssertErrorsEqual(nsError, error, ignoring: [NSLocalizedDescriptionKey, ALTLocalizedTitleErrorKey, NSLocalizedFailureErrorKey])
         }
+    }
+    
+    func testSwiftErrorWithLocalizedFailure() async throws
+    {
+        enum MyError: Int, LocalizedError, CaseIterable
+        {
+            case strange
+            case nothing
+            
+            var errorDescription: String? {
+                switch self
+                {
+                case .strange: return "A strange error occured."
+                case .nothing: return nil
+                }
+            }
+            
+            var recoverySuggestion: String? {
+                return "Have you tried turning it off and on again?"
+            }
+        }
+        
+        for error in MyError.allCases
+        {
+            let nsError = (error as NSError).withLocalizedFailure(.testLocalizedFailure)
+            
+            ALTAssertErrorsEqual(nsError, error, ignoring: [NSLocalizedDescriptionKey, NSLocalizedFailureErrorKey])
+            ALTAssertErrorFailureAndDescription(nsError, failure: .testLocalizedFailure, baseDescription: error.localizedDescription)
+        }
+    }
+    
+    func testNSErrorWithLocalizedFailure() async throws
+    {
+        let error = NSError(domain: .testDomain, code: 14, userInfo: [NSLocalizedDescriptionKey: String.testDescription])
+        let nsError = (error as NSError).withLocalizedFailure(.testLocalizedFailure)
+        
+        ALTAssertErrorsEqual(nsError, error, ignoring: [NSLocalizedDescriptionKey, NSLocalizedFailureErrorKey])
+        ALTAssertErrorFailureAndDescription(nsError, failure: .testLocalizedFailure, baseDescription: .testDescription)
     }
     
     func testReceivingAltServerError() async throws

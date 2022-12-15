@@ -36,12 +36,14 @@
 
 - (NSString *)localizedDescription
 {
+    NSString *localizedFailureReason = self.wrappedError.localizedFailureReason ?: self.wrappedError.localizedDescription;
+    
     NSString *wrappedLocalizedDescription = self.wrappedError.userInfo[NSLocalizedDescriptionKey];
     if (wrappedLocalizedDescription != nil)
     {
         NSString *localizedFailure = self.wrappedError.userInfo[NSLocalizedFailureErrorKey];
         
-        NSString *fallbackDescription = localizedFailure != nil ? [NSString stringWithFormat:@"%@ %@", localizedFailure, self.wrappedError.localizedFailureReason] : self.wrappedError.localizedFailureReason;
+        NSString *fallbackDescription = localizedFailure != nil ? [NSString stringWithFormat:@"%@ %@", localizedFailure, localizedFailureReason] : localizedFailureReason;
         if (![wrappedLocalizedDescription isEqualToString:fallbackDescription])
         {
             return wrappedLocalizedDescription;
@@ -51,8 +53,6 @@
     NSString *localizedFailure = self.userInfo[NSLocalizedFailureErrorKey];
     if (localizedFailure != nil)
     {
-        NSString *localizedFailureReason = self.wrappedError.localizedFailureReason ?: self.wrappedError.localizedDescription;
-       
         NSString *localizedDescription = [NSString stringWithFormat:@"%@ %@", localizedFailure, localizedFailureReason];
         return localizedDescription;
     }
