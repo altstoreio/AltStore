@@ -83,7 +83,8 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
             let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
                 // Try to load it from a file picker
                 var types = UTType.types(tag: "plist", tagClass: UTTagClass.filenameExtension, conformingTo: nil)
-                types.append(contentsOf: UTType.types(tag: "mobiledevicepairing", tagClass: UTTagClass.filenameExtension, conformingTo: nil))
+                types.append(contentsOf: UTType.types(tag: "mobiledevicepairing", tagClass: UTTagClass.filenameExtension, conformingTo: UTType.data))
+                types.append(.xml)
                 let documentPickerController = UIDocumentPickerViewController(forOpeningContentTypes: types)
                 documentPickerController.delegate = self
                 self.present(documentPickerController, animated: true, completion: nil)
@@ -140,7 +141,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
     }
     
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        displayError("Choosing a pairing file was cancelled")
+        displayError("Choosing a pairing file was cancelled. Please re-open the app and try again.")
     }
     
     func start_minimuxer_threads(_ pairing_file: String) {
