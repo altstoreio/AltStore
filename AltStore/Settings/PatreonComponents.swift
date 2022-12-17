@@ -40,7 +40,7 @@ class PatronsFooterView: UICollectionReusableView
         super.init(frame: frame)
         
         self.button.translatesAutoresizingMaskIntoConstraints = false
-        self.button.activityIndicatorView.style = .white
+        self.button.activityIndicatorView.style = .medium
         self.button.titleLabel?.textColor = .white
         self.addSubview(self.button)
         
