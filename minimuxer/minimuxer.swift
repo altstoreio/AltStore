@@ -27,7 +27,13 @@ public func set_usbmuxd_socket() {
 public func debug_app(app_id: String) throws -> Uhoh {
     let ai = NSString(string: app_id)
     let ai_pointer = UnsafeMutablePointer<CChar>(mutating: ai.utf8String)
-    let res = minimuxer_debug_app(ai_pointer)
+    var res = minimuxer_debug_app(ai_pointer)
+    var attempts = 10
+    while (attempts != 0 && res != 0) {
+        print("(JIT) ATTEMPTS: \(attempts)")
+        res = minimuxer_debug_app(ai_pointer)
+        attempts -= 1
+    }
     if res != 0 {
         throw Uhoh.Bad(code: res)
     }
@@ -39,7 +45,13 @@ public func install_provisioning_profile(plist: Data) throws -> Uhoh {
     print(pls)
     print(plist)
     let x = plist.withUnsafeBytes { buf in UnsafeMutableRawPointer(mutating: buf) }
-    let res = minimuxer_install_provisioning_profile(x, UInt32(plist.count))
+    var res = minimuxer_install_provisioning_profile(x, UInt32(plist.count))
+    var attempts = 10
+    while (attempts != 0 && res != 0) {
+        print("(INSTALL) ATTEMPTS: \(attempts)")
+        res = minimuxer_install_provisioning_profile(x, UInt32(plist.count))
+        attempts -= 1
+    }
     if res != 0 {
         throw Uhoh.Bad(code: res)
     }
@@ -49,7 +61,13 @@ public func install_provisioning_profile(plist: Data) throws -> Uhoh {
 public func remove_provisioning_profile(id: String) throws -> Uhoh {
     let id_ns = NSString(string: id)
     let id_pointer = UnsafeMutablePointer<CChar>(mutating: id_ns.utf8String)
-    let res = minimuxer_remove_provisioning_profile(id_pointer)
+    var res = minimuxer_remove_provisioning_profile(id_pointer)
+    var attempts = 10
+    while (attempts != 0 && res != 0) {
+        print("(REMOVE PROFILE) ATTEMPTS: \(attempts)")
+        res = minimuxer_remove_provisioning_profile(id_pointer)
+        attempts -= 1
+    }
     if res != 0 {
         throw Uhoh.Bad(code: res)
     }
@@ -59,7 +77,13 @@ public func remove_provisioning_profile(id: String) throws -> Uhoh {
 public func remove_app(app_id: String) throws -> Uhoh {
     let ai = NSString(string: app_id)
     let ai_pointer = UnsafeMutablePointer<CChar>(mutating: ai.utf8String)
-    let res = minimuxer_remove_app(ai_pointer)
+    var res = minimuxer_remove_app(ai_pointer)
+    var attempts = 10
+    while (attempts != 0 && res != 0) {
+        print("(REMOVE APP) ATTEMPTS: \(attempts)")
+        res = minimuxer_remove_app(ai_pointer)
+        attempts -= 1
+    }
     if res != 0 {
         throw Uhoh.Bad(code: res)
     }
