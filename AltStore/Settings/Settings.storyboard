@@ -847,7 +847,7 @@ Settings by i cons from the Noun Project</string>
         <image name="Next" width="18" height="18"/>
         <image name="Settings" width="20" height="20"/>
         <namedColor name="SettingsBackground">
-            <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.6431" green="0.0196" blue="0.9804" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
