@@ -56,7 +56,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
     let installedApps: [InstalledApp]
     private let managedObjectContext: NSManagedObjectContext
     
-    var presentsFinishedNotification: Bool = true
+    var presentsFinishedNotification: Bool = false
     
     private let refreshIdentifier: String = UUID().uuidString
     private var runningApplications: Set<String> = []
@@ -189,12 +189,12 @@ private extension BackgroundRefreshAppsOperation
             
             let content = UNMutableNotificationContent()
             
-            var shouldPresentAlert = true
+            var shouldPresentAlert = false
             
             do
             {
                 let results = try result.get()
-                shouldPresentAlert = !results.isEmpty
+                shouldPresentAlert = false
                 
                 for (_, result) in results
                 {
@@ -216,7 +216,7 @@ private extension BackgroundRefreshAppsOperation
                 content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
                 content.body = error.localizedDescription
                 
-                shouldPresentAlert = true
+                shouldPresentAlert = false
             }
             
             if shouldPresentAlert

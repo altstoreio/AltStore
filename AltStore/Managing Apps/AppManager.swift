@@ -758,7 +758,7 @@ extension AppManager
 extension AppManager
 {
     @discardableResult
-    func backgroundRefresh(_ installedApps: [InstalledApp], presentsNotifications: Bool = true, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> BackgroundRefreshAppsOperation
+    func backgroundRefresh(_ installedApps: [InstalledApp], presentsNotifications: Bool = false, completionHandler: @escaping (Result<[String: Result<InstalledApp, Error>], Error>) -> Void) -> BackgroundRefreshAppsOperation
     {
         let backgroundRefreshAppsOperation = BackgroundRefreshAppsOperation(installedApps: installedApps)
         backgroundRefreshAppsOperation.resultHandler = completionHandler
