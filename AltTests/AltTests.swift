@@ -427,6 +427,37 @@ extension AltTests
         }
     }
     
+    func testPatternMatchingErrorCode() async throws
+    {
+        do
+        {
+            // ALTLocalizedError
+            throw OperationError.serverNotFound
+        }
+        catch ~OperationError.Code.serverNotFound
+        {
+            // Success
+        }
+        catch
+        {
+            XCTFail("Failed to catch error as OperationError.Code.serverNotFound: \(error)")
+        }
+        
+        do
+        {
+            // ALTErrorEnum
+            throw AuthenticationError(.noTeam)
+        }
+        catch ~AuthenticationErrorCode.noTeam
+        {
+            // Success
+        }
+        catch
+        {
+            XCTFail("Failed to catch error as AuthenticationErrorCode.noTeam: \(error)")
+        }
+    }
+    
     func testWithLocalizedTitle() async throws
     {
         let localizedTitle = "AltTest Failed"
