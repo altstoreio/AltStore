@@ -38,6 +38,14 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "1.6rc",
+          "date": "2022-12-21T11:30:00-06:00",
+          "localizedDescription": "• Moved Error Log from \"Debug\" settings to \"Techy Things\"\n• Improved misc. error messages\n• Fixed repeated \"AltServer could not be found\" notifications\n• Fixed missing metadata for errors received from AltServer\n• Fixed decoding nested error metadata values",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_rc.ipa",
+          "size": 5606669,
+          "minOSVersion": "12.2"
+        },
+        {
           "version": "1.6b4",
           "date": "2022-11-30T12:00:00-06:00",
           "localizedDescription": "• Checks iOS compatibility for updates and installs \n• Asks user to install latest compatible version if not supported\n• View unsupported updates from My Apps tab\n• Pull-to-refresh to check for updates",
