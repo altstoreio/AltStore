@@ -27,6 +27,10 @@
     {
       "identifier": "eu.pokemmo.altstore",
       "sourceURL": "https://pokemmo.eu/altstore/"
+    },
+    {
+      "identifier": "stream.yattee",
+      "sourceURL": "https://repos.yattee.stream/alt/apps.json"
     }
   ]
 }
