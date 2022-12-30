@@ -17,7 +17,7 @@
  * # Safety
  * Don't be stupid
  */
-void *start_emotional_damage(const char *bind_addr);
+int start_emotional_damage(const char *bind_addr);
 
 /**
  * Stops further emotional damage
@@ -28,4 +28,13 @@ void *start_emotional_damage(const char *bind_addr);
  * # Safety
  * Don't be stupid
  */
-void stop_emotional_damage(void *handle);
+void stop_emotional_damage(void);
+
+/**
+ * Blocks until Wireguard is ready
+ * # Arguments
+ * * `timeout` - The timeout in miliseconds to wait for Wireguard
+ * # Returns
+ * 0 on success, -1 on failure
+ */
+int test_emotional_damage(int timeout);

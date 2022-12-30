@@ -22,3 +22,6 @@
 [submodule "Dependencies/minimuxer"]
 	path = Dependencies/minimuxer
 	url = https://github.com/jkcoxson/minimuxer
+[submodule "Dependencies/libfragmentzip"]
+	path = Dependencies/libfragmentzip
+	url = https://github.com/SideStore/libfragmentzip.git
