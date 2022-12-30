@@ -24,6 +24,8 @@
 		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B33FFBA8295F8E98002259E6 /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F894295F7F9B002B1159 /* libfragmentzip.a */; };
+		B33FFBAA295F8F78002259E6 /* preboard.c in Sources */ = {isa = PBXBuildFile; fileRef = B33FFBA9295F8F78002259E6 /* preboard.c */; };
+		B33FFBAC295F8F98002259E6 /* companion_proxy.c in Sources */ = {isa = PBXBuildFile; fileRef = B33FFBAB295F8F98002259E6 /* companion_proxy.c */; };
 		B343F858295F6331002B1159 /* libminimuxer_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F84C295F6321002B1159 /* libminimuxer_static.a */; };
 		B343F859295F6335002B1159 /* libem_proxy_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F853295F6323002B1159 /* libem_proxy_static.a */; };
 		B343F86D295F759E002B1159 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F86C295F759E002B1159 /* libresolv.tbd */; };
@@ -511,6 +513,8 @@
 		1920B04E2924AC8300744F60 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
+		B33FFBA9295F8F78002259E6 /* preboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = preboard.c; path = src/preboard.c; sourceTree = "<group>"; };
+		B33FFBAB295F8F98002259E6 /* companion_proxy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = companion_proxy.c; path = src/companion_proxy.c; sourceTree = "<group>"; };
 		B343F847295F6321002B1159 /* minimuxer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = minimuxer.xcodeproj; path = Dependencies/minimuxer.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B343F84D295F6323002B1159 /* em_proxy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = em_proxy.xcodeproj; path = Dependencies/em_proxy.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B343F86C295F759E002B1159 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
@@ -1102,6 +1106,7 @@
 			isa = PBXGroup;
 			children = (
 				BF4587D72298D3A800BD7491 /* afc.c */,
+				B33FFBAB295F8F98002259E6 /* companion_proxy.c */,
 				BF4587DF2298D3A900BD7491 /* debugserver.c */,
 				BF4587E42298D3A900BD7491 /* device_link_service.c */,
 				BF4587C92298D3A800BD7491 /* diagnostics_relay.c */,
@@ -1118,6 +1123,7 @@
 				BF4587DC2298D3A900BD7491 /* mobilebackup2.c */,
 				BF4587F32298D3AA00BD7491 /* mobilesync.c */,
 				BF4587CB2298D3A800BD7491 /* notification_proxy.c */,
+				B33FFBA9295F8F78002259E6 /* preboard.c */,
 				BF4587F42298D3AA00BD7491 /* property_list_service.c */,
 				BF4587E62298D3A900BD7491 /* restore.c */,
 				BF4587CC2298D3A800BD7491 /* sbservices.c */,
@@ -2292,6 +2298,8 @@
 				B343F881295F7C5D002B1159 /* termcolors.c in Sources */,
 				B343F87E295F7C5D002B1159 /* collection.c in Sources */,
 				BFD52C0F22A1A9CB000B7ED1 /* Real.cpp in Sources */,
+				B33FFBAA295F8F78002259E6 /* preboard.c in Sources */,
+				B33FFBAC295F8F98002259E6 /* companion_proxy.c in Sources */,
 				BF4587FB2298D3AB00BD7491 /* notification_proxy.c in Sources */,
 				BF4588352298D3C100BD7491 /* userpref.c in Sources */,
 				BFD52C0122A1A9CB000B7ED1 /* ptrarray.c in Sources */,
