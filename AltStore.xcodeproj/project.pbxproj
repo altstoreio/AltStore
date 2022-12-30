@@ -35,6 +35,7 @@
 		B343F883295F7C5D002B1159 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = B343F879295F7C5D002B1159 /* thread.c */; };
 		B343F884295F7C5D002B1159 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = B343F87A295F7C5D002B1159 /* utils.c */; };
 		B343F885295F7C5D002B1159 /* tlv.c in Sources */ = {isa = PBXBuildFile; fileRef = B343F87B295F7C5D002B1159 /* tlv.c */; };
+		B343F895295F7FAC002B1159 /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F894295F7F9B002B1159 /* libfragmentzip.a */; };
 		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
 		B3919A52292DBE5400519575 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D504F42528AD72C50014BB5D /* ProgressRing.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
@@ -320,7 +321,6 @@
 		BFF435D8255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF435D7255CBDAB00DD724F /* ALTApplication+AltStoreApp.swift */; };
 		BFF615A82510042B00484D3B /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
-		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
 		D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E163528776CB000A627A1 /* ComplicationView.swift */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
@@ -414,6 +414,34 @@
 			remoteGlobalIDString = CA60C44C93D7A30E3695DD59;
 			remoteInfo = "em_proxy-staticlib";
 		};
+		B343F88D295F7F9B002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 87B8C3401E0E9C37002F817D;
+			remoteInfo = "fragmentzip-cli-macOS";
+		};
+		B343F88F295F7F9B002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B315FDB02866CCF8002E243C;
+			remoteInfo = "fragmentzip-cli-iOS";
+		};
+		B343F891295F7F9B002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B315FDB52866CD91002E243C;
+			remoteInfo = "fragmentzip-macOS";
+		};
+		B343F893295F7F9B002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B315FDCE2866CDD3002E243C;
+			remoteInfo = "fragmentzip-iOS";
+		};
 		BF66EE832501AE50007EE018 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
@@ -491,6 +519,7 @@
 		B343F879295F7C5D002B1159 /* thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thread.c; sourceTree = "<group>"; };
 		B343F87A295F7C5D002B1159 /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
 		B343F87B295F7C5D002B1159 /* tlv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tlv.c; sourceTree = "<group>"; };
+		B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libfragmentzip.xcodeproj; path = Dependencies/libfragmentzip/libfragmentzip.xcodeproj; sourceTree = "<group>"; };
 		B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+SideStore.swift"; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39F16122918D7C5002E9404 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
@@ -870,6 +899,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B343F895295F7FAC002B1159 /* libfragmentzip.a in Frameworks */,
 				191E6087290C7B50001A3B7C /* libminimuxer.a in Frameworks */,
 				191E5FB4290A5DA0001A3B7C /* libminimuxer.a in Frameworks */,
 				19104DBC2909C4E500C49C7B /* libEmotionalDamage.a in Frameworks */,
@@ -882,7 +912,6 @@
 				B3C395F4284F35DD00DA9E2F /* Nuke in Frameworks */,
 				BF1614F1250822F100767AEA /* Roxas.framework in Frameworks */,
 				B3C395F7284F362400DA9E2F /* AppCenterAnalytics in Frameworks */,
-				D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */,
 				BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -950,6 +979,17 @@
 			children = (
 				B343F853295F6323002B1159 /* libem_proxy_static.a */,
 				B343F855295F6323002B1159 /* run */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B343F887295F7F9B002B1159 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B343F88E295F7F9B002B1159 /* libfragmentzip */,
+				B343F890295F7F9B002B1159 /* libfragmentzip */,
+				B343F892295F7F9B002B1159 /* libfragmentzip.a */,
+				B343F894295F7F9B002B1159 /* libfragmentzip.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1443,6 +1483,7 @@
 				BF98916C250AABF3002ACF50 /* AltWidget */,
 				19104DB32909C06D00C49C7B /* EmotionalDamage */,
 				191E5FAC290A5D92001A3B7C /* minimuxer */,
+				B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */,
 				BFD2476B2284B9A500981D42 /* Products */,
@@ -1992,6 +2033,10 @@
 					ProjectRef = B343F84D295F6323002B1159 /* em_proxy.xcodeproj */;
 				},
 				{
+					ProductGroup = B343F887295F7F9B002B1159 /* Products */;
+					ProjectRef = B343F886295F7F9B002B1159 /* libfragmentzip.xcodeproj */;
+				},
+				{
 					ProductGroup = B343F848295F6321002B1159 /* Products */;
 					ProjectRef = B343F847295F6321002B1159 /* minimuxer.xcodeproj */;
 				},
@@ -2055,6 +2100,34 @@
 			fileType = "compiled.mach-o.executable";
 			path = run;
 			remoteRef = B343F854295F6323002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F88E295F7F9B002B1159 /* libfragmentzip */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = libfragmentzip;
+			remoteRef = B343F88D295F7F9B002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F890295F7F9B002B1159 /* libfragmentzip */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = libfragmentzip;
+			remoteRef = B343F88F295F7F9B002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F892295F7F9B002B1159 /* libfragmentzip.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libfragmentzip.a;
+			remoteRef = B343F891295F7F9B002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F894295F7F9B002B1159 /* libfragmentzip.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libfragmentzip.a;
+			remoteRef = B343F893295F7F9B002B1159 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
