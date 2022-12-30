@@ -10,11 +10,9 @@
 		03F06CD52942C27E001C4D68 /* Bundle+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314122A05D4C00370A3C /* Bundle+AltStore.swift */; };
 		19104D952909BAEA00C49C7B /* libimobiledevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF45872B2298D31600BD7491 /* libimobiledevice.a */; };
 		19104DB52909C06D00C49C7B /* EmotionalDamage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19104DB42909C06D00C49C7B /* EmotionalDamage.swift */; };
-		19104DBB2909C11700C49C7B /* libem_proxy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19104DA32909BC1000C49C7B /* libem_proxy.a */; };
 		19104DBC2909C4E500C49C7B /* libEmotionalDamage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19104DB22909C06C00C49C7B /* libEmotionalDamage.a */; };
 		191E5FAE290A5D92001A3B7C /* minimuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 191E5FAD290A5D92001A3B7C /* minimuxer.swift */; };
 		191E5FB4290A5DA0001A3B7C /* libminimuxer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 191E5FAB290A5D92001A3B7C /* libminimuxer.a */; };
-		191E5FB6290A5E1F001A3B7C /* libminimuxer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 191E5FB5290A5E1F001A3B7C /* libminimuxer.a */; };
 		191E5FDC290AFA5C001A3B7C /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 191E5FDB290AFA5C001A3B7C /* OpenSSL */; };
 		191E6066290B2DB1001A3B7C /* cbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E605E290B2D6B001A3B7C /* cbuf.c */; };
 		191E6067290B2DB3001A3B7C /* collection.c in Sources */ = {isa = PBXBuildFile; fileRef = 191E6060290B2D6B001A3B7C /* collection.c */; };
@@ -36,6 +34,8 @@
 		4879A9622861049C00FC1BBD /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A9612861049C00FC1BBD /* OpenSSL */; };
 		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B343F858295F6331002B1159 /* libminimuxer_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F84C295F6321002B1159 /* libminimuxer_static.a */; };
+		B343F859295F6335002B1159 /* libem_proxy_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F853295F6323002B1159 /* libem_proxy_static.a */; };
 		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
 		B3919A52292DBE5400519575 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D504F42528AD72C50014BB5D /* ProgressRing.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
@@ -383,6 +383,27 @@
 			remoteGlobalIDString = BFADB00319AE7BB80050CF31;
 			remoteInfo = RoxasTests;
 		};
+		B343F84B295F6321002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F847295F6321002B1159 /* minimuxer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA609C732349C7AAD9FA67C4;
+			remoteInfo = "minimuxer-staticlib";
+		};
+		B343F852295F6323002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F84D295F6323002B1159 /* em_proxy.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA60C44C93D7916DE57E6EBD;
+			remoteInfo = "em_proxy-staticlib";
+		};
+		B343F854295F6323002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F84D295F6323002B1159 /* em_proxy.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA60058A9FBE4D17AF51A7D5;
+			remoteInfo = "run-bin";
+		};
 		BF66EE832501AE50007EE018 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
@@ -459,6 +480,8 @@
 		1920B04E2924AC8300744F60 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTeamViewController.swift; sourceTree = "<group>"; };
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
+		B343F847295F6321002B1159 /* minimuxer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = minimuxer.xcodeproj; path = Dependencies/minimuxer.xcodeproj; sourceTree = SOURCE_ROOT; };
+		B343F84D295F6323002B1159 /* em_proxy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = em_proxy.xcodeproj; path = Dependencies/em_proxy.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+SideStore.swift"; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39F16122918D7C5002E9404 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
@@ -788,7 +811,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19104DBB2909C11700C49C7B /* libem_proxy.a in Frameworks */,
+				B343F859295F6335002B1159 /* libem_proxy_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -796,7 +819,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				191E5FB6290A5E1F001A3B7C /* libminimuxer.a in Frameworks */,
+				B343F858295F6331002B1159 /* libminimuxer_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,6 +891,7 @@
 		19104DB32909C06D00C49C7B /* EmotionalDamage */ = {
 			isa = PBXGroup;
 			children = (
+				B343F84D295F6323002B1159 /* em_proxy.xcodeproj */,
 				19104DA92909BC7100C49C7B /* em_proxy.h */,
 				19104DB42909C06D00C49C7B /* EmotionalDamage.swift */,
 			);
@@ -877,6 +901,7 @@
 		191E5FAC290A5D92001A3B7C /* minimuxer */ = {
 			isa = PBXGroup;
 			children = (
+				B343F847295F6321002B1159 /* minimuxer.xcodeproj */,
 				191E5FD7290A6EFB001A3B7C /* minimuxer.h */,
 				191E5FAD290A5D92001A3B7C /* minimuxer.swift */,
 			);
@@ -905,6 +930,23 @@
 				B3146ECD284F580500BBC3FD /* Roxas.framework */,
 				B3146ECF284F580500BBC3FD /* Roxas.framework */,
 				B3146ED1284F580500BBC3FD /* RoxasTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B343F848295F6321002B1159 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B343F84C295F6321002B1159 /* libminimuxer_static.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B343F84E295F6323002B1159 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B343F853295F6323002B1159 /* libem_proxy_static.a */,
+				B343F855295F6323002B1159 /* run */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1952,6 +1994,14 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = B343F84E295F6323002B1159 /* Products */;
+					ProjectRef = B343F84D295F6323002B1159 /* em_proxy.xcodeproj */;
+				},
+				{
+					ProductGroup = B343F848295F6321002B1159 /* Products */;
+					ProjectRef = B343F847295F6321002B1159 /* minimuxer.xcodeproj */;
+				},
+				{
 					ProductGroup = B3146EC7284F580500BBC3FD /* Products */;
 					ProjectRef = B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */;
 				},
@@ -1990,6 +2040,27 @@
 			fileType = wrapper.cfbundle;
 			path = RoxasTests.xctest;
 			remoteRef = B3146ED0284F580500BBC3FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F84C295F6321002B1159 /* libminimuxer_static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libminimuxer_static.a;
+			remoteRef = B343F84B295F6321002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F853295F6323002B1159 /* libem_proxy_static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libem_proxy_static.a;
+			remoteRef = B343F852295F6323002B1159 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B343F855295F6323002B1159 /* run */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = run;
+			remoteRef = B343F854295F6323002B1159 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
