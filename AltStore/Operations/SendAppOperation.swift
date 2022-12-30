@@ -39,9 +39,10 @@ class SendAppOperation: ResultOperation<()>
         guard let resignedApp = self.context.resignedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
         
         // self.context.resignedApp.fileURL points to the app bundle, but we want the .ipa.
-        let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.url)
+        let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
         
+        print("AFC App `fileURL`: \(fileURL.absoluteString)")
         
         let ns_bundle = NSString(string: app.bundleIdentifier)
         let ns_bundle_ptr = UnsafeMutablePointer<CChar>(mutating: ns_bundle.utf8String)
@@ -59,6 +60,7 @@ class SendAppOperation: ResultOperation<()>
                 attempts -= 1
             }
             if res == 0 {
+                print("minimuxer_yeet_app_afc `res` == \(res)")
                 self.progress.completedUnitCount += 1
                 self.finish(.success(()))
             } else {

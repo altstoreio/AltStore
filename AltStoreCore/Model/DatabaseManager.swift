@@ -11,6 +11,15 @@ import CoreData
 import AltSign
 import Roxas
 
+extension CFNotificationName
+{
+    fileprivate static let willAccessDatabase = CFNotificationName("com.rileytestut.AltStore.WillAccessDatabase" as CFString)
+}
+
+private let ReceivedWillAccessDatabaseNotification: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void = { (center, observer, name, object, userInfo) in
+    DatabaseManager.shared.receivedWillAccessDatabaseNotification()
+}
+
 fileprivate class PersistentContainer: RSTPersistentContainer
 {
     override class func defaultDirectoryURL() -> URL
@@ -43,10 +52,15 @@ public class DatabaseManager
     private let coordinator = NSFileCoordinator()
     private let coordinatorQueue = OperationQueue()
     
+    private var ignoreWillAccessDatabaseNotification = false
+    
     private init()
     {
         self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
+        
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), observer, ReceivedWillAccessDatabaseNotification, CFNotificationName.willAccessDatabase.rawValue, nil, .deliverImmediately)
     }
 }
 
@@ -72,6 +86,10 @@ public extension DatabaseManager
             guard self.startCompletionHandlers.count == 1 else { return }
             
             guard !self.isStarted else { return finish(nil) }
+            
+            // Quit any other running AltStore processes to prevent concurrent database access during and after migration.
+            self.ignoreWillAccessDatabaseNotification = true
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .willAccessDatabase, nil, nil, true)
             
             self.migrateDatabaseToAppGroupIfNeeded { (result) in
                 switch result
@@ -122,6 +140,27 @@ public extension DatabaseManager
             }
         }
     }
+    
+    func purgeLoggedErrors(before date: Date? = nil, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.persistentContainer.performBackgroundTask { context in
+            do
+            {
+                let predicate = date.map { NSPredicate(format: "%K <= %@", #keyPath(LoggedError.date), $0 as NSDate) }
+                
+                let loggedErrors = LoggedError.all(satisfying: predicate, in: context, requestProperties: [\.returnsObjectsAsFaults: true])
+                loggedErrors.forEach { context.delete($0) }
+                
+                try context.save()
+                
+                completion(.success(()))
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 public extension DatabaseManager
@@ -129,10 +168,7 @@ public extension DatabaseManager
     var viewContext: NSManagedObjectContext {
         return self.persistentContainer.viewContext
     }
-}
-
-public extension DatabaseManager
-{
+    
     func activeAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> Account?
     {
         let predicate = NSPredicate(format: "%K == YES", #keyPath(Account.isActiveAccount))
@@ -193,7 +229,7 @@ private extension DatabaseManager
             else
             {
                 storeApp = StoreApp.makeAltStoreApp(in: context)
-                storeApp.version = localApp.version
+                storeApp.latestVersion?.version = localApp.version
                 storeApp.source = altStoreSource
             }
                         
@@ -379,5 +415,15 @@ private extension DatabaseManager
                 finish(.failure(error))
             }
         }
+    }
+    
+    func receivedWillAccessDatabaseNotification()
+    {
+        defer { self.ignoreWillAccessDatabaseNotification = false }
+        
+        // Ignore notifications sent by the current process.
+        guard !self.ignoreWillAccessDatabaseNotification else { return }
+        
+        exit(104)
     }
 }

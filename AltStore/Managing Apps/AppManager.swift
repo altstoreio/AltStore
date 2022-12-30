@@ -1121,7 +1121,7 @@ private extension AppManager
                             presentingViewController?.dismiss(animated: true, completion: nil)
                         }
                     }
-                    presentingViewController.present(navigationController, animated: true, completion: nil)
+                    presentingViewController.present(navigationController, animated: true, completion: nil)                    
                 }
             }
             catch
@@ -1223,7 +1223,7 @@ private extension AppManager
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
         let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
-        context.app = ALTApplication(fileURL: app.url)
+        context.app = ALTApplication(fileURL: app.fileURL)
         
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
@@ -1662,13 +1662,8 @@ private extension AppManager
             }
             
             if #available(iOS 14, *)
-            {
-                WidgetCenter.shared.getCurrentConfigurations { (result) in
-                    guard case .success(let widgets) = result else { return }
-                    
-                    guard let widget = widgets.first(where: { $0.configuration is ViewAppIntent }) else { return }
-                    WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
-                }
+            {                
+                WidgetCenter.shared.reloadAllTimelines()
             }
             
             do { try installedApp.managedObjectContext?.save() }
@@ -1677,6 +1672,8 @@ private extension AppManager
         catch
         {
             group.set(.failure(error), forAppWithBundleIdentifier: operation.bundleIdentifier)
+            
+            self.log(error, for: operation)
         }
     }
     
@@ -1699,6 +1696,43 @@ private extension AppManager
         
         let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
+    }
+    
+    func log(_ error: Error, for operation: AppOperation)
+    {
+        // Sanitize NSError on same thread before performing background task.
+        let sanitizedError = (error as NSError).sanitizedForCoreData()
+        
+        let loggedErrorOperation: LoggedError.Operation = {
+            switch operation
+            {
+            case .install: return .install
+            case .update: return .update
+            case .refresh: return .refresh
+            case .activate: return .activate
+            case .deactivate: return .deactivate
+            case .backup: return .backup
+            case .restore: return .restore
+            }
+        }()
+                    
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+            var app = operation.app
+            if let managedApp = app as? NSManagedObject, let tempApp = context.object(with: managedApp.objectID) as? AppProtocol
+            {
+                app = tempApp
+            }
+            
+            do
+            {
+                _ = LoggedError(error: sanitizedError, app: app, operation: loggedErrorOperation, context: context)
+                try context.save()
+            }
+            catch let saveError
+            {
+                print("[ALTLog] Failed to log error \(sanitizedError.domain) code \(sanitizedError.code) for \(app.bundleIdentifier):", saveError)
+            }
+        }
     }
     
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)

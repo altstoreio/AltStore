@@ -13,16 +13,16 @@ public protocol AppProtocol
 {
     var name: String { get }
     var bundleIdentifier: String { get }
-    var url: URL { get }
+    var url: URL? { get }
 }
 
 public struct AnyApp: AppProtocol
 {
     public var name: String
     public var bundleIdentifier: String
-    public var url: URL
+    public var url: URL?
     
-    public init(name: String, bundleIdentifier: String, url: URL)
+    public init(name: String, bundleIdentifier: String, url: URL?)
     {
         self.name = name
         self.bundleIdentifier = bundleIdentifier
@@ -32,21 +32,21 @@ public struct AnyApp: AppProtocol
 
 extension ALTApplication: AppProtocol
 {
-    public var url: URL {
+    public var url: URL? {
         return self.fileURL
     }
 }
 
 extension StoreApp: AppProtocol
 {
-    public var url: URL {
+    public var url: URL? {
         return self.downloadURL
     }
 }
 
 extension InstalledApp: AppProtocol
 {
-    public var url: URL {
+    public var url: URL? {
         return self.fileURL
     }
 }

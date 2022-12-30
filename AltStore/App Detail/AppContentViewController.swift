@@ -80,10 +80,21 @@ class AppContentViewController: UITableViewController
         
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
-        self.versionDescriptionTextView.text = self.app.versionDescription
-        self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), self.app.version)
-        self.versionDateLabel.text = Date().relativeDateString(since: self.app.versionDate, dateFormatter: self.dateFormatter)
-        self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: Int64(self.app.size))
+        
+        if let version = self.app.latestVersion
+        {
+            self.versionDescriptionTextView.text = version.localizedDescription
+            self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.version)
+            self.versionDateLabel.text = Date().relativeDateString(since: version.date, dateFormatter: self.dateFormatter)
+            self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: version.size)
+        }
+        else
+        {
+            self.versionDescriptionTextView.text = nil
+            self.versionLabel.text = nil
+            self.versionDateLabel.text = nil
+            self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: 0)
+        }
         
         self.descriptionTextView.maximumNumberOfLines = 5
         self.descriptionTextView.moreButton.addTarget(self, action: #selector(AppContentViewController.toggleCollapsingSection(_:)), for: .primaryActionTriggered)
