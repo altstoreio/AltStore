@@ -36,6 +36,7 @@
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B343F858295F6331002B1159 /* libminimuxer_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F84C295F6321002B1159 /* libminimuxer_static.a */; };
 		B343F859295F6335002B1159 /* libem_proxy_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F853295F6323002B1159 /* libem_proxy_static.a */; };
+		B343F86D295F759E002B1159 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F86C295F759E002B1159 /* libresolv.tbd */; };
 		B376FE3E29258C8900E18883 /* OSLog+SideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */; };
 		B3919A52292DBE5400519575 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D504F42528AD72C50014BB5D /* ProgressRing.swift */; };
 		B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39575F4284F29E20080B4FF /* Roxas.framework */; };
@@ -404,6 +405,20 @@
 			remoteGlobalIDString = CA60058A9FBE4D17AF51A7D5;
 			remoteInfo = "run-bin";
 		};
+		B343F86E295F76FD002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F847295F6321002B1159 /* minimuxer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CA609C732349A560B9642892;
+			remoteInfo = "minimuxer-staticlib";
+		};
+		B343F870295F7704002B1159 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B343F84D295F6323002B1159 /* em_proxy.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CA60C44C93D7A30E3695DD59;
+			remoteInfo = "em_proxy-staticlib";
+		};
 		BF66EE832501AE50007EE018 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
@@ -482,6 +497,7 @@
 		B3146EC6284F580500BBC3FD /* Roxas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Roxas.xcodeproj; path = Dependencies/Roxas/Roxas.xcodeproj; sourceTree = "<group>"; };
 		B343F847295F6321002B1159 /* minimuxer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = minimuxer.xcodeproj; path = Dependencies/minimuxer.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B343F84D295F6323002B1159 /* em_proxy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = em_proxy.xcodeproj; path = Dependencies/em_proxy.xcodeproj; sourceTree = SOURCE_ROOT; };
+		B343F86C295F759E002B1159 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
 		B376FE3D29258C8900E18883 /* OSLog+SideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+SideStore.swift"; sourceTree = "<group>"; };
 		B39575F4284F29E20080B4FF /* Roxas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Roxas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39F16122918D7C5002E9404 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
@@ -811,6 +827,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B343F86D295F759E002B1159 /* libresolv.tbd in Frameworks */,
 				B343F859295F6335002B1159 /* libem_proxy_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1506,6 +1523,7 @@
 		BFD247852284BB3300981D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B343F86C295F759E002B1159 /* libresolv.tbd */,
 				191E5FB5290A5E1F001A3B7C /* libminimuxer.a */,
 				19104DA32909BC1000C49C7B /* libem_proxy.a */,
 				B39575F4284F29E20080B4FF /* Roxas.framework */,
@@ -1775,6 +1793,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B343F871295F7704002B1159 /* PBXTargetDependency */,
 			);
 			name = EmotionalDamage;
 			productName = EmotionalDamage;
@@ -1792,6 +1811,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B343F86F295F76FD002B1159 /* PBXTargetDependency */,
 			);
 			name = minimuxer;
 			productName = minimuxer;
@@ -2434,6 +2454,16 @@
 		191E5FDA290AFA49001A3B7C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 191E5FD9290AFA49001A3B7C /* OpenSSL */;
+		};
+		B343F86F295F76FD002B1159 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "minimuxer-staticlib";
+			targetProxy = B343F86E295F76FD002B1159 /* PBXContainerItemProxy */;
+		};
+		B343F871295F7704002B1159 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "em_proxy-staticlib";
+			targetProxy = B343F870295F7704002B1159 /* PBXContainerItemProxy */;
 		};
 		BF66EE842501AE50007EE018 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
