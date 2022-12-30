@@ -938,7 +938,7 @@
 				191E6062290B2D6B001A3B7C /* tlv.c */,
 				191E605F290B2D6B001A3B7C /* utils.c */,
 			);
-			name = "libimobiledevice-glue";
+			path = "libimobiledevice-glue";
 			sourceTree = "<group>";
 		};
 		B3146EC7284F580500BBC3FD /* Products */ = {
@@ -1051,7 +1051,8 @@
 				BF4587972298D36400BD7491 /* libimobiledevice */,
 				BF45883D2298D3E800BD7491 /* libusbmuxd */,
 			);
-			path = libimobiledevice;
+			name = libimobiledevice;
+			path = Dependencies;
 			sourceTree = "<group>";
 		};
 		BF4587972298D36400BD7491 /* libimobiledevice */ = {
@@ -1109,7 +1110,7 @@
 				BF4587D62298D3A800BD7491 /* webinspector.c */,
 				BF4587E92298D3AA00BD7491 /* webinspector.h */,
 			);
-			name = libimobiledevice;
+			path = libimobiledevice;
 			sourceTree = "<group>";
 		};
 		BF4588282298D3B400BD7491 /* common */ = {
@@ -1136,7 +1137,7 @@
 				BF4588482298D55000BD7491 /* thread.c */,
 				BF4588492298D55000BD7491 /* thread.h */,
 			);
-			name = libusbmuxd;
+			path = libusbmuxd;
 			sourceTree = "<group>";
 		};
 		BF4588562298DC6D00BD7491 /* libplist */ = {
@@ -1175,7 +1176,7 @@
 				BFD52BF122A1A9CA000B7ED1 /* Uid.cpp */,
 				BFD52C0022A1A9CB000B7ED1 /* xplist.c */,
 			);
-			name = libplist;
+			path = libplist;
 			sourceTree = "<group>";
 		};
 		BF4588892298DDEA00BD7491 /* libcnary */ = {
