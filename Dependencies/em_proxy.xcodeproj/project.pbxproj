@@ -64,7 +64,7 @@
                     lastKnownFileType = text;
                     fileEncoding = 4;
                     name = "Cargo.toml";
-                    path = "/Users/jmattiello/Workspace/Provenance/SideStore/Dependencies/em_proxy/Cargo.toml";
+                    path = "em_proxy/Cargo.toml";
                     sourceTree = "<group>";
             };
                     /* Rust needs libresolv */

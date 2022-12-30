@@ -49,7 +49,7 @@
                     lastKnownFileType = text;
                     fileEncoding = 4;
                     name = "Cargo.toml";
-                    path = "/Users/jmattiello/Workspace/Provenance/SideStore/Dependencies/minimuxer/Cargo.toml";
+                    path = "minimuxer/Cargo.toml";
                     sourceTree = "<group>";
             };
                     /* Rust needs libresolv */
