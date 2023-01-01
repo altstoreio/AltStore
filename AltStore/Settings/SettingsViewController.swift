@@ -53,6 +53,7 @@ extension SettingsViewController
         case sendFeedback
         case refreshAttempts
         case errorLog
+        case advancedSettings
     }
 }
 
@@ -502,7 +503,14 @@ extension SettingsViewController
                     let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
                     toastView.show(in: self)
                 }
-                
+            case .advancedSettings:
+                // Create the URL that deep links to your app's custom settings.
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    // Ask the system to open that URL.
+                    UIApplication.shared.open(url)
+                } else {
+                    ELOG("UIApplication.openSettingsURLString invalid")
+                }
             case .refreshAttempts, .errorLog: break
             }
             
