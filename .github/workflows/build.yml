@@ -23,6 +23,23 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Test nightly
+        run: touch test.ipa
+
+      - name: Upload to nightly release
+        uses: IsaacShelton/update-existing-release@v1.3.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release: "Nightly"
+          tag: "nightly"
+          prerelease: true
+          files: test.ipa
+          message: "Nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+          body: ""
+
+      - name: Trigger error
+        run: exit 1
+
       # - name: Cache rust cargo
       #   id: cache-rust-cargo
       #   uses: actions/cache@v3
@@ -113,3 +130,14 @@ jobs:
         with:
           name: SideStore.ipa
           path: SideStore.ipa
+
+      - name: Upload to nightly release
+        uses: IsaacShelton/update-existing-release@v1.3.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release: "Nightly"
+          tag: "nightly"
+          prerelease: true
+          files: SideStore.ipa
+          message: "Nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+          body: ""
