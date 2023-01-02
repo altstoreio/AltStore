@@ -21,6 +21,10 @@ jobs:
       - name: Test nightly
         run: echo "test" > test.ipa
 
+      - name: Get current date
+        id: date
+        run: echo "date=$(date -u +'%c')" >> $GITHUB_OUTPUT
+
       - name: Upload to nightly release
         uses: IsaacShelton/update-existing-release@v1.3.1
         with:
@@ -34,9 +38,9 @@ jobs:
             
             Nightly builds are built from the most recent commit. However, since they are much newer and less tested, they have a much higher chance of bugs, so **use at your own risk**.
             
-            If you use the SideStore (Nightly) app, it will use the latest nightly build.
+            If you use the SideStore (Nightly) app, it will use the latest nightly build (make sure to update it in "My Apps").
             
-            Built at: $(date -u +'%c') (UTC)
+            Built at: ${{ steps.date.outputs.date }} (UTC)
 
       - name: Trigger error
         run: exit 1
