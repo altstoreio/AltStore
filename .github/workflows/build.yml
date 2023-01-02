@@ -45,7 +45,7 @@ jobs:
             If you use the SideStore (Nightly) app, it will use the latest nightly build (make sure to update it in "My Apps").
             
             Built at: `${{ steps.date.outputs.date }}` (UTC)
-            Built at (UTC date): `${{ steps.date.outputs.date_altstore }}`
+            Built at (UTC date): `${{ steps.date_altstore.outputs.date }}`
             Commit SHA: `${{ github.sha }}`
 
       - name: Trigger error
