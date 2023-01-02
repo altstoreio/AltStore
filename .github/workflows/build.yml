@@ -34,8 +34,7 @@ jobs:
           tag: "nightly"
           prerelease: true
           files: test.ipa
-          message: "Nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
-          body: ""
+          body: "Nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
 
       - name: Trigger error
         run: exit 1
