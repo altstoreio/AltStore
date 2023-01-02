@@ -18,26 +18,33 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-
       - name: Test nightly
-        run: touch test.ipa
+        run: echo "test" > test.ipa
 
       - name: Upload to nightly release
         uses: IsaacShelton/update-existing-release@v1.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release: "Nightly"
+          release: "Nightly build for ${{ github.sha }}"
           tag: "nightly"
           prerelease: true
           files: test.ipa
-          body: "Nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+          body: >
+            This is an __⚠️ **EXPERIMENTAL** ⚠️__ nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+            
+            Nightly builds are built from the most recent commit. However, since they are much newer and less tested, they have a much higher chance of bugs, so **use at your own risk**.
+            
+            If you use the SideStore (Nightly) app, it will use the latest nightly build.
+            
+            Built at: $(date -u +'%c') (UTC)
 
       - name: Trigger error
         run: exit 1
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       # - name: Cache rust cargo
       #   id: cache-rust-cargo
