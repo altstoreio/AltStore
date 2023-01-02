@@ -25,6 +25,10 @@ jobs:
         id: date
         run: echo "date=$(date -u +'%c')" >> $GITHUB_OUTPUT
 
+      - name: Get current date in AltStore date form
+        id: date_altstore
+        run: echo "date=$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
       - name: Upload to nightly release
         uses: IsaacShelton/update-existing-release@v1.3.1
         with:
@@ -34,13 +38,15 @@ jobs:
           prerelease: true
           files: test.ipa
           body: |
-            This is an __⚠️ **EXPERIMENTAL** ⚠️__ nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+            This is an ⚠️ **EXPERIMENTAL** ⚠️ nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
             
             Nightly builds are built from the most recent commit. However, since they are much newer and less tested, they have a much higher chance of bugs, so **use at your own risk**.
             
             If you use the SideStore (Nightly) app, it will use the latest nightly build (make sure to update it in "My Apps").
             
-            Built at: ${{ steps.date.outputs.date }} (UTC)
+            Built at: `${{ steps.date.outputs.date }}` (UTC)
+            Built at (UTC date): `${{ steps.date.outputs.date_altstore }}`
+            Commit SHA: `${{ github.sha }}`
 
       - name: Trigger error
         run: exit 1
