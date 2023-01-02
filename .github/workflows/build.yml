@@ -25,11 +25,11 @@ jobs:
         uses: IsaacShelton/update-existing-release@v1.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release: "Nightly build for ${{ github.sha }}"
+          release: "Nightly"
           tag: "nightly"
           prerelease: true
           files: test.ipa
-          body: >
+          body: |
             This is an __⚠️ **EXPERIMENTAL** ⚠️__ nightly build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
             
             Nightly builds are built from the most recent commit. However, since they are much newer and less tested, they have a much higher chance of bugs, so **use at your own risk**.
