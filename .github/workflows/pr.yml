@@ -1,0 +1,111 @@
+name: Pull Request SideStore build
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Build and upload SideStore
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: 'macos-12'
+            version: '14.2'
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      # - name: Cache rust cargo
+      #   id: cache-rust-cargo
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-rust-cargo
+      #   with:
+      #     path: ~/.cargo
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
+
+      # - name: Cache rust minimuxer
+      #   id: cache-rust-minimuxer
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-rust-minimuxer
+      #   with:
+      #     path: ./Dependencies/minimuxer/target
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
+
+      # - name: Cache rust em_proxy
+      #   id: cache-rust-em_proxy
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-rust-em_proxy
+      #   with:
+      #     path: ./Dependencies/em_proxy/target
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: brew install ldid
+
+      - name: Install rustup
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          target: aarch64-apple-ios
+
+      # - name: Create emotional damage
+      #   run: cd Dependencies/em_proxy && cargo build --release --target aarch64-apple-ios
+
+      # - name: Build minimuxer
+      #   run: cd Dependencies/minimuxer && cargo build --release --target aarch64-apple-ios
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1.4.1
+        with:
+          xcode-version: ${{ matrix.version }}
+
+      - name: Build SideStore
+        run: |
+          xcodebuild -project AltStore.xcodeproj \
+          -scheme AltStore \
+          -sdk iphoneos \
+          archive -archivePath ./archive \
+          CODE_SIGNING_REQUIRED=NO \
+          AD_HOC_CODE_SIGNING_ALLOWED=YES \
+          CODE_SIGNING_ALLOWED=NO \
+          DEVELOPMENT_TEAM=XYZ0123456 \
+          ORG_IDENTIFIER=com.SideStore \
+          | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Fakesign app
+        run: |
+          rm -rf archive.xcarchive/Products/Applications/SideStore.app/Frameworks/AltStoreCore.framework/Frameworks/
+          ldid -SAltStore/Resources/tempEnt.plist archive.xcarchive/Products/Applications/SideStore.app/SideStore
+
+      - name: Convert to IPA
+        run: |
+          mkdir Payload
+          mkdir Payload/SideStore.app
+          cp -R archive.xcarchive/Products/Applications/SideStore.app/ Payload/SideStore.app/
+          zip -r SideStore.ipa Payload
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SideStore.ipa
+          path: SideStore.ipa
