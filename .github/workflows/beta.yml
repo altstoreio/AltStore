@@ -1,14 +1,16 @@
-name: Build and Upload SideStore
+name: Beta SideStore build
 on:
   push:
     branches:
-      - master
       - develop
-  pull_request:
 
 jobs:
   build:
-    name: Build and upload SideStore
+    name: Build and upload SideStore Beta
+    if: startsWith(github.event.head_commit.message, '[beta]')
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +80,9 @@ jobs:
       # - name: Build minimuxer
       #   run: cd Dependencies/minimuxer && cargo build --release --target aarch64-apple-ios
 
+      - name: Add beta suffix to version
+        run: sed -e '/MARKETING_VERSION = .*/s/$/-beta.${{ github.run_number }}/' -i '' Build.xcconfig
+
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.4.1
         with:
@@ -113,3 +118,39 @@ jobs:
         with:
           name: SideStore.ipa
           path: SideStore.ipa
+
+      - name: Get version
+        id: version
+        run: echo "version=$(grep MARKETING_VERSION Build.xcconfig | sed -e "s/MARKETING_VERSION = //g")" >> $GITHUB_OUTPUT
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date -u +'%c')" >> $GITHUB_OUTPUT
+
+      - name: Get current date in AltStore date form
+        id: date_altstore
+        run: echo "date=$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Upload to beta release
+        uses: IsaacShelton/update-existing-release@v1.3.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release: "Beta"
+          tag: "beta"
+          prerelease: true
+          files: SideStore.ipa
+          body: |
+            This is an ⚠️ **EXPERIMENTAL** ⚠️ beta build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+            
+            Beta builds are hand-picked builds from development commits that will allow you to try out new features earlier than normal, but with a lower chance of bugs than if you used nightly builds. However, since these changes are newer and less tested, they still have a good chance of bugs, so **use at your own risk**.
+            
+            If you want to be on the bleeding edge and use the latest development builds, you can look at [SideStore Nightly](https://github.com/${{ github.repository }}/releases/tag/nightly). **Please be aware that these builds have a much higher chance of bugs than beta or stable**.
+            
+            If you use the `SideStore (Beta)` app, it will use the latest beta build (make sure to update it in "My Apps").
+            
+            ## Build Info
+            
+            Built at (UTC): `${{ steps.date.outputs.date }}`
+            Built at (UTC date): `${{ steps.date_altstore.outputs.date }}`
+            Commit SHA: `${{ github.sha }}`
+            Version: `${{ steps.version.outputs.version }}`
