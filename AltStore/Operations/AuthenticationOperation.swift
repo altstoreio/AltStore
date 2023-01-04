@@ -34,7 +34,7 @@ enum AuthenticationError: LocalizedError
 }
 
 @objc(AuthenticationOperation)
-class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppleAPISession)>
+final class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppleAPISession)>
 {
     let context: AuthenticatedOperationContext
     

@@ -14,7 +14,7 @@ import IntentsUI
 
 import AltSign
 
-class SelectTeamViewController: UITableViewController
+final class SelectTeamViewController: UITableViewController
 {
     public var teams: [ALTTeam]?
     public var completionHandler: ((Result<ALTTeam, Swift.Error>)  -> Void)?

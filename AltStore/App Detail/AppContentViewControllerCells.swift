@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PermissionCollectionViewCell: UICollectionViewCell
+final class PermissionCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var button: UIButton!
     @IBOutlet var textLabel: UILabel!
@@ -29,7 +29,7 @@ class PermissionCollectionViewCell: UICollectionViewCell
     }
 }
 
-class AppContentTableViewCell: UITableViewCell
+final class AppContentTableViewCell: UITableViewCell
 {
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize
     {

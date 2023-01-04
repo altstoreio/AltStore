@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BannerCollectionViewCell: UICollectionViewCell
+final class BannerCollectionViewCell: UICollectionViewCell
 {
     private(set) var errorBadge: UIView?
     @IBOutlet private(set) var bannerView: AppBannerView!

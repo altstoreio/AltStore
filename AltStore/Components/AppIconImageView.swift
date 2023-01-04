@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppIconImageView: UIImageView
+final class AppIconImageView: UIImageView
 {
     override func awakeFromNib()
     {

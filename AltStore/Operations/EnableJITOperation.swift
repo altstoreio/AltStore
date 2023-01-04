@@ -21,7 +21,7 @@ protocol EnableJITContext
 }
 
 @available(iOS 14, *)
-class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
+final class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
 {
     let context: Context
     

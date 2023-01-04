@@ -31,7 +31,7 @@ struct SourceError: LocalizedError
 }
 
 @objc(SourcesFooterView)
-private class SourcesFooterView: TextCollectionReusableView
+private final class SourcesFooterView: TextCollectionReusableView
 {
     @IBOutlet var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet var textView: UITextView!
@@ -46,7 +46,7 @@ extension SourcesViewController
     }
 }
 
-class SourcesViewController: UICollectionViewController
+final class SourcesViewController: UICollectionViewController
 {
     var deepLinkSourceURL: URL? {
         didSet {

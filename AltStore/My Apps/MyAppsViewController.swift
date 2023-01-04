@@ -30,7 +30,7 @@ extension MyAppsViewController
     }
 }
 
-class MyAppsViewController: UICollectionViewController
+final class MyAppsViewController: UICollectionViewController
 {
     private let coordinator = NSFileCoordinator()
     private let operationQueue = OperationQueue()

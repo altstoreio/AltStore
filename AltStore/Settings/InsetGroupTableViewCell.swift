@@ -19,7 +19,7 @@ extension InsetGroupTableViewCell
     }
 }
 
-class InsetGroupTableViewCell: UITableViewCell
+final class InsetGroupTableViewCell: UITableViewCell
 {
 #if !TARGET_INTERFACE_BUILDER
     @IBInspectable var style: Style = .single {

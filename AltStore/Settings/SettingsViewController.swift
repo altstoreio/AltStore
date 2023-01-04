@@ -57,7 +57,7 @@ extension SettingsViewController
     }
 }
 
-class SettingsViewController: UITableViewController
+final class SettingsViewController: UITableViewController
 {
     private var activeTeam: Team?
     

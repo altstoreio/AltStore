@@ -12,7 +12,7 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-class RefreshAltStoreViewController: UIViewController
+final class RefreshAltStoreViewController: UIViewController
 {
     var context: AuthenticatedOperationContext!
     

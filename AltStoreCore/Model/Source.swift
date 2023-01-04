@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import UIKit
 
 public extension Source
 {
@@ -33,6 +34,146 @@ public extension Source
     #endif
     
     #endif
+}
+
+public struct AppPermissionFeed: Codable {
+    let type: String // ALTAppPermissionType
+    let usageDescription: String
+       
+    enum CodingKeys: String, CodingKey
+    {
+        case type
+        case usageDescription
+    }
+}
+
+public struct AppVersionFeed: Codable {
+    /* Properties */
+    let version: String
+    let date: Date
+    let localizedDescription: String?
+    
+    let downloadURL: URL
+    let size: Int64
+    
+    enum CodingKeys: String, CodingKey
+    {
+        case version
+        case date
+        case localizedDescription
+        case downloadURL
+        case size
+    }
+}
+
+public struct PlatformURLFeed: Codable {
+    /* Properties */
+    let platform: Platform
+    let downloadURL: URL
+    
+    
+    private enum CodingKeys: String, CodingKey
+    {
+        case platform
+        case downloadURL
+    }
+}
+
+
+public struct StoreAppFeed: Codable {
+    let name: String
+    let bundleIdentifier: String
+    let subtitle: String?
+    
+    let developerName: String
+    let localizedDescription: String
+    let size: Int64
+    
+    let iconURL: URL
+    let screenshotURLs: [URL]
+    
+    let version: String
+    let versionDate: Date
+    let versionDescription: String?
+    let downloadURL: URL
+    let platformURLs: [PlatformURLFeed]?
+    
+    let tintColor: String? // UIColor?
+    let isBeta: Bool
+    
+    //    let source: Source?
+    let appPermission: [AppPermissionFeed]
+    let versions: [AppVersionFeed]
+    
+    enum CodingKeys: String, CodingKey
+    {
+        case bundleIdentifier
+        case developerName
+        case downloadURL
+        case iconURL
+        case isBeta = "beta"
+        case localizedDescription
+        case name
+        case appPermission = "permissions"
+        case platformURLs
+        case screenshotURLs
+        case size
+        case subtitle
+        case tintColor
+        case version
+        case versionDate
+        case versionDescription
+        case versions
+    }
+}
+
+public struct NewsItemFeed: Codable {
+    let identifier: String
+    let date: Date
+    
+    let title: String
+    let caption: String
+    let tintColor: String //UIColor
+    let notify: Bool
+    
+    let imageURL: URL?
+    let externalURL: URL?
+    
+    let appID: String?
+    
+    private enum CodingKeys: String, CodingKey
+    {
+        case identifier
+        case date
+        case title
+        case caption
+        case tintColor
+        case imageURL
+        case externalURL = "url"
+        case appID
+        case notify
+    }
+}
+
+
+public struct SourceJSON: Codable {
+    let name: String
+    let identifier: String
+    let sourceURL: URL
+    let userInfo: [String:String]? //[ALTSourceUserInfoKey:String]?
+    let apps: [StoreAppFeed]
+    let news: [NewsItemFeed]
+    
+    enum CodingKeys: String, CodingKey
+    {
+        case name
+        case identifier
+        case sourceURL
+        case userInfo
+        case apps
+        case news
+    }
+    
 }
 
 @objc(Source)

@@ -11,7 +11,7 @@ import Network
 import AltStoreCore
 
 @objc(SendAppOperation)
-class SendAppOperation: ResultOperation<()>
+final class SendAppOperation: ResultOperation<()>
 {
     let context: InstallAppOperationContext
     

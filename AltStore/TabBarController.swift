@@ -20,7 +20,7 @@ extension TabBarController
     }
 }
 
-class TabBarController: UITabBarController
+final class TabBarController: UITabBarController
 {
     private var initialSegue: (identifier: String, sender: Any?)?
     

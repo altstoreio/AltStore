@@ -30,7 +30,7 @@ private extension DownloadAppOperation
 }
 
 @objc(DownloadAppOperation)
-class DownloadAppOperation: ResultOperation<ALTApplication>
+final class DownloadAppOperation: ResultOperation<ALTApplication>
 {
     let app: AppProtocol
     let context: AppOperationContext

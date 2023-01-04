@@ -14,7 +14,7 @@ import Roxas
 import minimuxer
 
 @objc(DeactivateAppOperation)
-class DeactivateAppOperation: ResultOperation<InstalledApp>
+final class DeactivateAppOperation: ResultOperation<InstalledApp>
 {
     let app: InstalledApp
     let context: OperationContext

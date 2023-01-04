@@ -12,7 +12,7 @@ import Roxas
 
 import Nuke
 
-@objc class BrowseCollectionViewCell: UICollectionViewCell
+@objc final class BrowseCollectionViewCell: UICollectionViewCell
 {
     var imageURLs: [URL] = [] {
         didSet {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ForwardingNavigationController: UINavigationController
+final class ForwardingNavigationController: UINavigationController
 {
     override var childForStatusBarStyle: UIViewController? {
         return self.topViewController

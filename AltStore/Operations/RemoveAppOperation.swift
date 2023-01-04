@@ -12,7 +12,7 @@ import AltStoreCore
 import minimuxer
 
 @objc(RemoveAppOperation)
-class RemoveAppOperation: ResultOperation<InstalledApp>
+final class RemoveAppOperation: ResultOperation<InstalledApp>
 {
     let context: InstallAppOperationContext
     

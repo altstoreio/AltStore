@@ -16,7 +16,7 @@ extension TimeInterval
     static let longToastViewDuration = 8.0
 }
 
-class ToastView: RSTToastView
+final class ToastView: RSTToastView
 {
     var preferredDuration: TimeInterval
     

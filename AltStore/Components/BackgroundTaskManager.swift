@@ -8,7 +8,7 @@
 
 import AVFoundation
 
-class BackgroundTaskManager
+final class BackgroundTaskManager
 {
     static let shared = BackgroundTaskManager()
     

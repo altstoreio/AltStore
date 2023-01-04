@@ -13,7 +13,7 @@ import AltStoreCore
 import AltSign
 
 @objc(ResignAppOperation)
-class ResignAppOperation: ResultOperation<ALTApplication>
+final class ResignAppOperation: ResultOperation<ALTApplication>
 {
     let context: InstallAppOperationContext
     

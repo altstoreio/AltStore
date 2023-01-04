@@ -26,13 +26,11 @@ public extension StoreApp
 }
 
 @objc
-public enum Platform: UInt {
+public enum Platform: UInt, Codable {
     case ios
     case tvos
     case macos
 }
-
-extension Platform: Decodable {}
 
 @objc
 public final class PlatformURL: NSManagedObject, Decodable {

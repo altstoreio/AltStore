@@ -17,7 +17,7 @@ extension UpdateCollectionViewCell
     }
 }
 
-@objc class UpdateCollectionViewCell: UICollectionViewCell
+@objc final class UpdateCollectionViewCell: UICollectionViewCell
 {
     var mode: Mode = .expanded {
         didSet {

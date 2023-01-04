@@ -25,7 +25,7 @@ extension AppContentViewController
     }
 }
 
-class AppContentViewController: UITableViewController
+final class AppContentViewController: UITableViewController
 {
     var app: StoreApp!
     

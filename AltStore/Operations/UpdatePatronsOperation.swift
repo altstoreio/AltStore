@@ -30,7 +30,7 @@ extension UpdatePatronsOperation
     }
 }
 
-class UpdatePatronsOperation: ResultOperation<Void>
+final class UpdatePatronsOperation: ResultOperation<Void>
 {
     let context: NSManagedObjectContext
     
