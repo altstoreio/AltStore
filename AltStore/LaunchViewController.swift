@@ -47,6 +47,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
+        #if !targetEnvironment(simulator)
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         guard let pf = fetchPairingFile() else {
@@ -54,6 +55,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
             return
         }
         start_minimuxer_threads(pf)
+        #endif
     }
     
     func fetchPairingFile() -> String? {
