@@ -52,13 +52,7 @@ class SendAppOperation: ResultOperation<()>
             for (index, data) in data.enumerated() {
                 pls[index] = data
             }
-            var attempts = 10
             let res = minimuxer_yeet_app_afc(ns_bundle_ptr, pls, UInt(data.length))
-            while (attempts != 0 && res != 0){
-                print("minimuxer_yeet_app_afc `res` != 0, retry #\(attempts)")
-                let res = minimuxer_yeet_app_afc(ns_bundle_ptr, pls, UInt(data.length))
-                attempts -= 1
-            }
             if res == 0 {
                 print("minimuxer_yeet_app_afc `res` == \(res)")
                 self.progress.completedUnitCount += 1
