@@ -11,7 +11,7 @@ import UIKit
 import AltStoreCore
 import Roxas
 
-class AppIDsViewController: UICollectionViewController
+final class AppIDsViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
     

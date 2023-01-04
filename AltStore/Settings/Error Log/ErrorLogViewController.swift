@@ -14,7 +14,7 @@ import Roxas
 
 import Nuke
 
-class ErrorLogViewController: UITableViewController
+final class ErrorLogViewController: UITableViewController
 {
     private lazy var dataSource = self.makeDataSource()
     private var expandedErrorIDs = Set<NSManagedObjectID>()

@@ -28,7 +28,7 @@ extension AppManager
 }
 
 @available(iOS 13, *)
-class AppManagerPublisher: ObservableObject
+final class AppManagerPublisher: ObservableObject
 {
     @Published
     fileprivate(set) var installationProgress = [String: Progress]()
@@ -42,7 +42,7 @@ private func ==(lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Boo
     return (lhs.majorVersion == rhs.majorVersion && lhs.minorVersion == rhs.minorVersion && lhs.patchVersion == rhs.patchVersion)
 }
 
-class AppManager
+final class AppManager
 {
     static let shared = AppManager()
     
@@ -664,7 +664,7 @@ extension AppManager
     @available(iOS 14, *)
     func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        class Context: OperationContext, EnableJITContext
+        final class Context: OperationContext, EnableJITContext
         {
             var installedApp: InstalledApp?
         }
@@ -684,7 +684,7 @@ extension AppManager
     @available(iOS 14.0, *)
     func patch(resignedApp: ALTApplication, presentingViewController: UIViewController, context authContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> PatchAppOperation
     {
-        class Context: InstallAppOperationContext, PatchAppContext
+        final class Context: InstallAppOperationContext, PatchAppContext
         {
         }
         

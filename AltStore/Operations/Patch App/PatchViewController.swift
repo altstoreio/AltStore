@@ -29,7 +29,7 @@ extension PatchViewController
 }
 
 @available(iOS 14.0, *)
-class PatchViewController: UIViewController
+final class PatchViewController: UIViewController
 {
     var patchApp: AnyApp?
     var installedApp: InstalledApp?

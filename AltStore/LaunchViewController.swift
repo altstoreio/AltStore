@@ -14,7 +14,7 @@ import minimuxer
 import AltStoreCore
 import UniformTypeIdentifiers
 
-class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
+final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
 {
     private var didFinishLaunching = false
     

@@ -71,7 +71,7 @@ extension AnalyticsManager
     }
 }
 
-class AnalyticsManager
+final class AnalyticsManager
 {
     static let shared = AnalyticsManager()
     

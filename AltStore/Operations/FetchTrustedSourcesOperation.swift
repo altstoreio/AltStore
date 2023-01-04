@@ -32,7 +32,7 @@ extension FetchTrustedSourcesOperation
     }
 }
 
-class FetchTrustedSourcesOperation: ResultOperation<[FetchTrustedSourcesOperation.TrustedSource]>
+final class FetchTrustedSourcesOperation: ResultOperation<[FetchTrustedSourcesOperation.TrustedSource]>
 {
     override func main()
     {

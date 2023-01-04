@@ -38,7 +38,7 @@ class OperationContext
     }
 }
 
-class AuthenticatedOperationContext: OperationContext
+final class AuthenticatedOperationContext: OperationContext
 {
     var session: ALTAppleAPISession?
     

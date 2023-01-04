@@ -13,7 +13,7 @@ import AltStoreCore
 import Roxas
 
 @objc(FetchSourceOperation)
-class FetchSourceOperation: ResultOperation<Source>
+final class FetchSourceOperation: ResultOperation<Source>
 {
     let sourceURL: URL
     let managedObjectContext: NSManagedObjectContext

@@ -14,7 +14,7 @@ import Roxas
 import minimuxer
 
 @objc(RefreshAppOperation)
-class RefreshAppOperation: ResultOperation<InstalledApp>
+final class RefreshAppOperation: ResultOperation<InstalledApp>
 {
     let context: AppOperationContext
     

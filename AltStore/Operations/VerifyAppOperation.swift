@@ -55,7 +55,7 @@ enum VerificationError: ALTLocalizedError
 }
 
 @objc(VerifyAppOperation)
-class VerifyAppOperation: ResultOperation<Void>
+final class VerifyAppOperation: ResultOperation<Void>
 {
     let context: AppOperationContext
     var verificationHandler: ((VerificationError) -> Bool)?

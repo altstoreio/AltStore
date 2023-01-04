@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InstalledAppsCollectionHeaderView: UICollectionReusableView
+final class InstalledAppsCollectionHeaderView: UICollectionReusableView
 {
     let textLabel: UILabel
     let button: UIButton
