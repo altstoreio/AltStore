@@ -13,7 +13,7 @@ import Roxas
 
 import Nuke
 
-class AppViewController: UIViewController
+final class AppViewController: UIViewController
 {
     var app: StoreApp!
     
@@ -352,7 +352,7 @@ class AppViewController: UIViewController
 
 extension AppViewController
 {
-    class func makeAppViewController(app: StoreApp) -> AppViewController
+    final class func makeAppViewController(app: StoreApp) -> AppViewController
     {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         

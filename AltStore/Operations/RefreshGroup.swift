@@ -12,7 +12,7 @@ import CoreData
 import AltStoreCore
 import AltSign
 
-class RefreshGroup: NSObject
+final class RefreshGroup: NSObject
 {
     let context: AuthenticatedOperationContext
     let progress = Progress.discreteProgress(totalUnitCount: 0)

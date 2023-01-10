@@ -10,7 +10,7 @@ import UIKit
 
 import AltStoreCore
 
-class PermissionPopoverViewController: UIViewController
+final class PermissionPopoverViewController: UIViewController
 {
     var permission: AppPermission!
     

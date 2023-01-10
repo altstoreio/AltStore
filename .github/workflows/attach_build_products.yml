@@ -1,0 +1,22 @@
+name: Add artifact links to pull request and related issues
+on:
+  workflow_run:
+    workflows: [Pull Request SideStore build]
+    types: [completed]
+
+jobs:
+  artifacts-url-comments:
+    name: add artifact links to pull request and related issues job
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: add artifact links to pull request and related issues step
+        uses: tonyhallett/artifacts-url-comments@v1.1.0
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            prefix: Builds for this Pull Request are available at
+            suffix: Have a nice day.
+            format: name
+            addTo: pull
+            # addTo: pullandissues

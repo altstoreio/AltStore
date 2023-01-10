@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Button: UIButton
+final class Button: UIButton
 {
     override var intrinsicContentSize: CGSize {
         var size = super.intrinsicContentSize

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollapsingTextView: UITextView
+final class CollapsingTextView: UITextView
 {
     var isCollapsed = true {
         didSet {

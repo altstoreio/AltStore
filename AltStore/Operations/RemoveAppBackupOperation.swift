@@ -9,7 +9,7 @@
 import Foundation
 
 @objc(RemoveAppBackupOperation)
-class RemoveAppBackupOperation: ResultOperation<Void>
+final class RemoveAppBackupOperation: ResultOperation<Void>
 {
     let context: InstallAppOperationContext
     

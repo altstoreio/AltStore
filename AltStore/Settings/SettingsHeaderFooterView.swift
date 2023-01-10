@@ -10,7 +10,7 @@ import UIKit
 
 import Roxas
 
-class SettingsHeaderFooterView: UITableViewHeaderFooterView
+final class SettingsHeaderFooterView: UITableViewHeaderFooterView
 {
     @IBOutlet var primaryLabel: UILabel!
     @IBOutlet var secondaryLabel: UILabel!

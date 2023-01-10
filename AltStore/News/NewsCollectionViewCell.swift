@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewsCollectionViewCell: UICollectionViewCell
+final class NewsCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var captionLabel: UILabel!

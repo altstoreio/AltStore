@@ -10,7 +10,7 @@ import UIKit
 
 import Roxas
 
-class NavigationBar: UINavigationBar
+final class NavigationBar: UINavigationBar
 {
     @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
     

@@ -14,7 +14,7 @@ import minimuxer
 import AltStoreCore
 import UniformTypeIdentifiers
 
-class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
+final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
 {
     private var didFinishLaunching = false
     
@@ -47,6 +47,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
+        #if !targetEnvironment(simulator)
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         guard let pf = fetchPairingFile() else {
@@ -54,6 +55,7 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
             return
         }
         start_minimuxer_threads(pf)
+        #endif
     }
     
     func fetchPairingFile() -> String? {
@@ -147,7 +149,17 @@ class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDelegate
     
     func start_minimuxer_threads(_ pairing_file: String) {
         set_usbmuxd_socket()
+        #if false // Retries
+        var res = start_minimuxer(pairing_file: pairing_file)
+        var attempts = 10
+        while (attempts != 0 && res != 0) {
+            print("start_minimuxer `res` != 0, retry #\(attempts)")
+            res = start_minimuxer(pairing_file: pairing_file)
+            attempts -= 1
+        }
+        #else
         let res = start_minimuxer(pairing_file: pairing_file)
+        #endif
         if res != 0 {
             displayError("minimuxer failed to start. Incorrect arguments were passed.")
         }

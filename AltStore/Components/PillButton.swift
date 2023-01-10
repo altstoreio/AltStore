@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PillButton: UIButton
+final class PillButton: UIButton
 {
     override var accessibilityValue: String? {
         get {

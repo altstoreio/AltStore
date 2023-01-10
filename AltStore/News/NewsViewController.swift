@@ -14,7 +14,7 @@ import Roxas
 
 import Nuke
 
-private class AppBannerFooterView: UICollectionReusableView
+private final class AppBannerFooterView: UICollectionReusableView
 {
     let bannerView = AppBannerView(frame: .zero)
     let tapGestureRecognizer = UITapGestureRecognizer(target: nil, action: nil)
@@ -41,7 +41,7 @@ private class AppBannerFooterView: UICollectionReusableView
     }
 }
 
-class NewsViewController: UICollectionViewController
+final class NewsViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)

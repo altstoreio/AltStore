@@ -8,12 +8,12 @@
 
 import UIKit
 
-class PatronCollectionViewCell: UICollectionViewCell
+final class PatronCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var textLabel: UILabel!
 }
 
-class PatronsHeaderView: UICollectionReusableView
+final class PatronsHeaderView: UICollectionReusableView
 {
     let textLabel = UILabel()
     
@@ -31,7 +31,7 @@ class PatronsHeaderView: UICollectionReusableView
     }
 }
 
-class PatronsFooterView: UICollectionReusableView
+final class PatronsFooterView: UICollectionReusableView
 {
     let button = UIButton(type: .system)
     
@@ -53,7 +53,7 @@ class PatronsFooterView: UICollectionReusableView
     }
 }
 
-class AboutPatreonHeaderView: UICollectionReusableView
+final class AboutPatreonHeaderView: UICollectionReusableView
 {
     @IBOutlet var supportButton: UIButton!
     @IBOutlet var accountButton: UIButton!

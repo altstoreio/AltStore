@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LicensesViewController: UIViewController
+final class LicensesViewController: UIViewController
 {
     private var _didAppear = false
     

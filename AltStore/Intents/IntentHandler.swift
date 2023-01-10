@@ -11,7 +11,7 @@ import Foundation
 import AltStoreCore
 
 @available(iOS 14, *)
-class IntentHandler: NSObject, RefreshAllIntentHandling
+final class IntentHandler: NSObject, RefreshAllIntentHandling
 {
     private let queue = DispatchQueue(label: "io.altstore.IntentHandler")
     

@@ -11,7 +11,7 @@ import AltStoreCore
 import EmotionalDamage
 
 @available(iOS 13, *)
-class SceneDelegate: UIResponder, UIWindowSceneDelegate
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate
 {
     var window: UIWindow?
 

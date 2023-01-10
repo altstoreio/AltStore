@@ -13,7 +13,7 @@ import AltSign
 import Roxas
 
 @objc(InstallAppOperation)
-class InstallAppOperation: ResultOperation<InstalledApp>
+final class InstallAppOperation: ResultOperation<InstalledApp>
 {
     let context: InstallAppOperationContext
     

@@ -12,14 +12,14 @@ import AltStoreCore
 import Roxas
 
 @objc(RefreshAttemptTableViewCell)
-private class RefreshAttemptTableViewCell: UITableViewCell
+private final class RefreshAttemptTableViewCell: UITableViewCell
 {
     @IBOutlet var successLabel: UILabel!
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var errorDescriptionLabel: UILabel!
 }
 
-class RefreshAttemptsViewController: UITableViewController
+final class RefreshAttemptsViewController: UITableViewController
 {
     private lazy var dataSource = self.makeDataSource()
     

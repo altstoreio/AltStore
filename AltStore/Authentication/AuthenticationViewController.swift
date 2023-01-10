@@ -10,7 +10,7 @@ import UIKit
 
 import AltSign
 
-class AuthenticationViewController: UIViewController
+final class AuthenticationViewController: UIViewController
 {
     var authenticationHandler: ((String, String, @escaping (Result<(ALTAccount, ALTAppleAPISession), Error>) -> Void) -> Void)?
     var completionHandler: (((ALTAccount, ALTAppleAPISession, String)?) -> Void)?

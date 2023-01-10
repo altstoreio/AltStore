@@ -13,7 +13,7 @@ import AltSign
 import Roxas
 
 @objc(FetchAnisetteDataOperation)
-class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
+final class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
 {
     let context: OperationContext
     

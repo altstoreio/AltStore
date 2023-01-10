@@ -9,7 +9,7 @@
 import UIKit
 
 @objc(ErrorLogTableViewCell)
-class ErrorLogTableViewCell: UITableViewCell
+final class ErrorLogTableViewCell: UITableViewCell
 {
     @IBOutlet var appIconImageView: AppIconImageView!
     

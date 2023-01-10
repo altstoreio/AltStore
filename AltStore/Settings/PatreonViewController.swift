@@ -22,7 +22,7 @@ extension PatreonViewController
     }
 }
 
-class PatreonViewController: UICollectionViewController
+final class PatreonViewController: UICollectionViewController
 {
     private lazy var dataSource = self.makeDataSource()
     private lazy var patronsDataSource = self.makePatronsDataSource()

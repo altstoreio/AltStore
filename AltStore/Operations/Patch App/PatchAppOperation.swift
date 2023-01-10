@@ -52,7 +52,7 @@ private struct OTAUpdate
 }
 
 @available(iOS 14, *)
-class PatchAppOperation: ResultOperation<Void>
+final class PatchAppOperation: ResultOperation<Void>
 {
     let context: PatchAppContext
     
