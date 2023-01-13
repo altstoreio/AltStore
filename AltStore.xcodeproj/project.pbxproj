@@ -3537,7 +3537,7 @@
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
-				MARKETING_VERSION = 1.6rc2;
+				MARKETING_VERSION = 1.6rc3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
@@ -3571,7 +3571,7 @@
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
-				MARKETING_VERSION = 1.6rc2;
+				MARKETING_VERSION = 1.6rc3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AltStore/AltStore-Bridging-Header.h";
