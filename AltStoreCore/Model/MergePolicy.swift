@@ -17,9 +17,11 @@ extension MergeError
         typealias Error = MergeError
         
         case noVersions
+        case incorrectVersionOrder
     }
     
-    static func noVersions(for app: AppProtocol) -> MergeError { .init(code: .noVersions, appName: app.name, appBundleID: app.bundleIdentifier) }
+    static func noVersions(for app: StoreApp) -> MergeError { .init(code: .noVersions, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
+    static func incorrectVersionOrder(for app: StoreApp) -> MergeError { .init(code: .incorrectVersionOrder, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
 }
 
 struct MergeError: ALTLocalizedError
@@ -32,6 +34,7 @@ struct MergeError: ALTLocalizedError
     
     var appName: String?
     var appBundleID: String?
+    var sourceID: String?
     
     var errorFailureReason: String {
         switch self.code
@@ -44,6 +47,23 @@ struct MergeError: ALTLocalizedError
             }
             
             return String(format: NSLocalizedString("%@ does not have any app versions.", comment: ""), appName)
+            
+        case .incorrectVersionOrder:
+            var appName = NSLocalizedString("one or more apps", comment: "")
+            if let name = self.appName, let bundleID = self.appBundleID
+            {
+                appName = name + " (\(bundleID))"
+            }
+            
+            return String(format: NSLocalizedString("The cached versions for %@ do not match the source.", comment: ""), appName)
+        }
+    }
+    
+    var recoverySuggestion: String? {
+        switch self.code
+        {
+        case .incorrectVersionOrder: return NSLocalizedString("Please try again later.", comment: "")
+        default: return nil
         }
     }
 }
@@ -116,6 +136,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             return
         }
         
+        var sortedVersionsByAppBundleID = [String: NSOrderedSet]()
+        
         for conflict in conflicts
         {
             switch conflict.databaseObject
@@ -129,48 +151,17 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 
                 if let contextApp = conflict.conflictingObjects.first as? StoreApp
                 {
-                    let databaseVersions = Set(databaseObject._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
-                    let sortIndexesByVersion = contextApp._versions.lazy.compactMap { $0 as? AppVersion }.reduce(into: [:]) { $0[$1.version] = contextApp._versions.index(of: $1)  }
-                    let contextVersions = sortIndexesByVersion.keys
-                    
-                    var mergedVersions = Set<AppVersion>()
-                    
-                    for case let appVersion as AppVersion in databaseObject._versions
+                    let contextVersions = NSOrderedSet(array: contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
+
+                    for case let appVersion as AppVersion in databaseObject._versions where !contextVersions.contains(appVersion.version)
                     {
-                        if contextVersions.contains(appVersion.version)
-                        {
-                            // Version # exists in context, so add existing appVersion to mergedVersions.
-                            mergedVersions.insert(appVersion)
-                        }
-                        else
-                        {
-                            // Version # does NOT exist in context, so delete existing appVersion.
-                            appVersion.managedObjectContext?.delete(appVersion)
-                        }
+                        // Version # does NOT exist in context, so delete existing appVersion.
+                        appVersion.managedObjectContext?.delete(appVersion)
                     }
                     
-                    for case let appVersion as AppVersion in contextApp._versions where !databaseVersions.contains(appVersion.version)
-                    {
-                        // Add context appVersion only if version # doesn't already exist in databaseVersions.
-                        mergedVersions.insert(appVersion)
-                    }
-                    
-                    // Make sure versions are sorted in correct order.
-                    let sortedVersions = mergedVersions.sorted { (versionA, versionB) in
-                        let indexA = sortIndexesByVersion[versionA.version] ?? .max
-                        let indexB = sortIndexesByVersion[versionB.version] ?? .max
-                        return indexA < indexB
-                    }
-                    
-                    do
-                    {
-                        try databaseObject.setVersions(sortedVersions)
-                    }
-                    catch
-                    {
-                        let nsError = error.serialized(withFailure: NSLocalizedString("AltStore's database could not be saved.", comment: ""))
-                        throw nsError
-                    }
+                    // Core Data _normally_ preserves the correct ordering of versions when merging,
+                    // but just in case we cache the order and reorder the versions post-merge if needed.
+                    sortedVersionsByAppBundleID[databaseObject.bundleIdentifier] = contextVersions
                 }
                 
             case let databaseObject as Source:
@@ -210,8 +201,36 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             case let databaseObject as StoreApp:
                 do
                 {
+                    let appVersions: [AppVersion]
+                    
+                    if let sortedAppVersions = sortedVersionsByAppBundleID[databaseObject.bundleIdentifier],
+                       let sortedAppVersionsArray = sortedAppVersions.array as? [String],
+                       case let databaseVersions = databaseObject.versions.map({ $0.version }),
+                       databaseVersions != sortedAppVersionsArray
+                    {
+                        // databaseObject.versions post-merge doesn't match contextApp.versions pre-merge, so attempt to fix by re-sorting.
+                        
+                        let fixedAppVersions = databaseObject.versions.sorted { (versionA, versionB) in
+                            let indexA = sortedAppVersions.index(of: versionA.version)
+                            let indexB = sortedAppVersions.index(of: versionB.version)
+                            return indexA < indexB
+                        }
+                        
+                        let appVersionValues = fixedAppVersions.map { $0.version }
+                        guard appVersionValues == sortedAppVersionsArray else {
+                            // fixedAppVersions still doesn't match source's versions, so throw MergeError.
+                            throw MergeError.incorrectVersionOrder(for: databaseObject)
+                        }
+                        
+                        appVersions = fixedAppVersions
+                    }
+                    else
+                    {
+                        appVersions = databaseObject.versions
+                    }
+                    
                     // Update versions post-merging to make sure latestSupportedVersion is correct.
-                    try databaseObject.setVersions(databaseObject.versions)
+                    try databaseObject.setVersions(appVersions)
                 }
                 catch
                 {
