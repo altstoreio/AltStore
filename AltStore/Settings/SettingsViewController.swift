@@ -53,6 +53,7 @@ extension SettingsViewController
         case sendFeedback
         case refreshAttempts
         case errorLog
+        case resetPairingFile
         case advancedSettings
     }
 }
@@ -268,6 +269,8 @@ private extension SettingsViewController
         let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to sign out?", comment: ""), message: NSLocalizedString("You will no longer be able to install or refresh apps once you sign out.", comment: ""), preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Sign Out", comment: ""), style: .destructive) { _ in signOut() })
         alertController.addAction(.cancel)
+        //Fix crash on iPad
+        alertController.popoverPresentationController?.barButtonItem = sender
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -503,6 +506,30 @@ extension SettingsViewController
                     let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
                     toastView.show(in: self)
                 }
+            case .resetPairingFile:
+                let filename = "ALTPairingFile.mobiledevicepairing"
+                let fm = FileManager.default
+                let documentsPath = fm.documentsDirectory.appendingPathComponent("/\(filename)")
+                let alertController = UIAlertController(
+                    title: NSLocalizedString("Are you sure to reset the pairing file?", comment: ""),
+                    message: NSLocalizedString("You can reset the pairing file when you cannot sideload apps or enable JIT. You need to restart SideStore.", comment: ""),
+                    preferredStyle: UIAlertController.Style.actionSheet)
+                
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Delete and Reset", comment: ""), style: .destructive){ _ in
+                    if fm.fileExists(atPath: documentsPath.path), let contents = try? String(contentsOf: documentsPath), !contents.isEmpty {
+                        try? fm.removeItem(atPath: documentsPath.path)
+                        NSLog("Pairing File Reseted")
+                    }
+                    self.tableView.deselectRow(at: indexPath, animated: true)
+                    let dialogMessage = UIAlertController(title: NSLocalizedString("Pairing File Reseted", comment: ""), message: NSLocalizedString("Please restart SideStore", comment: ""), preferredStyle: .alert)
+                    self.present(dialogMessage, animated: true, completion: nil)
+                })
+                alertController.addAction(.cancel)
+                //Fix crash on iPad
+                alertController.popoverPresentationController?.sourceView = self.tableView
+                alertController.popoverPresentationController?.sourceRect = self.tableView.rectForRow(at: indexPath)
+                self.present(alertController, animated: true)
+                self.tableView.deselectRow(at: indexPath, animated: true)
             case .advancedSettings:
                 // Create the URL that deep links to your app's custom settings.
                 if let url = URL(string: UIApplication.openSettingsURLString) {

@@ -14,6 +14,8 @@ import Roxas
 
 import Nuke
 
+import QuickLook
+
 final class ErrorLogViewController: UITableViewController
 {
     private lazy var dataSource = self.makeDataSource()
@@ -176,6 +178,15 @@ private extension ErrorLogViewController
         }
     }
     
+    @IBAction func showMinimuxerLogs(_ sender: UIBarButtonItem)
+    {
+        // Show minimuxer.log
+        let previewController = QLPreviewController()
+        previewController.dataSource = self
+        let navigationController = UINavigationController(rootViewController: previewController)
+        present(navigationController, animated: true, completion: nil)
+    }
+    
     @IBAction func clearLoggedErrors(_ sender: UIBarButtonItem)
     {
         let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to clear the error log?", comment: ""), message: nil, preferredStyle: .actionSheet)
@@ -297,5 +308,16 @@ extension ErrorLogViewController
         {
             return loggedError.localizedDateString
         }
+    }
+}
+
+extension ErrorLogViewController: QLPreviewControllerDataSource {
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+        return 1
+    }
+
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        let fileURL = FileManager.default.documentsDirectory.appendingPathComponent("minimuxer.log")
+        return fileURL as QLPreviewItem
     }
 }

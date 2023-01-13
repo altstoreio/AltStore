@@ -58,7 +58,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>altstore</string>
-                                <string>sidestore</string>
+				<string>sidestore</string>
 			</array>
 		</dict>
 		<dict>
@@ -69,7 +69,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>altstore-com.rileytestut.AltStore</string>
-        <string>sidestore-com.SideStore.SideStore</string>
+				<string>sidestore-com.SideStore.SideStore</string>
 			</array>
 		</dict>
 	</array>
@@ -204,5 +204,7 @@
 			</dict>
 		</dict>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 </dict>
 </plist>

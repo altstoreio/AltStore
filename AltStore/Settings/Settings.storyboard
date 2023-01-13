@@ -21,7 +21,7 @@
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SideStore 1.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bUR-rp-Nw2">
-                            <rect key="frame" x="0.0" y="1092" width="375" height="25"/>
+                            <rect key="frame" x="0.0" y="1082" width="375" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" white="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -577,7 +577,7 @@
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
-                                                <integer key="value" value="3"/>
+                                                <integer key="value" value="2"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
                                         </userDefinedRuntimeAttributes>
@@ -585,8 +585,41 @@
                                             <segue destination="g8a-Rf-zWa" kind="show" identifier="showErrorLog" id="SSW-vL-86I"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="fj2-EJ-Z98" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="VNn-u4-cN8" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="1023" width="375" height="51"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VNn-u4-cN8" id="4bh-qe-l2N">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251"  text="Reset Pairing File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ysS-9s-dXm">
+                                                    <rect key="frame" x="30" y="15.5" width="140" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Next" translatesAutoresizingMaskIntoConstraints="NO" id="r09-mH-pOD">
+                                                    <rect key="frame" x="327" y="16.5" width="18" height="18"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="r09-mH-pOD" firstAttribute="centerY" secondItem="4bh-qe-l2N" secondAttribute="centerY" id="02u-Os-L7r"/>
+                                                <constraint firstItem="ysS-9s-dXm" firstAttribute="centerY" secondItem="4bh-qe-l2N" secondAttribute="centerY" id="QOA-3E-85e"/>
+                                                <constraint firstItem="ysS-9s-dXm" firstAttribute="leading" secondItem="4bh-qe-l2N" secondAttribute="leadingMargin" id="gRE-CM-w21"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="r09-mH-pOD" secondAttribute="trailing" id="udf-VS-o6t"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="fj2-EJ-Z98" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1074" width="375" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fj2-EJ-Z98" id="BcT-Fs-KNg">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
@@ -1018,11 +1051,18 @@ Settings by i cons from the Noun Project</string>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Error Log" largeTitleDisplayMode="never" id="a1p-3W-bSi">
-                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="BnQ-Eh-1gC">
-                            <connections>
-                                <action selector="clearLoggedErrors:" destination="g8a-Rf-zWa" id="faq-89-H5j"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="trash" id="BnQ-Eh-1gC">
+                                <connections>
+                                    <action selector="clearLoggedErrors:" destination="g8a-Rf-zWa" id="faq-89-H5j"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="ladybug" catalog="system" id="1cD-4y-vTJ" userLabel="Share">
+                                <connections>
+                                    <action selector="showMinimuxerLogs:" destination="g8a-Rf-zWa" id="V0f-0y-C6C"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rU1-TZ-TD8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1033,6 +1073,7 @@ Settings by i cons from the Noun Project</string>
     <resources>
         <image name="Next" width="18" height="18"/>
         <image name="Settings" width="20" height="20"/>
+        <image name="ladybug" catalog="system" width="128" height="122"/>
         <namedColor name="SettingsBackground">
             <color red="0.45098039215686275" green="0.015686274509803921" blue="0.68627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
