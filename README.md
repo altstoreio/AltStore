@@ -25,7 +25,7 @@ Why iOS 14? Targeting such a recent version of iOS allows us to accelerate devel
 SideStore is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of SideStore's functionality, including all the logic for downloading and updating apps through SideStore. SideStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with.
 
 ### EM Proxy
-[EM-Proxy](https://github.com/jkcoxson/em_proxy) powers the defining feature of SideStore: untethered app installation. By levaraging an App Store app with additional entitlements (WireGuard) to create the VPN tunnel for us, it allows SideStore to take advantage of [Jitterbug](https://github.com/osy/Jitterbug)'s loopback method without requiring a paid developer account.
+[SideServer mobile](https://github.com/jkcoxson/em_proxy) powers the defining feature of SideStore: untethered app installation. By levaraging an App Store app with additional entitlements (WireGuard) to create the VPN tunnel for us, it allows SideStore to take advantage of [Jitterbug](https://github.com/osy/Jitterbug)'s loopback method without requiring a paid developer account.
 
 ### Minimuxer
 [Minimuxer](https://github.com/jkcoxson/minimuxer) is a lockdown muxer that can run inside iOS’s sandbox. It replicates Apple’s usbmuxd protocol on MacOS to “discover” devices to interface with wireguard On-Device.
