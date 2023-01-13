@@ -8,13 +8,14 @@
 
 import CoreData
 
+import AltSign
 import Roxas
 
 extension MergeError
 {
-    enum Code: Int, ALTErrorCode
+    public enum Code: Int, ALTErrorCode
     {
-        typealias Error = MergeError
+        public typealias Error = MergeError
         
         case noVersions
         case incorrectVersionOrder
@@ -24,19 +25,19 @@ extension MergeError
     static func incorrectVersionOrder(for app: StoreApp) -> MergeError { .init(code: .incorrectVersionOrder, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
 }
 
-struct MergeError: ALTLocalizedError
+public struct MergeError: ALTLocalizedError
 {
-    static var errorDomain: String { "AltStore.MergeError" }
+    public static var errorDomain: String { "AltStore.MergeError" }
     
-    let code: Code
-    var errorTitle: String?
-    var errorFailure: String?
+    public let code: Code
+    public var errorTitle: String?
+    public var errorFailure: String?
     
-    var appName: String?
-    var appBundleID: String?
-    var sourceID: String?
+    public var appName: String?
+    public var appBundleID: String?
+    public var sourceID: String?
     
-    var errorFailureReason: String {
+    public var errorFailureReason: String {
         switch self.code
         {
         case .noVersions:
@@ -59,12 +60,45 @@ struct MergeError: ALTLocalizedError
         }
     }
     
-    var recoverySuggestion: String? {
+    public var recoverySuggestion: String? {
         switch self.code
         {
         case .incorrectVersionOrder: return NSLocalizedString("Please try again later.", comment: "")
         default: return nil
         }
+    }
+}
+
+// Necessary to cast back to MergeError from NSError when thrown from NSMergePolicy.
+extension MergeError: _ObjectiveCBridgeableError
+{
+    public var errorUserInfo: [String : Any] {
+        // Copied from ALTLocalizedError
+        var userInfo: [String: Any?] = [
+            NSLocalizedFailureErrorKey: self.errorFailure,
+            ALTLocalizedTitleErrorKey: self.errorTitle,
+            ALTSourceFileErrorKey: self.sourceFile,
+            ALTSourceLineErrorKey: self.sourceLine,
+        ]
+        
+        userInfo["appName"] = self.appName
+        userInfo["appBundleID"] = self.appBundleID
+        userInfo["sourceID"] = self.sourceID
+        
+        return userInfo.compactMapValues { $0 }
+    }
+    
+    public init?(_bridgedNSError error: NSError)
+    {
+        guard error.domain == MergeError.errorDomain, let code = Code(rawValue: error.code) else { return nil }
+        
+        self.code = code
+        self.errorTitle = error.localizedTitle
+        self.errorFailure = error.localizedFailure
+        
+        self.appName = error.userInfo["appName"] as? String
+        self.appBundleID = error.userInfo["appBundleID"] as? String
+        self.sourceID = error.userInfo["sourceID"] as? String
     }
 }
 
