@@ -173,8 +173,7 @@ private extension PatreonViewController
     
     @objc func openPatreonURL(_ sender: UIButton)
     {
-        // TODO: Is this the final URL? @JoeMatt
-        let patreonURL = URL(string: "https://www.patreon.com/JitStreamer")!
+        let patreonURL = URL(string: "https://www.patreon.com/SideStore")!
         
         let safariViewController = SFSafariViewController(url: patreonURL)
         safariViewController.preferredControlTintColor = self.view.tintColor
