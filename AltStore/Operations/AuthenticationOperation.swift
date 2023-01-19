@@ -13,6 +13,11 @@ import Network
 import AltStoreCore
 import AltSign
 
+private extension UIColor
+{
+    static let altInvertedPrimary = UIColor(named: "SettingsHighlighted")!
+}
+
 typealias AuthenticationError = AuthenticationErrorCode.Error
 enum AuthenticationErrorCode: Int, ALTErrorEnum, CaseIterable
 {
@@ -288,7 +293,7 @@ private extension AuthenticationOperation
     {
         guard let presentingViewController = self.presentingViewController else { return false }
         
-        self.navigationController.view.tintColor = .white
+        self.navigationController.view.tintColor = .altInvertedPrimary
         
         if self.navigationController.viewControllers.isEmpty
         {
