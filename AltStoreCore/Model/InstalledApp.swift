@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 import AltSign
+import SemanticVersion
 
 // Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
 public let ALTActiveAppsLimit = 3
@@ -57,6 +58,33 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     
     public var isSideloaded: Bool {
         return self.storeApp == nil
+    }
+    
+    @objc public var hasUpdate: Bool {
+        if self.storeApp == nil { return false }
+        if self.storeApp!.latestVersion == nil { return false }
+        
+        #if DEBUG
+        print("Comparing versions for app `\(self.bundleIdentifier)` between currentVersion `\(self.version)` and latestVersion `\(self.storeApp!.latestVersion!.version)`")
+        #endif
+        
+        let currentVersion = SemanticVersion(self.version)
+        let latestVersion = SemanticVersion(self.storeApp!.latestVersion!.version)
+        
+        if currentVersion == nil || latestVersion == nil {
+            #if DEBUG
+            print("One of the versions is not valid SemVer, using fallback method")
+            #endif
+            
+            // This should compare each character
+            return self.version < self.storeApp!.latestVersion!.version
+        }
+        
+        #if DEBUG
+        print("Both versions are valid SemVer, using SemVer comparison")
+        #endif
+        
+        return currentVersion! < latestVersion!
     }
     
     public var appIDCount: Int {
@@ -147,8 +175,8 @@ public extension InstalledApp
     class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
-                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestVersion.version))
+        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K == YES",
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.hasUpdate))
         return fetchRequest
     }
     

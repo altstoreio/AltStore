@@ -21,6 +21,7 @@
 		19B9B7452845E6DF0076EF69 /* SelectTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B9B7442845E6DF0076EF69 /* SelectTeamViewController.swift */; };
 		4879A95F2861046500FC1BBD /* AltSign in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A95E2861046500FC1BBD /* AltSign */; };
 		4879A9622861049C00FC1BBD /* OpenSSL in Frameworks */ = {isa = PBXBuildFile; productRef = 4879A9612861049C00FC1BBD /* OpenSSL */; };
+		99C4EF4D2979132100CB538D /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 99C4EF4C2979132100CB538D /* SemanticVersion */; };
 		B3146ED2284F581E00BBC3FD /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; };
 		B3146ED3284F581E00BBC3FD /* Roxas.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3146ECD284F580500BBC3FD /* Roxas.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B33FFBA8295F8E98002259E6 /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B343F894295F7F9B002B1159 /* libfragmentzip.a */; };
@@ -896,6 +897,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3C395F1284F2DE700DA9E2F /* KeychainAccess in Frameworks */,
+				99C4EF4D2979132100CB538D /* SemanticVersion in Frameworks */,
 				4879A95F2861046500FC1BBD /* AltSign in Frameworks */,
 				B39575F5284F29E20080B4FF /* Roxas.framework in Frameworks */,
 			);
@@ -1937,11 +1939,13 @@
 			buildRules = (
 			);
 			dependencies = (
+				99C4EF51297994E200CB538D /* PBXTargetDependency */,
 			);
 			name = AltStoreCore;
 			packageProductDependencies = (
 				B3C395F0284F2DE700DA9E2F /* KeychainAccess */,
 				4879A95E2861046500FC1BBD /* AltSign */,
+				99C4EF4C2979132100CB538D /* SemanticVersion */,
 			);
 			productName = AltStoreCore;
 			productReference = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */;
@@ -2060,6 +2064,7 @@
 				B3C395FD284F3C0900DA9E2F /* XCRemoteSwiftPackageReference "STPrivilegedTask" */,
 				4879A95D2861046500FC1BBD /* XCRemoteSwiftPackageReference "AltSign" */,
 				4879A9602861049C00FC1BBD /* XCRemoteSwiftPackageReference "OpenSSL" */,
+				99C4EF472978D52400CB538D /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
@@ -2542,6 +2547,10 @@
 		191E5FDA290AFA49001A3B7C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 191E5FD9290AFA49001A3B7C /* OpenSSL */;
+		};
+		99C4EF51297994E200CB538D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 99C4EF50297994E200CB538D /* SemanticVersion */;
 		};
 		B343F86F295F76FD002B1159 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3346,6 +3355,14 @@
 				minimumVersion = 1.1.180;
 			};
 		};
+		99C4EF472978D52400CB538D /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftPackageIndex/SemanticVersion.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.5;
+			};
+		};
 		B3C395EF284F2DE700DA9E2F /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
@@ -3416,6 +3433,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4879A9602861049C00FC1BBD /* XCRemoteSwiftPackageReference "OpenSSL" */;
 			productName = OpenSSL;
+		};
+		99C4EF4C2979132100CB538D /* SemanticVersion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99C4EF472978D52400CB538D /* XCRemoteSwiftPackageReference "SemanticVersion" */;
+			productName = SemanticVersion;
+		};
+		99C4EF50297994E200CB538D /* SemanticVersion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99C4EF472978D52400CB538D /* XCRemoteSwiftPackageReference "SemanticVersion" */;
+			productName = SemanticVersion;
 		};
 		B3C395F0284F2DE700DA9E2F /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
