@@ -64,25 +64,13 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         if self.storeApp == nil { return false }
         if self.storeApp!.latestVersion == nil { return false }
         
-        #if DEBUG
-        print("Comparing versions for app `\(self.bundleIdentifier)` between currentVersion `\(self.version)` and latestVersion `\(self.storeApp!.latestVersion!.version)`")
-        #endif
-        
         let currentVersion = SemanticVersion(self.version)
         let latestVersion = SemanticVersion(self.storeApp!.latestVersion!.version)
         
         if currentVersion == nil || latestVersion == nil {
-            #if DEBUG
-            print("One of the versions is not valid SemVer, using fallback method")
-            #endif
-            
-            // This should compare each character
+            // One of the versions is not valid SemVer, fall back to comparing the version strings by character
             return self.version < self.storeApp!.latestVersion!.version
         }
-        
-        #if DEBUG
-        print("Both versions are valid SemVer, using SemVer comparison")
-        #endif
         
         return currentVersion! < latestVersion!
     }
