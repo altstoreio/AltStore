@@ -38,6 +38,14 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "1.6rc3",
+          "date": "2023-01-23T11:30:00-06:00",
+          "localizedDescription": "**This update is solely to test that updating works as expected from the current beta, and otherwise is identical to 1.6 RC 2**\n\nPREVIOUS UPDATES\n• Fixed outdated AltStore updates appearing in My Apps tab\n• Moved Error Log from \"Debug\" settings to \"Techy Things\"\n• Improved misc. error messages\n• Fixed repeated \"AltServer could not be found\" notifications\n• Fixed missing metadata for errors received from AltServer\n• Fixed decoding nested error metadata values",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_rc3.ipa",
+          "size": 5614292,
+          "minOSVersion": "12.2"
+        },
+        {
           "version": "1.6rc2",
           "date": "2023-01-18T11:30:00-06:00",
           "localizedDescription": "• Fixed outdated AltStore updates appearing in My Apps tab\n\nPREVIOUS RC\n• Moved Error Log from \"Debug\" settings to \"Techy Things\"\n• Improved misc. error messages\n• Fixed repeated \"AltServer could not be found\" notifications\n• Fixed missing metadata for errors received from AltServer\n• Fixed decoding nested error metadata values",
