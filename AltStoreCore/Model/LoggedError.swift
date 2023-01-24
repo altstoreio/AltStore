@@ -91,7 +91,7 @@ public extension LoggedError
         return app
     }
     
-    var error: Error {
+    var error: NSError {
         let nsError = NSError(domain: self.domain, code: Int(self.code), userInfo: self.userInfo)
         return nsError
     }
