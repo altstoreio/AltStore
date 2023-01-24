@@ -194,38 +194,6 @@ extension AltTests
         }
     }
     
-//    func ALTAssertErrorsEqual(_ error1: Error, _ error2: Error, overriding overrideValues: [String: Any] = [:], file: StaticString = #file, line: UInt = #line)
-//    {
-//        let testDomain = overrideValues[ALTUnderlyingErrorDomainErrorKey] as? String ?? error2._domain
-//        XCTAssertEqual(error1._domain, testDomain, file: file, line: line)
-//
-//        let testCode = overrideValues[ALTUnderlyingErrorCodeErrorKey] as? Int ?? error2._code
-//        XCTAssertEqual(error1._code, testCode, file: file, line: line)
-//
-//        let testDescription = overrideValues[NSLocalizedDescriptionKey] as? String ?? error2.localizedDescription
-//        XCTAssertEqual(error1.localizedDescription, testDescription, "Localized Descriptions don't match.", file: file, line: line)
-//
-//        let nsError1 = error1 as NSError
-//        let nsError2 = error2 as NSError
-//
-//        let testTitle = overrideValues[ALTLocalizedTitleErrorKey] as? String ?? nsError2.localizedTitle
-//        XCTAssertEqual(nsError1.localizedTitle, testTitle, "Titles don't match.", file: file, line: line)
-//
-//        let testFailure = overrideValues[NSLocalizedFailureErrorKey] as? String ?? nsError2.localizedFailure
-//        XCTAssertEqual(nsError1.localizedFailure, testFailure, "Failures don't match.", file: file, line: line)
-//
-//        let testFailureReason = overrideValues[NSLocalizedFailureReasonErrorKey] as? String ?? nsError2.localizedFailureReason
-//        XCTAssertEqual(nsError1.localizedFailureReason, testFailureReason, "Failure reasons don't match.", file: file, line: line)
-//
-//        let testRecoverySuggestion = overrideValues[NSLocalizedRecoverySuggestionErrorKey] as? String ?? nsError2.localizedRecoverySuggestion
-//        XCTAssertEqual(nsError1.localizedRecoverySuggestion, testRecoverySuggestion, "Recovery suggestions don't match.", file: file, line: line)
-//
-//        let testDebugDescription = overrideValues[NSDebugDescriptionErrorKey] as? String ?? nsError2.localizedDebugDescription
-//        XCTAssertEqual(nsError1.localizedDebugDescription, testDebugDescription, file: file, line: line)
-//
-//        //TODO: Check remaining user info values are the same
-//    }
-    
     @discardableResult
     func ALTAssertUnderlyingErrorEqualsError(_ receivedError: Error, _ error: Error, ignoring ignoredValues: Set<String> = [], ignoreExtraUserInfoValues: Bool = false, file: StaticString = #file, line: UInt = #line) throws -> NSError
     {
@@ -371,66 +339,6 @@ extension AltTests
             ALTAssertErrorsEqual(nsError, error, ignoring: [NSLocalizedDescriptionKey, NSLocalizedFailureErrorKey])
         }
     }
-    
-//    func ALTAssertErrorsEqual(_ error1: Error, equals error2: Error, ignoring ignoredValues: Set<String> = [])
-//    {
-//        let nsError1 = error1 as NSError
-//        let nsError2 = error2 as NSError
-//
-//        XCTAssertEqual(error1._domain, error2._domain)
-//        XCTAssertEqual(error1._code, error2._code)
-//
-//        if let localizedDescription = overrideValues[NSLocalizedDescriptionKey]
-//        {
-//            XCTAssertEqual(error1.localizedDescription, localizedDescription)
-//        }
-//        else
-//        {
-//            XCTAssertEqual(error1.localizedDescription, error2.localizedDescription)
-//        }
-//
-//        if let localizedFailure = overrideValues[NSLocalizedFailureErrorKey]
-//        {
-//            XCTAssertEqual(nsError1.localizedFailure, localizedFailure)
-//        }
-//        else
-//        {
-//            XCTAssertEqual(nsError1.localizedFailure, nsError2.localizedFailure)
-//        }
-//
-//        if let localizedFailureReason = overrideValues[NSLocalizedFailureReasonErrorKey]
-//        {
-//            XCTAssertEqual(nsError1.localizedFailureReason, localizedFailureReason)
-//        }
-//        else
-//        {
-//            XCTAssertEqual(nsError1.localizedFailureReason, nsError2.localizedFailureReason)
-//        }
-//
-//        if let localizedRecoverySuggestion = overrideValues[NSLocalizedRecoverySuggestionErrorKey]
-//        {
-//            XCTAssertEqual(nsError1.localizedRecoverySuggestion, localizedRecoverySuggestion)
-//        }
-//        else
-//        {
-//            XCTAssertEqual(nsError1.localizedRecoverySuggestion, nsError2.localizedRecoverySuggestion)
-//        }
-//
-//        if let debugDescription = overrideValues[NSDebugDescriptionErrorKey]
-//        {
-//            XCTAssertEqual(nsError1.debugDescription, debugDescription)
-//        }
-//        else
-//        {
-//            if let provider = NSError.userInfoValueProvider(forDomain: error2._domain),
-//               let debugDescription = provider(error2, NSDebugDescriptionErrorKey) as? String
-//            {
-//                let unbridgedDebugDescription = provider(error1, NSDebugDescriptionErrorKey) as? String
-//                XCTAssertEqual(debugDescription, unbridgedDebugDescription)
-//            }
-//        }
-//    }
-    
         
     func testWithInitialLocalizedFailure() async throws
     {
@@ -831,7 +739,6 @@ extension AltTests
         let receivedError = try self.send(nsError)
         try ALTAssertUnderlyingErrorEqualsError(receivedError, nsError)
         
-        //TODO: THis moght not work, because single baseDescription parameter might not be enough to test everything
         // Description == .testLocalizedFailure + failureReason ?? description
         ALTAssertErrorFailureAndDescription(receivedError, failure: .testLocalizedFailure, baseDescription: nsError.localizedFailureReason ?? error.localizedDescription)
     }
@@ -1082,8 +989,6 @@ extension AltTests
     }
 }
 
-//TODO: test mac vs ios error messages
-
 extension AltTests
 {
     func testReceivingUnrecognizedAltServerError() async throws
@@ -1153,38 +1058,7 @@ extension AltTests
         // Failure == .testLocalizedFailure
         // Description == Failure + .testUnrecognizedFailureReason
         ALTAssertErrorFailureAndDescription(receivedNSError, failure: .testLocalizedFailure, baseDescription: .testUnrecognizedFailureReason)
-        
         ALTAssertErrorsEqual(receivedNSError, serializedError, ignoring: [NSLocalizedFailureErrorKey, NSLocalizedDescriptionKey])
-        
-//        let jsonData = try self.mockUserInfoValueProvider(for: error) {
-//            let codableError = CodableError(error: error)
-//            return try JSONEncoder().encode(codableError)
-//        }
-//
-//        let decodedError = try Foundation.JSONDecoder().decode(CodableError.self, from: jsonData)
-//        let receivedError = decodedError.error
-//        let receivedNSError = (receivedError as NSError).withLocalizedFailure(.testLocalizedFailure)
-//
-//        XCTAssertEqual(receivedError._domain, error._domain)
-//        XCTAssertEqual(receivedError._code, error.code.rawValue)
-//
-//        // We *can't* change the localized failure for unrecognized errors, so test that localizedDescription == failure reason.
-//        // *Technically* we could if we remove the NSLocalizedDescription check from
-//        // NVM, we did that
-//        let expectedLocalizedDescription = String.testLocalizedFailure + " " + .testUnrecognizedFailureReason
-//        XCTAssertEqual(receivedNSError.localizedDescription, expectedLocalizedDescription)
-//
-//        XCTAssertEqual(receivedNSError.localizedFailure, .testLocalizedFailure)
-//
-//        XCTAssertEqual(receivedNSError.localizedFailureReason, .testUnrecognizedFailureReason)
-//        XCTAssertEqual(receivedNSError.localizedRecoverySuggestion, .testUnrecognizedRecoverySuggestion)
-//
-//        if let provider = NSError.userInfoValueProvider(forDomain: ALTServerError.errorDomain),
-//           let debugDescription = provider(error, NSDebugDescriptionErrorKey) as? String
-//        {
-//            let unbridgedDebugDescription = provider(receivedError, NSDebugDescriptionErrorKey) as? String
-//            XCTAssertEqual(debugDescription, unbridgedDebugDescription)
-//        }
     }
     
     func testReceivingUnrecognizedAltServerErrorThenAddingLocalizedTitle() async throws
@@ -1220,36 +1094,6 @@ extension AltTests
         // Description == Failure + .testUnrecognizedFailureReason
         ALTAssertErrorFailureAndDescription(receivedNSError, failure: .testLocalizedFailure, baseDescription: .testUnrecognizedFailureReason)
         ALTAssertErrorsEqual(receivedNSError, serializedError, ignoring: [NSLocalizedFailureErrorKey, NSLocalizedDescriptionKey])
-        
-        
-//        let decodedError = try Foundation.JSONDecoder().decode(CodableError.self, from: jsonData)
-//        let receivedError = decodedError.error
-//        let receivedNSError = (receivedError as NSError).withLocalizedFailure(.testLocalizedFailure)
-//
-//        XCTAssertEqual(receivedError._domain, error._domain)
-//        XCTAssertEqual(receivedError._code, error.code.rawValue)
-//
-//        // We *can't* change the localized failure for unrecognized errors, so test that localizedDescription == original failure + failure reason.
-//        // NVM, above no longer true
-//        // NVMx2, back to first thought...idk
-//        let expectedLocalizedDescription = String.testLocalizedFailure + " " + receivedError.localizedDescription
-//        XCTAssertEqual(receivedNSError.localizedDescription, expectedLocalizedDescription)
-//
-//        // Test that localizedFailure did in fact change.
-//        XCTAssertEqual(receivedNSError.localizedFailure, .testLocalizedFailure)
-//
-//        // Test that decoded error retains original localized failure.
-//        XCTAssertEqual((receivedError as NSError).localizedFailure, .testOriginalLocalizedFailure)
-//
-//        XCTAssertEqual(receivedNSError.localizedFailureReason, .testUnrecognizedFailureReason)
-//        XCTAssertEqual(receivedNSError.localizedRecoverySuggestion, .testUnrecognizedRecoverySuggestion)
-//
-//        if let provider = NSError.userInfoValueProvider(forDomain: ALTServerError.errorDomain),
-//           let debugDescription = provider(error, NSDebugDescriptionErrorKey) as? String
-//        {
-//            let unbridgedDebugDescription = provider(receivedError, NSDebugDescriptionErrorKey) as? String
-//            XCTAssertEqual(debugDescription, unbridgedDebugDescription)
-//        }
     }
 }
 
@@ -1382,5 +1226,3 @@ extension AltTests
         XCTAssert(array.isEmpty)
     }
 }
-
-//TODO: Test userinfo parameters are transferred correctly from altserver to altstore
