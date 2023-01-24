@@ -197,20 +197,21 @@ public enum ServerResponse: Decodable
 // from easily changing response format for a request in the future.
 public struct ErrorResponse: ServerMessageProtocol
 {
-    public var version = 2
+    public var version = 3
     public var identifier = "ErrorResponse"
     
     public var error: ALTServerError {
-        return self.serverError?.error ?? ALTServerError(self.errorCode)
+        // Must be ALTServerError
+        return self.serverError.map { ALTServerError($0.error) } ?? ALTServerError(self.errorCode)
     }
-    private var serverError: CodableServerError?
+    private var serverError: CodableError?
     
     // Legacy (v1)
     private var errorCode: ALTServerError.Code
     
     public init(error: ALTServerError)
     {
-        self.serverError = CodableServerError(error: error)
+        self.serverError = CodableError(error: error)
         self.errorCode = error.code
     }
 }

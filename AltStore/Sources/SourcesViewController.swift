@@ -12,17 +12,22 @@ import CoreData
 import AltStoreCore
 import Roxas
 
-struct SourceError: LocalizedError
+struct SourceError: ALTLocalizedError
 {
-    enum Code
+    enum Code: Int, ALTErrorCode
     {
+        typealias Error = SourceError
+        
         case unsupported
     }
     
     var code: Code
+    var errorTitle: String?
+    var errorFailure: String?
+    
     @Managed var source: Source
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self.code
         {
         case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)

@@ -15,24 +15,25 @@ private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswux
 
 private let campaignID = "2863968"
 
-extension PatreonAPI
+typealias PatreonAPIError = PatreonAPIErrorCode.Error
+enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
 {
-    enum Error: LocalizedError
-    {
-        case unknown
-        case notAuthenticated
-        case invalidAccessToken
-        
-        var errorDescription: String? {
-            switch self
-            {
-            case .unknown: return NSLocalizedString("An unknown error occurred.", comment: "")
-            case .notAuthenticated: return NSLocalizedString("No connected Patreon account.", comment: "")
-            case .invalidAccessToken: return NSLocalizedString("Invalid access token.", comment: "")
-            }
+    case unknown
+    case notAuthenticated
+    case invalidAccessToken
+    
+    var errorFailureReason: String {
+        switch self
+        {
+        case .unknown: return NSLocalizedString("An unknown error occurred.", comment: "")
+        case .notAuthenticated: return NSLocalizedString("No connected Patreon account.", comment: "")
+        case .invalidAccessToken: return NSLocalizedString("Invalid access token.", comment: "")
         }
     }
-    
+}
+
+extension PatreonAPI
+{
     enum AuthorizationType
     {
         case none
@@ -110,7 +111,7 @@ public extension PatreonAPI
                     let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
                     let codeQueryItem = components.queryItems?.first(where: { $0.name == "code" }),
                     let code = codeQueryItem.value
-                else { throw Error.unknown }
+                else { throw PatreonAPIError(.unknown) }
                 
                 self.fetchAccessToken(oauthCode: code) { (result) in
                     switch result
@@ -151,9 +152,9 @@ public extension PatreonAPI
         self.send(request, authorizationType: .user) { (result: Result<AccountResponse, Swift.Error>) in
             switch result
             {
-            case .failure(Error.notAuthenticated):
+            case .failure(~PatreonAPIErrorCode.notAuthenticated):
                 self.signOut() { (result) in
-                    completion(.failure(Error.notAuthenticated))
+                    completion(.failure(PatreonAPIError(.notAuthenticated)))
                 }
                 
             case .failure(let error): completion(.failure(error))
@@ -357,11 +358,11 @@ private extension PatreonAPI
         {
         case .none: break
         case .creator:
-            guard let creatorAccessToken = Keychain.shared.patreonCreatorAccessToken else { return completion(.failure(Error.invalidAccessToken)) }
+            guard let creatorAccessToken = Keychain.shared.patreonCreatorAccessToken else { return completion(.failure(PatreonAPIError(.invalidAccessToken))) }
             request.setValue("Bearer " + creatorAccessToken, forHTTPHeaderField: "Authorization")
             
         case .user:
-            guard let accessToken = Keychain.shared.patreonAccessToken else { return completion(.failure(Error.notAuthenticated)) }
+            guard let accessToken = Keychain.shared.patreonAccessToken else { return completion(.failure(PatreonAPIError(.notAuthenticated))) }
             request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
         }
         
@@ -374,8 +375,8 @@ private extension PatreonAPI
                 {
                     switch authorizationType
                     {
-                    case .creator: completion(.failure(Error.invalidAccessToken))
-                    case .none: completion(.failure(Error.notAuthenticated))
+                    case .creator: completion(.failure(PatreonAPIError(.invalidAccessToken)))
+                    case .none: completion(.failure(PatreonAPIError(.notAuthenticated)))
                     case .user:
                         self.refreshAccessToken() { (result) in
                             switch result

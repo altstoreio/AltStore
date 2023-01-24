@@ -85,7 +85,7 @@ class FindServerOperation: ResultOperation<Server>
             else
             {
                 // No servers.
-                self.finish(.failure(ConnectionError.serverNotFound))
+                self.finish(.failure(OperationError.serverNotFound))
             }
         }
     }

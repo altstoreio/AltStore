@@ -15,24 +15,71 @@ import STPrivilegedTask
 private let pluginDirectoryURL = URL(fileURLWithPath: "/Library/Mail/Bundles", isDirectory: true)
 private let pluginURL = pluginDirectoryURL.appendingPathComponent("AltPlugin.mailbundle")
 
-enum PluginError: LocalizedError
+extension PluginError
 {
-    case cancelled
-    case unknown
-    case notFound
-    case mismatchedHash(hash: String, expectedHash: String)
-    case taskError(String)
-    case taskErrorCode(Int)
+    enum Code: Int, ALTErrorCode
+    {
+        typealias Error = PluginError
+        
+        case cancelled
+        case unknown
+        case notFound
+        case mismatchedHash
+        case taskError
+        case taskErrorCode
+    }
     
-    var errorDescription: String? {
-        switch self
+    static let cancelled = PluginError(code: .cancelled)
+    static let notFound = PluginError(code: .notFound)
+    
+    static func unknown(file: String = #fileID, line: UInt = #line) -> PluginError { PluginError(code: .unknown, sourceFile: file, sourceLine: line) }
+    static func mismatchedHash(hash: String, expectedHash: String) -> PluginError { PluginError(code: .mismatchedHash, hash: hash, expectedHash: expectedHash) }
+    static func taskError(output: String) -> PluginError { PluginError(code: .taskError, taskErrorOutput: output) }
+    static func taskErrorCode(_ code: Int) -> PluginError { PluginError(code: .taskErrorCode, taskErrorCode: code) }
+}
+
+struct PluginError: ALTLocalizedError
+{
+    let code: Code
+    
+    var errorTitle: String?
+    var errorFailure: String?
+    var sourceFile: String?
+    var sourceLine: UInt?
+    
+    var hash: String?
+    var expectedHash: String?
+    var taskErrorOutput: String?
+    var taskErrorCode: Int?
+    
+    var errorFailureReason: String {
+        switch self.code
         {
         case .cancelled: return NSLocalizedString("Mail plug-in installation was cancelled.", comment: "")
         case .unknown: return NSLocalizedString("Failed to install Mail plug-in.", comment: "")
         case .notFound: return NSLocalizedString("The Mail plug-in does not exist at the requested URL.", comment: "")
-        case .mismatchedHash(let hash, let expectedHash): return String(format: NSLocalizedString("The hash of the downloaded Mail plug-in does not match the expected hash.\n\nHash:\n%@\n\nExpected Hash:\n%@", comment: ""), hash, expectedHash)
-        case .taskError(let output): return output
-        case .taskErrorCode(let errorCode): return String(format: NSLocalizedString("There was an error installing the Mail plug-in. (Error Code: %@)", comment: ""), NSNumber(value: errorCode))
+        case .mismatchedHash:
+            let baseMessage = NSLocalizedString("The hash of the downloaded Mail plug-in does not match the expected hash.", comment: "")
+            guard let hash = self.hash, let expectedHash = self.expectedHash else { return baseMessage }
+            
+            let additionalInfo = String(format: NSLocalizedString("Hash:\n%@\n\nExpected Hash:\n%@", comment: ""), hash, expectedHash)
+            return baseMessage + "\n\n" + additionalInfo
+            
+        case .taskError:
+            if let output = self.taskErrorOutput
+            {
+                return output
+            }
+            
+            // Use .taskErrorCode base message as fallback.
+            fallthrough
+            
+        case .taskErrorCode:
+            let baseMessage = NSLocalizedString("There was an error installing the Mail plug-in.", comment: "")
+            guard let errorCode = self.taskErrorCode else { return baseMessage }
+            
+            let additionalInfo = String(format: NSLocalizedString("(Error Code: %@)", comment: ""), NSNumber(value: errorCode))
+            return baseMessage + " " + additionalInfo
         }
     }
 }
@@ -160,7 +207,7 @@ extension PluginManager
                             let unzippedPluginURL = temporaryDirectoryURL.appendingPathComponent(pluginURL.lastPathComponent)
                             try self.runAndKeepAuthorization("cp", arguments: ["-R", unzippedPluginURL.path, pluginDirectoryURL.path], authorization: authorization)
                             
-                            guard self.isMailPluginInstalled else { throw PluginError.unknown }
+                            guard self.isMailPluginInstalled else { throw PluginError.unknown() }
                             
                             // Enable Mail plug-in preferences.
                             try self.run("defaults", arguments: ["write", "/Library/Preferences/com.apple.mail", "EnableBundles", "-bool", "YES"], authorization: authorization)
@@ -360,13 +407,13 @@ private extension PluginManager
             
             if let outputString = String(data: outputData, encoding: .utf8), !outputString.isEmpty
             {
-                throw PluginError.taskError(outputString)
+                throw PluginError.taskError(output: outputString)
             }
             
             throw PluginError.taskErrorCode(Int(task.terminationStatus))
         }
         
-        guard let authorization = task.authorization else { throw PluginError.unknown }
+        guard let authorization = task.authorization else { throw PluginError.unknown() }
         return authorization
     }
 }

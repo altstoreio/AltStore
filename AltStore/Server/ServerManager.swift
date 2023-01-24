@@ -171,7 +171,7 @@ private extension ServerManager
             {
             case .failed(let error):
                 print("Failed to connect to service \(server.service?.name ?? "").", error)
-                completion(.failure(ConnectionError.connectionFailed))
+                completion(.failure(OperationError.connectionFailed))
                 
             case .cancelled:
                 completion(.failure(OperationError.cancelled))
@@ -192,7 +192,7 @@ private extension ServerManager
     
     func connectToLocalServer(_ server: Server, completion: @escaping (Result<Connection, Error>) -> Void)
     {
-        guard let machServiceName = server.machServiceName else { return completion(.failure(ConnectionError.connectionFailed)) }
+        guard let machServiceName = server.machServiceName else { return completion(.failure(OperationError.connectionFailed)) }
         
         let xpcConnection = NSXPCConnection.makeConnection(machServiceName: machServiceName)
         

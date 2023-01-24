@@ -108,9 +108,6 @@ char *bin2hex(const unsigned char *bin, size_t length)
 - (void)_enableUnsignedCodeExecutionForProcessWithName:(nullable NSString *)processName pid:(int32_t)pid completionHandler:(void (^)(BOOL success, NSError *_Nullable error))completionHandler
 {
     dispatch_async(self.connectionQueue, ^{
-        NSString *name = processName ?: NSLocalizedString(@"this app", @"");
-        NSString *localizedFailure = [NSString stringWithFormat:NSLocalizedString(@"JIT could not be enabled for %@.", comment: @""), name];
-        
         NSString *attachCommand = nil;
         
         if (processName)
@@ -133,7 +130,6 @@ char *bin2hex(const unsigned char *bin, size_t length)
             NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
             userInfo[ALTAppNameErrorKey] = processName;
             userInfo[ALTDeviceNameErrorKey] = self.device.name;
-            userInfo[NSLocalizedFailureErrorKey] = localizedFailure;
             
             NSError *returnError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
             return completionHandler(NO, returnError);
@@ -145,7 +141,6 @@ char *bin2hex(const unsigned char *bin, size_t length)
             NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
             userInfo[ALTAppNameErrorKey] = processName;
             userInfo[ALTDeviceNameErrorKey] = self.device.name;
-            userInfo[NSLocalizedFailureErrorKey] = localizedFailure;
             
             NSError *returnError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
             return completionHandler(NO, returnError);
@@ -249,7 +244,11 @@ char *bin2hex(const unsigned char *bin, size_t length)
             {
                 if (error)
                 {
-                    *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: response}];
+                    *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{
+                        NSLocalizedFailureReasonErrorKey: response,
+                        ALTSourceFileErrorKey: @(__FILE__).lastPathComponent,
+                        ALTSourceLineErrorKey: @(__LINE__)
+                    }];
                 }
                 
                 return NO;
@@ -292,7 +291,11 @@ char *bin2hex(const unsigned char *bin, size_t length)
                         break;
                         
                     default:
-                        *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: response}];
+                        *error = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{
+                            NSLocalizedFailureReasonErrorKey: response,
+                            ALTSourceFileErrorKey: @(__FILE__).lastPathComponent,
+                            ALTSourceLineErrorKey: @(__LINE__)
+                        }];
                         break;
                 }
             }

@@ -41,7 +41,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
             
             guard let server = self.context.server, let profiles = self.context.provisioningProfiles else { throw OperationError.invalidParameters }
             
-            guard let app = self.context.app else { throw OperationError.appNotFound }
+            guard let app = self.context.app else { throw OperationError.appNotFound(name: nil) }
             guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
             
             ServerManager.shared.connect(to: server) { (result) in
@@ -84,7 +84,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                                         self.managedObjectContext.perform {
                                             let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), app.bundleIdentifier)
                                             guard let installedApp = InstalledApp.first(satisfying: predicate, in: self.managedObjectContext) else {
-                                                return self.finish(.failure(OperationError.appNotFound))
+                                                return self.finish(.failure(OperationError.appNotFound(name: app.name)))
                                             }
                                             
                                             self.progress.completedUnitCount += 1

@@ -14,34 +14,21 @@ private let appGroupsSemaphore = DispatchSemaphore(value: 1)
 
 private let developerDiskManager = DeveloperDiskManager()
 
-enum InstallError: Int, LocalizedError, _ObjectiveCBridgeableError
+typealias OperationError = OperationErrorCode.Error
+enum OperationErrorCode: Int, ALTErrorEnum
 {
     case cancelled
     case noTeam
     case missingPrivateKey
     case missingCertificate
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self
         {
         case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
-        case .noTeam: return "You are not a member of any developer teams."
-        case .missingPrivateKey: return "The developer certificate's private key could not be found."
-        case .missingCertificate: return "The developer certificate could not be found."
-        }
-    }
-    
-    init?(_bridgedNSError error: NSError)
-    {
-        guard error.domain == InstallError.cancelled._domain else { return nil }
-        
-        if let installError = InstallError(rawValue: error.code)
-        {
-            self = installError
-        }
-        else
-        {
-            return nil
+        case .noTeam: return NSLocalizedString("You are not a member of any developer teams.", comment: "")
+        case .missingPrivateKey: return NSLocalizedString("The developer certificate's private key could not be found.", comment: "")
+        case .missingCertificate: return NSLocalizedString("The developer certificate could not be found.", comment: "")
         }
     }
 }
@@ -54,16 +41,18 @@ extension ALTDeviceManager
         
         var appName = (url.isFileURL) ? url.deletingPathExtension().lastPathComponent : NSLocalizedString("AltStore", comment: "")
         
-        func finish(_ result: Result<ALTApplication, Error>, title: String = "")
+        func finish(_ result: Result<ALTApplication, Error>, failure: String? = nil)
         {
             DispatchQueue.main.async {
                 switch result
                 {
                 case .success(let app): completion(.success(app))
                 case .failure(var error as NSError):
-                    if error.localizedFailure == nil
+                    error = error.withLocalizedTitle(String(format: NSLocalizedString("%@ could not be installed onto %@.", comment: ""), appName, altDevice.name))
+                    
+                    if let failure, error.localizedFailure == nil
                     {
-                        error = error.withLocalizedFailure(String(format: NSLocalizedString("Could not install %@ to %@.", comment: ""), appName, altDevice.name))
+                        error = error.withLocalizedFailure(failure)
                     }
                     
                     completion(.failure(error))
@@ -144,24 +133,25 @@ extension ALTDeviceManager
                                                                                 let profiles = try result.get()
                                                                                 
                                                                                 self.install(application, to: device, team: team, certificate: certificate, profiles: profiles) { (result) in
-                                                                                    finish(result.map { application }, title: "Failed to Install AltStore")
+                                                                                    finish(result.map { application })
                                                                                 }
                                                                             }
                                                                             catch
                                                                             {
-                                                                                finish(.failure(error), title: "Failed to Fetch Provisioning Profiles")
+                                                                                finish(.failure(error), failure: NSLocalizedString("AltServer could not fetch new provisioning profiles.", comment: ""))
                                                                             }
                                                                         }
                                                                     }
                                                                     catch
                                                                     {
-                                                                        finish(.failure(error), title: "Failed to Refresh Anisette Data")
+                                                                        finish(.failure(error))
                                                                     }
                                                                 }
                                                             }
                                                             catch
                                                             {
-                                                                finish(.failure(error), title: "Failed to Download AltStore")
+                                                                let failure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), appName)
+                                                                finish(.failure(error), failure: failure)
                                                             }
                                                         }
                                                     }
@@ -169,31 +159,31 @@ extension ALTDeviceManager
                                             }
                                             catch
                                             {
-                                                finish(.failure(error), title: "Failed to Fetch Certificate")
+                                                finish(.failure(error), failure: NSLocalizedString("A valid signing certificate could not be created.", comment: ""))
                                             }
                                         }
                                     }
                                     catch
                                     {
-                                        finish(.failure(error), title: "Failed to Register Device")
+                                        finish(.failure(error), failure: NSLocalizedString("Your device could not be registered with your development team.", comment: ""))
                                     }
                                 }
                             }
                             catch
                             {
-                                finish(.failure(error), title: "Failed to Fetch Team")
+                                finish(.failure(error))
                             }
                         }
                     }
                     catch
                     {
-                        finish(.failure(error), title: "Failed to Authenticate")
+                        finish(.failure(error), failure: NSLocalizedString("AltServer could not sign in with your Apple ID.", comment: ""))
                     }
                 }
             }
             catch
             {
-                finish(.failure(error), title: "Failed to Fetch Anisette Data")
+                finish(.failure(error))
             }
         }
     }
@@ -306,7 +296,7 @@ private extension ALTDeviceManager
             }
             else
             {
-                completionHandler(.failure(error ?? ALTAppleAPIError(.unknown)))
+                completionHandler(.failure(error ?? ALTAppleAPIError.unknown()))
             }
         }
     }
@@ -332,7 +322,7 @@ private extension ALTDeviceManager
                 }
                 else
                 {
-                    throw InstallError.noTeam
+                    throw OperationError(.noTeam)
                 }
             }
             catch
@@ -384,7 +374,7 @@ private extension ALTDeviceManager
                         }
                     }
                     
-                    guard !isCancelled else { return completionHandler(.failure(InstallError.cancelled)) }
+                    guard !isCancelled else { return completionHandler(.failure(OperationError(.cancelled))) }
                 }
                 
                 func addCertificate()
@@ -393,7 +383,7 @@ private extension ALTDeviceManager
                         do
                         {
                             let certificate = try Result(certificate, error).get()
-                            guard let privateKey = certificate.privateKey else { throw InstallError.missingPrivateKey }
+                            guard let privateKey = certificate.privateKey else { throw OperationError(.missingPrivateKey) }
                             
                             ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
                                 do
@@ -401,7 +391,7 @@ private extension ALTDeviceManager
                                     let certificates = try Result(certificates, error).get()
                                     
                                     guard let certificate = certificates.first(where: { $0.serialNumber == certificate.serialNumber }) else {
-                                        throw InstallError.missingCertificate
+                                        throw OperationError(.missingCertificate)
                                     }
                                     
                                     certificate.privateKey = privateKey
@@ -454,7 +444,7 @@ private extension ALTDeviceManager
                             }
                         }
                         
-                        guard !isCancelled else { return completionHandler(.failure(InstallError.cancelled)) }
+                        guard !isCancelled else { return completionHandler(.failure(OperationError(.cancelled))) }
                     }
                     
                     ALTAppleAPI.shared.revoke(certificate, for: team, session: session) { (success, error) in

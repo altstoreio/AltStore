@@ -1217,7 +1217,11 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
                 
                 // ALTServerErrorUnderlyingError uses its underlying error's failure reason as its error description (if one exists),
                 // so assign our recovery suggestion to NSLocalizedFailureReasonErrorKey to make sure it's always displayed on client.
-                NSError *underlyingError = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{NSLocalizedFailureReasonErrorKey: recoverySuggestion}];
+                NSError *underlyingError = [NSError errorWithDomain:AltServerConnectionErrorDomain code:ALTServerConnectionErrorUnknown userInfo:@{
+                    NSLocalizedFailureReasonErrorKey: recoverySuggestion,
+                    ALTSourceFileErrorKey: @(__FILE__).lastPathComponent,
+                    ALTSourceLineErrorKey: @(__LINE__)
+                }];
                 
                 returnError = [NSError errorWithDomain:AltServerErrorDomain code:ALTServerErrorUnderlyingError userInfo:@{NSUnderlyingErrorKey: underlyingError}];
             }

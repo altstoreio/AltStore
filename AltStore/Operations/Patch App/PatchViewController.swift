@@ -439,7 +439,7 @@ private extension PatchViewController
                             
                             do
                             {
-                                guard let (bundleIdentifier, result) = results.first else { throw refreshGroup?.context.error ?? OperationError.unknown }
+                                guard let (bundleIdentifier, result) = results.first else { throw refreshGroup?.context.error ?? OperationError.unknown() }
                                 _ = try result.get()
                                 
                                 if var patchedApps = UserDefaults.standard.patchedApps, let index = patchedApps.firstIndex(of: bundleIdentifier)
