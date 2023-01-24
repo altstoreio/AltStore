@@ -8,22 +8,6 @@
 
 import Network
 
-enum ConnectionError: LocalizedError
-{
-    case serverNotFound
-    case connectionFailed
-    case connectionDropped
-    
-    var failureReason: String? {
-        switch self
-        {
-        case .serverNotFound: return NSLocalizedString("Could not find AltServer.", comment: "")
-        case .connectionFailed: return NSLocalizedString("Could not connect to AltServer.", comment: "")
-        case .connectionDropped: return NSLocalizedString("The connection to AltServer was dropped.", comment: "")
-        }
-    }
-}
-
 extension Server
 {
     enum ConnectionType

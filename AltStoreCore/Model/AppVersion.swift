@@ -40,7 +40,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
     
     /* Relationships */
     @NSManaged public private(set) var app: StoreApp?
-    @NSManaged public private(set) var latestVersionApp: StoreApp?
+    @NSManaged @objc(latestVersionApp) public internal(set) var latestSupportedVersionApp: StoreApp?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -54,6 +54,8 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         case localizedDescription
         case downloadURL
         case size
+        case minOSVersion
+        case maxOSVersion
     }
     
     public required init(from decoder: Decoder) throws
@@ -72,6 +74,9 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
             
             self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
             self.size = try container.decode(Int64.self, forKey: .size)
+            
+            self._minOSVersion = try container.decodeIfPresent(String.self, forKey: .minOSVersion)
+            self._maxOSVersion = try container.decodeIfPresent(String.self, forKey: .maxOSVersion)
         }
         catch
         {
@@ -112,5 +117,18 @@ public extension AppVersion
         appVersion.sourceID = sourceID
 
         return appVersion
+    }
+    
+    var isSupported: Bool {
+        if let minOSVersion = self.minOSVersion, !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion)
+        {
+            return false
+        }
+        else if let maxOSVersion = self.maxOSVersion, ProcessInfo.processInfo.operatingSystemVersion > maxOSVersion
+        {
+            return false
+        }
+        
+        return true
     }
 }

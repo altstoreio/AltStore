@@ -25,6 +25,12 @@ extension AppManager
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
+    
+    enum PreferredAppVersion
+    {
+        case latestSupportedVersion
+        case latestAvailableVersionWithFallback
+    }
 }
 
 @available(iOS 13, *)
@@ -35,11 +41,6 @@ class AppManagerPublisher: ObservableObject
     
     @Published
     fileprivate(set) var refreshProgress = [String: Progress]()
-}
-
-private func ==(lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool
-{
-    return (lhs.majorVersion == rhs.majorVersion && lhs.minorVersion == rhs.minorVersion && lhs.patchVersion == rhs.patchVersion)
 }
 
 class AppManager
@@ -63,6 +64,15 @@ class AppManager
             self.publisher.refreshProgress = self.refreshProgress
         }
     }
+    
+    private lazy var progressLock: UnsafeMutablePointer<os_unfair_lock> = {
+        // Can't safely pass &os_unfair_lock to os_unfair_lock functions in Swift,
+        // so pass UnsafeMutablePointer instead which is guaranteed to be safe.
+        // https://stackoverflow.com/a/68615042
+        let lock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+        lock.initialize(to: .init())
+        return lock
+    }()
     
     @available(iOS 13, *)
     private(set) var publisher: AppManagerPublisher {
@@ -97,6 +107,13 @@ class AppManager
         {
             self.prepareSubscriptions()
         }
+    }
+    
+    deinit
+    {
+        // Should never be called, but do bookkeeping anyway.
+        self.progressLock.deinitialize(count: 1)
+        self.progressLock.deallocate()
     }
     
     @available(iOS 13, *)
@@ -377,10 +394,13 @@ extension AppManager
                     switch result
                     {
                     case .success(let source): fetchedSources.insert(source)
-                    case .failure(let error):
+                    case .failure(let nsError as NSError):
                         let source = managedObjectContext.object(with: source.objectID) as! Source
-                        source.error = (error as NSError).sanitizedForCoreData()
+                        let title = String(format: NSLocalizedString("Unable to Refresh “%@” Source", comment: ""), source.name)
+                        
+                        let error = nsError.withLocalizedTitle(title)
                         errors[source] = error
+                        source.error = error.sanitizedForSerialization()
                     }
                     
                     dispatchGroup.leave()
@@ -400,9 +420,9 @@ extension AppManager
                     {
                         completionHandler(.success((fetchedSources, managedObjectContext)))
                     }
+                    
+                    NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
                 }
-                
-                NotificationCenter.default.post(name: AppManager.didFetchSourceNotification, object: self)
             }
             
             self.run(operations, context: nil)
@@ -466,7 +486,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw context.error ?? OperationError.unknown }
+                guard let result = results.values.first else { throw context.error ?? OperationError.unknown() }
                 completionHandler(result)
             }
             catch
@@ -482,10 +502,17 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ app: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, to preferredAppVersion: PreferredAppVersion = .latestSupportedVersion, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        guard let storeApp = app.storeApp else {
-            completionHandler(.failure(OperationError.appNotFound))
+        let preferredApp: AppProtocol?
+        switch preferredAppVersion
+        {
+        case .latestSupportedVersion: preferredApp = installedApp.storeApp?.latestSupportedVersion
+        case .latestAvailableVersionWithFallback: preferredApp = installedApp.storeApp // Use StoreApp directly to correctly handle min/max OS versions in DownloadAppOperation.
+        }
+        
+        guard let app = preferredApp else {
+            completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
         
@@ -493,7 +520,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 completionHandler(result)
             }
             catch
@@ -502,8 +529,8 @@ extension AppManager
             }
         }
         
-        let operation = AppOperation.update(storeApp)
-        assert(operation.app as AnyObject === storeApp) // Make sure we never accidentally "update" to already installed app.
+        let operation = AppOperation.update(app)
+        assert(operation.app as AnyObject !== installedApp) // Make sure we never accidentally "update" to already installed app.
         
         self.perform([operation], presentingViewController: presentingViewController, group: group)
         
@@ -529,7 +556,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)
@@ -571,7 +598,7 @@ extension AppManager
             group.completionHandler = { (results) in
                 do
                 {
-                    guard let result = results.values.first else { throw OperationError.unknown }
+                    guard let result = results.values.first else { throw OperationError.unknown() }
 
                     let installedApp = try result.get()
                     assert(installedApp.managedObjectContext != nil)
@@ -597,7 +624,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)
@@ -622,7 +649,7 @@ extension AppManager
         group.completionHandler = { (results) in
             do
             {
-                guard let result = results.values.first else { throw OperationError.unknown }
+                guard let result = results.values.first else { throw OperationError.unknown() }
                 
                 let installedApp = try result.get()
                 assert(installedApp.managedObjectContext != nil)
@@ -692,6 +719,8 @@ extension AppManager
             var installedApp: InstalledApp?
         }
         
+        let appName = installedApp.name
+        
         let context = Context()
         context.installedApp = installedApp
         
@@ -699,7 +728,16 @@ extension AppManager
         
         let enableJITOperation = EnableJITOperation(context: context)
         enableJITOperation.resultHandler = { (result) in
-            completionHandler(result)
+            switch result
+            {
+            case .success: completionHandler(.success(()))
+            case .failure(let nsError as NSError):
+                let localizedTitle = String(format: NSLocalizedString("Failed to Enable JIT for %@", comment: ""), appName)
+                let error = nsError.withLocalizedTitle(localizedTitle)
+                
+                self.log(error, operation: .enableJIT, app: installedApp)
+                completionHandler(.failure(error))
+            }
         }
         enableJITOperation.addDependency(findServerOperation)
         
@@ -769,12 +807,18 @@ extension AppManager
     
     func installationProgress(for app: AppProtocol) -> Progress?
     {
+        os_unfair_lock_lock(self.progressLock)
+        defer { os_unfair_lock_unlock(self.progressLock) }
+        
         let progress = self.installationProgress[app.bundleIdentifier]
         return progress
     }
     
     func refreshProgress(for app: AppProtocol) -> Progress?
     {
+        os_unfair_lock_lock(self.progressLock)
+        defer { os_unfair_lock_unlock(self.progressLock) }
+        
         let progress = self.refreshProgress[app.bundleIdentifier]
         return progress
     }
@@ -829,6 +873,19 @@ private extension AppManager
             }
             
             return bundleIdentifier
+        }
+        
+        var loggedErrorOperation: LoggedError.Operation {
+            switch self
+            {
+            case .install: return .install
+            case .update: return .update
+            case .refresh: return .refresh
+            case .activate: return .activate
+            case .deactivate: return .deactivate
+            case .backup: return .backup
+            case .restore: return .restore
+            }
         }
     }
     
@@ -1270,7 +1327,7 @@ private extension AppManager
             case .success(let installedApp):
                 completionHandler(.success(installedApp))
                 
-            case .failure(ALTServerError.unknownRequest), .failure(OperationError.appNotFound):
+            case .failure(ALTServerError.unknownRequest), .failure(~OperationError.Code.appNotFound):
                 // Fall back to installation if AltServer doesn't support newer provisioning profile requests,
                 // OR if the cached app could not be found and we may need to redownload it.
                 app.managedObjectContext?.performAndWait { // Must performAndWait to ensure we add operations before we return.
@@ -1544,7 +1601,7 @@ private extension AppManager
         }
         
         guard let application = ALTApplication(fileURL: app.fileURL) else {
-            completionHandler(.failure(OperationError.appNotFound))
+            completionHandler(.failure(OperationError.appNotFound(name: app.name)))
             return progress
         }
         
@@ -1556,7 +1613,7 @@ private extension AppManager
                     let temporaryDirectoryURL = context.temporaryDirectory.appendingPathComponent("AltBackup-" + UUID().uuidString)
                     try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
                     
-                    guard let altbackupFileURL = Bundle.main.url(forResource: "AltBackup", withExtension: "ipa") else { throw OperationError.appNotFound }
+                    guard let altbackupFileURL = Bundle.main.url(forResource: "AltBackup", withExtension: "ipa") else { throw OperationError.appNotFound(name: "AltBackup") }
                     
                     let unzippedAppBundleURL = try FileManager.default.unzipAppBundle(at: altbackupFileURL, toDirectory: temporaryDirectoryURL)
                     guard let unzippedAppBundle = Bundle(url: unzippedAppBundleURL) else { throw OperationError.invalidApp }
@@ -1663,7 +1720,7 @@ private extension AppManager
                 else
                 {
                     // Not preferred server, so ignore these specific errors and throw serverNotFound instead.
-                    return ConnectionError.serverNotFound
+                    return OperationError(.serverNotFound)
                 }
                 
             default: return error
@@ -1716,11 +1773,43 @@ private extension AppManager
             do { try installedApp.managedObjectContext?.save() }
             catch { print("Error saving installed app.", error) }
         }
-        catch
+        catch let nsError as NSError
         {
+            var appName: String!
+            if let app = operation.app as? (NSManagedObject & AppProtocol)
+            {
+                if let context = app.managedObjectContext
+                {
+                    context.performAndWait {
+                        appName = app.name
+                    }
+                }
+                else
+                {
+                    appName = NSLocalizedString("App", comment: "")
+                }
+            }
+            else
+            {
+                appName = operation.app.name
+            }
+            
+            let localizedTitle: String
+            switch operation
+            {
+            case .install: localizedTitle = String(format: NSLocalizedString("Failed to Install %@", comment: ""), appName)
+            case .refresh: localizedTitle = String(format: NSLocalizedString("Failed to Refresh %@", comment: ""), appName)
+            case .update: localizedTitle = String(format: NSLocalizedString("Failed to Update %@", comment: ""), appName)
+            case .activate: localizedTitle = String(format: NSLocalizedString("Failed to Activate %@", comment: ""), appName)
+            case .deactivate: localizedTitle = String(format: NSLocalizedString("Failed to Deactivate %@", comment: ""), appName)
+            case .backup: localizedTitle = String(format: NSLocalizedString("Failed to Back Up %@", comment: ""), appName)
+            case .restore: localizedTitle = String(format: NSLocalizedString("Failed to Restore %@ Backup", comment: ""), appName)
+            }
+            
+            let error = nsError.withLocalizedTitle(localizedTitle)
             group.set(.failure(error), forAppWithBundleIdentifier: operation.bundleIdentifier)
             
-            self.log(error, for: operation)
+            self.log(error, operation: operation.loggedErrorOperation, app: operation.app)
         }
     }
     
@@ -1745,26 +1834,19 @@ private extension AppManager
         UNUserNotificationCenter.current().add(request)
     }
     
-    func log(_ error: Error, for operation: AppOperation)
+    func log(_ error: Error, operation: LoggedError.Operation, app: AppProtocol)
     {
-        // Sanitize NSError on same thread before performing background task.
-        let sanitizedError = (error as NSError).sanitizedForCoreData()
+        switch error
+        {
+        case ~OperationError.Code.cancelled: return // Don't log OperationError.cancelled
+        default: break
+        }
         
-        let loggedErrorOperation: LoggedError.Operation = {
-            switch operation
-            {
-            case .install: return .install
-            case .update: return .update
-            case .refresh: return .refresh
-            case .activate: return .activate
-            case .deactivate: return .deactivate
-            case .backup: return .backup
-            case .restore: return .restore
-            }
-        }()
-                    
+        // Sanitize NSError on same thread before performing background task.
+        let sanitizedError = (error as NSError).sanitizedForSerialization()
+        
         DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
-            var app = operation.app
+            var app = app
             if let managedApp = app as? NSManagedObject, let tempApp = context.object(with: managedApp.objectID) as? AppProtocol
             {
                 app = tempApp
@@ -1772,7 +1854,7 @@ private extension AppManager
             
             do
             {
-                _ = LoggedError(error: sanitizedError, app: app, operation: loggedErrorOperation, context: context)
+                _ = LoggedError(error: sanitizedError, app: app, operation: operation, context: context)
                 try context.save()
             }
             catch let saveError
@@ -1817,6 +1899,9 @@ private extension AppManager
     
     func progress(for operation: AppOperation) -> Progress?
     {
+        os_unfair_lock_lock(self.progressLock)
+        defer { os_unfair_lock_unlock(self.progressLock) }
+        
         switch operation
         {
         case .install, .update: return self.installationProgress[operation.bundleIdentifier]
@@ -1826,6 +1911,9 @@ private extension AppManager
     
     func set(_ progress: Progress?, for operation: AppOperation)
     {
+        os_unfair_lock_lock(self.progressLock)
+        defer { os_unfair_lock_unlock(self.progressLock) }
+        
         switch operation
         {
         case .install, .update: self.installationProgress[operation.bundleIdentifier] = progress

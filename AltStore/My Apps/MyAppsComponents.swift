@@ -64,12 +64,30 @@ class InstalledAppsCollectionFooterView: UICollectionReusableView
 class NoUpdatesCollectionViewCell: UICollectionViewCell
 {
     @IBOutlet var blurView: UIVisualEffectView!
+    @IBOutlet var textLabel: UILabel!
+    @IBOutlet var button: UIButton!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
         self.contentView.preservesSuperviewLayoutMargins = true
+        
+        let image: UIImage?
+        if #available(iOS 13, *)
+        {
+            let font = self.textLabel.font ?? UIFont.systemFont(ofSize: 17)
+            let configuration = UIImage.SymbolConfiguration(font: font)
+            
+            image = UIImage(systemName: "ellipsis.circle", withConfiguration: configuration)
+        }
+        else
+        {
+            image = UIImage(named: "ellipsis.circle")
+        }
+        
+        self.button.setTitle("", for: .normal)
+        self.button.setImage(image, for: .normal)
     }
 }
 

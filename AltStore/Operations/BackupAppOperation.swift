@@ -55,7 +55,7 @@ class BackupAppOperation: ResultOperation<Void>
                     let appName = installedApp.name
                     self.appName = appName
                     
-                    guard let altstoreApp = InstalledApp.fetchAltStore(in: context) else { throw OperationError.appNotFound }
+                    guard let altstoreApp = InstalledApp.fetchAltStore(in: context) else { throw OperationError.appNotFound(name: appName) }
                     let altstoreOpenURL = altstoreApp.openAppURL
                     
                     var returnURLComponents = URLComponents(url: altstoreOpenURL, resolvingAgainstBaseURL: false)

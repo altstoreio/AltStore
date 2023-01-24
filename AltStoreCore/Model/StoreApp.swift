@@ -40,9 +40,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged @objc(version) internal var _version: String
-    @NSManaged @objc(versionDate) internal var _versionDate: Date
-    @NSManaged @objc(versionDescription) internal var _versionDescription: String?
+    @NSManaged @objc(version) public private(set) var latestVersionString: String
+    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
+    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
     
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
@@ -78,7 +78,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(source) public var _source: Source?
     @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
-    @NSManaged public private(set) var latestVersion: AppVersion?
+    @NSManaged @objc(latestVersion) public private(set) var latestSupportedVersion: AppVersion?
     @NSManaged @objc(versions) public private(set) var _versions: NSOrderedSet
     
     @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
@@ -99,31 +99,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @nonobjc public var versions: [AppVersion] {
         return self._versions.array as! [AppVersion]
-    }
-    
-    @nonobjc public var size: Int64? {
-        guard let version = self.latestVersion else { return nil }
-        return version.size
-    }
-    
-    @nonobjc public var version: String? {
-        guard let version = self.latestVersion else { return nil }
-        return version.version
-    }
-    
-    @nonobjc public var versionDescription: String? {
-        guard let version = self.latestVersion else { return nil }
-        return version.localizedDescription
-    }
-    
-    @nonobjc public var versionDate: Date? {
-        guard let version = self.latestVersion else { return nil }
-        return version.date
-    }
-    
-    @nonobjc public var downloadURL: URL? {
-        guard let version = self.latestVersion else { return nil }
-        return version.downloadURL
     }
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
@@ -187,14 +162,12 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
             {
-                //TODO: Throw error if there isn't at least one version.
-                
                 for version in versions
                 {
                     version.appBundleID = self.bundleIdentifier
                 }
                 
-                self.setVersions(versions)
+                try self.setVersions(versions)
             }
             else
             {
@@ -212,7 +185,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                                                            size: Int64(size),
                                                            appBundleID: self.bundleIdentifier,
                                                            in: context)
-                self.setVersions([appVersion])
+                try self.setVersions([appVersion])
             }
         }
         catch
@@ -227,17 +200,34 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     }
 }
 
-private extension StoreApp
+internal extension StoreApp
 {
-    func setVersions(_ versions: [AppVersion])
+    func setVersions(_ versions: [AppVersion]) throws
     {
-        guard let latestVersion = versions.first else { preconditionFailure("StoreApp must have at least one AppVersion.") }
+        guard let latestVersion = versions.first else {
+            throw MergeError.noVersions(for: self)
+        }
         
-        self.latestVersion = latestVersion
         self._versions = NSOrderedSet(array: versions)
         
+        let latestSupportedVersion = versions.first(where: { $0.isSupported })
+        self.latestSupportedVersion = latestSupportedVersion
+        
+        for case let version as AppVersion in self._versions
+        {
+            if version == latestSupportedVersion
+            {
+                version.latestSupportedVersionApp = self
+            }
+            else
+            {
+                // Ensure we replace any previous relationship when merging.
+                version.latestSupportedVersionApp = nil
+            }
+        }
+                
         // Preserve backwards compatibility by assigning legacy property values.
-        self._version = latestVersion.version
+        self.latestVersionString = latestVersion.version
         self._versionDate = latestVersion.date
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL
@@ -247,6 +237,10 @@ private extension StoreApp
 
 public extension StoreApp
 {
+    var latestAvailableVersion: AppVersion? {
+        return self._versions.firstObject as? AppVersion
+    }
+    
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
@@ -270,7 +264,7 @@ public extension StoreApp
                                                    appBundleID: app.bundleIdentifier,
                                                    sourceID: Source.altStoreIdentifier,
                                                    in: context)
-        app.setVersions([appVersion])
+        try? app.setVersions([appVersion])
         
         #if BETA
         app.isBeta = true

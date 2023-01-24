@@ -25,21 +25,41 @@ protocol PatchAppContext
     var error: Error? { get }
 }
 
-enum PatchAppError: LocalizedError
+extension PatchAppError
 {
-    case unsupportedOperatingSystemVersion(OperatingSystemVersion)
+    enum Code: Int, ALTErrorCode, CaseIterable
+    {
+        typealias Error = PatchAppError
+        
+        case unsupportedOperatingSystemVersion
+    }
     
-    var errorDescription: String? {
-        switch self
+    static func unsupportedOperatingSystemVersion(_ osVersion: OperatingSystemVersion) -> PatchAppError { PatchAppError(code: .unsupportedOperatingSystemVersion, osVersion: osVersion) }
+}
+
+struct PatchAppError: ALTLocalizedError
+{
+    let code: Code
+    var errorFailure: String?
+    var errorTitle: String?
+    
+    var osVersion: OperatingSystemVersion?
+    
+    var errorFailureReason: String {
+        switch self.code
         {
-        case .unsupportedOperatingSystemVersion(let osVersion):
-            var osVersionString = "\(osVersion.majorVersion).\(osVersion.minorVersion)"
-            if osVersion.patchVersion != 0
+        case .unsupportedOperatingSystemVersion:
+            let osVersionString: String
+            if let osVersion = self.osVersion?.stringValue
             {
-                osVersionString += ".\(osVersion.patchVersion)"
+                osVersionString = NSLocalizedString("iOS", comment: "") + " " + osVersion
+            }
+            else
+            {
+                osVersionString = NSLocalizedString("your device's iOS version", comment: "")
             }
             
-            let errorDescription = String(format: NSLocalizedString("The OTA download URL for iOS %@ could not be determined.", comment: ""), osVersionString)
+            let errorDescription = String(format: NSLocalizedString("The OTA download URL for %@ could not be determined.", comment: ""), osVersionString)
             return errorDescription
         }
     }
