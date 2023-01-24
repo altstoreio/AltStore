@@ -19,6 +19,7 @@ extension LoggedError
         case deactivate
         case backup
         case restore
+        case enableJIT
     }
 }
 
@@ -113,6 +114,7 @@ public extension LoggedError
         case .deactivate: return String(format: NSLocalizedString("Deactivate %@ Failed", comment: ""), self.appName)
         case .backup: return String(format: NSLocalizedString("Backup %@ Failed", comment: ""), self.appName)
         case .restore: return String(format: NSLocalizedString("Restore %@ Failed", comment: ""), self.appName)
+        case .enableJIT: return String(format: NSLocalizedString("Enable JIT for %@ Failed", comment: ""), self.appName)
         }
     }
 }
