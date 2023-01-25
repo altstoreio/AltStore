@@ -1,7 +1,6 @@
 # macOS
 #
 *.DS_Store
-._*
 
 # Xcode
 #
