@@ -74,6 +74,9 @@ jobs:
       # - name: Build minimuxer
       #   run: cd Dependencies/minimuxer && cargo build --release --target aarch64-apple-ios
 
+      - name: Add PR suffix to version
+        run: sed -e '/MARKETING_VERSION = .*/s/$/-pr.${{ github.event.pull_request.number }}/' -i '' Build.xcconfig
+
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.4.1
         with:
