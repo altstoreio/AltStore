@@ -16,9 +16,10 @@
 			<key>Key</key>
 			<string>customAnisetteURL</string>
 			<key>DefaultValue</key>
-			<string>http://191.101.206.188:6969</string>
+			<string>http://ani.sidestore.io</string>
 			<key>Titles</key>
 			<array>
+				<string>SideStore</string>
 				<string>Macley (US)</string>
 				<string>Macley (DE)</string>
 				<string>DrPudding</string>
@@ -31,6 +32,7 @@
 			</array>
 			<key>Values</key>
 			<array>
+				<string>http://ani.sidestore.io</string>
 				<string>http://us1.sternserv.tech</string>
 				<string>http://de1.sternserv.tech</string>
 				<string>https://sign.rheaa.xyz</string>
