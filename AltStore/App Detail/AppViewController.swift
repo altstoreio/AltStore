@@ -371,23 +371,30 @@ private extension AppViewController
             button.tintColor = self.app.tintColor
             button.isIndicatingActivity = false
             
-            if self.app.installedApp == nil
+            if let installedApp = self.app.installedApp
             {
-                button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
+                if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+                {
+                    button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
+                }
+                else
+                {
+                    button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                }
             }
             else
             {
-                button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
             }
             
             let progress = AppManager.shared.installationProgress(for: self.app)
             button.progress = progress
         }
         
-        if Date() < self.app.versionDate
+        if let versionDate = self.app.latestAvailableVersion?.date, versionDate > Date()
         {
-            self.bannerView.button.countdownDate = self.app.versionDate
-            self.navigationBarDownloadButton.countdownDate = self.app.versionDate
+            self.bannerView.button.countdownDate = versionDate
+            self.navigationBarDownloadButton.countdownDate = versionDate
         }
         else
         {
@@ -486,7 +493,14 @@ extension AppViewController
     {
         if let installedApp = self.app.installedApp
         {
-            self.open(installedApp)
+            if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+            {
+                self.updateApp(installedApp)
+            }
+            else
+            {
+                self.open(installedApp)
+            }
         }
         else
         {
@@ -511,6 +525,7 @@ extension AppViewController
             {
                 DispatchQueue.main.async {
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 }
             }
@@ -529,6 +544,34 @@ extension AppViewController
     func open(_ installedApp: InstalledApp)
     {
         UIApplication.shared.open(installedApp.openAppURL)
+    }
+    
+    func updateApp(_ installedApp: InstalledApp)
+    {
+        let previousProgress = AppManager.shared.installationProgress(for: installedApp)
+        guard previousProgress == nil else {
+            //TODO: Handle cancellation
+            //previousProgress?.cancel()
+            return
+        }
+        
+        _ = AppManager.shared.update(installedApp, to: .latestAvailableVersionWithFallback, presentingViewController: self) { (result) in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .success: print("Updated app from AppViewController:", installedApp.bundleIdentifier)
+                case .failure(OperationError.cancelled): break
+                case .failure(let error):
+                    let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
+                    toastView.show(in: self)
+                }
+                
+                self.update()
+            }
+        }
+        
+        self.update()
     }
 }
 

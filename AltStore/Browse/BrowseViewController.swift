@@ -113,9 +113,9 @@ private extension BrowseViewController
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
                 
-                if Date() < app.versionDate
+                if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
                 {
-                    cell.bannerView.button.countdownDate = app.versionDate
+                    cell.bannerView.button.countdownDate = versionDate
                 }
                 else
                 {
@@ -198,9 +198,35 @@ private extension BrowseViewController
                     try error.managedObjectContext?.save()
                     throw error
                 }
+                catch let mergeError as MergeError
+                {
+                    guard let sourceID = mergeError.sourceID else { throw mergeError }
+                    
+                    let sanitizedError = (mergeError as NSError).sanitizedForSerialization()
+                    DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+                        do
+                        {
+                            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID), in: context) else { return }
+                            
+                            source.error = sanitizedError
+                            try context.save()
+                        }
+                        catch
+                        {
+                            print("[ALTLog] Failed to assign error \(sanitizedError.localizedErrorCode) to source \(sourceID).", error)
+                        }
+                    }
+                    
+                    throw mergeError
+                }
             }
-            catch
+            catch var error as NSError
             {
+                if error.localizedTitle == nil
+                {
+                    error = error.withLocalizedTitle(NSLocalizedString("Unable to Refresh Store", comment: ""))
+                }
+                                
                 DispatchQueue.main.async {
                     if self.dataSource.itemCount > 0
                     {
@@ -279,6 +305,7 @@ private extension BrowseViewController
                 case .failure(OperationError.cancelled): break // Ignore
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                 
                 case .success: print("Installed app:", app.bundleIdentifier)

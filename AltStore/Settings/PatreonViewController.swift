@@ -246,7 +246,8 @@ private extension PatreonViewController
     
     @objc func didUpdatePatrons(_ notification: Notification)
     {
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // Wait short delay before reloading or else footer won't properly update if it's already visible 🤷‍♂️
             self.collectionView.reloadData()
         }
     }
@@ -278,17 +279,27 @@ extension PatreonViewController
                 footerView.button.isHidden = false
                 footerView.button.addTarget(self, action: #selector(PatreonViewController.fetchPatrons), for: .primaryActionTriggered)
                 
-                if self.patronsDataSource.itemCount > 0
+                switch AppManager.shared.updatePatronsResult
                 {
-                    footerView.button.isHidden = true
-                }
-                else
-                {
-                    switch AppManager.shared.updatePatronsResult
+                case .none: footerView.button.isIndicatingActivity = true
+                case .success?: footerView.button.isHidden = true
+                case .failure?:
+                    #if DEBUG
+                    let debug = true
+                    #else
+                    let debug = false
+                    #endif
+                    
+                    if self.patronsDataSource.itemCount == 0 || debug
                     {
-                    case .none: footerView.button.isIndicatingActivity = true
-                    case .success?: footerView.button.isHidden = true
-                    case .failure?: footerView.button.setTitle(NSLocalizedString("Error Loading Patrons", comment: ""), for: .normal)
+                        // Only show error message if there aren't any cached Patrons (or if this is a debug build).
+                        
+                        footerView.button.isHidden = false
+                        footerView.button.setTitle(NSLocalizedString("Error Loading Patrons", comment: ""), for: .normal)
+                    }
+                    else
+                    {
+                        footerView.button.isHidden = true
                     }
                 }
                 
@@ -326,7 +337,7 @@ extension PatreonViewController: UICollectionViewDelegateFlowLayout
         switch section
         {
         case .about: return .zero
-        case .patrons: return CGSize(width: 320, height: 20)
+        case .patrons: return CGSize(width: 320, height: 44)
         }
     }
 }

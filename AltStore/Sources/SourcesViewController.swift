@@ -12,24 +12,6 @@ import CoreData
 import AltStoreCore
 import Roxas
 
-struct SourceError: LocalizedError
-{
-    enum Code
-    {
-        case unsupported
-    }
-    
-    var code: Code
-    @Managed var source: Source
-    
-    var errorDescription: String? {
-        switch self.code
-        {
-        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
-        }
-    }
-}
-
 @objc(SourcesFooterView)
 private class SourcesFooterView: TextCollectionReusableView
 {
@@ -236,7 +218,14 @@ private extension SourcesViewController
                 {
                 case .success: break
                 case .failure(OperationError.cancelled): break
-                case .failure(let error): self.present(error)
+                    
+                case .failure(var error as SourceError):
+                    let title = String(format: NSLocalizedString("“%@” could not be added to AltStore.", comment: ""), error.$source.name)
+                    error.errorTitle = title
+                    self.present(error)
+                    
+                case .failure(let error as NSError):
+                    self.present(error.withLocalizedTitle(NSLocalizedString("Unable to Add Source", comment: "")))
                 }
                 
                 self.collectionView.reloadSections([Section.trusted.rawValue])
@@ -259,10 +248,6 @@ private extension SourcesViewController
                 let source = try result.get()
                 let sourceName = source.name
                 let managedObjectContext = source.managedObjectContext
-                
-                #if !BETA
-                guard let trustedSourceIDs = UserDefaults.shared.trustedSourceIDs, trustedSourceIDs.contains(source.identifier) else { throw SourceError(code: .unsupported, source: source) }
-                #endif
                 
                 // Hide warning when adding a featured trusted source.
                 let message = isTrusted ? nil : NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
@@ -308,9 +293,10 @@ private extension SourcesViewController
         }
         
         let nsError = error as NSError
-        let message = nsError.userInfo[NSDebugDescriptionErrorKey] as? String ?? nsError.localizedRecoverySuggestion
+        let title = nsError.localizedTitle // OK if nil.
+        let message = [nsError.localizedDescription, nsError.localizedDebugDescription, nsError.localizedRecoverySuggestion].compactMap { $0 }.joined(separator: "\n\n")
         
-        let alertController = UIAlertController(title: error.localizedDescription, message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(.ok)
         self.present(alertController, animated: true, completion: nil)
     }

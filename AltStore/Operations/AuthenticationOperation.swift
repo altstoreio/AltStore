@@ -13,7 +13,13 @@ import Network
 import AltStoreCore
 import AltSign
 
-enum AuthenticationError: LocalizedError
+private extension UIColor
+{
+    static let altInvertedPrimary = UIColor(named: "SettingsHighlighted")!
+}
+
+typealias AuthenticationError = AuthenticationErrorCode.Error
+enum AuthenticationErrorCode: Int, ALTErrorEnum, CaseIterable
 {
     case noTeam
     case noCertificate
@@ -21,10 +27,10 @@ enum AuthenticationError: LocalizedError
     case missingPrivateKey
     case missingCertificate
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self {
-        case .noTeam: return NSLocalizedString("Developer team could not be found.", comment: "")
-        case .noCertificate: return NSLocalizedString("Developer certificate could not be found.", comment: "")
+        case .noTeam: return NSLocalizedString("Your Apple ID has no developer teams.", comment: "")
+        case .noCertificate: return NSLocalizedString("The developer certificate could not be found.", comment: "")
         case .missingPrivateKey: return NSLocalizedString("The certificate's private key could not be found.", comment: "")
         case .missingCertificate: return NSLocalizedString("The certificate could not be found.", comment: "")
         }
@@ -49,6 +55,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
     
     private lazy var storyboard = UIStoryboard(name: "Authentication", bundle: nil)
     
+    private var appleIDEmailAddress: String?
     private var appleIDPassword: String?
     private var shouldShowInstructions = false
     
@@ -174,6 +181,13 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 }
                 
                 account.update(account: altTeam.account)
+                
+                if let providedEmailAddress = self.appleIDEmailAddress
+                {
+                    // Save the user's provided email address instead of the one associated with their account (which may be outdated).
+                    account.appleID = providedEmailAddress
+                }
+                
                 team.update(team: altTeam)
                                 
                 try context.save()
@@ -202,7 +216,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 guard
                     let account = Account.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Account.identifier), altTeam.account.identifier), in: context),
                     let team = Team.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Team.identifier), altTeam.identifier), in: context)
-                else { throw AuthenticationError.noTeam }
+                else { throw AuthenticationError(.noTeam) }
                 
                 // Account
                 account.isActiveAccount = true
@@ -242,7 +256,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 try context.save()
                 
                 // Update keychain
-                Keychain.shared.appleIDEmailAddress = altTeam.account.appleID
+                Keychain.shared.appleIDEmailAddress = self.appleIDEmailAddress ?? altTeam.account.appleID // Prefer the user's provided email address over the one associated with their account (which may be outdated).
                 Keychain.shared.appleIDPassword = self.appleIDPassword
                 
                 Keychain.shared.signingCertificate = altCertificate.p12Data()
@@ -279,7 +293,7 @@ private extension AuthenticationOperation
     {
         guard let presentingViewController = self.presentingViewController else { return false }
         
-        self.navigationController.view.tintColor = .white
+        self.navigationController.view.tintColor = .altInvertedPrimary
         
         if self.navigationController.viewControllers.isEmpty
         {
@@ -359,6 +373,8 @@ private extension AuthenticationOperation
     
     func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Swift.Error>) -> Void)
     {
+        self.appleIDEmailAddress = appleID
+        
         let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: self.context)
         fetchAnisetteDataOperation.resultHandler = { (result) in
             switch result
@@ -419,7 +435,7 @@ private extension AuthenticationOperation
                     }
                     else
                     {
-                        completionHandler(.failure(error ?? OperationError.unknown))
+                        completionHandler(.failure(error ?? OperationError.unknown()))
                     }
                 }
             }
@@ -446,7 +462,7 @@ private extension AuthenticationOperation
             }
             else
             {
-                return completionHandler(.failure(AuthenticationError.noTeam))
+                return completionHandler(.failure(AuthenticationError(.noTeam)))
             }
         }
 
@@ -478,7 +494,7 @@ private extension AuthenticationOperation
                 do
                 {
                     let certificate = try Result(certificate, error).get()
-                    guard let privateKey = certificate.privateKey else { throw AuthenticationError.missingPrivateKey }
+                    guard let privateKey = certificate.privateKey else { throw AuthenticationError(.missingPrivateKey) }
                     
                     ALTAppleAPI.shared.fetchCertificates(for: team, session: session) { (certificates, error) in
                         do
@@ -486,7 +502,7 @@ private extension AuthenticationOperation
                             let certificates = try Result(certificates, error).get()
                             
                             guard let certificate = certificates.first(where: { $0.serialNumber == certificate.serialNumber }) else {
-                                throw AuthenticationError.missingCertificate
+                                throw AuthenticationError(.missingCertificate)
                             }
                             
                             certificate.privateKey = privateKey
@@ -507,7 +523,7 @@ private extension AuthenticationOperation
         
         func replaceCertificate(from certificates: [ALTCertificate])
         {
-            guard let certificate = certificates.first(where: { $0.machineName?.starts(with: "AltStore") == true }) ?? certificates.first else { return completionHandler(.failure(AuthenticationError.noCertificate)) }
+            guard let certificate = certificates.first(where: { $0.machineName?.starts(with: "AltStore") == true }) ?? certificates.first else { return completionHandler(.failure(AuthenticationError(.noCertificate))) }
             
             ALTAppleAPI.shared.revoke(certificate, for: team, session: session) { (success, error) in
                 if let error = error, !success

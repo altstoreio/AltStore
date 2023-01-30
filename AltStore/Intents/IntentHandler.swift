@@ -127,7 +127,7 @@ private extension IntentHandler
                     
                     self.finish(intent, response: RefreshAllIntentResponse(code: .success, userActivity: nil))
                 }
-                catch RefreshError.noInstalledApps
+                catch ~RefreshErrorCode.noInstalledApps
                 {
                     self.finish(intent, response: RefreshAllIntentResponse(code: .success, userActivity: nil))
                 }

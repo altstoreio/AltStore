@@ -34,11 +34,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     @available(iOS 14, *)
-    private lazy var intentHandler = IntentHandler()
+    private var intentHandler: IntentHandler {
+        get { _intentHandler as! IntentHandler }
+        set { _intentHandler = newValue }
+    }
     
     @available(iOS 14, *)
-    private lazy var viewAppIntentHandler = ViewAppIntentHandler()
-
+    private var viewAppIntentHandler: ViewAppIntentHandler {
+        get { _viewAppIntentHandler as! ViewAppIntentHandler }
+        set { _viewAppIntentHandler = newValue }
+    }
+    
+    private lazy var _intentHandler: Any = {
+        guard #available(iOS 14, *) else { fatalError() }
+        return IntentHandler()
+    }()
+    
+    private lazy var _viewAppIntentHandler: Any = {
+        guard #available(iOS 14, *) else { fatalError() }
+        return ViewAppIntentHandler()
+    }()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
         // Register default settings before doing anything else.
@@ -82,7 +98,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidEnterBackground(_ application: UIApplication)
     {
+        // Make sure to update SceneDelegate.sceneDidEnterBackground() as well.
+        
         ServerManager.shared.stopDiscovering()
+                
+        guard let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) else { return }
+        
+        let midnightOneMonthAgo = Calendar.current.startOfDay(for: oneMonthAgo)
+        DatabaseManager.shared.purgeLoggedErrors(before: midnightOneMonthAgo) { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("[ALTLog] Failed to purge logged errors before \(midnightOneMonthAgo).", error)
+            }
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication)
@@ -331,10 +360,10 @@ private extension AppDelegate
             {
                 let (sources, context) = try result.get()
                 
-                let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
+                let previousUpdatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
-                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier)]
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version)]
                 
                 let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
                 previousNewsItemsFetchRequest.includesPendingChanges = false
@@ -346,7 +375,7 @@ private extension AppDelegate
                 
                 try context.save()
                 
-                let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                let updatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest()
                 let newsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
                 
                 let updates = try context.fetch(updatesFetchRequest)
@@ -354,12 +383,17 @@ private extension AppDelegate
                 
                 for update in updates
                 {
-                    guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
-                    guard let storeApp = update.storeApp else { continue }
+                    guard let storeApp = update.storeApp, let latestSupportedVersion = storeApp.latestSupportedVersion, latestSupportedVersion.isSupported else { continue }
+                    
+                    if let previousUpdate = previousUpdates.first(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier })
+                    {
+                        // An update for this app was already available, so check whether the version # is different.
+                        guard let version = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)], version != latestSupportedVersion.version else { continue }
+                    }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.version)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)

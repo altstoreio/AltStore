@@ -10,13 +10,14 @@ import Foundation
 
 import AltSign
 
-enum DeveloperDiskError: LocalizedError
+typealias DeveloperDiskError = DeveloperDiskErrorCode.Error
+enum DeveloperDiskErrorCode: Int, ALTErrorEnum
 {
     case unknownDownloadURL
     case unsupportedOperatingSystem
     case downloadedDiskNotFound
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self
         {
         case .unknownDownloadURL: return NSLocalizedString("The URL to download the Developer disk image could not be determined.", comment: "")
@@ -88,14 +89,14 @@ class DeveloperDiskManager
     {
         do
         {
-            guard let osName = device.type.osName else { throw DeveloperDiskError.unsupportedOperatingSystem }
+            guard let osName = device.type.osName else { throw DeveloperDiskError(.unsupportedOperatingSystem) }
             
             let osKeyPath: KeyPath<FetchURLsResponse.Disks, [String: DeveloperDiskURL]?>
             switch device.type
             {
             case .iphone, .ipad: osKeyPath = \FetchURLsResponse.Disks.iOS
             case .appletv: osKeyPath = \FetchURLsResponse.Disks.tvOS
-            default: throw DeveloperDiskError.unsupportedOperatingSystem
+            default: throw DeveloperDiskError(.unsupportedOperatingSystem)
             }
             
             var osVersion = device.osVersion
@@ -146,7 +147,7 @@ class DeveloperDiskManager
                 do
                 {
                     let developerDiskURLs = try result.get()
-                    guard let diskURL = developerDiskURLs[keyPath: osKeyPath]?[osVersion.stringValue] else { throw DeveloperDiskError.unknownDownloadURL }
+                    guard let diskURL = developerDiskURLs[keyPath: osKeyPath]?[osVersion.stringValue] else { throw DeveloperDiskError(.unknownDownloadURL) }
                     
                     switch diskURL
                     {
@@ -201,7 +202,7 @@ private extension DeveloperDiskManager
             {
                 guard let data = data else { throw error! }
                 
-                let response = try JSONDecoder().decode(FetchURLsResponse.self, from: data)
+                let response = try Foundation.JSONDecoder().decode(FetchURLsResponse.self, from: data)
                 completionHandler(.success(response.disks))
             }
             catch
@@ -244,7 +245,7 @@ private extension DeveloperDiskManager
                     }
                 }
                 
-                guard let diskFileURL = tempDiskFileURL, let signatureFileURL = tempSignatureFileURL else { throw DeveloperDiskError.downloadedDiskNotFound }
+                guard let diskFileURL = tempDiskFileURL, let signatureFileURL = tempSignatureFileURL else { throw DeveloperDiskError(.downloadedDiskNotFound) }
                 
                 completionHandler(.success((diskFileURL, signatureFileURL)))
             }
@@ -318,7 +319,7 @@ private extension DeveloperDiskManager
             }
             
             guard let diskFileURL = diskFileURL, let signatureFileURL = signatureFileURL else {
-                return completionHandler(.failure(downloadError ?? DeveloperDiskError.downloadedDiskNotFound))
+                return completionHandler(.failure(downloadError ?? DeveloperDiskError(.downloadedDiskNotFound)))
             }
             
             completionHandler(.success((diskFileURL, signatureFileURL)))

@@ -15,7 +15,6 @@ extern NSErrorDomain const AltServerConnectionErrorDomain;
 extern NSErrorUserInfoKey const ALTUnderlyingErrorDomainErrorKey;
 extern NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey;
 extern NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey;
-extern NSErrorUserInfoKey const ALTAppNameErrorKey;
 extern NSErrorUserInfoKey const ALTDeviceNameErrorKey;
 extern NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey;
 extern NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey;

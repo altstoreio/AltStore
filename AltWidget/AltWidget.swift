@@ -173,8 +173,7 @@ struct Provider: IntentTimelineProvider
     }
 }
 
-@main
-struct AltWidget: Widget
+struct HomeScreenWidget: Widget
 {
     private let kind: String = "AppDetail"
     
@@ -187,5 +186,61 @@ struct AltWidget: Widget
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("AltWidget")
         .description("View remaining days until your sideloaded apps expire.")
+    }
+}
+
+struct TextLockScreenWidget: Widget
+{
+    private let kind: String = "TextLockAppDetail"
+    
+    public var body: some WidgetConfiguration {
+        if #available(iOSApplicationExtension 16, *)
+        {
+            return IntentConfiguration(kind: kind,
+                                       intent: ViewAppIntent.self,
+                                       provider: Provider()) { (entry) in
+                ComplicationView(entry: entry, style: .text)
+            }
+            .supportedFamilies([.accessoryCircular])
+            .configurationDisplayName("AltWidget (Text)")
+            .description("View remaining days until AltStore expires.")
+        }
+        else
+        {
+            return EmptyWidgetConfiguration()
+        }
+    }
+}
+
+struct IconLockScreenWidget: Widget
+{
+    private let kind: String = "IconLockAppDetail"
+    
+    public var body: some WidgetConfiguration {
+        if #available(iOSApplicationExtension 16, *)
+        {
+            return IntentConfiguration(kind: kind,
+                                       intent: ViewAppIntent.self,
+                                       provider: Provider()) { (entry) in
+                ComplicationView(entry: entry, style: .icon)
+            }
+            .supportedFamilies([.accessoryCircular])
+            .configurationDisplayName("AltWidget (Icon)")
+            .description("View remaining days until AltStore expires.")
+        }
+        else
+        {
+            return EmptyWidgetConfiguration()
+        }
+    }
+}
+
+@main
+struct AltWidgets: WidgetBundle
+{
+    var body: some Widget {
+        HomeScreenWidget()
+        IconLockScreenWidget()
+        TextLockScreenWidget()
     }
 }

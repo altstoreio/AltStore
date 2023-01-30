@@ -14,14 +14,6 @@ import AltSign
 import LaunchAtLogin
 import Sparkle
 
-#if STAGING
-private let altstoreAppURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
-#elseif BETA
-private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore-beta.ipa")!
-#else
-private let altstoreAppURL = URL(string: "https://cdn.altstore.io/file/altstore/altstore.ipa")!
-#endif
-
 extension ALTDevice: MenuDisplayable {}
 
 @NSApplicationMain
@@ -55,6 +47,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var _jitAppListMenuControllers = [AnyObject]()
     
     private var isAltPluginUpdateAvailable = false
+    
+    private var popoverController: NSPopover?
+    private var popoverError: NSError?
+    private var errorAlert: NSAlert?
     
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
@@ -135,7 +131,7 @@ private extension AppDelegate
 {
     @objc func installAltStore(to device: ALTDevice)
     {
-        self.installApplication(at: altstoreAppURL, to: device)
+        self.installApplication(at: nil, to: device)
     }
     
     @objc func sideloadIPA(to device: ALTDevice)
@@ -159,8 +155,9 @@ private extension AppDelegate
             DispatchQueue.main.async {
                 switch result
                 {
-                case .failure(let error):
-                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("JIT compilation could not be enabled for %@.", comment: ""), app.name))
+                case .failure(let error as NSError):
+                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
+                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
                     
                 case .success:
                     let alert = NSAlert()
@@ -193,7 +190,7 @@ private extension AppDelegate
         }
     }
     
-    func installApplication(at url: URL, to device: ALTDevice)
+    func installApplication(at fileURL: URL?, to device: ALTDevice)
     {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
@@ -250,20 +247,20 @@ private extension AppDelegate
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
                 
-            case .failure(InstallError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
+            case .failure(OperationError.cancelled), .failure(ALTAppleAPIError.requiresTwoFactorAuthentication):
                 // Ignore
                 break
                 
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showErrorAlert(error: error, localizedFailure: String(format: NSLocalizedString("Could not install app to %@.", comment: ""), device.name))
+                    self.showErrorAlert(error: error)
                 }
             }
         }
                 
         func install()
         {
-            ALTDeviceManager.shared.installApplication(at: url, to: device, appleID: username, password: password, completion: finish(_:))
+            ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password, completion: finish(_:))
         }
         
         AnisetteDataManager.shared.isXPCAvailable { isAvailable in
@@ -278,7 +275,10 @@ private extension AppDelegate
                 self.pluginManager.isUpdateAvailable { result in
                     switch result
                     {
-                    case .failure(let error): finish(.failure(error))
+                    case .failure(let error):
+                        let error = (error as NSError).withLocalizedTitle(NSLocalizedString("Could not check for Mail plug-in updates.", comment: ""))
+                        finish(.failure(error))
+                        
                     case .success(let isUpdateAvailable):
                         self.isAltPluginUpdateAvailable = isUpdateAvailable
                         
@@ -302,85 +302,61 @@ private extension AppDelegate
         }
     }
     
-    func showErrorAlert(error: Error, localizedFailure: String)
+    func showErrorAlert(error: Error)
     {
+        self.popoverError = error as NSError
+        
         let nsError = error as NSError
         
-        let alert = NSAlert()
-        alert.alertStyle = .critical
-        alert.messageText = localizedFailure
-        
-        var messageComponents = [String]()
-        
-        let separator: String
-        switch error
-        {
-        case ALTServerError.maximumFreeAppLimitReached: separator = "\n\n"
-        default: separator = " "
-        }
-        
-        if let errorFailure = nsError.localizedFailure
-        {
-            if let debugDescription = nsError.localizedDebugDescription
-            {
-                alert.messageText = errorFailure
-                messageComponents.append(debugDescription)
-            }
-            else if let failureReason = nsError.localizedFailureReason
-            {
-                if nsError.localizedDescription.starts(with: errorFailure)
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(failureReason)
-                }
-                else
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-            }
-            else
-            {
-                // No failure reason given.
-                
-                if nsError.localizedDescription.starts(with: errorFailure)
-                {
-                    // No need to duplicate errorFailure in both title and message.
-                    alert.messageText = localizedFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-                else
-                {
-                    alert.messageText = errorFailure
-                    messageComponents.append(nsError.localizedDescription)
-                }
-            }
-        }
-        else
-        {
-            alert.messageText = localizedFailure
-            
-            if let debugDescription = nsError.localizedDebugDescription
-            {
-                messageComponents.append(debugDescription)
-            }
-            else
-            {
-                messageComponents.append(nsError.localizedDescription)
-            }
-        }
-        
+        var messageComponents = [error.localizedDescription]
         if let recoverySuggestion = nsError.localizedRecoverySuggestion
         {
             messageComponents.append(recoverySuggestion)
         }
         
-        let informativeText = messageComponents.joined(separator: separator)
-        alert.informativeText = informativeText
+        let title = nsError.localizedTitle ?? NSLocalizedString("Operation Failed", comment: "")
+        let message = messageComponents.joined(separator: "\n\n")
+        
+        let alert = NSAlert()
+        alert.alertStyle = .critical
+        alert.messageText = title
+        alert.informativeText = message
+        alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("View More Details", comment: ""))
+        
+        if let viewMoreButton = alert.buttons.last
+        {
+            viewMoreButton.target = self
+            viewMoreButton.action = #selector(AppDelegate.showDetailedErrorDescription)
+            
+            self.errorAlert = alert
+        }
         
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-
+        
         alert.runModal()
+        
+        self.popoverController = nil
+        self.errorAlert = nil
+        self.popoverError = nil
+    }
+    
+    @objc func showDetailedErrorDescription()
+    {
+        guard let errorAlert, let contentView = errorAlert.window.contentView else { return }
+        
+        let errorDetailsViewController = NSStoryboard(name: "Main", bundle: .main).instantiateController(withIdentifier: "errorDetailsViewController") as! ErrorDetailsViewController
+        errorDetailsViewController.error = self.popoverError
+        
+        let fittingSize = errorDetailsViewController.view.fittingSize
+        errorDetailsViewController.view.frame.size = fittingSize
+        
+        let popoverController = NSPopover()
+        popoverController.contentViewController = errorDetailsViewController
+        popoverController.contentSize = fittingSize
+        popoverController.behavior = .transient
+        popoverController.show(relativeTo: contentView.bounds, of: contentView, preferredEdge: .maxX)
+        self.popoverController = popoverController
     }
     
     @objc func toggleLaunchAtLogin(_ item: NSMenuItem)

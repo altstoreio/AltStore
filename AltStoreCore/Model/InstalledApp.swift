@@ -53,6 +53,8 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var team: Team?
     @NSManaged public var appExtensions: Set<InstalledExtension>
     
+    @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
+    
     public var isSideloaded: Bool {
         return self.storeApp == nil
     }
@@ -144,7 +146,21 @@ public extension InstalledApp
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
-                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+                                             #keyPath(InstalledApp.isActive),
+                                             #keyPath(InstalledApp.storeApp),
+                                             #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestVersionString))
+        return fetchRequest
+    }
+    
+    class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
+    {
+        let predicate = NSPredicate(format: "%K != nil AND %K != %K",
+                                    #keyPath(InstalledApp.storeApp.latestSupportedVersion),
+                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version))
+        
+        let fetchRequest = InstalledApp.updatesFetchRequest()
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [fetchRequest.predicate, predicate].compactMap { $0 })
+        
         return fetchRequest
     }
     

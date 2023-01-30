@@ -21,7 +21,7 @@
 @interface AKDevice
 + (AKDevice *)currentDevice;
 - (NSString *)uniqueDeviceIdentifier;
-- (NSString *)serialNumber;
+- (nullable NSString *)serialNumber;
 - (NSString *)serverFriendlyDescription;
 @end
 
@@ -83,7 +83,7 @@
                                                                                          localUserID:headers[@"X-Apple-I-MD-LU"]
                                                                                          routingInfo:[headers[@"X-Apple-I-MD-RINFO"] longLongValue]
                                                                               deviceUniqueIdentifier:device.uniqueDeviceIdentifier
-                                                                                  deviceSerialNumber:device.serialNumber
+                                                                                  deviceSerialNumber:device.serialNumber ?: @"C02LKHBBFD57" // serialNumber can be nil, so provide valid fallback serial number.
                                                                                    deviceDescription:device.serverFriendlyDescription
                                                                                                 date:date
                                                                                               locale:[NSLocale currentLocale]

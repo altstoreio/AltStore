@@ -13,6 +13,9 @@ class ResultOperation<ResultType>: Operation
 {
     var resultHandler: ((Result<ResultType, Error>) -> Void)?
     
+    // Should only be set by subclasses.
+    var localizedFailure: String?
+    
     @available(*, unavailable)
     override func finish()
     {
@@ -23,14 +26,20 @@ class ResultOperation<ResultType>: Operation
     {
         guard !self.isFinished else { return }
         
+        var result = result
+        
         if self.isCancelled
         {
-            self.resultHandler?(.failure(OperationError.cancelled))
+            result = .failure(OperationError.cancelled)
         }
-        else
+        else if case .failure(let nsError as NSError) = result, let localizedFailure, nsError.localizedFailure == nil
         {
-            self.resultHandler?(result)
+            // Error does not have localizedFailure, so give it the Operation's failure (if one exists).
+            let error = nsError.withLocalizedFailure(localizedFailure)
+            result = .failure(error)
         }
+        
+        self.resultHandler?(result)
         
         super.finish()
     }
