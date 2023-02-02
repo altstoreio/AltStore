@@ -11,37 +11,29 @@ import UIKit
 
 public extension Source
 {
-    static var altStoreIdentifier: String {
-        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        
-        if appVersion != nil {
-            if appVersion!.contains("beta") {
-                return Bundle.Info.appbundleIdentifier + ".Beta"
-            }
-            if appVersion!.contains("nightly") {
-                return Bundle.Info.appbundleIdentifier + ".Nightly"
-            }
-        }
-        
-        return Bundle.Info.appbundleIdentifier
-    }
+    #if ALPHA
+    static let altStoreIdentifier = Bundle.Info.appbundleIdentifier
+    #else
+    static let altStoreIdentifier = Bundle.Info.appbundleIdentifier
+    #endif
     
-    static let altStoreSourceBaseURL = "https://sidestore-apps.naturecodevoid.dev/"
+    #if STAGING
     
-    static var altStoreSourceURL: URL {
-        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        
-        if appVersion != nil {
-            if appVersion!.contains("beta") {
-                return URL(string: altStoreSourceBaseURL + "beta")!
-            }
-            if appVersion!.contains("nightly") {
-                return URL(string: altStoreSourceBaseURL + "nightly")!
-            }
-        }
-        
-        return URL(string: altStoreSourceBaseURL)!
-    }
+    #if ALPHA
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
+    #else
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
+    #endif
+    
+    #else
+    
+    #if ALPHA
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
+    #else
+    static let altStoreSourceURL = URL(string: "https://apps.sidestore.io/")!
+    #endif
+    
+    #endif
 }
 
 public struct AppPermissionFeed: Codable {

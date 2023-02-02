@@ -32,15 +32,6 @@ public class NewsItem: NSManagedObject, Decodable, Fetchable
     @NSManaged public var storeApp: StoreApp?
     @NSManaged public var source: Source?
     
-    @objc public var isDuplicate: Bool {
-        if self.source == nil { return false }
-        
-        // Hide news from sources that begin with the SideStore identifier, and aren't from the same source as the current SideStore source
-        if self.source!.identifier.starts(with: Bundle.Info.appbundleIdentifier) && self.source!.identifier != Source.altStoreIdentifier { return true }
-        
-        return false
-    }
-    
     private enum CodingKeys: String, CodingKey
     {
         case identifier
@@ -95,9 +86,6 @@ public extension NewsItem
 {
     @nonobjc class func fetchRequest() -> NSFetchRequest<NewsItem>
     {
-        let fetchRequest = NSFetchRequest<NewsItem>(entityName: "NewsItem")
-        fetchRequest.predicate = NSPredicate(format: "%K == NO",
-                                             #keyPath(NewsItem.isDuplicate))
-        return fetchRequest
+        return NSFetchRequest<NewsItem>(entityName: "NewsItem")
     }
 }
