@@ -5,6 +5,14 @@
       "identifier": "io.sidestore.example"
     },
     {
+      "identifier": "com.SideStore.SideStore",
+      "sourceURL": "https://sidestore-apps.naturecodevoid.dev/"
+    },
+    {
+      "identifier": "com.SideStore.SideStore.Beta",
+      "sourceURL": "https://sidestore-apps.naturecodevoid.dev/beta"
+    },
+    {
       "identifier": "com.sidestoreapps.community",
       "sourceURL": "https://community-apps.sidestore.io/sidecommunity.json"
     },

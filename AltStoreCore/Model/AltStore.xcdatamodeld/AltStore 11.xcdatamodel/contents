@@ -103,6 +103,7 @@
         <attribute name="externalURL" optional="YES" attributeType="URI"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="isDuplicate" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isSilent" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>

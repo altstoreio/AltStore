@@ -77,7 +77,7 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.sourceIdentifier), Source.altStoreIdentifier)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in

@@ -343,16 +343,28 @@ public extension StoreApp
     {
         let app = StoreApp(context: context)
         app.name = "SideStore"
+        
+        let currentAppVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        
+        if currentAppVersion != nil {
+            if currentAppVersion!.contains("beta") {
+                app.name += " (Beta)"
+            }
+            if currentAppVersion!.contains("nightly") {
+                app.name += " (Nightly)"
+            }
+        }
+        
         app.bundleIdentifier = StoreApp.altstoreAppID
-        app.developerName = "Side Team"
-        app.localizedDescription = "SideStore is an alternative App Store."
-        app.iconURL = URL(string: "https://user-images.githubusercontent.com/705880/63392210-540c5980-c37b-11e9-968c-8742fc68ab2e.png")!
+        app.developerName = "SideStore Team"
+        app.localizedDescription = "SideStore is an alternative app store for non-jailbroken devices.\n\nSideStore allows you to sideload other .ipa files and apps from the Files app or via the SideStore Library."
+        app.iconURL = URL(string: "https://sidestore.io/assets/icon.png")!
         app.screenshotURLs = []
         app.sourceIdentifier = Source.altStoreIdentifier
         
-        let appVersion = AppVersion.makeAppVersion(version: "0.3.0",
+        let appVersion = AppVersion.makeAppVersion(version: "0.0.0", // this is set to the current app version later
                                                    date: Date(),
-                                                   downloadURL: URL(string: "http://rileytestut.com")!,
+                                                   downloadURL: URL(string: "https://sidestore.io")!,
                                                    size: 0,
                                                    appBundleID: app.bundleIdentifier,
                                                    sourceID: Source.altStoreIdentifier,
@@ -360,10 +372,6 @@ public extension StoreApp
         app.setVersions([appVersion])
         
         print("makeAltStoreApp StoreApp: \(String(describing: app))")
-        
-        #if BETA
-        app.isBeta = true
-        #endif
         
         return app
     }

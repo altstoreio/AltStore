@@ -108,6 +108,10 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     public func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
+        if storeApp != nil {
+            // This might break things; maybe only do this if the bundle ID is SideStore's?
+            self.name = storeApp!.name // If we don't do this, the name will always be SideStore in My Apps, even when using beta/nightly
+        }
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
@@ -178,7 +182,7 @@ public extension InstalledApp
     
     class func fetchAltStore(in context: NSManagedObjectContext) -> InstalledApp?
     {
-        let predicate = NSPredicate(format: "%K == %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
+        let predicate = NSPredicate(format: "%K == %@ AND %K != nil AND %K == %@", #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.sourceIdentifier), Source.altStoreIdentifier)
         print("Fetch 'AltStore' Predicate: \(String(describing: predicate))")
         let altStore = InstalledApp.first(satisfying: predicate, in: context)
         return altStore

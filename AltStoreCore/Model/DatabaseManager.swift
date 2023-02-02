@@ -222,7 +222,7 @@ private extension DatabaseManager
             
             let storeApp: StoreApp
             
-            if let app = StoreApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID), in: context)
+            if let app = StoreApp.first(satisfying: NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(StoreApp.sourceIdentifier), Source.altStoreIdentifier), in: context)
             {
                 storeApp = app
             }
