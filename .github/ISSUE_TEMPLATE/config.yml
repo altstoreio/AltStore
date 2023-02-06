@@ -1,0 +1,10 @@
+# force issue template usage
+blank_issues_enabled: false
+
+contact_links:
+  - name: Discord
+    url: https://discord.gg/RgpFBX3Q3k
+    about: If you need support, please go here first instead of making an issue!
+  - name: GitHub Discussions
+    url: https://github.com/SideStore/SideStore/discussions
+    about: As an alternative to Discord, you can also make a new GitHub discussion.

@@ -1,0 +1,40 @@
+name: Bug Report
+description: Report a bug
+title: "[BUG] "
+labels: ["bug"]
+assignees:
+  - naturecodevoid
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Before you continue filling out the report, please **[search in GitHub Issues](https://github.com/SideStore/SideStore/issues?q=is%3Aissue+is%3Aopen) for the bug you are experiencing** in case it has already been reported.
+        
+        **Please use [Discord](https://discord.gg/RgpFBX3Q3k) or [GitHub Discussions](https://github.com/SideStore/SideStore/discussions) for support.**
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: What is the bug and how did you discover it?
+      placeholder: Please be clear and concise with your description.
+    validations:
+      required: true
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: Instructions to reproduce
+      description: Please include clear and consistent instructions for reproducing the bug to make it easier for us to fix it.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: What version of SideStore are you using?
+      description: To retrieve this, go to `Settings` in the SideStore app and scroll down to the bottom.
+    validations:
+      required: true
+  - type: textarea
+    id: other-info
+    attributes:
+      label: Other info
+      description: If you have any other comments, other info that might be useful, or if you found a workaround, please put it here.

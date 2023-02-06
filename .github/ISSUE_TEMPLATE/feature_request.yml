@@ -1,0 +1,33 @@
+name: Feature Request
+description: Suggest a feature
+title: "[FEATURE REQUEST] "
+labels: ["enhancement"]
+assignees:
+  - naturecodevoid
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request! Before you continue filling out the form, please **[search in GitHub Issues](https://github.com/SideStore/SideStore/issues?q=is%3Aissue+is%3Aopen) for the feature you are suggestion** in case it has already been suggested.
+        
+        **Please use [Discord](https://discord.gg/RgpFBX3Q3k) or [GitHub Discussions](https://github.com/SideStore/SideStore/discussions) for support.**
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the feature
+      description: What is the feature? How would it work?
+      placeholder: Please be clear and concise with your description.
+    validations:
+      required: true
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use cases
+      description: Please include multiple use cases where this feature would be useful.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: If you have alternative ideas of how this feature could work, you can put them here.
