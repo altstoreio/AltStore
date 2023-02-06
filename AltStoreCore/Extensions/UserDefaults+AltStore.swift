@@ -41,6 +41,7 @@ public extension UserDefaults
     
     @NSManaged var trustedSourceIDs: [String]?
     
+    @nonobjc
     var activeAppsLimit: Int? {
         get {
             return self._activeAppsLimit?.intValue
@@ -58,6 +59,8 @@ public extension UserDefaults
     }
     @NSManaged @objc(activeAppsLimit) private var _activeAppsLimit: NSNumber?
     
+    @NSManaged var ignoreActiveAppsLimit: Bool
+    
     class func registerDefaults()
     {
         let ios13_5 = OperatingSystemVersion(majorVersion: 13, minorVersion: 5, patchVersion: 0)
@@ -72,7 +75,8 @@ public extension UserDefaults
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
             #keyPath(UserDefaults.activeAppLimitIncludesExtensions): activeAppLimitIncludesExtensions,
             #keyPath(UserDefaults.localServerSupportsRefreshing): localServerSupportsRefreshing,
-            #keyPath(UserDefaults.requiresAppGroupMigration): true
+            #keyPath(UserDefaults.requiresAppGroupMigration): true,
+            #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
         ]
         
         UserDefaults.standard.register(defaults: defaults)

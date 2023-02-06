@@ -518,6 +518,46 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="" id="2em-H5-kgS">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="n3X-OX-idC" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="957" width="375" height="51"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="n3X-OX-idC" id="IVp-7k-KdM">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enforce 3-App Limit" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IY0-94-5LN">
+                                                    <rect key="frame" x="30" y="15.5" width="163" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oie-te-KSQ">
+                                                    <rect key="frame" x="296" y="10" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="toggleEnforceThreeAppLimit:" destination="aMk-Xp-UL8" eventType="valueChanged" id="tfb-kk-C17"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="IY0-94-5LN" firstAttribute="leading" secondItem="IVp-7k-KdM" secondAttribute="leadingMargin" id="07y-eS-INC"/>
+                                                <constraint firstItem="Oie-te-KSQ" firstAttribute="centerY" secondItem="IVp-7k-KdM" secondAttribute="centerY" id="1dS-uM-gb1"/>
+                                                <constraint firstItem="IY0-94-5LN" firstAttribute="centerY" secondItem="IVp-7k-KdM" secondAttribute="centerY" id="FyZ-BM-Ss0"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Oie-te-KSQ" secondAttribute="trailing" id="I1v-Ub-eJJ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="" id="OMa-EK-hRI">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="FMZ-as-Ljo" customClass="InsetGroupTableViewCell" customModule="AltStore" customModuleProvider="target">
@@ -603,6 +643,7 @@
                         <outlet property="accountNameLabel" destination="CnN-M1-AYK" id="Ldc-Py-Bix"/>
                         <outlet property="accountTypeLabel" destination="434-MW-Den" id="mNB-QE-4Jg"/>
                         <outlet property="backgroundRefreshSwitch" destination="DPu-zD-Als" id="eiG-Hv-Vko"/>
+                        <outlet property="enforceThreeAppLimitSwitch" destination="Oie-te-KSQ" id="jKn-t1-gyk"/>
                         <outlet property="versionLabel" destination="bUR-rp-Nw2" id="85I-5R-hqz"/>
                     </connections>
                 </tableViewController>

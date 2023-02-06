@@ -991,7 +991,7 @@ private extension MyAppsViewController
     
     @objc func presentInactiveAppsAlert()
     {
-        let message: String
+        var message: String
         
         if UserDefaults.standard.activeAppLimitIncludesExtensions
         {
@@ -1000,6 +1000,12 @@ private extension MyAppsViewController
         else
         {
             message = NSLocalizedString("Non-developer Apple IDs are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again.", comment: "")
+            
+            if UserDefaults.standard.ignoreActiveAppsLimit
+            {
+                message += "\n\n"
+                message += NSLocalizedString("If you're using the MacDirtyCow exploit to remove the 3-app limit, you can install up to 10 apps and app extensions instead.", comment: "")
+            }
         }
                 
         let alertController = UIAlertController(title: NSLocalizedString("What are inactive apps?", comment: ""), message: message, preferredStyle: .alert)

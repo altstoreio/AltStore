@@ -50,7 +50,7 @@ class InstalledAppToInstalledAppMigrationPolicy: NSEntityMigrationPolicy
             
             // We can assume there is an active app limit,
             // but will confirm next time user authenticates.
-            UserDefaults.standard.activeAppsLimit = ALTActiveAppsLimit
+            UserDefaults.standard.activeAppsLimit = InstalledApp.freeAccountActiveAppsLimit
         }
         
         return NSNumber(value: isActive)
