@@ -250,10 +250,8 @@ private extension SettingsViewController
         switch section
         {
         case .macDirtyCow:
-            let ios16_2 = OperatingSystemVersion(majorVersion: 16, minorVersion: 2, patchVersion: 0)
-            
-            let isMacDirtyCowExploitSupported = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16_2)
-            return !(isMacDirtyCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
+            let isHidden = !(UserDefaults.standard.isMacDirtyCowSupported && UserDefaults.standard.isDebugModeEnabled)
+            return isHidden
             
         default: return false
         }

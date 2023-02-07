@@ -60,6 +60,7 @@ public extension UserDefaults
     @NSManaged @objc(activeAppsLimit) private var _activeAppsLimit: NSNumber?
     
     @NSManaged var ignoreActiveAppsLimit: Bool
+    @NSManaged var isMacDirtyCowSupported: Bool
     
     class func registerDefaults()
     {
@@ -70,6 +71,9 @@ public extension UserDefaults
         let ios14 = OperatingSystemVersion(majorVersion: 14, minorVersion: 0, patchVersion: 0)
         let localServerSupportsRefreshing = !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios14)
         
+        let ios16_2 = OperatingSystemVersion(majorVersion: 16, minorVersion: 2, patchVersion: 0)
+        let isMacDirtyCowSupported = ProcessInfo.processInfo.isOperatingSystemAtLeast(ios14) && !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16_2) // MacDirtyCow supports iOS 14.0 - 16.1.2
+        
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
@@ -77,9 +81,16 @@ public extension UserDefaults
             #keyPath(UserDefaults.localServerSupportsRefreshing): localServerSupportsRefreshing,
             #keyPath(UserDefaults.requiresAppGroupMigration): true,
             #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
+            #keyPath(UserDefaults.isMacDirtyCowSupported): isMacDirtyCowSupported,
         ]
         
         UserDefaults.standard.register(defaults: defaults)
         UserDefaults.shared.register(defaults: defaults)
+        
+        if !isMacDirtyCowSupported
+        {
+            // Disable ignoreActiveAppsLimit if running iOS version that doesn't support MacDirtyCow.
+            UserDefaults.standard.ignoreActiveAppsLimit = false
+        }
     }
 }
