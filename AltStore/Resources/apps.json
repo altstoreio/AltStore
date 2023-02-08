@@ -47,6 +47,14 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "1.6.1b",
+          "date": "2023-02-09T11:00:00-06:00",
+          "localizedDescription": "• Sideload more than 3 apps via MacDirtyCow exploit*\n• “Clear Cache” button removes non-essential data to free up disk space\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 15.7.1 or 16.0 - 16.1.2. See Patreon post for instructions.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1_b.ipa",
+          "size": 5627282,
+          "minOSVersion": "12.2"
+        },
+        {
           "version": "1.6rc3",
           "date": "2023-01-23T11:30:00-06:00",
           "localizedDescription": "**This update is solely to test that updating works as expected from the current beta, and otherwise is identical to 1.6 RC 2**\n\nPREVIOUS UPDATES\n• Fixed outdated AltStore updates appearing in My Apps tab\n• Moved Error Log from \"Debug\" settings to \"Techy Things\"\n• Improved misc. error messages\n• Fixed repeated \"AltServer could not be found\" notifications\n• Fixed missing metadata for errors received from AltServer\n• Fixed decoding nested error metadata values",
@@ -78,14 +86,14 @@
           "size": 5608964
         }
       ],
-      "version": "1.6rc2",
-      "versionDate": "2023-01-18T11:30:00-06:00",
-      "versionDescription": "• Fixed outdated AltStore updates appearing in My Apps tab\n\nPREVIOUS RC\n• Moved Error Log from \"Debug\" settings to \"Techy Things\"\n• Improved misc. error messages\n• Fixed repeated \"AltServer could not be found\" notifications\n• Fixed missing metadata for errors received from AltServer\n• Fixed decoding nested error metadata values",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_rc2.ipa",
+      "version": "1.6.1b",
+      "versionDate": "2023-02-09T11:00:00-06:00",
+      "versionDescription": "• Sideload more than 3 apps via MacDirtyCow exploit*\n• “Clear Cache” button removes non-essential data to free up disk space\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 15.7.1 or 16.0 - 16.1.2. See Patreon post for instructions.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1_b.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5614213,
+      "size": 5627282,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
