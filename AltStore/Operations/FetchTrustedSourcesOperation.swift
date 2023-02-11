@@ -10,11 +10,7 @@ import Foundation
 
 private extension URL
 {
-    #if STAGING
     static let trustedSources = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/trustedapps.json")!
-    #else
-    static let trustedSources = URL(string: "https://raw.githubusercontent.com/SideStore/SideStore/develop/trustedapps.json")!
-    #endif
 }
 
 extension FetchTrustedSourcesOperation

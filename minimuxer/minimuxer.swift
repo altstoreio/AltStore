@@ -86,6 +86,26 @@ public func remove_provisioning_profile(id: String) throws -> Uhoh {
     return Uhoh.Good
 }
 
+public func remove_provisioning_profiles(ids: Array<String>) throws -> Uhoh {
+    let id_ns = NSString(string: ids.joined(separator: ","))
+    let id_pointer = UnsafeMutablePointer<CChar>(mutating: id_ns.utf8String)
+    #if false // Retries
+    var res = minimuxer_remove_provisioning_profiles(id_pointer)
+    var attempts = 10
+    while (attempts != 0 && res != 0) {
+        print("(REMOVE PROFILES) ATTEMPTS: \(attempts)")
+        res = minimuxer_remove_provisioning_profiles(id_pointer)
+        attempts -= 1
+    }
+    #else
+    let res = minimuxer_remove_provisioning_profiles(id_pointer)
+    #endif
+    if res != 0 {
+        throw Uhoh.Bad(code: res)
+    }
+    return Uhoh.Good
+}
+
 public func remove_app(app_id: String) throws -> Uhoh {
     let ai = NSString(string: app_id)
     let ai_pointer = UnsafeMutablePointer<CChar>(mutating: ai.utf8String)

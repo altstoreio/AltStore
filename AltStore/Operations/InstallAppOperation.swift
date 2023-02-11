@@ -115,39 +115,6 @@ final class InstallAppOperation: ResultOperation<InstalledApp>
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
             
-            var activeProfiles: Set<String>?
-            if let sideloadedAppsLimit = UserDefaults.standard.activeAppsLimit
-            {
-                // When installing these new profiles, AltServer will remove all non-active profiles to ensure we remain under limit.
-                
-                let fetchRequest = InstalledApp.activeAppsFetchRequest()
-                fetchRequest.includesPendingChanges = false
-                
-                var activeApps = InstalledApp.fetch(fetchRequest, in: backgroundContext)
-                if !activeApps.contains(installedApp)
-                {
-                    let activeAppsCount = activeApps.map { $0.requiredActiveSlots }.reduce(0, +)
-                    
-                    let availableActiveApps = max(sideloadedAppsLimit - activeAppsCount, 0)
-                    if installedApp.requiredActiveSlots <= availableActiveApps
-                    {
-                        // This app has not been explicitly activated, but there are enough slots available,
-                        // so implicitly activate it.
-                        installedApp.isActive = true
-                        activeApps.append(installedApp)
-                    }
-                    else
-                    {
-                        installedApp.isActive = false
-                    }
-                }
-
-                activeProfiles = Set(activeApps.flatMap { (installedApp) -> [String] in
-                    let appExtensionProfiles = installedApp.appExtensions.map { $0.resignedBundleIdentifier }
-                    return [installedApp.resignedBundleIdentifier] + appExtensionProfiles
-                })
-            }
-            
             let ns_bundle = NSString(string: installedApp.bundleIdentifier)
             let ns_bundle_ptr = UnsafeMutablePointer<CChar>(mutating: ns_bundle.utf8String)
             

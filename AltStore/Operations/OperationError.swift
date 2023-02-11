@@ -120,45 +120,45 @@ enum OperationError: LocalizedError
 
 func minimuxer_to_operation(code: Int32) -> OperationError {
     switch code {
-    case -1:
+    case 1:
         return OperationError.noDevice
-    case -2:
+    case 2:
         return OperationError.createService(name: "debug")
-    case -3:
+    case 3:
         return OperationError.createService(name: "instproxy")
-    case -4:
+    case 4:
         return OperationError.getFromDevice(name: "installed apps")
-    case -5:
+    case 5:
         return OperationError.getFromDevice(name: "path to the app")
-    case -6:
+    case 6:
         return OperationError.getFromDevice(name: "bundle path")
-    case -7:
+    case 7:
         return OperationError.setArgument(name: "max packet")
-    case -8:
+    case 8:
         return OperationError.setArgument(name: "working directory")
-    case -9:
+    case 9:
         return OperationError.setArgument(name: "argv")
-    case -10:
+    case 10:
         return OperationError.getFromDevice(name: "launch success")
-    case -11:
+    case 11:
         return OperationError.detach
-    case -12:
+    case 12:
         return OperationError.functionArguments
-    case -13:
+    case 13:
         return OperationError.createService(name: "AFC")
-    case -14:
+    case 14:
         return OperationError.afc
-    case -15:
+    case 15:
         return OperationError.install
-    case -16:
+    case 16:
         return OperationError.uninstall
-    case -17:
+    case 17:
         return OperationError.createService(name: "misagent")
-    case -18:
+    case 18:
         return OperationError.profileInstall
-    case -19:
+    case 19:
         return OperationError.profileInstall
-    case -20:
+    case 20:
         return OperationError.noConnection
     default:
         return OperationError.unknown

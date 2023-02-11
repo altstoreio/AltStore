@@ -44,6 +44,17 @@ final class RefreshAppOperation: ResultOperation<InstalledApp>
             
             guard let app = self.context.app else { throw OperationError.appNotFound }
             
+            print("Removing provisioning profiles for ID \(app.bundleIdentifier)")
+            
+            do {
+                let res = try remove_provisioning_profiles(ids: [app.bundleIdentifier])
+                if case .Bad(let code) = res {
+                    self.finish(.failure(minimuxer_to_operation(code: code)))
+                }
+            } catch Uhoh.Bad(let code) {
+                self.finish(.failure(minimuxer_to_operation(code: code)))
+            }
+            
             DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                 print("Sending refresh app request...")
 
