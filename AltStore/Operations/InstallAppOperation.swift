@@ -11,6 +11,7 @@ import Network
 import AltStoreCore
 import AltSign
 import Roxas
+import minimuxer
 
 @objc(InstallAppOperation)
 final class InstallAppOperation: ResultOperation<InstalledApp>
@@ -57,6 +58,19 @@ final class InstallAppOperation: ResultOperation<InstalledApp>
             else
             {
                 installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, certificateSerialNumber: certificate.serialNumber, context: backgroundContext)
+            }
+            
+            print("Removing provisioning profiles for ID \(installedApp.bundleIdentifier)")
+            
+            do {
+                let res = try remove_provisioning_profiles(ids: [installedApp.bundleIdentifier])
+                if case .Bad(let code) = res {
+                    self.finish(.failure(minimuxer_to_operation(code: code)))
+                }
+            } catch Uhoh.Bad(let code) {
+                self.finish(.failure(minimuxer_to_operation(code: code)))
+            } catch {
+                self.finish(.failure(OperationError.unknown))
             }
             
             installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)

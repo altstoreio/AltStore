@@ -50,6 +50,17 @@ int minimuxer_install_ipa(char *bundle_id);
 int minimuxer_install_provisioning_profile(uint8_t *pointer, unsigned int len);
 
 /**
+ * Returns 0 if minimuxer is not ready, 1 if it is. Ready means:
+ * - device connection succeeded
+ * - at least 1 device exists
+ * - last heartbeat was a success
+ * - the developer disk image is mounted
+ * # Safety
+ * I don't know how you would be able to make this function unsafe to use.
+ */
+int minimuxer_ready(void);
+
+/**
  * Removes an app from the device
  * # Safety
  * Don't be stupid
@@ -62,6 +73,17 @@ int minimuxer_remove_app(char *bundle_id);
  * Don't be stupid
  */
 int minimuxer_remove_provisioning_profile(char *id);
+
+/**
+ * Removes provisioning profiles associated with the given IDs
+ * # Arguments
+ * - `ids`: The bundle IDs of profiles to remove, **seperated by comma.**<br />
+ *   Each profile's Name will be checked against each given ID. If the Name contains an ID, the profile will be removed.<br />
+ *   Example: ids `com.SideStore.SideStore,stream.yattee.app` would remove `com.SideStore.SideStore`, `com.SideStore.SideStore.AltWidget` and `stream.yattee.app` since they all have Names that would include a given ID.
+ * # Safety
+ * Don't be stupid
+ */
+int minimuxer_remove_provisioning_profiles(char *ids);
 
 /**
  * Yeets an ipa to the afc jail
