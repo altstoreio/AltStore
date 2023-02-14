@@ -60,7 +60,9 @@ public extension UserDefaults
     @NSManaged @objc(activeAppsLimit) private var _activeAppsLimit: NSNumber?
     
     @NSManaged var ignoreActiveAppsLimit: Bool
-    @NSManaged var isMacDirtyCowSupported: Bool
+    
+    // Including "MacDirtyCow" in name triggers false positives with malware detectors 🤷‍♂️
+    @NSManaged var isCowExploitSupported: Bool
     
     class func registerDefaults()
     {
@@ -87,7 +89,7 @@ public extension UserDefaults
             #keyPath(UserDefaults.localServerSupportsRefreshing): localServerSupportsRefreshing,
             #keyPath(UserDefaults.requiresAppGroupMigration): true,
             #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
-            #keyPath(UserDefaults.isMacDirtyCowSupported): isMacDirtyCowSupported,
+            #keyPath(UserDefaults.isCowExploitSupported): isMacDirtyCowSupported,
         ]
         
         UserDefaults.standard.register(defaults: defaults)
