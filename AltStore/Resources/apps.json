@@ -9,6 +9,13 @@
       "developerName": "Riley Testut",
       "versions": [
         {
+          "version": "1.6.1",
+          "date": "2023-02-20T12:00:00-06:00",
+          "localizedDescription": "• “Clear Cache” button removes non-essential data to free up disk space\n• Sideload more than 3 apps via MacDirtyCow exploit*†\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 16.1.2 (excluding 15.7.2). iOS 16.2+ not supported.\n†Visit faq.altstore.io for detailed instructions.\n",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1.ipa",
+          "size": 5626583
+        },
+        {
           "version": "1.6",
           "date": "2023-01-30T10:00:00-06:00",
           "localizedDescription": "NEW\n\nLock Screen Widget (iOS 16+)\n• Counts down days until AltStore expires\n• Available in 2 different styles: \"icon\" and \"text\"\n\nError Log\n• View past errors in more detail\n• Tap an error to copy the error message or error code\n• Search for error code directly in AltStore FAQ\n• Access via new \"Techy Things\" section in settings\n\niOS Version Compatibility\n• Checks iOS compatibility for updates and installs \n• Asks you to install latest compatible version if not supported\n• View unsupported updates from My Apps tab\n\nRevamped Error Handling\n• Completely revamped error handling to make debugging issues as easy as possible\n• Revised error messages to be more descriptive and provide more suggestions\n• Includes more information with errors\n\nMisc.\n• Pull-to-refresh to check for updates\n• Supports new “versions” key in source JSON\n• Supports updating apps from app detail page\n\nFIXED\n• Fixed \"more\" button appearing by mistake on app detail pages\n• Fixed widgets potentially not updating after refreshing apps\n• Fixed incorrect app name and iOS version in \"Unsupported iOS version\" error message\n• Fixed refreshing tweaked apps with removed app extensions\n• Fixed incorrect error toast view color when sign-in fails",
@@ -16,14 +23,14 @@
           "size": 5614798
         }
       ],
-      "version": "1.6",
-      "versionDate": "2023-01-30T10:00:00-06:00",
-      "versionDescription": "NEW\n\nLock Screen Widget (iOS 16+)\n• Counts down days until AltStore expires\n• Available in 2 different styles: \"icon\" and \"text\"\n\nError Log\n• View past errors in more detail\n• Tap an error to copy the error message or error code\n• Search for error code directly in AltStore FAQ\n• Access via new \"Techy Things\" section in settings\n\niOS Version Compatibility\n• Checks iOS compatibility for updates and installs \n• Asks user to install latest compatible version if not supported\n• View unsupported updates from My Apps tab\n\nRevamped Error Handling\n• Completely revamped error handling to make debugging issues as easy as possible\n• Revised error messages to be more descriptive and provide more suggestions\n• Includes more information with errors\n\nMisc.\n• Pull-to-refresh to check for updates\n• Supports new “versions” key in source JSON\n• Supports updating apps from app detail page\n\nFIXED\n• Fixed \"more\" button appearing by mistake on app detail pages\n• Fixed widgets potentially not updating after refreshing apps\n• Fixed incorrect app name and iOS version in \"Unsupported iOS version\" error message\n• Fixed refreshing tweaked apps with removed app extensions\n• Fixed incorrect error toast view color when sign-in fails",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6.ipa",
+      "version": "1.6.1",
+      "versionDate": "2023-02-20T12:00:00-06:00",
+      "versionDescription": "• “Clear Cache” button removes non-essential data to free up disk space\n• Sideload more than 3 apps via MacDirtyCow exploit*†\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 16.1.2 (excluding 15.7.2). iOS 16.2+ not supported.\n†Visit faq.altstore.io for detailed instructions.\n",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5614798,
+      "size": 5626583,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
