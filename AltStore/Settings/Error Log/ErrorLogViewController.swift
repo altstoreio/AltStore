@@ -152,16 +152,13 @@ private extension ErrorLogViewController
                     }
                     else if let storeApp = loggedError.storeApp
                     {
-                        ImagePipeline.shared.loadImage(with: storeApp.iconURL, progress: nil) { (response, error) in
+                        ImagePipeline.shared.loadImage(with: storeApp.iconURL, progress: nil) { result in
                             guard !operation.isCancelled else { return operation.finish() }
                             
-                            if let image = response?.image
+                            switch result
                             {
-                                completion(image, nil)
-                            }
-                            else
-                            {
-                                completion(nil, error)
+                            case .success(let response): completion(response.image, nil)
+                            case .failure(let error): completion(nil, error)
                             }
                         }
                     }

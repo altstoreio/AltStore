@@ -118,10 +118,11 @@ class AppViewController: UIViewController
         {
             imageView.isIndicatingActivity = true
             
-            Nuke.loadImage(with: self.app.iconURL, options: .shared, into: imageView, progress: nil) { [weak imageView] (response, error) in
-                if response?.image != nil
+            Nuke.loadImage(with: self.app.iconURL, options: .shared, into: imageView, progress: nil) { [weak imageView] (result) in
+                switch result
                 {
-                    imageView?.isIndicatingActivity = false
+                case .success: imageView?.isIndicatingActivity = false
+                case .failure(let error): print("[ALTLog] Failed to load app icons.", error)
                 }
             }
         }

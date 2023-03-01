@@ -11,12 +11,12 @@
 #import <AppCenter/MSACChannelProtocol.h>
 #import <AppCenter/MSACConstants+Flags.h>
 #import <AppCenter/MSACConstants.h>
-#import <AppCenter/MSACCustomProperties.h>
 #import <AppCenter/MSACDevice.h>
 #import <AppCenter/MSACEnable.h>
 #import <AppCenter/MSACLog.h>
 #import <AppCenter/MSACLogWithProperties.h>
 #import <AppCenter/MSACLogger.h>
+#import <AppCenter/MSACSerializableObject.h>
 #import <AppCenter/MSACService.h>
 #import <AppCenter/MSACServiceAbstract.h>
 #import <AppCenter/MSACWrapperLogger.h>
@@ -29,12 +29,12 @@
 #import "MSACChannelProtocol.h"
 #import "MSACConstants+Flags.h"
 #import "MSACConstants.h"
-#import "MSACCustomProperties.h"
 #import "MSACDevice.h"
 #import "MSACEnable.h"
 #import "MSACLog.h"
 #import "MSACLogWithProperties.h"
 #import "MSACLogger.h"
+#import "MSACSerializableObject.h"
 #import "MSACService.h"
 #import "MSACServiceAbstract.h"
 #import "MSACWrapperLogger.h"

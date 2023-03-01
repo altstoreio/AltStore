@@ -158,18 +158,15 @@ private extension NewsViewController
             guard let imageURL = newsItem.imageURL else { return nil }
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: imageURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: imageURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
