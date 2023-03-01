@@ -69,7 +69,8 @@ Due to the licensing of some dependencies used by AltStore, I have no choice but
 
 ## Contact Me
 
-* Email: riley@rileytestut.com
-* Twitter: [@rileytestut](https://twitter.com/rileytestut)
+* Email: riley@altstore.io
+* Mastodon (Preferred): [@rileytestut@mastodon.social](https://mastodon.social/@rileytestut)
+* Twitter (Less active nowadays): [@rileytestut](https://twitter.com/rileytestut)
 
 Questions about AltStore in general? Make sure to read the FAQ at https://altstore.io/faq/
