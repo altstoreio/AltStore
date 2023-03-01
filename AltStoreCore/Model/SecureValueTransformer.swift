@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 @objc(ALTSecureValueTransformer)
 public final class SecureValueTransformer: NSSecureUnarchiveFromDataTransformer
@@ -14,7 +15,7 @@ public final class SecureValueTransformer: NSSecureUnarchiveFromDataTransformer
     public static let name = NSValueTransformerName(rawValue: "ALTSecureValueTransformer")
     
     public override static var allowedTopLevelClasses: [AnyClass] {
-        let allowedClasses = super.allowedTopLevelClasses + [NSError.self]
+        let allowedClasses = super.allowedTopLevelClasses + [NSError.self, UIColor.self]
         return allowedClasses
     }
     
