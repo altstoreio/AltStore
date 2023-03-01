@@ -11,8 +11,22 @@ import CoreData
 
 import AltSign
 
-// Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
-public let ALTActiveAppsLimit = 3
+extension InstalledApp
+{
+    public static var freeAccountActiveAppsLimit: Int {
+        if UserDefaults.standard.ignoreActiveAppsLimit
+        {
+            // MacDirtyCow exploit allows users to remove 3-app limit, so return 10 to match App ID limit per-week.
+            // Don't return nil because that implies there is no limit, which isn't quite true due to App ID limit.
+            return 10
+        }
+        else
+        {
+            // Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
+            return 3
+        }
+    }
+}
 
 public protocol InstalledAppProtocol: Fetchable
 {

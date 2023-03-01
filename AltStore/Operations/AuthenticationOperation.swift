@@ -245,7 +245,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
                 let activeAppsMinimumVersion = OperatingSystemVersion(majorVersion: 13, minorVersion: 3, patchVersion: 1)
                 if team.type == .free, ProcessInfo.processInfo.isOperatingSystemAtLeast(activeAppsMinimumVersion)
                 {
-                    UserDefaults.standard.activeAppsLimit = ALTActiveAppsLimit
+                    UserDefaults.standard.activeAppsLimit = InstalledApp.freeAccountActiveAppsLimit
                 }
                 else
                 {

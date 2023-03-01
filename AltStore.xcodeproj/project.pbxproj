@@ -369,6 +369,7 @@
 		D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58916FD28C7C55C00E39C8B /* LoggedError.swift */; };
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
+		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
 		D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */; };
 		D5DAE0942804B0B80034D8D4 /* ScreenshotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */; };
@@ -870,6 +871,7 @@
 		D586D39A28EF58B0000E101F /* AltTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltTests.swift; sourceTree = "<group>"; };
 		D58916FD28C7C55C00E39C8B /* LoggedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedError.swift; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
+		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
 		D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 10.xcdatamodel"; sourceTree = "<group>"; };
 		D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore9ToAltStore10.xcmappingmodel; sourceTree = "<group>"; };
@@ -1760,6 +1762,7 @@
 				D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */,
 				D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */,
 				D5E1E7C028077DE90016FC96 /* FetchTrustedSourcesOperation.swift */,
+				D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */,
 				BF7B44062725A4B8005288A4 /* Patch App */,
 			);
 			path = Operations;
@@ -2748,6 +2751,7 @@
 				BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */,
 				BF41B808233433C100C593A3 /* LoadingState.swift in Sources */,
 				BFF0B69A2322D7D0007A79E1 /* UIScreen+CompactHeight.swift in Sources */,
+				D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */,
 				D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */,
 				BF8F69C222E659F700049BA1 /* AppContentViewController.swift in Sources */,
 				BF08858522DE7EC800DE9F1E /* UpdateCollectionViewCell.swift in Sources */,
@@ -3536,7 +3540,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.6.1b;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3570,7 +3574,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.6.1b;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -480,11 +480,12 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
         headerView.layoutMargins.left = self.view.layoutMargins.left
         headerView.layoutMargins.right = self.view.layoutMargins.right
         
-        let almostRequiredPriority = UILayoutPriority(UILayoutPriority.required.rawValue - 1) // Can't be required or else we can't satisfy constraints when hidden (size = 0).
-        headerView.leadingLayoutConstraint?.priority = almostRequiredPriority
-        headerView.trailingLayoutConstraint?.priority = almostRequiredPriority
-        headerView.topLayoutConstraint?.priority = almostRequiredPriority
-        headerView.bottomLayoutConstraint?.priority = almostRequiredPriority
+        /* Changing NSLayoutConstraint priorities from required to optional (and vice versa) isn’t supported, and crashes on iOS 12. */
+        // let almostRequiredPriority = UILayoutPriority(UILayoutPriority.required.rawValue - 1) // Can't be required or else we can't satisfy constraints when hidden (size = 0).
+        // headerView.leadingLayoutConstraint?.priority = almostRequiredPriority
+        // headerView.trailingLayoutConstraint?.priority = almostRequiredPriority
+        // headerView.topLayoutConstraint?.priority = almostRequiredPriority
+        // headerView.bottomLayoutConstraint?.priority = almostRequiredPriority
         
         switch kind
         {

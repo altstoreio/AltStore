@@ -25,6 +25,7 @@ extension SettingsViewController
         case instructions
         case techyThings
         case credits
+        case macDirtyCow
         case debug
     }
     
@@ -49,6 +50,12 @@ extension SettingsViewController
         case softwareLicenses
     }
     
+    fileprivate enum TechyThingsRow: Int, CaseIterable
+    {
+        case errorLog
+        case clearCache
+    }
+    
     fileprivate enum DebugRow: Int, CaseIterable
     {
         case sendFeedback
@@ -70,6 +77,7 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var accountTypeLabel: UILabel!
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
+    @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
     
     @IBOutlet private var versionLabel: UILabel!
     
@@ -146,6 +154,7 @@ private extension SettingsViewController
         }
         
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
+        self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         
         if self.isViewLoaded
         {
@@ -204,10 +213,27 @@ private extension SettingsViewController
             break
             
         case .techyThings:
-            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("TECHY THINGS", comment: "")
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("TECHY THINGS", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Free up disk space by removing non-essential data, such as temporary files and backups for uninstalled apps.", comment: "")
+            }
             
         case .credits:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("CREDITS", comment: "")
+            
+        case .macDirtyCow:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("MACDIRTYCOW", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("If you've removed the 3-sideloaded app limit via the MacDirtyCow exploit, disable this setting to sideload more than 3 apps at a time.", comment: "")
+            }
             
         case .debug:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DEBUG", comment: "")
@@ -224,6 +250,18 @@ private extension SettingsViewController
         
         let size = settingsHeaderFooterView.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         return size.height
+    }
+    
+    func isSectionHidden(_ section: Section) -> Bool
+    {
+        switch section
+        {
+        case .macDirtyCow:
+            let isHidden = !(UserDefaults.standard.isCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
+            return isHidden
+            
+        default: return false
+        }
     }
 }
 
@@ -279,6 +317,16 @@ private extension SettingsViewController
         UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
     }
     
+    @IBAction func toggleEnforceThreeAppLimit(_ sender: UISwitch)
+    {
+        UserDefaults.standard.ignoreActiveAppsLimit = !sender.isOn
+        
+        if UserDefaults.standard.activeAppsLimit != nil
+        {
+            UserDefaults.standard.activeAppsLimit = InstalledApp.freeAccountActiveAppsLimit
+        }
+    }
+    
     @available(iOS 14, *)
     @IBAction func addRefreshAppsShortcut()
     {
@@ -288,6 +336,34 @@ private extension SettingsViewController
         viewController.delegate = self
         viewController.modalPresentationStyle = .formSheet
         self.present(viewController, animated: true, completion: nil)
+    }
+    
+    func clearCache()
+    {
+        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to clear AltStore's cache?", comment: ""),
+                                                message: NSLocalizedString("This will remove all temporary files as well as backups for uninstalled apps.", comment: ""),
+                                                preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { [weak self] _ in
+            self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
+        })
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Clear Cache", comment: ""), style: .destructive) { [weak self] _ in
+            AppManager.shared.clearAppCache { result in
+                DispatchQueue.main.async {
+                    self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
+                    
+                    switch result
+                    {
+                    case .success: break
+                    case .failure(let error):
+                        let alertController = UIAlertController(title: NSLocalizedString("Unable to Clear Cache", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                        alertController.addAction(.ok)
+                        self?.present(alertController, animated: true)
+                    }
+                }
+            }
+        })
+        
+        self.present(alertController, animated: true)
     }
     
     @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)
@@ -376,6 +452,7 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 0
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 3
         case .appRefresh: return AppRefreshRow.allCases.count
@@ -404,9 +481,10 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return nil
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
-        case .signIn, .account, .patreon, .appRefresh, .techyThings, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .techyThings, .credits, .macDirtyCow, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
@@ -420,13 +498,14 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return nil
         case .signIn where self.activeTeam != nil: return nil
-        case .signIn, .patreon, .appRefresh:
+        case .signIn, .patreon, .appRefresh, .techyThings, .macDirtyCow:
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(footerView, for: section, isHeader: false)
             return footerView
             
-        case .account, .credits, .debug, .instructions, .techyThings: return nil
+        case .account, .credits, .debug, .instructions: return nil
         }
     }
 
@@ -435,9 +514,10 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 1.0
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
-        case .signIn, .account, .patreon, .appRefresh, .techyThings, .credits, .debug:
+        case .signIn, .account, .patreon, .appRefresh, .techyThings, .credits, .macDirtyCow, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
@@ -450,13 +530,14 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 1.0
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0            
-        case .signIn, .patreon, .appRefresh:
+        case .signIn, .patreon, .appRefresh, .techyThings, .macDirtyCow:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
             return height
             
-        case .account, .credits, .debug, .instructions, .techyThings: return 0.0
+        case .account, .credits, .debug, .instructions: return 0.0
         }
     }
 }
@@ -477,6 +558,14 @@ extension SettingsViewController
             case .addToSiri:
                 guard #available(iOS 14, *) else { return }
                 self.addRefreshAppsShortcut()
+            }
+            
+        case .techyThings:
+            let row = TechyThingsRow.allCases[indexPath.row]
+            switch row
+            {
+            case .errorLog: break
+            case .clearCache: self.clearCache()
             }
             
         case .credits:
@@ -520,7 +609,7 @@ extension SettingsViewController
             case .refreshAttempts: break
             }
             
-        case .account, .patreon, .instructions, .techyThings: break
+        case .account, .patreon, .instructions, .macDirtyCow: break
         }
     }
 }
