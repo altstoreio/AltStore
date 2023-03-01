@@ -335,6 +335,15 @@
       "date": "2022-12-12",
       "notify": true,
       "imageURL": "https://user-images.githubusercontent.com/705880/207133455-1e851fd0-89ae-48f0-906f-8f86f4e394db.png"
+    },
+    {
+      "title": "Fix for “Core Data” Refresh Error",
+      "identifier": "pojav-source-fix",
+      "caption": "Tap here for full instructions on how to fix this issue.",
+      "url": "https://twitter.com/altstoreio/status/1627807467584253952",
+      "tintColor": "FF6700",
+      "date": "2023-03-01",
+      "notify": false
     }
   ],
   "userInfo": {
