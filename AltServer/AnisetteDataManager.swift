@@ -53,31 +53,22 @@ class AnisetteDataManager: NSObject
     
     func requestAnisetteData(_ completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
-        if #available(macOS 10.15, *)
-        {
-            self.requestAnisetteDataFromXPCService { (result) in
-                do
-                {
-                    let anisetteData = try result.get()
-                    completion(.success(anisetteData))
-                }
-                catch CocoaError.xpcConnectionInterrupted
-                {
-                    // SIP and/or AMFI are not disabled, so fall back to Mail plug-in.
-                    self.requestAnisetteDataFromPlugin { (result) in
-                        completion(result)
-                    }
-                }
-                catch
-                {
-                    completion(.failure(error))
+        self.requestAnisetteDataFromXPCService { (result) in
+            do
+            {
+                let anisetteData = try result.get()
+                completion(.success(anisetteData))
+            }
+            catch CocoaError.xpcConnectionInterrupted
+            {
+                // SIP and/or AMFI are not disabled, so fall back to Mail plug-in.
+                self.requestAnisetteDataFromPlugin { (result) in
+                    completion(result)
                 }
             }
-        }
-        else
-        {
-            self.requestAnisetteDataFromPlugin { (result) in
-                completion(result)
+            catch
+            {
+                completion(.failure(error))
             }
         }
     }
@@ -96,7 +87,6 @@ class AnisetteDataManager: NSObject
 
 private extension AnisetteDataManager
 {
-    @available(macOS 10.15, *)
     func requestAnisetteDataFromXPCService(completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
         guard let proxy = self.xpcConnection.remoteObjectProxyWithErrorHandler({ (error) in
