@@ -10,7 +10,6 @@ import Foundation
 
 import AltStoreCore
 
-@available(iOS 14, *)
 class IntentHandler: NSObject, RefreshAllIntentHandling
 {
     private let queue = DispatchQueue(label: "io.altstore.IntentHandler")
@@ -91,7 +90,6 @@ class IntentHandler: NSObject, RefreshAllIntentHandling
     }
 }
 
-@available(iOS 14, *)
 private extension IntentHandler
 {
     func finish(_ intent: RefreshAllIntent, response: RefreshAllIntentResponse)

@@ -33,7 +33,6 @@ extension AppManager
     }
 }
 
-@available(iOS 13, *)
 class AppManagerPublisher: ObservableObject
 {
     @Published
@@ -92,7 +91,6 @@ class AppManager
         self.progressLock.deallocate()
     }
     
-    @available(iOS 13, *)
     func prepareSubscriptions()
     {
         /// Every time refreshProgress is changed, update all InstalledApps in memory
@@ -697,7 +695,6 @@ extension AppManager
         self.run([removeAppOperation, removeAppBackupOperation], context: authenticationContext)
     }
     
-    @available(iOS 14, *)
     func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         class Context: OperationContext, EnableJITContext
@@ -730,7 +727,6 @@ extension AppManager
         self.run([enableJITOperation], context: context, requiresSerialQueue: true)
     }
     
-    @available(iOS 14.0, *)
     func patch(resignedApp: ALTApplication, presentingViewController: UIViewController, context authContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> PatchAppOperation
     {
         class Context: InstallAppOperationContext, PatchAppContext

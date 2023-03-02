@@ -408,7 +408,6 @@ private extension PatreonAPI
     }
 }
 
-@available(iOS 13.0, *)
 extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
 {
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor

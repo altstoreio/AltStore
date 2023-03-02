@@ -11,7 +11,6 @@ import UIKit
 @objc(ErrorLogMenuButton)
 private class ErrorLogMenuButton: UIButton
 {
-    @available(iOS 14.0, *)
     override func menuAttachmentPoint(for configuration: UIContextMenuConfiguration) -> CGPoint
     {
         var point = super.menuAttachmentPoint(for: configuration)
