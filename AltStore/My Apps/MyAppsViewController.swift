@@ -10,6 +10,7 @@ import UIKit
 import MobileCoreServices
 import Intents
 import Combine
+import UniformTypeIdentifiers
 
 import AltStoreCore
 import AltSign
@@ -758,18 +759,9 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        let supportedTypes: [String]
+        let supportedTypes = UTType.types(tag: "ipa", tagClass: .filenameExtension, conformingTo: nil)
         
-        if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
-        {
-            supportedTypes = (types as NSArray).map { $0 as! String }
-        }
-        else
-        {
-            supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
-        }
-        
-        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
+        let documentPickerViewController = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
         documentPickerViewController.delegate = self
         self.present(documentPickerViewController, animated: true, completion: nil)
     }
@@ -1367,8 +1359,11 @@ private extension MyAppsViewController
     {
         guard let backupURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return }
         
-        let documentPicker = UIDocumentPickerViewController(url: backupURL, in: .exportToService)
-        documentPicker.delegate = self
+        let documentPicker = UIDocumentPickerViewController(forExporting: [backupURL], asCopy: true)
+        
+        // Don't set delegate to avoid conflicting with import callbacks.
+        // documentPicker.delegate = self
+        
         self.present(documentPicker, animated: true, completion: nil)
     }
     
@@ -2240,15 +2235,8 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        switch controller.documentPickerMode
-        {
-        case .import, .open:
-            self.sideloadApp(at: fileURL) { (result) in
-                print("Sideloaded app at \(fileURL) with result:", result)
-            }
-        
-        case .exportToService, .moveToService: break
-        @unknown default: break
+        self.sideloadApp(at: fileURL) { (result) in
+            print("Sideloaded app at \(fileURL) with result:", result)
         }
     }
 }
