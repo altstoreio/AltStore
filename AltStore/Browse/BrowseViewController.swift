@@ -13,7 +13,7 @@ import Roxas
 
 import Nuke
 
-class BrowseViewController: UICollectionViewController
+class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
@@ -46,7 +46,7 @@ class BrowseViewController: UICollectionViewController
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
         
-        self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
         self.update()
     }
@@ -374,6 +374,7 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
 
 extension BrowseViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         guard
@@ -389,6 +390,7 @@ extension BrowseViewController: UIViewControllerPreviewingDelegate
         return appViewController
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         self.navigationController?.pushViewController(viewControllerToCommit, animated: true)

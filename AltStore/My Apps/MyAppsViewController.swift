@@ -31,7 +31,7 @@ extension MyAppsViewController
     }
 }
 
-class MyAppsViewController: UICollectionViewController
+class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
 {
     private let coordinator = NSFileCoordinator()
     private let operationQueue = OperationQueue()
@@ -114,11 +114,7 @@ class MyAppsViewController: UICollectionViewController
                                          self.sideloadingProgressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
         }
         
-        if #available(iOS 13, *) {}
-        else
-        {
-            self.registerForPreviewing(with: self, sourceView: self.collectionView)
-        }
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -2243,6 +2239,7 @@ extension MyAppsViewController: UIDocumentPickerDelegate
 
 extension MyAppsViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         guard
@@ -2266,6 +2263,7 @@ extension MyAppsViewController: UIViewControllerPreviewingDelegate
         }
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         let point = CGPoint(x: previewingContext.sourceRect.midX, y: previewingContext.sourceRect.midY)
