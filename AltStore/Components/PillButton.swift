@@ -88,7 +88,8 @@ class PillButton: UIButton
         self.layer.masksToBounds = true
         self.accessibilityTraits.formUnion([.updatesFrequently, .button])
         
-        self.activityIndicatorView.style = .white
+        self.activityIndicatorView.style = .medium
+        self.activityIndicatorView.color = .white
         self.activityIndicatorView.isUserInteractionEnabled = false
         
         self.progressView.progress = 0
