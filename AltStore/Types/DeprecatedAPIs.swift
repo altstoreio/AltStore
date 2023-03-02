@@ -1,5 +1,5 @@
 //
-//  PeekPopPreviewing.swift
+//  DeprecatedAPIs.swift
 //  AltStore
 //
 //  Created by Riley Testut on 3/2/23.
@@ -8,9 +8,15 @@
 
 import UIKit
 
-// Conforming UIViewControllers to PeekPopPreviewing allows us to call deprecated registerForPreviewing(with:sourceView:) without warnings.
+// Conform types to these protocols to call deprecated APIs without warnings.
+
 protocol PeekPopPreviewing
 {
     @discardableResult
     func registerForPreviewing(with delegate: UIViewControllerPreviewingDelegate, sourceView: UIView) -> UIViewControllerPreviewing
+}
+
+protocol LegacyBackgroundFetching
+{
+    func setMinimumBackgroundFetchInterval(_ minimumBackgroundFetchInterval: TimeInterval)
 }
