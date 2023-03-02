@@ -113,18 +113,15 @@ private extension SourcesViewController
                     // Source exists in .added section, so hide the button.
                     cell.bannerView.button.isHidden = true
                     
-                    if #available(iOS 13.0, *)
-                    {
-                        let configuation = UIImage.SymbolConfiguration(pointSize: 24)
-                        
-                        let imageAttachment = NSTextAttachment()
-                        imageAttachment.image = UIImage(systemName: "checkmark.circle", withConfiguration: configuation)?.withTintColor(.altPrimary)
+                    let configuation = UIImage.SymbolConfiguration(pointSize: 24)
+                    
+                    let imageAttachment = NSTextAttachment()
+                    imageAttachment.image = UIImage(systemName: "checkmark.circle", withConfiguration: configuation)?.withTintColor(.altPrimary)
 
-                        let attributedText = NSAttributedString(attachment: imageAttachment)
-                        cell.bannerView.buttonLabel.attributedText = attributedText
-                        cell.bannerView.buttonLabel.textAlignment = .center
-                        cell.bannerView.buttonLabel.isHidden = false
-                    }
+                    let attributedText = NSAttributedString(attachment: imageAttachment)
+                    cell.bannerView.buttonLabel.attributedText = attributedText
+                    cell.bannerView.buttonLabel.textAlignment = .center
+                    cell.bannerView.buttonLabel.isHidden = false
                 }
                 else
                 {

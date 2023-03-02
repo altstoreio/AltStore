@@ -704,13 +704,10 @@ private extension MyAppsViewController
             }
         }
         
-        if #available(iOS 14, *)
-        {
-            let interaction = INInteraction.refreshAllApps()
-            interaction.donate { (error) in
-                guard let error = error else { return }
-                print("Failed to donate intent \(interaction.intent).", error)
-            }
+        let interaction = INInteraction.refreshAllApps()
+        interaction.donate { (error) in
+            guard let error = error else { return }
+            print("Failed to donate intent \(interaction.intent).", error)
         }
     }
     
@@ -1166,10 +1163,8 @@ private extension MyAppsViewController
             }
         }
                 
-        if UserDefaults.standard.activeAppsLimit != nil, #available(iOS 13, *)
+        if UserDefaults.standard.activeAppsLimit != nil
         {
-            // UserDefaults.standard.activeAppsLimit is only non-nil on iOS 13.3.1 or later, so the #available check is just so we can use Combine.
-            
             guard let app = ALTApplication(fileURL: installedApp.fileURL) else { return finish(.failure(OperationError.invalidApp)) }
             
             var cancellable: AnyCancellable?
@@ -1609,12 +1604,7 @@ extension MyAppsViewController
                 
                 headerView.textLabel.text = NSLocalizedString("Inactive", comment: "")
                 headerView.button.setTitle(nil, for: .normal)
-                
-                if #available(iOS 13.0, *)
-                {
-                    headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
-                }
-                
+                headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.presentInactiveAppsAlert), for: .primaryActionTriggered)
             }
             
@@ -1695,7 +1685,6 @@ extension MyAppsViewController
         }
         
         let jitAction = UIAction(title: NSLocalizedString("Enable JIT", comment: ""), image: UIImage(systemName: "bolt")) { (action) in
-            guard #available(iOS 14, *) else { return }
             self.enableJIT(for: installedApp)
         }
         
@@ -1745,7 +1734,7 @@ extension MyAppsViewController
             actions.append(activateAction)
         }
         
-        if installedApp.isActive, #available(iOS 14, *)
+        if installedApp.isActive
         {
             actions.append(jitAction)
         }

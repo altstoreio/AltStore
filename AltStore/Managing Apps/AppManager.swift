@@ -51,16 +51,14 @@ class AppManager
     
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
-
+    
     private var installationProgress = [String: Progress]() {
         didSet {
-            guard #available(iOS 13, *) else { return }
             self.publisher.installationProgress = self.installationProgress
         }
     }
     private var refreshProgress = [String: Progress]() {
         didSet {
-            guard #available(iOS 13, *) else { return }
             self.publisher.refreshProgress = self.refreshProgress
         }
     }
@@ -74,27 +72,8 @@ class AppManager
         return lock
     }()
     
-    @available(iOS 13, *)
-    private(set) var publisher: AppManagerPublisher {
-        get { _publisher as! AppManagerPublisher }
-        set { _publisher = newValue }
-    }
-    
-    @available(iOS 13, *)
-    private(set) var cancellables: Set<AnyCancellable> {
-        get { _cancellables as! Set<AnyCancellable> }
-        set { _cancellables = newValue }
-    }
-    
-    private lazy var _publisher: Any = {
-        guard #available(iOS 13, *) else { fatalError() }
-        return AppManagerPublisher()
-    }()
-    
-    private lazy var _cancellables: Any = {
-        guard #available(iOS 13, *) else { fatalError() }
-        return Set<AnyCancellable>()
-    }()
+    private let publisher = AppManagerPublisher()
+    private var cancellables: Set<AnyCancellable> = []
     
     private init()
     {
@@ -103,10 +82,7 @@ class AppManager
         self.serialOperationQueue.name = "com.altstore.AppManager.serialOperationQueue"
         self.serialOperationQueue.maxConcurrentOperationCount = 1
         
-        if #available(iOS 13, *)
-        {
-            self.prepareSubscriptions()
-        }
+        self.prepareSubscriptions()
     }
     
     deinit
@@ -1166,7 +1142,7 @@ private extension AppManager
                     return
                 }
                 
-                guard let presentingViewController = context.presentingViewController, #available(iOS 14, *) else { return operation.finish() }
+                guard let presentingViewController = context.presentingViewController else { return operation.finish() }
                 
                 if let error = context.error
                 {
@@ -1775,10 +1751,7 @@ private extension AppManager
                 AnalyticsManager.shared.trackEvent(event)
             }
             
-            if #available(iOS 14, *)
-            {                
-                WidgetCenter.shared.reloadAllTimelines()
-            }
+            WidgetCenter.shared.reloadAllTimelines()
             
             do { try installedApp.managedObjectContext?.save() }
             catch { print("Error saving installed app.", error) }

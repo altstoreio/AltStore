@@ -131,11 +131,7 @@ public extension PatreonAPI
             }
         }
         
-        if #available(iOS 13.0, *)
-        {
-            self.authenticationSession?.presentationContextProvider = self
-        }
-        
+        self.authenticationSession?.presentationContextProvider = self
         self.authenticationSession?.start()
     }
     
