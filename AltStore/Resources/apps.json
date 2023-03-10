@@ -157,6 +157,23 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
+      "versions": [
+        {
+          "version": "1.5b1",
+          "date": "2023-03-02T10:00:00-06:00",
+          "localizedDescription": "Local Multiplayer (thanks Ian Clawson @ThatClawsonBoy!)\n• Play NES, SNES, N64, and Genesis games with friends\n• Supports up to 4 players\n\nImproved Non-MFi Controller Support\n• New default mappings for single Joy-Cons and Switch NES/SNES controllers\n• Uses Logo/Home button as Delta pause button if possible",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_5_b1.ipa",
+          "size": 46055442,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.4rc",
+          "date": "2023-02-13T09:41:00-08:00",
+          "localizedDescription": "\"Contributors\" screen\n• See everyone who has contributed to Delta\n• View associated Pull Requests for contributed features\n\nPREVIOUS BETA\n• “Respect Silent Mode” setting\n• Automatically mutes game audio if another app is playing audio\n• Browse CheatBase for all known cheats for games (thanks Noah Keck @horn978)",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_rc.ipa",
+          "size": 46299284
+        }
+      ],
       "version": "1.4rc",
       "versionDate": "2023-02-13T09:41:00-08:00",
       "versionDescription": "\"Contributors\" screen\n• See everyone who has contributed to Delta\n• View associated Pull Requests for contributed features\n\nPREVIOUS BETA\n• “Respect Silent Mode” setting\n• Automatically mutes game audio if another app is playing audio\n• Browse CheatBase for all known cheats for games (thanks Noah Keck @horn978)",

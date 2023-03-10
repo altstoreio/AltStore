@@ -32,11 +32,8 @@ class PillButton: UIButton
     }
     
     var progressTintColor: UIColor? {
-        get {
-            return self.progressView.progressTintColor
-        }
-        set {
-            self.progressView.progressTintColor = newValue
+        didSet {
+            self.update()
         }
     }
     
@@ -81,10 +78,27 @@ class PillButton: UIButton
         self.displayLink.remove(from: .main, forMode: RunLoop.Mode.default)
     }
     
+    override init(frame: CGRect)
+    {
+        super.init(frame: frame)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.layer.masksToBounds = true
         self.accessibilityTraits.formUnion([.updatesFrequently, .button])
         
@@ -120,6 +134,13 @@ class PillButton: UIButton
         
         self.update()
     }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize
+    {
+        var size = super.sizeThatFits(size)
+        size.height = max(size.height, 31)
+        return size
+    }
 }
 
 private extension PillButton
@@ -137,7 +158,7 @@ private extension PillButton
             self.backgroundColor = self.tintColor.withAlphaComponent(0.15)
         }
         
-        self.progressView.progressTintColor = self.tintColor
+        self.progressView.progressTintColor = self.progressTintColor ?? self.tintColor
     }
     
     @objc func updateCountdown()

@@ -282,6 +282,8 @@ class AppViewController: UIViewController
             
             let fractionComplete = min(difference, range) / range
             self.navigationBarAnimator?.fractionComplete = fractionComplete
+            
+            print("[ALTLog] Difference: \(difference). Range: \(range). Fraction: \(fractionComplete)")
         }
         else
         {

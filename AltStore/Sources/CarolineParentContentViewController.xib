@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CarolineParentContentViewController" customModule="AltStore" customModuleProvider="target">
+            <connections>
+                <outlet property="backButton" destination="wWs-fZ-z1e" id="3im-c3-s2g"/>
+                <outlet property="backButtonContainerView" destination="v6n-ad-Bw8" id="KPv-yf-tP2"/>
+                <outlet property="backgroundBlurView" destination="C55-UK-peX" id="jjP-m7-Opj"/>
+                <outlet property="backgroundImageView" destination="czE-Xo-zk7" id="qkq-eu-ihw"/>
+                <outlet property="contentView" destination="Ac9-yB-eYH" id="aIU-3D-Mob"/>
+                <outlet property="headerImageView" destination="BqM-1g-Vmt" id="rN1-Kw-tEk"/>
+                <outlet property="labelsStackView" destination="wE4-OI-G3S" id="PtU-QN-MBE"/>
+                <outlet property="navigationBarAppIconImageView" destination="jC5-uP-qrX" id="pv7-j4-w6y"/>
+                <outlet property="navigationBarAppNameLabel" destination="aA3-0Z-FOp" id="LyL-eN-swO"/>
+                <outlet property="navigationBarButton" destination="KsM-R5-AAb" id="HQT-ME-zWP"/>
+                <outlet property="navigationBarTitleView" destination="ETo-ey-Iam" id="vZZ-xU-ssh"/>
+                <outlet property="scrollView" destination="jDe-LD-uFw" id="IQb-2d-LVv"/>
+                <outlet property="view" destination="iN0-l3-epB" id="fYV-M8-Rao"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="czE-Xo-zk7">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="300"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C55-UK-peX" userLabel="Background Blur View">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="zGt-BO-jEO">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </view>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <blurEffect style="regular"/>
+                </visualEffectView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" contentInsetAdjustmentBehavior="never" translatesAutoresizingMaskIntoConstraints="NO" id="jDe-LD-uFw">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="Nlk-2Y-hNd"/>
+                    </connections>
+                </scrollView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ac9-yB-eYH" userLabel="Content View">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                    <subviews>
+                        <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v6n-ad-Bw8" userLabel="Back Button Container View">
+                            <rect key="frame" x="58" y="117" width="18" height="18"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="11N-hV-KkW">
+                                <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tjh-sw-j33">
+                                        <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="G9a-jV-Fho">
+                                            <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wWs-fZ-z1e">
+                                                    <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <state key="normal" image="Back"/>
+                                                    <connections>
+                                                        <action selector="popViewController:" destination="-1" eventType="primaryActionTriggered" id="Q6V-7K-DCp"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </view>
+                                        <vibrancyEffect style="secondaryLabel">
+                                            <blurEffect style="systemThinMaterial"/>
+                                        </vibrancyEffect>
+                                    </visualEffectView>
+                                </subviews>
+                            </view>
+                            <blurEffect style="systemThinMaterial"/>
+                        </visualEffectView>
+                    </subviews>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="jDe-LD-uFw" secondAttribute="bottom" id="3D4-Xm-7vg"/>
+                <constraint firstAttribute="bottom" secondItem="C55-UK-peX" secondAttribute="bottom" id="4z3-Jh-ouA"/>
+                <constraint firstItem="C55-UK-peX" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="6WT-af-fpb"/>
+                <constraint firstItem="jDe-LD-uFw" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="6gJ-Tk-03U"/>
+                <constraint firstItem="Ac9-yB-eYH" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="DMx-EJ-raA"/>
+                <constraint firstItem="Ac9-yB-eYH" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="G5r-QX-Iov"/>
+                <constraint firstItem="C55-UK-peX" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="KEK-cc-qFO"/>
+                <constraint firstItem="Ac9-yB-eYH" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="Pc2-Bz-byU"/>
+                <constraint firstItem="jDe-LD-uFw" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Rwp-VB-Uy3"/>
+                <constraint firstItem="C55-UK-peX" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="bYE-Pr-8Yh"/>
+                <constraint firstAttribute="bottom" secondItem="Ac9-yB-eYH" secondAttribute="bottom" id="wxn-Ah-bXi"/>
+                <constraint firstAttribute="trailing" secondItem="jDe-LD-uFw" secondAttribute="trailing" id="yr4-Z4-3I4"/>
+            </constraints>
+            <point key="canvasLocation" x="104.61538461538461" y="17.772511848341232"/>
+        </view>
+        <stackView opaque="NO" contentMode="scaleToFill" spacing="8" id="ETo-ey-Iam">
+            <rect key="frame" x="0.0" y="0.0" width="85" height="35"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jC5-uP-qrX" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="35" id="2JZ-Ux-aNy"/>
+                        <constraint firstAttribute="height" constant="35" id="flw-yr-b8z"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delta" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aA3-0Z-FOp">
+                    <rect key="frame" x="43" y="0.0" width="42" height="35"/>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <point key="canvasLocation" x="608" y="-44"/>
+        </stackView>
+        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KsM-R5-AAb" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="72" height="31"/>
+            <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="MTH-hs-qbG"/>
+                <constraint firstAttribute="height" constant="31" id="lCx-cS-UyE"/>
+            </constraints>
+            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+            <state key="normal" title="FREE"/>
+            <point key="canvasLocation" x="138" y="379"/>
+        </button>
+        <view contentMode="scaleToFill" id="VG1-oN-KYK" userLabel="Header">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="a9S-6F-8oo">
+                    <rect key="frame" x="20" y="0.0" width="350" height="223.66666666666666"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Riley" translatesAutoresizingMaskIntoConstraints="NO" id="BqM-1g-Vmt">
+                            <rect key="frame" x="141" y="0.0" width="68" height="68"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="68" id="UGQ-yO-Qqt"/>
+                                <constraint firstAttribute="height" constant="68" id="c7U-Ew-2Az"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="8Oz-gX-MUt">
+                            <rect key="frame" x="0.0" y="75.999999999999986" width="350" height="147.66666666666663"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="wE4-OI-G3S">
+                                    <rect key="frame" x="0.0" y="0.0" width="350" height="86.666666666666671"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AltStore" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dLv-Ib-2HI">
+                                            <rect key="frame" x="110.00000000000001" y="0.0" width="130.33333333333337" height="40.666666666666664"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOt-Pw-hmt">
+                                            <rect key="frame" x="36.666666666666657" y="48.666666666666671" width="276.66666666666674" height="38"/>
+                                            <string key="text">A home for apps that push the boundary
+ of iOS.</string>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mJQ-RO-Gpk">
+                                    <rect key="frame" x="0.0" y="116.66666666666666" width="350" height="32"/>
+                                    <segments>
+                                        <segment title="Apps"/>
+                                        <segment title="News"/>
+                                    </segments>
+                                </segmentedControl>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="yBG-64-Ys1"/>
+            <constraints>
+                <constraint firstItem="mJQ-RO-Gpk" firstAttribute="width" secondItem="VG1-oN-KYK" secondAttribute="width" constant="-40" id="Slm-UE-X68"/>
+                <constraint firstItem="a9S-6F-8oo" firstAttribute="centerX" secondItem="VG1-oN-KYK" secondAttribute="centerX" id="sGK-kJ-NrW"/>
+                <constraint firstItem="a9S-6F-8oo" firstAttribute="top" secondItem="VG1-oN-KYK" secondAttribute="top" id="tMu-ea-m2W"/>
+            </constraints>
+            <point key="canvasLocation" x="138" y="-629"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Back" width="18" height="18"/>
+        <image name="Riley" width="512" height="512"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

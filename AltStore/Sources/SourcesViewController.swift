@@ -168,6 +168,23 @@ private extension SourcesViewController
         let dataSource = RSTArrayCollectionViewDataSource<Source>(items: [])
         return dataSource
     }
+//    
+//    @IBSegueAction
+//    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> SourceDetailViewController?
+//    {
+//        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return nil }
+//        
+//        let source = self.dataSource.item(at: indexPath)
+//        
+//        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
+//        return sourceDetailViewController
+//    }
+//
+//    func makeSourceDetailViewController(source: Source) -> UIViewController?
+//    {
+//        let sourceDetailViewController = ModernSourceDetailViewController(source: source)
+//        return sourceDetailViewController
+//    }
 }
 
 private extension SourcesViewController
@@ -427,12 +444,19 @@ extension SourcesViewController
 {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        self.collectionView.deselectItem(at: indexPath, animated: true)
+        defer {
+            self.collectionView.deselectItem(at: indexPath, animated: true)
+        }
         
         let source = self.dataSource.item(at: indexPath)
-        guard let error = source.error else { return }
         
-        self.present(error)
+        let sourceDetailViewController = ModernSourceDetailViewController(source: source)
+        self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
+        
+//        let source = self.dataSource.item(at: indexPath)
+//        guard let error = source.error else { return }
+//
+//        self.present(error)
     }
 }
 
