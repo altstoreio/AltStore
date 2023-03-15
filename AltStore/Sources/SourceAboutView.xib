@@ -13,6 +13,9 @@
             <connections>
                 <outlet property="backgroundEffectView" destination="VTh-Dz-qVQ" id="6fD-ck-hKW"/>
                 <outlet property="iconImageView" destination="rfC-wI-8JY" id="1FW-GN-WDa"/>
+                <outlet property="linkButton" destination="cDF-t8-8Ri" id="6YC-OT-StI"/>
+                <outlet property="linkButtonContainerView" destination="c6g-CV-IeK" id="dRp-cg-86n"/>
+                <outlet property="linkButtonImageView" destination="Vd9-Y3-Vhc" id="vvT-Wx-o8o"/>
                 <outlet property="subtitleLabel" destination="IUL-qI-QAg" id="RyD-ax-OtJ"/>
                 <outlet property="titleLabel" destination="FsG-Wm-6xP" id="huW-re-9G0"/>
                 <outlet property="vibrancyView" destination="7WA-03-aKF" id="rB6-E7-Tal"/>
@@ -20,82 +23,148 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ed2-hy-JkU">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0La-NZ-ozh">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <accessibility key="accessibilityConfiguration">
-                        <bool key="isElement" value="YES"/>
-                    </accessibility>
-                </view>
-                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VTh-Dz-qVQ" userLabel="Blur View">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VTh-Dz-qVQ" userLabel="Blur View">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="eHD-cD-5y4">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="hfp-yJ-gcH" userLabel="App Info">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" distribution="equalSpacing" alignment="bottom" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="Ydv-2n-m56">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rfC-wI-8JY">
-                                        <rect key="frame" x="14" y="16" width="68" height="68"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="rfC-wI-8JY" secondAttribute="height" multiplier="1:1" id="Pec-Vt-SX1"/>
-                                            <constraint firstAttribute="height" constant="68" id="enw-jt-m0C"/>
-                                        </constraints>
-                                    </imageView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="a5P-5y-U64">
-                                        <rect key="frame" x="93" y="26.000000000000004" width="270" height="48.333333333333343"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="center" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="hfp-yJ-gcH" userLabel="App Info">
+                                        <rect key="frame" x="14" y="14" width="349" height="68"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FsG-Wm-6xP">
-                                                <rect key="frame" x="0.0" y="0.0" width="100.66666666666667" height="26.333333333333332"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="NameLabel"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7WA-03-aKF" userLabel="Vibrancy View">
-                                                <rect key="frame" x="0.0" y="30.333333333333336" width="190" height="18"/>
-                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ie4-Od-obh">
-                                                    <rect key="frame" x="0.0" y="0.0" width="190" height="18"/>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rfC-wI-8JY">
+                                                <rect key="frame" x="0.0" y="0.0" width="68" height="68"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="rfC-wI-8JY" secondAttribute="height" multiplier="1:1" id="Pec-Vt-SX1"/>
+                                                    <constraint firstAttribute="height" constant="68" id="enw-jt-m0C"/>
+                                                </constraints>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="a5P-5y-U64">
+                                                <rect key="frame" x="79" y="10.000000000000004" width="270" height="48.333333333333343"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FsG-Wm-6xP">
+                                                        <rect key="frame" x="0.0" y="0.0" width="100.66666666666667" height="26.333333333333332"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="NameLabel"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7WA-03-aKF" userLabel="Vibrancy View">
+                                                        <rect key="frame" x="0.0" y="30.333333333333336" width="95" height="18"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ie4-Od-obh">
+                                                            <rect key="frame" x="0.0" y="0.0" width="95" height="18"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IUL-qI-QAg">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="95" height="18"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="IUL-qI-QAg" firstAttribute="top" secondItem="ie4-Od-obh" secondAttribute="top" id="3YV-ax-2UB"/>
+                                                                <constraint firstAttribute="trailing" secondItem="IUL-qI-QAg" secondAttribute="trailing" id="PFG-Oe-76p"/>
+                                                                <constraint firstAttribute="bottom" secondItem="IUL-qI-QAg" secondAttribute="bottom" id="Q0z-A4-UhM"/>
+                                                                <constraint firstItem="IUL-qI-QAg" firstAttribute="leading" secondItem="ie4-Od-obh" secondAttribute="leading" id="qjX-ro-UD6"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <vibrancyEffect style="secondaryLabel">
+                                                            <blurEffect style="systemThinMaterial"/>
+                                                        </vibrancyEffect>
+                                                    </visualEffectView>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kyG-Ne-9eG">
+                                        <rect key="frame" x="81" y="258" width="282" height="128"/>
+                                        <subviews>
+                                            <visualEffectView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c6g-CV-IeK" userLabel="Vibrancy View">
+                                                <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="zhu-r0-cL8">
+                                                    <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IUL-qI-QAg">
-                                                            <rect key="frame" x="0.0" y="0.0" width="190" height="18"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1lg-Ki-MOK">
+                                                            <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="tinted" title=" "/>
+                                                        </button>
                                                     </subviews>
-                                                    <constraints>
-                                                        <constraint firstItem="IUL-qI-QAg" firstAttribute="top" secondItem="ie4-Od-obh" secondAttribute="top" id="3YV-ax-2UB"/>
-                                                        <constraint firstAttribute="trailing" secondItem="IUL-qI-QAg" secondAttribute="trailing" id="PFG-Oe-76p"/>
-                                                        <constraint firstAttribute="bottom" secondItem="IUL-qI-QAg" secondAttribute="bottom" id="Q0z-A4-UhM"/>
-                                                        <constraint firstItem="IUL-qI-QAg" firstAttribute="leading" secondItem="ie4-Od-obh" secondAttribute="leading" id="qjX-ro-UD6"/>
-                                                    </constraints>
                                                 </view>
-                                                <vibrancyEffect style="secondaryLabel">
+                                                <constraints>
+                                                    <constraint firstItem="1lg-Ki-MOK" firstAttribute="leading" secondItem="c6g-CV-IeK" secondAttribute="leading" id="QzR-bU-VOB"/>
+                                                    <constraint firstAttribute="trailing" secondItem="1lg-Ki-MOK" secondAttribute="trailing" id="cX6-Gc-dyn"/>
+                                                    <constraint firstAttribute="bottom" secondItem="1lg-Ki-MOK" secondAttribute="bottom" id="fH8-kN-YEr"/>
+                                                    <constraint firstItem="1lg-Ki-MOK" firstAttribute="top" secondItem="c6g-CV-IeK" secondAttribute="top" id="osF-eI-UI7"/>
+                                                </constraints>
+                                                <vibrancyEffect style="secondaryFill">
                                                     <blurEffect style="systemThinMaterial"/>
                                                 </vibrancyEffect>
                                             </visualEffectView>
+                                            <visualEffectView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sgm-uO-rMs" userLabel="Vibrancy View">
+                                                <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="6e6-8c-O5P">
+                                                    <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cDF-t8-8Ri">
+                                                            <rect key="frame" x="0.0" y="0.0" width="282" height="128"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="plain" title="https://rileytestut.com"/>
+                                                        </button>
+                                                    </subviews>
+                                                </view>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="cDF-t8-8Ri" secondAttribute="bottom" id="39g-4p-3oj"/>
+                                                    <constraint firstAttribute="trailing" secondItem="cDF-t8-8Ri" secondAttribute="trailing" id="5iu-lT-Pgg"/>
+                                                    <constraint firstItem="cDF-t8-8Ri" firstAttribute="leading" secondItem="Sgm-uO-rMs" secondAttribute="leading" id="P8r-DC-dII"/>
+                                                    <constraint firstItem="cDF-t8-8Ri" firstAttribute="top" secondItem="Sgm-uO-rMs" secondAttribute="top" id="tUW-KW-1dm"/>
+                                                </constraints>
+                                                <vibrancyEffect style="fill">
+                                                    <blurEffect style="systemThinMaterial"/>
+                                                </vibrancyEffect>
+                                            </visualEffectView>
+                                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="44" placeholderIntrinsicHeight="44" translatesAutoresizingMaskIntoConstraints="NO" id="Vd9-Y3-Vhc">
+                                                <rect key="frame" x="-66" y="42" width="44" height="44"/>
+                                            </imageView>
                                         </subviews>
-                                    </stackView>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="c6g-CV-IeK" secondAttribute="trailing" id="2Db-8d-4ta"/>
+                                            <constraint firstItem="1lg-Ki-MOK" firstAttribute="leading" secondItem="Vd9-Y3-Vhc" secondAttribute="trailing" constant="22" id="3Je-y6-RNu"/>
+                                            <constraint firstAttribute="bottom" secondItem="Sgm-uO-rMs" secondAttribute="bottom" id="CuL-oW-Tka"/>
+                                            <constraint firstItem="c6g-CV-IeK" firstAttribute="leading" secondItem="kyG-Ne-9eG" secondAttribute="leading" id="Wey-l1-VIN"/>
+                                            <constraint firstItem="Sgm-uO-rMs" firstAttribute="leading" secondItem="kyG-Ne-9eG" secondAttribute="leading" id="Zca-A9-Z3v"/>
+                                            <constraint firstItem="Sgm-uO-rMs" firstAttribute="top" secondItem="kyG-Ne-9eG" secondAttribute="top" id="aLc-Sh-C2g"/>
+                                            <constraint firstItem="c6g-CV-IeK" firstAttribute="top" secondItem="kyG-Ne-9eG" secondAttribute="top" id="gL7-rP-JJQ"/>
+                                            <constraint firstAttribute="bottom" secondItem="c6g-CV-IeK" secondAttribute="bottom" id="h1Q-x5-7ch"/>
+                                            <constraint firstAttribute="trailing" secondItem="Sgm-uO-rMs" secondAttribute="trailing" id="hgG-mP-CiI"/>
+                                            <constraint firstItem="Vd9-Y3-Vhc" firstAttribute="centerY" secondItem="cDF-t8-8Ri" secondAttribute="centerY" id="jMW-YO-WvL"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="kyG-Ne-9eG" firstAttribute="width" secondItem="a5P-5y-U64" secondAttribute="width" constant="12" id="3yM-tZ-qPR"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="hfp-yJ-gcH" secondAttribute="trailing" id="9R7-eh-OeE"/>
+                                    <constraint firstAttribute="leadingMargin" secondItem="hfp-yJ-gcH" secondAttribute="leading" id="YPF-kW-MKJ"/>
+                                </constraints>
                                 <edgeInsets key="layoutMargins" top="14" left="14" bottom="14" right="12"/>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" name="BlurTint"/>
-                        <constraints>
-                            <constraint firstItem="hfp-yJ-gcH" firstAttribute="top" secondItem="eHD-cD-5y4" secondAttribute="top" id="9Vz-6X-lao"/>
-                            <constraint firstAttribute="bottom" secondItem="hfp-yJ-gcH" secondAttribute="bottom" id="Dlx-qz-iSL"/>
-                            <constraint firstAttribute="trailing" secondItem="hfp-yJ-gcH" secondAttribute="trailing" id="pyv-5f-AOq"/>
-                            <constraint firstItem="hfp-yJ-gcH" firstAttribute="leading" secondItem="eHD-cD-5y4" secondAttribute="leading" id="w0K-fJ-TJo"/>
-                        </constraints>
                     </view>
                     <constraints>
-                        <constraint firstAttribute="height" constant="100" id="XS2-iI-hTM"/>
+                        <constraint firstItem="Ydv-2n-m56" firstAttribute="top" secondItem="VTh-Dz-qVQ" secondAttribute="top" id="1b2-Mz-sNC"/>
+                        <constraint firstAttribute="bottom" secondItem="Ydv-2n-m56" secondAttribute="bottom" id="9eX-J2-X0F"/>
+                        <constraint firstAttribute="trailing" secondItem="Ydv-2n-m56" secondAttribute="trailing" id="Swg-uK-Acl"/>
+                        <constraint firstItem="Ydv-2n-m56" firstAttribute="leading" secondItem="VTh-Dz-qVQ" secondAttribute="leading" id="gaC-7W-p2z"/>
                     </constraints>
                     <blurEffect style="systemThinMaterial"/>
                 </visualEffectView>
@@ -104,11 +173,7 @@
             <constraints>
                 <constraint firstItem="VTh-Dz-qVQ" firstAttribute="top" secondItem="ed2-hy-JkU" secondAttribute="top" id="2oR-Up-r2e"/>
                 <constraint firstAttribute="bottom" secondItem="VTh-Dz-qVQ" secondAttribute="bottom" id="4bb-e5-tea"/>
-                <constraint firstAttribute="bottom" secondItem="0La-NZ-ozh" secondAttribute="bottom" id="SHf-y1-2Wq"/>
                 <constraint firstItem="VTh-Dz-qVQ" firstAttribute="leading" secondItem="ed2-hy-JkU" secondAttribute="leading" id="aZg-21-M6I"/>
-                <constraint firstAttribute="trailing" secondItem="0La-NZ-ozh" secondAttribute="trailing" id="asP-Fv-Cfc"/>
-                <constraint firstItem="0La-NZ-ozh" firstAttribute="top" secondItem="ed2-hy-JkU" secondAttribute="top" id="fVR-1v-Fhe"/>
-                <constraint firstItem="0La-NZ-ozh" firstAttribute="leading" secondItem="ed2-hy-JkU" secondAttribute="leading" id="fcy-zy-ICB"/>
                 <constraint firstAttribute="trailing" secondItem="VTh-Dz-qVQ" secondAttribute="trailing" id="o4u-HT-CZ6"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

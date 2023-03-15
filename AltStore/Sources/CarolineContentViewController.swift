@@ -182,7 +182,7 @@ class ModernSourceDetailViewController: CarolineParentContentViewController
     
     override func makeHeaderContentView() -> UIView?
     {
-        let sourceAboutView = SourceAboutView(frame: .zero)
+        let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
         return sourceAboutView
     }
@@ -290,6 +290,7 @@ class CarolineParentContentViewController: UIViewController
         self.navigationController?.presentationController?.delegate = self
         
         self.headerContentView = self.makeHeaderContentView()
+        self.headerContentView.translatesAutoresizingMaskIntoConstraints = true
         self.contentView.addSubview(self.headerContentView)
         
         self.contentViewController = self.makeContentViewController()
@@ -584,7 +585,7 @@ class CarolineParentContentViewController: UIViewController
         contentSize.height += maximumContentY
         contentSize.height = max(contentSize.height, self.view.bounds.height + maximumContentY - (self.navigationController?.navigationBar.bounds.height ?? 0))
         
-        print("[RSTLog] ContentSize:", contentSize, self.view.bounds.height, maximumContentY, self.navigationController?.navigationBar.bounds.height ?? 0)
+//        print("[RSTLog] ContentSize:", contentSize, self.view.bounds.height, maximumContentY, self.navigationController?.navigationBar.bounds.height ?? 0)
         
         self.scrollView.contentSize = contentSize
         self.scrollView.contentOffset = contentOffset

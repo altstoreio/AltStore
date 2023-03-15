@@ -45,6 +45,12 @@ class SourceAboutView: RSTNibView
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var subtitleLabel: UILabel!
     @IBOutlet var iconImageView: UIImageView!
+    
+    @IBOutlet var descriptionTextView: CollapsingTextView?
+    @IBOutlet var linkButton: UIButton!
+    @IBOutlet var linkButtonContainerView: UIView!
+    @IBOutlet var linkButtonImageView: UIImageView!
+    
 //    @IBOutlet var button: PillButton!
 //    @IBOutlet var buttonLabel: UILabel!
 //    @IBOutlet var betaBadgeView: UIView!
@@ -74,12 +80,76 @@ class SourceAboutView: RSTNibView
         let boldTitleFont = UIFont(descriptor: boldFont, size: 0.0)
         self.titleLabel.font = boldTitleFont
         
+        
+        
+//        self.descriptionTextView.textContainerInset = UIEdgeInsets(top: 0, left: 14, bottom: 14, right: 12)
+//        self.descriptionTextView.textContainer.lineFragmentPadding = 0
+//        self.descriptionTextView.maximumNumberOfLines = 6
+//        self.descriptionTextView.isScrollEnabled = false
+        
+//        print("[RSTLog] TextContentSize:", self.descriptionTextView.contentSize)
+        
         //self.accessibilityView.accessibilityTraits.formUnion(.button)
 
         //self.isAccessibilityElement = false
         //self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
 
         //self.betaBadgeView.isHidden = true
+        
+        let iconOutsideButton = true
+        
+        if #available(iOS 15, *)
+        {
+            self.linkButton.setTitle(nil, for: .normal)
+            
+            var configuration = UIButton.Configuration.tinted()
+            
+            if iconOutsideButton
+            {
+                let imageConfiguration = UIImage.SymbolConfiguration(scale: .medium)
+                self.linkButtonImageView.image = UIImage(systemName: "link", withConfiguration: imageConfiguration)
+                self.linkButtonImageView.isHidden = false
+                
+//                configuration.contentInsets.leading += 12 + 7 //12+7=19 = Centered Spacing
+//                configuration.imagePadding = 33 - 7 // 33-7=26 = Centered Spacing
+            }
+            else
+            {
+                let imageConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+                let image = UIImage(systemName: "globe", withConfiguration: imageConfiguration)
+                configuration.image = image
+                
+                configuration.contentInsets.leading += 12 + 7 //12+7=19 = Centered Spacing
+                configuration.imagePadding = 33 - 7 // 33-7=26 = Centered Spacing
+                
+                self.linkButtonImageView.isHidden = true
+            }
+            
+            
+
+            
+            
+//            configuration.contentInsets.leading += 12 + 7 //12+7=19 = Centered Spacing
+//            configuration.imagePadding = 33 - 7 // 33-7=26 = Centered Spacing
+            configuration.baseBackgroundColor = .clear
+            configuration.subtitle = "https://altstore.io"
+            configuration.titleAlignment = .leading
+            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+                var attributes = attributes
+                
+                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption2)
+                attributes.font = UIFont(descriptor: fontDescriptor, size: 0.0)
+                
+                return attributes
+            }
+            configuration.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+                var attributes = attributes
+                attributes.font = UIFont.preferredFont(forTextStyle: .subheadline)
+                return attributes
+            }
+            
+            self.linkButton.configuration = configuration
+        }
     }
     
     override func layoutSubviews()
@@ -88,6 +158,12 @@ class SourceAboutView: RSTNibView
         
         self.iconImageView.clipsToBounds = true
         self.iconImageView.layer.cornerRadius = self.iconImageView.bounds.midY
+        
+//        self.linkButton.clipsToBounds = true
+//        self.linkButton.layer.cornerRadius = max(self.layer.cornerRadius - 14, 0) // 14 = inset from corner
+        
+        self.linkButtonContainerView.clipsToBounds = true
+        self.linkButtonContainerView.layer.cornerRadius = 14
     }
     
     override func tintColorDidChange()
@@ -109,6 +185,8 @@ extension SourceAboutView
     {
         self.titleLabel.text = source.name
         self.subtitleLabel.text = "A home for apps that push the boundary of iOS."
+        
+        self.linkButton.tintColor = source.tintColor
         
 //        let displayScale = (self.traitCollection.displayScale == 0.0) ? 1.0 : self.traitCollection.displayScale // 0.0 == "unspecified"
 //        self.layer.borderWidth = 0.5
