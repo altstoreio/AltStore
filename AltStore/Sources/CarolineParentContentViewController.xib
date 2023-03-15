@@ -126,13 +126,8 @@
             </subviews>
             <point key="canvasLocation" x="608" y="-44"/>
         </stackView>
-        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KsM-R5-AAb" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KsM-R5-AAb">
             <rect key="frame" x="0.0" y="0.0" width="72" height="31"/>
-            <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
-            <constraints>
-                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="MTH-hs-qbG"/>
-                <constraint firstAttribute="height" constant="31" id="lCx-cS-UyE"/>
-            </constraints>
             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
             <state key="normal" title="FREE"/>
             <point key="canvasLocation" x="138" y="379"/>

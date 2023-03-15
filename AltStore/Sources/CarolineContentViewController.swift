@@ -50,14 +50,36 @@ class DummyTableViewController: UITableViewController, CarolineContentViewContro
     }
 }
 
+class AlmostPillButton: UIButton
+{
+    var useExtraPadding = true
+    
+    override var intrinsicContentSize: CGSize {
+        var size = super.intrinsicContentSize
+        guard useExtraPadding else {
+            size.height = 31
+            size.width = 31
+            return size
+        }
+        
+        size.width += 40
+//        size.height += 3
+        size.height = 31
+        return size
+    }
+}
+
 class ModernSourceDetailViewController: CarolineParentContentViewController
 {
     let source: Source
     
     private var previousBounds: CGRect?
     
-    private var addButton: UIButton!
+    private var addButton: AlmostPillButton!
     private var addButtonContainerView: UIView!
+    
+    private var aboutButton: AlmostPillButton!
+    private var aboutButtonContainerView: UIView!
     
     init(source: Source)
     {
@@ -79,25 +101,76 @@ class ModernSourceDetailViewController: CarolineParentContentViewController
         
         self.navigationController?.navigationBar.tintColor = self.source.tintColor
         
-        self.addButton = UIButton(type: .system)
-        self.addButton.translatesAutoresizingMaskIntoConstraints = false
-        self.addButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
-        self.addButton.setTitle(NSLocalizedString("ADD", comment: ""), for: .normal)
+        let useInfoIcon = false
         
-        let blurEffect = UIBlurEffect(style: .systemThinMaterial)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        
-        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel)
-        let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
-        vibrancyView.contentView.addSubview(self.addButton, pinningEdgesWith: .zero)
-        blurView.contentView.addSubview(vibrancyView, pinningEdgesWith: .zero)
-        self.addButtonContainerView = blurView
+        if true
+        {
+            self.addButton = AlmostPillButton(type: .system)
+            self.addButton.translatesAutoresizingMaskIntoConstraints = false
+            self.addButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
+            self.addButton.setTitle(NSLocalizedString("ADD", comment: ""), for: .normal)
+            
+            let blurEffect = UIBlurEffect(style: .systemThinMaterial)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            
+            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel)
+            let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+            vibrancyView.contentView.addSubview(self.addButton, pinningEdgesWith: .zero)
+            blurView.contentView.addSubview(vibrancyView, pinningEdgesWith: .zero)
+            self.addButtonContainerView = blurView
 
-        self.contentView.addSubview(self.addButtonContainerView)
+            self.contentView.addSubview(self.addButtonContainerView)
+        }
         
-        self.navigationBarButton.setTitle("ADD", for: .normal)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
-        self.navigationBarButton.tintColor = self.source.tintColor
+        if true
+        {
+            self.aboutButton = AlmostPillButton(type: .system, primaryAction: UIAction { [weak self] _ in
+                self?.showAboutViewController()
+            })
+            self.aboutButton.translatesAutoresizingMaskIntoConstraints = false
+            self.aboutButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
+            
+            if useInfoIcon
+            {
+                
+                let config = UIImage.SymbolConfiguration(pointSize: 14)
+                self.aboutButton.setTitle(nil, for: .normal)
+                self.aboutButton.setImage(UIImage(systemName: "info.circle", withConfiguration: config), for: .normal)
+                self.aboutButton.useExtraPadding = false
+            }
+            else
+            {
+                self.aboutButton.setTitle(NSLocalizedString("ABOUT", comment: ""), for: .normal)
+            }
+
+            let blurEffect = UIBlurEffect(style: .systemThinMaterial)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            
+            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel)
+            let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+            vibrancyView.contentView.addSubview(self.aboutButton, pinningEdgesWith: .zero)
+            blurView.contentView.addSubview(vibrancyView, pinningEdgesWith: .zero)
+            self.aboutButtonContainerView = blurView
+
+            self.contentView.addSubview(self.aboutButtonContainerView)
+        }
+        
+        if useInfoIcon
+        {
+            self.navigationBarButton.setTitle(nil, for: .normal)
+            self.navigationBarButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
+            self.navigationBarButton.addTarget(self, action: #selector(ModernSourceDetailViewController.showAboutViewController), for: .primaryActionTriggered)
+            
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
+            self.navigationBarButton.tintColor = self.source.tintColor
+        }
+        else
+        {
+            let barButtonItem = UIBarButtonItem(title: NSLocalizedString("About", comment: ""), style: .done, target: self, action: #selector(ModernSourceDetailViewController.showAboutViewController))
+            self.navigationItem.rightBarButtonItem = barButtonItem
+        }
+        
+        
         
 //        self.primaryOcculusionView = self.labelsStackView
         
@@ -147,16 +220,27 @@ class ModernSourceDetailViewController: CarolineParentContentViewController
         self.navigationItem.titleView = nil
         self.navigationItem.titleView = self.navigationBarTitleView
         
-        NSLayoutConstraint.activate([
-            self.addButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 72),
-            self.addButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 31)
-        ])
-        
+//        NSLayoutConstraint.activate([
+//            self.addButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 72),
+//            self.addButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 31),
+//
+//            self.aboutButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 72),
+//            self.aboutButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 31)
+//        ])
+
         let addButtonSize = self.addButton.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+//        let addButtonSize = self.addButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
         self.addButtonContainerView.frame.size = addButtonSize
+        
+        let aboutButtonSize = self.aboutButton.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+//        let aboutButtonSize = self.aboutButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
+        self.aboutButtonContainerView.frame.size = aboutButtonSize
         
         self.addButtonContainerView.clipsToBounds = true
         self.addButtonContainerView.layer.cornerRadius = self.addButtonContainerView.bounds.midY
+        
+        self.aboutButtonContainerView.clipsToBounds = true
+        self.aboutButtonContainerView.layer.cornerRadius = self.aboutButtonContainerView.bounds.midY
     }
     
     override func update()
@@ -193,14 +277,36 @@ class ModernSourceDetailViewController: CarolineParentContentViewController
         
         let inset = 15.0
         
-        self.addButtonContainerView.center.y = self.backButtonContainerView.center.y
-        self.addButtonContainerView.frame.origin.x = self.view.bounds.width - inset - self.addButtonContainerView.bounds.width
+        let leftButton = self.aboutButtonContainerView!
+        let rightButton = self.addButtonContainerView!
+        
+        rightButton.center.y = self.backButtonContainerView.center.y
+        rightButton.frame.origin.x = self.view.bounds.width - inset - rightButton.bounds.width
+        
+        leftButton.center.y = self.backButtonContainerView.center.y
+        leftButton.frame.origin.x = rightButton.frame.origin.x - inset - leftButton.bounds.width
         
         guard self.view.bounds != self.previousBounds else { return }
         self.previousBounds = self.view.bounds
                 
         let headerSize = self.headerContentView.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width - inset * 2, height: UIView.layoutFittingCompressedSize.height))
         self.headerContentView.frame.size.height = headerSize.height
+    }
+    
+    @IBAction func showAboutViewController()
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        
+        let aboutViewController = storyboard.instantiateViewController(identifier: "aboutSourceViewController") { coder in
+            SourceAboutViewController(source: self.source, coder: coder)
+        }
+        
+        let navigationController = UINavigationController(rootViewController: aboutViewController)
+        self.present(navigationController, animated: true)
+    }
+    
+    @IBAction func unwindToSourceDetail(_ segue: UIStoryboardSegue)
+    {
     }
 }
 
