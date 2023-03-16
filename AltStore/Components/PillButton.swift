@@ -70,6 +70,10 @@ class PillButton: UIButton
         var size = super.intrinsicContentSize
         size.width += 26
         size.height += 3
+        
+        size.width = max(size.width, 71)
+        size.height = max(size.height, 31)
+        
         return size
     }
     
@@ -138,6 +142,7 @@ class PillButton: UIButton
     override func sizeThatFits(_ size: CGSize) -> CGSize
     {
         var size = super.sizeThatFits(size)
+        size.width = max(size.width, 71)
         size.height = max(size.height, 31)
         return size
     }

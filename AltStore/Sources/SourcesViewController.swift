@@ -450,7 +450,7 @@ extension SourcesViewController
         
         let source = self.dataSource.item(at: indexPath)
         
-        let sourceDetailViewController = ModernSourceDetailViewController(source: source)
+        let sourceDetailViewController = SourceDetailViewController(source: source)
         self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
         
 //        let source = self.dataSource.item(at: indexPath)

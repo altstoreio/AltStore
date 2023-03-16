@@ -1074,10 +1074,10 @@ World</string>
             </objects>
             <point key="canvasLocation" x="3302" y="1430"/>
         </scene>
-        <!--Source Detail View Controller-->
+        <!--Collection View Controller-->
         <scene sceneID="yGF-zH-eyy">
             <objects>
-                <collectionViewController id="wl0-DL-9RK" customClass="SourceDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController id="wl0-DL-9RK" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="dMD-wX-adN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1168,10 +1168,10 @@ World</string>
             </objects>
             <point key="canvasLocation" x="4076" y="1429.8350824587708"/>
         </scene>
-        <!--Modern Source Detail View Controller-->
+        <!--Source Detail View Controller-->
         <scene sceneID="4fZ-ZS-dUI">
             <objects>
-                <viewController id="2Ta-j0-Ivt" customClass="ModernSourceDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="2Ta-j0-Ivt" customClass="SourceDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZYd-e1-bgN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

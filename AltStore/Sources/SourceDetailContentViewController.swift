@@ -43,12 +43,13 @@ class AppBannerViewCell: UICollectionViewCell
     }
 }
 
-extension SourcesDetailContentViewController
+extension SourceDetailContentViewController
 {
     private enum Section: Int
     {
         case news
         case apps
+        case about
     }
     
     private enum ElementKind: String
@@ -115,13 +116,14 @@ class TitleView: UICollectionReusableView
     }
 }
 
-class SourcesDetailContentViewController: UICollectionViewController
+class SourceDetailContentViewController: UICollectionViewController
 {
     let source: Source
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var newsDataSource = self.makeNewsDataSource()
     private lazy var appsDataSource = self.makeAppsDataSource()
+    private lazy var aboutDataSource = self.makeAboutDataSource()
         
     init(source: Source)
     {
@@ -143,6 +145,8 @@ class SourcesDetailContentViewController: UICollectionViewController
          
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
         self.collectionView.register(AppBannerViewCell.self, forCellWithReuseIdentifier: "AppCell")
+        self.collectionView.register(TextViewCollectionViewCell.self, forCellWithReuseIdentifier: "AboutCell")
+        
         self.collectionView.register(TitleView.self, forSupplementaryViewOfKind: ElementKind.title.rawValue, withReuseIdentifier: ElementKind.title.rawValue)
         self.collectionView.register(ButtonView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
@@ -162,16 +166,19 @@ class SourcesDetailContentViewController: UICollectionViewController
     }
 }
 
-extension SourcesDetailContentViewController: CarolineContentViewController
+extension SourceDetailContentViewController: CarolineContentViewController
 {
     var scrollView: UIScrollView { self.collectionView }
 }
 
-private extension SourcesDetailContentViewController
+private extension SourceDetailContentViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
-        let layout = UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
+        layoutConfig.interSectionSpacing = 20
+        
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             guard let `self` = self, let section = Section(rawValue: sectionIndex) else { return nil }
             
             let inset = 20.0
@@ -179,6 +186,8 @@ private extension SourcesDetailContentViewController
             switch section
             {
             case .news:
+                let isSectionHidden = (self.newsDataSource.itemCount == 0)
+                
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
@@ -187,7 +196,7 @@ private extension SourcesDetailContentViewController
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 
 //                let buttonAnchor = NSCollectionLayoutAnchor(edges: [.top, .trailing], absoluteOffset: CGPoint(x: 0, y: -(self.prototypeButton.bounds.height + 8)))
-                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: self.newsDataSource.itemCount == 0 ? .absolute(1) : .estimated(20))
+                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: isSectionHidden ? .absolute(1) : .estimated(20))
                 let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.button.rawValue, alignment: .bottomTrailing)
                 
 //                let showAllButton = NSCollectionLayoutSupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.showAllButton.rawValue, containerAnchor: buttonAnchor)
@@ -197,12 +206,14 @@ private extension SourcesDetailContentViewController
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 10
-                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: 4, trailing: inset)
+                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: 4, trailing: inset)
                 layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
                 layoutSection.boundarySupplementaryItems = [sectionFooter]
                 return layoutSection
                 
             case .apps:
+                let isSectionHidden = (self.appsDataSource.itemCount == 0)
+                
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(88))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
@@ -211,17 +222,35 @@ private extension SourcesDetailContentViewController
                 let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
                 let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.title.rawValue, alignment: .topLeading)
                 
-                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: self.appsDataSource.itemCount == 0 ? .absolute(1) : /*.estimated(20)*/ .absolute(68))
+                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: isSectionHidden ? .absolute(1) : .estimated(20) /*.absolute(68)*/)
                 let buttonHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.button.rawValue, alignment: .bottomTrailing)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 15
-                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 15 /* independent of inset */, leading: inset, bottom: 4, trailing: inset)
+                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: 15 /* independent of inset */, leading: inset, bottom: 4, trailing: inset)
                 layoutSection.orthogonalScrollingBehavior = .none
                 layoutSection.boundarySupplementaryItems = [titleHeader, buttonHeader]
                 return layoutSection
+                
+            case .about:
+                let isSectionHidden = (self.source.localizedDescription == nil)
+                
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: isSectionHidden ? .absolute(1) : .estimated(200))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
+                
+                let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: isSectionHidden ? .absolute(1) : .estimated(40))
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.title.rawValue, alignment: .topLeading)
+                
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.interGroupSpacing = 15
+                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: 15 /* independent of inset */, leading: inset, bottom: 44, trailing: inset)
+                layoutSection.orthogonalScrollingBehavior = .none
+                layoutSection.boundarySupplementaryItems = [titleHeader]
+                return layoutSection
             }
-        }
+        }, configuration: layoutConfig)
 
         return layout
     }
@@ -231,7 +260,7 @@ private extension SourcesDetailContentViewController
         let newsDataSource = self.newsDataSource as! RSTFetchedResultsCollectionViewDataSource<NSManagedObject>
         let appsDataSource = self.appsDataSource as! RSTFetchedResultsCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
         
-        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>(dataSources: [newsDataSource, appsDataSource])
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>(dataSources: [newsDataSource, appsDataSource, self.aboutDataSource])
         return dataSource
     }
     
@@ -364,9 +393,24 @@ private extension SourcesDetailContentViewController
         
         return dataSource
     }
+    
+    func makeAboutDataSource() -> RSTDynamicCollectionViewDataSource<NSManagedObject>
+    {
+        let dataSource = RSTDynamicCollectionViewDataSource<NSManagedObject>()
+        dataSource.numberOfSectionsHandler = { 1 }
+        dataSource.numberOfItemsHandler = { _ in 1 }
+        dataSource.cellIdentifierHandler = { _ in "AboutCell" }
+        dataSource.cellConfigurationHandler = { (cell, _, indexPath) in
+            let cell = cell as! TextViewCollectionViewCell
+            cell.textView.text = self.source.localizedDescription
+            cell.textView.maximumNumberOfLines = 0
+        }
+        
+        return dataSource
+    }
 }
 
-extension SourcesDetailContentViewController
+extension SourceDetailContentViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
@@ -392,6 +436,9 @@ extension SourcesDetailContentViewController
             
             print("[ALTLog] Bottom Spacing:", self.view.safeAreaInsets.bottom)
             
+        case (.about, _):
+            let titleView = headerView as! TitleView
+            titleView.label.text = NSLocalizedString("About", comment: "")
         }
         
         return headerView

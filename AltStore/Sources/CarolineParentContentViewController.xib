@@ -126,7 +126,7 @@
             </subviews>
             <point key="canvasLocation" x="608" y="-44"/>
         </stackView>
-        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KsM-R5-AAb">
+        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KsM-R5-AAb" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="72" height="31"/>
             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
             <state key="normal" title="FREE"/>

@@ -30,10 +30,27 @@ class CollapsingTextView: UITextView
     
     let moreButton = UIButton(type: .system)
     
+    override init(frame: CGRect, textContainer: NSTextContainer?)
+    {
+        super.init(frame: frame, textContainer: textContainer)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.layoutManager.delegate = self
         
         self.textContainerInset = .zero
