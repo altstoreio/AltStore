@@ -48,6 +48,7 @@ class CarolineParentContentViewController: UIViewController
 //    @IBOutlet private var bannerView: AppBannerView!
     private(set) var headerContentView: UIView!
     @IBOutlet private(set) var headerImageView: UIImageView!
+    private var headerScrollView: UIScrollView!
     
     @IBOutlet var labelsStackView: UIStackView!
     
@@ -105,9 +106,17 @@ class CarolineParentContentViewController: UIViewController
         
         self.navigationController?.presentationController?.delegate = self
         
+        self.headerScrollView = UIScrollView(frame: .zero)
+        self.headerScrollView.delegate = self
+        self.headerScrollView.isPagingEnabled = true
+        self.headerScrollView.clipsToBounds = false
+        self.headerScrollView.indicatorStyle = .white
+        self.headerScrollView.showsVerticalScrollIndicator = false
+        self.contentView.addSubview(self.headerScrollView)
+        
         self.headerContentView = self.makeHeaderContentView()
         self.headerContentView.translatesAutoresizingMaskIntoConstraints = true
-        self.contentView.addSubview(self.headerContentView)
+        self.headerScrollView.addSubview(self.headerContentView)
         
         self.contentViewController = self.makeContentViewController()
         
@@ -177,6 +186,8 @@ class CarolineParentContentViewController: UIViewController
         self.transitionCoordinator?.animate(alongsideTransition: { (context) in
             self.hideNavigationBar()
         }, completion: nil)
+       
+        self.headerScrollView.flashScrollIndicators()
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -376,10 +387,18 @@ class CarolineParentContentViewController: UIViewController
         // Set frames.
 //        self.contentViewController.view.superview?.frame = contentFrame
         self.contentViewController.view.frame = contentFrame
-        self.headerContentView.frame = headerFrame
+//        self.headerContentView.frame = headerFrame
         self.backgroundImageView.frame = backgroundIconFrame
         self.backgroundBlurView.frame = backgroundIconFrame
         self.backButtonContainerView.frame = backButtonFrame
+        
+        // Adjust header scroll view content size for paging
+        self.headerContentView.frame = CGRect(origin: .zero, size: headerFrame.size)
+        self.headerScrollView.frame = headerFrame
+        self.headerScrollView.contentSize = CGSize(width: headerFrame.width * 2, height: headerFrame.height)
+        
+//        self.headerScrollView.horizontalScrollIndicatorInsets.bottom = headerFrame.height + 3
+        self.headerScrollView.horizontalScrollIndicatorInsets.bottom = -12
         
 //        print("[ALTLog] Header Frame:", headerFrame)
         
@@ -541,10 +560,25 @@ extension CarolineParentContentViewController: UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     {
-        self.view.setNeedsLayout()
-        self.view.layoutIfNeeded()
-        
-//        print("[ALTLog] ContentY:", scrollView.contentOffset.y)
+        switch scrollView
+        {
+        case self.scrollView:
+            self.view.setNeedsLayout()
+            self.view.layoutIfNeeded()
+            
+        case self.headerScrollView:
+            self.headerScrollView.showsHorizontalScrollIndicator = false
+            
+            let minimumBlurFraction = 0.3 as CGFloat
+            
+            let maximumX = self.headerScrollView.bounds.width
+            let fraction = self.headerScrollView.contentOffset.x / maximumX
+            
+            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
+            self.blurAnimator?.fractionComplete = fractionComplete
+            
+        default: break
+        }
     }
 }
 
