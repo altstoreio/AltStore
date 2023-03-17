@@ -110,7 +110,7 @@
             <rect key="frame" x="0.0" y="0.0" width="85" height="35"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jC5-uP-qrX" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jC5-uP-qrX">
                     <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="35" id="2JZ-Ux-aNy"/>

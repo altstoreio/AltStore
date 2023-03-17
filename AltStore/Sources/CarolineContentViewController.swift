@@ -95,8 +95,13 @@ class CarolineParentContentViewController: UIViewController
     {
         super.viewDidLoad()
                         
+        self.navigationBarAppIconImageView.clipsToBounds = true
+        self.navigationBarAppIconImageView.layer.cornerRadius = self.navigationBarAppIconImageView.bounds.midY
+        
         self.navigationBarTitleView.sizeToFit()
         self.navigationItem.titleView = self.navigationBarTitleView
+        
+        self.navigationItem.largeTitleDisplayMode = .never
         
         self.navigationController?.presentationController?.delegate = self
         
@@ -232,11 +237,6 @@ class CarolineParentContentViewController: UIViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        
-        self.navigationController?.navigationBar.tintColor = self.view.tintColor
-        self.backButtonContainerView.tintColor = self.view.tintColor
-        self.navigationBarButton.tintColor = self.view.tintColor
-        self.navigationBarAppIconImageView.tintColor = self.view.tintColor
         
         if self._shouldResetLayout
         {
@@ -410,6 +410,10 @@ class CarolineParentContentViewController: UIViewController
     func update()
     {
         // Override
+        
+        self.navigationController?.navigationBar.tintColor = self.view.tintColor
+        self.backButtonContainerView.tintColor = self.view.tintColor
+        self.navigationBarAppIconImageView.tintColor = self.view.tintColor
     }
     
     deinit

@@ -370,6 +370,7 @@
 		D59162AB29BA60A9005CBF47 /* SourceAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59162AA29BA60A9005CBF47 /* SourceAboutView.swift */; };
 		D59162AD29BA616A005CBF47 /* SourceAboutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D59162AC29BA616A005CBF47 /* SourceAboutView.xib */; };
 		D5935AED29C39DE300C157EF /* SourceDetailsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */; };
+		D5935AEF29C3B23600C157EF /* Sources.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5935AEE29C3B23600C157EF /* Sources.storyboard */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
 		D5A0537129B91D8900997551 /* CarolineContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A0537029B91D8900997551 /* CarolineContentViewController.swift */; };
 		D5A0537329B91DB400997551 /* SourceDetailContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */; };
@@ -881,6 +882,7 @@
 		D59162AA29BA60A9005CBF47 /* SourceAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAboutView.swift; sourceTree = "<group>"; };
 		D59162AC29BA616A005CBF47 /* SourceAboutView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SourceAboutView.xib; sourceTree = "<group>"; };
 		D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailsComponents.swift; sourceTree = "<group>"; };
+		D5935AEE29C3B23600C157EF /* Sources.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Sources.storyboard; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
 		D5A0537029B91D8900997551 /* CarolineContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarolineContentViewController.swift; sourceTree = "<group>"; };
 		D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailContentViewController.swift; sourceTree = "<group>"; };
@@ -1557,6 +1559,7 @@
 		BFC84A4B2421A13000853474 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D5935AEE29C3B23600C157EF /* Sources.storyboard */,
 				BFC84A4C2421A19100853474 /* SourcesViewController.swift */,
 				D5ACCE4129C2730600949072 /* SourceDetailViewController.swift */,
 				D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */,
@@ -2335,6 +2338,7 @@
 				BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */,
 				BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */,
 				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
+				D5935AEF29C3B23600C157EF /* Sources.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

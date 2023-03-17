@@ -15,6 +15,9 @@ import Nuke
 
 class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == display apps from all sources
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -24,6 +27,18 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         didSet {
             self.update()
         }
+    }
+    
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
     }
     
     private var cachedItemSizes = [String: CGSize]()
@@ -77,7 +92,17 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        if let source = self.source
+        {
+            let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
+        }
+        else
+        {
+            fetchRequest.predicate = predicate
+        }
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
@@ -265,6 +290,12 @@ private extension BrowseViewController
             self.placeholderView.detailTextLabel.isHidden = true
             
             self.placeholderView.activityIndicatorView.stopAnimating()
+        }
+        
+        if let tintColor = self.source?.tintColor
+        {
+            self.navigationController?.navigationBar.tintColor = tintColor
+            self.navigationController?.view.tintColor = tintColor
         }
     }
 }

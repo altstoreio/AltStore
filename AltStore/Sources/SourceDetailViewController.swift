@@ -75,9 +75,12 @@ class AlmostPillButton: UIButton
             return size
         }
         
-        size.width += 40
+        size.width += 26
 //        size.height += 3
         size.height = 31
+        
+        size.width = max(size.width, 71)
+        
         return size
     }
 }
@@ -90,6 +93,12 @@ class SourceDetailViewController: CarolineParentContentViewController
     
     private var addButton: AlmostPillButton!
     private var addButtonContainerView: UIView!
+    
+    private var isSourceAdded = false {
+        didSet {
+            self.update()
+        }
+    }
     
     init(source: Source)
     {
@@ -117,6 +126,7 @@ class SourceDetailViewController: CarolineParentContentViewController
         self.addButton.translatesAutoresizingMaskIntoConstraints = false
         self.addButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
         self.addButton.setTitle(NSLocalizedString("ADD", comment: ""), for: .normal)
+        self.addButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         
         let blurEffect = UIBlurEffect(style: .systemThinMaterial)
         let blurView = UIVisualEffectView(effect: blurEffect)
@@ -136,19 +146,17 @@ class SourceDetailViewController: CarolineParentContentViewController
             self.navigationBarButton.addTarget(self, action: #selector(SourceDetailViewController.showAboutViewController), for: .primaryActionTriggered)
             
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
-            self.navigationBarButton.tintColor = self.source.tintColor
         }
         else
         {
             self.navigationBarButton.setTitle(NSLocalizedString("ADD", comment: ""), for: .normal)
-            self.navigationBarButton.tintColor = self.source.tintColor
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
             
 //            let barButtonItem = UIBarButtonItem(title: NSLocalizedString("About", comment: ""), style: .done, target: self, action: #selector(SourceDetailViewController.showAboutViewController))
 //            self.navigationItem.rightBarButtonItem = barButtonItem
         }
         
-        
+        self.navigationBarButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         
 //        self.primaryOcculusionView = self.labelsStackView
         
@@ -208,6 +216,8 @@ class SourceDetailViewController: CarolineParentContentViewController
             self.navigationBarButton.widthAnchor.constraint(greaterThanOrEqualToConstant: addButtonSize.width),
             self.navigationBarButton.heightAnchor.constraint(greaterThanOrEqualToConstant: addButtonSize.height),
         ])
+        
+        self.update()
     }
     
     override func update()
@@ -217,12 +227,31 @@ class SourceDetailViewController: CarolineParentContentViewController
 //        for button in [self.navigationBarButton!]
 //        {
 //            button.tintColor = self.source.tintColor
-//            button.isIndicatingActivity = false
 //        }
         
-        let barButtonItem = self.navigationItem.rightBarButtonItem
+        self.navigationBarButton.tintColor = self.isSourceAdded ? .refreshRed : self.source.tintColor ?? .altPrimary
+        
+        let title = self.isSourceAdded ? NSLocalizedString("REMOVE", comment: "") : NSLocalizedString("ADD", comment: "")
+        guard self.addButton?.title(for: .normal) != title else { return }
+        
+        self.navigationBarButton.setTitle(title, for: .normal)
+        self.addButton?.setTitle(title, for: .normal)
+        
         self.navigationItem.rightBarButtonItem = nil
+        
+        let titleView = self.navigationItem.titleView
+        self.navigationItem.titleView = nil
+        
+        self.navigationBarButton.frame.size.width = 100
+        self.navigationBarButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 9000), for: .horizontal)
+        
+        let barButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
         self.navigationItem.rightBarButtonItem = barButtonItem
+        
+        self.navigationController?.navigationBar.setNeedsLayout()
+        self.navigationController?.navigationBar.layoutIfNeeded()
+        
+        self.navigationItem.titleView = titleView
     }
     
     override func makeContentViewController() -> CarolineContentViewController
@@ -235,6 +264,7 @@ class SourceDetailViewController: CarolineParentContentViewController
     {
         let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
+        sourceAboutView.linkButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     
@@ -243,6 +273,8 @@ class SourceDetailViewController: CarolineParentContentViewController
         super.viewDidLayoutSubviews()
         
         let inset = 15.0
+        
+        self.addButtonContainerView.frame.size = self.addButton.intrinsicContentSize
         
         self.addButtonContainerView.center.y = self.backButtonContainerView.center.y
         self.addButtonContainerView.frame.origin.x = self.view.bounds.width - inset - self.addButtonContainerView.bounds.width
@@ -271,5 +303,20 @@ private extension SourceDetailViewController
     
     @IBAction func unwindToSourceDetail(_ segue: UIStoryboardSegue)
     {
+    }
+    
+    
+    @IBAction func addSource()
+    {
+        self.isSourceAdded.toggle()
+    }
+    
+    @IBAction func showWebsite()
+    {
+        guard let websiteURL = self.source.websiteURL else { return }
+        
+        let safariViewController = SFSafariViewController(url: websiteURL)
+        safariViewController.preferredControlTintColor = self.source.tintColor
+        self.present(safariViewController, animated: true, completion: nil)
     }
 }

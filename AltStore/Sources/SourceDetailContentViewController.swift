@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 import AltStoreCore
 import Roxas
@@ -258,7 +259,7 @@ private extension SourceDetailContentViewController
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
     {
         let newsDataSource = self.newsDataSource as! RSTFetchedResultsCollectionViewDataSource<NSManagedObject>
-        let appsDataSource = self.appsDataSource as! RSTFetchedResultsCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
+        let appsDataSource = self.appsDataSource as! RSTArrayCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
         
         let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>(dataSources: [newsDataSource, appsDataSource, self.aboutDataSource])
         return dataSource
@@ -304,15 +305,18 @@ private extension SourceDetailContentViewController
         return dataSource
     }
     
-    func makeAppsDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    func makeAppsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
-        let fetchRequest = StoreApp.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), self.source)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(StoreApp._source), ascending: true)]
+//        let fetchRequest = StoreApp.fetchRequest()
+//        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), self.source)
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(StoreApp._source), ascending: true)]
+//
+//        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
+        let featuredApps = Array(self.source.apps.prefix(5))
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>(items: featuredApps)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
-        dataSource.liveFetchLimit = 5
+//        dataSource.liveFetchLimit = 5
         dataSource.cellConfigurationHandler = { (cell, storeApp, indexPath) in
             let cell = cell as! AppBannerViewCell
             
@@ -410,6 +414,20 @@ private extension SourceDetailContentViewController
     }
 }
 
+private extension SourceDetailContentViewController
+{
+    @objc func viewAllApps()
+    {
+        let storyboard = UIStoryboard(name: "Sources", bundle: .main)
+        
+        let browseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
+            BrowseViewController(source: self.source, coder: coder)
+        }
+        
+        self.navigationController?.pushViewController(browseViewController, animated: true)
+    }
+}
+
 extension SourceDetailContentViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -432,6 +450,7 @@ extension SourceDetailContentViewController
         case (.apps, .button):
             let buttonView = headerView as! ButtonView
             buttonView.button.setTitle(NSLocalizedString("View All Apps", comment: ""), for: .normal)
+            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
 //            buttonView.bottomSpacing = 8 + self.view.safeAreaInsets.bottom // Add 20pts of spacing to bottom of collection view
             
             print("[ALTLog] Bottom Spacing:", self.view.safeAreaInsets.bottom)
@@ -442,5 +461,33 @@ extension SourceDetailContentViewController
         }
         
         return headerView
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let section = Section(rawValue: indexPath.section)!
+        let item = self.dataSource.item(at: indexPath)
+        
+        switch (section, item)
+        {
+        case (.news, let newsItem as NewsItem):
+            if let externalURL = newsItem.externalURL
+            {
+                let safariViewController = SFSafariViewController(url: externalURL)
+                safariViewController.preferredControlTintColor = newsItem.tintColor
+                self.present(safariViewController, animated: true, completion: nil)
+            }
+            else if let storeApp = newsItem.storeApp
+            {
+                let appViewController = AppViewController.makeAppViewController(app: storeApp)
+                self.navigationController?.pushViewController(appViewController, animated: true)
+            }
+            
+        case (.apps, let storeApp as StoreApp):
+            let appViewController = AppViewController.makeAppViewController(app: storeApp)
+            self.navigationController?.pushViewController(appViewController, animated: true)
+            
+        default: break
+        }
     }
 }
