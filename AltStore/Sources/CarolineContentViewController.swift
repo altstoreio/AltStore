@@ -63,6 +63,9 @@ class CarolineParentContentViewController: UIViewController
     @IBOutlet private(set) var navigationBarAppIconImageView: UIImageView!
     @IBOutlet private(set) var navigationBarAppNameLabel: UILabel!
     
+    private var ignoreBackGestureRecognizer: UIPanGestureRecognizer!
+    private var ignoreHeaderPanGestureRecognizer: UIPanGestureRecognizer!
+    
     private var _shouldResetLayout = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
@@ -95,6 +98,8 @@ class CarolineParentContentViewController: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        self.view.clipsToBounds = true
                         
         self.navigationBarAppIconImageView.clipsToBounds = true
         self.navigationBarAppIconImageView.layer.cornerRadius = self.navigationBarAppIconImageView.bounds.midY
@@ -148,6 +153,23 @@ class CarolineParentContentViewController: UIViewController
         
         self.contentViewController.scrollView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
         self.contentViewController.scrollView.showsVerticalScrollIndicator = false
+        
+        self.ignoreBackGestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
+        self.ignoreBackGestureRecognizer.delegate = self
+        self.view.addGestureRecognizer(self.ignoreBackGestureRecognizer)
+        
+        if let popGestureRecognizer = self.navigationController?.interactivePopGestureRecognizer
+        {
+            popGestureRecognizer.require(toFail: self.ignoreBackGestureRecognizer)
+            popGestureRecognizer.require(toFail: self.headerScrollView.panGestureRecognizer)
+        }
+        
+//        self.ignoreHeaderPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
+//        self.ignoreHeaderPanGestureRecognizer.delegate = self
+//        self.headerScrollView.panGestureRecognizer.require(toFail: self.ignoreHeaderPanGestureRecognizer)
+//        self.view.addGestureRecognizer(self.headerScrollView.panGestureRecognizer)
+//        self.view.addGestureRecognizer(self.ignoreHeaderPanGestureRecognizer)
+        
         
         // Bring to front so the scroll indicators are visible.
         self.view.bringSubviewToFront(self.scrollView)
@@ -586,6 +608,41 @@ extension CarolineParentContentViewController: UIAdaptivePresentationControllerD
 {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool
     {
+        return false
+    }
+}
+
+extension CarolineParentContentViewController: UIGestureRecognizerDelegate
+{
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        if gestureRecognizer == self.ignoreBackGestureRecognizer
+        {
+            if self.headerScrollView.contentOffset.x > 0
+            {
+                // Disable back gesture, which means enable this gesture.
+                
+                let location = gestureRecognizer.location(in: self.contentView)
+                
+                if location.y > self.headerScrollView.frame.minY && location.y < self.headerScrollView.frame.maxY
+                {
+                    // Block back gesture
+                    return true
+                }
+            }
+        }
+        else if gestureRecognizer == self.ignoreHeaderPanGestureRecognizer
+        {
+            let location = gestureRecognizer.location(in: self.contentView)
+            
+            if location.y < self.headerScrollView.frame.minY || location.y > self.headerScrollView.frame.maxY
+            {
+                // Block header scroll gesture
+                return true
+            }
+        }
+        
+        // Allow normal gesture to procede
         return false
     }
 }
