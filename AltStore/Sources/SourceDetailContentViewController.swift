@@ -416,6 +416,17 @@ private extension SourceDetailContentViewController
 
 private extension SourceDetailContentViewController
 {
+    @objc func viewAllNews()
+    {
+        let storyboard = UIStoryboard(name: "Sources", bundle: .main)
+        
+        let newsViewController = storyboard.instantiateViewController(identifier: "newsViewController") { coder in
+            NewsViewController(source: self.source, coder: coder)
+        }
+        
+        self.navigationController?.pushViewController(newsViewController, animated: true)
+    }
+    
     @objc func viewAllApps()
     {
         let storyboard = UIStoryboard(name: "Sources", bundle: .main)
@@ -443,6 +454,9 @@ extension SourceDetailContentViewController
             buttonView.button.setTitle(NSLocalizedString("View All", comment: ""), for: .normal)
             buttonView.button.isHidden = (self.newsDataSource.itemCount == 0)
             
+            buttonView.button.removeTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
+            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllNews), for: .primaryActionTriggered)
+            
         case (.apps, .title):
             let titleView = headerView as! TitleView
             titleView.label.text = NSLocalizedString("Featured Apps", comment: "")
@@ -450,8 +464,11 @@ extension SourceDetailContentViewController
         case (.apps, .button):
             let buttonView = headerView as! ButtonView
             buttonView.button.setTitle(NSLocalizedString("View All Apps", comment: ""), for: .normal)
-            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
 //            buttonView.bottomSpacing = 8 + self.view.safeAreaInsets.bottom // Add 20pts of spacing to bottom of collection view
+            
+            buttonView.button.removeTarget(self, action: #selector(SourceDetailContentViewController.viewAllNews), for: .primaryActionTriggered)
+            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
+
             
             print("[ALTLog] Bottom Spacing:", self.view.safeAreaInsets.bottom)
             

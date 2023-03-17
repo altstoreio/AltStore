@@ -43,6 +43,9 @@ private class AppBannerFooterView: UICollectionReusableView
 
 class NewsViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == display apps from all sources
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -57,16 +60,35 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     // Cache
     private var cachedCellSizes = [String: CGSize]()
     
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+        
+        self.initialize()
+    }
+    
     required init?(coder: NSCoder)
     {
         super.init(coder: coder)
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         NotificationCenter.default.addObserver(self, selector: #selector(NewsViewController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        if let source = self.source
+        {
+            self.view.tintColor = source.tintColor
+        }
         
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,7 +138,13 @@ private extension NewsViewController
                                         NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
                                         NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
+        if let source = self.source
+        {
+            fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), source)
+        }
+        
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
