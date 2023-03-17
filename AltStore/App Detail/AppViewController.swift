@@ -44,6 +44,7 @@ class AppViewController: UIViewController
     private var _shouldResetLayout = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
+    private var _viewDidAppear = false
     
     private var _preferredStatusBarStyle: UIStatusBarStyle = .default
     
@@ -148,6 +149,7 @@ class AppViewController: UIViewController
         super.viewDidAppear(animated)
         
         self._shouldResetLayout = true
+        self._viewDidAppear = true
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
     }
@@ -157,20 +159,38 @@ class AppViewController: UIViewController
         super.viewWillDisappear(animated)
 
         // Guard against "dismissing" when presenting via 3D Touch pop.
-        guard self.navigationController != nil else { return }
-
-        // Store reference since self.navigationController will be nil after disappearing.
-        let navigationController = self.navigationController
-        navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.showNavigationBar(for: navigationController)
-        }, completion: { (context) in
-            if !context.isCancelled
+        // Also store reference since self.navigationController will be nil after disappearing.
+        guard let navigationController = self.navigationController else { return }
+        
+        self.navigationBarAnimator?.stopAnimation(true)
+        
+        if let topViewController = navigationController.topViewController
+        {
+            if topViewController is AppViewController || topViewController is CarolineParentContentViewController
             {
-                self.showNavigationBar(for: navigationController)
+                // Moving to another one of us, so let them handle it from here
+                
+                print("[RSTLog] Ignoring nav bar changes...")
             }
-        })
+            else
+            {
+                // Moving away, so show navigation bar
+                print("[RSTLog] Showing nav bar!")
+                
+                // Store reference since self.navigationController will be nil after disappearing.
+                let navigationController = self.navigationController
+                navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
+
+                self.transitionCoordinator?.animate(alongsideTransition: { (context) in
+                    self.showNavigationBar(for: navigationController)
+                }, completion: { (context) in
+                    if !context.isCancelled
+                    {
+                        self.showNavigationBar(for: navigationController)
+                    }
+                })
+            }
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -343,6 +363,8 @@ class AppViewController: UIViewController
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?)
     {
         super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard _viewDidAppear else { return }
         self._shouldResetLayout = true
     }
     
@@ -476,6 +498,8 @@ private extension AppViewController
     
     func resetNavigationBarAnimation()
     {
+        guard _viewDidAppear else { return }
+        
         self.navigationBarAnimator?.stopAnimation(true)
         self.navigationBarAnimator = nil
         

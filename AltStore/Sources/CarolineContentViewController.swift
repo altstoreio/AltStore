@@ -69,6 +69,8 @@ class CarolineParentContentViewController: UIViewController
     private var _shouldResetLayout = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
+    private var _viewDidAppear = false
+    private var _previousNavigationBarHidden: Bool?
     
     private var _preferredStatusBarStyle: UIStatusBarStyle = .default
     
@@ -205,9 +207,22 @@ class CarolineParentContentViewController: UIViewController
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
 
+//        // Only explicitly hide on first appearance
+//        guard !_viewDidAppear else { return }
+        
         self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.hideNavigationBar()
+
+            if self._previousNavigationBarHidden == false
+            {
+                self.showNavigationBar()
+            }
+            else
+            {
+                self.hideNavigationBar()
+            }
+
         }, completion: nil)
+        
        
         self.headerScrollView.flashScrollIndicators()
     }
@@ -217,6 +232,7 @@ class CarolineParentContentViewController: UIViewController
         super.viewDidAppear(animated)
         
         self._shouldResetLayout = true
+        self._viewDidAppear = true
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
     }
@@ -226,20 +242,41 @@ class CarolineParentContentViewController: UIViewController
         super.viewWillDisappear(animated)
 
         // Guard against "dismissing" when presenting via 3D Touch pop.
-        guard self.navigationController != nil else { return }
-
-        // Store reference since self.navigationController will be nil after disappearing.
-        let navigationController = self.navigationController
-        navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.showNavigationBar(for: navigationController)
-        }, completion: { (context) in
-            if !context.isCancelled
+        // Also store reference since self.navigationController will be nil after disappearing.
+        guard let navigationController = self.navigationController else { return }
+        
+        _previousNavigationBarHidden = (navigationController.navigationBar.alpha == 0.0)
+        
+        
+        self.navigationBarAnimator?.stopAnimation(true)
+        
+        if let topViewController = navigationController.topViewController
+        {
+            if topViewController is AppViewController || topViewController is CarolineParentContentViewController
             {
-                self.showNavigationBar(for: navigationController)
+                // Moving to another one of us, so let them handle it from here
+                
+                print("[RSTLog] Ignoring nav bar changes...")
             }
-        })
+            else
+            {
+                // Moving away, so show navigation bar
+                print("[RSTLog] Showing nav bar!")
+                
+                // Store reference since self.navigationController will be nil after disappearing.
+                let navigationController = self.navigationController
+                navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
+
+                self.transitionCoordinator?.animate(alongsideTransition: { (context) in
+                    self.showNavigationBar(for: navigationController)
+                }, completion: { (context) in
+                    if !context.isCancelled
+                    {
+                        self.showNavigationBar(for: navigationController)
+                    }
+                })
+            }
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -355,7 +392,7 @@ class CarolineParentContentViewController: UIViewController
         let showNavigationBarThreshold = (maximumContentY - minimumContentY) + backButtonFrame.origin.y
         if self.scrollView.contentOffset.y > showNavigationBarThreshold
         {
-            if self.navigationBarAnimator == nil
+            if self.navigationBarAnimator == nil && !self.isDisappearing
             {
                 self.prepareNavigationBarAnimation()
             }
@@ -546,6 +583,8 @@ private extension CarolineParentContentViewController
     {
         self.navigationBarAnimator?.stopAnimation(true)
         self.navigationBarAnimator = nil
+        
+        guard self.navigationController?.topViewController == self else { return }
         
         self.hideNavigationBar()
         
