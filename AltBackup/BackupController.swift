@@ -8,44 +8,64 @@
 
 import Foundation
 
-extension ErrorUserInfoKey
-{
-    static let sourceFile: String = "alt_sourceFile"
-    static let sourceFileLine: String = "alt_sourceFileLine"
-}
+import AltStoreCore
+import AltSign
 
 extension Error
 {
     var sourceDescription: String? {
-        guard let sourceFile = (self as NSError).userInfo[ErrorUserInfoKey.sourceFile] as? String, let sourceFileLine = (self as NSError).userInfo[ErrorUserInfoKey.sourceFileLine] else {
+        guard let sourceFile = (self as NSError).userInfo[ALTSourceFileErrorKey] as? String, let sourceFileLine = (self as NSError).userInfo[ALTSourceLineErrorKey] else {
             return nil
         }
         return "(\((sourceFile as NSString).lastPathComponent), Line \(sourceFileLine))"
     }
 }
 
-struct BackupError: ALTLocalizedError
+extension BackupError
 {
-    enum Code
+    enum Code: Int, ALTErrorCode
     {
+        typealias Error = BackupError
+        
         case invalidBundleID
-        case appGroupNotFound(String?)
+        case appGroupNotFound
         case randomError // Used for debugging.
     }
     
+    static func invalidBundleID(description: String, file: String = #file, line: UInt = #line) -> BackupError
+    {
+        BackupError(code: .invalidBundleID, errorFailure: description, sourceFile: file, sourceLine: line)
+    }
+    
+    static func appGroupNotFound(groupID: String?, description: String, file: String = #file, line: UInt = #line) -> BackupError
+    {
+        BackupError(code: .appGroupNotFound, appGroupID: groupID, errorFailure: description, sourceFile: file, sourceLine: line)
+    }
+    
+    static func randomError(description: String, file: String = #file, line: UInt = #line) -> BackupError
+    {
+        BackupError(code: .randomError, errorFailure: description, sourceFile: file, sourceLine: line)
+    }
+}
+
+struct BackupError: ALTLocalizedError
+{
     let code: Code
     
-    let sourceFile: String
-    let sourceFileLine: Int
+    var appGroupID: String?
     
-    var failure: String?
+    var errorTitle: String?
+    var errorFailure: String?
+    
+    var sourceFile: String?
+    var sourceLine: UInt?
 
-    var failureReason: String? {
+    var errorFailureReason: String {
         switch self.code
         {
         case .invalidBundleID: return NSLocalizedString("The bundle identifier is invalid.", comment: "")
-        case .appGroupNotFound(let appGroup):
-            if let appGroup = appGroup
+        case .appGroupNotFound:
+            if let appGroup = self.appGroupID
             {
                 return String(format: NSLocalizedString("The app group “%@” could not be found.", comment: ""), appGroup)
             }
@@ -60,18 +80,12 @@ struct BackupError: ALTLocalizedError
     var errorUserInfo: [String : Any] {
         let userInfo: [String: Any?] = [NSLocalizedDescriptionKey: self.errorDescription,
                                         NSLocalizedFailureReasonErrorKey: self.failureReason,
-                                        NSLocalizedFailureErrorKey: self.failure,
-                                        ErrorUserInfoKey.sourceFile: self.sourceFile,
-                                        ErrorUserInfoKey.sourceFileLine: self.sourceFileLine]
+                                        NSLocalizedFailureErrorKey: self.errorFailure,
+                                        ALTSourceFileErrorKey: self.sourceFile,
+                                        ALTSourceLineErrorKey: self.sourceLine,
+                                        "ALTAppGroupID": self.appGroupID
+        ]
         return userInfo.compactMapValues { $0 }
-    }
-    
-    init(_ code: Code, description: String? = nil, file: String = #file, line: Int = #line)
-    {
-        self.code = code
-        self.failure = description
-        self.sourceFile = file
-        self.sourceFileLine = line
     }
 }
 
@@ -90,13 +104,13 @@ class BackupController: NSObject
         do
         {
             guard let bundleIdentifier = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.altBundleID) as? String else {
-                throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to create backup directory.", comment: ""))
+                throw BackupError.invalidBundleID(description: NSLocalizedString("Unable to create backup directory.", comment: ""))
             }
             
             guard
                 let altstoreAppGroup = Bundle.main.altstoreAppGroup,
                 let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: altstoreAppGroup)
-            else { throw BackupError(.appGroupNotFound(nil), description: NSLocalizedString("Unable to create backup directory.", comment: "")) }
+            else { throw BackupError.appGroupNotFound(groupID: nil, description: NSLocalizedString("Unable to create backup directory.", comment: "")) }
             
             let backupsDirectory = sharedDirectoryURL.appendingPathComponent("Backups")
             
@@ -153,7 +167,7 @@ class BackupController: NSObject
                     for appGroup in Bundle.main.appGroups where appGroup != altstoreAppGroup
                     {
                         guard let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
-                            throw BackupError(.appGroupNotFound(appGroup), description: NSLocalizedString("Unable to create app group backup directory.", comment: ""))
+                            throw BackupError.appGroupNotFound(groupID: appGroup, description: NSLocalizedString("Unable to create app group backup directory.", comment: ""))
                         }
                         
                         let backupAppGroupURL = temporaryAppBackupDirectory.appendingPathComponent(appGroup)
@@ -189,13 +203,13 @@ class BackupController: NSObject
         do
         {
             guard let bundleIdentifier = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.altBundleID) as? String else {
-                throw BackupError(.invalidBundleID, description: NSLocalizedString("Unable to access backup.", comment: ""))
+                throw BackupError.invalidBundleID(description: NSLocalizedString("Unable to access backup.", comment: ""))
             }
             
             guard
                 let altstoreAppGroup = Bundle.main.altstoreAppGroup,
                 let sharedDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: altstoreAppGroup)
-            else { throw BackupError(.appGroupNotFound(nil), description: NSLocalizedString("Unable to access backup.", comment: "")) }
+            else { throw BackupError.appGroupNotFound(groupID: nil, description: NSLocalizedString("Unable to access backup.", comment: "")) }
             
             let backupsDirectory = sharedDirectoryURL.appendingPathComponent("Backups")
             let appBackupDirectory = backupsDirectory.appendingPathComponent(bundleIdentifier)
@@ -223,7 +237,7 @@ class BackupController: NSObject
                     for appGroup in Bundle.main.appGroups where appGroup != altstoreAppGroup
                     {
                         guard let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
-                            throw BackupError(.appGroupNotFound(appGroup), description: NSLocalizedString("Unable to read app group backup.", comment: ""))
+                            throw BackupError.appGroupNotFound(groupID: appGroup, description: NSLocalizedString("Unable to read app group backup.", comment: ""))
                         }
                         
                         let backupAppGroupURL = appBackupDirectory.appendingPathComponent(appGroup)
