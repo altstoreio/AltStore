@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import UIKit
 
 public extension Source
 {
@@ -35,6 +36,23 @@ public extension Source
     #endif
 }
 
+public extension Source
+{
+    // Fallbacks for optional JSON values
+    
+    var effectiveIconURL: URL? {
+        return self.iconURL ?? self.apps.first?.iconURL
+    }
+    
+    var effectiveHeaderImageURL: URL? {
+        return self.headerImageURL ?? self.effectiveIconURL
+    }
+    
+    var effectiveTintColor: UIColor? {
+        return self.tintColor ?? self.apps.first?.tintColor
+    }
+}
+
 @objc(Source)
 public class Source: NSManagedObject, Fetchable, Decodable
 {
@@ -42,6 +60,15 @@ public class Source: NSManagedObject, Fetchable, Decodable
     @NSManaged public var name: String
     @NSManaged public var identifier: String
     @NSManaged public var sourceURL: URL
+    
+    /* Source Detail */
+    @NSManaged public var caption: String?
+    @NSManaged public var localizedDescription: String?
+    @NSManaged public var iconURL: URL?
+    @NSManaged public var headerImageURL: URL?
+    
+    @NSManaged public var websiteURL: URL?
+    @NSManaged public var tintColor: UIColor?
     
     @NSManaged public var error: NSError?
     
@@ -51,6 +78,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
     /* Relationships */
     @objc(apps) @NSManaged public private(set) var _apps: NSOrderedSet
     @objc(newsItems) @NSManaged public private(set) var _newsItems: NSOrderedSet
+    
+    @objc(featuredApps) @NSManaged public private(set) var _featuredApps: NSOrderedSet
+    @NSManaged public private(set) var hasFeaturedApps: Bool
     
     @nonobjc public var apps: [StoreApp] {
         get {
@@ -70,14 +100,26 @@ public class Source: NSManagedObject, Fetchable, Decodable
         }
     }
     
+    @nonobjc public var featuredApps: [StoreApp]? {
+        return self.hasFeaturedApps ? self._featuredApps.array as? [StoreApp] : nil
+    }
+    
     private enum CodingKeys: String, CodingKey
     {
         case name
         case identifier
         case sourceURL
+        case caption
+        case localizedDescription = "description"
+        case iconURL
+        case headerImageURL = "headerURL"
+        case websiteURL = "website"
+        case tintColor
         case userInfo
+        
         case apps
         case news
+        case featuredApps
     }
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
@@ -99,6 +141,21 @@ public class Source: NSManagedObject, Fetchable, Decodable
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.name = try container.decode(String.self, forKey: .name)
             self.identifier = try container.decode(String.self, forKey: .identifier)
+            
+            // Optional Values
+            self.caption = try container.decodeIfPresent(String.self, forKey: .caption)
+            self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
+            self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
+            self.websiteURL = try container.decodeIfPresent(URL.self, forKey: .websiteURL)
+            
+            if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
+            {
+                guard let tintColor = UIColor(hexString: tintColorHex) else {
+                    throw DecodingError.dataCorruptedError(forKey: .tintColor, in: container, debugDescription: "Hex code is invalid.")
+                }
+                
+                self.tintColor = tintColor
+            }
             
             let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
             self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
@@ -134,6 +191,18 @@ public class Source: NSManagedObject, Fetchable, Decodable
                 }
             }
             self._newsItems = NSMutableOrderedSet(array: newsItems)
+            
+            if let featuredAppBundleIDs = try container.decodeIfPresent([String].self, forKey: .featuredApps)
+            {
+                let featuredApps = featuredAppBundleIDs.compactMap { appsByID[$0] }
+                self._featuredApps = NSMutableOrderedSet(array: featuredApps)
+                self.hasFeaturedApps = true
+            }
+            else
+            {
+                self._featuredApps = NSMutableOrderedSet(array: [])
+                self.hasFeaturedApps = false
+            }
         }
         catch
         {

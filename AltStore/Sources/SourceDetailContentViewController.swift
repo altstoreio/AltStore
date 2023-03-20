@@ -141,7 +141,7 @@ class SourceDetailContentViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
-        self.view.tintColor = self.source.tintColor
+        self.view.tintColor = self.source.effectiveTintColor
         self.collectionView.collectionViewLayout = self.makeLayout()
          
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
@@ -241,7 +241,7 @@ private extension SourceDetailContentViewController
                 
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
                 
-                let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: isSectionHidden ? .absolute(1) : .estimated(40))
+                let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: isSectionHidden ? .absolute(44) : .estimated(40))
                 let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.title.rawValue, alignment: .topLeading)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
@@ -307,16 +307,11 @@ private extension SourceDetailContentViewController
     
     func makeAppsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
-//        let fetchRequest = StoreApp.fetchRequest()
-//        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), self.source)
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(StoreApp._source), ascending: true)]
-//
-//        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
+        let featuredApps = self.source.featuredApps ?? self.source.apps
+        let limitedFeaturedApps = Array(featuredApps.prefix(5))
         
-        let featuredApps = Array(self.source.apps.prefix(5))
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>(items: featuredApps)
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>(items: limitedFeaturedApps)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
-//        dataSource.liveFetchLimit = 5
         dataSource.cellConfigurationHandler = { (cell, storeApp, indexPath) in
             let cell = cell as! AppBannerViewCell
             
@@ -464,7 +459,15 @@ extension SourceDetailContentViewController
             
         case (.about, _):
             let titleView = headerView as! TitleView
-            titleView.label.text = NSLocalizedString("About", comment: "")
+            
+            if self.source.localizedDescription != nil
+            {
+                titleView.label.text = NSLocalizedString("About", comment: "")
+            }
+            else
+            {
+                titleView.label.text = ""
+            }
         }
         
         return headerView

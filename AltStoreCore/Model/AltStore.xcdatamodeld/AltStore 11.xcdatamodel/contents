@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -148,11 +148,19 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="caption" optional="YES" attributeType="String"/>
         <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="hasFeaturedApps" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="headerImageURL" optional="YES" attributeType="URI"/>
+        <attribute name="iconURL" optional="YES" attributeType="URI"/>
         <attribute name="identifier" attributeType="String"/>
+        <attribute name="localizedDescription" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="sourceURL" attributeType="URI"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="websiteURL" optional="YES" attributeType="URI"/>
         <relationship name="apps" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StoreApp" inverseName="source" inverseEntity="StoreApp"/>
+        <relationship name="featuredApps" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="StoreApp" inverseName="featuringSource" inverseEntity="StoreApp"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="NewsItem" inverseName="source" inverseEntity="NewsItem"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -177,6 +185,7 @@
         <attribute name="version" attributeType="String"/>
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="versionDescription" optional="YES" attributeType="String"/>
+        <relationship name="featuringSource" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="featuredApps" inverseEntity="Source"/>
         <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp"/>
         <relationship name="latestVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppVersion" inverseName="latestVersionApp" inverseEntity="AppVersion"/>
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>

@@ -204,6 +204,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 let bundleIdentifiers = Set(conflictedObject.apps.map { $0.bundleIdentifier })
                 let newsItemIdentifiers = Set(conflictedObject.newsItems.map { $0.identifier })
 
+                //TODO: Fix featuredApps order?
+                
                 for app in databaseObject.apps
                 {
                     if !bundleIdentifiers.contains(app.bundleIdentifier)

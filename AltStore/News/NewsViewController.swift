@@ -87,7 +87,7 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
         
         if let source = self.source
         {
-            self.view.tintColor = source.tintColor
+            self.view.tintColor = source.effectiveTintColor ?? .altPrimary
         }
         
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)

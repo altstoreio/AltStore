@@ -47,6 +47,7 @@ class SourceAboutView: RSTNibView
     @IBOutlet var iconImageView: UIImageView!
     
     @IBOutlet var descriptionTextView: CollapsingTextView?
+    @IBOutlet var websiteContentView: UIView!
     @IBOutlet var linkButton: UIButton!
     @IBOutlet var linkButtonContainerView: UIView!
     @IBOutlet var linkButtonImageView: UIImageView!
@@ -132,16 +133,22 @@ class SourceAboutView: RSTNibView
 //            configuration.contentInsets.leading += 12 + 7 //12+7=19 = Centered Spacing
 //            configuration.imagePadding = 33 - 7 // 33-7=26 = Centered Spacing
             configuration.baseBackgroundColor = .clear
-            configuration.subtitle = "https://altstore.io"
+            configuration.title = "https://altstore.io"
             configuration.titleAlignment = .leading
             configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
                 var attributes = attributes
-                
-                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption2)
-                attributes.font = UIFont(descriptor: fontDescriptor, size: 0.0)
-                
+                attributes.font = UIFont.preferredFont(forTextStyle: .subheadline)
                 return attributes
             }
+            
+//            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+//                var attributes = attributes
+//
+//                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption2)
+//                attributes.font = UIFont(descriptor: fontDescriptor, size: 0.0)
+//
+//                return attributes
+//            }
             configuration.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
                 var attributes = attributes
                 attributes.font = UIFont.preferredFont(forTextStyle: .subheadline)
@@ -184,15 +191,25 @@ extension SourceAboutView
     func configure(for source: Source)
     {
         self.titleLabel.text = source.name
-        self.subtitleLabel.text = "A home for apps that push the boundary of iOS."
+        self.subtitleLabel.text = source.caption
         
-        self.linkButton.tintColor = source.tintColor
+        self.linkButton.tintColor = source.effectiveTintColor
         
-//        let displayScale = (self.traitCollection.displayScale == 0.0) ? 1.0 : self.traitCollection.displayScale // 0.0 == "unspecified"
-//        self.layer.borderWidth = 0.5
-//        self.layer.borderColor = (source.tintColor ?? .altPrimary).withAlphaComponent(0.7).cgColor
+        if let websiteURL = source.websiteURL
+        {
+            self.linkButton.setTitle(websiteURL.absoluteString, for: .normal)
+            
+            self.websiteContentView.isHidden = false
+            self.linkButtonImageView.isHidden = false
+        }
+        else
+        {
+            self.linkButton.setTitle(nil, for: .normal)
+            self.websiteContentView.isHidden = true
+            self.linkButtonImageView.isHidden = true
+        }
         
-        Nuke.loadImage(with: source.iconURL, into: self.iconImageView)
+        Nuke.loadImage(with: source.effectiveIconURL, into: self.iconImageView)
     }
 }
 

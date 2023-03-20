@@ -14,29 +14,6 @@ import Roxas
 
 import Nuke
 
-extension Source
-{
-    var tintColor: UIColor? {
-        return self.apps.first?.tintColor
-    }
-    
-    var iconURL: URL? {
-        return self.apps.first?.iconURL
-    }
-    
-    var websiteURL: URL? {
-        return URL(string: "https://altstore.io")
-    }
-    
-    var localizedDescription: String? {
-        return """
-Lorem ipsum dolizzle sit amizzle, gangster adipiscing elit. Nullam sapizzle velizzle, things volutpizzle, suscipit brizzle, hizzle vel, that's the shizzle. Pellentesque eget tortizzle. Sizzle erizzle. Check it out at dolor dapibus daahng dawg tempizzle shizzlin dizzle. Fo shizzle pellentesque nibh et break it down. Vestibulum izzle shiz. Pellentesque mofo rhoncus dang. In dang sizzle platea dope. Shizzle my nizzle crocodizzle dapibizzle. We gonna chung sure urna, pretizzle the bizzle, mattis dizzle, dang hizzle, nunc. Rizzle suscipizzle. Its fo rizzle semper pimpin' sizzle the bizzle.
-
-Etizzle fo shizzle urna for sure nisl. Mammasay mammasa mamma oo sa quis izzle. Maecenas pulvinar, ipsizzle malesuada malesuada scelerisque, check out this purus euismizzle funky fresh, fo shizzle mah nizzle fo rizzle, mah home g-dizzle luctus metus stuff izzle izzle. Vivamizzle ullamcorper, tortizzle et varizzle shiz, crunk fo shizzle mah nizzle fo rizzle, mah home g-dizzle owned pizzle, izzle sheezy leo elizzle in pizzle. Boofron we gonna chung, orci break yo neck, yall volutpizzle black, sizzle phat luctizzle mah nizzle, for sure bibendizzle enizzle own yo' ut sure. Nullam a izzle izzle shiz hizzle viverra. Phasellus get down get down boofron. Curabitizzle nizzle shit i saw beyonces tizzles and my pizzle went crizzle pede sodalizzle facilisizzle. Hizzle sapizzle boofron, daahng dawg vel, molestie rizzle, yo a, erizzle. Shut the shizzle up vitae owned quis bibendizzle boofron. Nizzle fo shizzle my nizzle consectetuer . Aliquizzle dawg volutpat. Fo shizzle ut leo izzle dang pretizzle faucibus. Cras stuff lacus dui izzle ultricies. Fo shizzle my nizzle nisl. Fo shizzle et own yo'. Integer things rizzle mammasay mammasa mamma oo sa mi. Fo shizzle my nizzle izzle boofron.
-"""
-    }
-}
-
 class DummyTableViewController: UITableViewController, CarolineContentViewController
 {
     lazy var dataSource = self.makeDataSource()
@@ -116,9 +93,8 @@ class SourceDetailViewController: CarolineParentContentViewController
     {
         super.viewDidLoad()
         
-        self.view.tintColor = self.source.tintColor
-        
-        self.navigationController?.navigationBar.tintColor = self.source.tintColor
+        self.view.tintColor = self.source.effectiveTintColor
+        self.navigationController?.navigationBar.tintColor = self.source.effectiveTintColor
         
         let useInfoIcon = false
         
@@ -192,10 +168,8 @@ class SourceDetailViewController: CarolineParentContentViewController
         
         
         
-        
-        Nuke.loadImage(with: self.source.iconURL, into: self.backgroundImageView)
-        Nuke.loadImage(with: self.source.iconURL, into: self.navigationBarAppIconImageView)
-        Nuke.loadImage(with: self.source.iconURL, into: self.headerImageView)
+        Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarAppIconImageView)
+        Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
         
         self.navigationBarAppNameLabel.text = self.source.name
         self.navigationBarAppNameLabel.sizeToFit()
@@ -229,7 +203,7 @@ class SourceDetailViewController: CarolineParentContentViewController
 //            button.tintColor = self.source.tintColor
 //        }
         
-        self.navigationBarButton.tintColor = self.isSourceAdded ? .refreshRed : self.source.tintColor ?? .altPrimary
+        self.navigationBarButton.tintColor = self.isSourceAdded ? .refreshRed : self.source.effectiveTintColor ?? .altPrimary
         
         let title = self.isSourceAdded ? NSLocalizedString("REMOVE", comment: "") : NSLocalizedString("ADD", comment: "")
         guard self.addButton?.title(for: .normal) != title else { return }
@@ -316,7 +290,7 @@ private extension SourceDetailViewController
         guard let websiteURL = self.source.websiteURL else { return }
         
         let safariViewController = SFSafariViewController(url: websiteURL)
-        safariViewController.preferredControlTintColor = self.source.tintColor
+        safariViewController.preferredControlTintColor = self.source.effectiveTintColor ?? .altPrimary
         self.present(safariViewController, animated: true, completion: nil)
     }
 }
