@@ -235,6 +235,8 @@ class CarolineParentContentViewController: UIViewController
         self._viewDidAppear = true
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
+        
+        self.navigationController?.delegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool)
@@ -415,7 +417,10 @@ class CarolineParentContentViewController: UIViewController
         }
         else
         {
-            self.resetNavigationBarAnimation()
+            if !self.isAppearing && !self.isDisappearing
+            {
+                self.resetNavigationBarAnimation()
+            }
         }
         
         let beginMovingBackButtonThreshold = (maximumContentY - minimumContentY)
@@ -684,4 +689,41 @@ extension CarolineParentContentViewController: UIGestureRecognizerDelegate
         // Allow normal gesture to procede
         return false
     }
+}
+
+extension CarolineParentContentViewController: UINavigationControllerDelegate
+{
+//    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool)
+//    {
+//        if viewController == self
+//        {
+//            // Returning to self, ignore.
+//
+//
+//        }
+//        else if viewController is AppViewController || viewController is CarolineParentContentViewController
+//        {
+//            // Moving to another one of us, so let them handle it from here
+//
+//            print("[RSTLog] Ignoring nav bar changes...")
+//        }
+//        else
+//        {
+//            // Moving away, so show navigation bar
+//            print("[RSTLog] Showing nav bar!")
+//
+//            // Store reference since self.navigationController will be nil after disappearing.
+//            let navigationController = self.navigationController
+//            navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
+//
+//            self.transitionCoordinator?.animate(alongsideTransition: { (context) in
+//                self.showNavigationBar(for: navigationController)
+//            }, completion: { (context) in
+//                if !context.isCancelled
+//                {
+//                    self.showNavigationBar(for: navigationController)
+//                }
+//            })
+//        }
+//    }
 }

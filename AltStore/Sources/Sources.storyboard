@@ -28,17 +28,7 @@
                             <outlet property="delegate" destination="Nhf-Gw-Ukx" id="rW6-a2-seQ"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="All Apps" id="rUb-ON-AON">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="EBB-17-Y4P">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="mjd-ut-jCz" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                <rect key="frame" x="307" y="6.6666666666666679" width="70" height="31.000000000000004"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="ADD"/>
-                            </button>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="All Apps" id="rUb-ON-AON"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ih5-9R-QX7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
