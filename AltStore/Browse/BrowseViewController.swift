@@ -104,7 +104,8 @@ private extension BrowseViewController
             fetchRequest.predicate = predicate
         }
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
