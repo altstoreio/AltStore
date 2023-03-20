@@ -360,6 +360,7 @@
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D57B1C2029C8D6C3001E97B7 /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
+		D57B1C2129C8DC71001E97B7 /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
 		D57DF63F271E51E400677701 /* ALTAppPatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D57DF63E271E51E400677701 /* ALTAppPatcher.m */; };
 		D57F2C9126E0070200B9FA39 /* EnableJITOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */; };
@@ -941,6 +942,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D57B1C2129C8DC71001E97B7 /* Roxas.framework in Frameworks */,
 				D57B1C2029C8D6C3001E97B7 /* AltStoreCore.framework in Frameworks */,
 				BF580498246A3D19008AE704 /* UIKit.framework in Frameworks */,
 			);
