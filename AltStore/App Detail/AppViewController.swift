@@ -181,6 +181,7 @@ class AppViewController: UIViewController, NavigationBarAnimator
                     {
                         navigationController.navigationBar.tintColor = self.app.tintColor
                         
+                        // Fix navigation bar tint color.
                         self._shouldResetLayout = true
                         self.view.setNeedsLayout()
                     }

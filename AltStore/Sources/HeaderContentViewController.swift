@@ -212,10 +212,13 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             var backgroundConfiguration = UIBackgroundConfiguration.clear()
             backgroundConfiguration.visualEffect = UIBlurEffect(style: .systemThinMaterial)
             
+            let imageConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
+            let image = UIImage(systemName: "chevron.backward", withConfiguration: imageConfiguration)
+            
             var configuration = UIButton.Configuration.plain()
             configuration.cornerStyle = .capsule
             configuration.background = backgroundConfiguration
-            configuration.image = UIImage(systemName: "chevron.backward")
+            configuration.image = image
             
             self.backButton = UIButton(configuration: configuration)
         }
@@ -365,16 +368,16 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
                     if context.isCancelled
                     {
                         navigationController.navigationBar.tintColor = self.tintColor
+                        
+                        // Fix navigation bar tint color.
+                        self._shouldResetLayout = true
+                        self.view.setNeedsLayout()
                     }
                 })
             }
             else
             {
                 // Showing regular view controller, so show navigation bar.
-
-                // Do NOT call this if destination is AppViewController/CarolineParentContentViewController, or else nav bar animation will be messed up.
-                //TODO: Necessary?
-                self.resetNavigationBarAnimation()
                 
                 navigationController.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
 
