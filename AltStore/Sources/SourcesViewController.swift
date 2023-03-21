@@ -49,6 +49,8 @@ class SourcesViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        self.view.tintColor = .altPrimary
+        
         self.collectionView.dataSource = self.dataSource
         
         #if !BETA
@@ -450,8 +452,11 @@ extension SourcesViewController
         
         let source = self.dataSource.item(at: indexPath)
         
-        let sourceDetailViewController = SourceDetailViewController(source: source)
-        self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
+//        let sourceDetailViewController = SourceDetailViewController(source: source)
+//        self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
+        
+        let testViewController = TestViewController()
+        self.navigationController?.pushViewController(testViewController, animated: true)
         
 //        let source = self.dataSource.item(at: indexPath)
 //        guard let error = source.error else { return }

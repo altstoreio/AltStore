@@ -13,7 +13,7 @@ import Roxas
 
 import Nuke
 
-class AppViewController: UIViewController
+class AppViewController: UIViewController, NavigationBarAnimator
 {
     var app: StoreApp!
     
@@ -45,6 +45,10 @@ class AppViewController: UIViewController
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
     private var _viewDidAppear = false
+    
+    private var isNavigationBarHidden: Bool {
+        return self.navigationBarAnimator == nil || self.navigationBarAnimator?.fractionComplete == 0.0
+    }
     
     private var _preferredStatusBarStyle: UIStatusBarStyle = .default
     
@@ -166,25 +170,39 @@ class AppViewController: UIViewController
         
         if let topViewController = navigationController.topViewController
         {
-            if topViewController is AppViewController || topViewController is CarolineParentContentViewController
+            if let navigationBarAnimator = topViewController as? NavigationBarAnimator
             {
-                // Moving to another one of us, so let them handle it from here
+                // Showing NavigationBarAnimator view controller, so let it manage navigation bar.
+                                
+                self.transitionCoordinator?.animate(alongsideTransition: { (context) in
+                    navigationController.navigationBar.tintColor = navigationBarAnimator.view.tintColor
+                }, completion: { (context) in
+                    if context.isCancelled
+                    {
+                        navigationController.navigationBar.tintColor = self.app.tintColor
+                        
+                        self._shouldResetLayout = true
+                        self.view.setNeedsLayout()
+                    }
+                })
                 
-                print("[RSTLog] Ignoring nav bar changes...")
             }
             else
             {
-                // Moving away, so show navigation bar
-                print("[RSTLog] Showing nav bar!")
+                // Showing regular view controller, so show navigation bar.
                 
-                // Store reference since self.navigationController will be nil after disappearing.
-                let navigationController = self.navigationController
-                navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
+                navigationController.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
 
                 self.transitionCoordinator?.animate(alongsideTransition: { (context) in
                     self.showNavigationBar(for: navigationController)
+                    navigationController.navigationBar.tintColor = topViewController.view.tintColor
                 }, completion: { (context) in
-                    if !context.isCancelled
+                    if context.isCancelled
+                    {
+                        navigationController.navigationBar.tintColor = self.app.tintColor
+                        self.resetNavigationBarAnimation()
+                    }
+                    else
                     {
                         self.showNavigationBar(for: navigationController)
                     }
@@ -307,7 +325,8 @@ class AppViewController: UIViewController
         }
         else
         {
-            self.resetNavigationBarAnimation()
+            self.navigationBarAnimator?.fractionComplete = 0.0
+//            self.resetNavigationBarAnimation()
         }
         
         let beginMovingBackButtonThreshold = (maximumContentY - minimumContentY)
@@ -483,6 +502,9 @@ private extension AppViewController
     {
         self.resetNavigationBarAnimation()
         
+        let isNavBarHidden = self.isNavigationBarHidden
+        self.hideNavigationBar()
+        
         self.navigationBarAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) { [weak self] in
             self?.showNavigationBar()
             self?.navigationController?.navigationBar.tintColor = self?.app.tintColor
@@ -493,17 +515,26 @@ private extension AppViewController
         self.navigationBarAnimator?.startAnimation()
         self.navigationBarAnimator?.pauseAnimation()
         
+        if isNavBarHidden
+        {
+            self.hideNavigationBar()
+        }
+        else
+        {
+            self.showNavigationBar()
+        }
+        
         self.update()
     }
     
     func resetNavigationBarAnimation()
     {
-        guard _viewDidAppear else { return }
+//        guard _viewDidAppear else { return }
         
         self.navigationBarAnimator?.stopAnimation(true)
         self.navigationBarAnimator = nil
         
-        self.hideNavigationBar()
+//        self.hideNavigationBar()
         
         self.contentViewController.view.layer.cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
     }
