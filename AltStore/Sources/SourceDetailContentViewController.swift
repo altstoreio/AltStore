@@ -167,7 +167,7 @@ class SourceDetailContentViewController: UICollectionViewController
     }
 }
 
-extension SourceDetailContentViewController: CarolineContentViewController
+extension SourceDetailContentViewController: CarolineContentViewController, ScrollableContentViewController
 {
     var scrollView: UIScrollView { self.collectionView }
 }

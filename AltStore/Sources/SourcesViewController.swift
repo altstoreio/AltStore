@@ -455,7 +455,7 @@ extension SourcesViewController
 //        let sourceDetailViewController = SourceDetailViewController(source: source)
 //        self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
         
-        let testViewController = TestViewController()
+        let testViewController = RevisedSourceDetailViewController.make(source: source)
         self.navigationController?.pushViewController(testViewController, animated: true)
         
 //        let source = self.dataSource.item(at: indexPath)

@@ -8,6 +8,12 @@
 
 import UIKit
 
+extension PillButton
+{
+    static let minimumSize = CGSize(width: 70, height: 31)
+    static let contentInsets = NSDirectionalEdgeInsets(top: 1.5, leading: 13, bottom: 1.5, trailing: 13)
+}
+
 class PillButton: UIButton
 {
     override var accessibilityValue: String? {
@@ -68,11 +74,13 @@ class PillButton: UIButton
     
     override var intrinsicContentSize: CGSize {
         var size = super.intrinsicContentSize
-        size.width += 26
-        size.height += 3
         
-        size.width = max(size.width, 71)
-        size.height = max(size.height, 31)
+        let contentInsets = PillButton.contentInsets
+        size.width += contentInsets.leading + contentInsets.trailing
+        size.height += contentInsets.top + contentInsets.bottom
+        
+        size.width = max(size.width, PillButton.minimumSize.width)
+        size.height = max(size.height, PillButton.minimumSize.height)
         
         return size
     }
@@ -142,8 +150,8 @@ class PillButton: UIButton
     override func sizeThatFits(_ size: CGSize) -> CGSize
     {
         var size = super.sizeThatFits(size)
-        size.width = max(size.width, 71)
-        size.height = max(size.height, 31)
+        size.width = max(size.width, PillButton.minimumSize.width)
+        size.height = max(size.height, PillButton.minimumSize.height)
         return size
     }
 }

@@ -23,83 +23,6 @@ protocol ScrollableContentViewController: UIViewController
     var scrollView: UIScrollView { get }
 }
 
-//extension UINavigationBar
-//{
-//    var propertyAnimator: UIViewPropertyAnimator? {
-//        get { objc_getAssociatedObject(self, &navigationBarPropertyAnimatorKey) as? UIViewPropertyAnimator }
-//        set { objc_setAssociatedObject(self, &navigationBarPropertyAnimatorKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)}
-//    }
-//}
-
-class TestTableViewController: UITableViewController, ScrollableContentViewController
-{
-    lazy var dataSource = self.makeDataSource()
-    
-    var scrollView: UIScrollView { self.tableView }
-    
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-        
-        self.tableView.dataSource = self.dataSource
-        self.tableView.rowHeight = 100
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: RSTCellContentGenericCellIdentifier)
-    }
-    
-    func makeDataSource() -> RSTArrayTableViewDataSource<NSString>
-    {
-        let dataSource = RSTArrayTableViewDataSource(items: ["Riley", "Shane", "Caroline"/*, "Ryan", "Josh"*/] as [NSString])
-        dataSource.cellConfigurationHandler = { (cell, name, indexPath) in
-            cell.textLabel?.text = name as String
-        }
-        
-        return dataSource
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {
-        let predicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), "com.rileytestut.Delta")
-        let storeApp = StoreApp.first(satisfying: predicate, in: DatabaseManager.shared.viewContext)!
-        
-        let appsViewController = AppViewController.makeAppViewController(app: storeApp)
-        self.navigationController?.pushViewController(appsViewController, animated: true)
-    }
-}
-
-class TestViewController: HeaderContentViewController<UIView, TestTableViewController>
-{
-    override init()
-    {
-        super.init()
-        
-        self.title = NSLocalizedString("Test", comment: "")
-    }
-    
-    required init?(coder: NSCoder)
-    {
-        super.init(coder: coder)
-    }
-    
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-        
-        self.tintColor = .systemOrange
-    }
-    
-    override func makeContentViewController() -> TestTableViewController
-    {
-        TestTableViewController(style: .plain)
-    }
-    
-    override func makeHeaderView() -> UIVisualEffectView
-    {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        view.frame.size = CGSize(width: 200, height: 100)
-        return view
-    }
-}
-
 class HeaderContentViewController<Header: UIView, Content: UIViewController & ScrollableContentViewController> : UIViewController, NavigationBarAnimator, UIAdaptivePresentationControllerDelegate, UIScrollViewDelegate
 {
     var tintColor: UIColor! {
@@ -113,20 +36,18 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     private(set) var headerView: Header!
     private(set) var contentViewController: Content!
     
-    private var scrollView: UIScrollView!
-    private var headerScrollView: UIScrollView!
-    private var contentViewControllerShadowView: UIView!
-    
-    private var backButton: UIButton!
-//    private(set) var backButtonContainerView: UIVisualEffectView!
-    
+    private(set) var backButton: VibrantButton!
     private(set) var backgroundImageView: UIImageView!
-    private var backgroundBlurView: UIVisualEffectView!
     
     private(set) var navigationBarNameLabel: UILabel!
     private(set) var navigationBarIconView: UIImageView!
     private(set) var navigationBarButton: PillButton!
     private(set) var navigationBarTitleView: UIStackView!
+    
+    private var scrollView: UIScrollView!
+    private var headerScrollView: UIScrollView!
+    private var backgroundBlurView: UIVisualEffectView!
+    private var contentViewControllerShadowView: UIView!
     
     private var blurAnimator: UIViewPropertyAnimator?
     private var navigationBarAnimator: UIViewPropertyAnimator?
@@ -161,8 +82,9 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.navigationBarAnimator?.stopAnimation(true)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
     }
     
     func makeContentViewController() -> Content
@@ -207,31 +129,12 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.headerView.translatesAutoresizingMaskIntoConstraints = true
         self.headerScrollView.addSubview(self.headerView)
         
-        if #available(iOS 15, *)
-        {
-            var backgroundConfiguration = UIBackgroundConfiguration.clear()
-            backgroundConfiguration.visualEffect = UIBlurEffect(style: .systemThinMaterial)
-            
-            let imageConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
-            let image = UIImage(systemName: "chevron.backward", withConfiguration: imageConfiguration)
-            
-            var configuration = UIButton.Configuration.plain()
-            configuration.cornerStyle = .capsule
-            configuration.background = backgroundConfiguration
-            configuration.image = image
-            
-            self.backButton = UIButton(configuration: configuration)
-        }
-        else
-        {
-            self.backButton = UIButton(type: .system)
-            self.backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
-            self.backButton.backgroundColor = .white.withAlphaComponent(0.7)
-            self.backButton.sizeToFit()
-            self.backButton.clipsToBounds = true
-            self.backButton.layer.cornerRadius = self.backButton.bounds.midY
-        }
+        let imageConfiguration = UIImage.SymbolConfiguration(weight: .semibold)
+        let image = UIImage(systemName: "chevron.backward", withConfiguration: imageConfiguration)
         
+        self.backButton = VibrantButton(type: .system)
+        self.backButton.image = image
+        self.backButton.sizeToFit()
         self.backButton.addTarget(self.navigationController, action: #selector(UINavigationController.popViewController(animated:)), for: .primaryActionTriggered)
         self.view.addSubview(self.backButton)
         
@@ -285,9 +188,7 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             self.navigationBarIconView.widthAnchor.constraint(equalToConstant: 35),
             self.navigationBarIconView.heightAnchor.constraint(equalTo: self.navigationBarIconView.widthAnchor)
         ])
-        
-        self.navigationBarIconView.layer.cornerRadius = self.navigationBarIconView.bounds.midY
-        
+                
         let size = self.navigationBarTitleView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         self.navigationBarTitleView.bounds.size = size
         self.navigationItem.titleView = self.navigationBarTitleView
@@ -378,6 +279,10 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             else
             {
                 // Showing regular view controller, so show navigation bar.
+                
+                //                // Do NOT call this if destination is AppViewController/CarolineParentContentViewController, or else nav bar animation will be messed up.
+                //                //TODO: Necessary?
+                //                self.resetNavigationBarAnimation()
                 
                 navigationController.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
 
@@ -555,6 +460,12 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.scrollView.contentOffset = contentOffset
     }
     
+    func update()
+    {
+        self.navigationController?.navigationBar.tintColor = self.tintColor
+        self.backButton.tintColor = self.tintColor
+    }
+    
     // Cannot add @objc functions in extensions of generic types, so include them in main definition instead.
     
     //MARK: Notifications
@@ -612,12 +523,6 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
 
 private extension HeaderContentViewController
 {
-    func update()
-    {
-        self.navigationController?.navigationBar.tintColor = self.tintColor
-        self.backButton.tintColor = self.tintColor
-    }
-    
     func showNavigationBar(for navigationController: UINavigationController? = nil)
     {
         let navigationController = navigationController ?? self.navigationController

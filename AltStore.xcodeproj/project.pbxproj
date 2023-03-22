@@ -359,6 +359,7 @@
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
+		D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57968CA29CB99EF00539069 /* VibrantButton.swift */; };
 		D57B1C2029C8D6C3001E97B7 /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		D57B1C2129C8DC71001E97B7 /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
@@ -384,6 +385,7 @@
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
 		D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */; };
 		D5CD805D29CA2C1E00E591B0 /* HeaderContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */; };
+		D5CD805F29CA755E00E591B0 /* RevisedSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805E29CA755E00E591B0 /* RevisedSourceDetailViewController.swift */; };
 		D5DAE0942804B0B80034D8D4 /* ScreenshotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */; };
 		D5DAE0962804DF430034D8D4 /* UpdatePatronsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */; };
 		D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
@@ -873,6 +875,7 @@
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D55E163528776CB000A627A1 /* ComplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationView.swift; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
+		D57968CA29CB99EF00539069 /* VibrantButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrantButton.swift; sourceTree = "<group>"; };
 		D57DF637271E32F000677701 /* PatchApp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PatchApp.storyboard; sourceTree = "<group>"; };
 		D57DF63D271E51E400677701 /* ALTAppPatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPatcher.h; sourceTree = "<group>"; };
 		D57DF63E271E51E400677701 /* ALTAppPatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTAppPatcher.m; sourceTree = "<group>"; };
@@ -898,6 +901,7 @@
 		D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 10.xcdatamodel"; sourceTree = "<group>"; };
 		D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore9ToAltStore10.xcmappingmodel; sourceTree = "<group>"; };
 		D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContentViewController.swift; sourceTree = "<group>"; };
+		D5CD805E29CA755E00E591B0 /* RevisedSourceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisedSourceDetailViewController.swift; sourceTree = "<group>"; };
 		D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotProcessor.swift; sourceTree = "<group>"; };
 		D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePatronsOperation.swift; sourceTree = "<group>"; };
 		D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTLocalizedError.swift; sourceTree = "<group>"; };
@@ -1576,6 +1580,7 @@
 				D5ACCE3F29C25ADD00949072 /* SourceAboutViewController.swift */,
 				D59162AC29BA616A005CBF47 /* SourceAboutView.xib */,
 				D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */,
+				D5CD805E29CA755E00E591B0 /* RevisedSourceDetailViewController.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1690,6 +1695,7 @@
 				BF770E6622BD57C3002A40FE /* BackgroundTaskManager.swift */,
 				BF9ABA4A22DD137F008935CF /* NavigationBar.swift */,
 				BF9ABA4C22DD16DE008935CF /* PillButton.swift */,
+				D57968CA29CB99EF00539069 /* VibrantButton.swift */,
 				BF18B0F022E25DF9005C4CF5 /* ToastView.swift */,
 				BF3D649E22E7B24C00E9056B /* CollapsingTextView.swift */,
 				BF2901302318F7A800D88A45 /* AppBannerView.swift */,
@@ -2738,6 +2744,8 @@
 				D5E1E7C128077DE90016FC96 /* FetchTrustedSourcesOperation.swift in Sources */,
 				BFE338DF22F0EADB002E24B9 /* FetchSourceOperation.swift in Sources */,
 				D54DED1428CBC44B008B27A0 /* ErrorLogTableViewCell.swift in Sources */,
+				D5CD805F29CA755E00E591B0 /* RevisedSourceDetailViewController.swift in Sources */,
+				D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */,
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
 				BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */,
 				D5CD805D29CA2C1E00E591B0 /* HeaderContentViewController.swift in Sources */,
