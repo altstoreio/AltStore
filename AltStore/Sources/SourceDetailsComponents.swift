@@ -97,6 +97,9 @@ class TextViewCollectionViewCell: UICollectionViewCell
     {
         self.textView.font = UIFont.preferredFont(forTextStyle: .body)
         self.textView.isScrollEnabled = false
+        self.textView.isEditable = false
+        self.textView.isSelectable = true
+        self.textView.dataDetectorTypes = [.link]
         self.contentView.addSubview(self.textView, pinningEdgesWith: .zero)
     }
     

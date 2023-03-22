@@ -85,7 +85,7 @@ private extension SourceDetailContentViewController
     class func makeLayout(source: Source) -> UICollectionViewCompositionalLayout
     {
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
-        layoutConfig.interSectionSpacing = sectionInset
+        layoutConfig.interSectionSpacing = 10
         
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             guard let section = Section(rawValue: sectionIndex) else { return nil }

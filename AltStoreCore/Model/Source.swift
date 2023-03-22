@@ -148,6 +148,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
             
             // Optional Values
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
+            self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
             self.websiteURL = try container.decodeIfPresent(URL.self, forKey: .websiteURL)
