@@ -60,11 +60,11 @@ class SourceDetailContentViewController: UICollectionViewController
         self.view.tintColor = self.source.effectiveTintColor
         
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
-        self.collectionView.register(AppBannerViewCell.self, forCellWithReuseIdentifier: "AppCell")
+        self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: "AppCell")
         self.collectionView.register(TextViewCollectionViewCell.self, forCellWithReuseIdentifier: "AboutCell")
         
-        self.collectionView.register(TitleView.self, forSupplementaryViewOfKind: ElementKind.title.rawValue, withReuseIdentifier: ElementKind.title.rawValue)
-        self.collectionView.register(ButtonView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
+        self.collectionView.register(TitleCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.title.rawValue, withReuseIdentifier: ElementKind.title.rawValue)
+        self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
         self.dataSource.proxy = self
         self.collectionView.dataSource = self.dataSource
@@ -210,7 +210,7 @@ private extension SourceDetailContentViewController
         let dataSource = RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>(items: limitedFeaturedApps)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
         dataSource.cellConfigurationHandler = { (cell, storeApp, indexPath) in
-            let cell = cell as! AppBannerViewCell
+            let cell = cell as! AppBannerCollectionViewCell
             cell.tintColor = storeApp.tintColor
             
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -269,7 +269,7 @@ private extension SourceDetailContentViewController
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
-            let cell = cell as! AppBannerViewCell
+            let cell = cell as! AppBannerCollectionViewCell
             cell.bannerView.iconImageView.image = image
             cell.bannerView.iconImageView.isIndicatingActivity = false
         }
@@ -330,25 +330,25 @@ extension SourceDetailContentViewController
         switch (section, kind)
         {
         case (.news, _):
-            let buttonView = headerView as! ButtonView
+            let buttonView = headerView as! ButtonCollectionReusableView
             buttonView.button.setTitle(NSLocalizedString("View All", comment: ""), for: .normal)
             
             buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllNews), for: .primaryActionTriggered)
             
         case (.apps, .title):
-            let titleView = headerView as! TitleView
+            let titleView = headerView as! TitleCollectionReusableView
             titleView.label.text = self.source.featuredApps != nil ? NSLocalizedString("Featured Apps", comment: "") : NSLocalizedString("Apps", comment: "")
             
         case (.apps, .button):
-            let buttonView = headerView as! ButtonView
+            let buttonView = headerView as! ButtonCollectionReusableView
             buttonView.button.setTitle(NSLocalizedString("View All Apps", comment: ""), for: .normal)
             
             buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
             
         case (.about, _):
-            let titleView = headerView as! TitleView
+            let titleView = headerView as! TitleCollectionReusableView
             titleView.label.text = NSLocalizedString("About", comment: "")
         }
         

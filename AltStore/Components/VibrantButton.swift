@@ -97,7 +97,7 @@ class VibrantButton: UIButton
             self.insertSubview(blurView, at: 0)
         }
         
-        self.vibrancyView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel))
+        self.vibrancyView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect, style: .fill)) // .fill is more vibrant than .secondaryLabel
         self.vibrancyView.isUserInteractionEnabled = false
         self.addSubview(self.vibrancyView, pinningEdgesWith: .zero)
     }
