@@ -49,6 +49,11 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewDidLoad()
         
+        if let source = self.source
+        {
+            self.view.tintColor = source.effectiveTintColor ?? .altPrimary
+        }
+        
         #if BETA
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
         self.navigationItem.searchController = self.dataSource.searchController

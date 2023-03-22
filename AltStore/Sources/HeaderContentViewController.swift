@@ -423,12 +423,12 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             backgroundIconFrame.origin.y = 0
             
             let difference = self.scrollView.contentOffset.y - pinContentToTopThreshold
-            self.contentViewController.scrollView.contentOffset.y = difference
+            self.contentViewController.scrollView.contentOffset.y = -self.contentViewController.scrollView.contentInset.top + difference
         }
         else
         {
             // Keep content table view's content offset at the top.
-            self.contentViewController.scrollView.contentOffset.y = 0
+            self.contentViewController.scrollView.contentOffset.y = -self.contentViewController.scrollView.contentInset.top
         }
 
         // Keep background app icon centered in gap between top of content and top of screen.
@@ -454,6 +454,7 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         let contentOffset = self.scrollView.contentOffset
         
         var contentSize = self.contentViewController.scrollView.contentSize
+        contentSize.height += self.contentViewController.scrollView.contentInset.top + self.contentViewController.scrollView.contentInset.bottom
         contentSize.height += maximumContentY
         contentSize.height = max(contentSize.height, self.view.bounds.height + maximumContentY - (self.navigationController?.navigationBar.bounds.height ?? 0))
         self.scrollView.contentSize = contentSize

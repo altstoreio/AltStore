@@ -14,35 +14,7 @@ import Roxas
 
 import Nuke
 
-@objc(AppBannerViewCell)
-class AppBannerViewCell: UICollectionViewCell
-{
-    let bannerView: AppBannerView
-    
-    override init(frame: CGRect)
-    {
-        self.bannerView = AppBannerView(frame: .zero)
-        
-        super.init(frame: frame)
-        
-        self.initialize()
-    }
-    
-    required init?(coder: NSCoder)
-    {
-        self.bannerView = AppBannerView(frame: .zero)
-        
-        super.init(coder: coder)
-        
-        self.initialize()
-    }
-    
-    private func initialize()
-    {
-        self.bannerView.translatesAutoresizingMaskIntoConstraints = false
-        self.contentView.addSubview(self.bannerView, pinningEdgesWith: .zero)
-    }
-}
+private let sectionInset = 20.0
 
 extension SourceDetailContentViewController
 {
@@ -60,63 +32,6 @@ extension SourceDetailContentViewController
     }
 }
 
-class ButtonView: UICollectionReusableView
-{
-    let button: UIButton
-    
-//    var bottomSpacing: Double {
-//        get { self.bottomConstraint.constant }
-//        set { self.bottomConstraint.constant = newValue }
-//    }
-//    private var bottomConstraint: NSLayoutConstraint!
-    
-    override init(frame: CGRect)
-    {
-        self.button = UIButton(type: .system)
-        self.button.translatesAutoresizingMaskIntoConstraints = false
-        
-        super.init(frame: frame)
-        
-        self.addSubview(self.button)
-        
-//        self.bottomConstraint = self.bottomAnchor.constraint(equalTo: self.button.bottomAnchor)
-        
-        // Constrain to top, leading, trailing, but allow arbitrary bottom spacing.
-        NSLayoutConstraint.activate([
-//            self.bottomConstraint,
-            self.button.topAnchor.constraint(equalTo: self.topAnchor),
-            self.button.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.button.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-        ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class TitleView: UICollectionReusableView
-{
-    let label: UILabel
-    
-    override init(frame: CGRect)
-    {
-        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle).withSymbolicTraits(.traitBold)!
-        let font = UIFont(descriptor: fontDescriptor, size: 0.0)
-        
-        self.label = UILabel(frame: .zero)
-        
-        super.init(frame: frame)
-        
-        self.label.font = font
-        self.addSubview(self.label, pinningEdgesWith: .zero)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 class SourceDetailContentViewController: UICollectionViewController
 {
     let source: Source
@@ -125,12 +40,13 @@ class SourceDetailContentViewController: UICollectionViewController
     private lazy var newsDataSource = self.makeNewsDataSource()
     private lazy var appsDataSource = self.makeAppsDataSource()
     private lazy var aboutDataSource = self.makeAboutDataSource()
-        
+            
     init(source: Source)
     {
         self.source = source
         
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = Self.makeLayout(source: source)
+        super.init(collectionViewLayout: layout)
     }
     
     required init?(coder: NSCoder) {
@@ -142,8 +58,7 @@ class SourceDetailContentViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.view.tintColor = self.source.effectiveTintColor
-        self.collectionView.collectionViewLayout = self.makeLayout()
-         
+        
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
         self.collectionView.register(AppBannerViewCell.self, forCellWithReuseIdentifier: "AppCell")
         self.collectionView.register(TextViewCollectionViewCell.self, forCellWithReuseIdentifier: "AboutCell")
@@ -160,60 +75,46 @@ class SourceDetailContentViewController: UICollectionViewController
     {
         super.viewSafeAreaInsetsDidChange()
         
-//        if let buttonView = self.collectionView.supplementaryView(forElementKind: ElementKind.button.rawValue, at: IndexPath(item: 0, section: Section.apps.rawValue)) as? ButtonView
-//        {
-//            buttonView.bottomSpacing = 8 + self.view.safeAreaInsets.bottom
-//        }
+        // Add 20 to safeAreaInsets.bottom.
+        self.collectionView.contentInset = UIEdgeInsets(top: sectionInset, left: 0, bottom: self.view.safeAreaInsets.bottom + sectionInset, right: 0)
     }
-}
-
-extension SourceDetailContentViewController: CarolineContentViewController, ScrollableContentViewController
-{
-    var scrollView: UIScrollView { self.collectionView }
 }
 
 private extension SourceDetailContentViewController
 {
-    func makeLayout() -> UICollectionViewCompositionalLayout
+    class func makeLayout(source: Source) -> UICollectionViewCompositionalLayout
     {
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
-        layoutConfig.interSectionSpacing = 20
+        layoutConfig.interSectionSpacing = sectionInset
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            guard let `self` = self, let section = Section(rawValue: sectionIndex) else { return nil }
-            
-            let inset = 20.0
-            
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let section = Section(rawValue: sectionIndex) else { return nil }
+                        
             switch section
             {
             case .news:
-                let isSectionHidden = (self.newsDataSource.itemCount == 0)
+                guard !source.newsItems.isEmpty else { return nil }
                 
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)) // Underestimate height to prevent jumping size abruptly.
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
-                let groupWidth = layoutEnvironment.container.contentSize.width - inset * 2
-                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth), heightDimension: .estimated(1))
+                let groupWidth = layoutEnvironment.container.contentSize.width - sectionInset * 2
+                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth), heightDimension: .estimated(150))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 
-//                let buttonAnchor = NSCollectionLayoutAnchor(edges: [.top, .trailing], absoluteOffset: CGPoint(x: 0, y: -(self.prototypeButton.bounds.height + 8)))
-                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: isSectionHidden ? .absolute(1) : .estimated(20))
+                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: .estimated(20))
                 let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.button.rawValue, alignment: .bottomTrailing)
-                
-//                let showAllButton = NSCollectionLayoutSupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.showAllButton.rawValue, containerAnchor: buttonAnchor)
-//                group.supplementaryItems = [showAllButton]
-                
-//                group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 10
-                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: 4, trailing: inset)
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sectionInset, bottom: 4, trailing: sectionInset)
                 layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
                 layoutSection.boundarySupplementaryItems = [sectionFooter]
                 return layoutSection
                 
             case .apps:
-                let isSectionHidden = (self.appsDataSource.itemCount == 0)
+                // Always show Featured Apps section, even if there are no apps.
+                // guard !source.effectiveFeaturedApps.isEmpty else { return nil }
                 
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(88))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -223,30 +124,29 @@ private extension SourceDetailContentViewController
                 let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
                 let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.title.rawValue, alignment: .topLeading)
                 
-                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: isSectionHidden ? .absolute(1) : .estimated(20) /*.absolute(68)*/)
+                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: .estimated(20))
                 let buttonHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.button.rawValue, alignment: .bottomTrailing)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 15
-                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: 15 /* independent of inset */, leading: inset, bottom: 4, trailing: inset)
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 15 /* independent of sectionInset */, leading: sectionInset, bottom: 4, trailing: sectionInset)
                 layoutSection.orthogonalScrollingBehavior = .none
                 layoutSection.boundarySupplementaryItems = [titleHeader, buttonHeader]
                 return layoutSection
                 
             case .about:
-                let isSectionHidden = (self.source.localizedDescription == nil)
+                guard source.localizedDescription != nil else { return nil }
                 
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: isSectionHidden ? .absolute(1) : .estimated(200))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(200))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
                 
-                let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: isSectionHidden ? .absolute(44) : .estimated(40))
+                let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(40))
                 let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.title.rawValue, alignment: .topLeading)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
-                layoutSection.interGroupSpacing = 15
-                layoutSection.contentInsets = isSectionHidden ? .zero : NSDirectionalEdgeInsets(top: 15 /* independent of inset */, leading: inset, bottom: 44, trailing: inset)
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 15 /* independent of sectionInset */, leading: sectionInset, bottom: 0, trailing: sectionInset)
                 layoutSection.orthogonalScrollingBehavior = .none
                 layoutSection.boundarySupplementaryItems = [titleHeader]
                 return layoutSection
@@ -258,29 +158,25 @@ private extension SourceDetailContentViewController
     
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
     {
-        let newsDataSource = self.newsDataSource as! RSTFetchedResultsCollectionViewDataSource<NSManagedObject>
+        let newsDataSource = self.newsDataSource as! RSTArrayCollectionViewDataSource<NSManagedObject>
         let appsDataSource = self.appsDataSource as! RSTArrayCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
         
         let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>(dataSources: [newsDataSource, appsDataSource, self.aboutDataSource])
         return dataSource
     }
     
-    func makeNewsDataSource() -> RSTFetchedResultsCollectionViewDataSource<NewsItem>
+    func makeNewsDataSource() -> RSTArrayCollectionViewDataSource<NewsItem>
     {
-        let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), self.source)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: false)]
+        let limitedNewsItems = Array(self.source.newsItems.reversed().prefix(5))
         
-        let dataSource = RSTFetchedResultsCollectionViewDataSource(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
+        let dataSource = RSTArrayCollectionViewDataSource<NewsItem>(items: limitedNewsItems)
         dataSource.cellIdentifierHandler = { _ in "NewsCell" }
-        dataSource.liveFetchLimit = 5
         dataSource.cellConfigurationHandler = { (cell, newsItem, indexPath) in
             let cell = cell as! NewsCollectionViewCell
             
+            // For some reason, setting cell.layoutMargins = .zero does not update cell.contentView.layoutMargins.
             cell.layoutMargins = .zero
             cell.contentView.layoutMargins = .zero
-//            cell.contentView.layoutMargins.left = 0//self.view.layoutMargins.left
-//            cell.contentView.layoutMargins.right = 0//self.view.layoutMargins.right
             
             cell.titleLabel.text = newsItem.title
             cell.captionLabel.text = newsItem.caption
@@ -307,6 +203,7 @@ private extension SourceDetailContentViewController
     
     func makeAppsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
+        //TODO: Switch back to FetchedResultsController and sort by sortIndex
         let featuredApps = self.source.featuredApps ?? self.source.apps
         let limitedFeaturedApps = Array(featuredApps.prefix(5))
         
@@ -314,9 +211,6 @@ private extension SourceDetailContentViewController
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
         dataSource.cellConfigurationHandler = { (cell, storeApp, indexPath) in
             let cell = cell as! AppBannerViewCell
-            
-//            cell.layoutMargins.left = self.view.layoutMargins.left
-//            cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = storeApp.tintColor
             
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -387,7 +281,7 @@ private extension SourceDetailContentViewController
     {
         let dataSource = RSTDynamicCollectionViewDataSource<NSManagedObject>()
         dataSource.numberOfSectionsHandler = { 1 }
-        dataSource.numberOfItemsHandler = { _ in 1 }
+        dataSource.numberOfItemsHandler = { _ in self.source.localizedDescription == nil ? 0 : 1 }
         dataSource.cellIdentifierHandler = { _ in "AboutCell" }
         dataSource.cellConfigurationHandler = { (cell, _, indexPath) in
             let cell = cell as! TextViewCollectionViewCell
@@ -403,7 +297,8 @@ private extension SourceDetailContentViewController
 {
     @objc func viewAllNews()
     {
-        let storyboard = UIStoryboard(name: "Sources", bundle: .main)
+        //TODO: Use Segues
+        guard let storyboard = self.parent?.storyboard else { return }
         
         let newsViewController = storyboard.instantiateViewController(identifier: "newsViewController") { coder in
             NewsViewController(source: self.source, coder: coder)
@@ -414,8 +309,8 @@ private extension SourceDetailContentViewController
     
     @objc func viewAllApps()
     {
-        let storyboard = UIStoryboard(name: "Sources", bundle: .main)
-        
+        guard let storyboard = self.parent?.storyboard else { return }
+                
         let browseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
             BrowseViewController(source: self.source, coder: coder)
         }
@@ -437,37 +332,24 @@ extension SourceDetailContentViewController
         case (.news, _):
             let buttonView = headerView as! ButtonView
             buttonView.button.setTitle(NSLocalizedString("View All", comment: ""), for: .normal)
-            buttonView.button.isHidden = (self.newsDataSource.itemCount == 0)
             
             buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllNews), for: .primaryActionTriggered)
             
         case (.apps, .title):
             let titleView = headerView as! TitleView
-            titleView.label.text = NSLocalizedString("Featured Apps", comment: "")
+            titleView.label.text = self.source.featuredApps != nil ? NSLocalizedString("Featured Apps", comment: "") : NSLocalizedString("Apps", comment: "")
             
         case (.apps, .button):
             let buttonView = headerView as! ButtonView
             buttonView.button.setTitle(NSLocalizedString("View All Apps", comment: ""), for: .normal)
-//            buttonView.bottomSpacing = 8 + self.view.safeAreaInsets.bottom // Add 20pts of spacing to bottom of collection view
             
             buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
-
-            
-            print("[ALTLog] Bottom Spacing:", self.view.safeAreaInsets.bottom)
             
         case (.about, _):
             let titleView = headerView as! TitleView
-            
-            if self.source.localizedDescription != nil
-            {
-                titleView.label.text = NSLocalizedString("About", comment: "")
-            }
-            else
-            {
-                titleView.label.text = ""
-            }
+            titleView.label.text = NSLocalizedString("About", comment: "")
         }
         
         return headerView
@@ -612,4 +494,9 @@ extension SourceDetailContentViewController
             self.collectionView.reloadItems(at: [indexPath])
         }
     }
+}
+
+extension SourceDetailContentViewController: CarolineContentViewController, ScrollableContentViewController
+{
+    var scrollView: UIScrollView { self.collectionView }
 }

@@ -51,6 +51,10 @@ public extension Source
     var effectiveTintColor: UIColor? {
         return self.tintColor ?? self.apps.first?.tintColor
     }
+    
+    var effectiveFeaturedApps: [StoreApp] {
+        return self.featuredApps ?? self.apps
+    }
 }
 
 @objc(Source)
