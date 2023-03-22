@@ -2,7 +2,7 @@
 //  HeaderContentViewController.swift
 //  AltStore
 //
-//  Created by Riley Testut on 7/22/19.
+//  Created by Riley Testut on 3/10/23.
 //  Copyright © 2019 Riley Testut. All rights reserved.
 //
 
@@ -109,6 +109,7 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         
         // Background
         self.backgroundImageView = UIImageView(frame: .zero)
+        self.backgroundImageView.contentMode = .scaleAspectFill
         self.view.addSubview(self.backgroundImageView)
         
         let blurEffect = UIBlurEffect(style: .regular)

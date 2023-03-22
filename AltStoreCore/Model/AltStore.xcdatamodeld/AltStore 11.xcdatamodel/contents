@@ -148,7 +148,6 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
-        <attribute name="caption" optional="YES" attributeType="String"/>
         <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="hasFeaturedApps" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="headerImageURL" optional="YES" attributeType="URI"/>
@@ -157,6 +156,7 @@
         <attribute name="localizedDescription" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="sourceURL" attributeType="URI"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
         <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="websiteURL" optional="YES" attributeType="URI"/>
         <relationship name="apps" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StoreApp" inverseName="source" inverseEntity="StoreApp"/>

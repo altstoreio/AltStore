@@ -2,7 +2,7 @@
 //  RevisedSourceDetailViewController.swift
 //  AltStore
 //
-//  Created by Riley Testut on 3/21/23.
+//  Created by Riley Testut on 3/15/23.
 //  Copyright © 2023 Riley Testut. All rights reserved.
 //
 
@@ -18,9 +18,9 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
 {
     let source: Source
     
-    private var previousBounds: CGRect?
+    private var addButton: VibrantButton!
     
-    @IBOutlet private var addButton: VibrantButton!
+    private var previousBounds: CGRect?
     
     init?(source: Source, coder: NSCoder)
     {
@@ -31,7 +31,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         self.title = source.name
     }
     
-    class func make(source: Source) -> RevisedSourceDetailViewController
+    class func makeSourceDetailViewController(source: Source) -> RevisedSourceDetailViewController
     {
         let storyboard = UIStoryboard(name: "Sources", bundle: .main)
         
@@ -57,9 +57,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         self.addButton.contentInsets = PillButton.contentInsets
         self.addButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.addSource), for: .primaryActionTriggered)
         self.addButton.sizeToFit()
-        self.view.insertSubview(self.addButton, belowSubview: self.backButton)
-        
-        self.navigationBarIconView.layer.cornerRadius = self.navigationBarIconView.bounds.midY
+        self.view.addSubview(self.addButton)
         
         Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarIconView)
         Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
@@ -69,9 +67,12 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     {
         super.viewDidLayoutSubviews()
         
+        self.addButton.layer.cornerRadius = self.addButton.bounds.midY
+        self.navigationBarIconView.layer.cornerRadius = self.navigationBarIconView.bounds.midY
+        
         let inset = 15.0
                 
-        var addButtonSize = self.addButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
+        var addButtonSize = self.addButton.bounds.size
         addButtonSize.width = max(addButtonSize.width, PillButton.minimumSize.width)
         addButtonSize.height = max(addButtonSize.height, PillButton.minimumSize.height)
         self.addButton.frame.size = addButtonSize
@@ -84,9 +85,6 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
                 
         let headerSize = self.headerView.systemLayoutSizeFitting(CGSize(width: self.view.bounds.width - inset * 2, height: UIView.layoutFittingCompressedSize.height))
         self.headerView.frame.size.height = headerSize.height
-        
-        self.navigationBarIconView.layer.cornerRadius = self.navigationBarIconView.bounds.midY
-        self.addButton.layer.cornerRadius = self.addButton.bounds.midY
     }
     
     override func makeContentViewController() -> SourceDetailContentViewController
@@ -99,7 +97,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     {
         let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
-//        sourceAboutView.linkButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
+        sourceAboutView.linkButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     
@@ -109,5 +107,13 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     {
         print("[ALTLog] Add Source!")
     }
+    
+    @objc private func showWebsite()
+    {
+        guard let websiteURL = self.source.websiteURL else { return }
+        
+        let safariViewController = SFSafariViewController(url: websiteURL)
+        safariViewController.preferredControlTintColor = self.source.effectiveTintColor ?? .altPrimary
+        self.present(safariViewController, animated: true, completion: nil)
+    }
 }
-

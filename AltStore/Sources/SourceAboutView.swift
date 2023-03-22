@@ -191,7 +191,7 @@ extension SourceAboutView
     func configure(for source: Source)
     {
         self.titleLabel.text = source.name
-        self.subtitleLabel.text = source.caption
+        self.subtitleLabel.text = source.subtitle
         
         self.linkButton.tintColor = source.effectiveTintColor
         

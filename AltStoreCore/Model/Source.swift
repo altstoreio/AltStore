@@ -62,7 +62,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
     @NSManaged public var sourceURL: URL
     
     /* Source Detail */
-    @NSManaged public var caption: String?
+    @NSManaged public var subtitle: String?
     @NSManaged public var localizedDescription: String?
     @NSManaged public var iconURL: URL?
     @NSManaged public var headerImageURL: URL?
@@ -109,7 +109,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
         case name
         case identifier
         case sourceURL
-        case caption
+        case subtitle
         case localizedDescription = "description"
         case iconURL
         case headerImageURL = "headerURL"
@@ -143,7 +143,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.identifier = try container.decode(String.self, forKey: .identifier)
             
             // Optional Values
-            self.caption = try container.decodeIfPresent(String.self, forKey: .caption)
+            self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
             self.websiteURL = try container.decodeIfPresent(URL.self, forKey: .websiteURL)
