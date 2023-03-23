@@ -22,6 +22,8 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     
     private var previousBounds: CGRect?
     
+    private var isSourceAdded: Bool = false
+    
     init?(source: Source, coder: NSCoder)
     {
         self.source = source
@@ -53,11 +55,12 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         self.tintColor = self.source.effectiveTintColor
         
         self.addButton = VibrantButton(type: .system)
-        self.addButton.title = NSLocalizedString("ADD", comment: "")
         self.addButton.contentInsets = PillButton.contentInsets
         self.addButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.addSource), for: .primaryActionTriggered)
         self.addButton.sizeToFit()
         self.view.addSubview(self.addButton)
+        
+        self.navigationBarButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.addSource), for: .primaryActionTriggered)
         
         Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarIconView)
         Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
@@ -72,7 +75,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         
         let inset = 15.0
                 
-        var addButtonSize = self.addButton.bounds.size
+        var addButtonSize = self.addButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
         addButtonSize.width = max(addButtonSize.width, PillButton.minimumSize.width)
         addButtonSize.height = max(addButtonSize.height, PillButton.minimumSize.height)
         self.addButton.frame.size = addButtonSize
@@ -97,7 +100,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     {
         let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
-        sourceAboutView.linkButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.showWebsite), for: .primaryActionTriggered)
+        sourceAboutView.websiteButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     
@@ -105,7 +108,8 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
     
     @objc private func addSource()
     {
-        print("[ALTLog] Add Source!")
+        self.isSourceAdded.toggle()
+        self.update()
     }
     
     @objc private func showWebsite()
@@ -115,5 +119,24 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         let safariViewController = SFSafariViewController(url: websiteURL)
         safariViewController.preferredControlTintColor = self.source.effectiveTintColor ?? .altPrimary
         self.present(safariViewController, animated: true, completion: nil)
+    }
+    
+    //MARK: Override
+    
+    override func update()
+    {
+        // Set title before calling super.
+        self.navigationBarButton.tintColor = self.isSourceAdded ? .refreshRed : self.source.effectiveTintColor ?? .altPrimary
+        
+        let title = self.isSourceAdded ? NSLocalizedString("REMOVE", comment: "") : NSLocalizedString("ADD", comment: "")
+        if let addButton = self.addButton, addButton.title != title
+        {
+            addButton.title = title
+            self.navigationBarButton.setTitle(NSLocalizedString(title, comment: ""), for: .normal)
+            
+            self.view.setNeedsLayout()
+        }
+        
+        super.update()
     }
 }

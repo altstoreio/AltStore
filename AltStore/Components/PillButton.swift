@@ -149,10 +149,7 @@ class PillButton: UIButton
     
     override func sizeThatFits(_ size: CGSize) -> CGSize
     {
-        var size = super.sizeThatFits(size)
-        size.width = max(size.width, PillButton.minimumSize.width)
-        size.height = max(size.height, PillButton.minimumSize.height)
-        return size
+        return self.intrinsicContentSize
     }
 }
 
@@ -172,6 +169,9 @@ private extension PillButton
         }
         
         self.progressView.progressTintColor = self.progressTintColor ?? self.tintColor
+        
+        // Update font after init because the original titleLabel is replaced.
+        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
     }
     
     @objc func updateCountdown()

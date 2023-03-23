@@ -185,6 +185,9 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.navigationBarTitleView.axis = .horizontal
         self.navigationBarTitleView.spacing = 8
         
+        self.navigationBarButton = PillButton(type: .system)
+        self.navigationBarButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 9000), for: .horizontal) // Prioritize over title length.
+        
         NSLayoutConstraint.activate([
             self.navigationBarIconView.widthAnchor.constraint(equalToConstant: 35),
             self.navigationBarIconView.heightAnchor.constraint(equalTo: self.navigationBarIconView.widthAnchor)
@@ -203,7 +206,8 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             self?.view.layoutIfNeeded()
         }
         
-        self.update()
+        // Don't call update() before subclasses have finished viewDidLoad().
+        // self.update()
         
         NotificationCenter.default.addObserver(self, selector: #selector(HeaderContentViewController.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(HeaderContentViewController.didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -236,6 +240,8 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
                 self.showNavigationBar()
             }
         }, completion: nil)
+        
+        self.update()
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -466,6 +472,17 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     {
         self.navigationController?.navigationBar.tintColor = self.tintColor
         self.backButton.tintColor = self.tintColor
+        
+        let titleView = self.navigationItem.titleView
+        self.navigationItem.titleView = nil
+        
+        self.navigationItem.rightBarButtonItem = nil
+        self.navigationBarButton.sizeToFit()
+        
+        let barButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
+        self.navigationItem.rightBarButtonItem = barButtonItem
+        
+        self.navigationItem.titleView = titleView
     }
     
     // Cannot add @objc functions in extensions of generic types, so include them in main definition instead.
