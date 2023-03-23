@@ -236,9 +236,9 @@ class SourceDetailViewController: CarolineParentContentViewController
     
     override func makeHeaderContentView() -> UIView?
     {
-        let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
+        let sourceAboutView = SourceHeaderView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
-        sourceAboutView.linkButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
+        sourceAboutView.websiteButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     

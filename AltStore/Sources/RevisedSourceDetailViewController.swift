@@ -14,7 +14,7 @@ import Roxas
 
 import Nuke
 
-class RevisedSourceDetailViewController: HeaderContentViewController<SourceAboutView, SourceDetailContentViewController>
+class RevisedSourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
     let source: Source
     
@@ -96,9 +96,9 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceAbout
         return contentViewController
     }
     
-    override func makeHeaderView() -> SourceAboutView
+    override func makeHeaderView() -> SourceHeaderView
     {
-        let sourceAboutView = SourceAboutView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
+        let sourceAboutView = SourceHeaderView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
         sourceAboutView.websiteButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
