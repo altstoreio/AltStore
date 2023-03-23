@@ -497,7 +497,7 @@ extension SourceDetailContentViewController
     }
 }
 
-extension SourceDetailContentViewController: CarolineContentViewController, ScrollableContentViewController
+extension SourceDetailContentViewController: ScrollableContentViewController
 {
     var scrollView: UIScrollView { self.collectionView }
 }

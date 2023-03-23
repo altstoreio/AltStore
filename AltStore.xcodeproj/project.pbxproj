@@ -375,12 +375,8 @@
 		D5935AED29C39DE300C157EF /* SourceDetailsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */; };
 		D5935AEF29C3B23600C157EF /* Sources.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5935AEE29C3B23600C157EF /* Sources.storyboard */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
-		D5A0537129B91D8900997551 /* CarolineContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A0537029B91D8900997551 /* CarolineContentViewController.swift */; };
 		D5A0537329B91DB400997551 /* SourceDetailContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */; };
-		D5A0537529B9264E00997551 /* CarolineParentContentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5A0537429B9264E00997551 /* CarolineParentContentViewController.xib */; };
 		D5A2193429B14F94002229FC /* DeprecatedAPIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */; };
-		D5ACCE4029C25ADD00949072 /* SourceAboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACCE3F29C25ADD00949072 /* SourceAboutViewController.swift */; };
-		D5ACCE4229C2730600949072 /* SourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACCE4129C2730600949072 /* SourceDetailViewController.swift */; };
 		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
 		D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */; };
@@ -890,12 +886,8 @@
 		D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailsComponents.swift; sourceTree = "<group>"; };
 		D5935AEE29C3B23600C157EF /* Sources.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Sources.storyboard; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
-		D5A0537029B91D8900997551 /* CarolineContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarolineContentViewController.swift; sourceTree = "<group>"; };
 		D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailContentViewController.swift; sourceTree = "<group>"; };
-		D5A0537429B9264E00997551 /* CarolineParentContentViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarolineParentContentViewController.xib; sourceTree = "<group>"; };
 		D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedAPIs.swift; sourceTree = "<group>"; };
-		D5ACCE3F29C25ADD00949072 /* SourceAboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAboutViewController.swift; sourceTree = "<group>"; };
-		D5ACCE4129C2730600949072 /* SourceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailViewController.swift; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
 		D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 10.xcdatamodel"; sourceTree = "<group>"; };
@@ -1571,16 +1563,12 @@
 			children = (
 				D5935AEE29C3B23600C157EF /* Sources.storyboard */,
 				BFC84A4C2421A19100853474 /* SourcesViewController.swift */,
-				D5ACCE4129C2730600949072 /* SourceDetailViewController.swift */,
-				D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */,
-				D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */,
-				D5A0537029B91D8900997551 /* CarolineContentViewController.swift */,
-				D5A0537429B9264E00997551 /* CarolineParentContentViewController.xib */,
-				D5ACCE3F29C25ADD00949072 /* SourceAboutViewController.swift */,
-				D59162AA29BA60A9005CBF47 /* SourceHeaderView.swift */,
-				D59162AC29BA616A005CBF47 /* SourceHeaderView.xib */,
 				D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */,
 				D5CD805E29CA755E00E591B0 /* RevisedSourceDetailViewController.swift */,
+				D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */,
+				D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */,
+				D59162AA29BA60A9005CBF47 /* SourceHeaderView.swift */,
+				D59162AC29BA616A005CBF47 /* SourceHeaderView.xib */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -2344,7 +2332,6 @@
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
-				D5A0537529B9264E00997551 /* CarolineParentContentViewController.xib in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
 				BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */,
@@ -2761,14 +2748,12 @@
 				BFD2478C2284C4C300981D42 /* AppIconImageView.swift in Sources */,
 				BF8F69C422E662D300049BA1 /* AppViewController.swift in Sources */,
 				BFF0B68E23219520007A79E1 /* PatreonViewController.swift in Sources */,
-				D5ACCE4229C2730600949072 /* SourceDetailViewController.swift in Sources */,
 				BFF00D302501BD7D00746320 /* Intents.intentdefinition in Sources */,
 				D5DAE0942804B0B80034D8D4 /* ScreenshotProcessor.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
 				BFE00A202503097F00EB4D0C /* INInteraction+AltStore.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
-				D5ACCE4029C25ADD00949072 /* SourceAboutViewController.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
 				BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
@@ -2801,7 +2786,6 @@
 				BFBE0007250AD0E70080826E /* ViewAppIntentHandler.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */,
-				D5A0537129B91D8900997551 /* CarolineContentViewController.swift in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
 				BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */,
