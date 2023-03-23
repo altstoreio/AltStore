@@ -11,7 +11,7 @@
         {
           "version": "1.6.2",
           "date": "2023-03-22T12:00:00-05:00",
-          "localizedDescription": "This update fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.\n\n⚠️ You must manually install this update by re-installing AltStore with AltServer. You do NOT need to delete AltStore first.",
+          "localizedDescription": "⚠️ You must manually install this update by re-installing AltStore with AltServer. You do NOT need to delete AltStore first.\n\nThis update fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.",
           "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2.ipa",
           "size": 5624498
         },
@@ -32,7 +32,7 @@
       ],
       "version": "1.6.2",
       "versionDate": "2023-03-22T12:00:00-05:00",
-      "versionDescription": "This update fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.\n\n⚠️ You must manually install this update by re-installing AltStore with AltServer. You do NOT need to delete AltStore first.",
+      "versionDescription": "⚠️ You must manually install this update by re-installing AltStore with AltServer. You do NOT need to delete AltStore first.\n\nThis update fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.",
       "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
