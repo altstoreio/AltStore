@@ -1,5 +1,5 @@
 //
-//  RevisedSourceDetailViewController.swift
+//  SourceDetailViewController.swift
 //  AltStore
 //
 //  Created by Riley Testut on 3/15/23.
@@ -14,7 +14,7 @@ import Roxas
 
 import Nuke
 
-class RevisedSourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
+class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
     let source: Source
     
@@ -33,12 +33,12 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceHeade
         self.title = source.name
     }
     
-    class func makeSourceDetailViewController(source: Source) -> RevisedSourceDetailViewController
+    class func makeSourceDetailViewController(source: Source) -> SourceDetailViewController
     {
         let storyboard = UIStoryboard(name: "Sources", bundle: .main)
         
         let sourceDetailViewController = storyboard.instantiateViewController(identifier: "sourceDetailViewController") { coder in
-            RevisedSourceDetailViewController(source: source, coder: coder)
+            SourceDetailViewController(source: source, coder: coder)
         }
         return sourceDetailViewController
     }
@@ -56,11 +56,11 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceHeade
         
         self.addButton = VibrantButton(type: .system)
         self.addButton.contentInsets = PillButton.contentInsets
-        self.addButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.addSource), for: .primaryActionTriggered)
+        self.addButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         self.addButton.sizeToFit()
         self.view.addSubview(self.addButton)
         
-        self.navigationBarButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.addSource), for: .primaryActionTriggered)
+        self.navigationBarButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         
         Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarIconView)
         Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
@@ -100,7 +100,7 @@ class RevisedSourceDetailViewController: HeaderContentViewController<SourceHeade
     {
         let sourceAboutView = SourceHeaderView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
-        sourceAboutView.websiteButton.addTarget(self, action: #selector(RevisedSourceDetailViewController.showWebsite), for: .primaryActionTriggered)
+        sourceAboutView.websiteButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     
