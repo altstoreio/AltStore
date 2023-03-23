@@ -209,6 +209,7 @@ private extension SourceDetailContentViewController
         
         let dataSource = RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>(items: limitedFeaturedApps)
         dataSource.cellIdentifierHandler = { _ in "AppCell" }
+        dataSource.predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isBeta)) // Never show beta apps (at least until we support betas for other sources).
         dataSource.cellConfigurationHandler = { (cell, storeApp, indexPath) in
             let cell = cell as! AppBannerCollectionViewCell
             cell.tintColor = storeApp.tintColor
