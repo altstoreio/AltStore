@@ -122,4 +122,21 @@ class VibrantButton: UIButton
             vibrancyView.contentView.addSubview(imageView)
         }
     }
+    
+    override var isIndicatingActivity: Bool {
+        didSet {
+            guard #available(iOS 15, *) else { return }
+            
+            if self.isIndicatingActivity
+            {
+                self.configuration?.showsActivityIndicator = true
+                self.configuration?.title = ""
+            }
+            else
+            {
+                self.configuration?.showsActivityIndicator = false
+                self.configuration?.title = self.title
+            }
+        }
+    }
 }

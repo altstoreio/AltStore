@@ -332,6 +332,92 @@ extension AppManager
 
 extension AppManager
 {
+    func fetchSource(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()) async throws -> Source
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSource(sourceURL: sourceURL, managedObjectContext: managedObjectContext) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
+    func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
+    {
+        let (sourceName, sourceURL) = await $source.get { ($0.name, $0.sourceURL) }
+
+        let title = String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName)
+        let message = message ?? NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
+        let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
+        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+        
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        _ = AsyncManaged(wrappedValue: try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context))
+
+        try await context.performAsync {
+            try context.save()
+        }
+    }
+    
+    func remove(@AsyncManaged _ source: Source, presentingViewController: UIViewController) async throws
+    {
+        let (sourceName, sourceID) = await $source.get { ($0.name, $0.identifier) }
+        guard sourceID != Source.altStoreIdentifier else {
+            // TODO: Throw correct error
+            throw OperationError.noSources
+        }
+        
+        let title = String(format: NSLocalizedString("Are you sure you want to remove the source “%@”?", comment: ""), sourceName)
+        let message = NSLocalizedString("Any apps you've installed from this source will remain, but they'll no longer receive any app updates.", comment: "")
+        let action = await UIAlertAction(title: NSLocalizedString("Remove Source", comment: ""), style: .destructive)
+        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+        
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        try await context.performAsync {
+            let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID)
+            guard let source = Source.first(satisfying: predicate, in: context) else { throw OperationError.noSources }
+            
+            context.delete(source)
+            try context.save()
+        }
+    }
+}
+
+extension UIViewController
+{
+    @MainActor
+    func presentConfirmationAlert(title: String, message: String, primaryAction: UIAlertAction) async throws
+    {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
+                continuation.resume(throwing: CancellationError())
+            })
+            alertController.addAction(UIAlertAction(title: primaryAction.title, style: primaryAction.style) { _ in
+                continuation.resume()
+            })
+            
+            self.present(alertController, animated: true)
+        }
+    }
+    
+    @MainActor
+    func presentAlert(title: String, message: String, buttonTitle: String? = nil) async
+    {
+        let buttonTitle = buttonTitle ?? UIAlertAction.ok.title ?? NSLocalizedString("OK", comment: "")
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: buttonTitle, style: .default) { _ in
+                continuation.resume()
+            })
+            
+            self.present(alertController, animated: true)
+        }
+    }
+}
+
+extension AppManager
+{
+    @available(*, renamed: "fetchSource(sourceURL:)")
     func fetchSource(sourceURL: URL,
                      managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
                      dependencies: [Foundation.Operation] = [],

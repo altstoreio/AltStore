@@ -8,25 +8,55 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 import AltStoreCore
 import Roxas
 
 import Nuke
 
+extension SourceDetailViewController
+{
+    private class ViewModel: ObservableObject
+    {
+        let source: Source
+        
+        @Published
+        var isSourceAdded: Bool?
+        
+        init(source: Source)
+        {
+            self.source = source
+            
+            Task<Void, Never> {
+                do
+                {
+                    self.isSourceAdded = try await self.source.isAdded
+                }
+                catch
+                {
+                    print("[ALTLog] Failed to check source is added.", error)
+                }
+            }
+        }
+    }
+}
+
 class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
     let source: Source
     
+    private let viewModel: ViewModel
+    
     private var addButton: VibrantButton!
     
     private var previousBounds: CGRect?
-    
-    private var isSourceAdded: Bool = false
+    private var cancellables = Set<AnyCancellable>()
     
     init?(source: Source, coder: NSCoder)
     {
         self.source = source
+        self.viewModel = ViewModel(source: source)
         
         super.init(coder: coder)
         
@@ -52,18 +82,22 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     {
         super.viewDidLoad()
         
-        self.tintColor = self.source.effectiveTintColor
-        
         self.addButton = VibrantButton(type: .system)
         self.addButton.contentInsets = PillButton.contentInsets
         self.addButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         self.addButton.sizeToFit()
         self.view.addSubview(self.addButton)
         
+        // Assign after creating addButton to avoid implicitly unwrapping optional.
+        self.tintColor = self.source.effectiveTintColor
+        
         self.navigationBarButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         
         Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarIconView)
         Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
+        
+        self.update()
+        self.startObservations()
     }
     
     override func viewDidLayoutSubviews()
@@ -77,7 +111,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 
         var addButtonSize = self.addButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
         addButtonSize.width = max(addButtonSize.width, PillButton.minimumSize.width)
-        addButtonSize.height = max(addButtonSize.height, PillButton.minimumSize.height)
+        addButtonSize.height = PillButton.minimumSize.height // Enforce height so it doesn't change with UIActivityIndicatorView
         self.addButton.frame.size = addButtonSize
 
         self.addButton.center.y = self.backButton.center.y
@@ -108,8 +142,38 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     @objc private func addSource()
     {
-        self.isSourceAdded.toggle()
-        self.update()
+        Task<Void, Never> {
+//            self.addButton.isIndicatingActivity = true
+//            self.navigationBarButton.isIndicatingActivity = true
+            
+            defer {
+                // Compiler error that we can't mutate from main actor...?
+                Task { @MainActor in
+//                    self.addButton.isIndicatingActivity = false
+//                    self.navigationBarButton.isIndicatingActivity = false
+                }
+            }
+            
+            do
+            {
+                let isAdded = try await self.source.isAdded
+                if isAdded
+                {
+                    try await AppManager.shared.remove(self.source, presentingViewController: self)
+                }
+                else
+                {
+                    try await AppManager.shared.add(self.source, presentingViewController: self)
+                }
+                
+                self.viewModel.isSourceAdded = try await self.source.isAdded
+            }
+            catch is CancellationError {}
+            catch
+            {
+                await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+            }
+        }
     }
     
     @objc private func showWebsite()
@@ -125,18 +189,60 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     override func update()
     {
-        // Set title before calling super.
-        self.navigationBarButton.tintColor = self.isSourceAdded ? .refreshRed : self.source.effectiveTintColor ?? .altPrimary
-        
-        let title = self.isSourceAdded ? NSLocalizedString("REMOVE", comment: "") : NSLocalizedString("ADD", comment: "")
-        if let addButton = self.addButton, addButton.title != title
+        if self.source.identifier == Source.altStoreIdentifier
         {
-            addButton.title = title
-            self.navigationBarButton.setTitle(NSLocalizedString(title, comment: ""), for: .normal)
+            // Users can't remove default AltStore source, so hide buttons.
+            self.addButton.isHidden = true
+            self.navigationBarButton.isHidden = true
+        }
+        else
+        {
+            let title: String
+            
+            switch self.viewModel.isSourceAdded
+            {
+            case true?:
+                title = NSLocalizedString("REMOVE", comment: "")
+                self.navigationBarButton.tintColor = .refreshRed
+                
+                self.addButton.isHidden = false
+                self.navigationBarButton.isHidden = false
+                
+            case false?:
+                title = NSLocalizedString("ADD", comment: "")
+                self.navigationBarButton.tintColor = self.source.effectiveTintColor ?? .altPrimary
+                
+                self.addButton.isHidden = false
+                self.navigationBarButton.isHidden = false
+                
+            case nil:
+                title = ""
+                
+                self.addButton.isHidden = true
+                self.navigationBarButton.isHidden = true
+            }
+            
+            if self.addButton.title != title
+            {
+                self.addButton.title = title
+                self.navigationBarButton.setTitle(title, for: .normal)
+            }
             
             self.view.setNeedsLayout()
         }
         
         super.update()
+    }
+}
+
+private extension SourceDetailViewController
+{
+    func startObservations()
+    {
+        self.viewModel.$isSourceAdded
+            .receive(on: RunLoop.main)
+            .sink { isSourceAdded in
+                self.update()
+            }.store(in: &self.cancellables)
     }
 }

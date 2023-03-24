@@ -158,18 +158,21 @@ private extension SourceDetailContentViewController
     
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
     {
-        let newsDataSource = self.newsDataSource as! RSTArrayCollectionViewDataSource<NSManagedObject>
+        let newsDataSource = self.newsDataSource as! RSTFetchedResultsCollectionViewDataSource<NSManagedObject>
         let appsDataSource = self.appsDataSource as! RSTArrayCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>
         
         let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<NSManagedObject, UIImage>(dataSources: [newsDataSource, appsDataSource, self.aboutDataSource])
         return dataSource
     }
     
-    func makeNewsDataSource() -> RSTArrayCollectionViewDataSource<NewsItem>
+    func makeNewsDataSource() -> RSTFetchedResultsCollectionViewDataSource<NewsItem>
     {
-        let limitedNewsItems = Array(self.source.newsItems.reversed().prefix(5))
-        
-        let dataSource = RSTArrayCollectionViewDataSource<NewsItem>(items: limitedNewsItems)
+        let fetchRequest = NewsItem.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), self.source)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true)]
+                
+        let dataSource = RSTFetchedResultsCollectionViewDataSource(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
+        dataSource.liveFetchLimit = 5
         dataSource.cellIdentifierHandler = { _ in "NewsCell" }
         dataSource.cellConfigurationHandler = { (cell, newsItem, indexPath) in
             let cell = cell as! NewsCollectionViewCell
@@ -287,6 +290,7 @@ private extension SourceDetailContentViewController
         dataSource.cellConfigurationHandler = { (cell, _, indexPath) in
             let cell = cell as! TextViewCollectionViewCell
             cell.textView.text = self.source.localizedDescription
+            cell.contentView.layoutMargins = .zero // Fixes incorrect margins if not initially on screen.
             cell.textView.maximumNumberOfLines = 0
         }
         
@@ -385,19 +389,6 @@ extension SourceDetailContentViewController
     }
 }
 
-extension NSManagedObjectContext
-{
-    func performAsync<T>(_ closure: @escaping () throws -> T) async throws -> T
-    {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<T, Error>) in
-            self.perform {
-                let result = Result { try closure() }
-                continuation.resume(with: result)
-            }
-        }
-    }
-}
-
 extension SourceDetailContentViewController
 {
     @objc func addSourceThenDownloadApp(_ sender: UIButton)
@@ -405,30 +396,38 @@ extension SourceDetailContentViewController
         let point = self.collectionView.convert(sender.center, from: sender.superview)
         guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
         
+        sender.isIndicatingActivity = true
+        
         let storeApp = self.dataSource.item(at: indexPath) as! StoreApp
         
-        Task {
+        Task<Void, Never> {
             do
             {
-                try await self.addSource(for: storeApp)
-                
-//                defer {
-//                    self.collectionView.reloadSections([Section.apps.rawValue])
-//                }
-                
-                try await self.downloadApp(storeApp)
+                try await AppManager.shared.add(self.source,
+                                                message: NSLocalizedString("You must add this source before you can install apps. Your download will automatically start once it has been added.", comment: ""),
+                                                presentingViewController: self)
             }
-            catch OperationError.cancelled, is CancellationError
+            catch is CancellationError
             {
-                // Ignore
+                sender.isIndicatingActivity = false
+                return
             }
             catch
             {
-                DispatchQueue.main.async {
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                }
+                await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+                return
+            }
+            
+            do
+            {
+                try await self.downloadApp(storeApp)
+            }
+            catch OperationError.cancelled {}
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
             }
             
             self.collectionView.reloadSections([Section.apps.rawValue])
