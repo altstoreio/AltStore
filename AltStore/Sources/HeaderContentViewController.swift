@@ -188,6 +188,11 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.navigationBarButton = PillButton(type: .system)
         self.navigationBarButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 9000), for: .horizontal) // Prioritize over title length.
         
+        // Embed navigationBarButton in container view with Auto Layout to ensure it can automatically update its size.
+        let buttonContainerView = UIView()
+        buttonContainerView.addSubview(self.navigationBarButton, pinningEdgesWith: .zero)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: buttonContainerView)
+        
         NSLayoutConstraint.activate([
             self.navigationBarIconView.widthAnchor.constraint(equalToConstant: 35),
             self.navigationBarIconView.heightAnchor.constraint(equalTo: self.navigationBarIconView.widthAnchor)
@@ -472,17 +477,6 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     {
         self.navigationController?.navigationBar.tintColor = self.tintColor
         self.backButton.tintColor = self.tintColor
-        
-        let titleView = self.navigationItem.titleView
-        self.navigationItem.titleView = nil
-        
-        self.navigationItem.rightBarButtonItem = nil
-        self.navigationBarButton.sizeToFit()
-        
-        let barButtonItem = UIBarButtonItem(customView: self.navigationBarButton)
-        self.navigationItem.rightBarButtonItem = barButtonItem
-        
-        self.navigationItem.titleView = titleView
     }
     
     // Cannot add @objc functions in extensions of generic types, so include them in main definition instead.

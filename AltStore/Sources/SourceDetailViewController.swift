@@ -24,6 +24,9 @@ extension SourceDetailViewController
         @Published
         var isSourceAdded: Bool?
         
+        @Published
+        var isAddingSource: Bool = false
+        
         init(source: Source)
         {
             self.source = source
@@ -142,17 +145,10 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     @objc private func addSource()
     {
+        self.viewModel.isAddingSource = true
+        
         Task<Void, Never> {
-//            self.addButton.isIndicatingActivity = true
-//            self.navigationBarButton.isIndicatingActivity = true
-            
-            defer {
-                // Compiler error that we can't mutate from main actor...?
-                Task { @MainActor in
-//                    self.addButton.isIndicatingActivity = false
-//                    self.navigationBarButton.isIndicatingActivity = false
-                }
-            }
+            var isSourceAdded: Bool?
             
             do
             {
@@ -165,13 +161,20 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 {
                     try await AppManager.shared.add(self.source, presentingViewController: self)
                 }
-                
-                self.viewModel.isSourceAdded = try await self.source.isAdded
+               
+                isSourceAdded = try await self.source.isAdded
             }
             catch is CancellationError {}
             catch
             {
                 await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+            }
+            
+            self.viewModel.isAddingSource = false // Must set to false before setting isSourceAdded to avoid layout-related crashes.
+            
+            if let isSourceAdded
+            {
+                self.viewModel.isSourceAdded = isSourceAdded
             }
         }
     }
@@ -197,6 +200,10 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         }
         else
         {
+            // Update isIndicatingActivity first to ensure later updates are applied correctly.
+            self.addButton.isIndicatingActivity = self.viewModel.isAddingSource
+            self.navigationBarButton.isIndicatingActivity = self.viewModel.isAddingSource
+            
             let title: String
             
             switch self.viewModel.isSourceAdded
@@ -242,6 +249,12 @@ private extension SourceDetailViewController
         self.viewModel.$isSourceAdded
             .receive(on: RunLoop.main)
             .sink { isSourceAdded in
+                self.update()
+            }.store(in: &self.cancellables)
+        
+        self.viewModel.$isAddingSource
+            .receive(on: RunLoop.main)
+            .sink { isAddingSource in
                 self.update()
             }.store(in: &self.cancellables)
     }
