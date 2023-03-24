@@ -58,11 +58,34 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     init?(source: Source, coder: NSCoder)
     {
-        let context = source.managedObjectContext ?? DatabaseManager.shared.viewContext
-        let childContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: context)
-        childContext.automaticallyMergesChangesFromParent = false // Ignore changes from other contexts so we can delete Source without affecting this context.
+        let isolatedContext: NSManagedObjectContext
         
-        let source = childContext.object(with: source.objectID) as! Source
+        if source.managedObjectContext == DatabaseManager.shared.viewContext
+        {
+            do
+            {
+                // Source is persisted to disk, so we need to create a new main queue context
+                // that is pinned to current query generation to ensure information doesn't
+                // disappear if we remove (delete) the source.
+                let context = DatabaseManager.shared.persistentContainer.newViewContext(withParent: nil)
+                try context.setQueryGenerationFrom(.current)
+                isolatedContext = context
+            }
+            catch
+            {
+                print("[ATLog] Failed to set query generation for context.", error)
+                isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
+            }
+        }
+        else
+        {
+            // Source is not persisted to disk, so assign parent to source's managedObjectContext.
+            isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
+        }
+               
+        isolatedContext.automaticallyMergesChangesFromParent = false // Ignore changes from other contexts so we can delete Source without UI updating.
+        
+        let source = isolatedContext.object(with: source.objectID) as! Source
         self.source = source
         
         self.viewModel = ViewModel(source: source)
