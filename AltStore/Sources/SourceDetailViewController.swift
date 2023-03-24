@@ -47,7 +47,7 @@ extension SourceDetailViewController
 
 class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
-    let source: Source
+    @Managed private(set) var source: Source
     
     private let viewModel: ViewModel
     
@@ -58,7 +58,13 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     init?(source: Source, coder: NSCoder)
     {
+        let context = source.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let childContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: context)
+        childContext.automaticallyMergesChangesFromParent = false // Ignore changes from other contexts so we can delete Source without affecting this context.
+        
+        let source = childContext.object(with: source.objectID) as! Source
         self.source = source
+        
         self.viewModel = ViewModel(source: source)
         
         super.init(coder: coder)
@@ -149,12 +155,14 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         
         Task<Void, Never> {
             var isSourceAdded: Bool?
+            var errorTitle = NSLocalizedString("Unable to Add Source", comment: "")
             
             do
             {
                 let isAdded = try await self.source.isAdded
                 if isAdded
                 {
+                    errorTitle = NSLocalizedString("Unable to Remove Source", comment: "")
                     try await AppManager.shared.remove(self.source, presentingViewController: self)
                 }
                 else
@@ -167,7 +175,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
             catch is CancellationError {}
             catch
             {
-                await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+                await self.presentAlert(title: errorTitle, message: error.localizedDescription)
             }
             
             self.viewModel.isAddingSource = false // Must set to false before setting isSourceAdded to avoid layout-related crashes.

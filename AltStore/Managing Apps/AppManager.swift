@@ -362,8 +362,7 @@ extension AppManager
     {
         let (sourceName, sourceID) = await $source.get { ($0.name, $0.identifier) }
         guard sourceID != Source.altStoreIdentifier else {
-            // TODO: Throw correct error
-            throw OperationError.noSources
+            throw OperationError.unknown(failureReason: NSLocalizedString("AltStore's default source cannot be removed.", comment: ""))
         }
         
         let title = String(format: NSLocalizedString("Are you sure you want to remove the source “%@”?", comment: ""), sourceName)
@@ -374,7 +373,7 @@ extension AppManager
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         try await context.performAsync {
             let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID)
-            guard let source = Source.first(satisfying: predicate, in: context) else { throw OperationError.noSources }
+            guard let source = Source.first(satisfying: predicate, in: context) else { return } // Doesn't exist == success.
             
             context.delete(source)
             try context.save()

@@ -249,14 +249,12 @@ public extension Source
 {
     var isAdded: Bool {
         get async throws {
-            guard let managedObjectContext = self.managedObjectContext else { return false } //TODO: Throw something better
-            
-            let id = try await managedObjectContext.performAsync { self.identifier }
+            let identifier = await AsyncManaged(wrappedValue: self).identifier
             let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
             
             let isAdded = try await backgroundContext.performAsync {
                 let fetchRequest = Source.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), id)
+                fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), identifier)
                 
                 let count = try backgroundContext.count(for: fetchRequest)
                 return (count > 0)

@@ -169,7 +169,7 @@ private extension SourceDetailContentViewController
     {
         let fetchRequest = NewsItem.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), self.source)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: false)]
                 
         let dataSource = RSTFetchedResultsCollectionViewDataSource(fetchRequest: fetchRequest, managedObjectContext: self.source.managedObjectContext ?? DatabaseManager.shared.viewContext)
         dataSource.liveFetchLimit = 5
