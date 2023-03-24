@@ -343,7 +343,7 @@ extension SourceDetailContentViewController
             
         case (.apps, .title):
             let titleView = headerView as! TitleCollectionReusableView
-            titleView.label.text = self.source.featuredApps != nil ? NSLocalizedString("Featured Apps", comment: "") : NSLocalizedString("Apps", comment: "")
+            titleView.label.text = NSLocalizedString("Featured Apps", comment: "")
             
         case (.apps, .button):
             let buttonView = headerView as! ButtonCollectionReusableView
@@ -389,7 +389,7 @@ extension SourceDetailContentViewController
     }
 }
 
-extension SourceDetailContentViewController
+private extension SourceDetailContentViewController
 {
     @objc func addSourceThenDownloadApp(_ sender: UIButton)
     {
@@ -403,92 +403,47 @@ extension SourceDetailContentViewController
         Task<Void, Never> {
             do
             {
-                try await AppManager.shared.add(self.source,
-                                                message: NSLocalizedString("You must add this source before you can install apps. Your download will automatically start once it has been added.", comment: ""),
-                                                presentingViewController: self)
+                let isAdded = try await self.source.isAdded
+                if !isAdded
+                {
+                    let message = String(format: NSLocalizedString("You must add this source before you can install apps from it.\n\n“%@” will begin downloading once it has been added.", comment: ""), storeApp.name)
+                    try await AppManager.shared.add(self.source, message: message, presentingViewController: self)
+                }
+                
+                do
+                {
+                    try await self.downloadApp(storeApp)
+                }
+                catch OperationError.cancelled {}
+                catch
+                {
+                    let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
+                    toastView.show(in: self)
+                }
             }
-            catch is CancellationError
-            {
-                sender.isIndicatingActivity = false
-                return
-            }
+            catch is CancellationError {}
             catch
             {
                 await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
-                return
             }
             
-            do
-            {
-                try await self.downloadApp(storeApp)
-            }
-            catch OperationError.cancelled {}
-            catch
-            {
-                let toastView = ToastView(error: error)
-                toastView.opensErrorLog = true
-                toastView.show(in: self)
-            }
-            
+            sender.isIndicatingActivity = false
             self.collectionView.reloadSections([Section.apps.rawValue])
         }
     }
     
-    func addSource(@Managed for storeApp: StoreApp) async throws
-    {
-        let managedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-        
-        //TODO: Throw error so it doesn't continue to install app
-        guard let _source = $storeApp.source, case let source = Managed(wrappedValue: _source) else { return }
-        
-        let isSourceAdded = try await managedObjectContext.performAsync {
-            let fetchRequest = Source.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), source.identifier)
-            
-            let count = try managedObjectContext.count(for: fetchRequest)
-            return count > 0
-        }
-        
-        guard !isSourceAdded else { return }
-        
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            // Source has not been added, so ask user to do that.
-            let alertController = UIAlertController(title: String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), source.name),
-                                                    message: NSLocalizedString("You must add this source before you can install apps. Your download will automatically start once you do.", comment: ""), preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
-                continuation.resume(throwing: CancellationError())
-            })
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default) { _ in
-                continuation.resume()
-            })
-            
-            self.present(alertController, animated: true)
-        }
-        
-        // Workaround, because we can't save the existing source or else it may save all trusted sources.
-        let fetchedSource = try await withCheckedThrowingContinuation { continuation in
-            AppManager.shared.fetchSource(sourceURL: source.sourceURL) { (result) in
-                continuation.resume(with: result)
-            }
-        }
-        
-        //TODO: Throw error so it doesn't continue to install app
-        guard let sourceContext = fetchedSource.managedObjectContext else { return }
-        
-        try await sourceContext.performAsync {
-            try sourceContext.save()
-        }
-    }
-    
-    @objc func downloadApp(_ storeApp: StoreApp) async throws
+    func downloadApp(_ storeApp: StoreApp) async throws
     {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            let group = AppManager.shared.install(storeApp, presentingViewController: self) { result in
+            AppManager.shared.install(storeApp, presentingViewController: self) { result in
                 continuation.resume(with: result.map { _ in })
             }
             
-            // TODO: Throw error
-            guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else { return }
+            guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
+                self.collectionView.reloadSections([Section.apps.rawValue])
+                return
+            }
             
             let indexPath = IndexPath(item: index, section: Section.apps.rawValue)
             self.collectionView.reloadItems(at: [indexPath])

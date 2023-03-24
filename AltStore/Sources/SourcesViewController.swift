@@ -160,7 +160,7 @@ private extension SourcesViewController
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Source.name, ascending: true),
                                         NSSortDescriptor(keyPath: \Source.sourceURL, ascending: true),
                                         NSSortDescriptor(keyPath: \Source.identifier, ascending: true)]
-        
+                
         let dataSource = RSTFetchedResultsCollectionViewDataSource<Source>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
         return dataSource
     }
@@ -250,6 +250,7 @@ private extension SourcesViewController
             }
         }
         
+        //TODO: Remove this now that trusted sources aren't necessary.
         var dependencies: [Foundation.Operation] = []
         if let fetchTrustedSourcesOperation = self.fetchTrustedSourcesOperation
         {
@@ -261,34 +262,13 @@ private extension SourcesViewController
         AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies) { (result) in
             do
             {
-                let source = try result.get()
-                let sourceName = source.name
-                let managedObjectContext = source.managedObjectContext
-                
-                // Hide warning when adding a featured trusted source.
-                let message = isTrusted ? nil : NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
+                @Managed var source = try result.get()
                 
                 DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName),
-                                                            message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
-                        finish(.failure(OperationError.cancelled))
-                    })
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: UIAlertAction.ok.style) { _ in
-                        managedObjectContext?.perform {
-                            do
-                            {
-                                try managedObjectContext?.save()
-                                finish(.success(()))
-                            }
-                            catch
-                            {
-                                finish(.failure(error))
-                            }
-                        }
-                    })
-                    self.present(alertController, animated: true, completion: nil)
+                    self.showSourceDetails(for: source)
                 }
+                
+                finish(.success(()))
             }
             catch
             {
@@ -439,6 +419,12 @@ private extension SourcesViewController
         })
         
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showSourceDetails(for source: Source)
+    {
+        let sourceDetailViewController = SourceDetailViewController.makeSourceDetailViewController(source: source)
+        self.show(sourceDetailViewController, sender: nil)
     }
 }
 

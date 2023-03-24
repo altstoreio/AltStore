@@ -64,9 +64,9 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         {
             do
             {
-                // Source is persisted to disk, so we need to create a new main queue context
-                // that is pinned to current query generation to ensure information doesn't
-                // disappear if we remove (delete) the source.
+                // Source is persisted to disk, so we can create a new main queue context
+                // that's pinned to current query generation to ensure information doesn't
+                // disappear out from under us if we remove (delete) the source.
                 let context = DatabaseManager.shared.persistentContainer.newViewContext(withParent: nil)
                 try context.setQueryGenerationFrom(.current)
                 isolatedContext = context
@@ -80,6 +80,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         else
         {
             // Source is not persisted to disk, so assign parent to source's managedObjectContext.
+            // This also maintains strong reference to source.managedObjectContext, which may be necessary.
             isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
         }
                
