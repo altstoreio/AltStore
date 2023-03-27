@@ -96,16 +96,6 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         self.title = source.name
     }
     
-    class func makeSourceDetailViewController(source: Source) -> SourceDetailViewController
-    {
-        let storyboard = UIStoryboard(name: "Sources", bundle: .main)
-        
-        let sourceDetailViewController = storyboard.instantiateViewController(identifier: "sourceDetailViewController") { coder in
-            SourceDetailViewController(source: source, coder: coder)
-        }
-        return sourceDetailViewController
-    }
-    
     required init?(coder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")
@@ -159,7 +149,11 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     override func makeContentViewController() -> SourceDetailContentViewController
     {
-        let contentViewController = SourceDetailContentViewController(source: self.source)
+        guard let storyboard = self.storyboard else { fatalError("SourceDetailViewController must be initialized via UIStoryboard.") }
+        
+        let contentViewController = storyboard.instantiateViewController(identifier: "sourceDetailContentViewController") { coder in
+            SourceDetailContentViewController(source: self.source, coder: coder)
+        }
         return contentViewController
     }
     

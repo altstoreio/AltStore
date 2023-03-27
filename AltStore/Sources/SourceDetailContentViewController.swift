@@ -40,13 +40,16 @@ class SourceDetailContentViewController: UICollectionViewController
     private lazy var newsDataSource = self.makeNewsDataSource()
     private lazy var appsDataSource = self.makeAppsDataSource()
     private lazy var aboutDataSource = self.makeAboutDataSource()
+    
+    override var collectionViewLayout: UICollectionViewCompositionalLayout {
+        return self.collectionView.collectionViewLayout as! UICollectionViewCompositionalLayout
+    }
             
-    init(source: Source)
+    init?(source: Source, coder: NSCoder)
     {
         self.source = source
         
-        let layout = Self.makeLayout(source: source)
-        super.init(collectionViewLayout: layout)
+        super.init(coder: coder)
     }
     
     required init?(coder: NSCoder) {
@@ -59,10 +62,10 @@ class SourceDetailContentViewController: UICollectionViewController
         
         self.view.tintColor = self.source.effectiveTintColor
         
-        self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
-        self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: "AppCell")
-        self.collectionView.register(TextViewCollectionViewCell.self, forCellWithReuseIdentifier: "AboutCell")
+        let collectionViewLayout = self.makeLayout(source: source)
+        self.collectionView.collectionViewLayout = collectionViewLayout
         
+        self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: "NewsCell")
         self.collectionView.register(TitleCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.title.rawValue, withReuseIdentifier: ElementKind.title.rawValue)
         self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
@@ -82,7 +85,7 @@ class SourceDetailContentViewController: UICollectionViewController
 
 private extension SourceDetailContentViewController
 {
-    class func makeLayout(source: Source) -> UICollectionViewCompositionalLayout
+    func makeLayout(source: Source) -> UICollectionViewCompositionalLayout
     {
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
         layoutConfig.interSectionSpacing = 10
@@ -300,25 +303,26 @@ private extension SourceDetailContentViewController
 {
     @objc func viewAllNews()
     {
-        //TODO: Use Segues
-        guard let storyboard = self.parent?.storyboard else { return }
-        
-        let newsViewController = storyboard.instantiateViewController(identifier: "newsViewController") { coder in
-            NewsViewController(source: self.source, coder: coder)
-        }
-        
-        self.navigationController?.pushViewController(newsViewController, animated: true)
+        self.performSegue(withIdentifier: "showAllNews", sender: nil)
     }
     
     @objc func viewAllApps()
     {
-        guard let storyboard = self.parent?.storyboard else { return }
-                
-        let browseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
-            BrowseViewController(source: self.source, coder: coder)
-        }
-        
-        self.navigationController?.pushViewController(browseViewController, animated: true)
+        self.performSegue(withIdentifier: "showAllApps", sender: nil)
+    }
+    
+    @IBSegueAction
+    func makeNewsViewController(_ coder: NSCoder) -> UIViewController?
+    {
+        let newsViewController = NewsViewController(source: self.source, coder: coder)
+        return newsViewController
+    }
+    
+    @IBSegueAction
+    func makeBrowseViewController(_ coder: NSCoder) -> UIViewController?
+    {
+        let browseViewController = BrowseViewController(source: self.source, coder: coder)
+        return browseViewController
     }
 }
 

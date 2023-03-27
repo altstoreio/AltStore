@@ -50,6 +50,7 @@ class SourcesViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.view.tintColor = .altPrimary
+        self.navigationController?.view.tintColor = .altPrimary
         
         self.collectionView.dataSource = self.dataSource
         
@@ -170,23 +171,15 @@ private extension SourcesViewController
         let dataSource = RSTArrayCollectionViewDataSource<Source>(items: [])
         return dataSource
     }
-//    
-//    @IBSegueAction
-//    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> SourceDetailViewController?
-//    {
-//        guard let cell = sender as? UICollectionViewCell, let indexPath = self.collectionView.indexPath(for: cell) else { return nil }
-//        
-//        let source = self.dataSource.item(at: indexPath)
-//        
-//        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
-//        return sourceDetailViewController
-//    }
-//
-//    func makeSourceDetailViewController(source: Source) -> UIViewController?
-//    {
-//        let sourceDetailViewController = ModernSourceDetailViewController(source: source)
-//        return sourceDetailViewController
-//    }
+    
+    @IBSegueAction
+    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        guard let source = sender as? Source else { return nil }
+        
+        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
+        return sourceDetailViewController
+    }
 }
 
 private extension SourcesViewController
@@ -423,8 +416,7 @@ private extension SourcesViewController
     
     func showSourceDetails(for source: Source)
     {
-        let sourceDetailViewController = SourceDetailViewController.makeSourceDetailViewController(source: source)
-        self.show(sourceDetailViewController, sender: nil)
+        self.performSegue(withIdentifier: "showSourceDetails", sender: source)
     }
 }
 
@@ -437,18 +429,7 @@ extension SourcesViewController
         }
         
         let source = self.dataSource.item(at: indexPath)
-        
-//        let sourceDetailViewController = SourceDetailViewController(source: source)
-//        self.navigationController?.pushViewController(sourceDetailViewController, animated: true)
-        
-        let testViewController = SourceDetailViewController.makeSourceDetailViewController(source: source)
-//        let testViewController = SourceDetailContentViewController(source: source)
-        self.navigationController?.pushViewController(testViewController, animated: true)
-        
-//        let source = self.dataSource.item(at: indexPath)
-//        guard let error = source.error else { return }
-//
-//        self.present(error)
+        self.showSourceDetails(for: source)
     }
 }
 
