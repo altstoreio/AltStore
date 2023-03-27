@@ -133,15 +133,7 @@ private extension NewsViewController
 {
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>
     {
-        let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.date, ascending: false),
-                                        NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
-                                        NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
-        
-        if let source = self.source
-        {
-            fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), source)
-        }
+        let fetchRequest = NewsItem.fetchRequest(for: self.source)
         
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
