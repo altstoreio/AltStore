@@ -147,11 +147,15 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.identifier = try container.decode(String.self, forKey: .identifier)
             
             // Optional Values
-            self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
-            self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
+            self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle) ?? "A home for apps that push the boundaries of iOS."
+            self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription) ?? """
+This is the default source for AltStore. You can add additional sources to manage which apps appear in AltStore.
+
+For more info, check out our FAQ: https://faq.altstore.io/patreon/beta-access/sources
+"""
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
-            self.websiteURL = try container.decodeIfPresent(URL.self, forKey: .websiteURL)
+            self.websiteURL = try container.decodeIfPresent(URL.self, forKey: .websiteURL) ?? URL(string: "https://altstore.io")
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
