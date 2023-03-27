@@ -104,7 +104,7 @@
                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1lg-Ki-MOK">
                                                                             <rect key="frame" x="0.0" y="0.0" width="270" height="50"/>
                                                                             <state key="normal" title="Button"/>
-                                                                            <buttonConfiguration key="configuration" style="tinted"/>
+                                                                            <buttonConfiguration key="configuration" style="tinted" title=" "/>
                                                                         </button>
                                                                     </subviews>
                                                                     <constraints>
