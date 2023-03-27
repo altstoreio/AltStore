@@ -13,7 +13,7 @@ import Roxas
 public extension UserDefaults
 {
     static let shared: UserDefaults = {
-        guard let appGroup = Bundle.main.appGroups.first else { return .standard }
+        guard let appGroup = Bundle.main.altstoreAppGroup else { return .standard }
         
         let sharedUserDefaults = UserDefaults(suiteName: appGroup)!
         return sharedUserDefaults
