@@ -1037,10 +1037,10 @@ World</string>
                                 </stackView>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="bottom" secondItem="j0O-xE-gyd" secondAttribute="bottom" id="BQ5-11-BzK"/>
-                                <constraint firstItem="j0O-xE-gyd" firstAttribute="top" secondItem="X5B-Kp-w1p" secondAttribute="top" id="KZg-fd-8Cp" propertyAccessControl="none"/>
-                                <constraint firstItem="j0O-xE-gyd" firstAttribute="leading" secondItem="X5B-Kp-w1p" secondAttribute="leadingMargin" id="R2x-Io-bXD"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="j0O-xE-gyd" secondAttribute="trailing" id="aBK-Bq-P9O"/>
+                                <constraint firstAttribute="bottom" secondItem="j0O-xE-gyd" secondAttribute="bottom" priority="999" id="BQ5-11-BzK"/>
+                                <constraint firstItem="j0O-xE-gyd" firstAttribute="top" secondItem="X5B-Kp-w1p" secondAttribute="top" priority="999" id="KZg-fd-8Cp" propertyAccessControl="none"/>
+                                <constraint firstItem="j0O-xE-gyd" firstAttribute="leading" secondItem="X5B-Kp-w1p" secondAttribute="leadingMargin" priority="999" id="R2x-Io-bXD"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="j0O-xE-gyd" secondAttribute="trailing" priority="999" id="aBK-Bq-P9O"/>
                             </constraints>
                             <connections>
                                 <outlet property="activityIndicatorView" destination="PNx-uR-y2F" id="7Le-VW-GYK"/>
