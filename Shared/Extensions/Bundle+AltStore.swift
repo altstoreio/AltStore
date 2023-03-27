@@ -53,7 +53,11 @@ public extension Bundle
 
 public extension Bundle
 {
-    static var baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
+    #if ALPHA
+    static let baseAltStoreAppGroupID = "group.com.rileytestut.AltStore.Alpha"
+    #else
+    static let baseAltStoreAppGroupID = "group.com.rileytestut.AltStore"
+    #endif
     
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
