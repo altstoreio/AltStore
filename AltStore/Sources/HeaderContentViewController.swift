@@ -252,6 +252,8 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
         
+        self.headerScrollView.flashScrollIndicators()
+        
         self.transitionCoordinator?.animate(alongsideTransition: { (context) in
             if self.shouldHideNavigationBar
             {
