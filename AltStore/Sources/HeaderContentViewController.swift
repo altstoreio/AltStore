@@ -13,8 +13,6 @@ import Roxas
 
 import Nuke
 
-private var navigationBarPropertyAnimatorKey = 0
-
 // A UIViewController that manipulates its navigation controller's navigation bar.
 protocol NavigationBarAnimator: UIViewController {}
 
@@ -62,6 +60,11 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     
 //    private var _viewDidAppear = false
 //    private var _previousNavigationBarHidden: Bool?
+    
+    private var isViewingHeader: Bool {
+        let isViewingHeader = (self.headerScrollView.contentOffset.x != self.headerScrollView.contentInset.left)
+        return isViewingHeader
+    }
     
     private var _preferredStatusBarStyle: UIStatusBarStyle = .default
     
@@ -366,9 +369,6 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         let minimumContentHeight = minimumHeaderY + headerFrame.height + padding // Minimum height for header + back button + spacing.
         let maximumContentY = max(self.view.bounds.width * 0.667, minimumContentHeight) // Initial Y-value of content view.
         
-        // A full blur is too much, so we reduce the visible blur by 0.3, resulting in 70% blur.
-        let minimumBlurFraction = 0.3 as CGFloat
-        
         contentFrame.origin.y = maximumContentY - self.scrollView.contentOffset.y
         headerFrame.origin.y = contentFrame.origin.y - padding - headerFrame.height
         
@@ -376,25 +376,8 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
         let height = max(contentFrame.origin.y + cornerRadius * 2, backgroundIconFrame.height)
         backgroundIconFrame.size.height = height
         
-        let blurThreshold = 0 as CGFloat
-        if self.scrollView.contentOffset.y < blurThreshold
-        {
-            // Determine how much to lessen blur by.
-            
-            let range = 75 as CGFloat
-            let difference = -self.scrollView.contentOffset.y
-            
-            let fraction = min(difference, range) / range
-            
-            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
-            self.blurAnimator?.fractionComplete = fractionComplete
-        }
-        else
-        {
-            // Set blur to default.
-            
-            self.blurAnimator?.fractionComplete = minimumBlurFraction
-        }
+        // Update blur.
+        self.updateBlur()
         
         // Animate navigation bar.
         let showNavigationBarThreshold = (maximumContentY - minimumContentHeight) + backButtonFrame.origin.y
@@ -514,20 +497,11 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     {
         switch scrollView
         {
-        case self.scrollView:
-            self.view.setNeedsLayout()
-            self.view.layoutIfNeeded()
-            
+        case self.scrollView: self.view.setNeedsLayout()
         case self.headerScrollView:
+            // Do NOT call setNeedsLayout(), or else it will mess with scrolling
             self.headerScrollView.showsHorizontalScrollIndicator = false
-            
-            let minimumBlurFraction = 0.3 as CGFloat
-            
-            let maximumX = self.headerScrollView.bounds.width
-            let fraction = self.headerScrollView.contentOffset.x / maximumX
-            
-            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
-            self.blurAnimator?.fractionComplete = fractionComplete
+            self.updateBlur()
             
         default: break
         }
@@ -580,6 +554,38 @@ private extension HeaderContentViewController
 
         self.blurAnimator?.startAnimation()
         self.blurAnimator?.pauseAnimation()
+    }
+    
+    func updateBlur()
+    {
+        // A full blur is too much for header, so we reduce the visible blur by 0.3, resulting in 70% blur.
+        let minimumBlurFraction = 0.3 as CGFloat
+        
+        if self.isViewingHeader
+        {
+            let maximumX = self.headerScrollView.bounds.width
+            let fraction = self.headerScrollView.contentOffset.x / maximumX
+            
+            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
+            self.blurAnimator?.fractionComplete = fractionComplete
+        }
+        else if self.scrollView.contentOffset.y < 0
+        {
+            // Determine how much to lessen blur by.
+            
+            let range = 75 as CGFloat
+            let difference = -self.scrollView.contentOffset.y
+            
+            let fraction = min(difference, range) / range
+            
+            let fractionComplete = (fraction * (1.0 - minimumBlurFraction)) + minimumBlurFraction
+            self.blurAnimator?.fractionComplete = fractionComplete
+        }
+        else
+        {
+            // Set blur to default.
+            self.blurAnimator?.fractionComplete = minimumBlurFraction
+        }
     }
     
     func prepareNavigationBarAnimation()
