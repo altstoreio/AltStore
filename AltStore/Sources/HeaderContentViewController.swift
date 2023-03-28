@@ -21,7 +21,8 @@ protocol ScrollableContentViewController: UIViewController
     var scrollView: UIScrollView { get }
 }
 
-class HeaderContentViewController<Header: UIView, Content: UIViewController & ScrollableContentViewController> : UIViewController, NavigationBarAnimator, UIAdaptivePresentationControllerDelegate, UIScrollViewDelegate
+class HeaderContentViewController<Header: UIView, Content: UIViewController & ScrollableContentViewController> : UIViewController, NavigationBarAnimator,
+                                                                                                                    UIAdaptivePresentationControllerDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate
 {
     var tintColor: UIColor! {
         get { self.view.tintColor }
@@ -46,12 +47,13 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
     private var headerScrollView: UIScrollView!
     private var backgroundBlurView: UIVisualEffectView!
     private var contentViewControllerShadowView: UIView!
+    private var headerContainerView: UIView!
     
     private var blurAnimator: UIViewPropertyAnimator?
     private var navigationBarAnimator: UIViewPropertyAnimator?
     private var contentSizeObservation: NSKeyValueObservation?
     
-//    private var ignoreBackGestureRecognizer: UIPanGestureRecognizer!
+    private var ignoreBackGestureRecognizer: UIPanGestureRecognizer!
 //    private var ignoreHeaderPanGestureRecognizer: UIPanGestureRecognizer!
     
     private var _shouldResetLayout = false
@@ -121,13 +123,25 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
                 
         
         // Header View
-        self.headerScrollView = UIScrollView(frame: .zero)
+        self.headerContainerView = UIView(frame: .zero)
+        self.view.addSubview(self.headerContainerView, pinningEdgesWith: .zero)
+        
+        self.ignoreBackGestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
+        self.ignoreBackGestureRecognizer.delegate = self
+        self.headerContainerView.addGestureRecognizer(self.ignoreBackGestureRecognizer)
+        
+        if let popGestureRecognizer = self.navigationController?.interactivePopGestureRecognizer
+        {
+            popGestureRecognizer.require(toFail: self.ignoreBackGestureRecognizer)
+        }
+        
         self.headerScrollView.delegate = self
         self.headerScrollView.isPagingEnabled = true
         self.headerScrollView.clipsToBounds = false
         self.headerScrollView.indicatorStyle = .white
         self.headerScrollView.showsVerticalScrollIndicator = false
-        self.view.addSubview(self.headerScrollView)
+        self.headerContainerView.addSubview(self.headerScrollView)
+        self.headerContainerView.addGestureRecognizer(self.headerScrollView.panGestureRecognizer) // Allow panning outside headerScrollView bounds.
         
         self.headerView = self.makeHeaderView()
         self.headerView.translatesAutoresizingMaskIntoConstraints = true
@@ -505,6 +519,20 @@ class HeaderContentViewController<Header: UIView, Content: UIViewController & Sc
             
         default: break
         }
+    }
+    
+    //MARK: UIGestureRecognizerDelegate
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        // Ignore interactive back gesture when viewing header, which means returning `true` to enable ignoreBackGestureRecognizer.
+        let disableBackGesture = self.isViewingHeader
+        return disableBackGesture
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        return true
     }
 }
 
