@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 import AltStoreCore
 import Roxas
@@ -91,6 +92,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     {
         let sourceAboutView = SourceHeaderView(frame: CGRect(x: 0, y: 0, width: 375, height: 200))
         sourceAboutView.configure(for: self.source)
+        sourceAboutView.websiteButton.addTarget(self, action: #selector(SourceDetailViewController.showWebsite), for: .primaryActionTriggered)
         return sourceAboutView
     }
     
@@ -104,5 +106,16 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
             self.addButton.isHidden = true
             self.navigationBarButton.isHidden = true
         }
+    }
+    
+    //MARK: Actions
+    
+    @objc private func showWebsite()
+    {
+        guard let websiteURL = self.source.websiteURL else { return }
+        
+        let safariViewController = SFSafariViewController(url: websiteURL)
+        safariViewController.preferredControlTintColor = self.source.effectiveTintColor ?? .altPrimary
+        self.present(safariViewController, animated: true, completion: nil)
     }
 }
