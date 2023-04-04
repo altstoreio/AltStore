@@ -49,6 +49,16 @@ class SourcesViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        self.view.tintColor = .altPrimary
+        self.navigationController?.view.tintColor = .altPrimary
+        
+        if let navigationBar = self.navigationController?.navigationBar as? NavigationBar
+        {
+            // Don't automatically adjust item positions when being presented non-full screen,
+            // or else the navigation bar content won't be vertically centered.
+            navigationBar.automaticallyAdjustsItemPositions = false
+        }
+        
         self.collectionView.dataSource = self.dataSource
         
         #if !BETA
@@ -92,7 +102,7 @@ private extension SourcesViewController
         dataSource.cellConfigurationHandler = { (cell, source, indexPath) in
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! BannerCollectionViewCell
+            let cell = cell as! AppBannerCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
@@ -602,7 +612,7 @@ extension SourcesViewController
                 }
                 
             case .trusted:
-                if let cell = collectionView.cellForItem(at: indexPath) as? BannerCollectionViewCell, !cell.bannerView.button.isHidden
+                if let cell = collectionView.cellForItem(at: indexPath) as? AppBannerCollectionViewCell, !cell.bannerView.button.isHidden
                 {
                     actions.append(addAction)
                 }
@@ -618,7 +628,7 @@ extension SourcesViewController
     override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
         guard let indexPath = configuration.identifier as? NSIndexPath else { return nil }
-        guard let cell = collectionView.cellForItem(at: indexPath as IndexPath) as? BannerCollectionViewCell else { return nil }
+        guard let cell = collectionView.cellForItem(at: indexPath as IndexPath) as? AppBannerCollectionViewCell else { return nil }
 
         let parameters = UIPreviewParameters()
         parameters.backgroundColor = .clear

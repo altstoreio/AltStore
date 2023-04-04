@@ -72,7 +72,7 @@ private extension AppIDsViewController
         dataSource.cellConfigurationHandler = { (cell, appID, indexPath) in
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! BannerCollectionViewCell
+            let cell = cell as! AppBannerCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor

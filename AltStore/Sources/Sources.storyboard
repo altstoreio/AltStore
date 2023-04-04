@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7We-99-yEv">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Forwarding Navigation Controller-->
+        <scene sceneID="QxB-Dd-1xC">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7We-99-yEv" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="xWh-1U-u0q" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5vR-Su-j54" kind="relationship" relationship="rootViewController" id="Kt6-Nl-WsS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ULL-gB-Cpt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-18" y="-13"/>
+        </scene>
+        <!--Sources-->
+        <scene sceneID="hR0-Xj-lcc">
+            <objects>
+                <collectionViewController title="Sources" id="5vR-Su-j54" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="M2N-lD-Q3M">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="ldV-TM-Jx1">
+                            <size key="itemSize" width="375" height="80"/>
+                            <size key="headerReferenceSize" width="50" height="200"/>
+                            <size key="footerReferenceSize" width="50" height="50"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="mkn-CU-TaQ" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="9" y="200" width="375" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="w5e-xs-D45" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage sources to control which apps are available to download through AltStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KCm-fD-Jy0">
+                                    <rect key="frame" x="8" y="14" width="377" height="171"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                    <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="KCm-fD-Jy0" secondAttribute="bottom" priority="999" constant="15" id="1M7-ad-U2f"/>
+                                <constraint firstItem="KCm-fD-Jy0" firstAttribute="top" secondItem="w5e-xs-D45" secondAttribute="top" priority="999" constant="14" id="5h0-b0-UWE"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="KCm-fD-Jy0" secondAttribute="trailing" priority="999" id="K04-Ud-iGz"/>
+                                <constraint firstAttribute="leadingMargin" secondItem="KCm-fD-Jy0" secondAttribute="leading" priority="999" id="MN6-lr-3tF"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="bottomLayoutConstraint" destination="1M7-ad-U2f" id="tej-O7-Lyh"/>
+                                <outlet property="leadingLayoutConstraint" destination="MN6-lr-3tF" id="Deq-Tk-7Lc"/>
+                                <outlet property="textLabel" destination="KCm-fD-Jy0" id="alm-sb-NAa"/>
+                                <outlet property="topLayoutConstraint" destination="5h0-b0-UWE" id="kHq-up-pCk"/>
+                                <outlet property="trailingLayoutConstraint" destination="K04-Ud-iGz" id="rS5-c5-EkL"/>
+                            </connections>
+                        </collectionReusableView>
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="H5R-Ci-5aX" customClass="SourcesFooterView">
+                            <rect key="frame" x="0.0" y="280" width="393" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="oeg-V0-knE">
+                                    <rect key="frame" x="8" y="0.0" width="377" height="50"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="hnb-2l-24w">
+                                            <rect key="frame" x="0.0" y="0.0" width="377" height="0.0"/>
+                                        </activityIndicatorView>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="800" scrollEnabled="NO" contentInsetAdjustmentBehavior="never" editable="NO" text="Test" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4Mf-Ge-exp">
+                                            <rect key="frame" x="0.0" y="15" width="377" height="35"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="oeg-V0-knE" firstAttribute="top" secondItem="H5R-Ci-5aX" secondAttribute="top" priority="999" id="KK7-2G-rL0" propertyAccessControl="none"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="oeg-V0-knE" secondAttribute="trailing" priority="999" id="aG4-4x-ACP"/>
+                                <constraint firstAttribute="bottom" secondItem="oeg-V0-knE" secondAttribute="bottom" priority="999" id="ueD-zU-eSQ"/>
+                                <constraint firstItem="oeg-V0-knE" firstAttribute="leading" secondItem="H5R-Ci-5aX" secondAttribute="leadingMargin" priority="999" id="w2y-e8-rJG"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="activityIndicatorView" destination="hnb-2l-24w" id="6Dp-gp-nlC"/>
+                                <outlet property="bottomLayoutConstraint" destination="ueD-zU-eSQ" id="ChX-d2-sRT"/>
+                                <outlet property="leadingLayoutConstraint" destination="w2y-e8-rJG" id="9j3-ao-bfA"/>
+                                <outlet property="textView" destination="4Mf-Ge-exp" id="XqS-CB-3ek"/>
+                                <outlet property="topLayoutConstraint" destination="KK7-2G-rL0" id="oFe-fV-BgO"/>
+                                <outlet property="trailingLayoutConstraint" destination="aG4-4x-ACP" id="YOc-HZ-1pw"/>
+                            </connections>
+                        </collectionReusableView>
+                        <connections>
+                            <outlet property="dataSource" destination="5vR-Su-j54" id="lGW-bH-xYZ"/>
+                            <outlet property="delegate" destination="5vR-Su-j54" id="bj3-kR-erl"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Sources" id="UQX-GH-OMC">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="ox5-Bu-RLr">
+                            <connections>
+                                <action selector="addSource" destination="5vR-Su-j54" id="4s7-KQ-ume"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="QYt-Dn-SKf">
+                            <connections>
+                                <segue destination="wBZ-c2-miy" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="Dc6-tD-Z2I"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="69z-hg-xF8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="wBZ-c2-miy" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="810" y="-13"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
