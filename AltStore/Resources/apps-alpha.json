@@ -1,12 +1,25 @@
 {
   "name": "AltStore (Alpha)",
   "identifier": "com.rileytestut.AltStore.Alpha",
+  "subtitle": "A home for apps that push the boundaries of iOS.",
+  "description": "This is the default source for AltStore. You can add additional sources to manage which apps appear in AltStore.\n\nFor more info, check out our FAQ: https://faq.altstore.io/patreon/beta-access/sources",
+  "website": "https://altstore.io",
   "apps": [
     {
       "name": "AltStore (Alpha)",
       "bundleIdentifier": "com.rileytestut.AltStore.Alpha",
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
+      "versions": [
+        {
+          "version": "1.4.2a1",
+          "date": "2020-11-04T15:30:00-07:00",
+          "localizedDescription": "Allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later.",
+          "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/1_4_2_a1.ipa",
+          "size": 5374382,
+          "minOSVersion": "12.2"
+        }
+      ],
       "version": "1.4.2a1",
       "versionDate": "2020-11-04T15:30:00-07:00",
       "versionDescription": "Allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later.",
@@ -59,7 +72,7 @@
     },
     {
       "name": "Clip (Alpha)",
-      "bundleIdentifier": "com.rileytestut.Clip.Beta",
+      "bundleIdentifier": "com.rileytestut.Clip.Alpha",
       "subtitle": "Manage your clipboard history with ease.",
       "developerName": "Riley Testut",
       "version": "1.1a1",
@@ -85,6 +98,10 @@
       ]
     }
   ],
+  "featuredApps": [
+    "com.rileytestut.Delta.Alpha",
+    "com.rileytestut.Clip.Alpha"
+  ],
   "news": [
     {
       "title": "Welcome to AltStore (Alpha)",
@@ -92,11 +109,65 @@
       "caption": "Please read the FAQ for help with installing apps.",
       "tintColor": "018084",
       "url": "https://altstore.io/faq/",
-      "date": "2019-09-28",
+      "date": "2023-03-27",
+      "notify": false
+    },
+    {
+      "title": "#StandWithUkraine",
+      "identifier": "support-ukraine",
+      "caption": "Find out how you can help support those impacted by the Russian invasion.",
+      "tintColor": "003e80",
+      "imageURL": "https://user-images.githubusercontent.com/705880/156053447-a158cac7-df5f-4497-8025-15c3c2e10b48.png",
+      "url": "https://linktr.ee/razomforukraine",
+      "date": "2022-03-01",
+      "notify": false
+    },
+    {
+      "title": "The Biggest AltServer Update Yet!",
+      "identifier": "altserver-1-5",
+      "caption": "Update to AltServer 1.5 to use AltJIT and other exciting new features.",
+      "tintColor": "018084",
+      "imageURL": "https://user-images.githubusercontent.com/705880/166509576-744be578-6868-4b7d-b4fd-b9418c084327.png",
+      "url": "https://faq.altstore.io/release-notes/altserver",
+      "date": "2022-05-03",
+      "notify": true
+    },
+    {
+      "title": "More Apps in AltStore!",
+      "identifier": "trusted-sources",
+      "caption": "Update to AltStore 1.5 to easily download some of our favorite apps.",
+      "tintColor": "00CAB3",
+      "imageURL": "https://user-images.githubusercontent.com/705880/167026375-ddcb004f-7160-405c-b3e3-87a6795d2f43.png",
+      "url": "https://faq.altstore.io/release-notes/altstore",
+      "date": "2022-05-05",
+      "notify": true
+    },
+    {
+      "title": "New to AltStore?",
+      "identifier": "updated-faq",
+      "caption": "Check out our updated guide to learn how to sideload apps!",
+      "tintColor": "018084",
+      "url": "https://faq.altstore.io",
+      "date": "2022-07-28",
+      "notify": false
+    },
+    {
+      "title": "More Trusted Sources!",
+      "identifier": "welcome-provenance-pojavlauncher",
+      "caption": "Please welcome Provenance and PojavLauncher to AltStore 🎉",
+      "tintColor": "00A2FF",
+      "date": "2022-12-12",
+      "notify": true,
+      "imageURL": "https://user-images.githubusercontent.com/705880/207133455-1e851fd0-89ae-48f0-906f-8f86f4e394db.png"
+    },
+    {
+      "title": "Fix for “Core Data” Refresh Error",
+      "identifier": "pojav-source-fix",
+      "caption": "Tap here for full instructions on how to fix this issue.",
+      "url": "https://twitter.com/altstoreio/status/1627807467584253952",
+      "tintColor": "FF6700",
+      "date": "2023-03-01",
       "notify": false
     }
-  ],
-  "userInfo": {
-    "patreonAccessToken": "ZNpQ7TIHU5Ut2ytH4oIhW6bBJPcX-1VxLQS7TiE80F0"
-  }
+  ]
 }
