@@ -416,15 +416,17 @@ private extension AppViewController
     // Copied from HeaderContentViewController
     func updateNavigationBarAppearance(isHidden: Bool)
     {
-        let barAppearance = self.navigationItem.standardAppearance ?? UINavigationBarAppearance()
+        let barAppearance = self.navigationItem.standardAppearance as? NavigationBarAppearance ?? NavigationBarAppearance()
         
         if isHidden
         {
             barAppearance.configureWithTransparentBackground()
+            barAppearance.ignoresUserInteraction = true
         }
         else
         {
             barAppearance.configureWithDefaultBackground()
+            barAppearance.ignoresUserInteraction = false
         }
         
         barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]

@@ -10,8 +10,22 @@ import UIKit
 
 import Roxas
 
-class NavigationBar: UINavigationBar
+class NavigationBarAppearance: UINavigationBarAppearance
 {
+    // We sometimes need to ignore user interaction so
+    // we can tap items underneath the navigation bar.
+    var ignoresUserInteraction: Bool = false
+    
+    override func copy(with zone: NSZone? = nil) -> Any
+    {
+        let copy = super.copy(with: zone) as! NavigationBarAppearance
+        copy.ignoresUserInteraction = self.ignoresUserInteraction
+        return copy
+    }
+}
+
+class NavigationBar: UINavigationBar
+{    
     @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
     
     private let backgroundColorView = UIView()
@@ -79,5 +93,16 @@ class NavigationBar: UINavigationBar
                 contentView.center.y -= 2
             }
         }
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
+        if let appearance = self.topItem?.standardAppearance as? NavigationBarAppearance, appearance.ignoresUserInteraction
+        {
+            // Ignore touches.
+            return nil
+        }
+        
+        return super.hitTest(point, with: event)
     }
 }
