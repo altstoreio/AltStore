@@ -28,8 +28,6 @@ class NavigationBar: UINavigationBar
 {    
     @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
     
-    private let backgroundColorView = UIView()
-    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
@@ -78,11 +76,6 @@ class NavigationBar: UINavigationBar
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        
-        if self.backgroundColorView.superview != nil
-        {
-            self.insertSubview(self.backgroundColorView, at: 1)
-        }
         
         if self.automaticallyAdjustsItemPositions
         {
