@@ -85,10 +85,27 @@ class PillButton: UIButton
         self.displayLink.remove(from: .main, forMode: RunLoop.Mode.default)
     }
     
+    override init(frame: CGRect)
+    {
+        super.init(frame: frame)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.layer.masksToBounds = true
         self.accessibilityTraits.formUnion([.updatesFrequently, .button])
         
@@ -153,6 +170,9 @@ private extension PillButton
         }
         
         self.progressView.progressTintColor = self.tintColor
+        
+        // Update font after init because the original titleLabel is replaced.
+        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
     }
     
     @objc func updateCountdown()
