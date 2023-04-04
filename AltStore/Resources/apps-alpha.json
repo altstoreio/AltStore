@@ -12,6 +12,14 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "2.0a1",
+          "date": "2023-03-27T12:00:00-05:00",
+          "localizedDescription": "This alpha includes the initial version of About pages for sources.",
+          "downloadURL": "https://f000.backblazeb2.com/file/altstore/sources/alpha/altstore/2_0_a1.ipa",
+          "size": 5626076,
+          "minOSVersion": "12.2"
+        },
+        {
           "version": "1.4.2a1",
           "date": "2020-11-04T15:30:00-07:00",
           "localizedDescription": "Allows sideloaded apps to use just-in-time (JIT) compilation on iOS 14.2 and later.",
