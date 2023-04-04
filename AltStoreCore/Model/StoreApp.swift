@@ -243,6 +243,13 @@ public extension StoreApp
         return self._versions.firstObject as? AppVersion
     }
     
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceIdentifier else { return nil }
+        
+        let globallyUniqueID = self.bundleIdentifier + "|" + sourceIdentifier
+        return globallyUniqueID
+    }
+    
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")

@@ -170,7 +170,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             return
         }
         
-        var sortedVersionsByAppBundleID = [String: NSOrderedSet]()
+        var sortedVersionsByGlobalAppID = [String: NSOrderedSet]()
         var featuredAppIDsBySourceID = [String: [String]]()
         
         for conflict in conflicts
@@ -194,9 +194,12 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         appVersion.managedObjectContext?.delete(appVersion)
                     }
                     
-                    // Core Data _normally_ preserves the correct ordering of versions when merging,
-                    // but just in case we cache the order and reorder the versions post-merge if needed.
-                    sortedVersionsByAppBundleID[databaseObject.bundleIdentifier] = contextVersions
+                    if let globallyUniqueID = contextApp.globallyUniqueID
+                    {
+                        // Core Data _normally_ preserves the correct ordering of versions when merging,
+                        // but just in case we cache the order and reorder the versions post-merge if needed.
+                        sortedVersionsByGlobalAppID[globallyUniqueID] = contextVersions
+                    }
                 }
                 
             case let databaseObject as Source:
@@ -243,7 +246,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 {
                     let appVersions: [AppVersion]
                     
-                    if let sortedAppVersions = sortedVersionsByAppBundleID[databaseObject.bundleIdentifier],
+                    if let globallyUniqueID = databaseObject.globallyUniqueID,
+                       let sortedAppVersions = sortedVersionsByGlobalAppID[globallyUniqueID],
                        let sortedAppVersionsArray = sortedAppVersions.array as? [String],
                        case let databaseVersions = databaseObject.versions.map({ $0.version }),
                        databaseVersions != sortedAppVersionsArray
