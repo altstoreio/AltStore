@@ -76,6 +76,8 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public var newsItems: Set<NewsItem>
     
     @NSManaged @objc(source) public var _source: Source?
+    @NSManaged public internal(set) var featuringSource: Source?
+    
     @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
     @NSManaged @objc(latestVersion) public private(set) var latestSupportedVersion: AppVersion?
