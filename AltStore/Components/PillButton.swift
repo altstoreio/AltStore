@@ -38,11 +38,8 @@ class PillButton: UIButton
     }
     
     var progressTintColor: UIColor? {
-        get {
-            return self.progressView.progressTintColor
-        }
-        set {
-            self.progressView.progressTintColor = newValue
+        didSet {
+            self.update()
         }
     }
     
@@ -169,7 +166,7 @@ private extension PillButton
             self.backgroundColor = self.tintColor.withAlphaComponent(0.15)
         }
         
-        self.progressView.progressTintColor = self.tintColor
+        self.progressView.progressTintColor = self.progressTintColor ?? self.tintColor
         
         // Update font after init because the original titleLabel is replaced.
         self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
