@@ -171,6 +171,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
         }
         
         var sortedVersionsByAppBundleID = [String: NSOrderedSet]()
+        var featuredAppIDsBySourceID = [String: [String]]()
         
         for conflict in conflicts
         {
@@ -200,10 +201,10 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 
             case let databaseObject as Source:
                 guard let conflictedObject = conflict.conflictingObjects.first as? Source else { break }
-
+                
                 let bundleIdentifiers = Set(conflictedObject.apps.map { $0.bundleIdentifier })
                 let newsItemIdentifiers = Set(conflictedObject.newsItems.map { $0.identifier })
-
+                
                 for app in databaseObject.apps
                 {
                     if !bundleIdentifiers.contains(app.bundleIdentifier)
@@ -222,6 +223,11 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     }
                 }
                 
+                if let contextSource = conflict.conflictingObjects.first as? Source
+                {
+                    featuredAppIDsBySourceID[databaseObject.identifier] = contextSource.featuredApps?.map { $0.bundleIdentifier }
+                }
+                    
             default: break
             }
         }
@@ -271,6 +277,34 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     let nsError = error.serialized(withFailure: NSLocalizedString("AltStore's database could not be saved.", comment: ""))
                     throw nsError
                 }
+                
+            case let databaseObject as Source:
+                guard let featuredAppIDs = featuredAppIDsBySourceID[databaseObject.identifier] else {
+                    databaseObject.setFeaturedApps(nil)
+                    break
+                }
+                
+                let featuredApps: [StoreApp]?
+                
+                let databaseFeaturedAppIDs = databaseObject.featuredApps?.map { $0.bundleIdentifier }
+                if databaseFeaturedAppIDs != featuredAppIDs
+                {
+                    let fixedFeaturedApps = databaseObject.apps.lazy.filter { featuredAppIDs.contains($0.bundleIdentifier) }.sorted { (appA, appB) in
+                        let indexA = featuredAppIDs.firstIndex(of: appA.bundleIdentifier)!
+                        let indexB = featuredAppIDs.firstIndex(of: appB.bundleIdentifier)!
+                        return indexA < indexB
+                    }
+                    
+                    featuredApps = fixedFeaturedApps
+                }
+                else
+                {
+                    featuredApps = databaseObject.featuredApps
+                }
+                
+                // Update featuredApps post-merging to make sure relationships are correct,
+                // even if the ordering is correct.
+                databaseObject.setFeaturedApps(featuredApps)
                 
             default: break
             }
