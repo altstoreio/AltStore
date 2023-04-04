@@ -65,7 +65,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>RefreshAllIntent</string>
