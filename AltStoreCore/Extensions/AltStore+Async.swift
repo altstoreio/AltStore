@@ -59,3 +59,39 @@ public extension NSManagedObjectContext
         return result
     }
 }
+
+public extension UIViewController
+{
+    @MainActor
+    func presentAlert(title: String, message: String, action: UIAlertAction? = nil) async
+    {
+        let action = action ?? .ok
+        
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: action.title, style: action.style) { _ in
+                continuation.resume()
+            })
+            
+            self.present(alertController, animated: true)
+        }
+    }
+    
+    @MainActor
+    func presentConfirmationAlert(title: String, message: String, primaryAction: UIAlertAction, cancelAction: UIAlertAction? = nil) async throws
+    {
+        let cancelAction = cancelAction ?? .cancel
+        
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: cancelAction.title, style: cancelAction.style) { _ in
+                continuation.resume(throwing: CancellationError())
+            })
+            alertController.addAction(UIAlertAction(title: primaryAction.title, style: primaryAction.style) { _ in
+                continuation.resume()
+            })
+            
+            self.present(alertController, animated: true)
+        }
+    }
+}
