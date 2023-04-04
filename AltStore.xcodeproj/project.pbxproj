@@ -345,10 +345,10 @@
 		BFF7C90F257844C900E55F36 /* AltXPC.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = BFF7C904257844C900E55F36 /* AltXPC.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BFF7C920257844FA00E55F36 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BFF7C9342578492100E55F36 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
+		D519AD46292D665B004B12F9 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */ = {isa = PBXBuildFile; fileRef = D51AD27C29356B7B00967AAA /* ALTWrappedError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
-		D519AD46292D665B004B12F9 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
@@ -381,6 +381,7 @@
 		D5E3FB9828FDFAD90034B72C /* NSError+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+AltStore.swift */; };
 		D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */; };
 		D5F48B4829CCF21B002B52A4 /* AltStore+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */; };
+		D5F48B4C29CD0C48002B52A4 /* AsyncManaged.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */; };
 		D5F5AF2E28FDD2EC00C938F5 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */; };
 		D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */; };
 		D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */; };
@@ -884,6 +885,7 @@
 		D5E1E7C028077DE90016FC96 /* FetchTrustedSourcesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTrustedSourcesOperation.swift; sourceTree = "<group>"; };
 		D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchViewController.swift; sourceTree = "<group>"; };
 		D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltStore+Async.swift"; sourceTree = "<group>"; };
+		D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncManaged.swift; sourceTree = "<group>"; };
 		D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
 		D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore10ToAltStore11.xcmappingmodel; sourceTree = "<group>"; };
@@ -1299,6 +1301,7 @@
 			isa = PBXGroup;
 			children = (
 				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
+				D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermission.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermission.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
@@ -2647,6 +2650,7 @@
 				D5F48B4829CCF21B002B52A4 /* AltStore+Async.swift in Sources */,
 				BF66EED92501AECA007EE018 /* Team.swift in Sources */,
 				BF66EED12501AECA007EE018 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
+				D5F48B4C29CD0C48002B52A4 /* AsyncManaged.swift in Sources */,
 				BFAECC5C2501B0A400528F27 /* CFNotificationName+AltStore.m in Sources */,
 				BF66EED82501AECA007EE018 /* SecureValueTransformer.swift in Sources */,
 				BF8B17EB250AC40000F8157F /* FileManager+SharedDirectories.swift in Sources */,
