@@ -216,6 +216,28 @@ public class Source: NSManagedObject, Fetchable, Decodable
     }
 }
 
+public extension Source
+{
+    // Source is considered added IFF it has been saved to disk,
+    // which we can check by fetching on a new managed object context.
+    var isAdded: Bool {
+        get async throws {
+            let identifier = await AsyncManaged(wrappedValue: self).identifier
+            let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+            
+            let isAdded = try await backgroundContext.performAsync {
+                let fetchRequest = Source.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), identifier)
+                
+                let count = try backgroundContext.count(for: fetchRequest)
+                return (count > 0)
+            }
+            
+            return isAdded
+        }
+    }
+}
+
 internal extension Source
 {
     func setFeaturedApps(_ featuredApps: [StoreApp]?)
