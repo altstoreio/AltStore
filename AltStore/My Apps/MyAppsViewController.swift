@@ -10,6 +10,7 @@ import UIKit
 import MobileCoreServices
 import Intents
 import Combine
+import UniformTypeIdentifiers
 
 import AltStoreCore
 import AltSign
@@ -30,7 +31,7 @@ extension MyAppsViewController
     }
 }
 
-class MyAppsViewController: UICollectionViewController
+class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
 {
     private let coordinator = NSFileCoordinator()
     private let operationQueue = OperationQueue()
@@ -113,11 +114,7 @@ class MyAppsViewController: UICollectionViewController
                                          self.sideloadingProgressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
         }
         
-        if #available(iOS 13, *) {}
-        else
-        {
-            self.registerForPreviewing(with: self, sourceView: self.collectionView)
-        }
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -269,18 +266,15 @@ private extension MyAppsViewController
             guard let iconURL = installedApp.storeApp?.iconURL else { return nil }
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: iconURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -710,13 +704,10 @@ private extension MyAppsViewController
             }
         }
         
-        if #available(iOS 14, *)
-        {
-            let interaction = INInteraction.refreshAllApps()
-            interaction.donate { (error) in
-                guard let error = error else { return }
-                print("Failed to donate intent \(interaction.intent).", error)
-            }
+        let interaction = INInteraction.refreshAllApps()
+        interaction.donate { (error) in
+            guard let error = error else { return }
+            print("Failed to donate intent \(interaction.intent).", error)
         }
     }
     
@@ -761,18 +752,9 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        let supportedTypes: [String]
+        let supportedTypes = UTType.types(tag: "ipa", tagClass: .filenameExtension, conformingTo: nil)
         
-        if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
-        {
-            supportedTypes = (types as NSArray).map { $0 as! String }
-        }
-        else
-        {
-            supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
-        }
-        
-        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
+        let documentPickerViewController = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
         documentPickerViewController.delegate = self
         self.present(documentPickerViewController, animated: true, completion: nil)
     }
@@ -1181,10 +1163,8 @@ private extension MyAppsViewController
             }
         }
                 
-        if UserDefaults.standard.activeAppsLimit != nil, #available(iOS 13, *)
+        if UserDefaults.standard.activeAppsLimit != nil
         {
-            // UserDefaults.standard.activeAppsLimit is only non-nil on iOS 13.3.1 or later, so the #available check is just so we can use Combine.
-            
             guard let app = ALTApplication(fileURL: installedApp.fileURL) else { return finish(.failure(OperationError.invalidApp)) }
             
             var cancellable: AnyCancellable?
@@ -1370,8 +1350,11 @@ private extension MyAppsViewController
     {
         guard let backupURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return }
         
-        let documentPicker = UIDocumentPickerViewController(url: backupURL, in: .exportToService)
-        documentPicker.delegate = self
+        let documentPicker = UIDocumentPickerViewController(forExporting: [backupURL], asCopy: true)
+        
+        // Don't set delegate to avoid conflicting with import callbacks.
+        // documentPicker.delegate = self
+        
         self.present(documentPicker, animated: true, completion: nil)
     }
     
@@ -1432,7 +1415,6 @@ private extension MyAppsViewController
         }
     }
     
-    @available(iOS 14, *)
     func enableJIT(for installedApp: InstalledApp)
     {
         AppManager.shared.enableJIT(for: installedApp) { result in
@@ -1621,12 +1603,7 @@ extension MyAppsViewController
                 
                 headerView.textLabel.text = NSLocalizedString("Inactive", comment: "")
                 headerView.button.setTitle(nil, for: .normal)
-                
-                if #available(iOS 13.0, *)
-                {
-                    headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
-                }
-                
+                headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.presentInactiveAppsAlert), for: .primaryActionTriggered)
             }
             
@@ -1677,7 +1654,6 @@ extension MyAppsViewController
     }
 }
 
-@available(iOS 13.0, *)
 extension MyAppsViewController
 {
     private func actions(for installedApp: InstalledApp) -> [UIMenuElement]
@@ -1707,7 +1683,6 @@ extension MyAppsViewController
         }
         
         let jitAction = UIAction(title: NSLocalizedString("Enable JIT", comment: ""), image: UIImage(systemName: "bolt")) { (action) in
-            guard #available(iOS 14, *) else { return }
             self.enableJIT(for: installedApp)
         }
         
@@ -1757,7 +1732,7 @@ extension MyAppsViewController
             actions.append(activateAction)
         }
         
-        if installedApp.isActive, #available(iOS 14, *)
+        if installedApp.isActive
         {
             actions.append(jitAction)
         }
@@ -2243,21 +2218,15 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        switch controller.documentPickerMode
-        {
-        case .import, .open:
-            self.sideloadApp(at: fileURL) { (result) in
-                print("Sideloaded app at \(fileURL) with result:", result)
-            }
-        
-        case .exportToService, .moveToService: break
-        @unknown default: break
+        self.sideloadApp(at: fileURL) { (result) in
+            print("Sideloaded app at \(fileURL) with result:", result)
         }
     }
 }
 
 extension MyAppsViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         guard
@@ -2281,6 +2250,7 @@ extension MyAppsViewController: UIViewControllerPreviewingDelegate
         }
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         let point = CGPoint(x: previewingContext.sourceRect.midX, y: previewingContext.sourceRect.midY)

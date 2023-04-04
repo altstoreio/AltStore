@@ -10,11 +10,23 @@ import UIKit
 
 import Roxas
 
-class NavigationBar: UINavigationBar
+class NavigationBarAppearance: UINavigationBarAppearance
 {
-    @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
+    // We sometimes need to ignore user interaction so
+    // we can tap items underneath the navigation bar.
+    var ignoresUserInteraction: Bool = false
     
-    private let backgroundColorView = UIView()
+    override func copy(with zone: NSZone? = nil) -> Any
+    {
+        let copy = super.copy(with: zone) as! NavigationBarAppearance
+        copy.ignoresUserInteraction = self.ignoresUserInteraction
+        return copy
+    }
+}
+
+class NavigationBar: UINavigationBar
+{    
+    @IBInspectable var automaticallyAdjustsItemPositions: Bool = true
     
     override init(frame: CGRect)
     {
@@ -32,63 +44,38 @@ class NavigationBar: UINavigationBar
     
     private func initialize()
     {
-        if #available(iOS 13, *)
+        let standardAppearance = UINavigationBarAppearance()
+        standardAppearance.configureWithDefaultBackground()
+        standardAppearance.shadowColor = nil
+        
+        let edgeAppearance = UINavigationBarAppearance()
+        edgeAppearance.configureWithOpaqueBackground()
+        edgeAppearance.backgroundColor = self.barTintColor
+        edgeAppearance.shadowColor = nil
+        
+        if let tintColor = self.barTintColor
         {
-            let standardAppearance = UINavigationBarAppearance()
-            standardAppearance.configureWithDefaultBackground()
-            standardAppearance.shadowColor = nil
+            let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             
-            let edgeAppearance = UINavigationBarAppearance()
-            edgeAppearance.configureWithOpaqueBackground()
-            edgeAppearance.backgroundColor = self.barTintColor
-            edgeAppearance.shadowColor = nil
+            standardAppearance.backgroundColor = tintColor
+            standardAppearance.titleTextAttributes = textAttributes
+            standardAppearance.largeTitleTextAttributes = textAttributes
             
-            if let tintColor = self.barTintColor
-            {
-                let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-                
-                standardAppearance.backgroundColor = tintColor
-                standardAppearance.titleTextAttributes = textAttributes
-                standardAppearance.largeTitleTextAttributes = textAttributes
-                
-                edgeAppearance.titleTextAttributes = textAttributes
-                edgeAppearance.largeTitleTextAttributes = textAttributes
-            }
-            else
-            {
-                standardAppearance.backgroundColor = nil
-            }
-            
-            self.scrollEdgeAppearance = edgeAppearance
-            self.standardAppearance = standardAppearance
+            edgeAppearance.titleTextAttributes = textAttributes
+            edgeAppearance.largeTitleTextAttributes = textAttributes
         }
         else
         {
-            self.shadowImage = UIImage()
-            
-            if let tintColor = self.barTintColor
-            {
-                self.backgroundColorView.backgroundColor = tintColor
-                
-                // Top = -50 to cover status bar area above navigation bar on any device.
-                // Bottom = -1 to prevent a flickering gray line from appearing.
-                self.addSubview(self.backgroundColorView, pinningEdgesWith: UIEdgeInsets(top: -50, left: 0, bottom: -1, right: 0))
-            }
-            else
-            {
-                self.barTintColor = .white
-            }
+            standardAppearance.backgroundColor = nil
         }
+        
+        self.scrollEdgeAppearance = edgeAppearance
+        self.standardAppearance = standardAppearance
     }
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        
-        if self.backgroundColorView.superview != nil
-        {
-            self.insertSubview(self.backgroundColorView, at: 1)
-        }
         
         if self.automaticallyAdjustsItemPositions
         {
@@ -99,5 +86,16 @@ class NavigationBar: UINavigationBar
                 contentView.center.y -= 2
             }
         }
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
+        if let appearance = self.topItem?.standardAppearance as? NavigationBarAppearance, appearance.ignoresUserInteraction
+        {
+            // Ignore touches.
+            return nil
+        }
+        
+        return super.hitTest(point, with: event)
     }
 }

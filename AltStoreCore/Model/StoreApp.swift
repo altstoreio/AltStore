@@ -76,6 +76,8 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public var newsItems: Set<NewsItem>
     
     @NSManaged @objc(source) public var _source: Source?
+    @NSManaged public internal(set) var featuringSource: Source?
+    
     @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
     
     @NSManaged @objc(latestVersion) public private(set) var latestSupportedVersion: AppVersion?
@@ -239,6 +241,13 @@ public extension StoreApp
 {
     var latestAvailableVersion: AppVersion? {
         return self._versions.firstObject as? AppVersion
+    }
+    
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceIdentifier else { return nil }
+        
+        let globallyUniqueID = self.bundleIdentifier + "|" + sourceIdentifier
+        return globallyUniqueID
     }
     
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>

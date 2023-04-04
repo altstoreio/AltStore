@@ -109,7 +109,7 @@ class ToastView: RSTToastView
     
     override func show(in view: UIView, duration: TimeInterval)
     {
-        if self.opensErrorLog, #available(iOS 13, *),
+        if self.opensErrorLog,
            case let configuration = UIImage.SymbolConfiguration(font: self.textLabel.font),
            let icon = UIImage(systemName: "chevron.right.circle", withConfiguration: configuration)
         {

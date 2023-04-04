@@ -39,8 +39,8 @@
                         <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="dXz-Tu-hW8"/>
                         <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
                         <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="4Nf-rL-P4c"/>
-                        <segue destination="Qo4-72-Hmr" kind="presentation" identifier="presentSources" id="Qd6-ba-dIo"/>
                         <segue destination="bTL-bY-9Yq" kind="presentation" identifier="finishJailbreak" id="cIc-Ta-uNk"/>
+                        <segue destination="HCK-G6-KdY" kind="presentation" identifier="presentSources" id="SRd-VL-5nP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -70,7 +70,7 @@
                     <navigationItem key="navigationItem" title="Browse" id="pUx-6k-rtr">
                         <barButtonItem key="rightBarButtonItem" title="Sources" id="6Ul-JW-TMT">
                             <connections>
-                                <segue destination="Qo4-72-Hmr" kind="presentation" id="de9-NH-aec"/>
+                                <segue destination="HCK-G6-KdY" kind="presentation" id="hBK-Tt-naZ"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -191,7 +191,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="maq-gT-QcS">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="FLf-DS-F77">
+                        <barButtonItem key="rightBarButtonItem" id="FLf-DS-F77">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="grk-xM-YWA" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
                                 <rect key="frame" x="287" y="6.5" width="72" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -561,7 +561,7 @@ World</string>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HgE-PD-dC2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="962" y="1197"/>
+            <point key="canvasLocation" x="313" y="544"/>
         </scene>
         <!--News-->
         <scene sceneID="bqw-wB-hyB">
@@ -818,30 +818,13 @@ World</string>
                             <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="20"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XWu-DU-xbh" customClass="BannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XWu-DU-xbh" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="70" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1w8-fI-98T" customClass="AppBannerView" customModule="AltStore" customModuleProvider="target">
-                                            <rect key="frame" x="8" y="0.0" width="359" height="80"/>
-                                            <accessibility key="accessibilityConfiguration">
-                                                <bool key="isElement" value="YES"/>
-                                            </accessibility>
-                                        </view>
-                                    </subviews>
                                 </view>
-                                <constraints>
-                                    <constraint firstAttribute="trailingMargin" secondItem="1w8-fI-98T" secondAttribute="trailing" id="0bS-49-dqo"/>
-                                    <constraint firstAttribute="bottom" secondItem="1w8-fI-98T" secondAttribute="bottom" id="Bif-xB-0gt"/>
-                                    <constraint firstItem="1w8-fI-98T" firstAttribute="top" secondItem="XWu-DU-xbh" secondAttribute="top" id="aEf-KK-MHU"/>
-                                    <constraint firstItem="1w8-fI-98T" firstAttribute="leading" secondItem="XWu-DU-xbh" secondAttribute="leadingMargin" id="mFW-ti-cVB"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="bannerView" destination="1w8-fI-98T" id="OH8-L9-TZn"/>
-                                </connections>
                             </collectionViewCell>
                         </cells>
                         <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="th0-G6-bRt" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
@@ -890,7 +873,7 @@ World</string>
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" title="App IDs" id="3Co-uv-Fhb">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="Aqs-QK-Ups">
+                        <barButtonItem key="leftBarButtonItem" id="Aqs-QK-Ups">
                             <view key="customView" contentMode="scaleToFill" id="p0q-Fg-3Ba">
                                 <rect key="frame" x="16" y="7" width="83" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -950,150 +933,16 @@ World</string>
             <point key="canvasLocation" x="2526" y="731"/>
         </scene>
         <!--Sources-->
-        <scene sceneID="0S1-zn-9KZ">
+        <scene sceneID="Vzf-tb-LIH">
             <objects>
-                <collectionViewController title="Sources" id="cHC-TX-KzQ" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="S36-hD-vu2">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="X20-b5-XEP">
-                            <size key="itemSize" width="375" height="80"/>
-                            <size key="headerReferenceSize" width="50" height="200"/>
-                            <size key="footerReferenceSize" width="50" height="50"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="XcN-o4-9qm" customClass="BannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="210" width="375" height="80"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LW1-CC-bWu" customClass="AppBannerView" customModule="AltStore" customModuleProvider="target">
-                                            <rect key="frame" x="8" y="0.0" width="359" height="80"/>
-                                            <accessibility key="accessibilityConfiguration">
-                                                <bool key="isElement" value="YES"/>
-                                            </accessibility>
-                                        </view>
-                                    </subviews>
-                                </view>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="LW1-CC-bWu" secondAttribute="bottom" id="Pkr-zO-0wx"/>
-                                    <constraint firstItem="LW1-CC-bWu" firstAttribute="leading" secondItem="XcN-o4-9qm" secondAttribute="leadingMargin" id="egJ-X3-yEz"/>
-                                    <constraint firstItem="LW1-CC-bWu" firstAttribute="top" secondItem="XcN-o4-9qm" secondAttribute="top" id="glF-aM-4xQ"/>
-                                    <constraint firstAttribute="trailingMargin" secondItem="LW1-CC-bWu" secondAttribute="trailing" id="tQx-yV-LTq"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="bannerView" destination="LW1-CC-bWu" id="mwO-Ne-L1L"/>
-                                </connections>
-                            </collectionViewCell>
-                        </cells>
-                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="8N7-JY-mcA" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage sources to control which apps are available to download through AltStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TZv-TM-uJj">
-                                    <rect key="frame" x="8" y="14" width="359" height="171"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                    <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <constraints>
-                                <constraint firstItem="TZv-TM-uJj" firstAttribute="top" secondItem="8N7-JY-mcA" secondAttribute="top" priority="999" constant="14" id="2zE-UV-24S"/>
-                                <constraint firstAttribute="bottom" secondItem="TZv-TM-uJj" secondAttribute="bottom" priority="999" constant="15" id="Aml-PC-dko"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="TZv-TM-uJj" secondAttribute="trailing" priority="999" id="V0U-al-5eb"/>
-                                <constraint firstAttribute="leadingMargin" secondItem="TZv-TM-uJj" secondAttribute="leading" priority="999" id="aS5-6Y-rMd"/>
-                            </constraints>
-                            <connections>
-                                <outlet property="bottomLayoutConstraint" destination="Aml-PC-dko" id="I1s-ae-C8A"/>
-                                <outlet property="leadingLayoutConstraint" destination="aS5-6Y-rMd" id="An8-KN-xfb"/>
-                                <outlet property="textLabel" destination="TZv-TM-uJj" id="kWV-Wv-5gz"/>
-                                <outlet property="topLayoutConstraint" destination="2zE-UV-24S" id="mjq-yH-v8J"/>
-                                <outlet property="trailingLayoutConstraint" destination="V0U-al-5eb" id="z8b-2G-SgY"/>
-                            </connections>
-                        </collectionReusableView>
-                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="X5B-Kp-w1p" customClass="SourcesFooterView">
-                            <rect key="frame" x="0.0" y="280" width="375" height="50"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="j0O-xE-gyd">
-                                    <rect key="frame" x="8" y="0.0" width="359" height="50"/>
-                                    <subviews>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="PNx-uR-y2F">
-                                            <rect key="frame" x="0.0" y="0.0" width="359" height="3"/>
-                                        </activityIndicatorView>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="800" scrollEnabled="NO" contentInsetAdjustmentBehavior="never" editable="NO" text="Test" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="66c-H8-KJx">
-                                            <rect key="frame" x="0.0" y="18" width="359" height="32"/>
-                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                        </textView>
-                                    </subviews>
-                                </stackView>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="bottom" secondItem="j0O-xE-gyd" secondAttribute="bottom" id="BQ5-11-BzK"/>
-                                <constraint firstItem="j0O-xE-gyd" firstAttribute="top" secondItem="X5B-Kp-w1p" secondAttribute="top" id="KZg-fd-8Cp" propertyAccessControl="none"/>
-                                <constraint firstItem="j0O-xE-gyd" firstAttribute="leading" secondItem="X5B-Kp-w1p" secondAttribute="leadingMargin" id="R2x-Io-bXD"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="j0O-xE-gyd" secondAttribute="trailing" id="aBK-Bq-P9O"/>
-                            </constraints>
-                            <connections>
-                                <outlet property="activityIndicatorView" destination="PNx-uR-y2F" id="7Le-VW-GYK"/>
-                                <outlet property="bottomLayoutConstraint" destination="BQ5-11-BzK" id="iJR-4o-u9l"/>
-                                <outlet property="leadingLayoutConstraint" destination="R2x-Io-bXD" id="plZ-Yj-zTc"/>
-                                <outlet property="textView" destination="66c-H8-KJx" id="kwc-OH-U6i"/>
-                                <outlet property="topLayoutConstraint" destination="KZg-fd-8Cp" id="zNM-UU-feF"/>
-                                <outlet property="trailingLayoutConstraint" destination="aBK-Bq-P9O" id="L2r-VL-ruT"/>
-                            </connections>
-                        </collectionReusableView>
-                        <connections>
-                            <outlet property="dataSource" destination="cHC-TX-KzQ" id="VHQ-ls-gde"/>
-                            <outlet property="delegate" destination="cHC-TX-KzQ" id="MWr-Xg-N2k"/>
-                        </connections>
-                    </collectionView>
-                    <navigationItem key="navigationItem" title="Sources" id="QTB-W7-6BG">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="kBB-5c-8gw">
-                            <connections>
-                                <action selector="addSource" destination="cHC-TX-KzQ" id="WiB-Jg-NzT"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="NQF-u2-PZv">
-                            <connections>
-                                <segue destination="zjS-Nr-VTw" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="la1-dJ-UhL"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TrV-p3-ZAt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="zjS-Nr-VTw" userLabel="Exit" sceneMemberID="exit"/>
+                <viewControllerPlaceholder storyboardName="Sources" id="HCK-G6-KdY" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VTd-he-VYb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3302" y="1430"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="6NV-LQ-gKB">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Qo4-72-Hmr" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="mcx-oR-qPe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="108"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="cHC-TX-KzQ" kind="relationship" relationship="rootViewController" id="BC5-Fs-dCj"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4mO-93-4qk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2526" y="1445"/>
+            <point key="canvasLocation" x="-2" y="-553"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Qd6-ba-dIo"/>
+        <segue reference="hBK-Tt-naZ"/>
         <segue reference="cnd-KK-o60"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Primary"/>

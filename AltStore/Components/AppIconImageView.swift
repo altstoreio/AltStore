@@ -16,20 +16,9 @@ class AppIconImageView: UIImageView
         
         self.contentMode = .scaleAspectFill
         self.clipsToBounds = true
-        
         self.backgroundColor = .white
-                
-        if #available(iOS 13, *)
-        {
-            self.layer.cornerCurve = .continuous
-        }
-        else
-        {
-            if self.layer.responds(to: Selector(("continuousCorners")))
-            {
-                self.layer.setValue(true, forKey: "continuousCorners")
-            }
-        }
+        
+        self.layer.cornerCurve = .continuous
     }
     
     override func layoutSubviews()

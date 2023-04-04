@@ -14,10 +14,6 @@
 
 @class MSACWrapperSdk;
 
-#if !TARGET_OS_TV
-@class MSACCustomProperties;
-#endif
-
 NS_SWIFT_NAME(AppCenter)
 @interface MSACAppCenter : NSObject
 
@@ -123,15 +119,6 @@ NS_SWIFT_NAME(AppCenter)
  * Center SDK under the hood, e.g. our Xamarin SDK or ReactNative SDk.
  */
 @property(class, nonatomic, strong) MSACWrapperSdk *wrapperSdk;
-
-#if !TARGET_OS_TV
-/**
- * Set the custom properties.
- *
- * @param customProperties Custom properties object.
- */
-+ (void)setCustomProperties:(MSACCustomProperties *)customProperties;
-#endif
 
 /**
  * Check whether the application delegate forwarder is enabled or not.

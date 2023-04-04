@@ -1,7 +1,9 @@
 {
   "name": "AltStore",
   "identifier": "com.rileytestut.AltStore",
-  "sourceURL": "https://cdn.altstore.io/file/altstore/apps.json",
+  "subtitle": "A home for apps that push the boundaries of iOS.",
+  "description": "This is the default source for AltStore. You can add additional sources to manage what apps appear in AltStore.\n\nFor more info, check out our FAQ: https://faq.altstore.io/patreon/beta-access/sources",
+  "website": "https://altstore.io",
   "apps": [
     {
       "name": "AltStore",
@@ -262,6 +264,10 @@
         "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
       ]
     }
+  ],
+  "featuredApps": [
+    "com.rileytestut.Delta",
+    "com.rileytestut.Clip"
   ],
   "news": [
     {

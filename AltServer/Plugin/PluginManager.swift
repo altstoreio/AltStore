@@ -272,12 +272,6 @@ private extension PluginManager
             return completionHandler(.success(pluginVersion))
         }
         
-        guard #available(macOS 11, *) else {
-            // macOS versions prior to 11.0 require Mail plug-ins be *unsigned*,
-            // so we hardcode these versions to use the unsigned AltPlugin v1.0.
-            return completionHandler(.success(.v1_0))
-        }
-        
         let dataTask = self.session.dataTask(with: .altPluginUpdateURL) { (data, response, error) in
             do
             {
@@ -313,16 +307,12 @@ private extension PluginManager
                     do
                     {
                         let fileURL = try result.get()
+                        let data = try Data(contentsOf: fileURL)
+                        let sha256Hash = SHA256.hash(data: data)
+                        let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
                         
-                        if #available(OSX 10.15, *)
-                        {
-                            let data = try Data(contentsOf: fileURL)
-                            let sha256Hash = SHA256.hash(data: data)
-                            let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
-                            
-                            print("Comparing Mail plug-in hash (\(hashString)) against expected hash (\(pluginVersion.sha256Hash))...")
-                            guard hashString == pluginVersion.sha256Hash else { throw PluginError.mismatchedHash(hash: hashString, expectedHash: pluginVersion.sha256Hash) }
-                        }
+                        print("Comparing Mail plug-in hash (\(hashString)) against expected hash (\(pluginVersion.sha256Hash))...")
+                        guard hashString == pluginVersion.sha256Hash else { throw PluginError.mismatchedHash(hash: hashString, expectedHash: pluginVersion.sha256Hash) }
                         
                         completion(.success(fileURL))
                     }

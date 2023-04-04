@@ -18,23 +18,24 @@ extension OperationError
         
         /* General */
         case unknown = 1000
-        case unknownResult
-        case cancelled
-        case timedOut
-        case notAuthenticated
-        case appNotFound
-        case unknownUDID
-        case invalidApp
-        case invalidParameters
-        case maximumAppIDLimitReached
-        case noSources
-        case openAppFailed
-        case missingAppGroup
+        case unknownResult = 1001
+        case cancelled = 1002
+        case timedOut = 1003
+        case notAuthenticated = 1004
+        case appNotFound = 1005
+        case unknownUDID = 1006
+        case invalidApp = 1007
+        case invalidParameters = 1008
+        case maximumAppIDLimitReached = 1009
+        case noSources = 1010
+        case openAppFailed = 1011
+        case missingAppGroup = 1012
+        case forbidden = 1013
         
         /* Connection */
         case serverNotFound = 1200
-        case connectionFailed
-        case connectionDropped
+        case connectionFailed = 1201
+        case connectionDropped = 1202
     }
     
     static let unknownResult: OperationError = .init(code: .unknownResult)
@@ -60,6 +61,10 @@ extension OperationError
     
     static func maximumAppIDLimitReached(appName: String, requiredAppIDs: Int, availableAppIDs: Int, expirationDate: Date) -> OperationError {
         OperationError(code: .maximumAppIDLimitReached, appName: appName, requiredAppIDs: requiredAppIDs, availableAppIDs: availableAppIDs, expirationDate: expirationDate)
+    }
+    
+    static func forbidden(failureReason: String? = nil, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .forbidden, failureReason: failureReason, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -112,6 +117,9 @@ struct OperationError: ALTLocalizedError
         case .maximumAppIDLimitReached: return NSLocalizedString("You cannot register more than 10 App IDs within a 7 day period.", comment: "")
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
         case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be accessed.", comment: "")
+        case .forbidden:
+            guard let failureReason = self._failureReason else { return NSLocalizedString("The operation is forbidden.", comment: "") }
+            return failureReason
 
         case .appNotFound:
             let appName = self.appName ?? NSLocalizedString("The app", comment: "")

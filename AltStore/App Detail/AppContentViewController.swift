@@ -149,19 +149,16 @@ private extension AppContentViewController
         }
         dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL as URL, processor: .screenshot)
-                ImagePipeline.shared.loadImage(with: request, progress: nil, completion: { (response, error) in
+                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot])
+                ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in

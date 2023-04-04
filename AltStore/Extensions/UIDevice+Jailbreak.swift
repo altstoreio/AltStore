@@ -29,7 +29,6 @@ extension UIDevice
         }
     }
     
-    @available(iOS 14, *)
     var supportsFugu14: Bool {
         #if targetEnvironment(simulator)
         return true
@@ -40,7 +39,6 @@ extension UIDevice
         #endif
     }
     
-    @available(iOS 14, *)
     var isUntetheredJailbreakRequired: Bool {
         let ios14_4 = OperatingSystemVersion(majorVersion: 14, minorVersion: 4, patchVersion: 0)
         

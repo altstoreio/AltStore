@@ -32,14 +32,7 @@ extension SettingsViewController
     fileprivate enum AppRefreshRow: Int, CaseIterable
     {
         case backgroundRefresh
-        
-        @available(iOS 14, *)
         case addToSiri
-        
-        static var allCases: [AppRefreshRow] {
-            guard #available(iOS 14, *) else { return [.backgroundRefresh] }
-            return [.backgroundRefresh, .addToSiri]
-        }
     }
     
     fileprivate enum CreditsRow: Int, CaseIterable
@@ -327,7 +320,6 @@ private extension SettingsViewController
         }
     }
     
-    @available(iOS 14, *)
     @IBAction func addRefreshAppsShortcut()
     {
         guard let shortcut = INShortcut(intent: INInteraction.refreshAllApps().intent) else { return }
@@ -460,22 +452,6 @@ extension SettingsViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        
-        if #available(iOS 14, *) {}
-        else if let cell = cell as? InsetGroupTableViewCell,
-                indexPath.section == Section.appRefresh.rawValue,
-                indexPath.row == AppRefreshRow.backgroundRefresh.rawValue
-        {
-            // Only one row is visible pre-iOS 14.
-            cell.style = .single
-        }
-        
-        return cell
-    }
-    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let section = Section.allCases[section]
@@ -555,9 +531,7 @@ extension SettingsViewController
             switch row
             {
             case .backgroundRefresh: break
-            case .addToSiri:
-                guard #available(iOS 14, *) else { return }
-                self.addRefreshAppsShortcut()
+            case .addToSiri: self.addRefreshAppsShortcut()
             }
             
         case .techyThings:

@@ -73,7 +73,7 @@ class TabBarController: UITabBarController
             sourcesViewController.deepLinkSourceURL = sourceURL
             
         case "finishJailbreak":
-            guard let installedApp = sender as? InstalledApp, #available(iOS 14, *) else { return }
+            guard let installedApp = sender as? InstalledApp else { return }
             
             let navigationController = segue.destination as! UINavigationController
             

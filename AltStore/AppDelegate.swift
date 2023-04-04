@@ -15,6 +15,8 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+extension UIApplication: LegacyBackgroundFetching {}
+
 extension AppDelegate
 {
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
@@ -33,27 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    @available(iOS 14, *)
-    private var intentHandler: IntentHandler {
-        get { _intentHandler as! IntentHandler }
-        set { _intentHandler = newValue }
-    }
-    
-    @available(iOS 14, *)
-    private var viewAppIntentHandler: ViewAppIntentHandler {
-        get { _viewAppIntentHandler as! ViewAppIntentHandler }
-        set { _viewAppIntentHandler = newValue }
-    }
-    
-    private lazy var _intentHandler: Any = {
-        guard #available(iOS 14, *) else { fatalError() }
-        return IntentHandler()
-    }()
-    
-    private lazy var _viewAppIntentHandler: Any = {
-        guard #available(iOS 14, *) else { fatalError() }
-        return ViewAppIntentHandler()
-    }()
+    private let intentHandler = IntentHandler()
+    private let viewAppIntentHandler = ViewAppIntentHandler()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
@@ -129,8 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any?
     {
-        guard #available(iOS 14, *) else { return nil }
-        
         switch intent
         {
         case is RefreshAllIntent: return self.intentHandler
@@ -140,7 +121,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 13, *)
 extension AppDelegate
 {
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration
@@ -246,7 +226,7 @@ extension AppDelegate
     private func prepareForBackgroundFetch()
     {
         // "Fetch" every hour, but then refresh only those that need to be refreshed (so we don't drain the battery).
-        UIApplication.shared.setMinimumBackgroundFetchInterval(1 * 60 * 60)
+        (UIApplication.shared as LegacyBackgroundFetching).setMinimumBackgroundFetchInterval(1 * 60 * 60)
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }

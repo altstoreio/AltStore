@@ -198,6 +198,16 @@ NS_SWIFT_NAME(Analytics)
 + (void)resume;
 
 /**
+ * Start a new session if manual session tracker is enabled, otherwise do nothing.
+ */
++ (void)startSession;
+
+/**
+ * Enable manual session tracker.
+ */
++ (void)enableManualSessionTracker;
+
+/**
  * Get a transmission target.
  *
  * @param token The token of the transmission target to retrieve.

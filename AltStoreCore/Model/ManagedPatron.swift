@@ -19,11 +19,14 @@ public class ManagedPatron: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    public init(patron: Patron, context: NSManagedObjectContext)
+    public init?(patron: Patron, context: NSManagedObjectContext)
     {
+        // Only cache Patrons with non-nil names.
+        guard let name = patron.name else { return nil }
+        
         super.init(entity: ManagedPatron.entity(), insertInto: context)
         
-        self.name = patron.name
+        self.name = name
         self.identifier = patron.identifier
     }
 }
