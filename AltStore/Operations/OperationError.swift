@@ -18,24 +18,24 @@ extension OperationError
         
         /* General */
         case unknown = 1000
-        case unknownResult
-        case cancelled
-        case timedOut
-        case notAuthenticated
-        case appNotFound
-        case unknownUDID
-        case invalidApp
-        case invalidParameters
-        case maximumAppIDLimitReached
-        case noSources
-        case openAppFailed
-        case missingAppGroup
-        case forbidden
+        case unknownResult = 1001
+        case cancelled = 1002
+        case timedOut = 1003
+        case notAuthenticated = 1004
+        case appNotFound = 1005
+        case unknownUDID = 1006
+        case invalidApp = 1007
+        case invalidParameters = 1008
+        case maximumAppIDLimitReached = 1009
+        case noSources = 1010
+        case openAppFailed = 1011
+        case missingAppGroup = 1012
+        case forbidden = 1013
         
         /* Connection */
         case serverNotFound = 1200
-        case connectionFailed
-        case connectionDropped
+        case connectionFailed = 1201
+        case connectionDropped = 1202
     }
     
     static let unknownResult: OperationError = .init(code: .unknownResult)
