@@ -8,23 +8,90 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 import AltStoreCore
 import Roxas
 
 import Nuke
 
+extension SourceDetailViewController
+{
+    private class ViewModel: ObservableObject
+    {
+        let source: Source
+        
+        @Published
+        var isSourceAdded: Bool? = nil
+        
+        @Published
+        var isAddingSource: Bool = false
+        
+        init(source: Source)
+        {
+            self.source = source
+            
+            Task<Void, Never> {
+                do
+                {
+                    self.isSourceAdded = try await self.source.isAdded
+                }
+                catch
+                {
+                    print("[ALTLog] Failed to check if source is added.", error)
+                }
+            }
+        }
+    }
+}
+
 class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
     @Managed private(set) var source: Source
     
+    private let viewModel: ViewModel
+    
     private var addButton: VibrantButton!
     
     private var previousBounds: CGRect?
+    private var cancellable: AnyCancellable?
     
     init?(source: Source, coder: NSCoder)
     {
+        let isolatedContext: NSManagedObjectContext
+        
+        if source.managedObjectContext == DatabaseManager.shared.viewContext
+        {
+            do
+            {
+                // Source is persisted to disk, so we can create a new view context
+                // that's pinned to current query generation to ensure information
+                // doesn't disappear out from under us if we remove (delete) the source.
+                let context = DatabaseManager.shared.persistentContainer.newViewContext(withParent: nil)
+                try context.setQueryGenerationFrom(.current)
+                isolatedContext = context
+            }
+            catch
+            {
+                print("[ATLog] Failed to set query generation for context.", error)
+                isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
+            }
+        }
+        else
+        {
+            // Source is not persisted to disk, so create child view context with source's managedObjectContext as parent.
+            // This also maintains a strong reference to source.managedObjectContext, which may be necessary.
+            isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
+        }
+               
+        // Ignore changes from other contexts so we can delete source without UI automatically updating.
+        isolatedContext.automaticallyMergesChangesFromParent = false
+        
+        let source = isolatedContext.object(with: source.objectID) as! Source
         self.source = source
+        
+        self.viewModel = ViewModel(source: source)
+        
         super.init(coder: coder)
         
         self.title = source.name
@@ -41,15 +108,18 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         super.viewDidLoad()
         
         self.addButton = VibrantButton(type: .system)
-        self.addButton.title = NSLocalizedString("ADD", comment: "")
         self.addButton.contentInsets = PillButton.contentInsets
+        self.addButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         self.addButton.sizeToFit()
         self.view.addSubview(self.addButton)
+        
+        self.navigationBarButton.addTarget(self, action: #selector(SourceDetailViewController.addSource), for: .primaryActionTriggered)
         
         Nuke.loadImage(with: self.source.effectiveIconURL, into: self.navigationBarIconView)
         Nuke.loadImage(with: self.source.effectiveHeaderImageURL, into: self.backgroundImageView)
         
         self.update()
+        self.preparePipeline()
     }
     
     override func viewDidLayoutSubviews()
@@ -106,9 +176,86 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
             self.addButton.isHidden = true
             self.navigationBarButton.isHidden = true
         }
+        else
+        {
+            // Update isIndicatingActivity first to ensure later updates are applied correctly.
+            self.addButton.isIndicatingActivity = self.viewModel.isAddingSource
+            self.navigationBarButton.isIndicatingActivity = self.viewModel.isAddingSource
+            
+            let title: String
+            
+            switch self.viewModel.isSourceAdded
+            {
+            case true?:
+                title = NSLocalizedString("REMOVE", comment: "")
+                self.navigationBarButton.tintColor = .refreshRed
+                
+                self.addButton.isHidden = false
+                self.navigationBarButton.isHidden = false
+                
+            case false?:
+                title = NSLocalizedString("ADD", comment: "")
+                self.navigationBarButton.tintColor = self.source.effectiveTintColor ?? .altPrimary
+                
+                self.addButton.isHidden = false
+                self.navigationBarButton.isHidden = false
+                
+            case nil:
+                title = ""
+                
+                self.addButton.isHidden = true
+                self.navigationBarButton.isHidden = true
+            }
+            
+            if self.addButton.title != title
+            {
+                self.addButton.title = title
+                self.navigationBarButton.setTitle(title, for: .normal)
+            }
+            
+            self.view.setNeedsLayout()
+        }
     }
     
     //MARK: Actions
+    
+    @objc private func addSource()
+    {
+        self.viewModel.isAddingSource = true
+        
+        Task<Void, Never> { /* @MainActor in */ // Already on MainActor, even though this function wasn't called from async context.
+            var isSourceAdded: Bool?
+            var errorTitle = NSLocalizedString("Unable to Add Source", comment: "")
+            
+            do
+            {
+                let isAdded = try await self.source.isAdded
+                if isAdded
+                {
+                    errorTitle = NSLocalizedString("Unable to Remove Source", comment: "")
+                    try await AppManager.shared.remove(self.source, presentingViewController: self)
+                }
+                else
+                {
+                    try await AppManager.shared.add(self.source, presentingViewController: self)
+                }
+               
+                isSourceAdded = try await self.source.isAdded
+            }
+            catch is CancellationError {}
+            catch
+            {
+                await self.presentAlert(title: errorTitle, message: error.localizedDescription)
+            }
+            
+            self.viewModel.isAddingSource = false
+            
+            if let isSourceAdded
+            {
+                self.viewModel.isSourceAdded = isSourceAdded
+            }
+        }
+    }
     
     @objc private func showWebsite()
     {
@@ -117,5 +264,18 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         let safariViewController = SFSafariViewController(url: websiteURL)
         safariViewController.preferredControlTintColor = self.source.effectiveTintColor ?? .altPrimary
         self.present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+private extension SourceDetailViewController
+{
+    func preparePipeline()
+    {
+        self.cancellable = Publishers
+            .CombineLatest(self.viewModel.$isSourceAdded, self.viewModel.$isAddingSource)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.update()
+            }
     }
 }

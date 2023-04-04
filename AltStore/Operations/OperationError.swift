@@ -30,6 +30,7 @@ extension OperationError
         case noSources
         case openAppFailed
         case missingAppGroup
+        case forbidden
         
         /* Connection */
         case serverNotFound = 1200
@@ -60,6 +61,10 @@ extension OperationError
     
     static func maximumAppIDLimitReached(appName: String, requiredAppIDs: Int, availableAppIDs: Int, expirationDate: Date) -> OperationError {
         OperationError(code: .maximumAppIDLimitReached, appName: appName, requiredAppIDs: requiredAppIDs, availableAppIDs: availableAppIDs, expirationDate: expirationDate)
+    }
+    
+    static func forbidden(failureReason: String? = nil, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .forbidden, failureReason: failureReason, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -112,6 +117,9 @@ struct OperationError: ALTLocalizedError
         case .maximumAppIDLimitReached: return NSLocalizedString("You cannot register more than 10 App IDs within a 7 day period.", comment: "")
         case .noSources: return NSLocalizedString("There are no AltStore sources.", comment: "")
         case .missingAppGroup: return NSLocalizedString("AltStore's shared app group could not be accessed.", comment: "")
+        case .forbidden:
+            guard let failureReason = self._failureReason else { return NSLocalizedString("The operation is forbidden.", comment: "") }
+            return failureReason
 
         case .appNotFound:
             let appName = self.appName ?? NSLocalizedString("The app", comment: "")
