@@ -94,7 +94,6 @@ class AppViewController: UIViewController
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         
-        self.navigationController?.navigationBar.tintColor = self.app.tintColor
         self.navigationBarDownloadButton.tintColor = self.app.tintColor
         self.navigationBarAppNameLabel.text = self.app.name
         self.navigationBarAppIconImageView.tintColor = self.app.tintColor
@@ -126,6 +125,9 @@ class AppViewController: UIViewController
                 }
             }
         }
+        
+        // Start with navigation bar hidden.
+        self.hideNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -137,10 +139,6 @@ class AppViewController: UIViewController
         // Update blur immediately.
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.hideNavigationBar()
-        }, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -150,27 +148,6 @@ class AppViewController: UIViewController
         self._shouldResetLayout = true
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        super.viewWillDisappear(animated)
-
-        // Guard against "dismissing" when presenting via 3D Touch pop.
-        guard self.navigationController != nil else { return }
-
-        // Store reference since self.navigationController will be nil after disappearing.
-        let navigationController = self.navigationController
-        navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.showNavigationBar(for: navigationController)
-        }, completion: { (context) in
-            if !context.isCancelled
-            {
-                self.showNavigationBar(for: navigationController)
-            }
-        })
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -194,7 +171,6 @@ class AppViewController: UIViewController
         {
             // Fix navigation bar + tab bar appearance on iOS 15.
             self.setContentScrollView(self.scrollView)
-            self.navigationItem.scrollEdgeAppearance = self.navigationController?.navigationBar.standardAppearance
         }
     }
     
@@ -205,11 +181,6 @@ class AppViewController: UIViewController
         if self._shouldResetLayout
         {
             // Various events can cause UI to mess up, so reset affected components now.
-            
-            if self.navigationController?.topViewController == self
-            {
-                self.hideNavigationBar()
-            }
             
             self.prepareBlur()
             
@@ -285,6 +256,7 @@ class AppViewController: UIViewController
         }
         else
         {
+            self.navigationBarAnimator?.fractionComplete = 0.0
             self.resetNavigationBarAnimation()
         }
         
@@ -408,12 +380,13 @@ private extension AppViewController
         self.navigationItem.rightBarButtonItem = barButtonItem
     }
     
-    func showNavigationBar(for navigationController: UINavigationController? = nil)
+    func showNavigationBar()
     {
-        let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.alpha = 1.0
-        navigationController?.navigationBar.tintColor = .altPrimary
-        navigationController?.navigationBar.setNeedsLayout()
+        self.navigationBarAppIconImageView.alpha = 1.0
+        self.navigationBarAppNameLabel.alpha = 1.0
+        self.navigationBarDownloadButton.alpha = 1.0
+        
+        self.updateNavigationBarAppearance(isHidden: false)
         
         if self.traitCollection.userInterfaceStyle == .dark
         {
@@ -424,16 +397,43 @@ private extension AppViewController
             self._preferredStatusBarStyle = .default
         }
         
-        navigationController?.setNeedsStatusBarAppearanceUpdate()
+        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
-    func hideNavigationBar(for navigationController: UINavigationController? = nil)
+    func hideNavigationBar()
     {
-        let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.alpha = 0.0
+        self.navigationBarAppIconImageView.alpha = 0.0
+        self.navigationBarAppNameLabel.alpha = 0.0
+        self.navigationBarDownloadButton.alpha = 0.0
+        
+        self.updateNavigationBarAppearance(isHidden: true)
         
         self._preferredStatusBarStyle = .lightContent
-        navigationController?.setNeedsStatusBarAppearanceUpdate()
+        
+        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    // Copied from HeaderContentViewController
+    func updateNavigationBarAppearance(isHidden: Bool)
+    {
+        let barAppearance = self.navigationItem.standardAppearance ?? UINavigationBarAppearance()
+        
+        if isHidden
+        {
+            barAppearance.configureWithTransparentBackground()
+        }
+        else
+        {
+            barAppearance.configureWithDefaultBackground()
+        }
+        
+        barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        
+        let tintColor = isHidden ? UIColor.clear : self.app.tintColor ?? .altPrimary
+        barAppearance.configureWithTintColor(tintColor)
+        
+        self.navigationItem.standardAppearance = barAppearance
+        self.navigationItem.scrollEdgeAppearance = barAppearance
     }
     
     func prepareBlur()
@@ -461,8 +461,10 @@ private extension AppViewController
         
         self.navigationBarAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) { [weak self] in
             self?.showNavigationBar()
-            self?.navigationController?.navigationBar.tintColor = self?.app.tintColor
-            self?.navigationController?.navigationBar.barTintColor = nil
+            
+            // Must call layoutIfNeeded() to animate appearance change.
+            self?.navigationController?.navigationBar.layoutIfNeeded()
+            
             self?.contentViewController.view.layer.cornerRadius = 0
         }
         
@@ -474,6 +476,8 @@ private extension AppViewController
     
     func resetNavigationBarAnimation()
     {
+        guard self.navigationBarAnimator != nil else { return }
+        
         self.navigationBarAnimator?.stopAnimation(true)
         self.navigationBarAnimator = nil
         
