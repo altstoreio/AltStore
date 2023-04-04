@@ -15,6 +15,9 @@ import Nuke
 
 class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == Show apps from all sources.
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -24,6 +27,18 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         didSet {
             self.update()
         }
+    }
+    
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
     }
     
     private var cachedItemSizes = [String: CGSize]()
@@ -47,6 +62,22 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         self.collectionView.prefetchDataSource = self.dataSource
         
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
+        
+        if let source = self.source
+        {
+            let tintColor = source.effectiveTintColor ?? .altPrimary
+            self.view.tintColor = tintColor
+            
+            let appearance = NavigationBarAppearance()
+            appearance.configureWithTintColor(tintColor)
+            appearance.configureWithDefaultBackground()
+            
+            let edgeAppearance = appearance.copy()
+            edgeAppearance.configureWithTransparentBackground()
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = edgeAppearance
+        }
         
         self.update()
     }
@@ -77,9 +108,20 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        if let source = self.source
+        {
+            let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
+        }
+        else
+        {
+            fetchRequest.predicate = predicate
+        }
+        
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left

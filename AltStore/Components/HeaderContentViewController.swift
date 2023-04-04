@@ -473,13 +473,7 @@ private extension HeaderContentViewController
         barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
         
         let tintColor = isHidden ? UIColor.clear : self.tintColor ?? .altPrimary
-        
-        let buttonAppearance = UIBarButtonItemAppearance(style: .plain)
-        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: tintColor]
-        barAppearance.buttonAppearance = buttonAppearance
-        
-        let backButtonImage = UIImage(systemName: "chevron.backward")?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
-        barAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
+        barAppearance.configureWithTintColor(tintColor)
         
         self.navigationItem.standardAppearance = barAppearance
         self.navigationItem.scrollEdgeAppearance = barAppearance

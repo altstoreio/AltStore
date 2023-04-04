@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 import AltStoreCore
 import Roxas
@@ -304,6 +305,33 @@ private extension SourceDetailContentViewController
     }
 }
 
+private extension SourceDetailContentViewController
+{
+    @objc func viewAllNews()
+    {
+        self.performSegue(withIdentifier: "showAllNews", sender: nil)
+    }
+    
+    @objc func viewAllApps()
+    {
+        self.performSegue(withIdentifier: "showAllApps", sender: nil)
+    }
+    
+    @IBSegueAction
+    func makeNewsViewController(_ coder: NSCoder) -> UIViewController?
+    {
+        let newsViewController = NewsViewController(source: self.source, coder: coder)
+        return newsViewController
+    }
+    
+    @IBSegueAction
+    func makeBrowseViewController(_ coder: NSCoder) -> UIViewController?
+    {
+        let browseViewController = BrowseViewController(source: self.source, coder: coder)
+        return browseViewController
+    }
+}
+
 extension SourceDetailContentViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -318,6 +346,9 @@ extension SourceDetailContentViewController
             let buttonView = supplementaryView as! ButtonCollectionReusableView
             buttonView.button.setTitle(NSLocalizedString("View All", comment: ""), for: .normal)
             
+            buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
+            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllNews), for: .primaryActionTriggered)
+            
         case (.featuredApps, .title):
             let titleView = supplementaryView as! TitleCollectionReusableView
             titleView.label.text = NSLocalizedString("Featured Apps", comment: "")
@@ -326,12 +357,43 @@ extension SourceDetailContentViewController
             let buttonView = supplementaryView as! ButtonCollectionReusableView
             buttonView.button.setTitle(NSLocalizedString("View All Apps", comment: ""), for: .normal)
             
+            buttonView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
+            buttonView.button.addTarget(self, action: #selector(SourceDetailContentViewController.viewAllApps), for: .primaryActionTriggered)
+            
         case (.about, _):
             let titleView = supplementaryView as! TitleCollectionReusableView
             titleView.label.text = NSLocalizedString("About", comment: "")
         }
         
         return supplementaryView
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let section = Section(rawValue: indexPath.section)!
+        let item = self.dataSource.item(at: indexPath)
+        
+        switch (section, item)
+        {
+        case (.news, let newsItem as NewsItem):
+            if let externalURL = newsItem.externalURL
+            {
+                let safariViewController = SFSafariViewController(url: externalURL)
+                safariViewController.preferredControlTintColor = newsItem.tintColor
+                self.present(safariViewController, animated: true, completion: nil)
+            }
+            else if let storeApp = newsItem.storeApp
+            {
+                let appViewController = AppViewController.makeAppViewController(app: storeApp)
+                self.navigationController?.pushViewController(appViewController, animated: true)
+            }
+            
+        case (.featuredApps, let storeApp as StoreApp):
+            let appViewController = AppViewController.makeAppViewController(app: storeApp)
+            self.navigationController?.pushViewController(appViewController, animated: true)
+            
+        default: break
+        }
     }
 }
 
