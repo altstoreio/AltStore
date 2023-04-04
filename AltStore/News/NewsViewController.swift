@@ -450,6 +450,10 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
             return previousSize
         }
         
+        // Take layout margins into account.
+        self.prototypeCell.layoutMargins.left = self.view.layoutMargins.left
+        self.prototypeCell.layoutMargins.right = self.view.layoutMargins.right
+        
         let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
         NSLayoutConstraint.activate([widthConstraint])
         defer { NSLayoutConstraint.deactivate([widthConstraint]) }
