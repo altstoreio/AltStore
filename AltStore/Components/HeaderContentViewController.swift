@@ -20,7 +20,8 @@ protocol ScrollableContentViewController: UIViewController
 
 class HeaderContentViewController<Header: UIView, Content: ScrollableContentViewController> : UIViewController,
                                                                                               UIAdaptivePresentationControllerDelegate,
-                                                                                              UIScrollViewDelegate
+                                                                                              UIScrollViewDelegate,
+                                                                                              UIGestureRecognizerDelegate
 {
     var tintColor: UIColor? {
         didSet {
@@ -47,6 +48,8 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
     private var headerContainerView: UIView!
     private var backgroundBlurView: UIVisualEffectView!
     private var contentViewControllerShadowView: UIView!
+    
+    private var ignoreBackGestureRecognizer: UIPanGestureRecognizer!
     
     private var blurAnimator: UIViewPropertyAnimator?
     private var navigationBarAnimator: UIViewPropertyAnimator?
@@ -116,6 +119,11 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         // Header View
         self.headerContainerView = UIView(frame: .zero)
         self.view.addSubview(self.headerContainerView, pinningEdgesWith: .zero)
+        
+        self.ignoreBackGestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
+        self.ignoreBackGestureRecognizer.delegate = self
+        self.headerContainerView.addGestureRecognizer(self.ignoreBackGestureRecognizer)
+        self.navigationController?.interactivePopGestureRecognizer?.require(toFail: self.ignoreBackGestureRecognizer) // So we can disable back gesture when viewing header.
         
         self.headerScrollView = UIScrollView(frame: .zero)
         self.headerScrollView.delegate = self
@@ -419,6 +427,20 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
             
         default: break
         }
+    }
+    
+    //MARK: UIGestureRecognizerDelegate
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        // Ignore interactive back gesture when viewing header, which means returning `true` to enable ignoreBackGestureRecognizer.
+        let disableBackGesture = self.isViewingHeader
+        return disableBackGesture
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        return true
     }
 }
 
