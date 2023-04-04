@@ -351,7 +351,8 @@ private extension DatabaseManager
     
     func migrateDatabaseToAppGroupIfNeeded(completion: @escaping (Result<Void, Error>) -> Void)
     {
-        guard UserDefaults.shared.requiresAppGroupMigration else { return completion(.success(())) }
+        // Only migrate if we haven't migrated yet and there's a valid AltStore app group.
+        guard UserDefaults.shared.requiresAppGroupMigration && Bundle.main.altstoreAppGroup != nil else { return completion(.success(())) }
 
         func finish(_ result: Result<Void, Error>)
         {
