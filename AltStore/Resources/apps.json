@@ -63,6 +63,14 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "2.0b1",
+          "date": "2023-04-06T09:30:00-05:00",
+          "localizedDescription": "The first beta of AltStore 2.0 is finally here! 🎉\n\nAltStore 2.0 will unlock third-party sources for everyone, allowing anyone to distribute their apps with AltStore.\n\nNEW\n\nSource \"About\" Page\n• Preview sources before adding them to AltStore\n• Browse all apps and news for a source\n• \"About\" section includes detailed information and additional links\n• \"Featured Apps\" showcases a source's best apps\n• Customizable with updated source JSON format\n\nFIXED\n• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items\n• Fixed incorrectly merging app versions for same app from different sources",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b1.ipa",
+          "size": 5793338,
+          "minOSVersion": "14.0"
+        },
+        {
           "version": "1.6.2b",
           "date": "2023-03-21T12:00:00-05:00",
           "localizedDescription": "This beta fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.\n\n⚠️ You must manually install this update by downloading the latest AltServer beta from Patreon and using it to re-install AltStore. You do not need to delete AltStore first.",
