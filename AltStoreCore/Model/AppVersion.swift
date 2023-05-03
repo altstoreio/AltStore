@@ -18,6 +18,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public var downloadURL: URL
     @NSManaged public var size: Int64
+    @NSManaged public var sha256: String?
     
     @nonobjc public var minOSVersion: OperatingSystemVersion? {
         guard let osVersionString = self._minOSVersion else { return nil }
@@ -54,6 +55,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         case localizedDescription
         case downloadURL
         case size
+        case sha256
         case minOSVersion
         case maxOSVersion
     }
@@ -74,6 +76,8 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
             
             self.downloadURL = try container.decode(URL.self, forKey: .downloadURL)
             self.size = try container.decode(Int64.self, forKey: .size)
+            
+            self.sha256 = try container.decodeIfPresent(String.self, forKey: .sha256)?.lowercased()
             
             self._minOSVersion = try container.decodeIfPresent(String.self, forKey: .minOSVersion)
             self._maxOSVersion = try container.decodeIfPresent(String.self, forKey: .maxOSVersion)

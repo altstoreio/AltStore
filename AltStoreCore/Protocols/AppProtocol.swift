@@ -14,6 +14,8 @@ public protocol AppProtocol
     var name: String { get }
     var bundleIdentifier: String { get }
     var url: URL? { get }
+    
+    var storeApp: StoreApp? { get }
 }
 
 public struct AnyApp: AppProtocol
@@ -22,11 +24,14 @@ public struct AnyApp: AppProtocol
     public var bundleIdentifier: String
     public var url: URL?
     
-    public init(name: String, bundleIdentifier: String, url: URL?)
+    public var storeApp: StoreApp?
+    
+    public init(name: String, bundleIdentifier: String, url: URL?, storeApp: StoreApp? = nil)
     {
         self.name = name
         self.bundleIdentifier = bundleIdentifier
         self.url = url
+        self.storeApp = storeApp
     }
 }
 
@@ -35,12 +40,20 @@ extension ALTApplication: AppProtocol
     public var url: URL? {
         return self.fileURL
     }
+    
+    public var storeApp: StoreApp? {
+        return nil
+    }
 }
 
 extension StoreApp: AppProtocol
 {
     public var url: URL? {
         return self.latestAvailableVersion?.downloadURL
+    }
+    
+    public var storeApp: StoreApp? {
+        return self
     }
 }
 
@@ -63,5 +76,9 @@ extension AppVersion: AppProtocol
     
     public var url: URL? {
         return self.downloadURL
+    }
+    
+    public var storeApp: StoreApp? {
+        return self.app
     }
 }

@@ -15,8 +15,10 @@ import AltSign
 @objc(DownloadAppOperation)
 class DownloadAppOperation: ResultOperation<ALTApplication>
 {
-    let app: AppProtocol
-    let context: AppOperationContext
+    @Managed
+    private(set) var app: AppProtocol
+    
+    let context: InstallAppOperationContext
     
     private let appName: String
     private let bundleIdentifier: String
@@ -25,7 +27,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     private let session = URLSession(configuration: .default)
     private let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
     
-    init(app: AppProtocol, destinationURL: URL, context: AppOperationContext)
+    init(app: AppProtocol, destinationURL: URL, context: InstallAppOperationContext)
     {
         self.app = app
         self.context = context
@@ -54,6 +56,10 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         
         // Set _after_ checking self.context.error to prevent overwriting localized failure for previous errors.
         self.localizedFailure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), self.appName)
+        
+        // self.app might be AppVersion, not StoreApp,
+        // so call before the guard below.
+        self.context.storeApp = self.$app.storeApp
         
         guard let storeApp = self.app as? StoreApp else {
             return self.download(self.app)
@@ -201,6 +207,12 @@ private extension DownloadAppOperation
                 {
                     // File, so assuming this is a .ipa file.
                     appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: self.temporaryDirectory)
+                    
+                    // Use context's temporaryDirectory to ensure .ipa isn't deleted before we're done installing.
+                    let ipaURL = self.context.temporaryDirectory.appendingPathComponent("App.ipa")
+                    try FileManager.default.copyItem(at: fileURL, to: ipaURL)
+                    
+                    self.context.ipaURL = ipaURL
                 }
                 
                 guard let application = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }

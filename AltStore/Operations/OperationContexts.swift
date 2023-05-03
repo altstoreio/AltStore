@@ -123,4 +123,8 @@ class InstallAppOperationContext: AppOperationContext
     var beginInstallationHandler: ((InstalledApp) -> Void)?
     
     var alternateIconURL: URL?
+    var ipaURL: URL?
+    
+    @Managed
+    var storeApp: StoreApp?
 }

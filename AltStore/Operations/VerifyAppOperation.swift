@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 import AltStoreCore
 import AltSign
@@ -21,6 +22,8 @@ extension VerificationError
         case privateEntitlements
         case mismatchedBundleIdentifiers
         case iOSVersionNotSupported
+        
+        case mismatchedHash
     }
     
     static func privateEntitlements(_ entitlements: [String: Any], app: ALTApplication) -> VerificationError { VerificationError(code: .privateEntitlements, app: app, entitlements: entitlements) }
@@ -28,6 +31,10 @@ extension VerificationError
     
     static func iOSVersionNotSupported(app: AppProtocol, osVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion, requiredOSVersion: OperatingSystemVersion?) -> VerificationError {
         VerificationError(code: .iOSVersionNotSupported, app: app, deviceOSVersion: osVersion, requiredOSVersion: requiredOSVersion)
+    }
+    
+    static func mismatchedHash(app: AppProtocol, hash: String, expectedHash: String) -> VerificationError {
+        VerificationError(code: .mismatchedHash, app: app, hash: hash, expectedHash: expectedHash)
     }
 }
 
@@ -43,6 +50,12 @@ struct VerificationError: ALTLocalizedError
     var sourceBundleID: String?
     var deviceOSVersion: OperatingSystemVersion?
     var requiredOSVersion: OperatingSystemVersion?
+    
+    @UserInfoValue
+    var hash: String?
+    
+    @UserInfoValue
+    var expectedHash: String?
     
     var errorDescription: String? {
         //TODO: Make this automatic somehow with ALTLocalizedError
@@ -109,6 +122,10 @@ struct VerificationError: ALTLocalizedError
                 let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or later.", comment: ""), appName, requiredOSVersion.stringValue)
                 return failureReason
             }
+            
+        case .mismatchedHash:
+            let appName = self.$app.name ?? NSLocalizedString("the downloaded app", comment: "")
+            return String(format: NSLocalizedString("The SHA-256 hash of %@ does not match the hash specified by the source .", comment: ""), appName)
         }
     }
 }
@@ -116,10 +133,10 @@ struct VerificationError: ALTLocalizedError
 @objc(VerifyAppOperation)
 class VerifyAppOperation: ResultOperation<Void>
 {
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     var verificationHandler: ((VerificationError) -> Bool)?
     
-    init(context: AppOperationContext)
+    init(context: InstallAppOperationContext)
     {
         self.context = context
         
@@ -148,6 +165,18 @@ class VerifyAppOperation: ResultOperation<Void>
             
             guard ProcessInfo.processInfo.isOperatingSystemAtLeast(app.minimumiOSVersion) else {
                 throw VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: app.minimumiOSVersion)
+            }
+            
+            //TODO: Make this work with updates
+            if let expectedHash = self.context.$storeApp.get({ $0?.latestSupportedVersion?.sha256 }), let ipaURL = self.context.ipaURL
+            {
+                let data = try Data(contentsOf: ipaURL)
+                let sha256Hash = SHA256.hash(data: data)
+                let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
+                
+                print("Comparing app hash (\(hashString)) against expected hash (\(expectedHash))...")
+                
+                guard hashString == expectedHash else { throw VerificationError.mismatchedHash(app: app, hash: hashString, expectedHash: expectedHash) }
             }
             
             if #available(iOS 13.5, *)
@@ -229,7 +258,7 @@ private extension VerifyAppOperation
                 }))
                 presentingViewController.present(alertController, animated: true, completion: nil)
                 
-            case .mismatchedBundleIdentifiers, .iOSVersionNotSupported: return completion(.failure(error))
+            case .mismatchedBundleIdentifiers, .iOSVersionNotSupported, .mismatchedHash: return completion(.failure(error))
             }
         }
     }

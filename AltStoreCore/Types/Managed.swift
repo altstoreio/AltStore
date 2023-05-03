@@ -70,3 +70,25 @@ public struct Managed<ManagedObject>
         return result
     }
 }
+
+public extension Managed
+{
+    // Fetch multiple values.
+    func get<T>(_ closure: @escaping (ManagedObject) -> T) -> T
+    {
+        var result: T!
+        
+        if let context = self.managedObjectContext
+        {
+            context.performAndWait {
+                result = closure(self.wrappedValue)
+            }
+        }
+        else
+        {
+            result = closure(self.wrappedValue)
+        }
+        
+        return result
+    }
+}
