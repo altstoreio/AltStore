@@ -215,6 +215,7 @@ private extension ResignAppOperation
                 
                 // Prepare app
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
+                try self.removeMissingAppExtensionReferences(from: appBundle)
                 
                 if let directory = appBundle.builtInPlugInsURL, let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
                 {
@@ -262,5 +263,29 @@ private extension ResignAppOperation
         }
         
         return progress
+    }
+    
+    func removeMissingAppExtensionReferences(from bundle: Bundle) throws
+    {
+        // If app extensions have been removed from an app (either by AltStore or the developer),
+        // we must remove all references to them from SC_Info/Manifest.plist (if it exists).
+        
+        let scInfoURL = bundle.bundleURL.appendingPathComponent("SC_Info")
+        let manifestPlistURL = scInfoURL.appendingPathComponent("Manifest.plist")
+        
+        guard let manifestPlist = NSMutableDictionary(contentsOf: manifestPlistURL), let sinfReplicationPaths = manifestPlist["SinfReplicationPaths"] as? [String] else { return }
+        
+        // Remove references to missing files.
+        let filteredReplicationPaths = sinfReplicationPaths.filter { path in
+            guard let fileURL = URL(string: path, relativeTo: bundle.bundleURL) else { return false }
+            
+            let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
+            return fileExists
+        }
+        
+        manifestPlist["SinfReplicationPaths"] = filteredReplicationPaths
+        
+        // Save updated Manifest.plist to disk.
+        try manifestPlist.write(to: manifestPlistURL)
     }
 }
