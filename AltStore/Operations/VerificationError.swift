@@ -20,6 +20,8 @@ extension VerificationError
         
         case mismatchedBundleIdentifiers = 1
         case iOSVersionNotSupported = 2
+        
+        case mismatchedHash = 3
     }
     
     static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError {
@@ -28,6 +30,10 @@ extension VerificationError
     
     static func iOSVersionNotSupported(app: AppProtocol, osVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion, requiredOSVersion: OperatingSystemVersion?) -> VerificationError {
         VerificationError(code: .iOSVersionNotSupported, app: app, deviceOSVersion: osVersion, requiredOSVersion: requiredOSVersion)
+    }
+    
+    static func mismatchedHash(_ hash: String, expectedHash: String, app: AppProtocol) -> VerificationError {
+        VerificationError(code: .mismatchedHash, app: app, hash: hash, expectedHash: expectedHash)
     }
 }
 
@@ -42,6 +48,9 @@ struct VerificationError: ALTLocalizedError
     var sourceBundleID: String?
     var deviceOSVersion: OperatingSystemVersion?
     var requiredOSVersion: OperatingSystemVersion?
+    
+    @UserInfoValue var hash: String?
+    @UserInfoValue var expectedHash: String?
     
     var errorDescription: String? {
         //TODO: Make this automatic somehow with ALTLocalizedError
@@ -104,6 +113,10 @@ struct VerificationError: ALTLocalizedError
                 let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or later.", comment: ""), appName, requiredOSVersion.stringValue)
                 return failureReason
             }
+            
+        case .mismatchedHash:
+            let appName = self.$app.name ?? NSLocalizedString("the downloaded app", comment: "")
+            return String(format: NSLocalizedString("The SHA-256 hash of %@ does not match the hash specified by the source.", comment: ""), appName)
         }
     }
 }

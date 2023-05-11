@@ -16,7 +16,7 @@ import AltSign
 class DownloadAppOperation: ResultOperation<ALTApplication>
 {
     let app: AppProtocol
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     
     private let appName: String
     private let bundleIdentifier: String
@@ -25,7 +25,7 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     private let session = URLSession(configuration: .default)
     private let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
     
-    init(app: AppProtocol, destinationURL: URL, context: AppOperationContext)
+    init(app: AppProtocol, destinationURL: URL, context: InstallAppOperationContext)
     {
         self.app = app
         self.context = context
@@ -56,6 +56,8 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         self.localizedFailure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), self.appName)
         
         guard let storeApp = self.app as? StoreApp else {
+            // Only StoreApp allows falling back to previous versions.
+            // AppVersion can only install itself, and ALTApplication doesn't have previous versions.
             return self.download(self.app)
         }
         
@@ -133,6 +135,14 @@ private extension DownloadAppOperation
     {
         guard let sourceURL = $app.url else { return self.finish(.failure(OperationError.appNotFound(name: self.appName))) }
         
+        if let appVersion = app as? AppVersion
+        {
+            // All downloads go through this path, and `app` is
+            // always an AppVersion if downloading from a source,
+            // so context.appVersion != nil means downloading from source.
+            self.context.appVersion = appVersion
+        }
+        
         self.downloadIPA(from: sourceURL) { result in
             do
             {
@@ -201,6 +211,12 @@ private extension DownloadAppOperation
                 {
                     // File, so assuming this is a .ipa file.
                     appBundleURL = try FileManager.default.unzipAppBundle(at: fileURL, toDirectory: self.temporaryDirectory)
+                    
+                    // Use context's temporaryDirectory to ensure .ipa isn't deleted before we're done installing.
+                    let ipaURL = self.context.temporaryDirectory.appendingPathComponent("App.ipa")
+                    try FileManager.default.copyItem(at: fileURL, to: ipaURL)
+                    
+                    self.context.ipaURL = ipaURL
                 }
                 
                 guard let application = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }

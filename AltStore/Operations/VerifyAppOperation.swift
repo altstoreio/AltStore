@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 import AltStoreCore
 import AltSign
@@ -15,10 +16,10 @@ import Roxas
 @objc(VerifyAppOperation)
 class VerifyAppOperation: ResultOperation<Void>
 {
-    let context: AppOperationContext
+    let context: InstallAppOperationContext
     var verificationHandler: ((VerificationError) -> Bool)?
     
-    init(context: AppOperationContext)
+    init(context: InstallAppOperationContext)
     {
         self.context = context
         
@@ -49,11 +50,44 @@ class VerifyAppOperation: ResultOperation<Void>
                 throw VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: app.minimumiOSVersion)
             }
             
-            self.finish(.success(()))
+            guard let appVersion = self.context.appVersion else {
+                return self.finish(.success(()))
+            }
+            
+            Task<Void, Never>  {
+                do
+                {
+                    guard let ipaURL = self.context.ipaURL else { throw OperationError.appNotFound(name: app.name) }
+                    try await self.verifyHash(of: app, at: ipaURL, matches: appVersion)
+                    
+                    self.finish(.success(()))
+                }
+                catch
+                {
+                    self.finish(.failure(error))
+                }
+            }
         }
         catch
         {
             self.finish(.failure(error))
         }
+    }
+}
+
+private extension VerifyAppOperation
+{
+    func verifyHash(of app: ALTApplication, at ipaURL: URL, @AsyncManaged matches appVersion: AppVersion) async throws
+    {
+        // Do nothing if source doesn't provide hash.
+        guard let expectedHash = await $appVersion.sha256 else { return }
+
+        let data = try Data(contentsOf: ipaURL)
+        let sha256Hash = SHA256.hash(data: data)
+        let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
+
+        print("[ALTLog] Comparing app hash (\(hashString)) against expected hash (\(expectedHash))...")
+
+        guard hashString == expectedHash else { throw VerificationError.mismatchedHash(hashString, expectedHash: expectedHash, app: app) }
     }
 }
