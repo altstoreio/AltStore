@@ -18,6 +18,11 @@ public protocol AppProtocol
     var storeApp: StoreApp? { get }
 }
 
+//public extension AppProtocol
+//{
+//    var storeApp: StoreApp? { nil }
+//}
+
 public struct AnyApp: AppProtocol
 {
     public var name: String

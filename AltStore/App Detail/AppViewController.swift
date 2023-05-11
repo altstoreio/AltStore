@@ -73,6 +73,7 @@ class AppViewController: UIViewController
         self.contentViewController.view.layer.masksToBounds = true
         
         self.contentViewController.tableView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
+        self.contentViewController.appDetailCollectionViewController.collectionView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
         self.contentViewController.tableView.showsVerticalScrollIndicator = false
         
         // Bring to front so the scroll indicators are visible.
@@ -614,6 +615,10 @@ extension AppViewController: UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     {
+        // Don't layout AppDetailCollectionViewController every scroll, just self.contentView.
+//        self.contentView.setNeedsLayout()
+//        self.contentView.layoutIfNeeded()
+        
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
     }

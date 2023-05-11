@@ -332,10 +332,13 @@ extension AppManager
 
 extension AppManager
 {
-    func fetchSource(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()) async throws -> Source
+    func fetchSource(sourceURL: URL,
+                     managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
+                     dependencies: [Foundation.Operation] = [])
+    async throws -> Source
     {
         try await withCheckedThrowingContinuation { continuation in
-            self.fetchSource(sourceURL: sourceURL, managedObjectContext: managedObjectContext) { result in
+            self.fetchSource(sourceURL: sourceURL, managedObjectContext: managedObjectContext, dependencies: dependencies) { result in
                 continuation.resume(with: result)
             }
         }
@@ -353,8 +356,12 @@ extension AppManager
         let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
         try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
 
-        // Wait for fetch to finish before saving context.
-        _ = try await fetchedSource
+        // Wait for fetch to finish before saving context to make
+        // sure there isn't already a source with this identifier.
+        let sourceExists = try await fetchedSource.isAdded
+        
+        // This is just a sanity check, so pass nil for existingSource to keep code simple.
+        guard !sourceExists else { throw SourceError.duplicateID(source, existingSource: nil) }
         
         try await context.performAsync {
             try context.save()
@@ -428,7 +435,7 @@ extension AppManager
             let operations = sources.map { (source) -> FetchSourceOperation in
                 dispatchGroup.enter()
                 
-                let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL, managedObjectContext: managedObjectContext)
+                let fetchSourceOperation = FetchSourceOperation(source: source, managedObjectContext: managedObjectContext)
                 fetchSourceOperation.resultHandler = { (result) in
                     switch result
                     {
@@ -481,13 +488,13 @@ extension AppManager
     }
     
     @discardableResult
-    func fetchTrustedSources(completionHandler: @escaping (Result<[FetchTrustedSourcesOperation.TrustedSource], Error>) -> Void) -> FetchTrustedSourcesOperation
+    func fetchKnownSources(completionHandler: @escaping (Result<([FetchKnownSourcesOperation.Source], [FetchKnownSourcesOperation.Source]), Error>) -> Void) -> FetchKnownSourcesOperation
     {
-        let fetchTrustedSourcesOperation = FetchTrustedSourcesOperation()
-        fetchTrustedSourcesOperation.resultHandler = completionHandler
-        self.run([fetchTrustedSourcesOperation], context: nil)
+        let fetchKnownSourcesOperation = FetchKnownSourcesOperation()
+        fetchKnownSourcesOperation.resultHandler = completionHandler
+        self.run([fetchKnownSourcesOperation], context: nil)
         
-        return fetchTrustedSourcesOperation
+        return fetchKnownSourcesOperation
     }
     
     func updatePatronsIfNeeded()
@@ -981,8 +988,14 @@ private extension AppManager
                 
                 switch operation
                 {
-                case .install(let app), .update(let app):
-                    let installProgress = self._install(app, operation: operation, group: group) { (result) in
+                case .install(let app):
+                    let installProgress = self._install(app, permissionsVerification: .all, operation: operation, group: group) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(installProgress, withPendingUnitCount: 80)
+                    
+                case .update(let app):
+                    let installProgress = self._install(app, permissionsVerification: .added, operation: operation, group: group) { (result) in
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(installProgress, withPendingUnitCount: 80)
@@ -1071,7 +1084,14 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation appOperation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext? = nil, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol,
+                          permissionsVerification: VerifyAppOperation.PermissionsMode = .none,
+                          operation appOperation: AppOperation,
+                          group: RefreshGroup,
+                          context: InstallAppOperationContext? = nil,
+                          additionalEntitlements: [ALTEntitlement: Any]? = nil,
+                          cacheApp: Bool = true,
+                          completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -1118,11 +1138,6 @@ private extension AppManager
             {
                 let app = try result.get()
                 context.app = app
-                
-                if cacheApp
-                {
-                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
-                }
             }
             catch
             {
@@ -1134,11 +1149,21 @@ private extension AppManager
         
         /* Verify App */
         let verifyOperation = VerifyAppOperation(context: context)
+        verifyOperation.permissionsMode = permissionsVerification
         verifyOperation.resultHandler = { (result) in
-            switch result
+            do
             {
-            case .failure(let error): context.error = error
-            case .success: break
+                try result.get()
+                
+                // Wait until we've finished verifying app before caching it.
+                if let app = context.app, cacheApp
+                {
+                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
+                }
+            }
+            catch
+            {
+                context.error = error
             }
         }
         verifyOperation.addDependency(downloadOperation)
@@ -1662,11 +1687,11 @@ private extension AppManager
                         infoDictionary[kCFBundleIdentifierKey as String] = app.bundleIdentifier
                         
                         // Add app-specific exported UTI so we can check later if this temporary backup app is still installed or not.
-                        let installedAppUTI = ["UTTypeConformsTo": [],
+                        let installedAppUTI = ["UTTypeConformsTo": [String](),
                                                "UTTypeDescription": "AltStore Backup App",
-                                               "UTTypeIconFiles": [],
+                                               "UTTypeIconFiles": [String](),
                                                "UTTypeIdentifier": app.installedBackupAppUTI,
-                                               "UTTypeTagSpecification": [:]] as [String : Any]
+                                               "UTTypeTagSpecification": [String: Any]()] as [String : Any]
                         
                         var exportedUTIs = infoDictionary[Bundle.Info.exportedUTIs] as? [[String: Any]] ?? []
                         exportedUTIs.append(installedAppUTI)

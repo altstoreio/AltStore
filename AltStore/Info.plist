@@ -10,6 +10,8 @@
 	<string>00008110-000A68390A82801E</string>
 	<key>ALTServerID</key>
 	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
+	<key>ALTServerIDWin</key>
+	<string>37fa49c4-3833-4fe7-9602-59707a0e4c19</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
@@ -84,6 +86,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_altserver._tcp</string>
@@ -116,8 +120,6 @@
 			</array>
 		</dict>
 	</dict>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

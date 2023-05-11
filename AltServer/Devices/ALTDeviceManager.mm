@@ -548,6 +548,12 @@ NSNotificationName const ALTDeviceManagerDeviceDidDisconnectNotification = @"ALT
     
     afc_file_close(afc, af);
     
+//    if (![fileHandle closeAndReturnError:error])
+//    {
+//        NSLog(@"[ALTLog] Failed to close file handle for file: %@", fileURL);
+//        success = NO;
+//    }
+    
     return success;
 }
 

@@ -12,70 +12,15 @@ import CoreData
 import AltStoreCore
 import Roxas
 
-extension SourceError
-{
-    enum Code: Int, ALTErrorCode
-    {
-        typealias Error = SourceError
-        
-        case unsupported
-        case duplicateBundleID
-        case duplicateVersion
-    }
-    
-    static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
-    static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, bundleID: bundleID) }
-    static func duplicateVersion(_ version: String, for app: StoreApp, source: Source) -> SourceError { SourceError(code: .duplicateVersion, source: source, app: app, version: version) }
-}
-
-struct SourceError: ALTLocalizedError
-{
-    let code: Code
-    var errorTitle: String?
-    var errorFailure: String?
-    
-    @Managed var source: Source
-    @Managed var app: StoreApp?
-    var bundleID: String?
-    var version: String?
-    
-    var errorFailureReason: String {
-        switch self.code
-        {
-        case .unsupported: return String(format: NSLocalizedString("The source “%@” is not supported by this version of AltStore.", comment: ""), self.$source.name)
-        case .duplicateBundleID:
-            let bundleIDFragment = self.bundleID.map { String(format: NSLocalizedString("the bundle identifier %@", comment: ""), $0) } ?? NSLocalizedString("the same bundle identifier", comment: "")
-            let failureReason = String(format: NSLocalizedString("The source “%@” contains multiple apps with %@.", comment: ""), self.$source.name, bundleIDFragment)
-            return failureReason
-            
-        case .duplicateVersion:
-            var versionFragment = NSLocalizedString("duplicate versions", comment: "")
-            if let version
-            {
-                versionFragment += " (\(version))"
-            }
-            
-            let appFragment: String
-            if let name = self.$app.name, let bundleID = self.$app.bundleIdentifier
-            {
-                appFragment = name + " (\(bundleID))"
-            }
-            else
-            {
-                appFragment = NSLocalizedString("one or more apps", comment: "")
-            }
-                        
-            let failureReason = String(format: NSLocalizedString("The source “%@” contains %@ for %@.", comment: ""), self.$source.name, versionFragment, appFragment)
-            return failureReason
-        }
-    }
-}
-
 @objc(FetchSourceOperation)
 class FetchSourceOperation: ResultOperation<Source>
 {
     let sourceURL: URL
     let managedObjectContext: NSManagedObjectContext
+    
+    // When updating an existing source.
+    @Managed
+    private(set) var source: Source?
     
     private let session: URLSession
     
@@ -84,11 +29,25 @@ class FetchSourceOperation: ResultOperation<Source>
         return dateFormatter
     }()
     
-    init(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    // New source
+    convenience init(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    {
+        self.init(sourceURL: sourceURL, source: nil, managedObjectContext: managedObjectContext)
+    }
+    
+    // Existing source
+    convenience init(source: Source, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    {
+        self.init(sourceURL: source.sourceURL, source: source, managedObjectContext: managedObjectContext)
+    }
+    
+    private init(sourceURL: URL, source: Source?, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
     {
         self.sourceURL = sourceURL
         self.managedObjectContext = managedObjectContext
+        self.source = source
         
+        //TODO: Respect some caching
         let configuration = URLSessionConfiguration.default
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.urlCache = nil
@@ -107,7 +66,7 @@ class FetchSourceOperation: ResultOperation<Source>
             childContext.perform {
                 do
                 {
-                    let (data, _) = try Result((data, response), error).get()
+                    let (data, response) = try Result((data, response), error).get()
                     
                     let decoder = AltStoreCore.JSONDecoder()
                     decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
@@ -133,11 +92,12 @@ class FetchSourceOperation: ResultOperation<Source>
                     
                     decoder.managedObjectContext = childContext
                     decoder.sourceURL = self.sourceURL
+                    decoder.sourceContext = Source.DecodingContext()
                     
                     let source = try decoder.decode(Source.self, from: data)
                     let identifier = source.identifier
                     
-                    try self.verify(source)
+                    try self.verify(source, response: response)
                     
                     try childContext.save()
                     
@@ -169,14 +129,23 @@ class FetchSourceOperation: ResultOperation<Source>
 
 private extension FetchSourceOperation
 {
-    func verify(_ source: Source) throws
+    func verify(_ source: Source, response: URLResponse) throws
     {
-        #if !BETA
-        if let trustedSourceIDs = UserDefaults.shared.trustedSourceIDs
+        if let blockedSourceIDs = UserDefaults.shared.blockedSourceIDs
         {
-            guard trustedSourceIDs.contains(source.identifier) || source.identifier == Source.altStoreIdentifier else { throw SourceError(code: .unsupported, source: source) }
+            guard !blockedSourceIDs.contains(source.identifier) else { throw SourceError.blocked(source) }
         }
-        #endif
+        
+        if let blockedSourceURLs = UserDefaults.shared.blockedSourceURLs
+        {
+            guard !blockedSourceURLs.contains(source.sourceURL) else { throw SourceError.blocked(source) }
+            
+            if let responseURL = response.url
+            {
+                // responseURL may differ from sourceURL (e.g. due to redirects), so double-check it's also not blocked.
+                guard !blockedSourceURLs.contains(responseURL) else { throw SourceError.blocked(source) }
+            }
+        }
         
         var bundleIDs = Set<String>()
         for app in source.apps
@@ -190,6 +159,13 @@ private extension FetchSourceOperation
                 guard !versions.contains(version.version) else { throw SourceError.duplicateVersion(version.version, for: app, source: source) }
                 versions.insert(version.version)
             }
+        }
+        
+        //TODO: Verify no duplicate permissions? (Or implicitly merge them probs)
+        
+        if let previousSourceID = self.$source.identifier
+        {
+            guard source.identifier == previousSourceID else { throw SourceError.changedID(source.identifier, previousID: previousSourceID, for: source) }
         }
     }
 }

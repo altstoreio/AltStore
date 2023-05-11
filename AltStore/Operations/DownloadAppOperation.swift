@@ -57,14 +57,11 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
         // Set _after_ checking self.context.error to prevent overwriting localized failure for previous errors.
         self.localizedFailure = String(format: NSLocalizedString("%@ could not be downloaded.", comment: ""), self.appName)
         
-        // self.app might be AppVersion, not StoreApp,
-        // so call before the guard below.
-        self.context.storeApp = self.$app.storeApp
-        
         guard let storeApp = self.app as? StoreApp else {
+            // AppVersion + sideloaded apps are not verified, for different reasons.
             return self.download(self.app)
         }
-        
+                
         // Verify storeApp
         storeApp.managedObjectContext?.perform {
             do
@@ -138,6 +135,13 @@ private extension DownloadAppOperation
     func download(@Managed _ app: AppProtocol)
     {
         guard let sourceURL = $app.url else { return self.finish(.failure(OperationError.appNotFound(name: self.appName))) }
+        
+        if let appVersion = app as? AppVersion
+        {
+            // All downloads go through this path, and app is
+            // always an AppVersion if downloading from a source.
+            self.context.appVersion = appVersion
+        }
         
         self.downloadIPA(from: sourceURL) { result in
             do

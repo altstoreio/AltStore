@@ -48,6 +48,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var bundleIdentifier: String
     @NSManaged public var resignedBundleIdentifier: String
     @NSManaged public var version: String
+    @NSManaged public var buildVersion: String?
     
     @NSManaged public var refreshedDate: Date
     @NSManaged public var expirationDate: Date
@@ -168,9 +169,17 @@ public extension InstalledApp
     
     class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
-        let predicate = NSPredicate(format: "%K != nil AND %K != %K",
+        let predicate = NSPredicate(format: "%K != nil AND (%K != %K OR (%K == %K && %K != %K))",
                                     #keyPath(InstalledApp.storeApp.latestSupportedVersion),
-                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version))
+                                    
+                                    // Installed version != latest supported version
+                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version),
+                                    
+                                    // Installed version == latest supported version BUT
+                                    // installed bundle version != latest supported version's bundle version
+                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version),
+                                    #keyPath(InstalledApp.buildVersion), #keyPath(InstalledApp.storeApp.latestSupportedVersion.buildVersion)
+        )
         
         let fetchRequest = InstalledApp.updatesFetchRequest()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [fetchRequest.predicate, predicate].compactMap { $0 })

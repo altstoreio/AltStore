@@ -16,16 +16,50 @@ extension AppPermissionsCard
     struct PermissionKey: Hashable
     {
         var key: String
-        var permission: Permission
+        var permission: any ALTAppPermission
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(self.key)
+            hasher.combine(self.permission)
+        }
+        
+        static func ==(lhs: PermissionKey, rhs: PermissionKey) -> Bool
+        {
+            let isEqual = lhs.key == rhs.key && lhs.permission.isEqual(to: rhs.permission)
+            return isEqual
+        }
     }
 }
 
+protocol AppPermissionProtocol: Identifiable
+{
+    var localizedName: String { get }
+    var permission: any ALTAppPermission { get }
+    
+    var usageDescription: String? { get }
+}
+
+extension AppPermission: AppPermissionProtocol {}
+
+struct AppPermission_Preview: AppPermissionProtocol
+{
+    var localizedName: String
+    var permission: any ALTAppPermission
+    
+    var id: String {
+        return self.permission.rawValue
+    }
+    
+    var usageDescription: String? { "Allows Delta to use images from your Photo Library as game artwork." }
+}
 
 @available(iOS 16, *)
-struct AppPermissionsCard<Permission: ALTAppPermission>: View
+struct AppPermissionsCard<Permission: AppPermissionProtocol>: View
 {
-    let title: Text
-    let description: Text
+    let title: LocalizedStringKey
+    let description: LocalizedStringKey
+    
+    let tintColor: Color
     
     @State
     var permissions: [Permission]
@@ -40,12 +74,14 @@ struct AppPermissionsCard<Permission: ALTAppPermission>: View
         VStack(alignment: .leading, spacing: 20) {
             
             VStack(spacing: 8) {
-                self.title
+                Text(self.title)
                     .font(.title2)
+                    .multilineTextAlignment(.leading)
                     .bold()
+                    .opacity(selectedPermission != nil && permissions.count == 1 ? 0.0 : 1.0) // Hide when showing the only permission
                 
                 
-                self.description
+                Text(self.description)
                     .font(.subheadline)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity)
@@ -56,30 +92,47 @@ struct AppPermissionsCard<Permission: ALTAppPermission>: View
             
             Group {
                 Grid(verticalSpacing: 15) {
-                    ForEach(permissions, id: \.self) { permission in
+                    ForEach(permissions) { permission in
                         GridRow {
-                            let symbolName = permission.sfIconName ?? "lock"
-                            Image(systemName: symbolName)
-                                .gridColumnAlignment(.center)
-                                .matchedGeometryEffect(id: PermissionKey(key: "icon", permission: permission), in: animation)
+                            let symbolName = permission.permission.sfIconName ?? "lock"
                             
+                            if selectedPermission != nil
+                            {
+                                Image(systemName: symbolName)
+                                    .gridColumnAlignment(.center)
+                            }
+                            else
+                            {
+                                Image(systemName: symbolName)
+                                    .gridColumnAlignment(.center)
+                                    .matchedGeometryEffect(id: PermissionKey(key: "icon", permission: permission.permission), in: animation)
+                            }
+
                             SwiftUI.Button(action: { show(permission) }) {
                                 HStack {
-                                    Text(permission.localizedName ?? permission.rawValue)
+                                    
+                                    
+                                    let text = Text(permission.localizedName)
                                         .font(.body)
                                         .bold()
                                         .minimumScaleFactor(0.1)
-//                                        .frame(maxWidth: .infinity, alignment: .leading)
-//                                        .contentShape(Rectangle()) // Extend tap area
-                                        .matchedGeometryEffect(id: PermissionKey(key: "name", permission: permission), in: animation)
                                     
+                                    if selectedPermission != nil
+                                    {
+                                        text
+                                    }
+                                    else
+                                    {
+                                        text.matchedGeometryEffect(id: PermissionKey(key: "name", permission: permission.permission), in: animation)
+                                    }
+
                                     Spacer()
-                                    
+
                                     Image(systemName: "info.circle")
                                         .font(.title3)
                                 }
                                 .contentShape(Rectangle())
-                                
+
                             }
                             //                        .background(Color.red)
                         }
@@ -90,18 +143,18 @@ struct AppPermissionsCard<Permission: ALTAppPermission>: View
             }
             .opacity(selectedPermission != nil ? 0.0 : 1.0)
             
-            let text = select
             Text(selectedPermission != nil ? "Tap to go back." : "Tap a permission to learn more.")
                 .font(.subheadline)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .opacity(selectedPermission != nil && permissions.count == 1 ? 0.0 : 1.0) // Hide when showing the only permission
         }
         .frame(maxWidth: .infinity)
         .overlay(overlay, alignment: .center)
-        .foregroundColor(Color.purple)
+        .foregroundColor(self.tintColor)
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color.purple.opacity(0.3))
+                .fill(self.tintColor.opacity(0.3))
         , alignment: .center)
     }
     
@@ -110,19 +163,19 @@ struct AppPermissionsCard<Permission: ALTAppPermission>: View
         if let permission = selectedPermission
         {
             VStack(spacing: 15) {
-                let symbolName = permission.sfIconName ?? "lock"
+                let symbolName = permission.permission.sfIconName ?? "lock"
                 Image(systemName: symbolName)
                     .font(.largeTitle)
-                    .matchedGeometryEffect(id: PermissionKey(key: "icon", permission: permission), in: animation)
+                    .matchedGeometryEffect(id: PermissionKey(key: "icon", permission: permission.permission), in: animation)
                 
-                Text(permission.localizedName ?? permission.rawValue)
+                Text(permission.localizedName)
                     .font(.title2)
                     .bold()
                     .minimumScaleFactor(0.1)
-                    .matchedGeometryEffect(id: PermissionKey(key: "name", permission: permission), in: animation)
+                    .matchedGeometryEffect(id: PermissionKey(key: "name", permission: permission.permission), in: animation)
                 
                 
-                Text("Allows Delta to use images from your Photo Library as game artwork.")
+                Text(permission.usageDescription ?? "")
                     .font(.subheadline)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity)
@@ -149,6 +202,15 @@ struct AppPermissionsCard<Permission: ALTAppPermission>: View
             self.selectedPermission = permission
         }
     }
+    
+//    init(title: Text, description: Text, tintColor: UIColor? = nil, permissions: [Permission], selectedPermission: Permission? = nil)
+//    {
+//        self.title = title
+//        self.description = description
+//        self.tintColor = Color(uiColor: tintColor ?? UIColor.altPrimary)
+//        self.permissions = permissions
+//        self.selectedPermission = selectedPermission
+//    }
 }
 
 @available(iOS 16, *)
@@ -164,9 +226,17 @@ struct AppPermissionsCard_Previews: PreviewProvider {
             .photos
         ].sorted(by: { ($0.localizedName ?? $0.rawValue) < ($1.localizedName ?? $1.rawValue) })
         
-        AppPermissionsCard(title: Text("Privacy"),
-                           description: Text("Delta may request access to the following:"),
-                           permissions: permissions)
+        let appPermissions = [AppPermission_Preview(localizedName: "Camera", permission: ALTAppPrivacyPermission.camera)]
+//                              AppPermission_Preview(localizedName: "Face ID", permission: ALTAppPrivacyPermission.faceID),
+//                              AppPermission_Preview(localizedName: "Apple Music", permission: ALTAppPrivacyPermission.appleMusic),
+//                              AppPermission_Preview(localizedName: "Bluetooth", permission: ALTAppPrivacyPermission.bluetooth),
+//                              AppPermission_Preview(localizedName: "Calendars", permission: ALTAppPrivacyPermission.calendars),
+//                              AppPermission_Preview(localizedName: "Photos", permission: ALTAppPrivacyPermission.photos)]
+        
+        AppPermissionsCard(title: "Privacy",
+                           description: "Delta may request access to the following:",
+                           tintColor: Color(uiColor: .altPrimary),
+                           permissions: appPermissions)
             .frame(width: 350)
             .previewLayout(.sizeThatFits)
     }

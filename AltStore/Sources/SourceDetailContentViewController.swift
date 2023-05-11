@@ -293,7 +293,7 @@ private extension SourceDetailContentViewController
     {
         let dataSource = RSTDynamicCollectionViewDataSource<NSManagedObject>()
         dataSource.numberOfSectionsHandler = { 1 }
-        dataSource.numberOfItemsHandler = { _ in self.source.localizedDescription == nil ? 0 : 1 }
+        dataSource.numberOfItemsHandler = { _ in self.source.localizedDescription == nil ? 0 : 1 } //TODO: Memory leak bc of self??
         dataSource.cellIdentifierHandler = { _ in "AboutCell" }
         dataSource.cellConfigurationHandler = { [weak self] (cell, _, indexPath) in
             let cell = cell as! TextViewCollectionViewCell

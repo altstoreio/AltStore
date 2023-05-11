@@ -39,7 +39,6 @@ extension OperationError
     }
     
     static let unknownResult: OperationError = .init(code: .unknownResult)
-    static let cancelled: OperationError = .init(code: .cancelled)
     static let timedOut: OperationError = .init(code: .timedOut)
     static let notAuthenticated: OperationError = .init(code: .notAuthenticated)
     static let unknownUDID: OperationError = .init(code: .unknownUDID)
@@ -51,6 +50,10 @@ extension OperationError
     static let serverNotFound: OperationError = .init(code: .serverNotFound)
     static let connectionFailed: OperationError = .init(code: .connectionFailed)
     static let connectionDropped: OperationError = .init(code: .connectionDropped)
+    
+    static var cancelled: CancellationError {
+        CancellationError()
+    }
     
     static func unknown(failureReason: String? = nil, file: String = #fileID, line: UInt = #line) -> OperationError {
         OperationError(code: .unknown, failureReason: failureReason, sourceFile: file, sourceLine: line)

@@ -38,8 +38,24 @@ public extension UserDefaults
     @NSManaged var patchedApps: [String]?
     
     @NSManaged var patronsRefreshID: String?
+        
+    @nonobjc var trustedSourceIDs: Set<String>? {
+        get { (_trustedSourceIDs?.map { $0 }).map { Set($0) } }
+        set { _trustedSourceIDs = newValue?.map { $0 } }
+    }
+    @NSManaged @objc(trustedSourceIDs) var _trustedSourceIDs: [String]?
     
-    @NSManaged var trustedSourceIDs: [String]?
+    @nonobjc var blockedSourceIDs: Set<String>? {
+        get { (_blockedSourceIDs?.map { $0 }).map { Set($0) } }
+        set { _blockedSourceIDs = newValue?.map { $0 } }
+    }
+    @NSManaged @objc(blockedSourceIDs) var _blockedSourceIDs: [String]?
+    
+    @nonobjc var blockedSourceURLs: Set<URL>? {
+        get { (_blockedSourceURLs?.compactMap { URL(string: $0) }).map { Set($0) } }
+        set { _blockedSourceURLs = newValue?.map { $0.absoluteString } }
+    }
+    @NSManaged @objc(blockedSourceURLs) var _blockedSourceURLs: [String]?
     
     @nonobjc
     var activeAppsLimit: Int? {

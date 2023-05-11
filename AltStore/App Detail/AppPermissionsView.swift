@@ -88,15 +88,15 @@ struct AppPermissionsView: View {
 //            .listRowSeparator(.hidden)
             
             TabView {
-                AppPermissionsCard(title: Text("Privacy"),
-                                   description: Text("Delta may request access to the following:"),
-                                   permissions: privacyPermissions)
-                .frame(width: 340)
-                
-                AppPermissionsCard(title: Text("Background Modes"),
-                                   description: Text("Delta supports the following background modes:"),
-                                   permissions: backgroundPermissions)
-                .frame(width: 340)
+//                AppPermissionsCard(title: Text("Privacy"),
+//                                   description: Text("Delta may request access to the following:"),
+//                                   permissions: privacyPermissions)
+//                .frame(width: 340)
+//                
+//                AppPermissionsCard(title: Text("Background Modes"),
+//                                   description: Text("Delta supports the following background modes:"),
+//                                   permissions: backgroundPermissions)
+//                .frame(width: 340)
             }
             .frame(height: 490)
             .tabViewStyle(.page(indexDisplayMode: .always))

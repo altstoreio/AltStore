@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import SwiftUI
 
 import AltStoreCore
+import AltSign
 import Roxas
 
 import Nuke
@@ -30,7 +32,6 @@ class AppContentViewController: UITableViewController
     var app: StoreApp!
     
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
-    private lazy var permissionsDataSource = self.makePermissionsDataSource()
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -52,7 +53,9 @@ class AppContentViewController: UITableViewController
     @IBOutlet private var sizeLabel: UILabel!
     
     @IBOutlet private var screenshotsCollectionView: UICollectionView!
-    @IBOutlet private var permissionsCollectionView: UICollectionView!
+    
+    @IBOutlet private(set) var appDetailCollectionViewController: AppDetailCollectionViewController!
+    @IBOutlet private var appDetailCollectionViewHeightConstraint: NSLayoutConstraint!
     
     var preferredScreenshotSize: CGSize? {        
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
@@ -75,8 +78,6 @@ class AppContentViewController: UITableViewController
                 
         self.screenshotsCollectionView.dataSource = self.screenshotsDataSource
         self.screenshotsCollectionView.prefetchDataSource = self.screenshotsDataSource
-        
-        self.permissionsCollectionView.dataSource = self.permissionsDataSource
         
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
@@ -112,28 +113,12 @@ class AppContentViewController: UITableViewController
         
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = size
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        guard segue.identifier == "showPermission" else { return }
         
-        guard let cell = sender as? UICollectionViewCell, let indexPath = self.permissionsCollectionView.indexPath(for: cell) else { return }
-        
-        let permission = self.permissionsDataSource.item(at: indexPath)
-        
-        let maximumWidth = self.view.bounds.width - 20
-        
-        let permissionPopoverViewController = segue.destination as! PermissionPopoverViewController
-        permissionPopoverViewController.permission = permission
-        permissionPopoverViewController.view.widthAnchor.constraint(lessThanOrEqualToConstant: maximumWidth).isActive = true
-        
-        let size = permissionPopoverViewController.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        permissionPopoverViewController.preferredContentSize = size
-        
-        permissionPopoverViewController.popoverPresentationController?.delegate = self
-        permissionPopoverViewController.popoverPresentationController?.sourceRect = cell.frame
-        permissionPopoverViewController.popoverPresentationController?.sourceView = self.permissionsCollectionView
+        let permissionsHeight = self.appDetailCollectionViewController.collectionView.contentSize.height
+        if self.appDetailCollectionViewHeightConstraint.constant != permissionsHeight && permissionsHeight > 10
+        {
+            self.appDetailCollectionViewHeightConstraint.constant = permissionsHeight
+        }
     }
 }
 
@@ -175,16 +160,12 @@ private extension AppContentViewController
         return dataSource
     }
     
-    func makePermissionsDataSource() -> RSTArrayCollectionViewDataSource<AppPermission>
-    {        
-        let dataSource = RSTArrayCollectionViewDataSource(items: self.app.permissions)
-        dataSource.cellConfigurationHandler = { (cell, permission, indexPath) in
-            let cell = cell as! PermissionCollectionViewCell
-            cell.button.setImage(permission.type.icon, for: .normal)
-            cell.textLabel.text = permission.type.localizedShortName
-        }
-        
-        return dataSource
+    @IBSegueAction
+    func makeAppDetailCollectionViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        let appDetailViewController = AppDetailCollectionViewController(app: self.app, coder: coder)
+        self.appDetailCollectionViewController = appDetailViewController
+        return appDetailViewController
     }
 }
 
@@ -225,7 +206,7 @@ extension AppContentViewController
             
         case .permissions:
             guard !self.app.permissions.isEmpty else { return 0.0 }
-            return super.tableView(tableView, heightForRowAt: indexPath)
+            return UITableView.automaticDimension
             
         default:
             return super.tableView(tableView, heightForRowAt: indexPath)

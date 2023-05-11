@@ -41,7 +41,7 @@ class SourcesViewController: UICollectionViewController
     private lazy var addedSourcesDataSource = self.makeAddedSourcesDataSource()
     private lazy var trustedSourcesDataSource = self.makeTrustedSourcesDataSource()
     
-    private var fetchTrustedSourcesOperation: FetchTrustedSourcesOperation?
+    private var fetchTrustedSourcesOperation: FetchKnownSourcesOperation?
     private var fetchTrustedSourcesResult: Result<Void, Error>?
     private var _fetchTrustedSourcesContext: NSManagedObjectContext?
         
@@ -250,7 +250,6 @@ private extension SourcesViewController
             }
         }
         
-        //TODO: Remove this now that trusted sources aren't necessary.
         var dependencies: [Foundation.Operation] = []
         if let fetchTrustedSourcesOperation = self.fetchTrustedSourcesOperation
         {
@@ -262,10 +261,23 @@ private extension SourcesViewController
         AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies) { (result) in
             do
             {
+                // Use @Managed before dispatching Task to keep
+                // strong reference to source.managedObjectContext
                 @Managed var source = try result.get()
                 
-                DispatchQueue.main.async {
-                    self.showSourceDetails(for: source)
+                var contextResult: Result<Source?, Error>!
+                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                backgroundContext.performAndWait {
+                    let fetchRequest = Source.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
+                    
+                    contextResult = Result { try backgroundContext.fetch(fetchRequest).first }
+                }
+                
+                @Managed var existingSource = try contextResult.get()
+                if let existingSource
+                {
+                    throw SourceError.duplicateID(source, existingSource: existingSource)
                 }
                 
                 finish(.success(()))
@@ -274,6 +286,67 @@ private extension SourcesViewController
             {
                 finish(.failure(error))
             }
+        }
+    }
+    
+    func addSource2(url: URL, completionHandler: ((Result<Void, Error>) -> Void)? = nil)
+    {
+        guard self.view.window != nil else {
+            completionHandler?(.failure(CancellationError()))
+            return
+        }
+        
+        if url == self.deepLinkSourceURL
+        {
+            // Only handle deep link once.
+            self.deepLinkSourceURL = nil
+        }
+        
+        Task.detached(priority: .userInitiated) {
+            do
+            {
+                let dependencies: [Foundation.Operation]
+                if let fetchTrustedSourcesOperation = await self.fetchTrustedSourcesOperation
+                {
+                    // Must fetch trusted sources first to determine whether this is a trusted source.
+                    // We assume fetchTrustedSources() has already been called before this method.
+                    dependencies = [fetchTrustedSourcesOperation]
+                }
+                else
+                {
+                    dependencies = []
+                }
+                
+                do
+                {
+                    // Use @Managed to keep strong reference to source.managedObjectContext until out of scope.
+                    @Managed var source = try await AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies)
+                    await self.showSourceDetails(for: source)
+                    
+                    completionHandler?(.success(()))
+                }
+                catch let error
+                {
+                    completionHandler?(.failure(error))
+                    throw error
+                }
+            }
+            catch is CancellationError
+            {
+                // Ignore
+            }
+            catch var error as SourceError
+            {
+                let title = String(format: NSLocalizedString("“%@” could not be added to AltStore.", comment: ""), error.$source.name)
+                error.errorTitle = title
+                await self.present(error)
+            }
+            catch let error as NSError
+            {
+                await self.present(error.withLocalizedTitle(NSLocalizedString("Unable to Add Source", comment: "")))
+            }
+            
+            await self.collectionView.reloadSections([Section.trusted.rawValue])
         }
     }
 
@@ -322,14 +395,11 @@ private extension SourcesViewController
             }
         }
         
-        self.fetchTrustedSourcesOperation = AppManager.shared.fetchTrustedSources { result in
+        self.fetchTrustedSourcesOperation = AppManager.shared.fetchKnownSources { result in
             switch result
             {
             case .failure(let error): finish(.failure(error))
-            case .success(let trustedSources):
-                // Cache trusted source IDs.
-                UserDefaults.shared.trustedSourceIDs = trustedSources.map { $0.identifier }
-                
+            case .success((let trustedSources, _)):
                 // Don't show sources without a sourceURL.
                 let featuredSourceURLs = trustedSources.compactMap { $0.sourceURL }
                 

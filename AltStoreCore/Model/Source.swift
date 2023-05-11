@@ -57,6 +57,19 @@ public extension Source
     }
 }
 
+extension Source
+{
+    public class DecodingContext
+    {
+        public internal(set) var source: Source?
+        public internal(set) var storeApp: StoreApp?
+        
+        public init()
+        {
+        }
+    }
+}
+
 @objc(Source)
 public class Source: NSManagedObject, Fetchable, Decodable
 {
@@ -136,8 +149,10 @@ public class Source: NSManagedObject, Fetchable, Decodable
     
     public required init(from decoder: Decoder) throws
     {
-        guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
-        guard let sourceURL = decoder.sourceURL else { preconditionFailure("Decoder must have non-nil sourceURL.") }
+        guard let context = decoder.managedObjectContext,
+              let sourceURL = decoder.sourceURL,
+              let decodingContext = decoder.sourceContext
+        else { preconditionFailure("Decoder's userInfo must contain non-nil managedObjectContext, sourceURL, and decodingContext.") }
         
         super.init(entity: Source.entity(), insertInto: context)
         
@@ -167,6 +182,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
             
             let userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
             self.userInfo = userInfo?.reduce(into: [:]) { $0[ALTSourceUserInfoKey($1.key)] = $1.value }
+            
+            // Wait until other properties are initialized before assigning to decodingContext.
+            decodingContext.source = self
             
             let apps = try container.decodeIfPresent([StoreApp].self, forKey: .apps) ?? []
             let appsByID = Dictionary(apps.map { ($0.bundleIdentifier, $0) }, uniquingKeysWith: { (a, b) in return a })

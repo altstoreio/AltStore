@@ -13,9 +13,10 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged public var version: String
+    @NSManaged public var buildVersion: String?
+    
     @NSManaged public var date: Date
     @NSManaged public var localizedDescription: String?
-    
     @NSManaged public var downloadURL: URL
     @NSManaged public var size: Int64
     @NSManaged public var sha256: String?

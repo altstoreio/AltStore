@@ -122,7 +122,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case downloadURL
         case tintColor
         case subtitle
-        case permissions
+        case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
@@ -130,13 +130,18 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     public required init(from decoder: Decoder) throws
     {
-        guard let context = decoder.managedObjectContext else { preconditionFailure("Decoder must have non-nil NSManagedObjectContext.") }
+        guard let context = decoder.managedObjectContext, let decodingContext = decoder.sourceContext else { preconditionFailure("Decoder must have non-nil managedObjectContext and sourceContext.") }
         
         // Must initialize with context in order for child context saves to work correctly.
         super.init(entity: StoreApp.entity(), insertInto: context)
         
         do
         {
+            decodingContext.storeApp = self
+            defer {
+                decodingContext.storeApp = nil
+            }
+            
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.name = try container.decode(String.self, forKey: .name)
             self.bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
@@ -160,6 +165,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
             let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
+            for permission in permissions
+            {
+                permission.appBundleID = self.bundleIdentifier
+            }
             self._permissions = NSOrderedSet(array: permissions)
             
             if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
@@ -234,6 +243,23 @@ internal extension StoreApp
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL
         self._size = Int32(latestVersion.size)
+    }
+    
+    func setPermissions(_ permissions: [AppPermission])
+    {
+        for case let permission as AppPermission in self._permissions
+        {
+            if permissions.contains(permission)
+            {
+                permission.app = self
+            }
+            else
+            {
+                permission.app = nil
+            }
+        }
+        
+        self._permissions = NSOrderedSet(array: permissions)
     }
 }
 

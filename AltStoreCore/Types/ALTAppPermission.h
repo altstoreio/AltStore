@@ -8,7 +8,50 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NSString *ALTAppPermissionType NS_TYPED_EXTENSIBLE_ENUM;
-extern ALTAppPermissionType const ALTAppPermissionTypePhotos;
-extern ALTAppPermissionType const ALTAppPermissionTypeBackgroundAudio;
-extern ALTAppPermissionType const ALTAppPermissionTypeBackgroundFetch;
+typedef NS_ENUM(int16_t, ALTAppPermissionType)
+{
+    ALTAppPermissionTypeEntitlement = 0,
+    ALTAppPermissionTypePrivacy = 1,
+    ALTAppPermissionTypeBackgroundMode = 2,
+};
+
+typedef NSString *ALTAppBackgroundMode NS_TYPED_EXTENSIBLE_ENUM;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeAudio;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeLocation;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeVoIP;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeExternalAccessory;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeBluetoothCentral;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeBluetoothPeripheral;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeFetch;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeRemoteNotification;
+extern ALTAppBackgroundMode const ALTAppBackgroundModeProcessing;
+
+typedef NSString *ALTAppPrivacyPermission NS_TYPED_EXTENSIBLE_ENUM;
+
+// Verifiable in Settings
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionCamera;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionContacts;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocation;
+//extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionMediaLibrary;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionMicrophone;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionPhotos;
+//extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionScreenRecording;
+
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionBluetooth;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionBluetoothPeripheral;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionCalendars;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionReminders;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionFaceID;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionGameCenterFriendList;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionHealthRecords;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionHealthDataRead;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionHealthDataWrite;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionHomeKit;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocationAlwaysAndWhenInUse;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocationAlways;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocationWhenInUse;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocationTemporary;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionAppleMusic;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionPhotosAdd;
+
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocalNetwork;

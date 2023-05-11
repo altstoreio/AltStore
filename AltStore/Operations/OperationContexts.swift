@@ -66,6 +66,7 @@ class AppOperationContext
     let bundleIdentifier: String
     let authenticatedContext: AuthenticatedOperationContext
     
+    // Rename to downloaded app?
     var app: ALTApplication?
     var provisioningProfiles: [String: ALTProvisioningProfile]?
     
@@ -125,6 +126,10 @@ class InstallAppOperationContext: AppOperationContext
     var alternateIconURL: URL?
     var ipaURL: URL?
     
+    // If downloading with storeApp, it'll store appVersion
+//    @Managed
+//    var storeApp: StoreApp?
+    
     @Managed
-    var storeApp: StoreApp?
+    var appVersion: AppVersion?
 }

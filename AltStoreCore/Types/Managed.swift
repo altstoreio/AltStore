@@ -9,6 +9,22 @@
 import Foundation
 import CoreData
 
+// Public so we can use as generic constraint.
+public protocol OptionalProtocol
+{
+    associatedtype Wrapped
+    
+    static var none: Self { get }
+    
+    static var wrappedType: Wrapped.Type { get }
+}
+
+extension Optional: OptionalProtocol
+{
+    public static var wrappedType: Wrapped.Type { return Wrapped.self }
+}
+
+
 @propertyWrapper @dynamicMemberLookup
 public struct Managed<ManagedObject>
 {
@@ -65,6 +81,24 @@ public struct Managed<ManagedObject>
         else
         {
             result = self.wrappedValue?[keyPath: keyPath] as? T
+        }
+        
+        return result
+    }
+    
+    public subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T where ManagedObject == Optional<Wrapped>, T: OptionalProtocol
+    {
+        var result: T!
+        
+        if let context = self.managedObjectContext
+        {
+            context.performAndWait {
+                result = self.wrappedValue?[keyPath: keyPath]
+            }
+        }
+        else
+        {
+            result = self.wrappedValue?[keyPath: keyPath]
         }
         
         return result

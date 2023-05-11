@@ -27,12 +27,22 @@
         </uniquenessConstraints>
     </entity>
     <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
-        <attribute name="type" attributeType="String"/>
-        <attribute name="usageDescription" attributeType="String"/>
+        <attribute name="appBundleID" optional="YES" attributeType="String"/>
+        <attribute name="permission" attributeType="String"/>
+        <attribute name="permissionType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="usageDescription" optional="YES" attributeType="String"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="permission"/>
+                <constraint value="permissionType"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="buildVersion" optional="YES" attributeType="String"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="downloadURL" attributeType="URI"/>
         <attribute name="localizedDescription" optional="YES" attributeType="String"/>
@@ -48,11 +58,13 @@
             <uniquenessConstraint>
                 <constraint value="appBundleID"/>
                 <constraint value="version"/>
+                <constraint value="bundleVersion"/>
                 <constraint value="sourceID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
+        <attribute name="buildVersion" optional="YES" attributeType="String"/>
         <attribute name="bundleIdentifier" attributeType="String"/>
         <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
