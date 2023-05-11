@@ -362,6 +362,7 @@
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
+		D5728CA72A0D79D30014E73C /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */; };
 		D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57968CA29CB99EF00539069 /* VibrantButton.swift */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
 		D57DF63F271E51E400677701 /* ALTAppPatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D57DF63E271E51E400677701 /* ALTAppPatcher.m */; };
@@ -877,6 +878,7 @@
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D55E163528776CB000A627A1 /* ComplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationView.swift; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
+		D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
 		D57968CA29CB99EF00539069 /* VibrantButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrantButton.swift; sourceTree = "<group>"; };
 		D57DF637271E32F000677701 /* PatchApp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PatchApp.storyboard; sourceTree = "<group>"; };
 		D57DF63D271E51E400677701 /* ALTAppPatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTAppPatcher.h; sourceTree = "<group>"; };
@@ -1341,6 +1343,7 @@
 			children = (
 				BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */,
 				BF66EE9C2501AEC1007EE018 /* Fetchable.swift */,
+				D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -2688,6 +2691,7 @@
 				BF66EEEB2501AED0007EE018 /* UIApplication+AppExtension.swift in Sources */,
 				D5F48B4829CCF21B002B52A4 /* AltStore+Async.swift in Sources */,
 				BF66EED92501AECA007EE018 /* Team.swift in Sources */,
+				D5728CA72A0D79D30014E73C /* OptionalProtocol.swift in Sources */,
 				BF66EED12501AECA007EE018 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
 				D5F48B4C29CD0C48002B52A4 /* AsyncManaged.swift in Sources */,
 				BFAECC5C2501B0A400528F27 /* CFNotificationName+AltStore.m in Sources */,

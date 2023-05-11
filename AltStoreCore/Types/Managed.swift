@@ -80,16 +80,26 @@ public extension Managed
 /// @dynamicMemberLookup
 public extension Managed
 {
+    // Non-optional values
     subscript<T>(dynamicMember keyPath: KeyPath<ManagedObject, T>) -> T
     {
         let result = self.perform { $0[keyPath: keyPath] }
         return result
     }
     
-    // Optionals
+    // Optional wrapped value
     subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T? where ManagedObject == Optional<Wrapped>
     {
         guard let wrappedValue else { return nil }
+        
+        let result = self.perform { _ in wrappedValue[keyPath: keyPath] }
+        return result
+    }
+    
+    // Optional wrapped value + optional property (flattened)
+    subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T where ManagedObject == Optional<Wrapped>, T: OptionalProtocol
+    {
+        guard let wrappedValue else { return T.none }
         
         let result = self.perform { _ in wrappedValue[keyPath: keyPath] }
         return result

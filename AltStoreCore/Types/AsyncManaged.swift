@@ -71,6 +71,7 @@ public extension AsyncManaged
 /// @dynamicMemberLookup
 public extension AsyncManaged
 {
+    // Non-optional values
     subscript<T>(dynamicMember keyPath: KeyPath<ManagedObject, T>) -> T {
         get async {
             let result = await self.perform { $0[keyPath: keyPath] }
@@ -78,10 +79,20 @@ public extension AsyncManaged
         }
     }
 
-    // Optionals
+    // Optional wrapped value
     subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T? where ManagedObject == Optional<Wrapped> {
         get async {
             guard let wrappedValue else { return nil }
+            
+            let result = await self.perform { _ in wrappedValue[keyPath: keyPath] }
+            return result
+        }
+    }
+    
+    // Optional wrapped value + optional property (flattened)
+    subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T where ManagedObject == Optional<Wrapped>, T: OptionalProtocol {
+        get async {
+            guard let wrappedValue else { return T.none }
             
             let result = await self.perform { _ in wrappedValue[keyPath: keyPath] }
             return result
