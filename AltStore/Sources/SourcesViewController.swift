@@ -262,13 +262,31 @@ private extension SourcesViewController
         AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies) { (result) in
             do
             {
+                // Use @Managed before calling perform() to keep
+                // strong reference to source.managedObjectContext.
                 @Managed var source = try result.get()
                 
-                DispatchQueue.main.async {
-                    self.showSourceDetails(for: source)
+                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                backgroundContext.perform {
+                    do
+                    {
+                        let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
+                        if let existingSource = Source.first(satisfying: predicate, in: backgroundContext)
+                        {
+                            throw SourceError.duplicate(source, previousSourceName: existingSource.name)
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.showSourceDetails(for: source)
+                        }
+                        
+                        finish(.success(()))
+                    }
+                    catch
+                    {
+                        finish(.failure(error))
+                    }
                 }
-                
-                finish(.success(()))
             }
             catch
             {

@@ -353,8 +353,12 @@ extension AppManager
         let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
         try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
 
-        // Wait for fetch to finish before saving context.
-        _ = try await fetchedSource
+        // Wait for fetch to finish before saving context to make
+        // sure there isn't already a source with this identifier.
+        let sourceExists = try await fetchedSource.isAdded
+        
+        // This is just a sanity check, so pass nil for previousSourceName to keep code simple.
+        guard !sourceExists else { throw SourceError.duplicate(source, previousSourceName: nil) }
         
         try await context.performAsync {
             try context.save()

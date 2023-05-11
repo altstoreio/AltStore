@@ -23,6 +23,7 @@ extension SourceError
         case duplicateVersion
         
         case changedID
+        case duplicate
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
@@ -30,6 +31,7 @@ extension SourceError
     static func duplicateVersion(_ version: String, for app: StoreApp, source: Source) -> SourceError { SourceError(code: .duplicateVersion, source: source, app: app, version: version) }
     
     static func changedID(_ identifier: String, previousID: String, source: Source) -> SourceError { SourceError(code: .changedID, source: source, sourceID: identifier, previousSourceID: previousID) }
+    static func duplicate(_ source: Source, previousSourceName: String?) -> SourceError { SourceError(code: .duplicate, source: source, previousSourceName: previousSourceName) }
 }
 
 struct SourceError: ALTLocalizedError
@@ -42,6 +44,8 @@ struct SourceError: ALTLocalizedError
     @Managed var app: StoreApp?
     var bundleID: String?
     var version: String?
+    
+    @UserInfoValue var previousSourceName: String?
     
     // Store in userInfo so they can be viewed from Error Log.
     @UserInfoValue var sourceID: String?
@@ -79,6 +83,13 @@ struct SourceError: ALTLocalizedError
         case .changedID:
             let failureReason = String(format: NSLocalizedString("The identifier of the source “%@” has changed.", comment: ""), self.$source.name)
             return failureReason
+            
+        case .duplicate:
+            let baseMessage = String(format: NSLocalizedString("A source with the identifier '%@' already exists", comment: ""), self.$source.identifier)
+            guard let previousSourceName else { return baseMessage + "." }
+            
+            let failureReason = baseMessage + " (“\(previousSourceName)”)."
+            return failureReason
         }
     }
     
@@ -86,6 +97,10 @@ struct SourceError: ALTLocalizedError
         switch self.code
         {
         case .changedID: return NSLocalizedString("A source cannot change its identifier once added. This source can no longer be updated.", comment: "")
+        case .duplicate:
+            let failureReason = NSLocalizedString("Please remove the existing source in order to add this one.", comment: "")
+            return failureReason
+            
         default: return nil
         }
     }
