@@ -343,7 +343,7 @@ extension AppManager
     
     func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
     {
-        let (sourceName, sourceURL) = await $source.get { ($0.name, $0.sourceURL) }
+        let (sourceName, sourceURL) = await $source.perform { ($0.name, $0.sourceURL) }
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         async let fetchedSource = try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context) // Fetch source async while showing alert.
@@ -363,7 +363,7 @@ extension AppManager
     
     func remove(@AsyncManaged _ source: Source, presentingViewController: UIViewController) async throws
     {
-        let (sourceName, sourceID) = await $source.get { ($0.name, $0.identifier) }
+        let (sourceName, sourceID) = await $source.perform { ($0.name, $0.identifier) }
         guard sourceID != Source.altStoreIdentifier else {
             throw OperationError.forbidden(failureReason: NSLocalizedString("The default AltStore source cannot be removed.", comment: ""))
         }

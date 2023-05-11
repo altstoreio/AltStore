@@ -34,10 +34,11 @@ public struct AsyncManaged<ManagedObject>
     }
 }
 
+/// Run on managedObjectContext's queue.
 public extension AsyncManaged
 {
-    // Fetch multiple values.
-    func get<T>(_ closure: @escaping (ManagedObject) -> T) async -> T
+    // Non-throwing
+    func perform<T>(_ closure: @escaping (ManagedObject) -> T) async -> T
     {
         if let context = self.managedObjectContext
         {
@@ -50,33 +51,40 @@ public extension AsyncManaged
             return closure(self.wrappedValue)
         }
     }
+    
+    // Throwing
+    func perform<T>(_ closure: @escaping (ManagedObject) throws -> T) async throws -> T
+    {
+        if let context = self.managedObjectContext
+        {
+            return try await context.performAsync {
+                try closure(self.wrappedValue)
+            }
+        }
+        else
+        {
+            return try closure(self.wrappedValue)
+        }
+    }
 }
 
 /// @dynamicMemberLookup
-extension AsyncManaged
+public extension AsyncManaged
 {
-    public subscript<T>(dynamicMember keyPath: KeyPath<ManagedObject, T>) -> T {
+    subscript<T>(dynamicMember keyPath: KeyPath<ManagedObject, T>) -> T {
         get async {
-            guard let context = self.managedObjectContext else {
-                return self.wrappedValue[keyPath: keyPath]
-            }
-            
-            return await context.performAsync {
-                return self.wrappedValue[keyPath: keyPath]
-            }
+            let result = await self.perform { $0[keyPath: keyPath] }
+            return result
         }
     }
 
     // Optionals
-    public subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T? where ManagedObject == Optional<Wrapped> {
+    subscript<Wrapped, T>(dynamicMember keyPath: KeyPath<Wrapped, T>) -> T? where ManagedObject == Optional<Wrapped> {
         get async {
-            guard let context = self.managedObjectContext else {
-                return self.wrappedValue?[keyPath: keyPath]
-            }
+            guard let wrappedValue else { return nil }
             
-            return await context.performAsync {
-                return self.wrappedValue?[keyPath: keyPath]
-            }
+            let result = await self.perform { _ in wrappedValue[keyPath: keyPath] }
+            return result
         }
     }
 }
