@@ -21,11 +21,15 @@ extension SourceError
         case unsupported
         case duplicateBundleID
         case duplicateVersion
+        
+        case changedID
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
     static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, bundleID: bundleID) }
     static func duplicateVersion(_ version: String, for app: StoreApp, source: Source) -> SourceError { SourceError(code: .duplicateVersion, source: source, app: app, version: version) }
+    
+    static func changedID(_ identifier: String, previousID: String, source: Source) -> SourceError { SourceError(code: .changedID, source: source, sourceID: identifier, previousSourceID: previousID) }
 }
 
 struct SourceError: ALTLocalizedError
@@ -38,6 +42,10 @@ struct SourceError: ALTLocalizedError
     @Managed var app: StoreApp?
     var bundleID: String?
     var version: String?
+    
+    // Store in userInfo so they can be viewed from Error Log.
+    @UserInfoValue var sourceID: String?
+    @UserInfoValue var previousSourceID: String?
     
     var errorFailureReason: String {
         switch self.code
@@ -67,6 +75,18 @@ struct SourceError: ALTLocalizedError
                         
             let failureReason = String(format: NSLocalizedString("The source “%@” contains %@ for %@.", comment: ""), self.$source.name, versionFragment, appFragment)
             return failureReason
+            
+        case .changedID:
+            let failureReason = String(format: NSLocalizedString("The identifier of the source “%@” has changed.", comment: ""), self.$source.name)
+            return failureReason
+        }
+    }
+    
+    var recoverySuggestion: String? {
+        switch self.code
+        {
+        case .changedID: return NSLocalizedString("A source cannot change its identifier once added. This source can no longer be updated.", comment: "")
+        default: return nil
         }
     }
 }
@@ -77,6 +97,10 @@ class FetchSourceOperation: ResultOperation<Source>
     let sourceURL: URL
     let managedObjectContext: NSManagedObjectContext
     
+    // Non-nil when updating an existing source.
+    @Managed
+    private var source: Source?
+    
     private let session: URLSession
     
     private lazy var dateFormatter: ISO8601DateFormatter = {
@@ -84,10 +108,23 @@ class FetchSourceOperation: ResultOperation<Source>
         return dateFormatter
     }()
     
-    init(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    // New source
+    convenience init(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    {
+        self.init(sourceURL: sourceURL, source: nil, managedObjectContext: managedObjectContext)
+    }
+    
+    // Existing source
+    convenience init(source: Source, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext())
+    {
+        self.init(sourceURL: source.sourceURL, source: source, managedObjectContext: managedObjectContext)
+    }
+    
+    private init(sourceURL: URL, source: Source?, managedObjectContext: NSManagedObjectContext)
     {
         self.sourceURL = sourceURL
         self.managedObjectContext = managedObjectContext
+        self.source = source
         
         let configuration = URLSessionConfiguration.default
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -190,6 +227,11 @@ private extension FetchSourceOperation
                 guard !versions.contains(version.version) else { throw SourceError.duplicateVersion(version.version, for: app, source: source) }
                 versions.insert(version.version)
             }
+        }
+        
+        if let previousSourceID = self.$source.identifier
+        {
+            guard source.identifier == previousSourceID else { throw SourceError.changedID(source.identifier, previousID: previousSourceID, source: source) }
         }
     }
 }

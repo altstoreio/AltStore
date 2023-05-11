@@ -428,7 +428,7 @@ extension AppManager
             let operations = sources.map { (source) -> FetchSourceOperation in
                 dispatchGroup.enter()
                 
-                let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL, managedObjectContext: managedObjectContext)
+                let fetchSourceOperation = FetchSourceOperation(source: source, managedObjectContext: managedObjectContext)
                 fetchSourceOperation.resultHandler = { (result) in
                     switch result
                     {
