@@ -73,12 +73,14 @@ public extension ALTLocalizedError
     }
     
     var errorUserInfo: [String : Any] {
-        let userInfo: [String: Any?] = [
+        var userInfo: [String: Any?] = [
             NSLocalizedFailureErrorKey: self.errorFailure,
             ALTLocalizedTitleErrorKey: self.errorTitle,
             ALTSourceFileErrorKey: self.sourceFile,
             ALTSourceLineErrorKey: self.sourceLine,
         ]
+        
+        userInfo.merge(self.userInfoValues) { (_, new) in new }
         
         return userInfo.compactMapValues { $0 }
     }
@@ -129,6 +131,21 @@ public extension ALTLocalizedError
         {
             self.errorFailure = localizedFailure
         }
+    }
+}
+
+private extension ALTLocalizedError
+{
+    var userInfoValues: [(String, Any)] {
+        let userInfoValues = Mirror(reflecting: self).children.compactMap { (label, value) -> (String, Any)? in
+            guard let userInfoValue = value as? any UserInfoValueProtocol,
+                  let key: any StringProtocol = userInfoValue.key ?? label?.dropFirst() // Remove leading underscore
+            else { return nil }
+
+            return (String(key), userInfoValue.wrappedValue)
+        }
+        
+        return userInfoValues
     }
 }
 
