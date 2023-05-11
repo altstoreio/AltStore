@@ -177,6 +177,7 @@ class DeveloperDiskManager
     {
         guard let id = self.developerDiskCompatibilityID(for: device) else { return false }
         
+        if !UserDefaults.standard.dictionaryRepresentation().contains(where: { $0.key == id }) { return true }
         let isCompatible = UserDefaults.standard.bool(forKey: id)
         return isCompatible
     }
