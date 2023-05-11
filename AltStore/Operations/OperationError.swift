@@ -19,7 +19,7 @@ extension OperationError
         /* General */
         case unknown = 1000
         case unknownResult = 1001
-        case cancelled = 1002
+        // case cancelled = 1002
         case timedOut = 1003
         case notAuthenticated = 1004
         case appNotFound = 1005
@@ -38,8 +38,9 @@ extension OperationError
         case connectionDropped = 1202
     }
     
+    static var cancelled: CancellationError { CancellationError() }
+    
     static let unknownResult: OperationError = .init(code: .unknownResult)
-    static let cancelled: OperationError = .init(code: .cancelled)
     static let timedOut: OperationError = .init(code: .timedOut)
     static let notAuthenticated: OperationError = .init(code: .notAuthenticated)
     static let unknownUDID: OperationError = .init(code: .unknownUDID)
@@ -108,7 +109,6 @@ struct OperationError: ALTLocalizedError
             return failureReason
             
         case .unknownResult: return NSLocalizedString("The operation returned an unknown result.", comment: "")
-        case .cancelled: return NSLocalizedString("The operation was cancelled.", comment: "")
         case .timedOut: return NSLocalizedString("The operation timed out.", comment: "")
         case .notAuthenticated: return NSLocalizedString("You are not signed in.", comment: "")
         case .unknownUDID: return NSLocalizedString("AltStore could not determine this device's UDID.", comment: "")

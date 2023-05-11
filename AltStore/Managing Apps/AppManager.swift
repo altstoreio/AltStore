@@ -1872,7 +1872,7 @@ private extension AppManager
     {
         switch error
         {
-        case ~OperationError.Code.cancelled: return // Don't log OperationError.cancelled
+        case is CancellationError: return // Don't log CancellationErrors
         default: break
         }
         
