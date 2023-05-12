@@ -78,8 +78,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(source) public var _source: Source?
     @NSManaged public internal(set) var featuringSource: Source?
     
-    @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
-    
     @NSManaged @objc(latestVersion) public private(set) var latestSupportedVersion: AppVersion?
     @NSManaged @objc(versions) public private(set) var _versions: NSOrderedSet
     
@@ -95,9 +93,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         }
     }
     
-    @nonobjc public var permissions: [AppPermission] {
-        return self._permissions.array as! [AppPermission]
+    @nonobjc public var permissions: Set<AppPermission> {
+        return self._permissions as! Set<AppPermission>
     }
+    @NSManaged @objc(permissions) internal private(set) var _permissions: NSSet // Use NSSet to avoid eagerly fetching values.
     
     @nonobjc public var versions: [AppVersion] {
         return self._versions.array as! [AppVersion]
@@ -122,7 +121,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case downloadURL
         case tintColor
         case subtitle
-        case permissions
+        case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
@@ -160,7 +159,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
             let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
-            self._permissions = NSOrderedSet(array: permissions)
+            for permission in permissions
+            {
+                permission.appBundleID = self.bundleIdentifier
+            }
+            self._permissions = NSSet(array: permissions)
             
             if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
             {
@@ -234,6 +237,23 @@ internal extension StoreApp
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL
         self._size = Int32(latestVersion.size)
+    }
+    
+    func setPermissions(_ permissions: Set<AppPermission>)
+    {
+        for case let permission as AppPermission in self._permissions
+        {
+            if permissions.contains(permission)
+            {
+                permission.app = self
+            }
+            else
+            {
+                permission.app = nil
+            }
+        }
+        
+        self._permissions = permissions as NSSet
     }
 }
 

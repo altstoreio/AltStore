@@ -19,10 +19,12 @@ extension MergeError
         
         case noVersions
         case incorrectVersionOrder
+        case incorrectPermissions
     }
     
     static func noVersions(for app: StoreApp) -> MergeError { .init(code: .noVersions, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
     static func incorrectVersionOrder(for app: StoreApp) -> MergeError { .init(code: .incorrectVersionOrder, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
+    static func incorrectPermissions(for app: StoreApp) -> MergeError { .init(code: .incorrectPermissions, appName: app.name, appBundleID: app.bundleIdentifier, sourceID: app.sourceIdentifier) }
 }
 
 public struct MergeError: ALTLocalizedError
@@ -57,6 +59,15 @@ public struct MergeError: ALTLocalizedError
             }
             
             return String(format: NSLocalizedString("The cached versions for %@ do not match the source.", comment: ""), appName)
+            
+        case .incorrectPermissions:
+            var appName = NSLocalizedString("one or more apps", comment: "")
+            if let name = self.appName, let bundleID = self.appBundleID
+            {
+                appName = name + " (\(bundleID))"
+            }
+            
+            return String(format: NSLocalizedString("The cached permissions for %@ do not match the source.", comment: ""), appName)
         }
     }
     
@@ -134,8 +145,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     
                     if let previousApp = conflict.conflictingObjects.first(where: { !$0.isInserted }) as? StoreApp
                     {
-                        // Delete previous permissions (same as below).
-                        for permission in previousApp.permissions
+                        // Delete previous permissions (different than below).
+                        for case let permission as AppPermission in previousApp._permissions where permission.app == nil
                         {
                             permission.managedObjectContext?.delete(permission)
                         }
@@ -171,6 +182,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
         }
         
         var sortedVersionsByGlobalAppID = [String: NSOrderedSet]()
+        var permissionsByGlobalAppID = [String: Set<AnyHashable>]()
+        
         var featuredAppIDsBySourceID = [String: [String]]()
         
         for conflict in conflicts
@@ -178,28 +191,28 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             switch conflict.databaseObject
             {
             case let databaseObject as StoreApp:
-                // Delete previous permissions
-                for permission in databaseObject.permissions
+                guard let contextApp = conflict.conflictingObjects.first as? StoreApp else { break }
+                
+                // Permissions
+                let contextPermissions = Set(contextApp._permissions.lazy.compactMap { $0 as? AppPermission }.map { AnyHashable($0.permission) })
+                for case let databasePermission as AppPermission in databaseObject._permissions where !contextPermissions.contains(AnyHashable(databasePermission.permission))
                 {
-                    permission.managedObjectContext?.delete(permission)
+                    // Permission does NOT exist in context, so delete existing databasePermission.
+                    databasePermission.managedObjectContext?.delete(databasePermission)
                 }
                 
-                if let contextApp = conflict.conflictingObjects.first as? StoreApp
+                // Versions
+                let contextVersions = NSOrderedSet(array: contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
+                for case let databaseVersion as AppVersion in databaseObject._versions where !contextVersions.contains(databaseVersion.version)
                 {
-                    let contextVersions = NSOrderedSet(array: contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
-
-                    for case let appVersion as AppVersion in databaseObject._versions where !contextVersions.contains(appVersion.version)
-                    {
-                        // Version # does NOT exist in context, so delete existing appVersion.
-                        appVersion.managedObjectContext?.delete(appVersion)
-                    }
-                    
-                    if let globallyUniqueID = contextApp.globallyUniqueID
-                    {
-                        // Core Data _normally_ preserves the correct ordering of versions when merging,
-                        // but just in case we cache the order and reorder the versions post-merge if needed.
-                        sortedVersionsByGlobalAppID[globallyUniqueID] = contextVersions
-                    }
+                    // Version # does NOT exist in context, so delete existing databaseVersion.
+                    databaseVersion.managedObjectContext?.delete(databaseVersion)
+                }
+                
+                if let globallyUniqueID = contextApp.globallyUniqueID
+                {
+                    permissionsByGlobalAppID[globallyUniqueID] = contextPermissions
+                    sortedVersionsByGlobalAppID[globallyUniqueID] = contextVersions
                 }
                 
             case let databaseObject as Source:
@@ -244,36 +257,44 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             case let databaseObject as StoreApp:
                 do
                 {
-                    let appVersions: [AppVersion]
+                    var appVersions = databaseObject.versions
                     
-                    if let globallyUniqueID = databaseObject.globallyUniqueID,
-                       let sortedAppVersions = sortedVersionsByGlobalAppID[globallyUniqueID],
-                       let sortedAppVersionsArray = sortedAppVersions.array as? [String],
-                       case let databaseVersions = databaseObject.versions.map({ $0.version }),
-                       databaseVersions != sortedAppVersionsArray
+                    if let globallyUniqueID = databaseObject.globallyUniqueID
                     {
-                        // databaseObject.versions post-merge doesn't match contextApp.versions pre-merge, so attempt to fix by re-sorting.
-                        
-                        let fixedAppVersions = databaseObject.versions.sorted { (versionA, versionB) in
-                            let indexA = sortedAppVersions.index(of: versionA.version)
-                            let indexB = sortedAppVersions.index(of: versionB.version)
-                            return indexA < indexB
+                        // Permissions
+                        if let appPermissions = permissionsByGlobalAppID[globallyUniqueID],
+                           case let databasePermissions = Set(databaseObject.permissions.map({ AnyHashable($0.permission) })),
+                           databasePermissions != appPermissions
+                        {
+                            // Sorting order doesn't matter, but elements themselves don't match so throw error.
+                            throw MergeError.incorrectPermissions(for: databaseObject)
                         }
                         
-                        let appVersionValues = fixedAppVersions.map { $0.version }
-                        guard appVersionValues == sortedAppVersionsArray else {
-                            // fixedAppVersions still doesn't match source's versions, so throw MergeError.
-                            throw MergeError.incorrectVersionOrder(for: databaseObject)
+                        // App versions
+                        if let sortedAppVersions = sortedVersionsByGlobalAppID[globallyUniqueID],
+                           let sortedAppVersionsArray = sortedAppVersions.array as? [String],
+                           case let databaseVersions = databaseObject.versions.map({ $0.version }),
+                           databaseVersions != sortedAppVersionsArray
+                        {
+                            // databaseObject.versions post-merge doesn't match contextApp.versions pre-merge, so attempt to fix by re-sorting.
+                            
+                            let fixedAppVersions = databaseObject.versions.sorted { (versionA, versionB) in
+                                let indexA = sortedAppVersions.index(of: versionA.version)
+                                let indexB = sortedAppVersions.index(of: versionB.version)
+                                return indexA < indexB
+                            }
+                            
+                            let appVersionValues = fixedAppVersions.map { $0.version }
+                            guard appVersionValues == sortedAppVersionsArray else {
+                                // fixedAppVersions still doesn't match source's versions, so throw MergeError.
+                                throw MergeError.incorrectVersionOrder(for: databaseObject)
+                            }
+                            
+                            appVersions = fixedAppVersions
                         }
-                        
-                        appVersions = fixedAppVersions
-                    }
-                    else
-                    {
-                        appVersions = databaseObject.versions
                     }
                     
-                    // Update versions post-merging to make sure latestSupportedVersion is correct.
+                    // Always update versions post-merging to make sure latestSupportedVersion is correct.
                     try databaseObject.setVersions(appVersions)
                 }
                 catch

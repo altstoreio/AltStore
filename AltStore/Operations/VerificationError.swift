@@ -23,6 +23,8 @@ extension VerificationError
         
         case mismatchedHash = 3
         case mismatchedVersion = 4
+        
+        case undeclaredPermissions = 6
     }
     
     static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError {
@@ -39,6 +41,10 @@ extension VerificationError
     
     static func mismatchedVersion(_ version: String, expectedVersion: String, app: AppProtocol) -> VerificationError {
         VerificationError(code: .mismatchedVersion, app: app, version: version, expectedVersion: expectedVersion)
+    }
+    
+    static func undeclaredPermissions(_ permissions: [any ALTAppPermission], app: AppProtocol) -> VerificationError {
+        VerificationError(code: .undeclaredPermissions, app: app, permissions: permissions)
     }
 }
 
@@ -59,6 +65,9 @@ struct VerificationError: ALTLocalizedError
     
     @UserInfoValue var version: String?
     @UserInfoValue var expectedVersion: String?
+    
+    @UserInfoValue
+    var permissions: [any ALTAppPermission]?
     
     var errorDescription: String? {
         //TODO: Make this automatic somehow with ALTLocalizedError
@@ -129,6 +138,52 @@ struct VerificationError: ALTLocalizedError
         case .mismatchedVersion:
             let appName = self.$app.name ?? NSLocalizedString("the app", comment: "")
             return String(format: NSLocalizedString("The downloaded version of %@ does not match the version specified by the source.", comment: ""), appName)
+            
+        case .undeclaredPermissions:
+            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ requires additional permissions not specified by the source.", comment: ""), appName)
+        }
+    }
+    
+    var recoverySuggestion: String? {
+        switch self.code
+        {
+        case .undeclaredPermissions:
+            guard let permissions, !permissions.isEmpty else { return nil }
+            
+            let baseMessage = NSLocalizedString("These permissions must be declared by the source in order for AltStore to install this app:", comment: "")
+            
+            let permissionsByType = Dictionary(grouping: permissions) { $0.type }
+            let permissionSections = [ALTAppPermissionType.entitlement, .privacy, .backgroundMode].compactMap { (type) -> String? in
+                guard let permissions = permissionsByType[type] else { return nil }
+                
+                // "Privacy:"
+                var sectionText = "\(type.localizedName ?? type.rawValue):\n"
+                
+                // Sort permissions + join into single string.
+                let sortedList = permissions.map { permission -> String in
+                    if let localizedName = permission.localizedName
+                    {
+                        // "Entitlement Name (com.apple.entitlement.name)"
+                        return "\(localizedName) (\(permission.rawValue))"
+                    }
+                    else
+                    {
+                        // "com.apple.entitlement.name"
+                        return permission.rawValue
+                    }
+                }
+                    .sorted { $0.localizedStandardCompare($1) == .orderedAscending } // Case-insensitive sorting
+                    .joined(separator: "\n")
+                
+                sectionText += sortedList
+                return sectionText
+            }
+            
+            let recoverySuggestion = ([baseMessage] + permissionSections).joined(separator: "\n\n")
+            return recoverySuggestion
+            
+        default: return nil
         }
     }
 }

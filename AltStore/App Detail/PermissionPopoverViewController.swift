@@ -21,7 +21,7 @@ class PermissionPopoverViewController: UIViewController
     {
         super.viewDidLoad()
         
-        self.nameLabel.text = self.permission.type.localizedName
+        self.nameLabel.text = self.permission.localizedName ?? self.permission.permission.rawValue
         self.descriptionLabel.text = self.permission.usageDescription
     }
 }

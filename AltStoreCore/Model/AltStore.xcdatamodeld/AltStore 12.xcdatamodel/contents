@@ -27,9 +27,18 @@
         </uniquenessConstraints>
     </entity>
     <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
+        <attribute name="appBundleID" optional="YES" attributeType="String"/>
+        <attribute name="permission" attributeType="String"/>
         <attribute name="type" attributeType="String"/>
-        <attribute name="usageDescription" attributeType="String"/>
+        <attribute name="usageDescription" optional="YES" attributeType="String"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="permission"/>
+                <constraint value="type"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
@@ -191,7 +200,7 @@
         <relationship name="latestVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppVersion" inverseName="latestVersionApp" inverseEntity="AppVersion"/>
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
-        <relationship name="permissions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
+        <relationship name="permissions" toMany="YES" deletionRule="Cascade" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
         <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
         <uniquenessConstraints>

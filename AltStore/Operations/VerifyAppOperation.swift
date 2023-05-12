@@ -13,6 +13,16 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+import RegexBuilder
+
+private extension ALTEntitlement
+{
+    static var ignoredEntitlements: Set<ALTEntitlement> = [
+        .applicationIdentifier,
+        .teamIdentifier
+    ]
+}
+
 @objc(VerifyAppOperation)
 class VerifyAppOperation: ResultOperation<Void>
 {
@@ -62,6 +72,11 @@ class VerifyAppOperation: ResultOperation<Void>
                     try await self.verifyHash(of: app, at: ipaURL, matches: appVersion)
                     try await self.verifyDownloadedVersion(of: app, matches: appVersion)
                     
+                    if let storeApp = await self.context.$appVersion.app
+                    {
+                        try await self.verifyPermissions(of: app, match: storeApp)
+                    }
+                    
                     self.finish(.success(()))
                 }
                 catch
@@ -98,5 +113,82 @@ private extension VerifyAppOperation
         let version = await $appVersion.version
         
         guard version == app.version else { throw VerificationError.mismatchedVersion(app.version, expectedVersion: version, app: app) }
+    }
+    
+    @discardableResult
+    func verifyPermissions(of app: ALTApplication, @AsyncManaged match storeApp: StoreApp) async throws -> [any ALTAppPermission]
+    {
+        // Entitlements
+        var allEntitlements = Set(app.entitlements.keys)
+        for appExtension in app.appExtensions
+        {
+            allEntitlements.formUnion(appExtension.entitlements.keys)
+        }
+             
+        // Filter out ignored entitlements.
+        allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
+        
+        
+        // Background Modes
+        // App extensions can't have background modes, so don't need to worry about them.
+        let allBackgroundModes: Set<ALTAppBackgroundMode>
+        if let backgroundModes = app.bundle.infoDictionary?[Bundle.Info.backgroundModes] as? [String]
+        {
+            let backgroundModes = backgroundModes.lazy.map { ALTAppBackgroundMode($0) }
+            allBackgroundModes = Set(backgroundModes)
+        }
+        else
+        {
+            allBackgroundModes = []
+        }
+        
+        
+        // Privacy
+        let allPrivacyPermissions: Set<ALTAppPrivacyPermission>
+        if #available(iOS 16, *)
+        {
+            let regex = Regex {
+                "NS"
+                
+                // Capture permission "name"
+                Capture {
+                    OneOrMore(.anyGraphemeCluster)
+                }
+                
+                "UsageDescription"
+                
+                // Optional suffix
+                Optionally(OneOrMore(.anyGraphemeCluster))
+            }
+            
+            let privacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
+                let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
+                    guard let match = key.wholeMatch(of: regex) else { return nil }
+                    
+                    let permission = ALTAppPrivacyPermission(rawValue: String(match.1))
+                    return permission
+                } ?? []
+                 
+                return permissions
+            }
+            
+            allPrivacyPermissions = Set(privacyPermissions)
+        }
+        else
+        {
+            allPrivacyPermissions = []
+        }
+        
+        
+        // Verify permissions.
+        let sourcePermissions: Set<AnyHashable> = Set(await $storeApp.perform { $0.permissions.map { AnyHashable($0.permission) } })
+        let localPermissions: [any ALTAppPermission] = Array(allEntitlements) + Array(allBackgroundModes) + Array(allPrivacyPermissions)
+        
+        // To pass: EVERY permission in localPermissions must also appear in sourcePermissions.
+        // If there is a single missing permission, throw error.
+        let missingPermissions: [any ALTAppPermission] = localPermissions.filter { !sourcePermissions.contains(AnyHashable($0)) }
+        guard missingPermissions.isEmpty else { throw VerificationError.undeclaredPermissions(missingPermissions, app: app) }
+        
+        return localPermissions
     }
 }

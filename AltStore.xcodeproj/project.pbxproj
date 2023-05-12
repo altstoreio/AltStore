@@ -133,10 +133,10 @@
 		BF66EE852501AE50007EE018 /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
 		BF66EE862501AE50007EE018 /* AltStoreCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE8B2501AEB1007EE018 /* Keychain.swift */; };
-		BF66EE942501AEBC007EE018 /* ALTAppPermission.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8E2501AEBC007EE018 /* ALTAppPermission.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE952501AEBC007EE018 /* ALTSourceUserInfoKey.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE962501AEBC007EE018 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */; };
-		BF66EE972501AEBC007EE018 /* ALTAppPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE912501AEBC007EE018 /* ALTAppPermission.m */; };
+		BF66EE972501AEBC007EE018 /* ALTAppPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */; };
 		BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */; };
 		BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */; };
@@ -362,6 +362,7 @@
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
+		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
 		D5728CA72A0D79D30014E73C /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */; };
 		D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57968CA29CB99EF00539069 /* VibrantButton.swift */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
@@ -656,10 +657,10 @@
 		BF66EE802501AE50007EE018 /* AltStoreCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AltStoreCore.h; sourceTree = "<group>"; };
 		BF66EE812501AE50007EE018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF66EE8B2501AEB1007EE018 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
-		BF66EE8E2501AEBC007EE018 /* ALTAppPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTAppPermission.h; sourceTree = "<group>"; };
+		BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTAppPermissions.h; sourceTree = "<group>"; };
 		BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTSourceUserInfoKey.h; sourceTree = "<group>"; };
 		BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
-		BF66EE912501AEBC007EE018 /* ALTAppPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermission.m; sourceTree = "<group>"; };
+		BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermissions.m; sourceTree = "<group>"; };
 		BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
 		BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppProtocol.swift; sourceTree = "<group>"; };
@@ -879,6 +880,7 @@
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D55E163528776CB000A627A1 /* ComplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationView.swift; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
+		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
 		D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
 		D57968CA29CB99EF00539069 /* VibrantButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrantButton.swift; sourceTree = "<group>"; };
 		D57DF637271E32F000677701 /* PatchApp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PatchApp.storyboard; sourceTree = "<group>"; };
@@ -1330,8 +1332,8 @@
 			children = (
 				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 				D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */,
-				BF66EE8E2501AEBC007EE018 /* ALTAppPermission.h */,
-				BF66EE912501AEBC007EE018 /* ALTAppPermission.m */,
+				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
+				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
 				BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */,
 				BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */,
@@ -1346,6 +1348,7 @@
 				BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */,
 				BF66EE9C2501AEC1007EE018 /* Fetchable.swift */,
 				D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */,
+				D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1990,7 +1993,7 @@
 				BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */,
 				BFAECC5F2501B0BF00528F27 /* ALTConstants.h in Headers */,
 				BFAECC5D2501B0BF00528F27 /* ALTConnection.h in Headers */,
-				BF66EE942501AEBC007EE018 /* ALTAppPermission.h in Headers */,
+				BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */,
 				BFAECC602501B0BF00528F27 /* NSError+ALTServerError.h in Headers */,
 				D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */,
 				BFAECC5E2501B0BF00528F27 /* CFNotificationName+AltStore.h in Headers */,
@@ -2673,7 +2676,7 @@
 				D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */,
 				BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */,
 				BF66EED42501AECA007EE018 /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
-				BF66EE972501AEBC007EE018 /* ALTAppPermission.m in Sources */,
+				BF66EE972501AEBC007EE018 /* ALTAppPermissions.m in Sources */,
 				BFAECC552501B0A400528F27 /* Connection.swift in Sources */,
 				BF66EEDA2501AECA007EE018 /* RefreshAttempt.swift in Sources */,
 				BF66EEA92501AEC5007EE018 /* Tier.swift in Sources */,
@@ -2706,6 +2709,7 @@
 				D5F99A1A28D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift in Sources */,
 				BFAECC562501B0A400528F27 /* ALTServerError+Conveniences.swift in Sources */,
 				BFAECC592501B0A400528F27 /* Result+Conveniences.swift in Sources */,
+				D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */,
 				D5E3FB9828FDFAD90034B72C /* NSError+AltStore.swift in Sources */,
 				BFAECC542501B0A400528F27 /* NSError+ALTServerError.m in Sources */,
 				BF66EEE12501AECA007EE018 /* DatabaseManager.swift in Sources */,
