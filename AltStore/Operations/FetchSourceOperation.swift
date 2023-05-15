@@ -24,6 +24,8 @@ extension SourceError
         
         case changedID
         case duplicate
+        
+        case missingPermissionUsageDescription
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
@@ -32,6 +34,10 @@ extension SourceError
     
     static func changedID(_ identifier: String, previousID: String, source: Source) -> SourceError { SourceError(code: .changedID, source: source, sourceID: identifier, previousSourceID: previousID) }
     static func duplicate(_ source: Source, previousSourceName: String?) -> SourceError { SourceError(code: .duplicate, source: source, previousSourceName: previousSourceName) }
+    
+    static func missingPermissionUsageDescription(for permission: any ALTAppPermission, app: StoreApp, source: Source) -> SourceError {
+        SourceError(code: .missingPermissionUsageDescription, source: source, app: app, permission: permission)
+    }
 }
 
 struct SourceError: ALTLocalizedError
@@ -50,6 +56,9 @@ struct SourceError: ALTLocalizedError
     // Store in userInfo so they can be viewed from Error Log.
     @UserInfoValue var sourceID: String?
     @UserInfoValue var previousSourceID: String?
+    
+    @UserInfoValue
+    var permission: (any ALTAppPermission)?
     
     var errorFailureReason: String {
         switch self.code
@@ -89,6 +98,16 @@ struct SourceError: ALTLocalizedError
             guard let previousSourceName else { return baseMessage + "." }
             
             let failureReason = baseMessage + " (“\(previousSourceName)”)."
+            return failureReason
+            
+        case .missingPermissionUsageDescription:
+            let appName = self.$app.name ?? String(format: NSLocalizedString("an app in source “%@”", comment: ""), self.$source.name)
+            guard let permission else {
+                return String(format: NSLocalizedString("A permission for %@ is missing a usage description.", comment: ""), appName)
+            }
+            
+            let permissionType = permission.type.localizedName ?? NSLocalizedString("Permission", comment: "")
+            let failureReason = String(format: NSLocalizedString("The %@ '%@' for %@ is missing a usage description.", comment: ""), permissionType.lowercased(), permission.rawValue, appName)
             return failureReason
         }
     }
@@ -241,6 +260,17 @@ private extension FetchSourceOperation
             {
                 guard !versions.contains(version.version) else { throw SourceError.duplicateVersion(version.version, for: app, source: source) }
                 versions.insert(version.version)
+            }
+            
+            for permission in app.permissions
+            {
+                switch permission.type
+                {
+                case .privacy, .backgroundMode:
+                    guard permission.usageDescription != nil else { throw SourceError.missingPermissionUsageDescription(for: permission.permission, app: app, source: source) }
+                    
+                default: break
+                }
             }
         }
         
