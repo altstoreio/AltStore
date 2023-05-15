@@ -25,6 +25,7 @@ extension VerificationError
         case mismatchedVersion = 4
         
         case undeclaredPermissions = 6
+        case addedPermissions = 7
     }
     
     static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError {
@@ -45,6 +46,10 @@ extension VerificationError
     
     static func undeclaredPermissions(_ permissions: [any ALTAppPermission], app: AppProtocol) -> VerificationError {
         VerificationError(code: .undeclaredPermissions, app: app, permissions: permissions)
+    }
+    
+    static func addedPermissions(_ permissions: [any ALTAppPermission], app: AppProtocol) -> VerificationError {
+        VerificationError(code: .addedPermissions, app: app, permissions: permissions)
     }
 }
 
@@ -142,6 +147,10 @@ struct VerificationError: ALTLocalizedError
         case .undeclaredPermissions:
             let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
             return String(format: NSLocalizedString("%@ requires additional permissions not specified by the source.", comment: ""), appName)
+            
+        case .addedPermissions:
+            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ requires more permissions than the version that is already installed.", comment: ""), appName)
         }
     }
     
