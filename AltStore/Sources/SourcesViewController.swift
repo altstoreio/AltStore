@@ -41,7 +41,7 @@ class SourcesViewController: UICollectionViewController
     private lazy var addedSourcesDataSource = self.makeAddedSourcesDataSource()
     private lazy var trustedSourcesDataSource = self.makeTrustedSourcesDataSource()
     
-    private var fetchTrustedSourcesOperation: FetchTrustedSourcesOperation?
+    private var fetchTrustedSourcesOperation: UpdateKnownSourcesOperation?
     private var fetchTrustedSourcesResult: Result<Void, Error>?
     private var _fetchTrustedSourcesContext: NSManagedObjectContext?
         
@@ -250,7 +250,6 @@ private extension SourcesViewController
             }
         }
         
-        //TODO: Remove this now that trusted sources aren't necessary.
         var dependencies: [Foundation.Operation] = []
         if let fetchTrustedSourcesOperation = self.fetchTrustedSourcesOperation
         {
@@ -340,14 +339,11 @@ private extension SourcesViewController
             }
         }
         
-        self.fetchTrustedSourcesOperation = AppManager.shared.fetchTrustedSources { result in
+        self.fetchTrustedSourcesOperation = AppManager.shared.updateKnownSources { result in
             switch result
             {
             case .failure(let error): finish(.failure(error))
-            case .success(let trustedSources):
-                // Cache trusted source IDs.
-                UserDefaults.shared.trustedSourceIDs = trustedSources.map { $0.identifier }
-                
+            case .success((let trustedSources, _)):
                 // Don't show sources without a sourceURL.
                 let featuredSourceURLs = trustedSources.compactMap { $0.sourceURL }
                 

@@ -65,7 +65,7 @@ class FetchSourceOperation: ResultOperation<Source>
             childContext.perform {
                 do
                 {
-                    let (data, _) = try Result((data, response), error).get()
+                    let (data, response) = try Result((data, response), error).get()
                     
                     let decoder = AltStoreCore.JSONDecoder()
                     decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
@@ -95,7 +95,7 @@ class FetchSourceOperation: ResultOperation<Source>
                     let source = try decoder.decode(Source.self, from: data)
                     let identifier = source.identifier
                     
-                    try self.verify(source)
+                    try self.verify(source, response: response)
                     
                     try childContext.save()
                     
@@ -127,14 +127,23 @@ class FetchSourceOperation: ResultOperation<Source>
 
 private extension FetchSourceOperation
 {
-    func verify(_ source: Source) throws
+    func verify(_ source: Source, response: URLResponse) throws
     {
-        #if !BETA
-        if let trustedSourceIDs = UserDefaults.shared.trustedSourceIDs
+        if let blockedSourceIDs = UserDefaults.shared.blockedSourceIDs
         {
-            guard trustedSourceIDs.contains(source.identifier) || source.identifier == Source.altStoreIdentifier else { throw SourceError(code: .unsupported, source: source) }
+            guard !blockedSourceIDs.contains(source.identifier) else { throw SourceError.blocked(source) }
         }
-        #endif
+        
+        if let blockedSourceURLs = UserDefaults.shared.blockedSourceURLs
+        {
+            guard !blockedSourceURLs.contains(source.sourceURL) else { throw SourceError.blocked(source) }
+            
+            if let responseURL = response.url
+            {
+                // responseURL may differ from sourceURL (e.g. due to redirects), so double-check it's also not blocked.
+                guard !blockedSourceURLs.contains(responseURL) else { throw SourceError.blocked(source) }
+            }
+        }
         
         var bundleIDs = Set<String>()
         for app in source.apps

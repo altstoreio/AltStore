@@ -18,6 +18,7 @@ extension SourceError
         case duplicateBundleID
         case duplicateVersion
         
+        case blocked
         case changedID
         case duplicate
         
@@ -28,6 +29,7 @@ extension SourceError
     static func duplicateBundleID(_ bundleID: String, source: Source) -> SourceError { SourceError(code: .duplicateBundleID, source: source, bundleID: bundleID) }
     static func duplicateVersion(_ version: String, for app: StoreApp, source: Source) -> SourceError { SourceError(code: .duplicateVersion, source: source, app: app, version: version) }
     
+    static func blocked(_ source: Source) -> SourceError { SourceError(code: .blocked, source: source) }
     static func changedID(_ identifier: String, previousID: String, source: Source) -> SourceError { SourceError(code: .changedID, source: source, sourceID: identifier, previousSourceID: previousID) }
     static func duplicate(_ source: Source, previousSourceName: String?) -> SourceError { SourceError(code: .duplicate, source: source, previousSourceName: previousSourceName) }
     
@@ -85,6 +87,10 @@ struct SourceError: ALTLocalizedError
             let failureReason = String(format: NSLocalizedString("The source “%@” contains %@ for %@.", comment: ""), self.$source.name, versionFragment, appFragment)
             return failureReason
             
+        case .blocked:
+            let failureReason = String(format: NSLocalizedString("The source “%@” has been blocked by AltStore for security reasons.", comment: ""), self.$source.name)
+            return failureReason
+            
         case .changedID:
             let failureReason = String(format: NSLocalizedString("The identifier of the source “%@” has changed.", comment: ""), self.$source.name)
             return failureReason
@@ -111,6 +117,7 @@ struct SourceError: ALTLocalizedError
     var recoverySuggestion: String? {
         switch self.code
         {
+        case .blocked: return NSLocalizedString("For your protection, please remove the source and uninstall all apps downloaded from it.", comment: "")
         case .changedID: return NSLocalizedString("A source cannot change its identifier once added. This source can no longer be updated.", comment: "")
         case .duplicate:
             let failureReason = NSLocalizedString("Please remove the existing source in order to add this one.", comment: "")

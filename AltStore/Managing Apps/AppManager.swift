@@ -485,13 +485,13 @@ extension AppManager
     }
     
     @discardableResult
-    func fetchTrustedSources(completionHandler: @escaping (Result<[FetchTrustedSourcesOperation.TrustedSource], Error>) -> Void) -> FetchTrustedSourcesOperation
+    func updateKnownSources(completionHandler: @escaping (Result<([UpdateKnownSourcesOperation.Source], [UpdateKnownSourcesOperation.Source]), Error>) -> Void) -> UpdateKnownSourcesOperation
     {
-        let fetchTrustedSourcesOperation = FetchTrustedSourcesOperation()
-        fetchTrustedSourcesOperation.resultHandler = completionHandler
-        self.run([fetchTrustedSourcesOperation], context: nil)
+        let updateKnownSourcesOperation = UpdateKnownSourcesOperation()
+        updateKnownSourcesOperation.resultHandler = completionHandler
+        self.run([updateKnownSourcesOperation], context: nil)
         
-        return fetchTrustedSourcesOperation
+        return updateKnownSourcesOperation
     }
     
     func updatePatronsIfNeeded()
