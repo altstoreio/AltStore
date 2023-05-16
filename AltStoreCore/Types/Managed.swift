@@ -40,12 +40,12 @@ public extension Managed
     // Non-throwing
     func perform<T>(_ closure: @escaping (ManagedObject) -> T) -> T
     {
-        var result: T!
+        let result: T
         
         if let context = self.managedObjectContext
         {
-            context.performAndWait {
-                result = closure(self.wrappedValue)
+            result = context.performAndWait {
+                closure(self.wrappedValue)
             }
         }
         else
@@ -59,21 +59,20 @@ public extension Managed
     // Throwing
     func perform<T>(_ closure: @escaping (ManagedObject) throws -> T) throws -> T
     {
-        var result: Result<T, Error>!
+        let result: T
         
         if let context = self.managedObjectContext
         {
-            context.performAndWait {
-                result = Result { try closure(self.wrappedValue) }
+            result = try context.performAndWait {
+                try closure(self.wrappedValue)
             }
         }
         else
         {
-            result = Result { try closure(self.wrappedValue) }
+            result = try closure(self.wrappedValue)
         }
         
-        let value = try result.get()
-        return value
+        return result
     }
 }
 
