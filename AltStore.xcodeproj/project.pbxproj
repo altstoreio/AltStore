@@ -375,6 +375,7 @@
 		D57FE84428C7DB7100216002 /* ErrorLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */; };
 		D586D39B28EF58B0000E101F /* AltTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D586D39A28EF58B0000E101F /* AltTests.swift */; };
 		D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58916FD28C7C55C00E39C8B /* LoggedError.swift */; };
+		D5893F802A1419E800E767CD /* NSManagedObjectContext+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */; };
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 		D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593F1932717749A006E82DE /* PatchAppOperation.swift */; };
 		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
@@ -889,6 +890,7 @@
 		D586D39828EF58B0000E101F /* AltTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D586D39A28EF58B0000E101F /* AltTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltTests.swift; sourceTree = "<group>"; };
 		D58916FD28C7C55C00E39C8B /* LoggedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedError.swift; sourceTree = "<group>"; };
+		D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Conveniences.swift"; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
@@ -1422,6 +1424,7 @@
 				BF66EEE42501AED0007EE018 /* UserDefaults+AltStore.swift */,
 				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
 				D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */,
+				D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2736,6 +2739,7 @@
 				D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */,
 				BFBF331B2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel in Sources */,
 				D5FD4ECB2A9532960097BEE8 /* DatabaseManager+Async.swift in Sources */,
+				D5893F802A1419E800E767CD /* NSManagedObjectContext+Conveniences.swift in Sources */,
 				D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */,
 				D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */,
 				BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */,
