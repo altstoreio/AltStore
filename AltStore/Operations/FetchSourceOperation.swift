@@ -58,6 +58,28 @@ class FetchSourceOperation: ResultOperation<Source>
     {
         super.main()
         
+        if let source = self.source
+        {
+            // Check if source is blocked before fetching it.
+            
+            do
+            {
+                try self.managedObjectContext.performAndWait {
+                    // Source must be from self.managedObjectContext
+                    let source = self.managedObjectContext.object(with: source.objectID) as! Source
+                    try self.verifySourceNotBlocked(source, response: nil)
+                }
+            }
+            catch
+            {
+                self.managedObjectContext.perform {
+                    self.finish(.failure(error))
+                }
+                
+                return
+            }
+        }
+        
         let dataTask = self.session.dataTask(with: self.sourceURL) { (data, response, error) in
             
             let childContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(withParent: self.managedObjectContext)
@@ -129,21 +151,7 @@ private extension FetchSourceOperation
 {
     func verify(_ source: Source, response: URLResponse) throws
     {
-        if let blockedSourceIDs = UserDefaults.shared.blockedSourceIDs
-        {
-            guard !blockedSourceIDs.contains(source.identifier) else { throw SourceError.blocked(source) }
-        }
-        
-        if let blockedSourceURLs = UserDefaults.shared.blockedSourceURLs
-        {
-            guard !blockedSourceURLs.contains(source.sourceURL) else { throw SourceError.blocked(source) }
-            
-            if let responseURL = response.url
-            {
-                // responseURL may differ from sourceURL (e.g. due to redirects), so double-check it's also not blocked.
-                guard !blockedSourceURLs.contains(responseURL) else { throw SourceError.blocked(source) }
-            }
-        }
+        try self.verifySourceNotBlocked(source, response: response)
         
         var bundleIDs = Set<String>()
         for app in source.apps
@@ -173,6 +181,27 @@ private extension FetchSourceOperation
         if let previousSourceID = self.$source.identifier
         {
             guard source.identifier == previousSourceID else { throw SourceError.changedID(source.identifier, previousID: previousSourceID, source: source) }
+        }
+    }
+    
+    func verifySourceNotBlocked(_ source: Source, response: URLResponse?) throws
+    {
+        guard let blockedSources = UserDefaults.shared.blockedSources else { return }
+        
+        for blockedSource in blockedSources
+        {
+            guard
+                source.identifier != blockedSource.identifier,
+                source.sourceURL.absoluteString.lowercased() != blockedSource.sourceURL?.absoluteString.lowercased()
+            else { throw SourceError.blocked(source, bundleIDs: blockedSource.bundleIDs, existingSource: self.source) }
+            
+            if let responseURL = response?.url
+            {
+                // responseURL may differ from source.sourceURL (e.g. due to redirects), so double-check it's also not blocked.
+                guard responseURL.absoluteString.lowercased() != blockedSource.sourceURL?.absoluteString.lowercased() else {
+                    throw SourceError.blocked(source, bundleIDs: blockedSource.bundleIDs, existingSource: self.source)
+                }
+            }
         }
     }
 }

@@ -272,7 +272,7 @@ private extension SourcesViewController
                         let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
                         if let existingSource = Source.first(satisfying: predicate, in: backgroundContext)
                         {
-                            throw SourceError.duplicate(source, previousSourceName: existingSource.name)
+                            throw SourceError.duplicate(source, existingSource: existingSource)
                         }
                         
                         DispatchQueue.main.async {

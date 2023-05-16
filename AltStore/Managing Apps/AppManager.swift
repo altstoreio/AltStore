@@ -357,8 +357,8 @@ extension AppManager
         // sure there isn't already a source with this identifier.
         let sourceExists = try await fetchedSource.isAdded
         
-        // This is just a sanity check, so pass nil for previousSourceName to keep code simple.
-        guard !sourceExists else { throw SourceError.duplicate(source, previousSourceName: nil) }
+        // This is just a sanity check, so pass nil for existingSource to keep code simple.
+        guard !sourceExists else { throw SourceError.duplicate(source, existingSource: nil) }
         
         try await context.performAsync {
             try context.save()
@@ -485,7 +485,7 @@ extension AppManager
     }
     
     @discardableResult
-    func updateKnownSources(completionHandler: @escaping (Result<([UpdateKnownSourcesOperation.Source], [UpdateKnownSourcesOperation.Source]), Error>) -> Void) -> UpdateKnownSourcesOperation
+    func updateKnownSources(completionHandler: @escaping (Result<([KnownSource], [KnownSource]), Error>) -> Void) -> UpdateKnownSourcesOperation
     {
         let updateKnownSourcesOperation = UpdateKnownSourcesOperation()
         updateKnownSourcesOperation.resultHandler = completionHandler

@@ -19,22 +19,16 @@ private extension URL
 
 extension UpdateKnownSourcesOperation
 {
-    struct Source: Decodable
-    {
-        var identifier: String
-        var sourceURL: URL?
-    }
-    
     private struct Response: Decodable
     {
         var version: Int
         
-        var trusted: [Source]
-        var blocked: [Source]?
+        var trusted: [KnownSource]?
+        var blocked: [KnownSource]?
     }
 }
 
-class UpdateKnownSourcesOperation: ResultOperation<([UpdateKnownSourcesOperation.Source], [UpdateKnownSourcesOperation.Source])>
+class UpdateKnownSourcesOperation: ResultOperation<([KnownSource], [KnownSource])>
 {
     override func main()
     {
@@ -54,17 +48,11 @@ class UpdateKnownSourcesOperation: ResultOperation<([UpdateKnownSourcesOperation
                 guard let data = data else { throw error! }
                 
                 let response = try Foundation.JSONDecoder().decode(Response.self, from: data)
-                let sources = (trusted: response.trusted, blocked: response.blocked ?? [])
+                let sources = (trusted: response.trusted ?? [], blocked: response.blocked ?? [])
                 
-                // Cache trusted sources
-                let trustedSourceIDs = Set(sources.trusted.map { $0.identifier })
-                UserDefaults.shared.trustedSourceIDs = trustedSourceIDs
-                
-                // Cache blocked sources
-                let blockedSourceIDs = Set(sources.blocked.map { $0.identifier })
-                let blockedSourceURLs = Set(sources.blocked.compactMap { $0.sourceURL })
-                UserDefaults.shared.blockedSourceIDs = blockedSourceIDs
-                UserDefaults.shared.blockedSourceURLs = blockedSourceURLs
+                // Cache sources
+                UserDefaults.shared.trustedSources = sources.trusted
+                UserDefaults.shared.blockedSources = sources.blocked
                 
                 self.finish(.success(sources))
             }
