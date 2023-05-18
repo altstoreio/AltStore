@@ -185,7 +185,7 @@ public extension InstalledApp
         fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
                                              #keyPath(InstalledApp.isActive),
                                              #keyPath(InstalledApp.storeApp),
-                                             #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestVersionString))
+                                             #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp._version))
         return fetchRequest
     }
     

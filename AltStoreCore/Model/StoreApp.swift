@@ -40,13 +40,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged @objc(version) public private(set) var latestVersionString: String
-    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
-    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
-    
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
+    
+    @NSManaged public var sortIndex: Int32
     
     @objc public internal(set) var sourceIdentifier: String? {
         get {
@@ -69,7 +67,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     }
     @NSManaged private var primitiveSourceIdentifier: String?
     
-    @NSManaged public var sortIndex: Int32
+    // Legacy (kept for backwards compatibility)
+    @NSManaged @objc(version) internal private(set) var _version: String
+    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
+    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
     
     /* Relationships */
     @NSManaged public var installedApp: InstalledApp?
@@ -233,7 +234,7 @@ internal extension StoreApp
         }
                 
         // Preserve backwards compatibility by assigning legacy property values.
-        self.latestVersionString = latestVersion.version
+        self._version = latestVersion.version
         self._versionDate = latestVersion.date
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL
