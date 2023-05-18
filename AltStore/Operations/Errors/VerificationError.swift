@@ -23,6 +23,7 @@ extension VerificationError
         
         case mismatchedHash = 3
         case mismatchedVersion = 4
+        case mismatchedBuildVersion = 5
         
         case undeclaredPermissions = 6
         case addedPermissions = 7
@@ -42,6 +43,10 @@ extension VerificationError
     
     static func mismatchedVersion(_ version: String, expectedVersion: String, app: AppProtocol) -> VerificationError {
         VerificationError(code: .mismatchedVersion, app: app, version: version, expectedVersion: expectedVersion)
+    }
+    
+    static func mismatchedBuildVersion(_ version: String, expectedVersion: String, app: AppProtocol) -> VerificationError {
+        VerificationError(code: .mismatchedBuildVersion, app: app, version: version, expectedVersion: expectedVersion)
     }
     
     static func undeclaredPermissions(_ permissions: [any ALTAppPermission], app: AppProtocol) -> VerificationError {
@@ -143,6 +148,10 @@ struct VerificationError: ALTLocalizedError
         case .mismatchedVersion:
             let appName = self.$app.name ?? NSLocalizedString("the app", comment: "")
             return String(format: NSLocalizedString("The downloaded version of %@ does not match the version specified by the source.", comment: ""), appName)
+            
+        case .mismatchedBuildVersion:
+            let appName = self.$app.name ?? NSLocalizedString("the app", comment: "")
+            return String(format: NSLocalizedString("The downloaded version of %@ does not match the build number specified by the source.", comment: ""), appName)
             
         case .undeclaredPermissions:
             let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")

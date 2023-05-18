@@ -117,9 +117,14 @@ private extension VerifyAppOperation
     
     func verifyDownloadedVersion(of app: ALTApplication, @AsyncManaged matches appVersion: AppVersion) async throws
     {
-        let version = await $appVersion.version
+        let (version, buildVersion) = await $appVersion.perform { ($0.version, $0.buildVersion) }
         
         guard version == app.version else { throw VerificationError.mismatchedVersion(app.version, expectedVersion: version, app: app) }
+        
+        if let buildVersion
+        {
+            guard buildVersion == app.buildVersion else { throw VerificationError.mismatchedBuildVersion(app.buildVersion, expectedVersion: buildVersion, app: app) }
+        }
     }
     
     func verifyPermissions(of app: ALTApplication, @AsyncManaged match appVersion: AppVersion) async throws
