@@ -25,12 +25,6 @@ extension AppManager
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
-    
-    enum PreferredAppVersion
-    {
-        case latestSupportedVersion
-        case latestAvailableVersionWithFallback
-    }
 }
 
 class AppManagerPublisher: ObservableObject
@@ -545,16 +539,9 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ installedApp: InstalledApp, to preferredAppVersion: PreferredAppVersion = .latestSupportedVersion, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        let preferredApp: AppProtocol?
-        switch preferredAppVersion
-        {
-        case .latestSupportedVersion: preferredApp = installedApp.storeApp?.latestSupportedVersion
-        case .latestAvailableVersionWithFallback: preferredApp = installedApp.storeApp // Use StoreApp directly to correctly handle min/max OS versions in DownloadAppOperation.
-        }
-        
-        guard let app = preferredApp else {
+        guard let appVersion = installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
@@ -572,7 +559,7 @@ extension AppManager
             }
         }
         
-        let operation = AppOperation.update(app)
+        let operation = AppOperation.update(appVersion)
         assert(operation.app as AnyObject !== installedApp) // Make sure we never accidentally "update" to already installed app.
         
         self.perform([operation], presentingViewController: presentingViewController, group: group)

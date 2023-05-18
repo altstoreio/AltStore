@@ -346,7 +346,7 @@ private extension AppViewController
             
             if let installedApp = self.app.installedApp
             {
-                if let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
+                if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
                 {
                     button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
                 }
@@ -364,7 +364,7 @@ private extension AppViewController
             button.progress = progress
         }
         
-        if let versionDate = self.app.latestAvailableVersion?.date, versionDate > Date()
+        if let versionDate = self.app.latestSupportedVersion?.date, versionDate > Date()
         {
             self.bannerView.button.countdownDate = versionDate
             self.navigationBarDownloadButton.countdownDate = versionDate
@@ -500,7 +500,7 @@ extension AppViewController
     {
         if let installedApp = self.app.installedApp
         {
-            if let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
+            if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
             {
                 self.updateApp(installedApp)
             }
@@ -562,7 +562,7 @@ extension AppViewController
             return
         }
         
-        _ = AppManager.shared.update(installedApp, to: .latestAvailableVersionWithFallback, presentingViewController: self) { (result) in
+        _ = AppManager.shared.update(installedApp, presentingViewController: self) { (result) in
             DispatchQueue.main.async {
                 switch result
                 {
