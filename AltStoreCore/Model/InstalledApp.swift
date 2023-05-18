@@ -48,6 +48,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var bundleIdentifier: String
     @NSManaged public var resignedBundleIdentifier: String
     @NSManaged public var version: String
+    @NSManaged public var buildVersion: String
     
     @NSManaged public var refreshedDate: Date
     @NSManaged public var expirationDate: Date
@@ -100,29 +101,38 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
     }
+}
+
+public extension InstalledApp
+{
+    var localizedVersion: String {
+        let localizedVersion = "\(self.version) (\(self.buildVersion))"
+        return localizedVersion
+    }
     
-    public func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        self.buildVersion = resignedApp.buildVersion
         
         self.certificateSerialNumber = certificateSerialNumber
-
+        
         if let provisioningProfile = resignedApp.provisioningProfile
         {
             self.update(provisioningProfile: provisioningProfile)
         }
     }
     
-    public func update(provisioningProfile: ALTProvisioningProfile)
+    func update(provisioningProfile: ALTProvisioningProfile)
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
     }
     
-    public func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
+    func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
     {
         let hasAlternateIcon = self.hasAlternateIcon
         let alternateIconURL = self.alternateIconURL
@@ -147,6 +157,19 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
             }
         }
     }
+    
+    func matches(_ appVersion: AppVersion) -> Bool
+    {
+        // Versions MUST match exactly.
+        guard self.version == appVersion.version else { return false }
+        
+        // If buildVersion is nil, return true because versions match.
+        guard let buildVersion = appVersion.buildVersion else { return true }
+        
+        // If buildVersion != nil, compare buildVersions and return result.
+        let matchesAppVersion = (self.buildVersion == buildVersion)
+        return matchesAppVersion
+    }
 }
 
 public extension InstalledApp
@@ -168,13 +191,22 @@ public extension InstalledApp
     
     class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
-        let predicate = NSPredicate(format: "%K != nil AND %K != %K",
-                                    #keyPath(InstalledApp.storeApp.latestSupportedVersion),
-                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version))
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         
-        let fetchRequest = InstalledApp.updatesFetchRequest()
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [fetchRequest.predicate, predicate].compactMap { $0 })
+        let predicateFormat = [
+            // isActive && storeApp != nil && latestSupportedVersion != nil
+            "%K == YES AND %K != nil AND %K != nil",
+            
+            "AND",
+            
+            // (latestSupportedVersion.version != installedApp.version || (latestSupportedVersion.buildVersion != nil && latestSupportedVersion.buildVersion != installedApp.buildVersion))
+            "(%K != %K OR (%K != '' AND %K != %K))",
+        ].joined(separator: " ")
         
+        fetchRequest.predicate = NSPredicate(format: predicateFormat,
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.latestSupportedVersion),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion.version), #keyPath(InstalledApp.version),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.buildVersion))
         return fetchRequest
     }
     

@@ -231,8 +231,7 @@ private extension DatabaseManager
             }
             else
             {
-                storeApp = StoreApp.makeAltStoreApp(in: context)
-                storeApp.latestSupportedVersion?.version = localApp.version
+                storeApp = StoreApp.makeAltStoreApp(version: localApp.version, buildVersion: localApp.buildVersion, in: context)
                 storeApp.source = altStoreSource
             }
                         
@@ -280,7 +279,7 @@ private extension DatabaseManager
             #if DEBUG
             let replaceCachedApp = true
             #else
-            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
+            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version || installedApp.buildVersion != localApp.buildVersion
             #endif
             
             if replaceCachedApp

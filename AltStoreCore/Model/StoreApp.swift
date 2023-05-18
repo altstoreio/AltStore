@@ -184,6 +184,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 let size = try container.decode(Int32.self, forKey: .size)
                 
                 let appVersion = AppVersion.makeAppVersion(version: version,
+                                                           buildVersion: nil,
                                                            date: versionDate,
                                                            localizedDescription: versionDescription,
                                                            downloadURL: downloadURL,
@@ -275,7 +276,7 @@ public extension StoreApp
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
     }
     
-    class func makeAltStoreApp(in context: NSManagedObjectContext) -> StoreApp
+    class func makeAltStoreApp(version: String, buildVersion: String?, in context: NSManagedObjectContext) -> StoreApp
     {
         let app = StoreApp(context: context)
         app.name = "AltStore"
@@ -286,7 +287,8 @@ public extension StoreApp
         app.screenshotURLs = []
         app.sourceIdentifier = Source.altStoreIdentifier
         
-        let appVersion = AppVersion.makeAppVersion(version: "1.0",
+        let appVersion = AppVersion.makeAppVersion(version: version,
+                                                   buildVersion: buildVersion,
                                                    date: Date(),
                                                    downloadURL: URL(string: "http://rileytestut.com")!,
                                                    size: 0,

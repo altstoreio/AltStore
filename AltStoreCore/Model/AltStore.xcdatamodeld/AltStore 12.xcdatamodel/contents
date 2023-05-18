@@ -42,6 +42,7 @@
     </entity>
     <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="buildVersion" attributeType="String"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="downloadURL" attributeType="URI"/>
         <attribute name="localizedDescription" optional="YES" attributeType="String"/>
@@ -57,11 +58,13 @@
             <uniquenessConstraint>
                 <constraint value="appBundleID"/>
                 <constraint value="version"/>
+                <constraint value="buildVersion"/>
                 <constraint value="sourceID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
+        <attribute name="buildVersion" attributeType="String"/>
         <attribute name="bundleIdentifier" attributeType="String"/>
         <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
         <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>

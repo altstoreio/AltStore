@@ -181,7 +181,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             return
         }
         
-        var sortedVersionsByGlobalAppID = [String: NSOrderedSet]()
+        var sortedVersionIDsByGlobalAppID = [String: NSOrderedSet]()
         var permissionsByGlobalAppID = [String: Set<AnyHashable>]()
         
         var featuredAppIDsBySourceID = [String: [String]]()
@@ -202,8 +202,8 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 }
                 
                 // Versions
-                let contextVersions = NSOrderedSet(array: contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.version })
-                for case let databaseVersion as AppVersion in databaseObject._versions where !contextVersions.contains(databaseVersion.version)
+                let contextVersionIDs = NSOrderedSet(array: contextApp._versions.lazy.compactMap { $0 as? AppVersion }.map { $0.versionID })
+                for case let databaseVersion as AppVersion in databaseObject._versions where !contextVersionIDs.contains(databaseVersion.versionID)
                 {
                     // Version # does NOT exist in context, so delete existing databaseVersion.
                     databaseVersion.managedObjectContext?.delete(databaseVersion)
@@ -212,7 +212,7 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 if let globallyUniqueID = contextApp.globallyUniqueID
                 {
                     permissionsByGlobalAppID[globallyUniqueID] = contextPermissions
-                    sortedVersionsByGlobalAppID[globallyUniqueID] = contextVersions
+                    sortedVersionIDsByGlobalAppID[globallyUniqueID] = contextVersionIDs
                 }
                 
             case let databaseObject as Source:
@@ -271,21 +271,21 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         }
                         
                         // App versions
-                        if let sortedAppVersions = sortedVersionsByGlobalAppID[globallyUniqueID],
-                           let sortedAppVersionsArray = sortedAppVersions.array as? [String],
-                           case let databaseVersions = databaseObject.versions.map({ $0.version }),
-                           databaseVersions != sortedAppVersionsArray
+                        if let sortedAppVersionIDs = sortedVersionIDsByGlobalAppID[globallyUniqueID],
+                           let sortedAppVersionsIDsArray = sortedAppVersionIDs.array as? [String],
+                           case let databaseVersionIDs = databaseObject.versions.map({ $0.versionID }),
+                           databaseVersionIDs != sortedAppVersionsIDsArray
                         {
                             // databaseObject.versions post-merge doesn't match contextApp.versions pre-merge, so attempt to fix by re-sorting.
                             
                             let fixedAppVersions = databaseObject.versions.sorted { (versionA, versionB) in
-                                let indexA = sortedAppVersions.index(of: versionA.version)
-                                let indexB = sortedAppVersions.index(of: versionB.version)
+                                let indexA = sortedAppVersionIDs.index(of: versionA.versionID)
+                                let indexB = sortedAppVersionIDs.index(of: versionB.versionID)
                                 return indexA < indexB
                             }
                             
-                            let appVersionValues = fixedAppVersions.map { $0.version }
-                            guard appVersionValues == sortedAppVersionsArray else {
+                            let appVersionIDs = fixedAppVersions.map { $0.versionID }
+                            guard appVersionIDs == sortedAppVersionsIDsArray else {
                                 // fixedAppVersions still doesn't match source's versions, so throw MergeError.
                                 throw MergeError.incorrectVersionOrder(for: databaseObject)
                             }

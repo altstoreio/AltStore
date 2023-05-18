@@ -30,6 +30,7 @@ extension AnalyticsManager
         case bundleIdentifier
         case developerName
         case version
+        case buildVersion
         case size
         case tintColor
         case sourceIdentifier
@@ -65,6 +66,7 @@ extension AnalyticsManager
                     .bundleIdentifier: app.bundleIdentifier,
                     .developerName: app.storeApp?.developerName,
                     .version: app.version,
+                    .buildVersion: app.buildVersion,
                     .size: appBundleSize?.description,
                     .tintColor: app.storeApp?.tintColor?.hexString,
                     .sourceIdentifier: app.storeApp?.sourceIdentifier,

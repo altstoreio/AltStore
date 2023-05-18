@@ -84,7 +84,7 @@ class AppContentViewController: UITableViewController
         if let version = self.app.latestAvailableVersion
         {
             self.versionDescriptionTextView.text = version.localizedDescription
-            self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.version)
+            self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.localizedVersion)
             self.versionDateLabel.text = Date().relativeDateString(since: version.date, dateFormatter: self.dateFormatter)
             self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: version.size)
         }

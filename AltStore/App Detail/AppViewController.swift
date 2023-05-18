@@ -346,7 +346,7 @@ private extension AppViewController
             
             if let installedApp = self.app.installedApp
             {
-                if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+                if let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
                 {
                     button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
                 }
@@ -500,7 +500,7 @@ extension AppViewController
     {
         if let installedApp = self.app.installedApp
         {
-            if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+            if let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
             {
                 self.updateApp(installedApp)
             }

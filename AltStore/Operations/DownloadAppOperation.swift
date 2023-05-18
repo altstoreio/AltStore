@@ -70,19 +70,24 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
             }
             catch let error as VerificationError where error.code == .iOSVersionNotSupported
             {
-                guard let presentingViewController = self.context.presentingViewController,
-                      let latestSupportedVersion = storeApp.latestSupportedVersion, case let version = latestSupportedVersion.version, version != storeApp.installedApp?.version
+                guard let presentingViewController = self.context.presentingViewController, let latestSupportedVersion = storeApp.latestSupportedVersion
                 else { return self.finish(.failure(error)) }
+                
+                if let installedApp = storeApp.installedApp
+                {
+                    guard !installedApp.matches(latestSupportedVersion) else { return self.finish(.failure(error)) }
+                }
                 
                 let title = NSLocalizedString("Unsupported iOS Version", comment: "")
                 let message = error.localizedDescription + "\n\n" + NSLocalizedString("Would you like to download the last version compatible with this device instead?", comment: "")
+                let localizedVersion = latestSupportedVersion.localizedVersion
                                 
                 DispatchQueue.main.async {
                     let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
                     alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
                         self.finish(.failure(OperationError.cancelled))
                     })
-                    alertController.addAction(UIAlertAction(title: String(format: NSLocalizedString("Download %@ %@", comment: ""), self.appName, version), style: .default) { _ in
+                    alertController.addAction(UIAlertAction(title: String(format: NSLocalizedString("Download %@ %@", comment: ""), self.appName, localizedVersion), style: .default) { _ in
                         self.download(latestSupportedVersion)
                     })
                     presentingViewController.present(alertController, animated: true)

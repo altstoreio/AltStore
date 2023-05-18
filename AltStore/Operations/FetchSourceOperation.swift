@@ -162,8 +162,8 @@ private extension FetchSourceOperation
             var versions = Set<String>()
             for version in app.versions
             {
-                guard !versions.contains(version.version) else { throw SourceError.duplicateVersion(version.version, for: app, source: source) }
-                versions.insert(version.version)
+                guard !versions.contains(version.versionID) else { throw SourceError.duplicateVersion(version.localizedVersion, for: app, source: source) }
+                versions.insert(version.versionID)
             }
             
             for permission in app.permissions

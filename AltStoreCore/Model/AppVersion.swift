@@ -13,9 +13,17 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged public var version: String
+    
+    // NULL does not work as expected with SQL Unique Constraints (because NULL != NULL),
+    // so we store non-optional value and provide public accessor with optional return type.
+    @nonobjc public var buildVersion: String? {
+        get { _buildVersion.isEmpty ? nil : _buildVersion }
+        set { _buildVersion = newValue ?? "" }
+    }
+    @NSManaged @objc(buildVersion) public private(set) var _buildVersion: String
+    
     @NSManaged public var date: Date
     @NSManaged public var localizedDescription: String?
-    
     @NSManaged public var downloadURL: URL
     @NSManaged public var size: Int64
     @NSManaged public var sha256: String?
@@ -51,6 +59,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
     private enum CodingKeys: String, CodingKey
     {
         case version
+        case buildVersion
         case date
         case localizedDescription
         case downloadURL
@@ -71,6 +80,8 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
             self.version = try container.decode(String.self, forKey: .version)
+            self.buildVersion = try container.decodeIfPresent(String.self, forKey: .buildVersion)
+            
             self.date = try container.decode(Date.self, forKey: .date)
             self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             
@@ -96,6 +107,26 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
 
 public extension AppVersion
 {
+    var localizedVersion: String {
+        guard let buildVersion else { return self.version }
+        
+        let localizedVersion = "\(self.version) (\(buildVersion))"
+        return localizedVersion
+    }
+    
+    var versionID: String {
+        // Use `nil` as fallback to prevent collisions between versions with builds and versions without.
+        // 1.5 (4) -> "1.5|4"
+        // 1.5.4 (no build) -> "1.5.4|nil"
+        let buildVersion = self.buildVersion ?? "nil"
+        
+        let versionID = "\(self.version)|\(buildVersion)"
+        return versionID
+    }
+}
+
+public extension AppVersion
+{
     @nonobjc class func fetchRequest() -> NSFetchRequest<AppVersion>
     {
         return NSFetchRequest<AppVersion>(entityName: "AppVersion")
@@ -103,6 +134,7 @@ public extension AppVersion
     
     class func makeAppVersion(
         version: String,
+        buildVersion: String?,
         date: Date,
         localizedDescription: String? = nil,
         downloadURL: URL,
@@ -113,6 +145,7 @@ public extension AppVersion
     {
         let appVersion = AppVersion(context: context)
         appVersion.version = version
+        appVersion.buildVersion = buildVersion
         appVersion.date = date
         appVersion.localizedDescription = localizedDescription
         appVersion.downloadURL = downloadURL

@@ -343,7 +343,9 @@ private extension AppDelegate
                 let previousUpdatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
-                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version)]
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion.version),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)]
                 
                 let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
                 previousNewsItemsFetchRequest.includesPendingChanges = false
@@ -367,13 +369,19 @@ private extension AppDelegate
                     
                     if let previousUpdate = previousUpdates.first(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier })
                     {
-                        // An update for this app was already available, so check whether the version # is different.
-                        guard let version = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)], version != latestSupportedVersion.version else { continue }
+                        // An update for this app was already available, so check whether the version or build version is different.
+                        guard let previousVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)] else { continue }
+                        
+                        // previousUpdate might not contain buildVersion, but if it does then map empty string to nil to match AppVersion.
+                        let previousBuildVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)].map { $0.isEmpty ? nil : "" }
+                        
+                        // Only show notification if previous latestSupportedVersion does not _exactly_ match current latestSupportedVersion.
+                        guard previousVersion != latestSupportedVersion.version || previousBuildVersion != latestSupportedVersion.buildVersion  else { continue }
                     }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.localizedVersion)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
