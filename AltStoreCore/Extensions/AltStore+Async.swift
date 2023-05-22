@@ -63,7 +63,7 @@ public extension NSManagedObjectContext
 public extension UIViewController
 {
     @MainActor
-    func presentAlert(title: String, message: String, action: UIAlertAction? = nil) async
+    func presentAlert(title: String, message: String?, action: UIAlertAction? = nil) async
     {
         let action = action ?? .ok
         
@@ -80,18 +80,32 @@ public extension UIViewController
     @MainActor
     func presentConfirmationAlert(title: String, message: String, primaryAction: UIAlertAction, cancelAction: UIAlertAction? = nil) async throws
     {
+        _ = try await self.presentConfirmationAlert(title: title, message: message, actions: [primaryAction], cancelAction: cancelAction)
+    }
+    
+    @MainActor
+    func presentConfirmationAlert(title: String, message: String, actions: [UIAlertAction], cancelAction: UIAlertAction? = nil) async throws -> UIAlertAction
+    {
         let cancelAction = cancelAction ?? .cancel
         
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        let action = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<UIAlertAction, Error>) in
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: cancelAction.title, style: cancelAction.style) { _ in
                 continuation.resume(throwing: CancellationError())
             })
-            alertController.addAction(UIAlertAction(title: primaryAction.title, style: primaryAction.style) { _ in
-                continuation.resume()
-            })
+            
+            for action in actions
+            {
+                alertController.addAction(UIAlertAction(title: action.title, style: action.style) { alertAction in
+                    // alertAction is different than the action provided,
+                    // so return original action instead for == comparison.
+                    continuation.resume(returning: action)
+                })
+            }
             
             self.present(alertController, animated: true)
         }
+        
+        return action
     }
 }
