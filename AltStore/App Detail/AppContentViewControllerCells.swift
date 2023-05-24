@@ -8,27 +8,6 @@
 
 import UIKit
 
-class PermissionCollectionViewCell: UICollectionViewCell
-{
-    @IBOutlet var button: UIButton!
-    @IBOutlet var textLabel: UILabel!
-    
-    override func layoutSubviews()
-    {
-        super.layoutSubviews()
-        
-        self.button.layer.cornerRadius = self.button.bounds.midY
-    }
-    
-    override func tintColorDidChange()
-    {
-        super.tintColorDidChange()
-        
-        self.button.backgroundColor = self.tintColor.withAlphaComponent(0.15)
-        self.textLabel.textColor = self.tintColor
-    }
-}
-
 class AppContentTableViewCell: UITableViewCell
 {
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize
