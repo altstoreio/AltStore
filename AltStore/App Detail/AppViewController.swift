@@ -73,6 +73,7 @@ class AppViewController: UIViewController
         self.contentViewController.view.layer.masksToBounds = true
         
         self.contentViewController.tableView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
+        self.contentViewController.appDetailCollectionViewController.collectionView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
         self.contentViewController.tableView.showsVerticalScrollIndicator = false
         
         // Bring to front so the scroll indicators are visible.

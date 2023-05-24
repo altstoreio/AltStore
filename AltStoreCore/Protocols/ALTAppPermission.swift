@@ -28,11 +28,17 @@ public protocol ALTAppPermission: RawRepresentable<String>, Hashable
     var symbolName: String? { get }
     
     var localizedName: String? { get }
-    var localizedDisplayName: String { get } // Default implementation
+    var localizedDescription: String? { get }
+    
+    // Default implementations
+    var effectiveSymbolName: String { get }
+    var localizedDisplayName: String { get }
 }
 
 public extension ALTAppPermission
 {
+    var effectiveSymbolName: String { self.symbolName ?? "lock" }
+    
     var localizedDisplayName: String {
         return self.localizedName ?? self.rawValue
     }
@@ -55,6 +61,7 @@ public struct UnknownAppPermission: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var localizedDescription: String? { nil }
         
     public var rawValue: String
     
@@ -70,6 +77,7 @@ extension ALTEntitlement: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var localizedDescription: String? { nil }
 }
 
 extension ALTAppPrivacyPermission: ALTAppPermission
@@ -78,6 +86,7 @@ extension ALTAppPrivacyPermission: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var localizedDescription: String? { nil }
 }
 
 extension ALTAppBackgroundMode: ALTAppPermission
@@ -86,4 +95,5 @@ extension ALTAppBackgroundMode: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var localizedDescription: String? { nil }
 }
