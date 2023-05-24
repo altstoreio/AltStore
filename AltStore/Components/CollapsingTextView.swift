@@ -119,13 +119,13 @@ class CollapsingTextView: UITextView
         {
             if self.isCollapsed
             {
-                self.textContainer.maximumNumberOfLines = self.maximumNumberOfLines
-                
                 let boundingSize = self.attributedText.boundingRect(with: CGSize(width: self.textContainer.size.width, height: .infinity), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
-                let maximumCollapsedHeight = font.lineHeight * Double(self.maximumNumberOfLines)
+                let maximumCollapsedHeight = font.lineHeight * Double(self.maximumNumberOfLines) + self.lineSpacing * Double(self.maximumNumberOfLines - 1)
                 
                 if boundingSize.height.rounded() > maximumCollapsedHeight.rounded()
                 {
+                    self.textContainer.maximumNumberOfLines = self.maximumNumberOfLines
+                    
                     var exclusionFrame = moreButtonFrame
                     exclusionFrame.origin.y += self.moreButton.bounds.midY
                     exclusionFrame.size.width = self.bounds.width // Extra wide to make sure it wraps to next line.
@@ -135,6 +135,7 @@ class CollapsingTextView: UITextView
                 }
                 else
                 {
+                    self.textContainer.maximumNumberOfLines = 0 // Fixes last line having slightly smaller line spacing.
                     self.textContainer.exclusionPaths = []
                     
                     self.moreButton.isHidden = true
