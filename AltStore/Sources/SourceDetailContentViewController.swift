@@ -293,12 +293,12 @@ private extension SourceDetailContentViewController
     {
         let dataSource = RSTDynamicCollectionViewDataSource<NSManagedObject>()
         dataSource.numberOfSectionsHandler = { 1 }
-        dataSource.numberOfItemsHandler = { _ in self.source.localizedDescription == nil ? 0 : 1 }
+        dataSource.numberOfItemsHandler = { [source] _ in source.localizedDescription == nil ? 0 : 1 }
         dataSource.cellIdentifierHandler = { _ in "AboutCell" }
-        dataSource.cellConfigurationHandler = { [weak self] (cell, _, indexPath) in
+        dataSource.cellConfigurationHandler = { [source] (cell, _, indexPath) in
             let cell = cell as! TextViewCollectionViewCell
             cell.contentView.layoutMargins = .zero // Fixes incorrect margins if not initially on screen.
-            cell.textView.text = self?.source.localizedDescription
+            cell.textView.text = source.localizedDescription
             cell.textView.isCollapsed = false
         }
         
