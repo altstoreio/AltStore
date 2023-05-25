@@ -28,21 +28,33 @@ public protocol ALTAppPermission: RawRepresentable<String>, Hashable
     var symbolName: String? { get }
     
     var localizedName: String? { get }
+    var synthesizedName: String? { get } // Kupo!
+    
     var localizedDescription: String? { get }
     
-    // Default implementations
+    // Convenience properties with default implementations.
+    // Would normally just be in extension, except that crashes Swift 5.8 compiler ¯\_(ツ)_/¯
+    var isKnown: Bool { get }
     var effectiveSymbolName: String { get }
     var localizedDisplayName: String { get }
 }
 
 public extension ALTAppPermission
 {
+    var isKnown: Bool {
+        // Assume all known permissions have non-nil localizedDescriptions.
+        return self.localizedDescription != nil
+    }
+    
     var effectiveSymbolName: String { self.symbolName ?? "lock" }
     
     var localizedDisplayName: String {
-        return self.localizedName ?? self.rawValue
+        return self.localizedName ?? self.synthesizedName ?? self.rawValue
     }
-    
+}
+
+public extension ALTAppPermission
+{
     func isEqual(_ permission: any ALTAppPermission) -> Bool
     {
         guard let permission = permission as? Self else { return false }
@@ -61,6 +73,8 @@ public struct UnknownAppPermission: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var synthesizedName: String? { nil }
+    
     public var localizedDescription: String? { nil }
         
     public var rawValue: String
@@ -77,6 +91,25 @@ extension ALTEntitlement: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    
+    public var synthesizedName: String? {
+        // Attempt to convert last component of entitlement to human-readable string.
+        // e.g. com.apple.developer.kernel.increased-memory-limit -> "Increased Memory Limit"
+        let components = self.rawValue.components(separatedBy: ".")
+        guard let rawName = components.last else { return nil }
+        
+        let words = rawName.components(separatedBy: "-").map { word in
+            switch word.lowercased()
+            {
+            case "carplay": return NSLocalizedString("CarPlay", comment: "")
+            default: return word.localizedCapitalized
+            }
+        }
+        
+        let synthesizedName = words.joined(separator: " ")
+        return synthesizedName
+    }
+    
     public var localizedDescription: String? { nil }
 }
 
@@ -99,6 +132,7 @@ extension ALTAppPrivacyPermission: ALTAppPermission
         }
     }
     
+    public var synthesizedName: String? { nil }
     public var localizedDescription: String? { nil }
         
     public var symbolName: String? {
@@ -123,5 +157,7 @@ extension ALTAppBackgroundMode: ALTAppPermission
     public var symbolName: String? { nil }
     
     public var localizedName: String? { nil }
+    public var synthesizedName: String? { nil }
+    
     public var localizedDescription: String? { nil }
 }
