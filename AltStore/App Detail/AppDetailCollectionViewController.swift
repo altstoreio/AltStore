@@ -17,7 +17,8 @@ extension AppDetailCollectionViewController
     private enum Section: Int
     {
         case privacy
-        case entitlements
+        case knownEntitlements
+        case unknownEntitlements
     }
     
     private enum ElementKind: String
@@ -45,7 +46,8 @@ class AppDetailCollectionViewController: UICollectionViewController
 {
     let app: StoreApp
     private let privacyPermissions: [AppPermission]
-    private let entitlementPermissions: [AppPermission]
+    private let knownEntitlementPermissions: [AppPermission]
+    private let unknownEntitlementPermissions: [AppPermission]
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var privacyDataSource = self.makePrivacyDataSource()
@@ -79,7 +81,10 @@ class AppDetailCollectionViewController: UICollectionViewController
         }
         
         self.privacyPermissions = app.permissions.filter { $0.type == .privacy }.sorted(by: comparator)
-        self.entitlementPermissions = app.permissions.filter { $0.type == .entitlement }.sorted(by: comparator)
+        
+        let entitlementPermissions = app.permissions.lazy.filter { $0.type == .entitlement }
+        self.knownEntitlementPermissions = entitlementPermissions.filter { $0.isKnown }.sorted(by: comparator)
+        self.unknownEntitlementPermissions = entitlementPermissions.filter { !$0.isKnown }.sorted(by: comparator)
         
         super.init(coder: coder)
     }
@@ -101,11 +106,35 @@ class AppDetailCollectionViewController: UICollectionViewController
         self.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "PrivacyCell")
         self.collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         
-        self.headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
+        self.headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] (headerView, elementKind, indexPath) in
             var configuration = UIListContentConfiguration.plainHeader()
-            configuration.text = NSLocalizedString("Entitlements", comment: "")
-            configuration.directionalLayoutMargins.bottom = 15
             
+            switch Section(rawValue: indexPath.section)!
+            {
+            case .privacy: break
+            case .knownEntitlements:
+                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3)
+                configuration.textProperties.font = UIFont(descriptor: fontDescriptor, size: 0.0)
+                configuration.text = NSLocalizedString("Entitlements", comment: "")
+                
+                configuration.secondaryTextProperties.font = UIFont.preferredFont(forTextStyle: .callout)
+                configuration.textToSecondaryTextVerticalPadding = 8
+                configuration.secondaryText = NSLocalizedString("Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information. We recommend reviewing these before sideloading.", comment: "")
+                
+            case .unknownEntitlements:
+                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
+                configuration.textProperties.font = UIFont(descriptor: fontDescriptor, size: 0.0)
+                configuration.text = NSLocalizedString("Other Entitlements", comment: "")
+                
+                let action = UIAction(image: UIImage(systemName: "questionmark.circle")) { _ in
+                    self?.showUnknownEntitlementsAlert()
+                }
+                
+                let helpButton = UIButton(primaryAction: action)
+                let customAccessory = UICellAccessory.customView(configuration: .init(customView: helpButton, placement: .trailing(), tintColor: self?.app.tintColor ?? .altPrimary))
+                headerView.accessories = [customAccessory]
+            }
+                        
             headerView.contentConfiguration = configuration
             headerView.backgroundConfiguration = UIBackgroundConfiguration.clear()
         }
@@ -120,7 +149,7 @@ private extension AppDetailCollectionViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [privacyPermissions, entitlementPermissions] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [privacyPermissions, knownEntitlementPermissions, unknownEntitlementPermissions] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             guard let section = Section(rawValue: sectionIndex) else { return nil }
             switch section
             {
@@ -137,15 +166,18 @@ private extension AppDetailCollectionViewController
                 layoutSection.interGroupSpacing = 10
                 return layoutSection
                 
-            case .entitlements:
-                guard !entitlementPermissions.isEmpty else { return nil }
-                
+            case .knownEntitlements where !knownEntitlementPermissions.isEmpty: fallthrough
+            case .unknownEntitlements where !unknownEntitlementPermissions.isEmpty:
                 var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
                 configuration.headerMode = .supplementary
+                configuration.showsSeparators = false
                 configuration.backgroundColor = .altBackground
                 
                 let layoutSection = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
+                layoutSection.contentInsets.top = 4
                 return layoutSection
+                
+            case .knownEntitlements, .unknownEntitlements: return nil
             }
         })
         
@@ -186,46 +218,58 @@ private extension AppDetailCollectionViewController
         
         return dataSource
     }
-
-    func makeEntitlementsDataSource() -> RSTArrayCollectionViewDataSource<AppPermission>
+    
+    func makeEntitlementsDataSource() -> RSTCompositeCollectionViewDataSource<AppPermission>
     {
-        let dataSource = RSTArrayCollectionViewDataSource(items: self.entitlementPermissions)
-        dataSource.cellConfigurationHandler = { [weak self] (cell, appPermission, indexPath) in
+        let knownEntitlementsDataSource = RSTArrayCollectionViewDataSource(items: self.knownEntitlementPermissions)
+        let unknownEntitlementsDataSource = RSTArrayCollectionViewDataSource(items: self.unknownEntitlementPermissions)
+        
+        let dataSource = RSTCompositeCollectionViewDataSource(dataSources: [knownEntitlementsDataSource, unknownEntitlementsDataSource])
+        dataSource.cellConfigurationHandler = { [weak self] (cell, appPermission, _) in
             let cell = cell as! UICollectionViewListCell
+            let tintColor = self?.app.tintColor ?? .altPrimary
             
             var content = cell.defaultContentConfiguration()
-            content.image = UIImage(systemName: appPermission.effectiveSymbolName)
+            content.text = appPermission.localizedDisplayName
+            content.secondaryText = appPermission.permission.rawValue
+            content.secondaryTextProperties.color = .secondaryLabel
             
-            let tintColor = self?.app.tintColor ?? .altPrimary
-            content.imageProperties.tintColor = tintColor
-            
-            if let name = appPermission.localizedName
+            if appPermission.isKnown
             {
-                content.text = name
-                content.secondaryText = appPermission.permission.rawValue
-                content.secondaryTextProperties.color = UIColor.secondaryLabel
-            }
-            else
-            {
-                content.text = appPermission.permission.rawValue
+                content.image = UIImage(systemName: appPermission.effectiveSymbolName)
+                content.imageProperties.tintColor = tintColor
+                
+                if #available(iOS 15.4, *) /*, let self */ // Capturing self leads to strong-reference cycle.
+                {
+                    let detailAccessory = UICellAccessory.detail(options: .init(tintColor: tintColor)) {
+                        self?.showPermissionAlert(for: appPermission)
+                    }
+                    cell.accessories = [detailAccessory]
+                }
             }
             
             cell.contentConfiguration = content
             cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
-            
-            if #available(iOS 15.4, *) /*, let self */ // Capturing self leads to strong-reference cycle.
-            {
-                let detailAccessory = UICellAccessory.detail(displayed: .always, options: .init(tintColor: tintColor)) {
-                    let alertController = UIAlertController(title: appPermission.localizedDisplayName, message: appPermission.localizedDescription, preferredStyle: .alert)
-                    alertController.addAction(.ok)
-                    self?.present(alertController, animated: true)
-                }
-                
-                cell.accessories = [detailAccessory]
-            }
         }
-
+        
         return dataSource
+    }
+}
+
+private extension AppDetailCollectionViewController
+{
+    func showPermissionAlert(for permission: AppPermission)
+    {
+        let alertController = UIAlertController(title: permission.localizedDisplayName, message: permission.localizedDescription, preferredStyle: .alert)
+        alertController.addAction(.ok)
+        self.present(alertController, animated: true)
+    }
+    
+    func showUnknownEntitlementsAlert()
+    {
+        let alertController = UIAlertController(title: NSLocalizedString("Other Entitlements", comment: ""), message: NSLocalizedString("AltStore does not have detailed information for these entitlements.", comment: ""), preferredStyle: .alert)
+        alertController.addAction(.ok)
+        self.present(alertController, animated: true)
     }
 }
 

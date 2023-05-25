@@ -116,6 +116,12 @@ class AppContentViewController: UITableViewController
         if self.appDetailCollectionViewHeightConstraint.constant != permissionsHeight && permissionsHeight > 0
         {
             self.appDetailCollectionViewHeightConstraint.constant = permissionsHeight
+            
+            UIView.performWithoutAnimation {
+                // Update row height without animation.
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+            }
         }
     }
 }
