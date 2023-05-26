@@ -1171,6 +1171,9 @@ private extension MyAppsViewController
             catch OperationError.cancelled
             {
                 // Ignore
+                DispatchQueue.main.async {
+                    installedApp.isActive = false
+                }
             }
             catch
             {
@@ -1243,6 +1246,13 @@ private extension MyAppsViewController
                 try? app.managedObjectContext?.save()
                 
                 print("Finished deactivating app:", app.bundleIdentifier)
+            }
+            catch OperationError.cancelled
+            {
+                // Ignore
+                DispatchQueue.main.async {
+                    installedApp.isActive = true
+                }
             }
             catch
             {
