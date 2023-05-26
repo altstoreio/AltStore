@@ -100,6 +100,10 @@ class AppDetailCollectionViewController: UICollectionViewController
         // Allow parent background color to show through.
         self.collectionView.backgroundColor = nil
         
+        // Match the parent table view margins.
+        self.collectionView.directionalLayoutMargins.leading = 20
+        self.collectionView.directionalLayoutMargins.trailing = 20
+        
         let collectionViewLayout = self.makeLayout()
         self.collectionView.collectionViewLayout = collectionViewLayout
         
@@ -109,21 +113,21 @@ class AppDetailCollectionViewController: UICollectionViewController
         self.headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] (headerView, elementKind, indexPath) in
             var configuration = UIListContentConfiguration.plainHeader()
             
+            // Match parent table view section headers.
+            configuration.textProperties.font = UIFont.systemFont(ofSize: 22, weight: .bold) // .boldSystemFont(ofSize:) returns *semi-bold* color smh.
+            configuration.textProperties.color = .label
+            
             switch Section(rawValue: indexPath.section)!
             {
             case .privacy: break
             case .knownEntitlements:
-                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3)
-                configuration.textProperties.font = UIFont(descriptor: fontDescriptor, size: 0.0)
                 configuration.text = NSLocalizedString("Entitlements", comment: "")
                 
                 configuration.secondaryTextProperties.font = UIFont.preferredFont(forTextStyle: .callout)
                 configuration.textToSecondaryTextVerticalPadding = 8
-                configuration.secondaryText = NSLocalizedString("Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information. We recommend reviewing these before sideloading.", comment: "")
+                configuration.secondaryText = NSLocalizedString("Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information.", comment: "")
                 
             case .unknownEntitlements:
-                let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold) ?? UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
-                configuration.textProperties.font = UIFont(descriptor: fontDescriptor, size: 0.0)
                 configuration.text = NSLocalizedString("Other Entitlements", comment: "")
                 
                 let action = UIAction(image: UIImage(systemName: "questionmark.circle")) { _ in
@@ -149,6 +153,9 @@ private extension AppDetailCollectionViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
+        let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
+        layoutConfig.contentInsetsReference = .layoutMargins
+        
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [privacyPermissions, knownEntitlementPermissions, unknownEntitlementPermissions] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             guard let section = Section(rawValue: sectionIndex) else { return nil }
             switch section
@@ -179,7 +186,7 @@ private extension AppDetailCollectionViewController
                 
             case .knownEntitlements, .unknownEntitlements: return nil
             }
-        })
+        }, configuration: layoutConfig)
         
         return layout
     }
@@ -199,12 +206,12 @@ private extension AppDetailCollectionViewController
             guard let self, #available(iOS 16, *) else { return }
             
             cell.contentConfiguration = UIHostingConfiguration {
-                AppPermissionsCard(title: "Privacy",
+                AppPermissionsCard(title: "Permissions",
                                    description: "\(self.app.name) may request access to the following:",
                                    tintColor: Color(uiColor: self.app.tintColor ?? .altPrimary),
                                    permissions: self.privacyPermissions)
             }
-            .margins(.horizontal, 20)
+            .margins(.horizontal, 0)
         }
         
         if #available(iOS 16, *)
