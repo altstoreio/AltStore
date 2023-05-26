@@ -173,25 +173,26 @@ private extension VerifyAppOperation
         guard let storeApp = await $appVersion.app else { throw OperationError.invalidParameters }
         
         // Verify source permissions match first.
-        let allPermissions = try await self.verifyPermissions(of: app, match: storeApp)
+        _ = try await self.verifyPermissions(of: app, match: storeApp)
         
-        switch self.permissionsMode
-        {
-        case .none, .all: break
-        case .added:
-            let installedAppURL = InstalledApp.fileURL(for: app)
-            guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
-            
-            var previousEntitlements = Set(previousApp.entitlements.keys)
-            for appExtension in previousApp.appExtensions
-            {
-                previousEntitlements.formUnion(appExtension.entitlements.keys)
-            }
-            
-            // Make sure all entitlements already exist in previousApp.
-            let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
-            guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
-        }
+        // TODO: Uncomment to verify added permissions.
+        // switch self.permissionsMode
+        // {
+        // case .none, .all: break
+        // case .added:
+        //     let installedAppURL = InstalledApp.fileURL(for: app)
+        //     guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
+        //
+        //     var previousEntitlements = Set(previousApp.entitlements.keys)
+        //     for appExtension in previousApp.appExtensions
+        //     {
+        //         previousEntitlements.formUnion(appExtension.entitlements.keys)
+        //     }
+        //
+        //     // Make sure all entitlements already exist in previousApp.
+        //     let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
+        //     guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
+        // }
     }
     
     @discardableResult
