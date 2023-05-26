@@ -179,16 +179,6 @@ public extension InstalledApp
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
     }
     
-    class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
-    {
-        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
-                                             #keyPath(InstalledApp.isActive),
-                                             #keyPath(InstalledApp.storeApp),
-                                             #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp._version))
-        return fetchRequest
-    }
-    
     class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>

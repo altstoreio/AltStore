@@ -335,6 +335,15 @@ extension AppManager
         }
     }
     
+    func fetchSources() async throws -> (Set<Source>, NSManagedObjectContext)
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSources { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
     func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
     {
         let (sourceName, sourceURL) = await $source.perform { ($0.name, $0.sourceURL) }
@@ -410,6 +419,7 @@ extension AppManager
         self.run([fetchSourceOperation], context: nil)
     }
     
+    @available(*, renamed: "fetchSources")
     func fetchSources(completionHandler: @escaping (Result<(Set<Source>, NSManagedObjectContext), FetchSourcesError>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
