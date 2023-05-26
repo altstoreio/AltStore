@@ -11,7 +11,6 @@
 ALTAppPermissionType const ALTAppPermissionTypeUnknown = @"unknown";
 ALTAppPermissionType const ALTAppPermissionTypeEntitlement = @"entitlement";
 ALTAppPermissionType const ALTAppPermissionTypePrivacy = @"privacy";
-ALTAppPermissionType const ALTAppPermissionTypeBackgroundMode = @"background";
 
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionAppleMusic = @"AppleMusic";
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionBluetooth = @"BluetoothAlways";

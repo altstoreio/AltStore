@@ -16,7 +16,6 @@ public extension ALTAppPermissionType
         case .unknown: return NSLocalizedString("Permission", comment: "")
         case .entitlement: return NSLocalizedString("Entitlement", comment: "")
         case .privacy: return NSLocalizedString("Privacy Permission", comment: "")
-        case .backgroundMode: return NSLocalizedString("Background Mode", comment: "")
         default: return nil
         }
     }
@@ -149,15 +148,4 @@ extension ALTAppPrivacyPermission: ALTAppPermission
         default: return nil
         }
     }
-}
-
-extension ALTAppBackgroundMode: ALTAppPermission
-{
-    public var type: ALTAppPermissionType { .backgroundMode }
-    public var symbolName: String? { nil }
-    
-    public var localizedName: String? { nil }
-    public var synthesizedName: String? { nil }
-    
-    public var localizedDescription: String? { nil }
 }
