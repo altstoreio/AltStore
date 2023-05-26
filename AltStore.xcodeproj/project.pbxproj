@@ -356,6 +356,7 @@
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
+		D53D84022A2158FC00543C3B /* Permissions.plist in Resources */ = {isa = PBXBuildFile; fileRef = D53D84012A2158FC00543C3B /* Permissions.plist */; };
 		D54058B92A1D6269008CCC58 /* AppPermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */; };
 		D54058BB2A1D8FE3008CCC58 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */; };
 		D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */; };
@@ -882,6 +883,7 @@
 		D533E8B82727B61400A9B5DD /* fragmentzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fragmentzip.h; sourceTree = "<group>"; };
 		D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dependencies/fragmentzip/libfragmentzip.a; sourceTree = SOURCE_ROOT; };
 		D533E8BD2727BBF800A9B5DD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = Dependencies/libcurl/libcurl.a; sourceTree = SOURCE_ROOT; };
+		D53D84012A2158FC00543C3B /* Permissions.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Permissions.plist; sourceTree = "<group>"; };
 		D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionProtocol.swift; sourceTree = "<group>"; };
 		D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 		D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
@@ -1612,6 +1614,7 @@
 			isa = PBXGroup;
 			children = (
 				BFCB9206250AB2120057B44E /* Colors.xcassets */,
+				D53D84012A2158FC00543C3B /* Permissions.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2365,6 +2368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFCB9207250AB2120057B44E /* Colors.xcassets in Resources */,
+				D53D84022A2158FC00543C3B /* Permissions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
