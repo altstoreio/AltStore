@@ -190,7 +190,7 @@ private extension VerifyAppOperation
             
             // Make sure all entitlements already exist in previousApp.
             let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
-            guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, app: appVersion) }
+            guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
         }
     }
     
