@@ -166,15 +166,10 @@ private extension FetchSourceOperation
                 versions.insert(version.versionID)
             }
             
-            for permission in app.permissions
+            for permission in app.permissions where permission.type == .privacy
             {
-                switch permission.type
-                {
-                case .privacy, .backgroundMode:
-                    guard permission.usageDescription != nil else { throw SourceError.missingPermissionUsageDescription(for: permission.permission, app: app, source: source) }
-                    
-                default: break
-                }
+                // Privacy permissions MUST have a usage description.
+                guard permission.usageDescription != nil else { throw SourceError.missingPermissionUsageDescription(for: permission.permission, app: app, source: source) }
             }
         }
         

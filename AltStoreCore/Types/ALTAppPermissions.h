@@ -12,7 +12,4 @@ typedef NSString *ALTAppPermissionType NS_TYPED_EXTENSIBLE_ENUM;
 extern ALTAppPermissionType const ALTAppPermissionTypeUnknown;
 extern ALTAppPermissionType const ALTAppPermissionTypeEntitlement;
 extern ALTAppPermissionType const ALTAppPermissionTypePrivacy;
-extern ALTAppPermissionType const ALTAppPermissionTypeBackgroundMode;
-
 typedef NSString *ALTAppPrivacyPermission NS_TYPED_EXTENSIBLE_ENUM;
-typedef NSString *ALTAppBackgroundMode NS_TYPED_EXTENSIBLE_ENUM;

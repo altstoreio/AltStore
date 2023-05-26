@@ -206,7 +206,7 @@ private extension VerificationError
         guard let permissions, !permissions.isEmpty else { return nil }
         
         let permissionsByType = Dictionary(grouping: permissions) { $0.type }
-        let permissionSections = [ALTAppPermissionType.entitlement, .privacy, .backgroundMode].compactMap { (type) -> String? in
+        let permissionSections = [ALTAppPermissionType.entitlement, .privacy].compactMap { (type) -> String? in
             guard let permissions = permissionsByType[type] else { return nil }
             
             // "Privacy:"

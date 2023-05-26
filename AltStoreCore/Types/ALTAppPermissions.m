@@ -11,4 +11,3 @@
 ALTAppPermissionType const ALTAppPermissionTypeUnknown = @"unknown";
 ALTAppPermissionType const ALTAppPermissionTypeEntitlement = @"entitlement";
 ALTAppPermissionType const ALTAppPermissionTypePrivacy = @"privacy";
-ALTAppPermissionType const ALTAppPermissionTypeBackgroundMode = @"background";

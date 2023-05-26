@@ -209,20 +209,6 @@ private extension VerifyAppOperation
         allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
         
         
-        // Background Modes
-        // App extensions can't have background modes, so don't need to worry about them.
-        let allBackgroundModes: Set<ALTAppBackgroundMode>
-        if let backgroundModes = app.bundle.infoDictionary?[Bundle.Info.backgroundModes] as? [String]
-        {
-            let backgroundModes = backgroundModes.lazy.map { ALTAppBackgroundMode($0) }
-            allBackgroundModes = Set(backgroundModes)
-        }
-        else
-        {
-            allBackgroundModes = []
-        }
-        
-        
         // Privacy
         let allPrivacyPermissions: Set<ALTAppPrivacyPermission>
         if #available(iOS 16, *)
@@ -262,7 +248,7 @@ private extension VerifyAppOperation
         
         // Verify permissions.
         let sourcePermissions: Set<AnyHashable> = Set(await $storeApp.perform { $0.permissions.map { AnyHashable($0.permission) } })
-        let localPermissions: [any ALTAppPermission] = Array(allEntitlements) + Array(allBackgroundModes) + Array(allPrivacyPermissions)
+        let localPermissions: [any ALTAppPermission] = Array(allEntitlements) + Array(allPrivacyPermissions)
         
         // To pass: EVERY permission in localPermissions must also appear in sourcePermissions.
         // If there is a single missing permission, throw error.
