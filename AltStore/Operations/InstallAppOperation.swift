@@ -45,6 +45,9 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        @Managed var appVersion = self.context.appVersion
+        let storeBuildVersion = $appVersion.buildVersion
+        
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         backgroundContext.perform {
             
@@ -58,10 +61,14 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, certificateSerialNumber: certificate.serialNumber, context: backgroundContext)
+                installedApp = InstalledApp(resignedApp: resignedApp,
+                                            originalBundleIdentifier: self.context.bundleIdentifier,
+                                            certificateSerialNumber: certificate.serialNumber,
+                                            storeBuildVersion: storeBuildVersion,
+                                            context: backgroundContext)
             }
             
-            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)
+            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber, storeBuildVersion: storeBuildVersion)
             installedApp.needsResign = false
             
             if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
