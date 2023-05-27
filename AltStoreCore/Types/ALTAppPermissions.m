@@ -18,4 +18,5 @@ ALTAppPrivacyPermission const ALTAppPrivacyPermissionCalendars = @"Calendars";
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionCamera = @"Camera";
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionFaceID = @"FaceID";
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocalNetwork = @"LocalNetwork";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionMicrophone = @"Microphone";
 ALTAppPrivacyPermission const ALTAppPrivacyPermissionPhotos = @"PhotoLibrary";

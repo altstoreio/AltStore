@@ -20,4 +20,5 @@ extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionCalendars;
 extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionCamera;
 extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionFaceID;
 extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocalNetwork;
+extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionMicrophone;
 extern ALTAppPrivacyPermission const ALTAppPrivacyPermissionPhotos;

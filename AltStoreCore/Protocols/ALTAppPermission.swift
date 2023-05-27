@@ -168,6 +168,7 @@ extension ALTAppPrivacyPermission: ALTAppPermission
         case .localNetwork: return NSLocalizedString("Local Network", comment: "")
         case .bluetooth: return NSLocalizedString("Bluetooth (Always)", comment: "")
         case .calendars: return NSLocalizedString("Calendars", comment: "")
+        case .microphone: return NSLocalizedString("Microphone", comment: "")
         default: return nil
         }
     }
@@ -184,6 +185,7 @@ extension ALTAppPrivacyPermission: ALTAppPermission
         case .localNetwork: return "wifi"
         case .bluetooth: return "dot.radiowaves.forward"
         case .calendars: return "calendar"
+        case .microphone: return "mic"
         default: return nil
         }
     }
