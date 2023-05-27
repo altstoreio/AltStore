@@ -231,7 +231,7 @@ private extension DatabaseManager
             }
             else
             {
-                storeApp = StoreApp.makeAltStoreApp(version: localApp.version, buildVersion: localApp.buildVersion, in: context)
+                storeApp = StoreApp.makeAltStoreApp(version: localApp.version, buildVersion: nil, in: context)
                 storeApp.source = altStoreSource
             }
                         
@@ -244,7 +244,10 @@ private extension DatabaseManager
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, context: context)
+                //TODO: Support build versions.
+                // For backwards compatibility reasons, we cannot use localApp's buildVersion as storeBuildVersion,
+                // or else the latest update will _always_ be considered new because we don't use buildVersions in our source (yet).
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, storeBuildVersion: nil, context: context)
                 installedApp.storeApp = storeApp
             }
             
@@ -324,7 +327,7 @@ private extension DatabaseManager
             let cachedExpirationDate = installedApp.expirationDate
                         
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
+            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber, storeBuildVersion: nil)
             
             if installedApp.refreshedDate < cachedRefreshedDate
             {
