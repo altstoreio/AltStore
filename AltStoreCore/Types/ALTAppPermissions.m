@@ -11,3 +11,11 @@
 ALTAppPermissionType const ALTAppPermissionTypeUnknown = @"unknown";
 ALTAppPermissionType const ALTAppPermissionTypeEntitlement = @"entitlement";
 ALTAppPermissionType const ALTAppPermissionTypePrivacy = @"privacy";
+
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionAppleMusic = @"AppleMusic";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionBluetooth = @"BluetoothAlways";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionCalendars = @"Calendars";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionCamera = @"Camera";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionFaceID = @"FaceID";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionLocalNetwork = @"LocalNetwork";
+ALTAppPrivacyPermission const ALTAppPrivacyPermissionPhotos = @"PhotoLibrary";
