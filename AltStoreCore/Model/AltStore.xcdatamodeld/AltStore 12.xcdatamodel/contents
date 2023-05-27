@@ -76,6 +76,7 @@
         <attribute name="needsResign" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="resignedBundleIdentifier" attributeType="String"/>
+        <attribute name="storeBuildVersion" optional="YES" attributeType="String"/>
         <attribute name="version" attributeType="String"/>
         <relationship name="appExtensions" toMany="YES" deletionRule="Cascade" destinationEntity="InstalledExtension" inverseName="parentApp" inverseEntity="InstalledExtension"/>
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="installedApp" inverseEntity="LoggedError"/>
