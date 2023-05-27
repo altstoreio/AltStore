@@ -235,12 +235,12 @@
 			<key>symbol</key>
 			<string>person.3</string>
 		</dict>
-		<key>healthkit</key>
+		<key>com.apple.developer.healthkit</key>
 		<dict>
 			<key>name</key>
-			<string>Sensitive Health Records</string>
+			<string>Health</string>
 			<key>description</key>
-			<string>App may access HealthKit clinical health records with more sensitive information.</string>
+			<string>Allows the app to access your Health data.</string>
 			<key>key</key>
 			<string>com.apple.developer.healthkit</string>
 			<key>symbol</key>
@@ -249,7 +249,7 @@
 		<key>healthkit.background-delivery</key>
 		<dict>
 			<key>name</key>
-			<string>Background Updates - Health</string>
+			<string>Health - Background Updates</string>
 			<key>description</key>
 			<string>App may receive health updates while running in the background.</string>
 			<key>key</key>
@@ -260,7 +260,7 @@
 		<key>com.apple.developer.healthkit.recalibrate-estimates</key>
 		<dict>
 			<key>name</key>
-			<string>Recalibrate - Health</string>
+			<string>Health - Recalibrate</string>
 			<key>description</key>
 			<string>App may recalibrate Health data.</string>
 			<key>key</key>
@@ -431,7 +431,7 @@
 			<key>key</key>
 			<string>com.apple.developer.kernel.extended-virtual-addressing</string>
 			<key>symbol</key>
-			<string>externaldrive.badge.plus</string>
+			<string>memorychip</string>
 		</dict>
 		<key>com.apple.developer.networking.networkextension</key>
 		<dict>
@@ -502,7 +502,7 @@
 		<key>aps-environment</key>
 		<dict>
 			<key>name</key>
-			<string>APS Environment</string>
+			<string>Push Notifications</string>
 			<key>description</key>
 			<string>App can send push notifications.</string>
 			<key>key</key>
@@ -548,7 +548,7 @@
 			<key>name</key>
 			<string>App Groups</string>
 			<key>description</key>
-			<string>Allows app to share files with other apps and app extensions with same group.</string>
+			<string>Allows app to share files with other apps and app extensions in same App Group.</string>
 			<key>key</key>
 			<string>com.apple.security.application-groups</string>
 			<key>symbol</key>
@@ -557,7 +557,7 @@
 		<key>keychain-access-groups</key>
 		<dict>
 			<key>name</key>
-			<string>Keychain Access Groups</string>
+			<string>Keychain</string>
 			<key>description</key>
 			<string>Allows app to read and write secure data to the system&apos;s keychain.</string>
 			<key>key</key>
@@ -818,6 +818,28 @@
 			<key>symbol</key>
 			<string>hammer</string>
 		</dict>
+        <key>inter-app-audio</key>
+        <dict>
+            <key>name</key>
+            <string>Inter-App Audio</string>
+            <key>description</key>
+            <string>Allows sharing real-time audio between apps.</string>
+            <key>key</key>
+            <string>inter-app-audio</string>
+            <key>symbol</key>
+            <string>hifispeaker.2</string>
+        </dict>
+        <key>com.apple.developer.healthkit.access</key>
+        <dict>
+            <key>name</key>
+            <string>Sensitive Health Data</string>
+            <key>description</key>
+            <string>Allows the app to access your sensitive Health data.</string>
+            <key>key</key>
+            <string>com.apple.developer.healthkit.access</string>
+            <key>symbol</key>
+            <string>heart.text.square</string>
+        </dict>
 	</dict>
 </dict>
 </plist>

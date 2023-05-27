@@ -8,9 +8,9 @@
 
 import AltSign
 
-public extension ALTAppPermissionType
+extension ALTAppPermissionType
 {
-    var localizedName: String? {
+    public var localizedName: String? {
         switch self
         {
         case .unknown: return NSLocalizedString("Permission", comment: "")
@@ -19,23 +19,76 @@ public extension ALTAppPermissionType
         default: return nil
         }
     }
+    
+    fileprivate var knownPermissionsKey: String? {
+        switch self
+        {
+        case .unknown: return nil
+        case .entitlement: return "entitlements"
+        case .privacy: return "privacy"
+        default: return nil
+        }
+    }
 }
 
 public protocol ALTAppPermission: RawRepresentable<String>, Hashable
 {
     var type: ALTAppPermissionType { get }
-    var symbolName: String? { get }
-    
-    var localizedName: String? { get }
     var synthesizedName: String? { get } // Kupo!
     
+    // Default implementations
+    var localizedName: String? { get }
     var localizedDescription: String? { get }
+    var symbolName: String? { get }
     
-    // Convenience properties with default implementations.
+    // Convenience properties (also with default implementations).
     // Would normally just be in extension, except that crashes Swift 5.8 compiler ¯\_(ツ)_/¯
     var isKnown: Bool { get }
     var effectiveSymbolName: String { get }
     var localizedDisplayName: String { get }
+}
+
+private struct KnownPermission: Decodable
+{
+    var localizedName: String
+    var localizedDescription: String
+    var rawValue: String
+    var symbolName: String
+    
+    private enum CodingKeys: String, CodingKey
+    {
+        case localizedName = "name"
+        case localizedDescription = "description"
+        case rawValue = "key"
+        case symbolName = "symbol"
+    }
+}
+
+private let knownPermissions: [String: [String: KnownPermission]] = {
+    guard let fileURL = Bundle(for: DatabaseManager.self).url(forResource: "Permissions", withExtension: "plist"),
+          let data = try? Data(contentsOf: fileURL),
+          let propertyList = try? PropertyListDecoder().decode([String: [String: KnownPermission]].self, from: data)
+    else {
+        fatalError("Could not decode Permissions.plist.")
+    }
+    
+    return propertyList
+}()
+
+public extension ALTAppPermission
+{
+    private var knownPermission: KnownPermission? {
+        guard let key = self.type.knownPermissionsKey,
+              let permissions = knownPermissions[key]
+        else { return nil }
+        
+        let knownPermission = permissions[self.rawValue]
+        return knownPermission
+    }
+    
+    var localizedName: String? { self.knownPermission?.localizedName }
+    var localizedDescription: String? { self.knownPermission?.localizedDescription }
+    var symbolName: String? { self.knownPermission?.symbolName }
 }
 
 public extension ALTAppPermission
@@ -50,10 +103,7 @@ public extension ALTAppPermission
     var localizedDisplayName: String {
         return self.localizedName ?? self.synthesizedName ?? self.rawValue
     }
-}
-
-public extension ALTAppPermission
-{
+    
     func isEqual(_ permission: any ALTAppPermission) -> Bool
     {
         guard let permission = permission as? Self else { return false }
@@ -69,13 +119,8 @@ public extension ALTAppPermission
 public struct UnknownAppPermission: ALTAppPermission
 {
     public var type: ALTAppPermissionType { .unknown }
-    public var symbolName: String? { nil }
-    
-    public var localizedName: String? { nil }
     public var synthesizedName: String? { nil }
     
-    public var localizedDescription: String? { nil }
-        
     public var rawValue: String
     
     public init(rawValue: String)
@@ -87,9 +132,6 @@ public struct UnknownAppPermission: ALTAppPermission
 extension ALTEntitlement: ALTAppPermission
 {
     public var type: ALTAppPermissionType { .entitlement }
-    public var symbolName: String? { nil }
-    
-    public var localizedName: String? { nil }
     
     public var synthesizedName: String? {
         // Attempt to convert last component of entitlement to human-readable string.
@@ -108,8 +150,6 @@ extension ALTEntitlement: ALTAppPermission
         let synthesizedName = words.joined(separator: " ")
         return synthesizedName
     }
-    
-    public var localizedDescription: String? { nil }
 }
 
 extension ALTAppPrivacyPermission: ALTAppPermission
