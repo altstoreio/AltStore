@@ -63,6 +63,7 @@ public extension UserDefaults
     @NSManaged var isCowExploitSupported: Bool
     
     @NSManaged var permissionCheckingDisabled: Bool
+    @NSManaged var responseCachingDisabled: Bool
     
     class func registerDefaults()
     {
