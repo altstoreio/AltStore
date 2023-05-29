@@ -30,11 +30,26 @@ extension UpdateKnownSourcesOperation
 
 class UpdateKnownSourcesOperation: ResultOperation<([KnownSource], [KnownSource])>
 {
+    private let session: URLSession
+    
+    override init()
+    {
+        let configuration = URLSessionConfiguration.default
+        
+        if UserDefaults.standard.responseCachingDisabled
+        {
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            configuration.urlCache = nil
+        }
+        
+        self.session = URLSession(configuration: configuration)
+    }
+    
     override func main()
     {
         super.main()
         
-        let dataTask = URLSession.shared.dataTask(with: .sources) { (data, response, error) in
+        let dataTask = self.session.dataTask(with: .sources) { (data, response, error) in
             do
             {
                 if let response = response as? HTTPURLResponse

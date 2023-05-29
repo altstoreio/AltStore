@@ -53,6 +53,7 @@ extension SettingsViewController
     {
         case sendFeedback
         case refreshAttempts
+        case responseCaching
     }
 }
 
@@ -71,6 +72,7 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
+    @IBOutlet private var disableResponseCachingSwitch: UISwitch!
     
     @IBOutlet private var versionLabel: UILabel!
     
@@ -159,6 +161,7 @@ private extension SettingsViewController
         
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
+        self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
         
         if self.isViewLoaded
         {
@@ -329,6 +332,11 @@ private extension SettingsViewController
         {
             UserDefaults.standard.activeAppsLimit = InstalledApp.freeAccountActiveAppsLimit
         }
+    }
+    
+    @IBAction func toggleDisableResponseCaching(_ sender: UISwitch)
+    {
+        UserDefaults.standard.responseCachingDisabled = sender.isOn
     }
     
     @IBAction func addRefreshAppsShortcut()
@@ -591,7 +599,7 @@ extension SettingsViewController
                     toastView.show(in: self)
                 }
                 
-            case .refreshAttempts: break
+            case .refreshAttempts, .responseCaching: break
             }
             
         case .account, .patreon, .instructions, .macDirtyCow: break
