@@ -121,7 +121,7 @@ class AppDetailCollectionViewController: UICollectionViewController
             {
             case .privacy: break
             case .knownEntitlements:
-                configuration.text = NSLocalizedString("Entitlements", comment: "")
+                configuration.text = nil
                 
                 configuration.secondaryTextProperties.font = UIFont.preferredFont(forTextStyle: .callout)
                 configuration.textToSecondaryTextVerticalPadding = 8
@@ -206,7 +206,7 @@ private extension AppDetailCollectionViewController
             guard let self, #available(iOS 16, *) else { return }
             
             cell.contentConfiguration = UIHostingConfiguration {
-                AppPermissionsCard(title: "Permissions",
+                AppPermissionsCard(title: "Privacy",
                                    description: "\(self.app.name) may request access to the following:",
                                    tintColor: Color(uiColor: self.app.tintColor ?? .altPrimary),
                                    permissions: self.privacyPermissions)
