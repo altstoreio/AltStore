@@ -64,7 +64,7 @@ struct AppPermissionsCard<Permission: AppPermissionProtocol>: View
     
     var body: some View {
         let title = Text(title)
-            .font(.title2)
+            .font(.title3)
             .bold()
             .minimumScaleFactor(0.1) // Avoid clipping during matchedGeometryEffect animation.
         
