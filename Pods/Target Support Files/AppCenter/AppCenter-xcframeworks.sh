@@ -17,6 +17,15 @@ RSYNC_PROTECT_TMP_FILES=(--filter "P .*.??????")
 variant_for_slice()
 {
   case "$1" in
+  "AppCenterAnalytics.xcframework/ios-arm64_arm64e")
+    echo ""
+    ;;
+  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "maccatalyst"
+    ;;
+  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-simulator")
+    echo "simulator"
+    ;;
   "AppCenterAnalytics.xcframework/macos-arm64_x86_64")
     echo ""
     ;;
@@ -26,16 +35,13 @@ variant_for_slice()
   "AppCenterAnalytics.xcframework/tvos-arm64_x86_64-simulator")
     echo "simulator"
     ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-maccatalyst")
-    echo "maccatalyst"
-    ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-simulator")
-    echo "simulator"
-    ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_arm64e")
+  "AppCenter.xcframework/ios-arm64_arm64e")
     echo ""
     ;;
-  "AppCenter.xcframework/tvos-arm64_x86_64-simulator")
+  "AppCenter.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "maccatalyst"
+    ;;
+  "AppCenter.xcframework/ios-arm64_x86_64-simulator")
     echo "simulator"
     ;;
   "AppCenter.xcframework/macos-arm64_x86_64")
@@ -44,19 +50,10 @@ variant_for_slice()
   "AppCenter.xcframework/tvos-arm64")
     echo ""
     ;;
-  "AppCenter.xcframework/ios-arm64_x86_64-maccatalyst")
-    echo "maccatalyst"
-    ;;
-  "AppCenter.xcframework/ios-arm64_arm64e")
-    echo ""
-    ;;
-  "AppCenter.xcframework/ios-arm64_x86_64-simulator")
+  "AppCenter.xcframework/tvos-arm64_x86_64-simulator")
     echo "simulator"
     ;;
-  "AppCenterCrashes.xcframework/macos-arm64_x86_64")
-    echo ""
-    ;;
-  "AppCenterCrashes.xcframework/tvos-arm64")
+  "AppCenterCrashes.xcframework/ios-arm64_arm64e")
     echo ""
     ;;
   "AppCenterCrashes.xcframework/ios-arm64_x86_64-maccatalyst")
@@ -65,7 +62,10 @@ variant_for_slice()
   "AppCenterCrashes.xcframework/ios-arm64_x86_64-simulator")
     echo "simulator"
     ;;
-  "AppCenterCrashes.xcframework/ios-arm64_arm64e")
+  "AppCenterCrashes.xcframework/macos-arm64_x86_64")
+    echo ""
+    ;;
+  "AppCenterCrashes.xcframework/tvos-arm64")
     echo ""
     ;;
   "AppCenterCrashes.xcframework/tvos-arm64_x86_64-simulator")
@@ -77,6 +77,15 @@ variant_for_slice()
 archs_for_slice()
 {
   case "$1" in
+  "AppCenterAnalytics.xcframework/ios-arm64_arm64e")
+    echo "arm64 arm64e"
+    ;;
+  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "arm64 x86_64"
+    ;;
+  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-simulator")
+    echo "arm64 x86_64"
+    ;;
   "AppCenterAnalytics.xcframework/macos-arm64_x86_64")
     echo "arm64 x86_64"
     ;;
@@ -86,16 +95,13 @@ archs_for_slice()
   "AppCenterAnalytics.xcframework/tvos-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-maccatalyst")
-    echo "arm64 x86_64"
-    ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_x86_64-simulator")
-    echo "arm64 x86_64"
-    ;;
-  "AppCenterAnalytics.xcframework/ios-arm64_arm64e")
+  "AppCenter.xcframework/ios-arm64_arm64e")
     echo "arm64 arm64e"
     ;;
-  "AppCenter.xcframework/tvos-arm64_x86_64-simulator")
+  "AppCenter.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "arm64 x86_64"
+    ;;
+  "AppCenter.xcframework/ios-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
   "AppCenter.xcframework/macos-arm64_x86_64")
@@ -104,20 +110,11 @@ archs_for_slice()
   "AppCenter.xcframework/tvos-arm64")
     echo "arm64"
     ;;
-  "AppCenter.xcframework/ios-arm64_x86_64-maccatalyst")
+  "AppCenter.xcframework/tvos-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
-  "AppCenter.xcframework/ios-arm64_arm64e")
+  "AppCenterCrashes.xcframework/ios-arm64_arm64e")
     echo "arm64 arm64e"
-    ;;
-  "AppCenter.xcframework/ios-arm64_x86_64-simulator")
-    echo "arm64 x86_64"
-    ;;
-  "AppCenterCrashes.xcframework/macos-arm64_x86_64")
-    echo "arm64 x86_64"
-    ;;
-  "AppCenterCrashes.xcframework/tvos-arm64")
-    echo "arm64"
     ;;
   "AppCenterCrashes.xcframework/ios-arm64_x86_64-maccatalyst")
     echo "arm64 x86_64"
@@ -125,8 +122,11 @@ archs_for_slice()
   "AppCenterCrashes.xcframework/ios-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
-  "AppCenterCrashes.xcframework/ios-arm64_arm64e")
-    echo "arm64 arm64e"
+  "AppCenterCrashes.xcframework/macos-arm64_x86_64")
+    echo "arm64 x86_64"
+    ;;
+  "AppCenterCrashes.xcframework/tvos-arm64")
+    echo "arm64"
     ;;
   "AppCenterCrashes.xcframework/tvos-arm64_x86_64-simulator")
     echo "arm64 x86_64"
@@ -213,7 +213,7 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenterAnalytics.xcframework" "AppCenter/Analytics" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator" "ios-arm64_arm64e"
-install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenter.xcframework" "AppCenter/Core" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_arm64e" "ios-arm64_x86_64-simulator"
-install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenterCrashes.xcframework" "AppCenter/Crashes" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator" "ios-arm64_arm64e"
+install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenterAnalytics.xcframework" "AppCenter/Analytics" "framework" "ios-arm64_arm64e" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator"
+install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenter.xcframework" "AppCenter/Core" "framework" "ios-arm64_arm64e" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator"
+install_xcframework "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/AppCenterCrashes.xcframework" "AppCenter/Crashes" "framework" "ios-arm64_arm64e" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator"
 
