@@ -1508,7 +1508,8 @@ private extension MyAppsViewController
                                 
                 if #available(iOS 15, *)
                 {
-                    for await _ in NotificationCenter.default.notifications(named: AppManager.didFetchSourceNotification)
+                    // .map { $0.name } to avoid "non-sendable type 'Notification?' cannot cross actor boundary" warning.
+                    for await _ in NotificationCenter.default.notifications(named: AppManager.didFetchSourceNotification).map({ $0.name })
                     {
                         // Wait until _after_ didFetchSourceNotification
                         // to prevent incorrect update() animations.
