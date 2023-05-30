@@ -41,9 +41,7 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
     
     private enum CodingKeys: String, CodingKey
     {
-        case entitlement
-        case privacyType = "privacy"
-        
+        case name
         case usageDescription
     }
     
@@ -57,27 +55,11 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
         {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
+            self._permission = try container.decode(String.self, forKey: .name)
             self.usageDescription = try container.decodeIfPresent(String.self, forKey: .usageDescription)
             
-            if let entitlement = try container.decodeIfPresent(String.self, forKey: .entitlement)
-            {
-                self._permission = entitlement
-                self.type = .entitlement
-            }
-            else if let privacyType = try container.decodeIfPresent(String.self, forKey: .privacyType)
-            {
-                self._permission = privacyType
-                self.type = .privacy
-            }
-            else
-            {
-                self._permission = ""
-                self.type = .unknown
-                
-                // We don't want to save any unknown permissions, but can't throw error
-                // without making the entire decoding fail, so just delete self instead.
-                context.delete(self)
-            }
+            // Will be updated from StoreApp.
+            self.type = .unknown
         }
         catch
         {

@@ -23,6 +23,12 @@ public extension StoreApp
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
+    
+    private struct AppPermissions: Decodable
+    {
+        var entitlements: [AppPermission]?
+        var privacy: [AppPermission]?
+    }
 }
 
 @objc(StoreApp)
@@ -159,12 +165,23 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
-            let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
-            for permission in permissions
+            if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
-                permission.appBundleID = self.bundleIdentifier
+                appPermissions.entitlements?.forEach { $0.type = .entitlement }
+                appPermissions.privacy?.forEach { $0.type = .privacy }
+                
+                let allPermissions = (appPermissions.entitlements ?? []) + (appPermissions.privacy ?? [])
+                for permission in allPermissions
+                {
+                    permission.appBundleID = self.bundleIdentifier
+                }
+                
+                self._permissions = NSSet(array: allPermissions)
             }
-            self._permissions = NSSet(array: permissions)
+            else
+            {
+                self._permissions = NSSet()
+            }
             
             if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
             {
