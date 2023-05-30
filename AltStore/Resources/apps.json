@@ -61,7 +61,29 @@
           "type": "background-audio",
           "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
         }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          {
+          "name": "get-task-allow"
+        },
+        {
+          "name": "com.apple.security.application-groups"
+        },
+        {
+          "name": "aps-environment"
+        },
+        {
+          "name": "com.apple.developer.siri"
+        }
+        ],
+        "privacy": [
+          {
+          "name": "LocalNetwork",
+          "usageDescription": "AltStore uses the local network to find and communicate with AltServer."
+        }
       ]
+      }
     },
     {
       "name": "AltStore",
@@ -156,7 +178,29 @@
           "type": "background-audio",
           "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
         }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          {
+          "name": "get-task-allow"
+        },
+        {
+          "name": "com.apple.security.application-groups"
+        },
+        {
+          "name": "aps-environment"
+        },
+        {
+          "name": "com.apple.developer.siri"
+        }
+        ],
+        "privacy": [
+          {
+          "name": "LocalNetwork",
+          "usageDescription": "AltStore uses the local network to find and communicate with AltServer."
+        }
       ]
+      }
     },
     {
       "name": "Delta",
@@ -193,6 +237,27 @@
           "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "get-task-allow"
+          }
+        ],
+        "privacy": [
+          {
+            "name": "Microphone",
+            "usageDescription": "Delta uses your microphone to emulate the Nintendo DS microphone."
+          },
+          {
+            "name": "LocalNetwork",
+            "usageDescription": "Delta uses the local network to communicate with AltServer and enable JIT."
+          },
+          {
+            "name": "PhotoLibrary",
+            "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
         "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
@@ -245,6 +310,27 @@
           "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "get-task-allow"
+          }
+        ],
+        "privacy": [
+          {
+            "name": "Microphone",
+            "usageDescription": "Delta uses your microphone to emulate the Nintendo DS microphone."
+          },
+          {
+            "name": "LocalNetwork",
+            "usageDescription": "Delta uses the local network to communicate with AltServer and enable JIT."
+          },
+          {
+            "name": "PhotoLibrary",
+            "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
         "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG",
@@ -271,6 +357,19 @@
           "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "inter-app-audio"
+          },
+          {
+            "name": "get-task-allow"
+          },
+          {
+            "name": "com.apple.security.application-groups"
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
@@ -296,6 +395,19 @@
           "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "inter-app-audio"
+          },
+          {
+            "name": "get-task-allow"
+          },
+          {
+            "name": "com.apple.security.application-groups"
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
