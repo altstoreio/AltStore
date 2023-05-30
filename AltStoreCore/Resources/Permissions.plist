@@ -4,18 +4,18 @@
 <dict>
 	<key>entitlements</key>
 	<dict>
-		<key>autofill credential provider</key>
+		<key>com.apple.developer.authentication-services.autofill-credential-provider</key>
 		<dict>
 			<key>name</key>
 			<string>AutoFill Credential Provider</string>
 			<key>description</key>
-			<string>Allows app to provide user names and passwords for AutoFill</string>
+			<string>Allows app to provide user names and passwords for AutoFill.</string>
 			<key>key</key>
 			<string>com.apple.developer.authentication-services.autofill-credential-provider</string>
 			<key>symbol</key>
 			<string>wallet.pass</string>
 		</dict>
-		<key>applesignin</key>
+		<key>com.apple.developer.applesignin</key>
 		<dict>
 			<key>name</key>
 			<string>Sign in with Apple</string>
@@ -26,21 +26,21 @@
 			<key>symbol</key>
 			<string>apple.logo</string>
 		</dict>
-		<key>parent-application-identifiers</key>
+		<key>com.apple.developer.parent-application-identifiers</key>
 		<dict>
 			<key>name</key>
-			<string>Parent Application Identifiers</string>
+			<string>App Clips - Parent Identifiers</string>
 			<key>description</key>
-			<string>Allows app to use App Clips</string>
+			<string>Allows app to use App Clips.</string>
 			<key>key</key>
 			<string>com.apple.developer.parent-application-identifiers</string>
 			<key>symbol</key>
 			<string>appclip</string>
 		</dict>
-		<key>associated-appclip-app-identifiers</key>
+		<key>com.apple.developer.associated-appclip-app-identifiers</key>
 		<dict>
 			<key>name</key>
-			<string>Associated App Clip Identifiers</string>
+			<string>App Clips - Associated Identifiers</string>
 			<key>description</key>
 			<string>Allows app to use App Clips with other apps.</string>
 			<key>key</key>
@@ -48,18 +48,18 @@
 			<key>symbol</key>
 			<string>appclip</string>
 		</dict>
-		<key>on-demand-install-capable</key>
+		<key>com.apple.developer.on-demand-install-capable</key>
 		<dict>
 			<key>name</key>
-			<string>On-Demand Install Capable</string>
+			<string>App Clips - Install</string>
 			<key>description</key>
-			<string>App can install App Clips</string>
+			<string>App can install App Clips.</string>
 			<key>key</key>
 			<string>com.apple.developer.on-demand-install-capable</string>
 			<key>symbol</key>
 			<string>appclip</string>
 		</dict>
-		<key>carplay-audio</key>
+		<key>com.apple.developer.carplay-audio</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Audio</string>
@@ -70,7 +70,7 @@
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-charging</key>
+		<key>com.apple.developer.carplay-charging</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Charging</string>
@@ -81,7 +81,7 @@
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-communication</key>
+		<key>com.apple.developer.carplay-communication</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Communication</string>
@@ -92,18 +92,18 @@
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-maps</key>
+		<key>com.apple.developer.carplay-maps</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Maps</string>
 			<key>description</key>
-			<string>Allows the app to provide maps and navigation services for CarPlay.</string>
+			<string>Allows use of maps and navigation services for CarPlay.</string>
 			<key>key</key>
 			<string>com.apple.developer.carplay-maps</string>
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-parking</key>
+		<key>com.apple.developer.carplay-parking</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Parking</string>
@@ -114,29 +114,40 @@
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-quick-ordering</key>
+		<key>com.apple.developer.carplay-quick-ordering</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Quick Ordering</string>
 			<key>description</key>
-			<string>Allows the app to provide quick ordering capabilities for CarPlay.</string>
+			<string>Allows quick ordering capabilities for CarPlay.</string>
 			<key>key</key>
 			<string>com.apple.developer.carplay-quick-ordering</string>
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>carplay-messaging</key>
+		<key>com.apple.developer.carplay-messaging</key>
 		<dict>
 			<key>name</key>
 			<string>CarPlay Messaging</string>
 			<key>description</key>
-			<string>Allows the app to send and receive messages through CarPlay.</string>
+			<string>Allows sending and receiving messages through CarPlay.</string>
 			<key>key</key>
 			<string>com.apple.developer.carplay-messaging</string>
 			<key>symbol</key>
 			<string>car</string>
 		</dict>
-		<key>automated-device-enrollment.add-devices</key>
+		<key>com.apple.developer.contact.notes</key>
+		<dict>
+			<key>name</key>
+			<string>Contact Notes</string>
+			<key>description</key>
+			<string>Grants access to the notes in contact entries.</string>
+			<key>key</key>
+			<string>com.apple.developer.contact.notes</string>
+			<key>symbol</key>
+			<string>person.crop.circle</string>
+		</dict>
+		<key>com.apple.developer.automated-device-enrollment.add-devices</key>
 		<dict>
 			<key>name</key>
 			<string>Automated Device Enrollment</string>
@@ -147,7 +158,7 @@
 			<key>symbol</key>
 			<string>macbook.and.iphone</string>
 		</dict>
-		<key>ClassKit-environment</key>
+		<key>com.apple.developer.ClassKit-environment</key>
 		<dict>
 			<key>name</key>
 			<string>ClassKit</string>
@@ -158,7 +169,7 @@
 			<key>symbol</key>
 			<string>books.vertical</string>
 		</dict>
-		<key>automatic-assessment-configuration</key>
+		<key>com.apple.developer.automatic-assessment-configuration</key>
 		<dict>
 			<key>name</key>
 			<string>Automatic Assessment Configuration</string>
@@ -169,7 +180,7 @@
 			<key>symbol</key>
 			<string>books.vertical</string>
 		</dict>
-		<key>mail-client</key>
+		<key>com.apple.developer.mail-client</key>
 		<dict>
 			<key>name</key>
 			<string>Mail Client</string>
@@ -180,7 +191,7 @@
 			<key>symbol</key>
 			<string>envelope</string>
 		</dict>
-		<key>exposure-notification</key>
+		<key>com.apple.developer.exposure-notification</key>
 		<dict>
 			<key>name</key>
 			<string>Exposure Notification</string>
@@ -191,7 +202,7 @@
 			<key>symbol</key>
 			<string>microbe.fill</string>
 		</dict>
-		<key>family-controls</key>
+		<key>com.apple.developer.family-controls</key>
 		<dict>
 			<key>name</key>
 			<string>Family Controls</string>
@@ -202,7 +213,7 @@
 			<key>symbol</key>
 			<string>figure.and.child.holdinghands</string>
 		</dict>
-		<key>fileprovider.testing-mode</key>
+		<key>com.apple.developer.fileprovider.testing-mode</key>
 		<dict>
 			<key>name</key>
 			<string>Testing Mode</string>
@@ -224,7 +235,7 @@
 			<key>symbol</key>
 			<string>gamecontroller</string>
 		</dict>
-		<key>group-session</key>
+		<key>com.apple.developer.group-session</key>
 		<dict>
 			<key>name</key>
 			<string>Group Activities</string>
@@ -243,6 +254,17 @@
 			<string>Allows the app to access your Health data.</string>
 			<key>key</key>
 			<string>com.apple.developer.healthkit</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>com.apple.developer.healthkit.access</key>
+		<dict>
+			<key>name</key>
+			<string>Sensitive Health Data</string>
+			<key>description</key>
+			<string>Allows the app to access your sensitive Health data.</string>
+			<key>key</key>
+			<string>com.apple.developer.healthkit.access</string>
 			<key>symbol</key>
 			<string>heart.text.square</string>
 		</dict>
@@ -268,21 +290,32 @@
 			<key>symbol</key>
 			<string>heart.text.square</string>
 		</dict>
-		<key>homekit</key>
+		<key>com.apple.developer.homekit</key>
+		<dict>
+			<key>name</key>
+			<string>HomeKit</string>
+			<key>description</key>
+			<string>App may perform setup and management tasks for HomeKit accessories.</string>
+			<key>key</key>
+			<string>com.apple.developer.homekit</string>
+			<key>symbol</key>
+			<string>house</string>
+		</dict>
+		<key>com.apple.developer.homekit.matter.allow-setup-payload</key>
 		<dict>
 			<key>name</key>
 			<string>HomeKit - Matter</string>
 			<key>description</key>
 			<string>Allows app to provide the setup of a Matter device.</string>
 			<key>key</key>
-			<string>com.apple.developer.homekit</string>
+			<string>com.apple.developer.homekit.matter.allow-setup-payload</string>
 			<key>symbol</key>
 			<string>house</string>
 		</dict>
 		<key>com.apple.security.hypervisor</key>
 		<dict>
 			<key>name</key>
-			<string>Hypervisor</string>
+			<string>Virtual Machine</string>
 			<key>description</key>
 			<string>Allows app to create and manage virtual machines.</string>
 			<key>key</key>
@@ -304,7 +337,7 @@
 		<key>com.apple.vm.networking</key>
 		<dict>
 			<key>name</key>
-			<string>Networking</string>
+			<string>Virtual Networking</string>
 			<key>description</key>
 			<string>App can manage virtual network interfaces without escalating privileges to the root user.</string>
 			<key>key</key>
@@ -359,7 +392,7 @@
 		<key>com.apple.developer.icloud-services</key>
 		<dict>
 			<key>name</key>
-			<string>iCloud Services Entitlement</string>
+			<string>iCloud Services</string>
 			<key>description</key>
 			<string>Grants access to iCloud services.</string>
 			<key>key</key>
@@ -370,7 +403,7 @@
 		<key>com.apple.developer.ubiquity-kvstore-identifier</key>
 		<dict>
 			<key>name</key>
-			<string>iCloud Key-Value Store Entitlement</string>
+			<string>iCloud Key-Value Store</string>
 			<key>description</key>
 			<string>The container identifier to use for iCloud key-value storage.</string>
 			<key>key</key>
@@ -482,7 +515,7 @@
 			<key>name</key>
 			<string>Applinks</string>
 			<key>description</key>
-			<string>Grants app read/write access to Applinks</string>
+			<string>Grants app read/write access to Applinks.</string>
 			<key>key</key>
 			<string>com.apple.developer.associated-domains.applinks.read-write</string>
 			<key>symbol</key>
@@ -508,7 +541,7 @@
 			<key>key</key>
 			<string>aps-environment</string>
 			<key>symbol</key>
-			<string>platter.filled.top.and.arrow.up.iphone</string>
+			<string>app.badge</string>
 		</dict>
 		<key>com.apple.developer.usernotifications.filtering</key>
 		<dict>
@@ -603,7 +636,7 @@
 			<key>name</key>
 			<string>Sensor Data</string>
 			<key>description</key>
-			<string>Grants access to sensor data that&apos;s required by your app&apos;s preapproved research study.</string>
+			<string>Grants access to sensor data that&apos;s required by a preapproved research study.</string>
 			<key>key</key>
 			<string>com.apple.developer.sensorkit.reader.allow</string>
 			<key>symbol</key>
@@ -658,7 +691,7 @@
 			<key>name</key>
 			<string>Subscriber Single Sign-On</string>
 			<key>description</key>
-			<string>Allows app to use single sign on</string>
+			<string>Allows app to use single sign-on.</string>
 			<key>key</key>
 			<string>com.apple.developer.video-subscriber-single-sign-on</string>
 			<key>symbol</key>
@@ -667,9 +700,9 @@
 		<key>com.apple.smoot.subscriptionservice</key>
 		<dict>
 			<key>name</key>
-			<string>Subscription</string>
+			<string>Subscriptions Verification</string>
 			<key>description</key>
-			<string>Allows app to check for subscription</string>
+			<string>Allows app to check for TV subscriptions.</string>
 			<key>key</key>
 			<string>com.apple.smoot.subscriptionservice</string>
 			<key>symbol</key>
@@ -680,7 +713,7 @@
 			<key>name</key>
 			<string>Pass Type</string>
 			<key>description</key>
-			<string>Allows app to check for passes in Apple Wallet</string>
+			<string>Allows app to check for passes in Apple Wallet.</string>
 			<key>key</key>
 			<string>com.apple.developer.pass-type-identifiers</string>
 			<key>symbol</key>
@@ -689,9 +722,9 @@
 		<key>com.apple.developer.in-app-payments</key>
 		<dict>
 			<key>name</key>
-			<string>In-App Payments</string>
+			<string>Apple Pay</string>
 			<key>description</key>
-			<string>Allows app to use Apple Pay</string>
+			<string>Allows app to use Apple Pay.</string>
 			<key>key</key>
 			<string>com.apple.developer.in-app-payments</string>
 			<key>symbol</key>
@@ -700,9 +733,9 @@
 		<key>com.apple.developer.in-app-identity-presentment</key>
 		<dict>
 			<key>name</key>
-			<string>In-App Identity Presentment</string>
+			<string>Apple Pay - User Verification</string>
 			<key>description</key>
-			<string>Allows app to verify user for Apple Pay</string>
+			<string>Allows app to verify user for Apple Pay.</string>
 			<key>key</key>
 			<string>com.apple.developer.in-app-identity-presentment</string>
 			<key>symbol</key>
@@ -711,9 +744,9 @@
 		<key>com.apple.developer.in-app-identity-presentment.merchant-identifiers</key>
 		<dict>
 			<key>name</key>
-			<string>In-App Identity Presentment (Merchant Identifiers)</string>
+			<string>Apple Pay - Merchant Verification</string>
 			<key>description</key>
-			<string>Allows app to verify merchant for Apple Pay</string>
+			<string>Allows app to verify merchant for Apple Pay.</string>
 			<key>key</key>
 			<string>com.apple.developer.in-app-identity-presentment.merchant-identifiers</string>
 			<key>symbol</key>
@@ -724,7 +757,7 @@
 			<key>name</key>
 			<string>Weather Data</string>
 			<key>description</key>
-			<string>Allows app to use WeatherKit</string>
+			<string>Allows app to use WeatherKit.</string>
 			<key>key</key>
 			<string>com.apple.developer.weatherkit</string>
 			<key>symbol</key>
@@ -735,7 +768,7 @@
 			<key>name</key>
 			<string>Default Web Browser</string>
 			<key>description</key>
-			<string>Allows app to be used as the user&apos;s default web browser.</string>
+			<string>Allows app to be set as the user&apos;s default web browser.</string>
 			<key>key</key>
 			<string>com.apple.developer.web-browser</string>
 			<key>symbol</key>
@@ -744,9 +777,9 @@
 		<key>com.apple.developer.web-browser.public-key-credential</key>
 		<dict>
 			<key>name</key>
-			<string>Public Key Credential</string>
+			<string>Passkeys</string>
 			<key>description</key>
-			<string>Allows app to access passkeys</string>
+			<string>Allows app to access passkeys.</string>
 			<key>key</key>
 			<string>com.apple.developer.web-browser.public-key-credential</string>
 			<key>symbol</key>
@@ -788,7 +821,7 @@
 		<key>com.apple.developer.networking.HotspotConfiguration</key>
 		<dict>
 			<key>name</key>
-			<string>Hotspot Configuration</string>
+			<string>Hotspots</string>
 			<key>description</key>
 			<string>App can use the hotspot manager to configure Wi-Fi networks.</string>
 			<key>key</key>
@@ -818,28 +851,17 @@
 			<key>symbol</key>
 			<string>hammer</string>
 		</dict>
-        <key>inter-app-audio</key>
-        <dict>
-            <key>name</key>
-            <string>Inter-App Audio</string>
-            <key>description</key>
-            <string>Allows sharing real-time audio between apps.</string>
-            <key>key</key>
-            <string>inter-app-audio</string>
-            <key>symbol</key>
-            <string>hifispeaker.2</string>
-        </dict>
-        <key>com.apple.developer.healthkit.access</key>
-        <dict>
-            <key>name</key>
-            <string>Sensitive Health Data</string>
-            <key>description</key>
-            <string>Allows the app to access your sensitive Health data.</string>
-            <key>key</key>
-            <string>com.apple.developer.healthkit.access</string>
-            <key>symbol</key>
-            <string>heart.text.square</string>
-        </dict>
+		<key>inter-app-audio</key>
+		<dict>
+			<key>name</key>
+			<string>Inter-App Audio</string>
+			<key>description</key>
+			<string>Allows sharing real-time audio between apps.</string>
+			<key>key</key>
+			<string>inter-app-audio</string>
+			<key>symbol</key>
+			<string>hifispeaker.2</string>
+		</dict>
 	</dict>
 </dict>
 </plist>
