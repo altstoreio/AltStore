@@ -27,8 +27,9 @@
         </uniquenessConstraints>
     </entity>
     <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
-        <attribute name="appBundleID" optional="YES" attributeType="String"/>
+        <attribute name="appBundleID" attributeType="String"/>
         <attribute name="permission" attributeType="String"/>
+        <attribute name="sourceID" attributeType="String"/>
         <attribute name="type" attributeType="String"/>
         <attribute name="usageDescription" attributeType="String"/>
         <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
@@ -37,6 +38,7 @@
                 <constraint value="appBundleID"/>
                 <constraint value="permission"/>
                 <constraint value="type"/>
+                <constraint value="sourceID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

@@ -36,7 +36,8 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(permission) private var _permission: String
     
     // Set by StoreApp.
-    @NSManaged public var appBundleID: String?
+    @NSManaged public var appBundleID: String
+    @NSManaged public var sourceID: String
     
     /* Relationships */
     @NSManaged public internal(set) var app: StoreApp?

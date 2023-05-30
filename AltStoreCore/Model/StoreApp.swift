@@ -69,6 +69,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 version.sourceID = newValue
             }
+            
+            for permission in self.permissions
+            {
+                permission.sourceID = self.sourceIdentifier ?? ""
+            }
         }
     }
     @NSManaged private var primitiveSourceIdentifier: String?
