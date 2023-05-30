@@ -94,8 +94,8 @@ public extension ALTAppPermission
 public extension ALTAppPermission
 {
     var isKnown: Bool {
-        // Assume all known permissions have non-nil localizedDescriptions.
-        return self.localizedDescription != nil
+        // Assume all known permissions have non-nil localizedNames.
+        return self.localizedName != nil
     }
     
     var effectiveSymbolName: String { self.symbolName ?? "lock" }
