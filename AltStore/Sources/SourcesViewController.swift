@@ -168,7 +168,10 @@ private extension SourcesViewController
         let fetchRequest = Source.fetchRequest() as NSFetchRequest<Source>
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Source.name, ascending: true),
-                                        NSSortDescriptor(keyPath: \Source.sourceURL, ascending: true),
+                                        
+                                        // Can't sort by URLs or else app will crash.
+                                        // NSSortDescriptor(keyPath: \Source.sourceURL, ascending: true),
+                                        
                                         NSSortDescriptor(keyPath: \Source.identifier, ascending: true)]
         
         let dataSource = RSTFetchedResultsCollectionViewDataSource<Source>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
