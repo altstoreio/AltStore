@@ -16,7 +16,14 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged public var type: ALTAppPermissionType
-    @NSManaged public var usageDescription: String?
+    
+    // usageDescription must be non-optional for backwards compatibility,
+    // so we store non-optional value and provide public accessor with optional return type.
+    @nonobjc public var usageDescription: String? {
+        get { _usageDescription.isEmpty ? nil : _usageDescription }
+        set { _usageDescription = newValue ?? "" }
+    }
+    @NSManaged @objc(usageDescription) private var _usageDescription: String
     
     @nonobjc public var permission: any ALTAppPermission {
         switch self.type
