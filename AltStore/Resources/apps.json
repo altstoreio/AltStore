@@ -92,6 +92,15 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "2.0b2",
+          "date": "2023-05-31T15:30:00-05:00",
+          "localizedDescription": "NEW\n\nApp Permissions\n• View all entitlements and privacy permissions on an app's store page\n• Tap a permission to view description\n• Shows error alert if downloaded app's permissions don't match source*\n\nSources\n• SHA-256 hashes for app downloads\n• Supports updating apps by build version\n• Supports remotely blocking sources\n\nFIXED\n• Fixed updating apps with manually removed extensions (e.g. uYou+)\n• Fixed showing \"Update\" button on store page when no update is available\n• Fixed \"More\" button appearing unnecessarily in Error Log\n• Fixed various memory leaks\n• Fixed incorrectly showing \"Unsupported Updates Available\"\n\n*While AltStore 2.0 is in beta, you can choose to ignore this alert.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b2.ipa",
+          "size": 5963157,
+          "sha256": "8cd9d2a68f20e03b0501d2def9fabdbe2113e113a305a6824535e47b6bfd5bcf",
+          "minOSVersion": "14.0"
+        },
+        {
           "version": "2.0b1",
           "date": "2023-04-06T09:30:00-05:00",
           "localizedDescription": "The first beta of AltStore 2.0 is finally here! 🎉\n\nAltStore 2.0 will unlock third-party sources for everyone, allowing anyone to distribute their apps with AltStore.\n\nNEW\n\nSource \"About\" Page\n• Preview sources before adding them to AltStore\n• Browse all apps and news for a source\n• \"About\" section includes detailed information and additional links\n• \"Featured Apps\" showcases a source's best apps\n• Customizable with updated source JSON format\n\nFIXED\n• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items\n• Fixed incorrectly merging app versions for same app from different sources",
