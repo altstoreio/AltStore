@@ -651,7 +651,7 @@
 			<key>key</key>
 			<string>com.apple.developer.siri</string>
 			<key>symbol</key>
-			<string>mic</string>
+			<string>mic.circle</string>
 		</dict>
 		<key>com.apple.developer.storekit.external-link.account</key>
 		<dict>
@@ -861,6 +861,297 @@
 			<string>inter-app-audio</string>
 			<key>symbol</key>
 			<string>hifispeaker.2</string>
+		</dict>
+	</dict>
+	<key>privacy</key>
+	<dict>
+		<key>BluetoothAlways</key>
+		<dict>
+			<key>name</key>
+			<string>Bluetooth</string>
+			<key>key</key>
+			<string>BluetoothAlways</string>
+			<key>symbol</key>
+			<string>antenna.radiowaves.left.and.right</string>
+		</dict>
+		<key>BluetoothPeripheral</key>
+		<dict>
+			<key>name</key>
+			<string>Bluetooth (Peripherals)</string>
+			<key>key</key>
+			<string>BluetoothPeripheral</string>
+			<key>symbol</key>
+			<string>antenna.radiowaves.left.and.right</string>
+		</dict>
+		<key>Calendars</key>
+		<dict>
+			<key>name</key>
+			<string>Calendars</string>
+			<key>key</key>
+			<string>Calendars</string>
+			<key>symbol</key>
+			<string>calendar</string>
+		</dict>
+		<key>Reminders</key>
+		<dict>
+			<key>name</key>
+			<string>Reminders</string>
+			<key>key</key>
+			<string>Reminders</string>
+			<key>symbol</key>
+			<string>note.text</string>
+		</dict>
+		<key>Camera</key>
+		<dict>
+			<key>name</key>
+			<string>Camera</string>
+			<key>key</key>
+			<string>Camera</string>
+			<key>symbol</key>
+			<string>camera</string>
+		</dict>
+		<key>Microphone</key>
+		<dict>
+			<key>name</key>
+			<string>Microphone</string>
+			<key>key</key>
+			<string>Microphone</string>
+			<key>symbol</key>
+			<string>mic</string>
+		</dict>
+		<key>Contacts</key>
+		<dict>
+			<key>name</key>
+			<string>Contacts</string>
+			<key>key</key>
+			<string>Contacts</string>
+			<key>symbol</key>
+			<string>person.crop.circle</string>
+		</dict>
+		<key>FaceID</key>
+		<dict>
+			<key>name</key>
+			<string>Face ID</string>
+			<key>key</key>
+			<string>FaceID</string>
+			<key>symbol</key>
+			<string>faceid</string>
+		</dict>
+		<key>GKFriendList</key>
+		<dict>
+			<key>name</key>
+			<string>Game Center Friends List</string>
+			<key>key</key>
+			<string>GKFriendList</string>
+			<key>symbol</key>
+			<string>gamecontroller</string>
+		</dict>
+		<key>HealthClinicalHealthRecordsShare</key>
+		<dict>
+			<key>name</key>
+			<string>Health (Clinical Records)</string>
+			<key>key</key>
+			<string>HealthClinicalHealthRecordsShare</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>HealthShare</key>
+		<dict>
+			<key>name</key>
+			<string>Health</string>
+			<key>key</key>
+			<string>HealthShare</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>HealthUpdate</key>
+		<dict>
+			<key>name</key>
+			<string>Health (Add)</string>
+			<key>key</key>
+			<string>HealthUpdate</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>HomeKit</key>
+		<dict>
+			<key>name</key>
+			<string>HomeKit</string>
+			<key>key</key>
+			<string>HomeKit</string>
+			<key>symbol</key>
+			<string>homekit</string>
+		</dict>
+		<key>LocationAlways</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Background)</string>
+			<key>key</key>
+			<string>LocationAlways</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>LocationAlwaysAndWhenInUse</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Always)</string>
+			<key>key</key>
+			<string>LocationAlwaysAndWhenInUse</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>Location</key>
+		<dict>
+			<key>name</key>
+			<string>Location</string>
+			<key>key</key>
+			<string>Location</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>LocationWhenInUse</key>
+		<dict>
+			<key>name</key>
+			<string>Location (When Using)</string>
+			<key>key</key>
+			<string>LocationWhenInUse</string>
+			<key>symbol</key>
+			<string>location</string>
+		</dict>
+		<key>LocationTemporary</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Temporary)</string>
+			<key>key</key>
+			<string>LocationTemporary</string>
+			<key>symbol</key>
+			<string>location</string>
+		</dict>
+		<key>AppleMusic</key>
+		<dict>
+			<key>name</key>
+			<string>Apple Music</string>
+			<key>key</key>
+			<string>AppleMusic</string>
+			<key>symbol</key>
+			<string>music.note</string>
+		</dict>
+		<key>Motion</key>
+		<dict>
+			<key>name</key>
+			<string>Motion</string>
+			<key>key</key>
+			<string>Motion</string>
+			<key>symbol</key>
+			<string>figure.run</string>
+		</dict>
+		<key>FallDetection</key>
+		<dict>
+			<key>name</key>
+			<string>Fall Detection</string>
+			<key>key</key>
+			<string>FallDetection</string>
+			<key>symbol</key>
+			<string>figure.fall</string>
+		</dict>
+		<key>LocalNetwork</key>
+		<dict>
+			<key>name</key>
+			<string>Local Network</string>
+			<key>key</key>
+			<string>LocalNetwork</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>NearbyInteraction</key>
+		<dict>
+			<key>name</key>
+			<string>Nearby Interaction</string>
+			<key>key</key>
+			<string>NearbyInteraction</string>
+			<key>symbol</key>
+			<string>dot.radiowaves.left.and.right</string>
+		</dict>
+		<key>NearbyInteractionAllowOnce</key>
+		<dict>
+			<key>name</key>
+			<string>Nearby Interaction (Once)</string>
+			<key>key</key>
+			<string>NearbyInteractionAllowOnce</string>
+			<key>symbol</key>
+			<string>dot.radiowaves.left.and.right</string>
+		</dict>
+		<key>NFCReader</key>
+		<dict>
+			<key>name</key>
+			<string>NFC</string>
+			<key>key</key>
+			<string>NFCReader</string>
+			<key>symbol</key>
+			<string>sensor.tag.radiowaves.forward</string>
+		</dict>
+		<key>PhotoLibraryAdd</key>
+		<dict>
+			<key>name</key>
+			<string>Photos (Add)</string>
+			<key>key</key>
+			<string>PhotoLibraryAdd</string>
+			<key>symbol</key>
+			<string>photo</string>
+		</dict>
+		<key>PhotoLibrary</key>
+		<dict>
+			<key>name</key>
+			<string>Photos</string>
+			<key>key</key>
+			<string>PhotoLibrary</string>
+			<key>symbol</key>
+			<string>photo.stack</string>
+		</dict>
+		<key>UserTracking</key>
+		<dict>
+			<key>name</key>
+			<string>User Tracking</string>
+			<key>key</key>
+			<string>UserTracking</string>
+			<key>symbol</key>
+			<string>location.magnifyingglass</string>
+		</dict>
+		<key>SensorKit</key>
+		<dict>
+			<key>name</key>
+			<string>SensorKit</string>
+			<key>key</key>
+			<string>SensorKit</string>
+			<key>symbol</key>
+			<string>sensor</string>
+		</dict>
+		<key>Siri</key>
+		<dict>
+			<key>name</key>
+			<string>Siri</string>
+			<key>key</key>
+			<string>Siri</string>
+			<key>symbol</key>
+			<string>mic.circle</string>
+		</dict>
+		<key>SpeechRecognition</key>
+		<dict>
+			<key>name</key>
+			<string>Speech Recognition</string>
+			<key>key</key>
+			<string>SpeechRecognition</string>
+			<key>symbol</key>
+			<string>waveform.and.mic</string>
+		</dict>
+		<key>Identity</key>
+		<dict>
+			<key>name</key>
+			<string>ID Cards</string>
+			<key>key</key>
+			<string>Identity</string>
+			<key>symbol</key>
+			<string>wallet.pass</string>
 		</dict>
 	</dict>
 </dict>

@@ -51,7 +51,7 @@ public protocol ALTAppPermission: RawRepresentable<String>, Hashable
 private struct KnownPermission: Decodable
 {
     var localizedName: String
-    var localizedDescription: String
+    var localizedDescription: String?
     var rawValue: String
     var symbolName: String
     
@@ -156,36 +156,5 @@ extension ALTAppPrivacyPermission: ALTAppPermission
 {
     public var type: ALTAppPermissionType { .privacy }
     
-    public var localizedName: String? {
-        switch self
-        {
-        case .photos: return NSLocalizedString("Photos", comment: "")
-        case .camera: return NSLocalizedString("Camera", comment: "")
-        case .faceID: return NSLocalizedString("Face ID", comment: "")
-        case .appleMusic: return NSLocalizedString("Apple Music", comment: "")
-        case .localNetwork: return NSLocalizedString("Local Network", comment: "")
-        case .bluetooth: return NSLocalizedString("Bluetooth (Always)", comment: "")
-        case .calendars: return NSLocalizedString("Calendars", comment: "")
-        case .microphone: return NSLocalizedString("Microphone", comment: "")
-        default: return nil
-        }
-    }
-    
     public var synthesizedName: String? { nil }
-    public var localizedDescription: String? { nil }
-        
-    public var symbolName: String? {
-        switch self
-        {
-        case .photos: return "photo"
-        case .camera: return "camera"
-        case .faceID: return "faceid"
-        case .appleMusic: return "music.note"
-        case .localNetwork: return "wifi"
-        case .bluetooth: return "dot.radiowaves.forward"
-        case .calendars: return "calendar"
-        case .microphone: return "mic"
-        default: return nil
-        }
-    }
 }
