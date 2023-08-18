@@ -106,10 +106,10 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
             
             self.startListeningForRunningApps()
             
-            // Wait for 3 seconds (2 now, 1 later in FindServerOperation) to:
+            // Wait for 2 seconds (1 now, 1 later in FindServerOperation) to:
             // a) give us time to discover AltServers
             // b) give other processes a chance to respond to requestAppState notification
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.managedObjectContext.perform {
                     
                     let filteredApps = self.installedApps.filter { !self.runningApplications.contains($0.bundleIdentifier) }
@@ -141,6 +141,8 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
                     group.completionHandler = { (results) in
                         self.finish(.success(results))
                     }
+                    
+                    self.progress.addChild(group.progress, withPendingUnitCount: 1)
                 }
             }
         }
