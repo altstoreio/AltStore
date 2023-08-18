@@ -228,7 +228,8 @@ private extension BackgroundRefreshAppsOperation
             
             if shouldPresentAlert
             {
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
+                // Using nil if delay == 0 fixes race condition where multiple notifications can appear (or none).
+                let trigger = delay == 0 ? nil : UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
                 
                 let request = UNNotificationRequest(identifier: self.refreshIdentifier, content: content, trigger: trigger)
                 UNUserNotificationCenter.current().add(request)
