@@ -113,7 +113,7 @@ private extension IntentHandler
     func refreshApps(intent: RefreshAllIntent)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-            let installedApps = InstalledApp.fetchActiveApps(in: context)
+            let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: context)
             let operation = AppManager.shared.backgroundRefresh(installedApps, presentsNotifications: false) { (result) in
                 do
                 {
