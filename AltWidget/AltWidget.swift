@@ -178,7 +178,7 @@ struct HomeScreenWidget: Widget
     private let kind: String = "AppDetail"
     
     public var body: some WidgetConfiguration {
-        return IntentConfiguration(kind: kind,
+        let configuration = IntentConfiguration(kind: kind,
                                    intent: ViewAppIntent.self,
                                    provider: Provider()) { (entry) in
             WidgetView(entry: entry)
@@ -186,6 +186,16 @@ struct HomeScreenWidget: Widget
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("AltWidget")
         .description("View remaining days until your sideloaded apps expire.")
+        
+        if #available(iOS 17, *)
+        {
+            return configuration
+                .contentMarginsDisabled()
+        }
+        else
+        {
+            return configuration
+        }
     }
 }
 
