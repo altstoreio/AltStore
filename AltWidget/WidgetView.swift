@@ -104,7 +104,7 @@ struct WidgetView : View
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .background(backgroundView(icon: entry.app?.icon, tintColor: entry.app?.tintColor))
+        .widgetBackground(backgroundView(icon: entry.app?.icon, tintColor: entry.app?.tintColor))
     }
 }
 
