@@ -80,9 +80,11 @@ struct WidgetView : View
                                         .opacity(0.8)
                                         .fixedSize(horizontal: true, vertical: false)
                                         .offset(x: 5)
+                                        .invalidatableContentIfAvailable()
                                 }
                             }
                             .fixedSize(horizontal: false, vertical: true)
+                            .activatesRefreshAllAppsIntent()
                         }
                         .padding()
                     }
