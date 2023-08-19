@@ -69,12 +69,21 @@ struct RefreshAllAppsIntent: AppIntent, CustomIntentMigratedAppIntent, Predictab
         }
     }
     
+    let presentsNotifications: Bool
+    
     private let operationActor = OperationActor()
+    
+    init(presentsNotifications: Bool)
+    {
+        self.presentsNotifications = presentsNotifications
+        
+        self.progress.completedUnitCount = 0
+        self.progress.totalUnitCount = 1
+    }
     
     init()
     {
-        self.progress.completedUnitCount = 0
-        self.progress.totalUnitCount = 1
+        self.init(presentsNotifications: false)
     }
     
     func perform() async throws -> some IntentResult & ProvidesDialog
@@ -99,6 +108,7 @@ struct RefreshAllAppsIntent: AppIntent, CustomIntentMigratedAppIntent, Predictab
                     for try await _ in taskGroup.prefix(1)
                     {
                         // We only care about the first child task to complete.
+                        taskGroup.cancelAll()
                         break
                     }
                 }
@@ -148,7 +158,7 @@ private extension RefreshAllAppsIntent
         let installedApps = await context.perform { InstalledApp.fetchAppsForRefreshingAll(in: context) }
         
         try await withCheckedThrowingContinuation { continuation in
-            let operation = AppManager.shared.backgroundRefresh(installedApps, presentsNotifications: false) { (result) in
+            let operation = AppManager.shared.backgroundRefresh(installedApps, presentsNotifications: self.presentsNotifications) { (result) in
                 do
                 {
                     let results = try result.get()

@@ -346,6 +346,8 @@
 		BFF7C9342578492100E55F36 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
 		D513F6162A12CE4E0061EAA1 /* SourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCD2A02FA7400B24B63 /* SourceError.swift */; };
 		D5151BD92A8FF64300C96F28 /* RefreshAllAppsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BD82A8FF64300C96F28 /* RefreshAllAppsIntent.swift */; };
+		D5151BE12A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */; };
+		D5151BE22A90363300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */; };
 		D5151BE72A90395400C96F28 /* View+AltWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BE52A90391900C96F28 /* View+AltWidget.swift */; };
 		D5177B0D2A26944600270065 /* AltStore12ToAltStore13.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5177B0C2A26944600270065 /* AltStore12ToAltStore13.xcmappingmodel */; };
 		D5189C012A01BC6800F44625 /* UserInfoValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5189C002A01BC6800F44625 /* UserInfoValue.swift */; };
@@ -878,6 +880,7 @@
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
 		C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5151BD82A8FF64300C96F28 /* RefreshAllAppsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAllAppsIntent.swift; sourceTree = "<group>"; };
+		D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAllAppsWidgetIntent.swift; sourceTree = "<group>"; };
 		D5151BE52A90391900C96F28 /* View+AltWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AltWidget.swift"; sourceTree = "<group>"; };
 		D5177B0C2A26944600270065 /* AltStore12ToAltStore13.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore12ToAltStore13.xcmappingmodel; sourceTree = "<group>"; };
 		D5189C002A01BC6800F44625 /* UserInfoValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoValue.swift; sourceTree = "<group>"; };
@@ -1967,6 +1970,7 @@
 			children = (
 				D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */,
 				D5151BD82A8FF64300C96F28 /* RefreshAllAppsIntent.swift */,
+				D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */,
 			);
 			path = "App Intents";
 			sourceTree = "<group>";
@@ -2814,6 +2818,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF98917E250AAC4F002ACF50 /* Countdown.swift in Sources */,
+				D5151BE22A90363300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */,
 				BF42345A25101C35006D1EB2 /* WidgetView.swift in Sources */,
 				D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */,
 				D5151BE72A90395400C96F28 /* View+AltWidget.swift in Sources */,
@@ -2830,6 +2835,7 @@
 				BF74989B23621C0700CED65F /* ForwardingNavigationController.swift in Sources */,
 				D57F2C9426E01BC700B9FA39 /* UIDevice+Vibration.swift in Sources */,
 				BFD2478F2284C8F900981D42 /* Button.swift in Sources */,
+				D5151BE12A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */,
 				D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */,
 				D513F6162A12CE4E0061EAA1 /* SourceError.swift in Sources */,
 				BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */,
@@ -3476,6 +3482,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$inherited WIDGET_EXTENSION";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3505,6 +3512,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$inherited WIDGET_EXTENSION";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

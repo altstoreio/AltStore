@@ -24,4 +24,33 @@ extension View
             background(backgroundView)
         }
     }
+    
+    @ViewBuilder
+    func invalidatableContentIfAvailable() -> some View
+    {
+        if #available(iOSApplicationExtension 17, *)
+        {
+            self.invalidatableContent()
+        }
+        else
+        {
+            self
+        }
+    }
+    
+    @ViewBuilder
+    func activatesRefreshAllAppsIntent() -> some View
+    {
+        if #available(iOSApplicationExtension 17, *)
+        {
+            Button(intent: RefreshAllAppsWidgetIntent()) {
+                self
+            }
+            .buttonStyle(.plain)
+        }
+        else
+        {
+            self
+        }
+    }
 }
