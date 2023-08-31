@@ -1,14 +1,12 @@
 //
-//  AltWidget.swift
-//  AltWidget
+//  Provider.swift
+//  AltStore
 //
 //  Created by Riley Testut on 6/26/20.
 //  Copyright © 2020 Riley Testut. All rights reserved.
 //
 
-import SwiftUI
 import WidgetKit
-import UIKit
 import CoreData
 
 import AltStoreCore
@@ -21,34 +19,6 @@ struct AppEntry: TimelineEntry
     
     var app: AppSnapshot?
     var isPlaceholder: Bool = false
-}
-
-struct AppSnapshot
-{
-    var name: String
-    var bundleIdentifier: String
-    var expirationDate: Date
-    var refreshedDate: Date
-    
-    var tintColor: UIColor?
-    var icon: UIImage?
-}
-
-extension AppSnapshot
-{
-    // Declared in extension so we retain synthesized initializer.
-    init(installedApp: InstalledApp)
-    {
-        self.name = installedApp.name
-        self.bundleIdentifier = installedApp.bundleIdentifier
-        self.expirationDate = installedApp.expirationDate
-        self.refreshedDate = installedApp.refreshedDate
-        
-        self.tintColor = installedApp.storeApp?.tintColor
-        
-        let application = ALTApplication(fileURL: installedApp.fileURL)
-        self.icon = application?.icon?.resizing(toFill: CGSize(width: 180, height: 180))
-    }
 }
 
 struct Provider: IntentTimelineProvider
@@ -170,87 +140,5 @@ struct Provider: IntentTimelineProvider
                 }
             }
         }
-    }
-}
-
-struct HomeScreenWidget: Widget
-{
-    private let kind: String = "AppDetail"
-    
-    public var body: some WidgetConfiguration {
-        let configuration = IntentConfiguration(kind: kind,
-                                   intent: ViewAppIntent.self,
-                                   provider: Provider()) { (entry) in
-            WidgetView(entry: entry)
-        }
-        .supportedFamilies([.systemSmall])
-        .configurationDisplayName("AltWidget")
-        .description("View remaining days until your sideloaded apps expire.")
-        
-        if #available(iOS 17, *)
-        {
-            return configuration
-                .contentMarginsDisabled()
-        }
-        else
-        {
-            return configuration
-        }
-    }
-}
-
-struct TextLockScreenWidget: Widget
-{
-    private let kind: String = "TextLockAppDetail"
-    
-    public var body: some WidgetConfiguration {
-        if #available(iOSApplicationExtension 16, *)
-        {
-            return IntentConfiguration(kind: kind,
-                                       intent: ViewAppIntent.self,
-                                       provider: Provider()) { (entry) in
-                ComplicationView(entry: entry, style: .text)
-            }
-            .supportedFamilies([.accessoryCircular])
-            .configurationDisplayName("AltWidget (Text)")
-            .description("View remaining days until AltStore expires.")
-        }
-        else
-        {
-            return EmptyWidgetConfiguration()
-        }
-    }
-}
-
-struct IconLockScreenWidget: Widget
-{
-    private let kind: String = "IconLockAppDetail"
-    
-    public var body: some WidgetConfiguration {
-        if #available(iOSApplicationExtension 16, *)
-        {
-            return IntentConfiguration(kind: kind,
-                                       intent: ViewAppIntent.self,
-                                       provider: Provider()) { (entry) in
-                ComplicationView(entry: entry, style: .icon)
-            }
-            .supportedFamilies([.accessoryCircular])
-            .configurationDisplayName("AltWidget (Icon)")
-            .description("View remaining days until AltStore expires.")
-        }
-        else
-        {
-            return EmptyWidgetConfiguration()
-        }
-    }
-}
-
-@main
-struct AltWidgets: WidgetBundle
-{
-    var body: some Widget {
-        HomeScreenWidget()
-        IconLockScreenWidget()
-        TextLockScreenWidget()
     }
 }
