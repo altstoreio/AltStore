@@ -1,6 +1,6 @@
 //
-//  WidgetView.swift
-//  AltStore
+//  AppDetailWidget.swift
+//  AltWidgetExtension
 //
 //  Created by Riley Testut on 9/14/20.
 //  Copyright © 2020 Riley Testut. All rights reserved.
@@ -10,10 +10,34 @@ import WidgetKit
 import SwiftUI
 
 import AltStoreCore
-import AltSign
-import CoreData
 
-struct WidgetView : View
+struct AppDetailWidget: Widget
+{
+    private let kind: String = "AppDetail"
+    
+    public var body: some WidgetConfiguration {
+        let configuration = IntentConfiguration(kind: kind,
+                                   intent: ViewAppIntent.self,
+                                   provider: Provider()) { (entry) in
+            AppDetailWidgetView(entry: entry)
+        }
+        .supportedFamilies([.systemSmall])
+        .configurationDisplayName("AltWidget")
+        .description("View remaining days until your sideloaded apps expire.")
+        
+        if #available(iOS 17, *)
+        {
+            return configuration
+                .contentMarginsDisabled()
+        }
+        else
+        {
+            return configuration
+        }
+    }
+}
+
+private struct AppDetailWidgetView: View
 {
     var entry: AppEntry
     
@@ -110,7 +134,7 @@ struct WidgetView : View
     }
 }
 
-private extension WidgetView
+private extension AppDetailWidgetView
 {
     func backgroundView(icon: UIImage? = nil, tintColor: UIColor? = nil) -> some View
     {
@@ -178,19 +202,19 @@ struct WidgetView_Previews: PreviewProvider {
                                        icon: UIImage(named: "Delta"))
         
         return Group {
-            WidgetView(entry: AppEntry(date: Date(), app: altstore))
+            AppDetailWidgetView(entry: AppEntry(date: Date(), app: altstore))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            WidgetView(entry: AppEntry(date: Date(), app: delta))
+            AppDetailWidgetView(entry: AppEntry(date: Date(), app: delta))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            WidgetView(entry: AppEntry(date: Date(), app: expiredDelta))
+            AppDetailWidgetView(entry: AppEntry(date: Date(), app: expiredDelta))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            WidgetView(entry: AppEntry(date: Date(), app: nil))
+            AppDetailWidgetView(entry: AppEntry(date: Date(), app: nil))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            WidgetView(entry: AppEntry(date: Date(), app: nil, isPlaceholder: true))
+            AppDetailWidgetView(entry: AppEntry(date: Date(), app: nil, isPlaceholder: true))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
     }

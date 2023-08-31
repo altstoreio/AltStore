@@ -1,6 +1,6 @@
 //
-//  ComplicationView.swift
-//  AltStore
+//  LockScreenWidget.swift
+//  AltWidget
 //
 //  Created by Riley Testut on 7/7/22.
 //  Copyright © 2022 Riley Testut. All rights reserved.
@@ -9,10 +9,58 @@
 import SwiftUI
 import WidgetKit
 
+import AltStoreCore
+
+struct TextLockScreenWidget: Widget
+{
+    private let kind: String = "TextLockAppDetail"
+    
+    public var body: some WidgetConfiguration {
+        if #available(iOSApplicationExtension 16, *)
+        {
+            return IntentConfiguration(kind: kind,
+                                       intent: ViewAppIntent.self,
+                                       provider: Provider()) { (entry) in
+                ComplicationView(entry: entry, style: .text)
+            }
+            .supportedFamilies([.accessoryCircular])
+            .configurationDisplayName("AltWidget (Text)")
+            .description("View remaining days until AltStore expires.")
+        }
+        else
+        {
+            return EmptyWidgetConfiguration()
+        }
+    }
+}
+
+struct IconLockScreenWidget: Widget
+{
+    private let kind: String = "IconLockAppDetail"
+    
+    public var body: some WidgetConfiguration {
+        if #available(iOSApplicationExtension 16, *)
+        {
+            return IntentConfiguration(kind: kind,
+                                       intent: ViewAppIntent.self,
+                                       provider: Provider()) { (entry) in
+                ComplicationView(entry: entry, style: .icon)
+            }
+            .supportedFamilies([.accessoryCircular])
+            .configurationDisplayName("AltWidget (Icon)")
+            .description("View remaining days until AltStore expires.")
+        }
+        else
+        {
+            return EmptyWidgetConfiguration()
+        }
+    }
+}
+
 @available(iOS 16, *)
 extension ComplicationView
 {
-    enum Style
+    fileprivate enum Style
     {
         case text
         case icon
@@ -20,7 +68,7 @@ extension ComplicationView
 }
 
 @available(iOS 16, *)
-struct ComplicationView: View
+private struct ComplicationView: View
 {
     let entry: AppEntry
     let style: Style
