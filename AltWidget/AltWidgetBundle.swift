@@ -17,5 +17,10 @@ struct AltWidgetBundle: WidgetBundle
         
         IconLockScreenWidget()
         TextLockScreenWidget()
+        
+        if #available(iOS 17, *)
+        {
+            ActiveAppsWidget()
+        }
     }
 }
