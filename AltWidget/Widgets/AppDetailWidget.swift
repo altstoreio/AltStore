@@ -171,51 +171,18 @@ private extension AppDetailWidgetView
     }
 }
 
-struct WidgetView_Previews: PreviewProvider {
-    static var previews: some View {
-        let shortRefreshedDate = Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date()
-        let shortExpirationDate = Calendar.current.date(byAdding: .day, value: 7, to: shortRefreshedDate) ?? Date()
-        let expiredExpirationDate = Calendar.current.date(byAdding: .day, value: -155, to: Date()) ?? Date()
-        
-        let longRefreshedDate = Calendar.current.date(byAdding: .day, value: -100, to: Date()) ?? Date()
-        let longExpirationDate = Calendar.current.date(byAdding: .day, value: 365, to: longRefreshedDate) ?? Date()
-        
-        let altstore = AppSnapshot(name: "AltStore",
-                              bundleIdentifier: "com.rileytestut.AltStore",
-                              expirationDate: shortExpirationDate,
-                              refreshedDate: shortRefreshedDate,
-                              tintColor: .altPrimary,
-                              icon: UIImage(named: "AltStore"))
-        
-        let delta = AppSnapshot(name: "Delta",
-                              bundleIdentifier: "com.rileytestut.Delta",
-                              expirationDate: longExpirationDate,
-                              refreshedDate: longRefreshedDate,
-                              tintColor: .deltaPrimary,
-                              icon: UIImage(named: "Delta"))
-        
-        let expiredDelta = AppSnapshot(name: "Delta",
-                                       bundleIdentifier: "com.rileytestut.Delta",
-                                       expirationDate: expiredExpirationDate,
-                                       refreshedDate: shortRefreshedDate,
-                                       tintColor: .deltaPrimary,
-                                       icon: UIImage(named: "Delta"))
-        
-        return Group {
-            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [altstore]))
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-            
-            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [delta]))
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-            
-            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [expiredDelta]))
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-            
-            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: []))
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-            
-            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [], isPlaceholder: true))
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
-        }
-    }
+#Preview(as: .systemSmall) {
+    AppDetailWidget()
+} timeline: {
+    let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
+    let (altstore, delta, clip, _, longDelta, _) = AppSnapshot.makePreviewSnapshots()
+    
+    AppsEntry(date: Date(), apps: [altstore])
+    AppsEntry(date: Date(), apps: [delta])
+    AppsEntry(date: Date(), apps: [longDelta])
+    
+    AppsEntry(date: expiredDate, apps: [delta])
+    
+    AppsEntry(date: Date(), apps: [])
+    AppsEntry(date: Date(), apps: [], isPlaceholder: true)
 }
