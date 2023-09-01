@@ -200,3 +200,28 @@ extension AppsTimelineProvider: TimelineProvider
         }
     }
 }
+
+extension AppsTimelineProvider: IntentTimelineProvider
+{
+    typealias Intent = ViewAppIntent
+    
+    func getSnapshot(for intent: Intent, in context: Context, completion: @escaping (AppsEntry) -> Void)
+    {
+        Task<Void, Never> {
+            let bundleIDs = [intent.identifier ?? StoreApp.altstoreAppID]
+            
+            let snapshot = await self.snapshot(for: bundleIDs)
+            completion(snapshot)
+        }
+    }
+    
+    func getTimeline(for intent: Intent, in context: Context, completion: @escaping (Timeline<AppsEntry>) -> Void)
+    {
+        Task<Void, Never> {
+            let bundleIDs = [intent.identifier ?? StoreApp.altstoreAppID]
+            
+            let timeline = await self.timeline(for: bundleIDs)
+            completion(timeline)
+        }
+    }
+}

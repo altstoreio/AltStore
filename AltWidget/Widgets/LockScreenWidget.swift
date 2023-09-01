@@ -20,7 +20,7 @@ struct TextLockScreenWidget: Widget
         {
             return IntentConfiguration(kind: kind,
                                        intent: ViewAppIntent.self,
-                                       provider: Provider()) { (entry) in
+                                       provider: AppsTimelineProvider()) { (entry) in
                 ComplicationView(entry: entry, style: .text)
             }
             .supportedFamilies([.accessoryCircular])
@@ -43,7 +43,7 @@ struct IconLockScreenWidget: Widget
         {
             return IntentConfiguration(kind: kind,
                                        intent: ViewAppIntent.self,
-                                       provider: Provider()) { (entry) in
+                                       provider: AppsTimelineProvider()) { (entry) in
                 ComplicationView(entry: entry, style: .icon)
             }
             .supportedFamilies([.accessoryCircular])
@@ -70,12 +70,12 @@ extension ComplicationView
 @available(iOS 16, *)
 private struct ComplicationView: View
 {
-    let entry: AppEntry
+    let entry: AppsEntry
     let style: Style
     
     var body: some View {
-        let refreshedDate = self.entry.app?.refreshedDate ?? .now
-        let expirationDate = self.entry.app?.expirationDate ?? .now
+        let refreshedDate = self.entry.apps.first?.refreshedDate ?? .now
+        let expirationDate = self.entry.apps.first?.expirationDate ?? .now
         
         let totalDays = expirationDate.numberOfCalendarDays(since: refreshedDate)
         let daysRemaining = expirationDate.numberOfCalendarDays(since: self.entry.date)
@@ -159,23 +159,23 @@ struct ComplicationView_Previews: PreviewProvider {
                               icon: UIImage(named: "AltStore"))
         
         return Group {
-            ComplicationView(entry: AppEntry(date: Date(), app: weekAltstore), style: .icon)
+            ComplicationView(entry: AppsEntry(date: Date(), apps: [weekAltstore]), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: expiredDate, app: weekAltstore), style: .icon)
+            ComplicationView(entry: AppsEntry(date: expiredDate, apps: [weekAltstore]), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: longRefreshedDate, app: yearAltstore), style: .icon)
+            ComplicationView(entry: AppsEntry(date: longRefreshedDate, apps: [yearAltstore]), style: .icon)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: Date(), app: weekAltstore), style: .text)
+            ComplicationView(entry: AppsEntry(date: Date(), apps: [weekAltstore]), style: .text)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: expiredDate, app: weekAltstore), style: .text)
+            ComplicationView(entry: AppsEntry(date: expiredDate, apps: [weekAltstore]), style: .text)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             
-            ComplicationView(entry: AppEntry(date: longRefreshedDate, app: yearAltstore), style: .text)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))            
+            ComplicationView(entry: AppsEntry(date: longRefreshedDate, apps: [yearAltstore]), style: .text)
+                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
         }
     }
 }
