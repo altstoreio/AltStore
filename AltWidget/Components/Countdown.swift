@@ -15,13 +15,15 @@ struct Countdown: View
     var endDate: Date?
     var currentDate: Date = Date()
     
+    var strokeWidth: Double = 4.0
+    
     @Environment(\.font) private var font
     
     private var numberOfDays: Int {
         guard let date = self.endDate else { return 0 }
         
         let numberOfDays = date.numberOfCalendarDays(since: self.currentDate)
-        return numberOfDays
+        return max(numberOfDays, 0) // Never show negative values.
     }
     
     private var fractionComplete: CGFloat {
@@ -35,7 +37,7 @@ struct Countdown: View
     @ViewBuilder
     private func overlay(progress: CGFloat) -> some View
     {
-        let strokeStyle = StrokeStyle(lineWidth: 4.0, lineCap: .round, lineJoin: .round)
+        let strokeStyle = StrokeStyle(lineWidth: self.strokeWidth, lineCap: .round, lineJoin: .round)
         
         if self.numberOfDays > 9 || self.numberOfDays < 0 {
             Capsule(style: .continuous)
