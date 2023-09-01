@@ -373,7 +373,6 @@
 		D57F2C9126E0070200B9FA39 /* EnableJITOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */; };
 		D57F2C9426E01BC700B9FA39 /* UIDevice+Vibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */; };
 		D57FE84428C7DB7100216002 /* ErrorLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */; };
-		D586222F2AA1161700A493E1 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D586222D2AA115D000A493E1 /* Provider.swift */; };
 		D586D39B28EF58B0000E101F /* AltTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D586D39A28EF58B0000E101F /* AltTests.swift */; };
 		D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58916FD28C7C55C00E39C8B /* LoggedError.swift */; };
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
@@ -886,7 +885,6 @@
 		D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableJITOperation.swift; sourceTree = "<group>"; };
 		D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Vibration.swift"; sourceTree = "<group>"; };
 		D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogViewController.swift; sourceTree = "<group>"; };
-		D586222D2AA115D000A493E1 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		D586D39828EF58B0000E101F /* AltTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D586D39A28EF58B0000E101F /* AltTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltTests.swift; sourceTree = "<group>"; };
 		D58916FD28C7C55C00E39C8B /* LoggedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedError.swift; sourceTree = "<group>"; };
@@ -1491,7 +1489,6 @@
 			children = (
 				BF8B17F0250AC62400F8157F /* AltWidgetExtension.entitlements */,
 				D5FD4EC42A952EAD0097BEE8 /* AltWidgetBundle.swift */,
-				D586222D2AA115D000A493E1 /* Provider.swift */,
 				D577AB7A2A967DF5007FE952 /* AppsTimelineProvider.swift */,
 				D50C29F22A8ECD71009AB488 /* Widgets */,
 				D51AF9752A97D29100471312 /* Model */,
@@ -2786,7 +2783,6 @@
 				BF98917E250AAC4F002ACF50 /* Countdown.swift in Sources */,
 				D5151BE22A90363300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */,
 				D5FD4EC92A9530C00097BEE8 /* AppSnapshot.swift in Sources */,
-				D586222F2AA1161700A493E1 /* Provider.swift in Sources */,
 				D5151BE72A90395400C96F28 /* View+AltWidget.swift in Sources */,
 				BF98917F250AAC4F002ACF50 /* LockScreenWidget.swift in Sources */,
 				D5FD4EC52A952EAD0097BEE8 /* AltWidgetBundle.swift in Sources */,

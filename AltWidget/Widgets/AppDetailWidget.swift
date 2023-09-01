@@ -18,7 +18,7 @@ struct AppDetailWidget: Widget
     public var body: some WidgetConfiguration {
         let configuration = IntentConfiguration(kind: kind,
                                    intent: ViewAppIntent.self,
-                                   provider: Provider()) { (entry) in
+                                   provider: AppsTimelineProvider()) { (entry) in
             AppDetailWidgetView(entry: entry)
         }
         .supportedFamilies([.systemSmall])
@@ -39,11 +39,11 @@ struct AppDetailWidget: Widget
 
 private struct AppDetailWidgetView: View
 {
-    var entry: AppEntry
+    var entry: AppsEntry
     
     var body: some View {
         Group {
-            if let app = self.entry.app
+            if let app = self.entry.apps.first
             {
                 let daysRemaining = app.expirationDate.numberOfCalendarDays(since: self.entry.date)
                     
@@ -130,7 +130,7 @@ private struct AppDetailWidgetView: View
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .widgetBackground(backgroundView(icon: entry.app?.icon, tintColor: entry.app?.tintColor))
+        .widgetBackground(backgroundView(icon: entry.apps.first?.icon, tintColor: entry.apps.first?.tintColor))
     }
 }
 
@@ -202,19 +202,19 @@ struct WidgetView_Previews: PreviewProvider {
                                        icon: UIImage(named: "Delta"))
         
         return Group {
-            AppDetailWidgetView(entry: AppEntry(date: Date(), app: altstore))
+            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [altstore]))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            AppDetailWidgetView(entry: AppEntry(date: Date(), app: delta))
+            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [delta]))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            AppDetailWidgetView(entry: AppEntry(date: Date(), app: expiredDelta))
+            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [expiredDelta]))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            AppDetailWidgetView(entry: AppEntry(date: Date(), app: nil))
+            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: []))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            AppDetailWidgetView(entry: AppEntry(date: Date(), app: nil, isPlaceholder: true))
+            AppDetailWidgetView(entry: AppsEntry(date: Date(), apps: [], isPlaceholder: true))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
     }
