@@ -134,49 +134,28 @@ private struct ComplicationView: View
     }
 }
 
-@available(iOS 16, *)
-struct ComplicationView_Previews: PreviewProvider {
-    static var previews: some View {
-        let shortRefreshedDate = Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date()
-        let shortExpirationDate = Calendar.current.date(byAdding: .day, value: 7, to: shortRefreshedDate) ?? Date()
-        
-        let longRefreshedDate = Calendar.current.date(byAdding: .day, value: -100, to: Date()) ?? Date()
-        let longExpirationDate = Calendar.current.date(byAdding: .day, value: 365, to: longRefreshedDate) ?? Date()
-        
-        let expiredDate = shortExpirationDate.addingTimeInterval(1 * 60 * 60 * 24)
-        
-        let weekAltstore = AppSnapshot(name: "AltStore",
-                              bundleIdentifier: "com.rileytestut.AltStore",
-                              expirationDate: shortExpirationDate,
-                              refreshedDate: shortRefreshedDate,
-                              tintColor: .altPrimary,
-                              icon: UIImage(named: "AltStore"))
-        
-        let yearAltstore = AppSnapshot(name: "AltStore",
-                              bundleIdentifier: "com.rileytestut.AltStore",
-                              expirationDate: longExpirationDate,
-                              refreshedDate: longRefreshedDate,
-                              tintColor: .altPrimary,
-                              icon: UIImage(named: "AltStore"))
-        
-        return Group {
-            ComplicationView(entry: AppsEntry(date: Date(), apps: [weekAltstore]), style: .icon)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-            
-            ComplicationView(entry: AppsEntry(date: expiredDate, apps: [weekAltstore]), style: .icon)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-            
-            ComplicationView(entry: AppsEntry(date: longRefreshedDate, apps: [yearAltstore]), style: .icon)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-            
-            ComplicationView(entry: AppsEntry(date: Date(), apps: [weekAltstore]), style: .text)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-            
-            ComplicationView(entry: AppsEntry(date: expiredDate, apps: [weekAltstore]), style: .text)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-            
-            ComplicationView(entry: AppsEntry(date: longRefreshedDate, apps: [yearAltstore]), style: .text)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-        }
-    }
+private let widgetFamily = if #available(iOS 16, *) { WidgetFamily.accessoryCircular } else { WidgetFamily.systemSmall }
+
+#Preview("Text", as: widgetFamily) {
+    TextLockScreenWidget()
+} timeline: {
+    let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
+    let (altstore, _, _, longAltStore, _, _) = AppSnapshot.makePreviewSnapshots()
+    
+    AppsEntry(date: Date(), apps: [altstore])
+    AppsEntry(date: Date(), apps: [longAltStore])
+    
+    AppsEntry(date: expiredDate, apps: [altstore])
+}
+
+#Preview("Icon", as: widgetFamily) {
+    IconLockScreenWidget()
+} timeline: {
+    let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
+    let (altstore, _, _, longAltStore, _, _) = AppSnapshot.makePreviewSnapshots()
+    
+    AppsEntry(date: Date(), apps: [altstore])
+    AppsEntry(date: Date(), apps: [longAltStore])
+    
+    AppsEntry(date: expiredDate, apps: [altstore])
 }
