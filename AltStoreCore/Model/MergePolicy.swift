@@ -195,10 +195,13 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 
                 // Permissions
                 let contextPermissions = Set(contextApp._permissions.lazy.compactMap { $0 as? AppPermission }.map { AnyHashable($0.permission) })
-                for case let databasePermission as AppPermission in databaseObject._permissions where !contextPermissions.contains(AnyHashable(databasePermission.permission))
+                for case let databasePermission as AppPermission in databaseObject._permissions /* where !contextPermissions.contains(AnyHashable(databasePermission.permission)) */ // Compiler error as of Xcode 15
                 {
-                    // Permission does NOT exist in context, so delete existing databasePermission.
-                    databasePermission.managedObjectContext?.delete(databasePermission)
+                    if !contextPermissions.contains(AnyHashable(databasePermission.permission))
+                    {
+                        // Permission does NOT exist in context, so delete existing databasePermission.
+                        databasePermission.managedObjectContext?.delete(databasePermission)
+                    }
                 }
                 
                 // Versions
