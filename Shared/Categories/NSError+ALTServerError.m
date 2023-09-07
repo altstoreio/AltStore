@@ -8,13 +8,16 @@
 
 #import "NSError+ALTServerError.h"
 
-#if TARGET_OS_OSX
-#import "AltServer-Swift.h"
-#else
-#import <AltStoreCore/AltStoreCore-Swift.h>
-#endif
-
+#if ALTJIT
+#import "AltJIT-Swift.h"
 @import AltSign;
+#elif TARGET_OS_OSX
+#import "AltServer-Swift.h"
+@import AltSign;
+#elif !TARGET_OS_OSX
+#import <AltStoreCore/AltStoreCore-Swift.h>
+@import AltSign;
+#endif
 
 NSErrorDomain const AltServerErrorDomain = @"AltServer.ServerError";
 NSErrorDomain const AltServerInstallationErrorDomain = @"Apple.InstallationError";
