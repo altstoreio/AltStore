@@ -5,7 +5,7 @@ This application makes use of the following third party libraries:
 
 BSD 3-Clause License
 
-Copyright (c) 2009, Sveinbjorn Thordarson
+Copyright (c) 2008-2021, Sveinbjorn Thordarson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
