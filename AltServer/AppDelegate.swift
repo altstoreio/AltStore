@@ -150,41 +150,53 @@ private extension AppDelegate
     
     func enableJIT(for app: InstalledApp, on device: ALTDevice)
     {
-        func finish(_ result: Result<Void, Error>)
-        {
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(let error as NSError):
-                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
-                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
-                    
-                case .success:
+        Task<Void, Never> {
+            do
+            {
+                try await JITManager.shared.enableUnsignedCodeExecution(process: .name(app.executableName), device: device)
+                
+                await MainActor.run {
                     let alert = NSAlert()
                     alert.messageText = String(format: NSLocalizedString("Successfully enabled JIT for %@.", comment: ""), app.name)
                     alert.informativeText = String(format: NSLocalizedString("JIT will remain enabled until you quit the app. You can now disconnect %@ from your computer.", comment: ""), device.name)
+                    
+                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                    
                     alert.runModal()
                 }
             }
-        }
-        
-        ALTDeviceManager.shared.prepare(device) { (result) in
-            switch result
+            catch let error as JITError where error.code == .dependencyNotFound
             {
-            case .failure(let error as NSError): return finish(.failure(error))
-            case .success:
-                ALTDeviceManager.shared.startDebugConnection(to: device) { (connection, error) in
-                    guard let connection = connection else {
-                        return finish(.failure(error! as NSError))
-                    }
+                var errorMessage = error.localizedDescription
+                if let recoverySuggestion = error.recoverySuggestion
+                {
+                    errorMessage += "\n\n" + recoverySuggestion
+                }
+                
+                await MainActor.run { [errorMessage] in
+                    let alert = NSAlert()
+                    alert.alertStyle = .critical
+                    alert.messageText = NSLocalizedString("Missing AltJIT Dependencies", comment: "")
+                    alert.informativeText = errorMessage
                     
-                    connection.enableUnsignedCodeExecutionForProcess(withName: app.executableName) { (success, error) in
-                        guard success else {
-                            return finish(.failure(error!))
-                        }
-                        
-                        finish(.success(()))
+                    alert.addButton(withTitle: NSLocalizedString("View Instructions", comment: ""))
+                    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                    
+                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                    
+                    let response = alert.runModal()
+                    if response == .alertFirstButtonReturn
+                    {
+                        let faqURL = URL(string: "https://faq.altstore.io/how-to-use-altstore/altjit")!
+                        NSWorkspace.shared.open(faqURL)
                     }
+                }
+            }
+            catch let error as NSError
+            {
+                await MainActor.run {
+                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
+                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
                 }
             }
         }

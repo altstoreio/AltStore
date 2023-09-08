@@ -255,39 +255,19 @@ extension ALTDeviceManager
     }
 }
 
-extension ALTDeviceManager
+private extension ALTDeviceManager
 {
     func prepare(_ device: ALTDevice, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {        
-        ALTDeviceManager.shared.isDeveloperDiskImageMounted(for: device) { (isMounted, error) in
-            switch (isMounted, error)
+        Task<Void, Never> {
+            do
             {
-            case (_, let error?): return completionHandler(.failure(error))
-            case (true, _): return completionHandler(.success(()))
-            case (false, _):
-                developerDiskManager.downloadDeveloperDisk(for: device) { (result) in
-                    switch result
-                    {
-                    case .failure(let error): completionHandler(.failure(error))
-                    case .success((let diskFileURL, let signatureFileURL)):
-                        ALTDeviceManager.shared.installDeveloperDiskImage(at: diskFileURL, signatureURL: signatureFileURL, to: device) { (success, error) in
-                            switch Result(success, error)
-                            {
-                            case .failure(let error as ALTServerError) where error.code == .incompatibleDeveloperDisk:
-                                developerDiskManager.setDeveloperDiskCompatible(false, with: device)
-                                completionHandler(.failure(error))
-                                
-                            case .failure(let error):
-                                // Don't mark developer disk as incompatible because it probably failed for a different reason.
-                                completionHandler(.failure(error))
-                                
-                            case .success:
-                                developerDiskManager.setDeveloperDiskCompatible(true, with: device)
-                                completionHandler(.success(()))
-                            }
-                        }
-                    }
-                }
+                try await JITManager.shared.prepare(device)
+                completionHandler(.success(()))
+            }
+            catch
+            {
+                completionHandler(.failure(error))
             }
         }
     }
