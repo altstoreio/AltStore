@@ -181,6 +181,8 @@ private extension RefreshAllAppsIntent
                 }
             }
             
+            operation.ignoresServerNotFoundError = false
+            
             self.progress.addChild(operation.progress, withPendingUnitCount: 1)
             
             Task {
