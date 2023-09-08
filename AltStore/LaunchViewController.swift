@@ -8,6 +8,7 @@
 
 import UIKit
 import Roxas
+import WidgetKit
 
 import AltStoreCore
 
@@ -83,6 +84,8 @@ extension LaunchViewController
         AppManager.shared.update()
         AppManager.shared.updatePatronsIfNeeded()        
         PatreonAPI.shared.refreshPatreonAccount()
+        
+        WidgetCenter.shared.reloadAllTimelines()
         
         // Add view controller as child (rather than presenting modally)
         // so tint adjustment + card presentations works correctly.
