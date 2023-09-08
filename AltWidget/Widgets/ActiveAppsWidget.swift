@@ -140,7 +140,8 @@ private struct ActiveAppsWidgetView: View
 }
 
 #Preview(as: .systemMedium) {
-    ActiveAppsWidget()
+    guard #available(iOS 17, *) else { fatalError() }
+    return ActiveAppsWidget()
 } timeline: {
     let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
     let (altstore, delta, clip, longAltStore, longDelta, longClip) = AppSnapshot.makePreviewSnapshots()
