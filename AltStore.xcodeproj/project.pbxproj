@@ -438,7 +438,6 @@
 		D5FB7A312AA28A2900EF863D /* NSError+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+AltStore.swift */; };
 		D5FB7A322AA28A4000EF863D /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D5FB7A392AA28D8300EF863D /* NSError+ALTServerError.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1E314922A060F400370A3C /* NSError+ALTServerError.m */; };
-		D5FB7A472AA293D000EF863D /* ALTErrorKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FB7A462AA293D000EF863D /* ALTErrorKeys.m */; };
 		D5FD4EC52A952EAD0097BEE8 /* AltWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FD4EC42A952EAD0097BEE8 /* AltWidgetBundle.swift */; };
 		D5FD4EC92A9530C00097BEE8 /* AppSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FD4EC82A9530C00097BEE8 /* AppSnapshot.swift */; };
 		D5FD4ECB2A9532960097BEE8 /* DatabaseManager+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FD4ECA2A9532960097BEE8 /* DatabaseManager+Async.swift */; };
@@ -1018,8 +1017,6 @@
 		D5FB7A1F2AA284ED00EF863D /* MountDisk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MountDisk.swift; path = AltJIT/Commands/MountDisk.swift; sourceTree = SOURCE_ROOT; };
 		D5FB7A202AA284ED00EF863D /* Task+Timeout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Task+Timeout.swift"; path = "AltJIT/Extensions/Task+Timeout.swift"; sourceTree = SOURCE_ROOT; };
 		D5FB7A382AA28AC700EF863D /* AltJIT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AltJIT-Bridging-Header.h"; path = "AltJIT/AltJIT-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		D5FB7A452AA293D000EF863D /* ALTErrorKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTErrorKeys.h; sourceTree = "<group>"; };
-		D5FB7A462AA293D000EF863D /* ALTErrorKeys.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTErrorKeys.m; sourceTree = "<group>"; };
 		D5FD4EC42A952EAD0097BEE8 /* AltWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltWidgetBundle.swift; sourceTree = "<group>"; };
 		D5FD4EC82A9530C00097BEE8 /* AppSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSnapshot.swift; sourceTree = "<group>"; };
 		D5FD4ECA2A9532960097BEE8 /* DatabaseManager+Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DatabaseManager+Async.swift"; sourceTree = "<group>"; };
@@ -2073,8 +2070,6 @@
 		D522F9562AA509E9003E57D1 /* Types */ = {
 			isa = PBXGroup;
 			children = (
-				D5FB7A452AA293D000EF863D /* ALTErrorKeys.h */,
-				D5FB7A462AA293D000EF863D /* ALTErrorKeys.m */,
 				D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */,
 				D59A6B7A2AA91B8E00F61259 /* PythonCommand.swift */,
 			);
@@ -3176,7 +3171,6 @@
 				D5A1D2EC2AA51D490066CACC /* ProcessError.swift in Sources */,
 				D5FB7A262AA284ED00EF863D /* MountDisk.swift in Sources */,
 				D5FB7A392AA28D8300EF863D /* NSError+ALTServerError.m in Sources */,
-				D5FB7A472AA293D000EF863D /* ALTErrorKeys.m in Sources */,
 				D59A6B7F2AA9226C00F61259 /* AppProcess.swift in Sources */,
 				D5FB7A272AA284ED00EF863D /* Task+Timeout.swift in Sources */,
 				D59A6B822AA92D1C00F61259 /* Process+Conveniences.swift in Sources */,
