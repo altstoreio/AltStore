@@ -4118,6 +4118,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/../Frameworks",
+					"@executable_path/AltServer.app/Contents/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4157,6 +4158,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/../Frameworks",
+					"@executable_path/AltServer.app/Contents/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
