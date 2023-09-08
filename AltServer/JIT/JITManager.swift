@@ -108,7 +108,14 @@ private extension JITManager
 {
     func installPersonalizedDeveloperDisk(onto device: ALTDevice) async throws
     {
-        _ = try await Process.launchAndWait(.altjit, arguments: ["mount", "--udid", device.identifier])
+        do
+        {
+            _ = try await Process.launchAndWait(.altjit, arguments: ["mount", "--udid", device.identifier])
+        }
+        catch
+        {
+            try self.processAltJITError(error)
+        }
     }
     
     func enableModernUnsignedCodeExecution(process: AppProcess, device: ALTDevice) async throws
@@ -132,9 +139,23 @@ private extension JITManager
             
             self.authorization = try Process.runAsAdmin(URL.altjit.path, arguments: arguments, authorization: self.authorization)
         }
+        catch
+        {
+            try self.processAltJITError(error)
+        }
+    }
+    
+    func processAltJITError(_ error: some Error) throws
+    {
+        do
+        {
+            throw error
+        }
         catch let error as ProcessError where error.code == .failed
         {
-            let regex = Regex {
+            guard let output = error.output else { throw error }
+            
+            let dependencyNotFoundRegex = Regex {
                 "No module named"
                 
                 OneOrMore(.whitespace)
@@ -144,10 +165,23 @@ private extension JITManager
                 }
             }
             
-            guard let output = error.output, let match = output.firstMatch(of: regex) else { throw error }
+            let deviceNotFoundRegex = Regex {
+                "Device is not connected"
+            }
             
-            let dependency = String(match.1)
-            throw JITError.dependencyNotFound(dependency)
+            if let match = output.firstMatch(of: dependencyNotFoundRegex)
+            {
+                let dependency = String(match.1)
+                throw JITError.dependencyNotFound(dependency)
+            }
+            else if output.contains(deviceNotFoundRegex)
+            {
+                throw ALTServerError(.deviceNotFound, userInfo: [
+                    NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString("Your device must be plugged into your computer to enable JIT on iOS 17 or later.", comment: "")
+                ])
+            }
+            
+            throw error
         }
     }
 }
