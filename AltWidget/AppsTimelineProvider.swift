@@ -208,7 +208,7 @@ extension AppsTimelineProvider: IntentTimelineProvider
     func getSnapshot(for intent: Intent, in context: Context, completion: @escaping (AppsEntry) -> Void)
     {
         Task<Void, Never> {
-            let bundleIDs = [intent.identifier ?? StoreApp.altstoreAppID]
+            let bundleIDs = [intent.app?.identifier ?? StoreApp.altstoreAppID]
             
             let snapshot = await self.snapshot(for: bundleIDs)
             completion(snapshot)
@@ -218,7 +218,7 @@ extension AppsTimelineProvider: IntentTimelineProvider
     func getTimeline(for intent: Intent, in context: Context, completion: @escaping (Timeline<AppsEntry>) -> Void)
     {
         Task<Void, Never> {
-            let bundleIDs = [intent.identifier ?? StoreApp.altstoreAppID]
+            let bundleIDs = [intent.app?.identifier ?? StoreApp.altstoreAppID]
             
             let timeline = await self.timeline(for: bundleIDs)
             completion(timeline)
