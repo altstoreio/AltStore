@@ -20,11 +20,18 @@ struct RefreshAllAppsWidgetIntent: AppIntent, ProgressReportingIntent
     
     func perform() async throws -> some IntentResult & ProvidesDialog
     {
-    #if WIDGET_EXTENSION
-        return .result(dialog: "")
-    #else
-        return try await self.intent.perform()
+    #if !WIDGET_EXTENSION
+        do
+        {
+            _ = try await self.intent.perform()
+        }
+        catch
+        {
+            print("Failed to refresh apps via widget.", error)
+        }
     #endif
+        
+        return .result(dialog: "")
     }
 }
 
