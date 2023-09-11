@@ -128,8 +128,6 @@ struct RefreshAllAppsIntent: AppIntent, CustomIntentMigratedAppIntent, Predictab
         }
         catch
         {
-            WidgetCenter.shared.reloadAllTimelines()
-            
             let intentError = IntentError(error)
             throw intentError
         }
