@@ -21,18 +21,27 @@ private extension Color
     static let altGradientExtraDark = Color.init(.displayP3, red: 2.0/255.0, green: 82.0/255.0, blue: 103.0/255.0)
 }
 
-@available(iOS 17, *)
+//@available(iOS 17, *)
 struct ActiveAppsWidget: Widget
 {
     private let kind: String = "ActiveApps"
     
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: AppsTimelineProvider()) { entry in
-            ActiveAppsWidgetView(entry: entry)
+        if #available(iOS 17, *)
+        {
+            return StaticConfiguration(kind: kind, provider: AppsTimelineProvider()) { entry in
+                ActiveAppsWidgetView(entry: entry)
+            }
+            .supportedFamilies([.systemMedium])
+            .configurationDisplayName("AltWidget")
+            .description("View remaining days until your active apps expire. Tap any timer to refresh them in the background.")
         }
-        .supportedFamilies([.systemMedium])
-        .configurationDisplayName("AltWidget")
-        .description("View remaining days until your active apps expire.")
+        else
+        {
+            // Can't mark ActiveAppsWidget as requiring iOS 17 directly without causing crash on older versions.
+            // So instead we just return EmptyWidgetConfiguration pre-iOS 17.
+            return EmptyWidgetConfiguration()
+        }
     }
 }
 
@@ -139,7 +148,6 @@ private struct ActiveAppsWidgetView: View
 }
 
 #Preview(as: .systemMedium) {
-    guard #available(iOS 17, *) else { fatalError() }
     return ActiveAppsWidget()
 } timeline: {
     let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
