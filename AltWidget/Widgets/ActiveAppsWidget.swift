@@ -106,21 +106,20 @@ private struct ActiveAppsWidgetView: View
                                     .foregroundStyle(.secondary)
                             }
                             
-                            HStack {
-                                Spacer()
-                                
-                                Countdown(startDate: app.refreshedDate, 
-                                          endDate: app.expirationDate,
-                                          currentDate: entry.date,
-                                          strokeWidth: 3.0) // Slightly thinner circle stroke width
-                                .background {
-                                    Color.black.opacity(0.1)
-                                        .mask(Capsule())
-                                        .padding(.all, -5)
-                                }
-                                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                .invalidatableContent()
+                            Spacer()
+                            
+                            Countdown(startDate: app.refreshedDate,
+                                      endDate: app.expirationDate,
+                                      currentDate: entry.date,
+                                      strokeWidth: 3.0) // Slightly thinner circle stroke width
+                            .background {
+                                Color.black.opacity(0.1)
+                                    .mask(Capsule())
+                                    .padding(.all, -5)
                             }
+                            .font(.system(size: 16, weight: .semibold, design: .rounded))
+                            .invalidatableContent()
+                            .padding(.horizontal, 8)
                             .activatesRefreshAllAppsIntent()
                         }
                         .frame(height: rowHeight)
