@@ -92,6 +92,15 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "2.0b3",
+          "date": "2023-09-11T12:30:00-05:00",
+          "localizedDescription": "NEW\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nIMPROVED\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n\nFIXED\n• Fixed AltJIT on iOS 17*\n• Fixed not refreshing AltStore last when refreshing via Shortcut\n• Fixed Error Log not displaying all detailed info for certain errors\n\n*Requires AltServer 1.7b1 (macOS) from latest Patreon post",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b3.ipa",
+          "size": 5951325,
+          "sha256": "e9bb9b126f7acb1c18f22c28f1970b308e5850cf23bf1bb01da7933a97e7d17d",
+          "minOSVersion": "14.0"
+        },
+        {
           "version": "2.0b2",
           "date": "2023-05-31T15:30:00-05:00",
           "localizedDescription": "NEW\n\nApp Permissions\n• View all entitlements and privacy permissions on an app's store page\n• Tap a permission to view description\n• Shows error alert if downloaded app's permissions don't match source*\n\nSources\n• SHA-256 hashes for app downloads\n• Supports updating apps by build version\n• Supports remotely blocking sources\n\nFIXED\n• Fixed updating apps with manually removed extensions (e.g. uYou+)\n• Fixed showing \"Update\" button on store page when no update is available\n• Fixed \"More\" button appearing unnecessarily in Error Log\n• Fixed various memory leaks\n• Fixed incorrectly showing \"Unsupported Updates Available\"\n\n*While AltStore 2.0 is in beta, you can choose to ignore this alert.",
