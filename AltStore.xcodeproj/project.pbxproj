@@ -385,6 +385,8 @@
 		D57F2C9126E0070200B9FA39 /* EnableJITOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */; };
 		D57F2C9426E01BC700B9FA39 /* UIDevice+Vibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */; };
 		D57FE84428C7DB7100216002 /* ErrorLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */; };
+		D58032EE2AB241D100878F5E /* AnisetteError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58032ED2AB241D100878F5E /* AnisetteError.swift */; };
+		D58032F02AB2429D00878F5E /* ProcessInfo+Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58032EF2AB2429D00878F5E /* ProcessInfo+Device.swift */; };
 		D586D39B28EF58B0000E101F /* AltTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D586D39A28EF58B0000E101F /* AltTests.swift */; };
 		D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58916FD28C7C55C00E39C8B /* LoggedError.swift */; };
 		D5893F802A1419E800E767CD /* NSManagedObjectContext+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */; };
@@ -984,6 +986,8 @@
 		D57F2C9026E0070200B9FA39 /* EnableJITOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableJITOperation.swift; sourceTree = "<group>"; };
 		D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Vibration.swift"; sourceTree = "<group>"; };
 		D57FE84328C7DB7100216002 /* ErrorLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogViewController.swift; sourceTree = "<group>"; };
+		D58032ED2AB241D100878F5E /* AnisetteError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteError.swift; sourceTree = "<group>"; };
+		D58032EF2AB2429D00878F5E /* ProcessInfo+Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Device.swift"; sourceTree = "<group>"; };
 		D581822C2A218A140087965B /* AltStore 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 13.xcdatamodel"; sourceTree = "<group>"; };
 		D586D39828EF58B0000E101F /* AltTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D586D39A28EF58B0000E101F /* AltTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltTests.swift; sourceTree = "<group>"; };
@@ -1167,6 +1171,7 @@
 				BF541C0A25E5A5FA00CD46B2 /* FileManager+URLs.swift */,
 				D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */,
 				D59A6B832AA932F700F61259 /* Logger+AltServer.swift */,
+				D58032EF2AB2429D00878F5E /* ProcessInfo+Device.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1253,6 +1258,7 @@
 				D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */,
 				BFC15ADB27BC3AD100ED2FB4 /* Plugin */,
 				BF703195229F36FF006E110F /* Devices */,
+				D58032EC2AB241B900878F5E /* Anisette Data */,
 				BFD52BDC22A0A659000B7ED1 /* Connections */,
 				D59A6B792AA919E500F61259 /* JIT */,
 				BF055B4A233B528B0086DEA9 /* Extensions */,
@@ -2133,6 +2139,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		D58032EC2AB241B900878F5E /* Anisette Data */ = {
+			isa = PBXGroup;
+			children = (
+				D58032ED2AB241D100878F5E /* AnisetteError.swift */,
+			);
+			path = "Anisette Data";
+			sourceTree = "<group>";
+		};
 		D586D39928EF58B0000E101F /* AltTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2868,9 +2882,11 @@
 				BF718BD123C91BD300A89F2D /* ALTWiredConnection.mm in Sources */,
 				BFAD678E25E0649500D4C4D1 /* ALTDebugConnection.mm in Sources */,
 				BFECAC8524FD950B0077C41F /* Connection.swift in Sources */,
+				D58032EE2AB241D100878F5E /* AnisetteError.swift in Sources */,
 				BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */,
 				BFECAC8424FD950B0077C41F /* ALTConstants.m in Sources */,
 				BF4586C52298CDB800BD7491 /* ALTDeviceManager.mm in Sources */,
+				D58032F02AB2429D00878F5E /* ProcessInfo+Device.swift in Sources */,
 				D59A6B842AA932F700F61259 /* Logger+AltServer.swift in Sources */,
 				BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */,
 				BFECAC9424FD98BA0077C41F /* NSError+ALTServerError.m in Sources */,

@@ -247,8 +247,7 @@ private extension AppDelegate
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
         
-        func finish(_ result: Result<ALTApplication, Error>)
-        {
+        ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password) { (result) in
             switch result
             {
             case .success(let application):
@@ -266,49 +265,6 @@ private extension AppDelegate
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.showErrorAlert(error: error)
-                }
-            }
-        }
-                
-        func install()
-        {
-            ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password, completion: finish(_:))
-        }
-        
-        AnisetteDataManager.shared.isXPCAvailable { isAvailable in
-            if isAvailable
-            {
-                // XPC service is available, so we don't need to install/update Mail plug-in.
-                // Users can still manually do so from the AltServer menu.
-                install()
-            }
-            else
-            {
-                self.pluginManager.isUpdateAvailable { result in
-                    switch result
-                    {
-                    case .failure(let error):
-                        let error = (error as NSError).withLocalizedTitle(NSLocalizedString("Could not check for Mail plug-in updates.", comment: ""))
-                        finish(.failure(error))
-                        
-                    case .success(let isUpdateAvailable):
-                        self.isAltPluginUpdateAvailable = isUpdateAvailable
-                        
-                        if !self.pluginManager.isMailPluginInstalled || isUpdateAvailable
-                        {
-                            self.installMailPlugin { result in
-                                switch result
-                                {
-                                case .failure: break
-                                case .success: install()
-                                }
-                            }
-                        }
-                        else
-                        {
-                            install()
-                        }
-                    }
                 }
             }
         }
