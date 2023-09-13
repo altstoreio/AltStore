@@ -22,8 +22,8 @@ struct AppDetailWidget: Widget
             AppDetailWidgetView(entry: entry)
         }
         .supportedFamilies([.systemSmall])
-        .configurationDisplayName("AltWidget")
-        .description("View remaining days until your sideloaded apps expire.")
+        .configurationDisplayName("App Status")
+        .description("View remaining days until your sideloaded apps expire. Tap the countdown timer to refresh them in the background.")
         
         if #available(iOS 17, *)
         {

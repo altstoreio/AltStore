@@ -33,8 +33,8 @@ struct ActiveAppsWidget: Widget
                 ActiveAppsWidgetView(entry: entry)
             }
             .supportedFamilies([.systemMedium])
-            .configurationDisplayName("AltWidget")
-            .description("View remaining days until your active apps expire. Tap any timer to refresh them in the background.")
+            .configurationDisplayName("Active Apps")
+            .description("View remaining days until your active apps expire. Tap the countdown timers to refresh them in the background.")
         }
         else
         {
