@@ -347,7 +347,21 @@ private extension AppDelegate
     
     @IBAction private func showAboutPanel(_ sender: NSMenuItem)
     {
-        NSApplication.shared.orderFrontStandardAboutPanel(sender)
+        let options: [NSApplication.AboutPanelOptionKey: Any]
+        
+        if #available(macOS 12, *)
+        {
+            var credits = try! AttributedString(markdown: "Thanks to [pymobiledevice3](https://github.com/doronz88/pymobiledevice3) for their work on the iOS 17 Developer Disk format.")
+            credits.font = .systemFont(ofSize: NSFont.smallSystemFontSize) // YOLO ignore Sendable warning.
+            
+            options = [.credits: NSAttributedString(credits)]
+        }
+        else
+        {
+            options = [:]
+        }
+                
+        NSApplication.shared.orderFrontStandardAboutPanel(options: options)
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
     }
 }
