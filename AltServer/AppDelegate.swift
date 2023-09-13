@@ -332,6 +332,12 @@ private extension AppDelegate
             }
         }
     }
+    
+    @IBAction private func showAboutPanel(_ sender: NSMenuItem)
+    {
+        NSApplication.shared.orderFrontStandardAboutPanel(sender)
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+    }
 }
 
 extension AppDelegate: NSMenuDelegate
