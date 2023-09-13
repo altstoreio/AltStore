@@ -1251,7 +1251,6 @@
 			children = (
 				BF45868F229872EA00BD7491 /* AppDelegate.swift */,
 				BF458695229872EA00BD7491 /* Main.storyboard */,
-				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
 				BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */,
 				BFF0394A25F0551600BE607D /* MenuController.swift */,
 				BF904DE9265DAE9A00E86C2A /* InstalledApp.swift */,
@@ -2143,6 +2142,7 @@
 			isa = PBXGroup;
 			children = (
 				D58032ED2AB241D100878F5E /* AnisetteError.swift */,
+				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
 			);
 			path = "Anisette Data";
 			sourceTree = "<group>";
