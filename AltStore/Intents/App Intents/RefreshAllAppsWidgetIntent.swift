@@ -18,7 +18,7 @@ struct RefreshAllAppsWidgetIntent: AppIntent, ProgressReportingIntent
     private let intent = RefreshAllAppsIntent(presentsNotifications: true)
     #endif
     
-    func perform() async throws -> some IntentResult & ProvidesDialog
+    func perform() async throws -> some IntentResult
     {
     #if !WIDGET_EXTENSION
         do
@@ -31,7 +31,7 @@ struct RefreshAllAppsWidgetIntent: AppIntent, ProgressReportingIntent
         }
     #endif
         
-        return .result(dialog: "")
+        return .result()
     }
 }
 
