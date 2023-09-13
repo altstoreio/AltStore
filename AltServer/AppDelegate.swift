@@ -109,16 +109,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 UserDefaults.standard.didPresentInitialNotification = true
             }
         }
-        
-        self.pluginManager.isUpdateAvailable { result in
-            guard let isUpdateAvailable = try? result.get() else { return }
-            self.isAltPluginUpdateAvailable = isUpdateAvailable
-            
-            if isUpdateAvailable
-            {
-                self.installMailPlugin()
-            }
-        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
@@ -332,46 +322,7 @@ private extension AppDelegate
         LaunchAtLogin.isEnabled.toggle()
     }
     
-    @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
-    {
-        if !self.pluginManager.isMailPluginInstalled || self.isAltPluginUpdateAvailable
-        {
-            self.installMailPlugin()
-        }
-        else
-        {
-            self.uninstallMailPlugin()
-        }
-    }
-    
-    private func installMailPlugin(completion: ((Result<Void, Error>) -> Void)? = nil)
-    {
-        self.pluginManager.installMailPlugin { (result) in
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(PluginError.cancelled): break
-                case .failure(let error):
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
-                    alert.informativeText = error.localizedDescription
-                    alert.runModal()
-                    
-                case .success:
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
-                    alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
-                    alert.runModal()
-                    
-                    self.isAltPluginUpdateAvailable = false
-                }
-                
-                completion?(result)
-            }
-        }
-    }
-    
-    private func uninstallMailPlugin()
+    @IBAction private func uninstallMailPlugin(_ sender: NSMenuItem)
     {
         self.pluginManager.uninstallMailPlugin { (result) in
             DispatchQueue.main.async {
@@ -387,7 +338,7 @@ private extension AppDelegate
                 case .success:
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("Mail Plug-in Uninstalled", comment: "")
-                    alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect. You will not be able to use AltServer until the plug-in is reinstalled.", comment: "")
+                    alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect.", comment: "")
                     alert.runModal()
                 }
             }
@@ -414,20 +365,11 @@ extension AppDelegate: NSMenuDelegate
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
 
-        if self.isAltPluginUpdateAvailable
+        if !self.pluginManager.isMailPluginInstalled
         {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in…", comment: "")
+            // Hide "Install Mail Plug-In" option now that it's not required.
+            self.installMailPluginMenuItem.isHidden = true
         }
-        else if self.pluginManager.isMailPluginInstalled
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in…", comment: "")
-        }
-        else
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in…", comment: "")
-        }
-        self.installMailPluginMenuItem.target = self
-        self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
         
         // Need to re-set this every time menu appears so we can refresh device app list.
         self.enableJITMenuController.submenuHandler = { [weak self] device in
