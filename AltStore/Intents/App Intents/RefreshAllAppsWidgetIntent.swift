@@ -40,6 +40,6 @@ struct RefreshAllAppsWidgetIntent: AppIntent, ProgressReportingIntent
 // https://mastodon.social/@mgorbach/110812347476671807
 //
 // Unfortunately `ForegroundContinuableIntent` is marked as unavailable in app extensions,
-// so we conform to AudioPlaybackIntent instead despite not playing audio ¯\_(ツ)_/¯
-@available(iOS 17, *)
-extension RefreshAllAppsWidgetIntent: AudioPlaybackIntent {}
+// so we "conform" RefreshAllAppsWidgetIntent to it in an `unavailable` extension ¯\_(ツ)_/¯
+@available(iOS, unavailable)
+extension RefreshAllAppsWidgetIntent: ForegroundContinuableIntent {}
