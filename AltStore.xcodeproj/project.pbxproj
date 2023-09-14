@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -350,10 +350,10 @@
 		D5151BE72A90395400C96F28 /* View+AltWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BE52A90391900C96F28 /* View+AltWidget.swift */; };
 		D5189C012A01BC6800F44625 /* UserInfoValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5189C002A01BC6800F44625 /* UserInfoValue.swift */; };
 		D5189C022A01BC6800F44625 /* UserInfoValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5189C002A01BC6800F44625 /* UserInfoValue.swift */; };
+		D519AD46292D665B004B12F9 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */ = {isa = PBXBuildFile; fileRef = D51AD27C29356B7B00967AAA /* ALTWrappedError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
-		D519AD46292D665B004B12F9 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB39B5B252BC10E00D1BE50 /* Managed.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
@@ -3644,7 +3644,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.6.3;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3678,7 +3678,7 @@
 					"$(PROJECT_DIR)/Dependencies/fragmentzip",
 					"$(PROJECT_DIR)/Dependencies/libcurl",
 				);
-				MARKETING_VERSION = 1.6.3;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
