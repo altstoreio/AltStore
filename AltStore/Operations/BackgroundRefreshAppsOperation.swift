@@ -215,10 +215,6 @@ private extension BackgroundRefreshAppsOperation
             {
                 shouldPresentAlert = false
             }
-            catch is CancellationError
-            {
-                shouldPresentAlert = false
-            }
             catch ~OperationError.Code.serverNotFound where self.ignoresServerNotFoundError
             {
                 shouldPresentAlert = false
@@ -229,12 +225,19 @@ private extension BackgroundRefreshAppsOperation
             }
             catch
             {
-                print("Failed to refresh apps in background.", error)
-                
-                content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
-                content.body = error.localizedDescription
-                
-                shouldPresentAlert = true
+                if #available(iOS 13, *), error is CancellationError
+                {
+                    shouldPresentAlert = false
+                }
+                else
+                {
+                    print("Failed to refresh apps in background.", error)
+                    
+                    content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
+                    content.body = error.localizedDescription
+                    
+                    shouldPresentAlert = true
+                }
             }
             
             if shouldPresentAlert

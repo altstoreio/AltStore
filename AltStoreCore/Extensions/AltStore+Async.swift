@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+@available(iOS 13, *)
 public extension NSManagedObjectContext
 {
     // Non-Throwing

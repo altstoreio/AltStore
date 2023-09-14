@@ -85,7 +85,10 @@ extension LaunchViewController
         AppManager.shared.updatePatronsIfNeeded()        
         PatreonAPI.shared.refreshPatreonAccount()
         
-        WidgetCenter.shared.reloadAllTimelines()
+        if #available(iOS 14, *)
+        {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         
         // Add view controller as child (rather than presenting modally)
         // so tint adjustment + card presentations works correctly.
