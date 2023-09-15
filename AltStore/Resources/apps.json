@@ -92,6 +92,15 @@
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
         {
+          "version": "2.0b4",
+          "date": "2023-09-15T13:30:00-05:00",
+          "localizedDescription": "• Updates Home Screen widget names & descriptions\n• Fixed returning empty dialog from Refresh Apps shortcut\n\nPREVIOUS BETA\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n\nBug Fixes\n• Fixed AltJIT on iOS 17*\n\n*Requires AltServer 1.7rc (macOS) from latest Patreon post",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b4.ipa",
+          "size": 5950900,
+          "sha256": "5f2546be957509532675f4827185d8ec071eaf3a6a5785dc01efcc1e0c88890d",
+          "minOSVersion": "14.0"
+        },
+        {
           "version": "2.0b3",
           "date": "2023-09-11T12:30:00-05:00",
           "localizedDescription": "NEW\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nIMPROVED\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n\nFIXED\n• Fixed AltJIT on iOS 17*\n• Fixed not refreshing AltStore last when refreshing via Shortcut\n• Fixed Error Log not displaying all detailed info for certain errors\n\n*Requires AltServer 1.7b1 (macOS) from latest Patreon post",
