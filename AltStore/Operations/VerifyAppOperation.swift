@@ -210,41 +210,16 @@ private extension VerifyAppOperation
         
         
         // Privacy
-        let allPrivacyPermissions: Set<ALTAppPrivacyPermission>
-        if #available(iOS 16, *)
-        {
-            let regex = Regex {
-                "NS"
+        let allPrivacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
+            let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
+                guard key.contains("UsageDescription") else { return nil } // Or check for "NS"/"NFC" explicitly?
                 
-                // Capture permission "name"
-                Capture {
-                    OneOrMore(.anyGraphemeCluster)
-                }
-                
-                "UsageDescription"
-                
-                // Optional suffix
-                Optionally(OneOrMore(.anyGraphemeCluster))
-            }
+                let permission = ALTAppPrivacyPermission(rawValue: key)
+                return permission
+            } ?? []
             
-            let privacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
-                let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
-                    guard let match = key.wholeMatch(of: regex) else { return nil }
-                    
-                    let permission = ALTAppPrivacyPermission(rawValue: String(match.1))
-                    return permission
-                } ?? []
-                 
-                return permissions
-            }
-            
-            allPrivacyPermissions = Set(privacyPermissions)
+            return permissions
         }
-        else
-        {
-            allPrivacyPermissions = []
-        }
-        
         
         // Verify permissions.
         let sourcePermissions: Set<AnyHashable> = Set(await $storeApp.perform { $0.permissions.map { AnyHashable($0.permission) } })
@@ -252,8 +227,54 @@ private extension VerifyAppOperation
         
         // To pass: EVERY permission in localPermissions must also appear in sourcePermissions.
         // If there is a single missing permission, throw error.
-        let missingPermissions: [any ALTAppPermission] = localPermissions.filter { !sourcePermissions.contains(AnyHashable($0)) }
-        guard missingPermissions.isEmpty else { throw VerificationError.undeclaredPermissions(missingPermissions, app: app) }
+        let missingPermissions: [any ALTAppPermission] = localPermissions.filter { permission in
+            if sourcePermissions.contains(AnyHashable(permission))
+            {
+                // `permission` exists in source, so return false.
+                return false
+            }
+            else if permission.type == .privacy
+            {
+                guard #available(iOS 16, *) else {
+                    // Assume all privacy permissions _are_ included in source on pre-iOS 16 devices.
+                    return false
+                }
+                
+                // Special-handling for legacy privacy permissions.
+                
+                let regex = Regex {
+                    Optionally {
+                        "NS"
+                    }
+                    
+                    // Capture permission "name"
+                    Capture {
+                        OneOrMore(.anyGraphemeCluster)
+                    }
+                    
+                    "UsageDescription"
+                    
+                    // Optional suffix
+                    Optionally(OneOrMore(.anyGraphemeCluster))
+                }
+                
+                if let match = permission.rawValue.firstMatch(of: regex),
+                   case let legacyPermission = ALTAppPrivacyPermission(rawValue: String(match.1)),
+                   sourcePermissions.contains(AnyHashable(legacyPermission))
+                {
+                    // The legacy name of this permission exists in the source, so return false.
+                    return false
+                }
+            }
+            
+            // Source doesn't contain permission or its legacy name, so assume it is missing.
+            return true
+        }
+        
+        guard missingPermissions.isEmpty else {
+            // There is at least one undeclared permission, so throw error.
+            throw VerificationError.undeclaredPermissions(missingPermissions, app: app)
+        }
         
         return localPermissions
     }

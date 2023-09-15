@@ -206,7 +206,7 @@
           "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
         }
       ],
-      "appPermissions": {
+      "appPermissionsLegacy": {
         "entitlements": [
           {
           "name": "get-task-allow"
@@ -227,6 +227,17 @@
           "usageDescription": "AltStore uses the local network to find and communicate with AltServer."
         }
       ]
+      },
+      "appPermissions": {
+        "entitlements": {
+          "get-task-allow": "",
+          "com.apple.security.application-groups": "",
+          "aps-environment": "",
+          "com.apple.developer.siri": ""
+        },
+        "privacy": {
+          "LocalNetwork": "AltStore uses the local network to find and communicate with AltServer."
+        }
       }
     },
     {
@@ -264,7 +275,7 @@
           "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
         }
       ],
-      "appPermissions": {
+      "appPermissionsLegacy": {
         "entitlements": [
           {
             "name": "get-task-allow"
@@ -284,6 +295,16 @@
             "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
           }
         ]
+      },
+      "appPermissions": {
+        "entitlements": [
+          "get-task-allow"
+        ],
+        "privacy": {
+          "NSMicrophoneUsageDescription": "Delta uses your microphone to emulate the Nintendo DS microphone.",
+          "NSLocalNetworkUsageDescription": "Delta uses the local network to communicate with AltServer and enable JIT.",
+          "NSPhotoLibraryUsageDescription": "Allows Delta to use images from your Photo Library as game artwork."
+        }
       },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
