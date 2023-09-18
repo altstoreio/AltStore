@@ -11,6 +11,13 @@
       "developerName": "Riley Testut",
       "versions": [
         {
+          "version": "1.7",
+          "date": "2023-09-18T12:00:00-05:00",
+          "localizedDescription": "NEW\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nIMPROVED\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n• Fully compatible with macOS Sonoma\n\nFIXED\n• Fixed AltJIT on iOS 17*\n• Fixed updating apps with manually removed extensions (e.g. uYou+)\n• Fixed not refreshing AltStore last when refreshing via Shortcut\n• Fixed Error Log not displaying all detailed info for certain errors\n\n*Requires AltServer 1.7 (macOS)",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_7.ipa",
+          "size": 5809750
+        },
+        {
           "version": "1.6.3",
           "date": "2023-04-12T12:00:00-05:00",
           "localizedDescription": "• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items",
