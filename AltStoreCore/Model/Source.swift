@@ -11,11 +11,7 @@ import UIKit
 
 public extension Source
 {
-    #if ALPHA
-    static let altStoreIdentifier = "com.rileytestut.AltStore.Alpha"
-    #else
-    static let altStoreIdentifier = "com.rileytestut.AltStore"
-    #endif
+    static let altStoreIdentifier = Source.sourceID(from: Source.altStoreSourceURL)!
     
     #if STAGING
     
@@ -62,8 +58,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
 {
     /* Properties */
     @NSManaged public var name: String
-    @NSManaged public var identifier: String
+    @NSManaged public private(set) var identifier: String
     @NSManaged public var sourceURL: URL
+    @NSManaged public var renamingID: String?
     
     /* Source Detail */
     @NSManaged public var subtitle: String?
@@ -114,7 +111,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
     private enum CodingKeys: String, CodingKey
     {
         case name
-        case identifier
+        case renamingID = "identifier"
         case sourceURL
         case subtitle
         case localizedDescription = "description"
@@ -147,7 +144,11 @@ public class Source: NSManagedObject, Fetchable, Decodable
             
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.name = try container.decode(String.self, forKey: .name)
-            self.identifier = try container.decode(String.self, forKey: .identifier)
+            
+            guard let identifier = Source.sourceID(from: sourceURL) else {
+                throw DecodingError.dataCorruptedError(forKey: .sourceURL, in: container, debugDescription: "A source URL must have a valid host.")
+            }
+            self.identifier = identifier
             
             // Optional Values
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
@@ -155,6 +156,8 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
+            
+            self.renamingID = try container.decodeIfPresent(String.self, forKey: .renamingID)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -240,6 +243,38 @@ public extension Source
 
 internal extension Source
 {
+    class func sourceID(from sourceURL: URL) -> String?
+    {
+        guard let host = sourceURL.host else { return nil }
+        
+        // Based on https://encyclopedia.pub/entry/29841
+        
+        var standardizedID = host
+        
+        //TODO: Use percent encoding
+        if let port = sourceURL.port, port != 80 && port != 443
+        {
+            standardizedID += ":" + String(port)
+        }
+            
+        // Path includes leading "/"
+        standardizedID += sourceURL.path
+        
+        standardizedID = standardizedID.lowercased()
+        
+        if standardizedID.hasSuffix("/")
+        {
+            standardizedID.removeLast()
+        }
+        
+        if standardizedID.hasPrefix("www.")
+        {
+            standardizedID = String(standardizedID.dropFirst(4))
+        }
+        
+        return standardizedID
+    }
+    
     func setFeaturedApps(_ featuredApps: [StoreApp]?)
     {
         // Explicitly update relationships for all apps to ensure featuredApps merges correctly.
@@ -263,6 +298,29 @@ internal extension Source
 
 public extension Source
 {
+    func setSourceURL(_ sourceURL: URL) throws
+    {
+        guard let identifier = Source.sourceID(from: sourceURL) else {
+            throw URLError(.cannotFindHost, userInfo: [NSURLErrorKey: sourceURL])
+        }
+
+        self.identifier = identifier
+        self.sourceURL = sourceURL
+        
+        for app in self.apps
+        {
+            app.sourceIdentifier = identifier
+        }
+        
+        for newsItem in self.newsItems 
+        {
+            newsItem.sourceIdentifier = identifier
+        }
+    }
+}
+
+public extension Source
+{
     @nonobjc class func fetchRequest() -> NSFetchRequest<Source>
     {
         return NSFetchRequest<Source>(entityName: "Source")
@@ -272,8 +330,8 @@ public extension Source
     {
         let source = Source(context: context)
         source.name = "AltStore"
-        source.identifier = Source.altStoreIdentifier
-        source.sourceURL = Source.altStoreSourceURL
+        try! source.setSourceURL(Source.altStoreSourceURL) // Updates identifier too.
+        source.renamingID = source.identifier // Allow migrating source to other URLs
         
         return source
     }

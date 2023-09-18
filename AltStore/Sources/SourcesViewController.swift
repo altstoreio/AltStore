@@ -270,27 +270,11 @@ private extension SourcesViewController
                 // strong reference to source.managedObjectContext.
                 @Managed var source = try result.get()
                 
-                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-                backgroundContext.perform {
-                    do
-                    {
-                        let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
-                        if let existingSource = Source.first(satisfying: predicate, in: backgroundContext)
-                        {
-                            throw SourceError.duplicate(source, existingSource: existingSource)
-                        }
-                        
-                        DispatchQueue.main.async {
-                            self.showSourceDetails(for: source)
-                        }
-                        
-                        finish(.success(()))
-                    }
-                    catch
-                    {
-                        finish(.failure(error))
-                    }
+                DispatchQueue.main.async {
+                    self.showSourceDetails(for: source)
                 }
+                
+                finish(.success(()))
             }
             catch
             {

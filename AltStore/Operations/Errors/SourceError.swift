@@ -97,10 +97,10 @@ struct SourceError: ALTLocalizedError
             return failureReason
             
         case .duplicate:
-            let baseMessage = String(format: NSLocalizedString("A source with the identifier '%@' already exists", comment: ""), self.$source.identifier)
-            guard let existingSourceName = self.$existingSource.name else { return baseMessage + "." }
+            let baseMessage = String(format: NSLocalizedString("The source “%@” has already been added under a different URL", comment: ""), self.$source.name)
+            guard let existingSourceURL = self.$existingSource.sourceURL else { return baseMessage + "." }
             
-            let failureReason = baseMessage + " (“\(existingSourceName)”)."
+            let failureReason = baseMessage + " (\(existingSourceURL.absoluteString))."
             return failureReason
             
         case .missingPermissionUsageDescription:

@@ -346,25 +346,51 @@ extension AppManager
     
     func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
     {
-        let (sourceName, sourceURL) = await $source.perform { ($0.name, $0.sourceURL) }
+        let sourceURL = await $source.perform { $0.sourceURL }
         
-        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-        async let fetchedSource = try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context) // Fetch source async while showing alert.
-
-        let title = String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName)
-        let message = message ?? NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
-        let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
-        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
-
-        // Wait for fetch to finish before saving context to make
-        // sure there isn't already a source with this identifier.
-        let sourceExists = try await fetchedSource.isAdded
-        
-        // This is just a sanity check, so pass nil for existingSource to keep code simple.
-        guard !sourceExists else { throw SourceError.duplicate(source, existingSource: nil) }
-        
-        try await context.performAsync {
-            try context.save()
+        do
+        {
+            let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+            let fetchedSource = try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context)
+            
+            if let renamingID = await context.performAsync({ fetchedSource.renamingID })
+            {
+                let saveContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                try await saveContext.performAsync {
+                    // Consider a source a duplicate if it has same renamingID as another source.
+                    // That means source maintainer opted-in to allowing URL migrations with this ID.
+                    let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.renamingID), renamingID)
+                    if let existingSource = Source.first(satisfying: predicate, in: saveContext)
+                    {
+                        throw SourceError.duplicate(fetchedSource, existingSource: existingSource)
+                    }
+                }
+            }
+            
+            try await context.performAsync {
+                try context.save()
+            }
+        }
+        catch let sourceError as SourceError where sourceError.code == .duplicate
+        {
+            guard let existingSource = sourceError.existingSource, let context = existingSource.managedObjectContext else { throw sourceError }
+            
+            let sourceName = await context.performAsync { existingSource.name }
+            
+            let title = sourceError.localizedDescription
+            let message = String(format: NSLocalizedString("Would you like to replace the source “%@”? Any installed apps will not be affected.", comment: ""), sourceName)
+            
+            let action = await UIAlertAction(title: NSLocalizedString("Replace Source", comment: ""), style: .destructive)
+            try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+            
+            try await context.performAsync {
+                // Update existingSource to have new sourceURL.
+                // This will implicitly update all sourceIDs for apps and news items.
+                try existingSource.setSourceURL(sourceURL)
+                
+                // Save changes
+                try context.save()
+            }
         }
     }
     
