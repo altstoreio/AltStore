@@ -59,6 +59,8 @@ public class DatabaseManager
         self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
         
+        self.persistentContainer.shouldAddStoresAsynchronously = false
+        
         let observer = Unmanaged.passUnretained(self).toOpaque()
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), observer, ReceivedWillMigrateDatabaseNotification, CFNotificationName.willMigrateDatabase.rawValue, nil, .deliverImmediately)
     }
@@ -112,6 +114,24 @@ public extension DatabaseManager
                     }
                 }
             }
+        }
+    }
+    
+    func startSynchronously()
+    {
+        try! FileManager.default.removeItem(at: PersistentContainer.defaultDirectoryURL())
+        
+        guard !self.isStarted else { return }
+        
+        self.persistentContainer.loadPersistentStores { (description, error) in
+            guard error == nil else { 
+                print("Failed to load database:", error)
+                return
+            }
+        }
+        
+        self.prepareDatabase() { (result) in
+            print("Prepared database with result:", result)
         }
     }
     

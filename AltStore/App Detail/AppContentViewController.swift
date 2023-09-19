@@ -29,7 +29,7 @@ class AppContentViewController: UITableViewController
 {
     var app: StoreApp!
     
-    private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
+//    private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -50,23 +50,26 @@ class AppContentViewController: UITableViewController
     @IBOutlet private var versionDateLabel: UILabel!
     @IBOutlet private var sizeLabel: UILabel!
     
-    @IBOutlet private var screenshotsCollectionView: UICollectionView!
+//    @IBOutlet private var screenshotsCollectionView: UICollectionView!
+    
+    @IBOutlet private(set) var appScreenshotsViewController: AppScreenshotsViewController!
+    @IBOutlet private var appScreenshotsHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet private(set) var appDetailCollectionViewController: AppDetailCollectionViewController!
     @IBOutlet private var appDetailCollectionViewHeightConstraint: NSLayoutConstraint!
     
-    var preferredScreenshotSize: CGSize? {        
-        let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        
-        let aspectRatio: CGFloat = 16.0 / 9.0 // Hardcoded for now.
-        
-        let width = self.screenshotsCollectionView.bounds.width - (layout.minimumInteritemSpacing * 2)
-        
-        let itemWidth = width / 1.5
-        let itemHeight = itemWidth * aspectRatio
-        
-        return CGSize(width: itemWidth, height: itemHeight)
-    }
+//    var preferredScreenshotSize: CGSize? {        
+//        let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+//        
+//        let aspectRatio: CGFloat = 16.0 / 9.0 // Hardcoded for now.
+//        
+//        let width = self.screenshotsCollectionView.bounds.width - (layout.minimumInteritemSpacing * 2)
+//        
+//        let itemWidth = width / 1.5
+//        let itemHeight = itemWidth * aspectRatio
+//        
+//        return CGSize(width: itemWidth, height: itemHeight)
+//    }
     
     override func viewDidLoad()
     {
@@ -74,8 +77,8 @@ class AppContentViewController: UITableViewController
         
         self.tableView.contentInset.bottom = 20
                 
-        self.screenshotsCollectionView.dataSource = self.screenshotsDataSource
-        self.screenshotsCollectionView.prefetchDataSource = self.screenshotsDataSource
+//        self.screenshotsCollectionView.dataSource = self.screenshotsDataSource
+//        self.screenshotsCollectionView.prefetchDataSource = self.screenshotsDataSource
         
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
@@ -106,17 +109,30 @@ class AppContentViewController: UITableViewController
     {
         super.viewDidLayoutSubviews()
         
-        guard var size = self.preferredScreenshotSize else { return }
-        size.height = min(size.height, self.screenshotsCollectionView.bounds.height) // Silence temporary "item too tall" warning.
+//        guard var size = self.preferredScreenshotSize else { return }
+//        size.height = min(size.height, self.screenshotsCollectionView.bounds.height) // Silence temporary "item too tall" warning.
+//        
+//        let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+//        layout.itemSize = size
         
-        let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.itemSize = size
+        var needsTableViewUpdate = false
+        
+        let screenshotsHeight = self.appScreenshotsViewController.collectionView.contentSize.height
+        if self.appScreenshotsHeightConstraint.constant != screenshotsHeight && screenshotsHeight > 0
+        {
+            self.appScreenshotsHeightConstraint.constant = screenshotsHeight
+            needsTableViewUpdate = true
+        }
         
         let permissionsHeight = self.appDetailCollectionViewController.collectionView.contentSize.height
         if self.appDetailCollectionViewHeightConstraint.constant != permissionsHeight && permissionsHeight > 0
         {
             self.appDetailCollectionViewHeightConstraint.constant = permissionsHeight
-            
+            needsTableViewUpdate = true
+        }
+        
+        if needsTableViewUpdate
+        {
             UIView.performWithoutAnimation {
                 // Update row height without animation.
                 self.tableView.beginUpdates()
@@ -128,40 +144,48 @@ class AppContentViewController: UITableViewController
 
 private extension AppContentViewController
 {
-    func makeScreenshotsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>
+//    func makeScreenshotsDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>
+//    {
+//        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>(items: self.app.screenshotURLs as [NSURL])
+//        dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
+//            let cell = cell as! ScreenshotCollectionViewCell
+//            cell.imageView.image = nil
+//            cell.imageView.isIndicatingActivity = true
+//        }
+//        dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
+//            return RSTAsyncBlockOperation() { (operation) in
+//                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot])
+//                ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
+//                    guard !operation.isCancelled else { return operation.finish() }
+//                    
+//                    switch result
+//                    {
+//                    case .success(let response): completionHandler(response.image, nil)
+//                    case .failure(let error): completionHandler(nil, error)
+//                    }
+//                }
+//            }
+//        }
+//        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+//            let cell = cell as! ScreenshotCollectionViewCell
+//            cell.imageView.isIndicatingActivity = false
+//            cell.imageView.image = image
+//            
+//            if let error = error
+//            {
+//                print("Error loading image:", error)
+//            }
+//        }
+//        
+//        return dataSource
+//    }
+    
+    @IBSegueAction
+    func makeAppScreenshotsViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
     {
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<NSURL, UIImage>(items: self.app.screenshotURLs as [NSURL])
-        dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
-            let cell = cell as! ScreenshotCollectionViewCell
-            cell.imageView.image = nil
-            cell.imageView.isIndicatingActivity = true
-        }
-        dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
-            return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot])
-                ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
-                    guard !operation.isCancelled else { return operation.finish() }
-                    
-                    switch result
-                    {
-                    case .success(let response): completionHandler(response.image, nil)
-                    case .failure(let error): completionHandler(nil, error)
-                    }
-                }
-            }
-        }
-        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
-            let cell = cell as! ScreenshotCollectionViewCell
-            cell.imageView.isIndicatingActivity = false
-            cell.imageView.image = image
-            
-            if let error = error
-            {
-                print("Error loading image:", error)
-            }
-        }
-        
-        return dataSource
+        let appScreenshotsViewController = AppScreenshotsViewController(app: self.app, coder: coder)
+        self.appScreenshotsViewController = appScreenshotsViewController
+        return appScreenshotsViewController
     }
     
     @IBSegueAction
@@ -205,8 +229,8 @@ extension AppContentViewController
         switch Row.allCases[indexPath.row]
         {
         case .screenshots:
-            guard let size = self.preferredScreenshotSize else { return 0.0 }
-            return size.height
+            guard !self.app.screenshots.isEmpty else { return 0.0 }
+            return UITableView.automaticDimension
             
         case .permissions:
             guard !self.app.permissions.isEmpty else { return 0.0 }

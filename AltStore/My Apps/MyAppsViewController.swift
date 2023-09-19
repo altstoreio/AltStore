@@ -1541,7 +1541,7 @@ private extension MyAppsViewController
                     guard let sourceID = mergeError.sourceID else { throw mergeError }
                     
                     let sanitizedError = (mergeError as NSError).sanitizedForSerialization()
-                    DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+                    await DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
                         do
                         {
                             guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID), in: context) else { return }

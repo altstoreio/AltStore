@@ -68,6 +68,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 permission.sourceID = self.sourceIdentifier ?? ""
             }
+            
+            for screenshot in self.screenshots
+            {
+                screenshot.sourceID = self.sourceIdentifier ?? ""
+            }
         }
     }
     @NSManaged private var primitiveSourceIdentifier: String?
@@ -108,6 +113,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
+    @nonobjc public var screenshots: [AppScreenshot] {
+        return self._screenshots.array as! [AppScreenshot]
+    }
+    @NSManaged @objc(screenshots) /*private(set)*/ var _screenshots: NSOrderedSet
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -119,18 +129,21 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case bundleIdentifier
         case developerName
         case localizedDescription
-        case version
-        case versionDescription
-        case versionDate
         case iconURL
-        case screenshotURLs
-        case downloadURL
+        case screenshots
         case tintColor
         case subtitle
         case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
+        
+        // Legacy
+        case version
+        case versionDescription
+        case versionDate
+        case downloadURL
+        case screenshotURLs
     }
     
     public required init(from decoder: Decoder) throws
@@ -151,7 +164,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             
             self.iconURL = try container.decode(URL.self, forKey: .iconURL)
-            self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -163,6 +175,28 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             }
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
+            
+            if let screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots)
+            {
+                for screenshot in screenshots
+                {
+                    screenshot.appBundleID = self.bundleIdentifier
+                }
+                
+                self.setScreenshots(screenshots)
+            }
+            else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+            {
+                let legacyAspectRatio = CGSize(width: 750, height: 1334)
+                
+                let screenshots = screenshotURLs.map { imageURL in
+                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, context: context)
+                    screenshot.appBundleID = self.bundleIdentifier
+                    return screenshot
+                }
+                
+                self.setScreenshots(screenshots)
+            }
             
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
@@ -207,6 +241,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                                                            in: context)
                 try self.setVersions([appVersion])
             }
+            
+            // Backwards compatibility
+            self.screenshotURLs = []
         }
         catch
         {
@@ -270,6 +307,23 @@ internal extension StoreApp
         
         self._permissions = permissions as NSSet
     }
+    
+    func setScreenshots(_ screenshots: [AppScreenshot])
+    {
+        for case let screenshot as AppScreenshot in self._screenshots
+        {
+            if screenshots.contains(screenshot)
+            {
+                screenshot.app = self
+            }
+            else
+            {
+                screenshot.app = nil
+            }
+        }
+        
+        self._screenshots = NSOrderedSet(array: screenshots)
+    }
 }
 
 public extension StoreApp
@@ -296,7 +350,12 @@ public extension StoreApp
         app.name = "AltStore"
         app.bundleIdentifier = StoreApp.altstoreAppID
         app.developerName = "Riley Testut"
-        app.localizedDescription = "AltStore is an alternative App Store."
+//        app.localizedDescription = "AltStore is an alternative App Store."
+        app.localizedDescription = """
+AltStore is an alternative app store for non-jailbroken devices.
+
+This version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.
+"""
         app.iconURL = URL(string: "https://user-images.githubusercontent.com/705880/63392210-540c5980-c37b-11e9-968c-8742fc68ab2e.png")!
         app.screenshotURLs = []
         app.sourceIdentifier = Source.altStoreIdentifier
@@ -309,7 +368,48 @@ public extension StoreApp
                                                    appBundleID: app.bundleIdentifier,
                                                    sourceID: Source.altStoreIdentifier,
                                                    in: context)
+        appVersion.localizedDescription = """
+• “Clear Cache” button removes non-essential data to free up disk space
+• Sideload more than 3 apps via MacDirtyCow exploit*†
+• Fixes crash when viewing Sources on iOS 12
+
+*Requires iOS 14.0 - 16.1.2 (excluding 15.7.2). iOS 16.2+ not supported.
+†Visit faq.altstore.io for detailed instructions.
+"""
         try? app.setVersions([appVersion])
+        
+        let screenshot1 = AppScreenshot(context: context)
+        screenshot1.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG")!
+        screenshot1._height = 1334
+        screenshot1._width = 750
+        screenshot1.appBundleID = app.bundleIdentifier
+        screenshot1.sourceID = Source.altStoreIdentifier
+        
+        let screenshot2 = AppScreenshot(context: context)
+        screenshot2.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG")!
+        screenshot2._height = 1334
+        screenshot2._width = 750
+        screenshot2.appBundleID = app.bundleIdentifier
+        screenshot2.sourceID = Source.altStoreIdentifier
+        
+        let screenshot3 = AppScreenshot(context: context)
+        screenshot3.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG")!
+        screenshot3._height = 1334
+        screenshot3._width = 750
+        screenshot3.appBundleID = app.bundleIdentifier
+        screenshot3.sourceID = Source.altStoreIdentifier
+        
+        let screenshot4 = AppScreenshot(context: context)
+        screenshot4.imageURL = URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG")!
+        screenshot4.appBundleID = app.bundleIdentifier
+        screenshot4.sourceID = Source.altStoreIdentifier
+        
+        let screenshot5 = AppScreenshot(context: context)
+        screenshot5.imageURL = URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg")!
+        screenshot5.appBundleID = app.bundleIdentifier
+        screenshot5.sourceID = Source.altStoreIdentifier
+        
+        app._screenshots = NSOrderedSet(array: [screenshot4, screenshot1, screenshot2, screenshot5, screenshot3])
         
         #if BETA
         app.isBeta = true
