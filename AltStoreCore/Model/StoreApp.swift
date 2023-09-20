@@ -176,27 +176,43 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
-            if let screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots)
+            let screenshots: [AppScreenshot]
+            
+            do
             {
-                for screenshot in screenshots
+                if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshots)
                 {
-                    screenshot.appBundleID = self.bundleIdentifier
+                    screenshots = screenshotURLs.map { imageURL in
+                        let screenshot = AppScreenshot(imageURL: imageURL, size: nil, context: context)
+                        return screenshot
+                    }
                 }
-                
-                self.setScreenshots(screenshots)
+                else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+                {
+                    let legacyScreenshotSize = CGSize(width: 750, height: 1334)
+                    
+                    screenshots = screenshotURLs.map { imageURL in
+                        let screenshot = AppScreenshot(imageURL: imageURL, size: legacyScreenshotSize, context: context)
+                        return screenshot
+                    }
+                }
+                else
+                {
+                    screenshots = []
+                }
             }
-            else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+            catch DecodingError.typeMismatch
             {
-                let legacyAspectRatio = CGSize(width: 750, height: 1334)
-                
-                let screenshots = screenshotURLs.map { imageURL in
-                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, context: context)
-                    screenshot.appBundleID = self.bundleIdentifier
-                    return screenshot
-                }
-                
-                self.setScreenshots(screenshots)
+                // Ignore and fall back to expected format.
+                screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots) ?? []
             }
+            
+            for screenshot in screenshots
+            {
+                screenshot.appBundleID = self.bundleIdentifier
+            }
+            
+            self.setScreenshots(screenshots)
             
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
