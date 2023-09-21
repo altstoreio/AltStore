@@ -100,8 +100,10 @@ private extension PreviewAppScreenshotsViewController
     }
     
     func makeDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>
-    {        
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: self.app.screenshots)
+    {
+        let screenshots = self.app.preferredScreenshots()
+        
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: screenshots)
         dataSource.cellConfigurationHandler = { [weak self] (cell, screenshot, indexPath) in
             let cell = cell as! AppScreenshotCollectionViewCell
             cell.imageView.image = nil
@@ -136,8 +138,9 @@ private extension PreviewAppScreenshotsViewController
         }
         dataSource.prefetchHandler = { [weak self] (screenshot, indexPath, completionHandler) in
             let imageURL = screenshot.imageURL
+            let traits = self?.traitCollection
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL, processors: [.screenshot])
+                let request = ImageRequest(url: imageURL, processors: [.screenshot(screenshot, traits: traits)])
                 ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     

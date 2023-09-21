@@ -229,7 +229,7 @@ extension AppContentViewController
         switch Row.allCases[indexPath.row]
         {
         case .screenshots:
-            guard !self.app.screenshots.isEmpty else { return 0.0 }
+            guard !self.app.allScreenshots.isEmpty else { return 0.0 }
             return UITableView.automaticDimension
             
         case .permissions:

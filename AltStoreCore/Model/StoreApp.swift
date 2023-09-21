@@ -69,7 +69,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 permission.sourceID = self.sourceIdentifier ?? ""
             }
             
-            for screenshot in self.screenshots
+            for screenshot in self.allScreenshots
             {
                 screenshot.sourceID = self.sourceIdentifier ?? ""
             }
@@ -113,7 +113,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
-    @nonobjc public var screenshots: [AppScreenshot] {
+    @nonobjc public var allScreenshots: [AppScreenshot] {
         return self._screenshots.array as! [AppScreenshot]
     }
     @NSManaged @objc(screenshots) /*private(set)*/ var _screenshots: NSOrderedSet
@@ -176,43 +176,32 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
-            let screenshots: [AppScreenshot]
+            let appScreenshots: [AppScreenshot]
             
-            do
+            if let screenshots = try container.decodeIfPresent(AppScreenshots.self, forKey: .screenshots)
             {
-                if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshots)
-                {
-                    screenshots = screenshotURLs.map { imageURL in
-                        let screenshot = AppScreenshot(imageURL: imageURL, size: nil, context: context)
-                        return screenshot
-                    }
-                }
-                else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
-                {
-                    let legacyScreenshotSize = CGSize(width: 750, height: 1334)
-                    
-                    screenshots = screenshotURLs.map { imageURL in
-                        let screenshot = AppScreenshot(imageURL: imageURL, size: legacyScreenshotSize, context: context)
-                        return screenshot
-                    }
-                }
-                else
-                {
-                    screenshots = []
+                appScreenshots = screenshots.screenshots
+            }
+            else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+            {
+                let legacyScreenshotSize = CGSize(width: 750, height: 1334)
+                
+                appScreenshots = screenshotURLs.map { imageURL in
+                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyScreenshotSize, deviceType: .iphone, context: context)
+                    return screenshot
                 }
             }
-            catch DecodingError.typeMismatch
+            else
             {
-                // Ignore and fall back to expected format.
-                screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots) ?? []
+                appScreenshots = []
             }
-            
-            for screenshot in screenshots
+   
+            for screenshot in appScreenshots
             {
                 screenshot.appBundleID = self.bundleIdentifier
             }
             
-            self.setScreenshots(screenshots)
+            self.setScreenshots(appScreenshots)
             
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
@@ -344,6 +333,38 @@ internal extension StoreApp
 
 public extension StoreApp
 {
+    func screenshots(for deviceType: ALTDeviceType) -> [AppScreenshot]
+    {
+        let filteredScreenshots = self.allScreenshots.filter { $0.deviceType == deviceType }
+        return filteredScreenshots
+    }
+    
+    func preferredScreenshots() -> [AppScreenshot]
+    {
+        let deviceType: ALTDeviceType
+        
+        if UIDevice.current.model.contains("iPad")
+        {
+            deviceType = .ipad
+        }
+        else
+        {
+            deviceType = .iphone
+        }
+        
+        let preferredScreenshots = self.screenshots(for: deviceType)
+        if !preferredScreenshots.isEmpty
+        {
+            return preferredScreenshots
+        }
+        
+        // There are no screenshots for deviceType, so return _all_ screenshots instead.
+        return self.allScreenshots
+    }
+}
+
+public extension StoreApp
+{
     var latestAvailableVersion: AppVersion? {
         return self._versions.firstObject as? AppVersion
     }
@@ -394,38 +415,49 @@ This version of AltStore allows you to install Delta, an all-in-one emulator for
 """
         try? app.setVersions([appVersion])
         
-        let screenshot1 = AppScreenshot(context: context)
-        screenshot1.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG")!
-        screenshot1._height = 1334
-        screenshot1._width = 750
+        let screenshot1 = AppScreenshot(imageURL: URL(string: "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG")!, 
+                                        size: CGSize(width: 1334, height: 750),
+                                        deviceType: .iphone,
+                                        context: context)
         screenshot1.appBundleID = app.bundleIdentifier
         screenshot1.sourceID = Source.altStoreIdentifier
         
-        let screenshot2 = AppScreenshot(context: context)
-        screenshot2.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG")!
-        screenshot2._height = 1334
-        screenshot2._width = 750
+        let screenshot2 = AppScreenshot(imageURL: URL(string: "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG")!,
+                                        size: CGSize(width: 750, height: 1334),
+                                        deviceType: .iphone,
+                                        context: context)
         screenshot2.appBundleID = app.bundleIdentifier
         screenshot2.sourceID = Source.altStoreIdentifier
         
-        let screenshot3 = AppScreenshot(context: context)
-        screenshot3.imageURL = URL(string: "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG")!
-        screenshot3._height = 1334
-        screenshot3._width = 750
+        let screenshot3 = AppScreenshot(imageURL: URL(string: "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG")!,
+                                        size: CGSize(width: 1334, height: 750),
+                                        deviceType: .iphone,
+                                        context: context)
         screenshot3.appBundleID = app.bundleIdentifier
         screenshot3.sourceID = Source.altStoreIdentifier
         
-        let screenshot4 = AppScreenshot(context: context)
-        screenshot4.imageURL = URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG")!
+        let screenshot4 = AppScreenshot(imageURL: URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG")!,
+                                        size: nil,
+                                        deviceType: .iphone,
+                                        context: context)
         screenshot4.appBundleID = app.bundleIdentifier
         screenshot4.sourceID = Source.altStoreIdentifier
         
-        let screenshot5 = AppScreenshot(context: context)
-        screenshot5.imageURL = URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg")!
+        let screenshot5 = AppScreenshot(imageURL: URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg")!,
+                                        size: nil,
+                                        deviceType: .iphone,
+                                        context: context)
         screenshot5.appBundleID = app.bundleIdentifier
         screenshot5.sourceID = Source.altStoreIdentifier
         
-        app._screenshots = NSOrderedSet(array: [screenshot4, screenshot1, screenshot2, screenshot5, screenshot3])
+        let screenshot6 = AppScreenshot(imageURL: URL(string: "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG")!,
+                                        size: CGSize(width: 768, height: 1024),
+                                        deviceType: .ipad,
+                                        context: context)
+        screenshot6.appBundleID = app.bundleIdentifier
+        screenshot6.sourceID = Source.altStoreIdentifier
+        
+        app._screenshots = NSOrderedSet(array: [screenshot4, screenshot1, screenshot2, screenshot5, screenshot3, screenshot6])
         
         #if BETA
         app.isBeta = true

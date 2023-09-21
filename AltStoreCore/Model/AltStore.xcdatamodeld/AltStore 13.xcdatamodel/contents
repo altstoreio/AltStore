@@ -44,6 +44,7 @@
     </entity>
     <entity name="AppScreenshot" representedClassName="AppScreenshot" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="deviceType" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="height" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
         <attribute name="imageURL" attributeType="URI"/>
         <attribute name="sourceID" attributeType="String"/>
@@ -52,6 +53,7 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="imageURL"/>
+                <constraint value="deviceType"/>
                 <constraint value="appBundleID"/>
                 <constraint value="sourceID"/>
             </uniquenessConstraint>

@@ -172,14 +172,32 @@ private extension AppScreenshotsViewController
     
     func makeDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>
     {
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: self.app.screenshots)
-        dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
+        let screenshots = self.app.preferredScreenshots()
+        
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: screenshots)
+        dataSource.cellConfigurationHandler = { [weak self] (cell, screenshot, indexPath) in
             let cell = cell as! AppScreenshotCollectionViewCell
             cell.imageView.image = nil
             cell.imageView.isIndicatingActivity = true
             
-            if let aspectRatio = screenshot.size
+            if var aspectRatio = screenshot.size
             {
+                if aspectRatio.width > aspectRatio.height
+                {
+                    switch screenshot.deviceType
+                    {
+                    case .iphone:
+                        // Always rotate landscape iPhone screenshots regardless of horizontal size class.
+                        aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                        
+                    case .ipad where self?.traitCollection.horizontalSizeClass == .compact:
+                        // Only rotate landscape iPad screenshots if we're in horizontally compact environment.
+                        aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                        
+                    default: break
+                    }
+                }
+                
                 cell.aspectRatio = aspectRatio
                 cell.isRounded = false
             }
@@ -189,10 +207,11 @@ private extension AppScreenshotsViewController
                 cell.isRounded = true
             }
         }
-        dataSource.prefetchHandler = { (screenshot, indexPath, completionHandler) in
+        dataSource.prefetchHandler = { [weak self] (screenshot, indexPath, completionHandler) in
             let imageURL = screenshot.imageURL
+            let traits = self?.traitCollection
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL, processors: [.screenshot])
+                let request = ImageRequest(url: imageURL, processors: [.screenshot(screenshot, traits: traits)])
                 ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
@@ -216,6 +235,18 @@ private extension AppScreenshotsViewController
         }
         
         return dataSource
+    }
+}
+
+extension AppScreenshotsViewController
+{
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
+    {
+        let previewViewController = PreviewAppScreenshotsViewController(app: self.app)
+        
+        let navigationController = UINavigationController(rootViewController: previewViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true)
     }
 }
 
