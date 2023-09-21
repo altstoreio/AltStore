@@ -373,6 +373,7 @@
 		D55467C52A8D72C300F4CE90 /* ActiveAppsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55467C42A8D72C300F4CE90 /* ActiveAppsWidget.swift */; };
 		D561B2EB28EF5A4F006752E4 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; };
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		D56F0F0C2ABA5F2C0083A25E /* PreviewAppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56F0F0B2ABA5F2C0083A25E /* PreviewAppScreenshotsViewController.swift */; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
@@ -975,6 +976,7 @@
 		D552B1D72A042A740066216F /* AppPermissionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionsCard.swift; sourceTree = "<group>"; };
 		D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
 		D55467C42A8D72C300F4CE90 /* ActiveAppsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveAppsWidget.swift; sourceTree = "<group>"; };
+		D56F0F0B2ABA5F2C0083A25E /* PreviewAppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppScreenshotsViewController.swift; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
 		D571ADCD2A02FA7400B24B63 /* SourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceError.swift; sourceTree = "<group>"; };
 		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
@@ -1247,6 +1249,7 @@
 				D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */,
 				D552B1D72A042A740066216F /* AppPermissionsCard.swift */,
 				D5F982202AB910180045751F /* AppScreenshotsViewController.swift */,
+				D56F0F0B2ABA5F2C0083A25E /* PreviewAppScreenshotsViewController.swift */,
 			);
 			path = "App Detail";
 			sourceTree = "<group>";
@@ -3135,6 +3138,7 @@
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
 				BF770E6722BD57C4002A40FE /* BackgroundTaskManager.swift in Sources */,
 				BF44EEFC246B4550002A52F2 /* RemoveAppOperation.swift in Sources */,
+				D56F0F0C2ABA5F2C0083A25E /* PreviewAppScreenshotsViewController.swift in Sources */,
 				BF3D64B022E8D4B800E9056B /* AppContentViewControllerCells.swift in Sources */,
 				BFC57A6E2416FC5D00EB891E /* InstalledAppsCollectionHeaderView.swift in Sources */,
 				D5927D6629DCC89000D6898E /* UINavigationBarAppearance+TintColor.swift in Sources */,

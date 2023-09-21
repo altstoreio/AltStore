@@ -32,7 +32,14 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         didSet {
             if self.isRounded
             {
-                let cornerRadius = (1.0 / 8.0) * self.bounds.width // self.imageView.bounds may be .zero at this point.
+                var boundsWidth = self.imageView.bounds.width
+                if boundsWidth == 0
+                {
+                    // self.imageView.bounds may be .zero at this point.
+                    boundsWidth = self.bounds.width
+                }
+                
+                let cornerRadius = (1.0 / 8.0) * boundsWidth
                 self.imageView.layer.cornerRadius = cornerRadius
                 
                 self.setNeedsLayout()
@@ -58,7 +65,27 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         
         super.init(frame: frame)
         
-        self.contentView.addSubview(self.imageView, pinningEdgesWith: .zero)
+        self.imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.contentView.addSubview(self.imageView)
+        
+//        self.contentView.backgroundColor = .purple
+//        self.imageView.backgroundColor = .red
+//        self.imageView.isHidden = true
+        
+        let widthConstraint = self.imageView.widthAnchor.constraint(equalTo: self.contentView.widthAnchor)
+        widthConstraint.priority = UILayoutPriority(999)
+        
+        let heightConstraint = self.imageView.heightAnchor.constraint(equalTo: self.contentView.heightAnchor)
+        heightConstraint.priority = UILayoutPriority(999)
+        
+        NSLayoutConstraint.activate([
+            widthConstraint,
+            heightConstraint,
+            self.imageView.widthAnchor.constraint(lessThanOrEqualTo: self.contentView.widthAnchor),
+            self.imageView.heightAnchor.constraint(lessThanOrEqualTo: self.contentView.heightAnchor),
+            self.imageView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
+            self.imageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor)
+        ])
     }
     
     required init?(coder: NSCoder) {
