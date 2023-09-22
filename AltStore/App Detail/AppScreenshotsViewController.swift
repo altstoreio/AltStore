@@ -70,6 +70,9 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
             self.imageView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
             self.imageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor)
         ])
+        
+        self.setNeedsLayout()
+        self.layoutSubviews()
     }
     
     required init?(coder: NSCoder) {
@@ -84,30 +87,28 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         self.imageView.layer.borderWidth = 1.0 / displayScale
     }
     
-    override func layoutIfNeeded() 
+    override func layoutSubviews() 
     {
-        super.layoutIfNeeded()
+        super.layoutSubviews()
         
-        var boundsWidth = self.imageView.bounds.width
-        if boundsWidth == 0
-        {
-            // self.imageView.bounds may be .zero at this point.
-            boundsWidth = self.contentView.bounds.width
+        guard self.imageView.bounds.width != 0 else {
+            self.setNeedsLayout()
+            return
         }
         
         if self.isRounded
         {
-            let cornerRadius = (1.0 / 8.0) * boundsWidth
+            let cornerRadius = self.imageView.bounds.width / 8.0 // Based on iPhone 15
             self.imageView.layer.cornerRadius = cornerRadius
             
             print("Rounded corner radius:", cornerRadius)
         }
         else
         {
-            let cornerRadius = boundsWidth / 44.0
+            let cornerRadius = self.imageView.bounds.width / 25.0 // Based on iPhone 8
             self.imageView.layer.cornerRadius = cornerRadius
             
-            print("Non-rounded corner radius:", cornerRadius)
+            print("Non-rounded corner radius:", cornerRadius, self.imageView.bounds)
         }
     }
 }
