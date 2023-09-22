@@ -30,24 +30,8 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
     
     var isRounded: Bool = false {
         didSet {
-            if self.isRounded
-            {
-                var boundsWidth = self.imageView.bounds.width
-                if boundsWidth == 0
-                {
-                    // self.imageView.bounds may be .zero at this point.
-                    boundsWidth = self.bounds.width
-                }
-                
-                let cornerRadius = (1.0 / 8.0) * boundsWidth
-                self.imageView.layer.cornerRadius = cornerRadius
-                
-                self.setNeedsLayout()
-            }
-            else
-            {
-                self.imageView.layer.cornerRadius = 1
-            }
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
         }
     }
     
@@ -98,6 +82,33 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         
         let displayScale = (self.traitCollection.displayScale == 0.0) ? 1.0 : self.traitCollection.displayScale
         self.imageView.layer.borderWidth = 1.0 / displayScale
+    }
+    
+    override func layoutIfNeeded() 
+    {
+        super.layoutIfNeeded()
+        
+        var boundsWidth = self.imageView.bounds.width
+        if boundsWidth == 0
+        {
+            // self.imageView.bounds may be .zero at this point.
+            boundsWidth = self.contentView.bounds.width
+        }
+        
+        if self.isRounded
+        {
+            let cornerRadius = (1.0 / 8.0) * boundsWidth
+            self.imageView.layer.cornerRadius = cornerRadius
+            
+            print("Rounded corner radius:", cornerRadius)
+        }
+        else
+        {
+            let cornerRadius = boundsWidth / 44.0
+            self.imageView.layer.cornerRadius = cornerRadius
+            
+            print("Non-rounded corner radius:", cornerRadius)
+        }
     }
 }
 
