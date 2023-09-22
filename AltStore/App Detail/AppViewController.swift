@@ -191,7 +191,7 @@ class AppViewController: UIViewController
             self._shouldResetLayout = false
         }
                 
-        let statusBarHeight = self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let statusBarHeight = (self.view.window ?? self.presentedViewController?.view.window)?.windowScene?.statusBarManager?.statusBarFrame.height ??  0
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 12 as CGFloat
