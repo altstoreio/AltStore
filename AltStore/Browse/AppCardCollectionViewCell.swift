@@ -45,6 +45,8 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.screenshotsCollectionView.dataSource = self.dataSource
         self.screenshotsCollectionView.prefetchDataSource = self.dataSource
         self.screenshotsCollectionView.register(AppScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
+        self.screenshotsCollectionView.alwaysBounceHorizontal = true
+        self.screenshotsCollectionView.alwaysBounceVertical = false
         self.contentView.addSubview(self.screenshotsCollectionView)
         
         NSLayoutConstraint.activate([
@@ -58,28 +60,30 @@ class AppCardCollectionViewCell: UICollectionViewCell
             self.screenshotsCollectionView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             self.screenshotsCollectionView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
             
-            self.contentView.widthAnchor.constraint(equalTo: self.contentView.heightAnchor, multiplier: 1.09)
+            self.screenshotsCollectionView.heightAnchor.constraint(equalTo: self.screenshotsCollectionView.widthAnchor, 
+                                                                   multiplier: (220.0 / 349.0))
         ])
         
-        self.layoutMargins = UIEdgeInsets(top: 14, left: 14, bottom: 12, right: 14)
+        self.contentView.layoutMargins = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         self.screenshotsCollectionView.layoutMargins = self.layoutMargins
         
-//        self.contentView.clipsToBounds = true
+        self.contentView.clipsToBounds = true
+        self.contentView.layer.cornerCurve = .continuous
+        self.contentView.layer.cornerRadius = 12 + 14
     }
-//    
-//    override func layoutMarginsDidChange() 
-//    {
-//        super.layoutMarginsDidChange()
-//        
-//        self.layoutMargins = self.bannerView.layoutMargins
-//        
-//    }
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        
-//        self.layer.cornerRadius = self.bannerView.layer.cornerRadius
+                
+        let cornerRadius = self.bannerView.iconImageView.layer.cornerRadius + 14
+        if cornerRadius != self.contentView.layer.cornerRadius
+        {
+            self.contentView.layer.cornerRadius = cornerRadius
+            self.screenshotsCollectionView.reloadData()
+            
+            self.setNeedsLayout()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -99,29 +103,6 @@ private extension AppCardCollectionViewCell
             
             let screenshots = self.screenshots
             let minimumSpacing = 4.0
-            
-//            // Determine if there is only enough room for one screenshot.
-//            // If so, we special-case that layout to horizontally center the item.
-//            let screenshotWidths = screenshots.map { screenshot -> Double in
-//                var aspectRatio = screenshot.size ?? defaultAspectRatio
-//                if aspectRatio.width > aspectRatio.height
-//                {
-//                    switch screenshot.deviceType
-//                    {
-//                    case .iphone:
-//                        // Always rotate landscape iPhone screenshots regardless of horizontal size class.
-//                        aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
-//                        
-//                    default: break
-//                    }
-//                }
-//                
-//                let screenshotWidth = layoutEnvironment.container.effectiveContentSize.height * (aspectRatio.width / aspectRatio.height)
-//                return screenshotWidth
-//            }
-//            
-//            let minimumContentWidth = screenshotWidths.prefix(2).reduce(0) { $0 + minimumSpacing + $1 }
-//            let totalContentWidth = screenshotWidths.reduce(0) { $0 + minimumSpacing + $1 }
             
             var visibleScreenshots = 0.0
             var totalContentWidth = 0.0
@@ -165,29 +146,6 @@ private extension AppCardCollectionViewCell
             
             let singleItem = NSCollectionLayoutItem(layoutSize: itemSize)
             items = [singleItem]
-                        
-//            if (totalContentWidth < layoutEnvironment.container.effectiveContentSize.width ||
-//                minimumContentWidth > layoutEnvironment.container.effectiveContentSize.width)
-//            {
-//                // There is only enough room for one screenshot (or all of them)
-//                
-//                print("Single Item (or can only show one)")
-//                
-//                let singleItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//                items = [singleItem]
-//            }
-//            else
-//            {
-//                print("Multi Item")
-//                
-//                let leadingItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//                leadingItem.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: .flexible(0.0), top: nil, trailing: nil, bottom: nil)
-//                
-//                let trailingItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//                trailingItem.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: nil, top: nil, trailing: .flexible(0.0), bottom: nil)
-//                
-//                items = [leadingItem, trailingItem]
-//            }
             
             let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: items)
@@ -196,39 +154,17 @@ private extension AppCardCollectionViewCell
             if items.count == 1
             {
                 // Horizontally-center items
+                let insetWidth = (layoutEnvironment.container.effectiveContentSize.width - totalContentWidth) / (visibleScreenshots + 1)
                 
-                
-                let contentWidth: Double
-                
-//                if minimumContentWidth < layoutEnvironment.container.effectiveContentSize.width
-//                {
-//                    // Full thing fits, so use total width
-//                    contentWidth = totalContentWidth
-//                }
-//                else if let screenshotWidth = screenshotWidths.first
-//                {
-//                    // Only first item fits, so use that single width
-//                    contentWidth = screenshotWidth
-//                }
-//                else
-//                {
-//                    // Handled by system calculations, so just in case.
-//                    contentWidth = layoutEnvironment.container.effectiveContentSize.width
-//                }
-                contentWidth = totalContentWidth
-                
-                let insetWidth = (layoutEnvironment.container.effectiveContentSize.width - contentWidth) / (visibleScreenshots + 1)
-                
-                print("Difference: \(layoutEnvironment.container.effectiveContentSize.width - contentWidth). Inset width:", insetWidth)
+                print("Difference: \(layoutEnvironment.container.effectiveContentSize.width - totalContentWidth). Inset width:", insetWidth)
                 
                 group.contentInsets.leading = (insetWidth - 1).rounded(.down) // Subtracting 1 important to avoid overflowing + clipping
                 group.contentInsets.trailing = (insetWidth - 1).rounded(.down) // Yes, this must be set for 2 9:19.5 screenshots to look correct
             }
             
             let layoutSection = NSCollectionLayoutSection(group: group)
-//            layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
-//            layoutSection.interGroupSpacing = 10
-            
+            layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+
             return layoutSection
         }, configuration: layoutConfig)
         
@@ -239,6 +175,8 @@ private extension AppCardCollectionViewCell
     {
         let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: [])
         dataSource.cellConfigurationHandler = { [weak self] (cell, screenshot, indexPath) in
+            guard let self else { return }
+            
             let cell = cell as! AppScreenshotCollectionViewCell
             cell.imageView.image = nil
             cell.imageView.isIndicatingActivity = true
@@ -263,6 +201,8 @@ private extension AppCardCollectionViewCell
                 
                 cell.aspectRatio = aspectRatio
                 cell.isRounded = false
+                
+                cell.imageView.layer.cornerRadius = 5
             }
             else
             {
@@ -310,7 +250,9 @@ extension AppCardCollectionViewCell
         self.bannerView.tintColor = storeApp.tintColor
         self.bannerView.configure(for: storeApp)
         
-//        self.bannerView.subtitleLabel.numberOfLines = 0
+        self.bannerView.subtitleLabel.numberOfLines = 1
+        self.bannerView.subtitleLabel.minimumScaleFactor = 0.75
+        self.bannerView.subtitleLabel.lineBreakMode = .byTruncatingTail
         self.bannerView.subtitleLabel.text = storeApp.subtitle ?? storeApp.developerName
     }
 }

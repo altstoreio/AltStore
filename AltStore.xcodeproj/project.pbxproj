@@ -202,7 +202,6 @@
 		BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */; };
 		BF989185250AAD1D002ACF50 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2479E2284FBD000981D42 /* UIColor+AltStore.swift */; };
 		BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */; };
-		BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */; };
 		BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */; };
 		BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4A22DD137F008935CF /* NavigationBar.swift */; };
 		BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9ABA4C22DD16DE008935CF /* PillButton.swift */; };
@@ -285,7 +284,6 @@
 		BFD52C2122A1A9EC000B7ED1 /* node_list.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1E22A1A9EC000B7ED1 /* node_list.c */; };
 		BFD52C2222A1A9EC000B7ED1 /* cnary.c in Sources */ = {isa = PBXBuildFile; fileRef = BFD52C1F22A1A9EC000B7ED1 /* cnary.c */; };
 		BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */; };
-		BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */; };
 		BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */; };
 		BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */; };
 		BFDB6A0D22AAFC1A007EA6D6 /* OperationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */; };
@@ -833,7 +831,6 @@
 		BF989190250AAE86002ACF50 /* ViewAppIntentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewAppIntentHandler.swift; sourceTree = "<group>"; };
 		BF989191250AAE86002ACF50 /* ViewApp.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.intentdefinition; path = ViewApp.intentdefinition; sourceTree = "<group>"; };
 		BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
-		BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF9ABA4A22DD137F008935CF /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		BF9ABA4C22DD16DE008935CF /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
@@ -912,7 +909,6 @@
 		BFD52C1F22A1A9EC000B7ED1 /* cnary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cnary.c; path = Dependencies/libplist/libcnary/cnary.c; sourceTree = SOURCE_ROOT; };
 		BFD6B03222DFF20800B86064 /* MyAppsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsComponents.swift; sourceTree = "<group>"; };
 		BFDB5B1522EE90D300F74113 /* Date+RelativeDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+RelativeDate.swift"; sourceTree = "<group>"; };
-		BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BrowseCollectionViewCell.xib; sourceTree = "<group>"; };
 		BFDB6A0722AAED73007EA6D6 /* ResignAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignAppOperation.swift; sourceTree = "<group>"; };
 		BFDB6A0A22AAEDB7007EA6D6 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		BFDB6A0C22AAFC19007EA6D6 /* OperationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationError.swift; sourceTree = "<group>"; };
@@ -1687,8 +1683,6 @@
 			isa = PBXGroup;
 			children = (
 				BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */,
-				BF9ABA4622DD0638008935CF /* BrowseCollectionViewCell.swift */,
-				BFDB5B2522EFBBEA00F74113 /* BrowseCollectionViewCell.xib */,
 				BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */,
 				D5B3B3102ABCD07000454AF1 /* AppCardCollectionViewCell.swift */,
 			);
@@ -2691,7 +2685,6 @@
 				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
 				BFB6B22423187A3D0022A802 /* NewsCollectionViewCell.xib in Resources */,
 				BFD247752284B9A500981D42 /* Main.storyboard in Resources */,
-				BFDB5B2622EFBBEA00F74113 /* BrowseCollectionViewCell.xib in Resources */,
 				BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */,
 				BF29012F2318F6B100D88A45 /* AppBannerView.xib in Resources */,
 				BFE6325A22A83BEB00F30809 /* Authentication.storyboard in Resources */,
@@ -3151,7 +3144,6 @@
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */,
-				BF9ABA4722DD0638008935CF /* BrowseCollectionViewCell.swift in Sources */,
 				D552B1D82A042A740066216F /* AppPermissionsCard.swift in Sources */,
 				BFD6B03322DFF20800B86064 /* MyAppsComponents.swift in Sources */,
 				BF41B808233433C100C593A3 /* LoadingState.swift in Sources */,
