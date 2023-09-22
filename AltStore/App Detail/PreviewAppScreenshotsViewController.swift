@@ -37,6 +37,8 @@ class PreviewAppScreenshotsViewController: UICollectionViewController
         let collectionViewLayout = self.makeLayout()
         self.collectionView.collectionViewLayout = collectionViewLayout
         
+        self.collectionView.alwaysBounceVertical = false
+        
         self.collectionView.directionalLayoutMargins.leading = 20
         self.collectionView.directionalLayoutMargins.trailing = 20
 //        self.collectionView.directionalLayoutMargins.bottom = 44
