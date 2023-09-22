@@ -49,6 +49,14 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.screenshotsCollectionView.alwaysBounceVertical = false
         self.contentView.addSubview(self.screenshotsCollectionView)
         
+        // Adding screenshotsCollectionView's gesture recognizers to self.contentView breaks paging,
+        // so instead we intercept taps and pass them onto delegate.
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture(_:)))
+        tapGestureRecognizer.cancelsTouchesInView = false
+        tapGestureRecognizer.delaysTouchesBegan = false
+        tapGestureRecognizer.delaysTouchesEnded = false
+        self.screenshotsCollectionView.addGestureRecognizer(tapGestureRecognizer)
+        
         NSLayoutConstraint.activate([
             self.bannerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
             self.bannerView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
@@ -163,7 +171,7 @@ private extension AppCardCollectionViewCell
             }
             
             let layoutSection = NSCollectionLayoutSection(group: group)
-            layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+            layoutSection.orthogonalScrollingBehavior = .paging
 
             return layoutSection
         }, configuration: layoutConfig)
@@ -238,6 +246,27 @@ private extension AppCardCollectionViewCell
         }
         
         return dataSource
+    }
+    
+    @objc func handleTapGesture(_ tapGesture: UITapGestureRecognizer)
+    {
+        var superview: UIView? = self.superview
+        var collectionView: UICollectionView? = nil
+        
+        while case let view? = superview
+        {
+            if let cv = view as? UICollectionView
+            {
+                collectionView = cv
+                break
+            }
+            
+            superview = view.superview
+        }
+        
+        guard let cv = collectionView, let indexPath = cv.indexPath(for: self) else { return }
+        
+        cv.delegate?.collectionView?(cv, didSelectItemAt: indexPath)
     }
 }
 
