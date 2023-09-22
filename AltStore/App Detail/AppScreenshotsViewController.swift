@@ -254,7 +254,10 @@ extension AppScreenshotsViewController
 {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
     {
+        let screenshot = self.dataSource.item(at: indexPath)
+        
         let previewViewController = PreviewAppScreenshotsViewController(app: self.app)
+        previewViewController.currentScreenshot = screenshot
         
         let navigationController = UINavigationController(rootViewController: previewViewController)
         navigationController.modalPresentationStyle = .fullScreen

@@ -17,6 +17,8 @@ class PreviewAppScreenshotsViewController: UICollectionViewController
 {
     let app: StoreApp
     
+    var currentScreenshot: AppScreenshot?
+    
     private lazy var dataSource = self.makeDataSource()
     
     init(app: StoreApp)
@@ -55,6 +57,17 @@ class PreviewAppScreenshotsViewController: UICollectionViewController
             self?.dismiss(animated: true)
         })
         self.navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) 
+    {
+        super.viewIsAppearing(animated)
+        
+        if let screenshot = self.currentScreenshot, let index = self.dataSource.items.firstIndex(of: screenshot)
+        {
+            let indexPath = IndexPath(item: index, section: 0)
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        }
     }
 }
 
