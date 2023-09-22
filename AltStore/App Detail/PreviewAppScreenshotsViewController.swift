@@ -67,12 +67,14 @@ private extension PreviewAppScreenshotsViewController
         
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
+            guard let self else { return nil }
+            
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
 //            print("Content sizes: \(layoutEnvironment.container.contentSize) vs \(layoutEnvironment.container.effectiveContentSize)")
             
-            var safeAreaInsets = self?.view.safeAreaInsets ?? .zero
+            var safeAreaInsets = self.view.safeAreaInsets
             if safeAreaInsets.bottom == 0
             {
                 safeAreaInsets.bottom = 20
