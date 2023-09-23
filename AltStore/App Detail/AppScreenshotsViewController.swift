@@ -162,18 +162,63 @@ private extension AppScreenshotsViewController
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
         layoutConfig.contentInsetsReference = .none
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        let preferredHeight = 400.0
+        
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
-            let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(168), heightDimension: .fractionalHeight(1.0))
+            guard let self else { return nil }
+            
+            let screenshotWidths = self.dataSource.items.map { screenshot in
+                var aspectRatio = screenshot.size ?? defaultAspectRatio
+                if aspectRatio.width > aspectRatio.height
+                {
+                    switch screenshot.deviceType
+                    {
+                    case .iphone:
+                        // Always rotate landscape iPhone screenshots regardless of horizontal size class.
+                        aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                        
+                    case .ipad where self.traitCollection.horizontalSizeClass == .compact:
+                        // Only rotate landscape iPad screenshots if we're in horizontally compact environment.
+                        aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                        
+                    default: break
+                    }
+                }
+                
+                let screenshotWidth = (preferredHeight * (aspectRatio.width / aspectRatio.height)).rounded(.up) // Rounding important
+                return screenshotWidth
+            }
+            
+            let smallestWidth = screenshotWidths.sorted().first
+            
+            let defaultWidth = preferredHeight * (defaultAspectRatio.width / defaultAspectRatio.height)
+            let itemWidth = smallestWidth ?? defaultWidth
+                        
+            let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(itemWidth), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(168), heightDimension: .absolute(400))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(itemWidth), heightDimension: .absolute(preferredHeight))
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item]) // Vertical because that ensures each item is it's own group
             
             let layoutSection = NSCollectionLayoutSection(group: group)
             layoutSection.interGroupSpacing = 10
             layoutSection.contentInsets.leading = 20
-            layoutSection.contentInsets.trailing = 20
+            
+            if let lastScreenshotWidth = screenshotWidths.last
+            {
+                let trailingSpace = layoutEnvironment.container.effectiveContentSize.width - lastScreenshotWidth - 20 // 20 important...for some reason
+                layoutSection.contentInsets.trailing = trailingSpace // Ensures we can always see last item
+                
+                print("Trailing space:", trailingSpace)
+            }
+            else
+            {
+                layoutSection.contentInsets.trailing = 20
+            }
+            
+            
+//            layoutSection.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
             layoutSection.orthogonalScrollingBehavior = .groupPaging
             
             return layoutSection
