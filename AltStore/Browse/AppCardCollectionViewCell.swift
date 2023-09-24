@@ -76,8 +76,8 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.screenshotsCollectionView.layoutMargins = self.layoutMargins
         
         self.contentView.clipsToBounds = true
-        self.contentView.layer.cornerCurve = .continuous
-        self.contentView.layer.cornerRadius = 12 + 14
+        self.contentView.layer.cornerCurve = .circular
+//        self.contentView.layer.cornerRadius = 12 + 14
     }
     
     override func layoutSubviews()
@@ -220,9 +220,9 @@ private extension AppCardCollectionViewCell
         }
         dataSource.prefetchHandler = { [weak self] (screenshot, indexPath, completionHandler) in
             let imageURL = screenshot.imageURL
-//            let traits = self?.traitCollection
+            let traits = screenshot.deviceType == .ipad ? nil : self?.traitCollection // Don't provide traits to prevent rotating iPad
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot(screenshot, traits: nil)]) // Don't provide traits to prevent rotating iPad
+                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot(screenshot, traits: traits)])
                 ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     

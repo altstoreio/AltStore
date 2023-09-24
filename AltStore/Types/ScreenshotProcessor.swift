@@ -29,10 +29,10 @@ struct ScreenshotProcessor: ImageProcessing
     
     func process(_ container: ImageContainer, context: ImageProcessingContext) -> ImageContainer? 
     {
+        // TODO: Caching image in incorrect orientation results in weird behaviors...
+        
         if let screenshot
         {
-            guard let traits else { return container }
-            
             let (size, deviceType) = $screenshot.perform { _ in (screenshot.size, screenshot.deviceType) }
             guard let aspectRatio = size, aspectRatio.width > aspectRatio.height else { return container }
                     
@@ -44,7 +44,7 @@ struct ScreenshotProcessor: ImageProcessing
                 // Always rotate landscape iPhone screenshots regardless of horizontal size class.
                 shouldRotate = true
                 
-            case .ipad where traits.horizontalSizeClass == .compact:
+            case .ipad where self.traits?.horizontalSizeClass == .compact:
                 // Only rotate landscape iPad screenshots if we're in horizontally compact environment.
                 shouldRotate = true
                 
