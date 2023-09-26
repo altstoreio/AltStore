@@ -48,26 +48,19 @@
       "tintColor": "018084",
       "size": 5625134,
       "screenshots": [
+        "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg",
         {
-          "imageURL": "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg"
-        },
-        {
-          "imageURL": "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
-          "width": 750,
-          "height": 1334
-        },
-        {
-          "imageURL": "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
-          "width": 750,
-          "height": 1334
+          "imageURL": "https://f000.backblazeb2.com/file/rileytestut/screenshots/iphone_landscape_1.PNG",
+          "width": 2436,
+          "height": 1125
         },
         {
           "imageURL": "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG"
         },
         {
-          "imageURL": "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG",
-          "width": 750,
-          "height": 1334
+          "imageURL": "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
+          "width": 375,
+          "height": 667
         }
       ],
       "screenshotURLs": [
@@ -214,7 +207,37 @@
       "tintColor": "018084",
       "size": 5624104,
       "beta": true,
-      "screenshots": [
+      "screenshots": {
+        "iphone": [
+          "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg",
+          {
+            "imageURL": "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
+            "width": 750,
+            "height": 1334
+          },
+          {
+            "imageURL": "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
+            "width": 750,
+            "height": 1334
+          },
+          {
+            "imageURL": "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG"
+          },
+          {
+            "imageURL": "https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG",
+            "width": 750,
+            "height": 1334
+          }
+        ],
+        "ipad": [
+          {
+            "imageURL": "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg",
+            "width": 768,
+            "height": 1024
+          }
+        ]
+      },
+      "screenshots2": [
         {
           "imageURL": "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot2.jpeg"
         },
@@ -315,6 +338,29 @@
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
       "size": 46315257,
+      "screenshots": [
+        "https://f000.backblazeb2.com/file/rileytestut/TestScreenshot1.PNG",
+        {
+          "imageURL": "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
+          "width": 375,
+          "height": 667
+        },
+        {
+          "imageURL": "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
+          "width": 375,
+          "height": 667
+        },
+        {
+          "imageURL": "https://user-images.githubusercontent.com/705880/65601117-58b5c600-df56-11e9-9c19-9a5ba5da54cf.PNG",
+          "width": 375,
+          "height": 667
+        },
+        {
+          "imageURL": "https://user-images.githubusercontent.com/705880/65601125-5b182000-df56-11e9-9e7e-261480e893c0.PNG",
+          "width": 375,
+          "height": 667
+        }
+      ],
       "permissions": [
         {
           "type": "photos",
@@ -485,7 +531,21 @@
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
-      ]
+      ],
+      "screenshots": {
+        "ipad": [
+          {
+            "imageURL": "https://f000.backblazeb2.com/file/rileytestut/screenshots/ipad_landscape_1.PNG",
+            "width": 2388,
+            "height": 1668
+          },
+          {
+            "imageURL": "https://f000.backblazeb2.com/file/rileytestut/screenshots/ipad_portrait_1.PNG",
+            "width": 1668,
+            "height": 2388
+          }
+        ]
+      }
     },
     {
       "name": "Clip",
