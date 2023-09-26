@@ -39,7 +39,7 @@ class AppBannerCollectionViewCell: UICollectionViewCell
         let errorBadge = UIView()
         errorBadge.translatesAutoresizingMaskIntoConstraints = false
         errorBadge.isHidden = true
-        self.addSubview(errorBadge)
+        self.contentView.addSubview(errorBadge)
         
         // Solid background to make the X opaque white.
         let backgroundView = UIView()

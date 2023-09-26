@@ -63,15 +63,6 @@ class TabBarController: UITabBarController
         
         switch identifier
         {
-        case "presentSources":
-            guard let notification = sender as? Notification,
-                  let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
-            else { return }
-            
-            let navigationController = segue.destination as! UINavigationController
-            let sourcesViewController = navigationController.viewControllers.first as! SourcesViewController
-            sourcesViewController.deepLinkSourceURL = sourceURL
-            
         case "finishJailbreak":
             guard let installedApp = sender as? InstalledApp else { return }
             
@@ -104,30 +95,21 @@ extension TabBarController
     {
         if let presentedViewController = self.presentedViewController
         {
-            if let navigationController = presentedViewController as? UINavigationController,
-               let sourcesViewController = navigationController.viewControllers.first as? SourcesViewController
-            {
-                if let notification = (sender as? Notification),
-                   let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
-                {
-                    sourcesViewController.deepLinkSourceURL = sourceURL
-                }
-                else
-                {
-                    // Don't dismiss SourcesViewController if it's already presented.
-                }
-            }
-            else
-            {
-                presentedViewController.dismiss(animated: true) {
-                    self.presentSources(sender)
-                }
+            presentedViewController.dismiss(animated: true) {
+                self.presentSources(sender)
             }
             
             return
         }
         
-        self.performSegue(withIdentifier: "presentSources", sender: sender)
+        guard let sourcesViewController = self.viewControllers?.lazy.compactMap({ $0 as? SourcesViewController }).first else { return }
+        
+        if let notification = (sender as? Notification), let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
+        {
+            sourcesViewController.deepLinkSourceURL = sourceURL
+        }
+        
+        self.selectedViewController = sourcesViewController
     }
 }
 
