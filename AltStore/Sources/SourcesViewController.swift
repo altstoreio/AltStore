@@ -38,13 +38,6 @@ class SourcesViewController: UICollectionViewController
         self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         
-        if let navigationBar = self.navigationController?.navigationBar as? NavigationBar
-        {
-            // Don't automatically adjust item positions when being presented non-full screen,
-            // or else the navigation bar content won't be vertically centered.
-            navigationBar.automaticallyAdjustsItemPositions = false
-        }
-        
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
     }
@@ -418,7 +411,7 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
     DatabaseManager.shared.startSynchronously()
     
     let storyboard = UIStoryboard(name: "Sources", bundle: nil)
-    let sourcesViewController = storyboard.instantiateViewController(identifier: "mySourcesViewController")
+    let sourcesViewController = storyboard.instantiateInitialViewController()!
     
     let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
     context.performAndWait {
@@ -467,6 +460,5 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
         }
     }
     
-    let navigationController = UINavigationController(rootViewController: sourcesViewController)
-    return navigationController
+    return sourcesViewController
 }

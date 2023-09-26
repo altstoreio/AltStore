@@ -91,11 +91,6 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         self.update()
     }
-    
-    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
-    {
-        self.fetchSource()
-    }
 }
 
 private extension BrowseViewController

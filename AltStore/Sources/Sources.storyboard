@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ATI-qu-l8n">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Rki-nI-1QL">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
@@ -12,7 +12,7 @@
         <!--Sources-->
         <scene sceneID="5QD-Jh-krn">
             <objects>
-                <collectionViewController storyboardIdentifier="mySourcesViewController" title="Sources" id="ATI-qu-l8n" customClass="MySourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="mySourcesViewController" title="Sources" id="ATI-qu-l8n" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="xHk-7r-cjr">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -46,15 +46,9 @@
                     </collectionView>
                     <navigationItem key="navigationItem" title="Sources" largeTitleDisplayMode="always" id="aHu-oq-JhH">
                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="aXL-sC-le7"/>
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="72H-Ff-Asz">
-                            <connections>
-                                <segue destination="E2Q-4g-nlg" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="QqT-WB-kjA"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fSc-1E-kJk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="E2Q-4g-nlg" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1692.3664122137404" y="-13.380281690140846"/>
         </scene>
@@ -173,13 +167,15 @@
             </objects>
             <point key="canvasLocation" x="3404" y="-711"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Sources-->
         <scene sceneID="dsT-m0-ZQD">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Rki-nI-1QL" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Rki-nI-1QL" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Sources" image="Sources" id="SQB-Ty-BDh"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="syD-Ab-HGH">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="syD-Ab-HGH" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -196,6 +192,7 @@
         <segue reference="azf-Uh-jgz"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="Sources" width="20" height="20"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

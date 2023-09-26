@@ -133,11 +133,6 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
             self.collectionView.contentInset.bottom = 20
         }
     }
-    
-    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
-    {
-        self.fetchSource()
-    }
 }
 
 private extension NewsViewController
