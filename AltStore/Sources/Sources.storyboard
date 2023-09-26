@@ -138,6 +138,74 @@
             </objects>
             <point key="canvasLocation" x="810" y="-13"/>
         </scene>
+        <!--Sources-->
+        <scene sceneID="5QD-Jh-krn">
+            <objects>
+                <collectionViewController storyboardIdentifier="mySourcesViewController" title="Sources" id="ATI-qu-l8n" customClass="MySourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="xHk-7r-cjr">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="l1J-k0-Tpi">
+                            <size key="itemSize" width="375" height="80"/>
+                            <size key="headerReferenceSize" width="50" height="200"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="B9B-dW-KxR" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="9" y="200" width="375" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="Mru-bh-ZKZ" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage sources to control which apps are available to download through AltStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4me-OV-xW1">
+                                    <rect key="frame" x="8" y="14" width="377" height="171"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                    <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="4me-OV-xW1" secondAttribute="bottom" priority="999" constant="15" id="6u2-wa-553"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="4me-OV-xW1" secondAttribute="trailing" priority="999" id="9dM-yr-kzY"/>
+                                <constraint firstItem="4me-OV-xW1" firstAttribute="top" secondItem="Mru-bh-ZKZ" secondAttribute="top" priority="999" constant="14" id="LUy-zc-FCo"/>
+                                <constraint firstAttribute="leadingMargin" secondItem="4me-OV-xW1" secondAttribute="leading" priority="999" id="Mw0-TZ-lca"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="bottomLayoutConstraint" destination="6u2-wa-553" id="vPB-JC-mL8"/>
+                                <outlet property="leadingLayoutConstraint" destination="Mw0-TZ-lca" id="KIr-tR-yIv"/>
+                                <outlet property="textLabel" destination="4me-OV-xW1" id="w52-wK-sv4"/>
+                                <outlet property="topLayoutConstraint" destination="LUy-zc-FCo" id="AlZ-0Z-v7x"/>
+                                <outlet property="trailingLayoutConstraint" destination="9dM-yr-kzY" id="QdT-hc-Hep"/>
+                            </connections>
+                        </collectionReusableView>
+                        <connections>
+                            <outlet property="dataSource" destination="ATI-qu-l8n" id="ou4-Td-L1o"/>
+                            <outlet property="delegate" destination="ATI-qu-l8n" id="VRq-Y5-ojQ"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Sources" largeTitleDisplayMode="always" id="aHu-oq-JhH">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="aXL-sC-le7"/>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="72H-Ff-Asz">
+                            <connections>
+                                <segue destination="E2Q-4g-nlg" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="QqT-WB-kjA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fSc-1E-kJk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="E2Q-4g-nlg" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1736.6412213740457" y="756.33802816901414"/>
+        </scene>
         <!--All Apps-->
         <scene sceneID="d8a-U8-CPc">
             <objects>
@@ -251,6 +319,24 @@
                 </collectionViewController>
             </objects>
             <point key="canvasLocation" x="3404" y="-711"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="a78-6S-LCl">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bl5-ls-k4r" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="B3D-eq-6I8">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="ATI-qu-l8n" kind="relationship" relationship="rootViewController" id="5wE-uH-qW6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lar-7k-EMU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="809.92366412213732" y="756.33802816901414"/>
         </scene>
     </scenes>
     <resources>

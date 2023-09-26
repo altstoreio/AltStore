@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17124"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,6 +16,7 @@
                 <outlet property="button" destination="tVx-3G-dcu" id="joa-AH-syX"/>
                 <outlet property="buttonLabel" destination="Yd9-jw-faD" id="o7g-Gb-CIt"/>
                 <outlet property="iconImageView" destination="avS-dx-4iy" id="TQs-Ej-gin"/>
+                <outlet property="iconImageViewHeightConstraint" destination="6lU-H8-nEw" id="PSt-Xa-lQT"/>
                 <outlet property="subtitleLabel" destination="oN5-vu-Dnw" id="gA4-iJ-Tix"/>
                 <outlet property="titleLabel" destination="mFe-zJ-eva" id="2OH-f8-cid"/>
                 <outlet property="vibrancyView" destination="fC4-1V-iMn" id="PXE-2B-A7w"/>

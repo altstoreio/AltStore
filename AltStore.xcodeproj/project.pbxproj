@@ -357,6 +357,7 @@
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
+		D5390C3A2AC35ED700D17E62 /* MySourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5390C392AC35ED700D17E62 /* MySourcesViewController.swift */; };
 		D53D84022A2158FC00543C3B /* Permissions.plist in Resources */ = {isa = PBXBuildFile; fileRef = D53D84012A2158FC00543C3B /* Permissions.plist */; };
 		D54058B92A1D6269008CCC58 /* AppPermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */; };
 		D54058BB2A1D8FE3008CCC58 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */; };
@@ -885,6 +886,7 @@
 		D533E8B82727B61400A9B5DD /* fragmentzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fragmentzip.h; sourceTree = "<group>"; };
 		D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dependencies/fragmentzip/libfragmentzip.a; sourceTree = SOURCE_ROOT; };
 		D533E8BD2727BBF800A9B5DD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = Dependencies/libcurl/libcurl.a; sourceTree = SOURCE_ROOT; };
+		D5390C392AC35ED700D17E62 /* MySourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySourcesViewController.swift; sourceTree = "<group>"; };
 		D53D84012A2158FC00543C3B /* Permissions.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Permissions.plist; sourceTree = "<group>"; };
 		D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionProtocol.swift; sourceTree = "<group>"; };
 		D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
@@ -1605,6 +1607,7 @@
 			children = (
 				D5935AEE29C3B23600C157EF /* Sources.storyboard */,
 				BFC84A4C2421A19100853474 /* SourcesViewController.swift */,
+				D5390C392AC35ED700D17E62 /* MySourcesViewController.swift */,
 				D5CD805E29CA755E00E591B0 /* SourceDetailViewController.swift */,
 				D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */,
 				D5935AEC29C39DE300C157EF /* SourceDetailsComponents.swift */,
@@ -2862,6 +2865,7 @@
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
 				D57FE84428C7DB7100216002 /* ErrorLogViewController.swift in Sources */,
+				D5390C3A2AC35ED700D17E62 /* MySourcesViewController.swift in Sources */,
 				BFBE0007250AD0E70080826E /* ViewAppIntentHandler.swift in Sources */,
 				BFDB6A0822AAED73007EA6D6 /* ResignAppOperation.swift in Sources */,
 				D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */,

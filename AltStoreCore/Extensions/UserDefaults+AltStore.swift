@@ -84,7 +84,7 @@ public extension UserDefaults
         (ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16) && !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16_2))
         
         #if DEBUG
-        let permissionCheckingDisabled = true
+        let permissionCheckingDisabled = false
         #else
         let permissionCheckingDisabled = false
         #endif

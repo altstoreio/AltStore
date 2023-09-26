@@ -53,8 +53,8 @@ class AppBannerCollectionViewCell: UICollectionViewCell
         errorBadge.addSubview(badgeView, pinningEdgesWith: .zero)
         
         NSLayoutConstraint.activate([
-            self.bannerView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-            self.bannerView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
+            self.bannerView.topAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.topAnchor),
+            self.bannerView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
             self.bannerView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
             self.bannerView.trailingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.trailingAnchor),
             

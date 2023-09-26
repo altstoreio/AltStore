@@ -11,6 +11,15 @@ import UIKit
 import AltStoreCore
 import Roxas
 
+extension AppBannerView
+{
+    enum Style
+    {
+        case app
+        case source
+    }
+}
+
 class AppBannerView: RSTNibView
 {
     override var accessibilityLabel: String? {
@@ -38,6 +47,8 @@ class AppBannerView: RSTNibView
         set { self.accessibilityView?.accessibilityTraits = newValue }
     }
     
+    var style: Style = .app
+    
     private var originalTintColor: UIColor?
     
     @IBOutlet var titleLabel: UILabel!
@@ -51,6 +62,8 @@ class AppBannerView: RSTNibView
     
     @IBOutlet private var vibrancyView: UIVisualEffectView!
     @IBOutlet private var accessibilityView: UIView!
+    
+    @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect)
     {
@@ -138,7 +151,36 @@ private extension AppBannerView
         self.clipsToBounds = true
         self.layer.cornerRadius = 22
         
-        self.subtitleLabel.textColor = self.originalTintColor ?? self.tintColor        
+        self.subtitleLabel.textColor = self.originalTintColor ?? self.tintColor
         self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
+        
+        switch self.style
+        {
+        case .app:
+            self.iconImageViewHeightConstraint.constant = 60
+            self.iconImageView.style = .icon
+            
+            self.titleLabel.textColor = .darkText
+            
+            self.accessibilityView.backgroundColor = nil
+            
+            self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
+            self.backgroundEffectView.isHidden = true
+            
+        case .source:
+            self.iconImageViewHeightConstraint.constant = 44
+            self.iconImageView.style = .circular
+            
+            self.titleLabel.textColor = .white
+            
+            self.accessibilityView.backgroundColor = self.originalTintColor ?? self.tintColor
+            
+            self.backgroundEffectView.backgroundColor = nil
+            self.backgroundEffectView.isHidden = true
+            
+            let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
+            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel)
+            self.vibrancyView.effect = vibrancyEffect
+        }
     }
 }

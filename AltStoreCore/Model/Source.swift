@@ -236,6 +236,13 @@ public extension Source
             return isAdded
         }
     }
+    
+    var lastUpdatedDate: Date? {
+        let allDates = self.apps.compactMap { $0.latestAvailableVersion?.date } + self.newsItems.map { $0.date }
+        
+        let lastUpdatedDate = allDates.sorted().last
+        return lastUpdatedDate
+    }
 }
 
 internal extension Source
@@ -281,6 +288,16 @@ public extension Source
     class func fetchAltStoreSource(in context: NSManagedObjectContext) -> Source?
     {
         let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), Source.altStoreIdentifier), in: context)
+        return source
+    }
+    
+    class func make(name: String, identifier: String, sourceURL: URL, context: NSManagedObjectContext) -> Source
+    {
+        let source = Source(context: context)
+        source.name = name
+        source.identifier = identifier
+        source.sourceURL = sourceURL
+        
         return source
     }
 }
