@@ -58,12 +58,17 @@ class AppBannerView: RSTNibView
     @IBOutlet var buttonLabel: UILabel!
     @IBOutlet var betaBadgeView: UIView!
     
+    @IBOutlet private(set) var stackView: UIStackView!
+    
     @IBOutlet var backgroundEffectView: UIVisualEffectView!
     
     @IBOutlet private var vibrancyView: UIVisualEffectView!
     @IBOutlet private var accessibilityView: UIView!
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet private(set) var buttonWidthLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet private(set) var buttonHeightLayoutConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect)
     {
