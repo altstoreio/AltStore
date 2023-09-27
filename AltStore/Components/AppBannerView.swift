@@ -165,7 +165,7 @@ private extension AppBannerView
             self.accessibilityView.backgroundColor = nil
             
             self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
-            self.backgroundEffectView.isHidden = true
+            self.backgroundEffectView.isHidden = false
             
         case .source:
             self.iconImageViewHeightConstraint.constant = 44
