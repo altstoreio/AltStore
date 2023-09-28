@@ -14,6 +14,7 @@ extension TabBarController
     private enum Tab: Int, CaseIterable
     {
         case news
+        case sources
         case browse
         case myApps
         case settings
