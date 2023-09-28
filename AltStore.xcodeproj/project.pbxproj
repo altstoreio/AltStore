@@ -356,6 +356,7 @@
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
 		D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */; };
+		D541EAA52AC5FC60000A0EC0 /* Logger+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B832AA932F700F61259 /* Logger+AltServer.swift */; };
 		D54DED1428CBC44B008B27A0 /* ErrorLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */; };
 		D55E163728776CB700A627A1 /* ComplicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E163528776CB000A627A1 /* ComplicationView.swift */; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
@@ -878,6 +879,7 @@
 		D586D39A28EF58B0000E101F /* AltTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltTests.swift; sourceTree = "<group>"; };
 		D58916FD28C7C55C00E39C8B /* LoggedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedError.swift; sourceTree = "<group>"; };
 		D593F1932717749A006E82DE /* PatchAppOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchAppOperation.swift; sourceTree = "<group>"; };
+		D59A6B832AA932F700F61259 /* Logger+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltServer.swift"; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
 		D5CA0C4C280E242500469595 /* AltStore 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 10.xcdatamodel"; sourceTree = "<group>"; };
@@ -1007,6 +1009,7 @@
 			children = (
 				BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */,
 				BF541C0A25E5A5FA00CD46B2 /* FileManager+URLs.swift */,
+				D59A6B832AA932F700F61259 /* Logger+AltServer.swift */,
 				D58032EF2AB2429D00878F5E /* ProcessInfo+Device.swift */,
 			);
 			path = Extensions;
@@ -2548,6 +2551,7 @@
 				BFECAC9424FD98BA0077C41F /* NSError+ALTServerError.m in Sources */,
 				BFAD67A325E0854500D4C4D1 /* DeveloperDiskManager.swift in Sources */,
 				D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */,
+				D541EAA52AC5FC60000A0EC0 /* Logger+AltServer.swift in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
 				D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */,
