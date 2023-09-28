@@ -8,6 +8,7 @@
 
 import OSLog
 
+@available(macOS 11, *)
 extension Logger
 {
     static let altserverSubsystem = Bundle.main.bundleIdentifier!

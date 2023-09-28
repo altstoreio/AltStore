@@ -93,7 +93,10 @@ class AnisetteDataManager: NSObject
                             }
                             catch
                             {
-                                Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
+                                if #available(macOS 11, *)
+                                {
+                                    Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
+                                }
                                 
                                 // Return original error.
                                 completion(.failure(aosKitError))
@@ -102,7 +105,10 @@ class AnisetteDataManager: NSObject
                     }
                     catch
                     {
-                        Logger.main.error("Failed to fetch anisette data via XPC service. \(error.localizedDescription, privacy: .public)")
+                        if #available(macOS 11, *)
+                        {
+                            Logger.main.error("Failed to fetch anisette data via XPC service. \(error.localizedDescription, privacy: .public)")
+                        }
                         
                         // Return original error.
                         completion(.failure(aosKitError))
