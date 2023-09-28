@@ -412,6 +412,7 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
     }
 }
 
+@available(iOS 17, *)
 #Preview(traits: .portrait) {
     DatabaseManager.shared.startSynchronously()
     
