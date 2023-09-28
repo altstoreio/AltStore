@@ -37,6 +37,14 @@ class TabBarController: UITabBarController
         NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.openErrorLog(_:)), name: ToastView.openErrorLogNotification, object: nil)
     }
     
+    override func viewDidLoad() 
+    {
+        super.viewDidLoad()
+        
+        let browseNavigationController = self.viewControllers![Tab.browse.rawValue] as! UINavigationController
+        browseNavigationController.tabBarItem.image = UIImage(systemName: "bag")
+    }
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
