@@ -191,7 +191,21 @@ class AppViewController: UIViewController
             self._shouldResetLayout = false
         }
                 
-        let statusBarHeight = self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let statusBarHeight: Double
+        
+        if let navigationController, navigationController.presentingViewController != nil, navigationController.modalPresentationStyle != .fullScreen
+        {
+            statusBarHeight = 20
+        }
+        else if let statusBarManager = self.view.window?.windowScene?.statusBarManager
+        {
+            statusBarHeight = statusBarManager.statusBarFrame.height
+        }
+        else
+        {
+            statusBarHeight = 0
+        }
+        
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 12 as CGFloat
