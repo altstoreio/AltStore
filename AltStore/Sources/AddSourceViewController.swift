@@ -124,7 +124,8 @@ class AddSourceViewController: UICollectionViewController
             
             let items = [self.previewSource].compactMap { $0 }
             
-            let indexPath = IndexPath(row: 0, section: Section.preview.rawValue)
+            // Have to provide changes in terms of previewDataSource
+            let indexPath = IndexPath(row: 0, section: 0)
             
             let change: RSTCellContentChange
             
@@ -142,7 +143,7 @@ class AddSourceViewController: UICollectionViewController
             }
             
             print("Updating with change:", change)
-            self.previewSourceDataSource.setItems(items, with: nil)
+            self.previewSourceDataSource.setItems(items, with: [change])
         }
     }
     
@@ -151,12 +152,16 @@ class AddSourceViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.title = NSLocalizedString("Add Source", comment: "")
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        self.navigationController?.isModalInPresentation = true
+        self.navigationController?.view.tintColor = .altPrimary
         
         self.collectionView.collectionViewLayout = self.makeLayout()
         
         self.collectionView.register(SourceTextFieldCell.self, forCellWithReuseIdentifier: "TextFieldCell")
-        self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
+        
+        // Registered in Storyboard with Segue
+        // self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         
         self.collectionView.keyboardDismissMode = .onDrag
         
@@ -403,6 +408,7 @@ private extension AddSourceViewController
             widthConstraint.isActive = true
         }
         
+        cell.bannerView.button.isHidden = false
         cell.bannerView.button.contentEdgeInsets = .zero
         cell.bannerView.button.tintColor = .white
         cell.bannerView.buttonLabel.isHidden = true
@@ -426,6 +432,30 @@ private extension AddSourceViewController
         }
         
         cell.bannerView.subtitleLabel.numberOfLines = 2
+        
+        Task<Void, Never>(priority: .userInitiated) {
+            do
+            {
+                let isAdded = try await source.isAdded
+                if isAdded
+                {
+                    cell.bannerView.button.isHidden = true
+                }
+            }
+            catch
+            {
+                print("Failed to determine if source is added.", error)
+            }
+        }
+    }
+    
+    @IBSegueAction
+    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        guard let source = sender as? Source else { return nil }
+        
+        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
+        return sourceDetailViewController
     }
 }
 
@@ -505,6 +535,17 @@ extension AddSourceViewController
                 }
             }
         }
+    }
+}
+
+extension AddSourceViewController
+{
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
+    {
+        guard Section(rawValue: indexPath.section) != .add else { return }
+        
+        let source = self.dataSource.item(at: indexPath)
+        self.performSegue(withIdentifier: "showSourceDetails", sender: source)
     }
 }
 

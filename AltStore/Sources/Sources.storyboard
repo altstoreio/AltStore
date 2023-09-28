@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Rki-nI-1QL">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -9,6 +10,51 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Add Source View Controller-->
+        <scene sceneID="irK-Dj-5hx">
+            <objects>
+                <collectionViewController id="jDD-Wv-SyW" customClass="AddSourceViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="8T7-qQ-6kF">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="b1u-S9-0qT">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="10v-wX-jqW" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="jDD-Wv-SyW" id="bgt-VD-m2g"/>
+                            <outlet property="delegate" destination="jDD-Wv-SyW" id="fBR-3s-ojc"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="SPR-2A-5tV">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="wIa-YU-v8p">
+                            <connections>
+                                <segue destination="ywt-Gn-tgd" kind="unwind" unwindAction="unwindFromAddSource:" id="hqB-zG-gaM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="7XE-Wv-lf9" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="OFQ-0O-HFZ"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lyB-hR-Sp5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="ywt-Gn-tgd" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1692" y="-692"/>
+        </scene>
         <!--Sources-->
         <scene sceneID="5QD-Jh-krn">
             <objects>
@@ -45,7 +91,11 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" title="Sources" largeTitleDisplayMode="always" id="aHu-oq-JhH">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="aXL-sC-le7"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="aXL-sC-le7">
+                            <connections>
+                                <segue destination="z7e-lS-A5c" kind="presentation" identifier="addSource" id="czP-3S-iap"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fSc-1E-kJk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -83,7 +133,7 @@
             <objects>
                 <viewController storyboardIdentifier="sourceDetailViewController" id="7XE-Wv-lf9" customClass="SourceDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eIv-0H-ZIq">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="GND-ro-Anp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -165,7 +215,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7f5-vn-JrS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3404" y="-711"/>
+            <point key="canvasLocation" x="4330.5343511450383" y="-711.26760563380287"/>
         </scene>
         <!--Sources-->
         <scene sceneID="dsT-m0-ZQD">
@@ -187,9 +237,27 @@
             </objects>
             <point key="canvasLocation" x="765.64885496183206" y="-13.380281690140846"/>
         </scene>
+        <!--Forwarding Navigation Controller-->
+        <scene sceneID="fBH-EG-ITQ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="z7e-lS-A5c" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="t4o-WB-8xq">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="108"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="jDD-Wv-SyW" kind="relationship" relationship="rootViewController" id="Nsd-6B-lhz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="G0s-Cn-F7W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="766" y="-692"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="azf-Uh-jgz"/>
+        <segue reference="OFQ-0O-HFZ"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Sources" width="20" height="20"/>

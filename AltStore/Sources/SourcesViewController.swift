@@ -222,6 +222,11 @@ private extension SourcesViewController
         let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
         return sourceDetailViewController
     }
+    
+    @IBAction
+    func unwindFromAddSource(_ segue: UIStoryboardSegue)
+    {
+    }
 }
 
 private extension SourcesViewController
