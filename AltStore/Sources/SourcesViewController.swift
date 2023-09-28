@@ -40,9 +40,6 @@ class SourcesViewController: UICollectionViewController
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(SourcesViewController.didUpdateSource(_:)), name: AppManager.didAddSourceNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(SourcesViewController.didUpdateSource(_:)), name: AppManager.didRemoveSourceNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -229,22 +226,6 @@ private extension SourcesViewController
     @IBAction
     func unwindFromAddSource(_ segue: UIStoryboardSegue)
     {
-    }
-    
-    @objc func didUpdateSource(_ notification: Notification)
-    {
-        guard let source = notification.object as? Source, let context = source.managedObjectContext else { return }
-        
-        let sourceID = context.performAndWait { source.identifier }
-        
-        DispatchQueue.main.async {
-            if let recommendedSource = self.dataSource.fetchedResultsController.fetchedObjects?.first(where: { $0.identifier == sourceID }),
-               let indexPath = self.dataSource.fetchedResultsController.indexPath(forObject: recommendedSource)
-            {
-                // Added or removed a recommended source, so make sure to update its state.
-                self.collectionView.reloadItems(at: [indexPath])
-            }
-        }        
     }
 }
 

@@ -224,6 +224,31 @@ class AddSourceViewController: UICollectionViewController
             }
             .assign(to: \._previewSource, on: self)
             .store(in: &self.cancellables)
+        
+        let addPublisher = NotificationCenter.default.publisher(for: AppManager.didAddSourceNotification)
+        let removePublisher = NotificationCenter.default.publisher(for: AppManager.didRemoveSourceNotification)
+        
+        Publishers.Merge(addPublisher, removePublisher)
+            .compactMap { notification -> String? in
+                guard let source = notification.object as? Source,
+                      let context = source.managedObjectContext
+                else { return nil }
+                
+                let sourceID = context.performAndWait { source.identifier }
+                return sourceID
+            }
+            .receive(on: RunLoop.main)
+            .compactMap { [dataSource = recommendedSourcesDataSource] sourceID -> IndexPath? in
+                guard let index = dataSource.items.firstIndex(where: { $0.identifier == sourceID }) else { return nil }
+                
+                let indexPath = IndexPath(item: index, section: Section.recommended.rawValue)
+                return indexPath
+            }
+            .sink { indexPath in
+                // Added or removed a recommended source, so make sure to update its state.
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+            .store(in: &self.cancellables)
     }
 }
 
