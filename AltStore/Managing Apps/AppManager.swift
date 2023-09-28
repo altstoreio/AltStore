@@ -22,6 +22,8 @@ extension AppManager
 {
     static let didFetchSourceNotification = Notification.Name("io.altstore.AppManager.didFetchSource")
     static let didUpdatePatronsNotification = Notification.Name("io.altstore.AppManager.didUpdatePatrons")
+    static let didAddSourceNotification = Notification.Name("io.altstore.AppManager.didAddSource")
+    static let didRemoveSourceNotification = Notification.Name("io.altstore.AppManager.didRemoveSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
@@ -366,6 +368,8 @@ extension AppManager
         try await context.performAsync {
             try context.save()
         }
+        
+        NotificationCenter.default.post(name: AppManager.didAddSourceNotification, object: source)
     }
     
     func remove(@AsyncManaged _ source: Source, presentingViewController: UIViewController) async throws
@@ -388,6 +392,8 @@ extension AppManager
             context.delete(source)
             try context.save()
         }
+        
+        NotificationCenter.default.post(name: AppManager.didRemoveSourceNotification, object: source)
     }
 }
 
