@@ -27,6 +27,8 @@ class TabBarController: UITabBarController
     
     private var _viewDidAppear = false
     
+    private var sourcesViewController: SourcesViewController!
+    
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
@@ -43,6 +45,9 @@ class TabBarController: UITabBarController
         
         let browseNavigationController = self.viewControllers![Tab.browse.rawValue] as! UINavigationController
         browseNavigationController.tabBarItem.image = UIImage(systemName: "bag")
+        
+        let sourcesNavigationController = self.viewControllers![Tab.sources.rawValue] as! UINavigationController
+        self.sourcesViewController = sourcesNavigationController.viewControllers.first as? SourcesViewController
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -110,15 +115,13 @@ extension TabBarController
             
             return
         }
-        
-        guard let sourcesViewController = self.viewControllers?.lazy.compactMap({ $0 as? SourcesViewController }).first else { return }
-        
+                
         if let notification = (sender as? Notification), let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
         {
-            sourcesViewController.deepLinkSourceURL = sourceURL
+            self.sourcesViewController?.deepLinkSourceURL = sourceURL
         }
         
-        self.selectedViewController = sourcesViewController
+        self.selectedIndex = Tab.sources.rawValue
     }
 }
 

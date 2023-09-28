@@ -231,33 +231,7 @@ private extension SourcesViewController
 
 private extension SourcesViewController
 {
-    @IBAction func addSource()
-    {
-        let alertController = UIAlertController(title: NSLocalizedString("Add Source", comment: ""), message: nil, preferredStyle: .alert)
-        alertController.addTextField { (textField) in
-            textField.placeholder = "https://apps.altstore.io"
-            textField.textContentType = .URL
-        }
-        alertController.addAction(.cancel)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Add", comment: ""), style: .default) { (action) in
-            guard let text = alertController.textFields![0].text else { return }
-            guard var sourceURL = URL(string: text) else { return }
-            if sourceURL.scheme == nil {
-                guard let httpsSourceURL = URL(string: "https://" + text) else { return }
-                sourceURL = httpsSourceURL
-            }
-            
-            self.navigationItem.leftBarButtonItem?.isIndicatingActivity = true
-            
-            self.addSource(url: sourceURL) { _ in
-                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
-            }
-        })
-        
-        self.present(alertController, animated: true, completion: nil)
-    }
-    
-    func addSource(url: URL, completionHandler: ((Result<Void, Error>) -> Void)? = nil)
+    func addSource(url: URL)
     {
         guard self.view.window != nil else { return }
         
@@ -267,71 +241,45 @@ private extension SourcesViewController
             self.deepLinkSourceURL = nil
         }
         
-//        func finish(_ result: Result<Void, Error>)
-//        {
-//            DispatchQueue.main.async {
-//                switch result
-//                {
-//                case .success: break
-//                case .failure(OperationError.cancelled): break
-//
-//                case .failure(var error as SourceError):
-//                    let title = String(format: NSLocalizedString("“%@” could not be added to AltStore.", comment: ""), error.$source.name)
-//                    error.errorTitle = title
-//                    self.present(error)
-//
-//                case .failure(let error as NSError):
-//                    self.present(error.withLocalizedTitle(NSLocalizedString("Unable to Add Source", comment: "")))
-//                }
-//
-//                self.collectionView.reloadSections([Section.trusted.rawValue])
-//
-//                completionHandler?(result)
-//            }
-//        }
-//
-//        var dependencies: [Foundation.Operation] = []
-//        if let fetchTrustedSourcesOperation = self.fetchTrustedSourcesOperation
-//        {
-//            // Must fetch trusted sources first to determine whether this is a trusted source.
-//            // We assume fetchTrustedSources() has already been called before this method.
-//            dependencies = [fetchTrustedSourcesOperation]
-//        }
-//
-//        AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies) { (result) in
-//            do
-//            {
-//                // Use @Managed before calling perform() to keep
-//                // strong reference to source.managedObjectContext.
-//                @Managed var source = try result.get()
-//
-//                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
-//                backgroundContext.perform {
-//                    do
-//                    {
-//                        let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
-//                        if let existingSource = Source.first(satisfying: predicate, in: backgroundContext)
-//                        {
-//                            throw SourceError.duplicate(source, existingSource: existingSource)
-//                        }
-//
-//                        DispatchQueue.main.async {
-//                            self.showSourceDetails(for: source)
-//                        }
-//
-//                        finish(.success(()))
-//                    }
-//                    catch
-//                    {
-//                        finish(.failure(error))
-//                    }
-//                }
-//            }
-//            catch
-//            {
-//                finish(.failure(error))
-//            }
-//        }
+        func finish(_ result: Result<Void, Error>)
+        {
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .success: break
+                case .failure(OperationError.cancelled): break
+
+                case .failure(var error as SourceError):
+                    let title = String(format: NSLocalizedString("“%@” could not be added to AltStore.", comment: ""), error.$source.name)
+                    error.errorTitle = title
+                    self.present(error)
+
+                case .failure(let error as NSError):
+                    self.present(error.withLocalizedTitle(NSLocalizedString("Unable to Add Source", comment: "")))
+                }
+                
+                self.navigationItem.leftBarButtonItem?.isIndicatingActivity = false
+            }
+        }
+        
+        AppManager.shared.fetchSource(sourceURL: url) { (result) in
+            do
+            {
+                // Use @Managed before calling perform() to keep
+                // strong reference to source.managedObjectContext.
+                @Managed var source = try result.get()
+                
+                DispatchQueue.main.async {
+                    self.showSourceDetails(for: source)
+                }
+                
+                finish(.success(()))
+            }
+            catch
+            {
+                finish(.failure(error))
+            }
+        }
     }
 
     func present(_ error: Error)
