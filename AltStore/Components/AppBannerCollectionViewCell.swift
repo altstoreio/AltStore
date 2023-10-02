@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppBannerCollectionViewCell: UICollectionViewCell
+class AppBannerCollectionViewCell: UICollectionViewListCell
 {
     let bannerView = AppBannerView(frame: .zero)
     

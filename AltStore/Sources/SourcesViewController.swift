@@ -40,6 +40,9 @@ class SourcesViewController: UICollectionViewController
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
+        self.collectionView.allowsSelectionDuringEditing = false
+        
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -71,7 +74,6 @@ private extension SourcesViewController
         configuration.headerMode = .supplementary
         configuration.showsSeparators = false
         configuration.backgroundColor = .altBackground
-        configuration.headerTopPadding = 0
         
         configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
             guard let self else { return UISwipeActionsConfiguration(actions: []) }
@@ -185,6 +187,15 @@ private extension SourcesViewController
             }
             
             cell.errorBadge?.isHidden = (source.error == nil)
+            
+            if source.identifier != Source.altStoreIdentifier
+            {
+                cell.accessories = [.delete(displayed: .whenEditing)]
+            }
+            else
+            {
+                cell.accessories = []
+            }
             
             cell.bannerView.accessibilityTraits.remove(.button)
             
@@ -347,7 +358,7 @@ extension SourcesViewController
     }
 }
 
-extension SourcesViewController: UICollectionViewDelegateFlowLayout
+extension SourcesViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
