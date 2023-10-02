@@ -67,9 +67,6 @@ class AppBannerView: RSTNibView
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
-    @IBOutlet private(set) var buttonWidthLayoutConstraint: NSLayoutConstraint!
-    @IBOutlet private(set) var buttonHeightLayoutConstraint: NSLayoutConstraint!
-    
     override init(frame: CGRect)
     {
         super.init(frame: frame)

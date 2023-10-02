@@ -141,13 +141,19 @@ private extension SourcesViewController
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
             
+            cell.bannerView.titleLabel.text = source.name
+            
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
-            cell.bannerView.button.isHidden = true
-            cell.bannerView.buttonLabel.isHidden = true
-                                                
-            cell.bannerView.titleLabel.text = source.name
+            cell.bannerView.button.style = .custom
+            cell.bannerView.button.titleLabel?.textAlignment = .center
+            cell.bannerView.button.setTitle(source.apps.count.description, for: .normal)
+            
+            cell.bannerView.button.tintColor = .white.withAlphaComponent(0.2)
+            cell.bannerView.buttonLabel.isHidden = true            
+            
+            cell.bannerView.stackView.directionalLayoutMargins.trailing = 20
             
             if #available(iOS 15, *)
             {

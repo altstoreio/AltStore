@@ -422,23 +422,14 @@ private extension AddSourceViewController
         cell.bannerView.button.setImage(image, for: .normal)
         cell.bannerView.button.setTitle(nil, for: .normal)
         
+        cell.bannerView.button.isHidden = false
+        cell.bannerView.button.isUserInteractionEnabled = false
+        cell.bannerView.button.style = .custom
+        cell.bannerView.button.tintColor = .white
         cell.bannerView.stackView.directionalLayoutMargins.trailing = 20
         
-        if cell.bannerView.buttonWidthLayoutConstraint.isActive
-        {
-            cell.bannerView.buttonWidthLayoutConstraint.isActive = false
-            cell.bannerView.buttonHeightLayoutConstraint.constant = 24
-            
-            let widthConstraint = cell.bannerView.button.widthAnchor.constraint(equalTo: cell.bannerView.button.heightAnchor)
-            widthConstraint.isActive = true
-        }
-        
-        cell.bannerView.button.isHidden = false
-        cell.bannerView.button.contentEdgeInsets = .zero
-        cell.bannerView.button.tintColor = .white
-        cell.bannerView.buttonLabel.isHidden = true
-                                            
         cell.bannerView.titleLabel.text = source.name
+        cell.bannerView.buttonLabel.isHidden = true
         
         if let subtitle = source.subtitle
         {
