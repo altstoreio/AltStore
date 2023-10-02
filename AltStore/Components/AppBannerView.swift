@@ -162,8 +162,6 @@ private extension AppBannerView
             self.iconImageViewHeightConstraint.constant = 60
             self.iconImageView.style = .icon
             
-            self.titleLabel.textColor = .darkText
-            
             self.accessibilityView.backgroundColor = nil
             
             self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
