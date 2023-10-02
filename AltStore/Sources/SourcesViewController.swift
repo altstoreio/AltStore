@@ -161,7 +161,7 @@ private extension SourcesViewController
                 
                 if let lastUpdatedDate = source.lastUpdatedDate
                 {
-                    dateText = lastUpdatedDate.formatted(.relative(presentation: .named)).capitalized
+                    dateText = lastUpdatedDate.formatted(.relative(presentation: .named)).localizedCapitalized
                 }
                 else
                 {
