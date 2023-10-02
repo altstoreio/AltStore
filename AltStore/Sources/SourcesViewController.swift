@@ -14,6 +14,12 @@ import Roxas
 
 import Nuke
 
+private extension UIAction.Identifier
+{
+    static let showDetails = UIAction.Identifier("io.altstore.showDetails")
+    static let showError = UIAction.Identifier("io.altstore.showError")
+}
+
 class SourcesViewController: UICollectionViewController
 {
     var deepLinkSourceURL: URL? {
@@ -201,6 +207,7 @@ private extension SourcesViewController
             
             let cell = cell as! AppBannerCollectionViewCell
             cell.bannerView.style = .source
+            cell.selectedBackgroundView = UIView() // Disable selection highlighting
             cell.layoutMargins.top = 5
             cell.layoutMargins.bottom = 5
             cell.layoutMargins.left = self.view.layoutMargins.left
@@ -213,11 +220,35 @@ private extension SourcesViewController
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
             cell.bannerView.button.style = .custom
-            cell.bannerView.button.titleLabel?.textAlignment = .center
-            cell.bannerView.button.setTitle(source.apps.count.description, for: .normal)
             
+            if let error = source.error
+            {
+                let image = UIImage(systemName: "exclamationmark")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+                
+                cell.bannerView.button.setImage(image, for: .normal)
+                cell.bannerView.button.setTitle(nil, for: .normal)
+                
+                let action = UIAction(identifier: .showError) { _ in
+                    self.present(error)
+                }
+                cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
+                cell.bannerView.button.removeAction(identifiedBy: .showDetails, for: .primaryActionTriggered)
+            }
+            else
+            {
+                cell.bannerView.button.setImage(nil, for: .normal)
+                cell.bannerView.button.setTitle(source.apps.count.description, for: .normal)
+                
+                let action = UIAction(identifier: .showDetails) { _ in
+                    self.showSourceDetails(for: source)
+                }
+                cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
+                cell.bannerView.button.removeAction(identifiedBy: .showError, for: .primaryActionTriggered)
+            }
+
+            cell.bannerView.button.titleLabel?.textAlignment = .center
             cell.bannerView.button.tintColor = .white.withAlphaComponent(0.2)
-            cell.bannerView.buttonLabel.isHidden = true            
+            cell.bannerView.buttonLabel.isHidden = true
             
             cell.bannerView.stackView.directionalLayoutMargins.trailing = 20
             
@@ -249,9 +280,7 @@ private extension SourcesViewController
                 let attributedLabel = NSAttributedString(string: source.name + "\n" + source.sourceURL.absoluteString, attributes: [.accessibilitySpeechPunctuation: true])
                 cell.bannerView.accessibilityAttributedLabel = attributedLabel
             }
-            
-            cell.errorBadge?.isHidden = (source.error == nil)
-            
+                        
             if source.identifier != Source.altStoreIdentifier
             {
                 cell.accessories = [.delete(displayed: .whenEditing)]
