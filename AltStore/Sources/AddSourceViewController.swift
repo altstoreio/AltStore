@@ -609,8 +609,8 @@ extension AddSourceViewController: UITextFieldDelegate
 #Preview(traits: .portrait) {
     DatabaseManager.shared.startSynchronously()
     
-    let addSourceViewController = AddSourceViewController(collectionViewLayout: UICollectionViewFlowLayout())
+    let storyboard = UIStoryboard(name: "Sources", bundle: .main)
     
-    let navigationController = ForwardingNavigationController(rootViewController: addSourceViewController)
-    return navigationController
+    let addSourceNavigationController = storyboard.instantiateViewController(withIdentifier: "addSourceNavigationController")
+    return addSourceNavigationController
 }

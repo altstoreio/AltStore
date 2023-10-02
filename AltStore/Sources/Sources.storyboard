@@ -240,9 +240,9 @@
         <!--Forwarding Navigation Controller-->
         <scene sceneID="fBH-EG-ITQ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="z7e-lS-A5c" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="addSourceNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="z7e-lS-A5c" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="t4o-WB-8xq">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="t4o-WB-8xq" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="108"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
