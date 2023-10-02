@@ -63,8 +63,11 @@ extension AddSourceViewController
             self.textField.tintColor = .altPrimary
             self.textField.textColor = .altPrimary
             self.textField.textContentType = .URL
+            self.textField.keyboardType = .URL
             self.textField.returnKeyType = .done
             self.textField.autocapitalizationType = .none
+            self.textField.autocorrectionType = .no
+            self.textField.spellCheckingType = .no
             self.textField.enablesReturnKeyAutomatically = true
             
             let blurEffect = UIBlurEffect(style: .systemChromeMaterial)
