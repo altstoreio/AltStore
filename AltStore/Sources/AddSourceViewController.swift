@@ -14,6 +14,31 @@ import Roxas
 
 import Nuke
 
+class PlaceholderCollectionReusableView: UICollectionReusableView
+{
+    let placeholderView: RSTPlaceholderView
+    
+    override init(frame: CGRect)
+    {
+        self.placeholderView = RSTPlaceholderView(frame: .zero)
+        
+        super.init(frame: frame)
+                
+        self.addSubview(self.placeholderView, pinningEdgesWith: .zero)
+        
+        NSLayoutConstraint.activate([
+            self.placeholderView.leadingAnchor.constraint(equalTo: self.placeholderView.stackView.leadingAnchor),
+            self.placeholderView.trailingAnchor.constraint(equalTo: self.placeholderView.stackView.trailingAnchor),
+            self.placeholderView.topAnchor.constraint(equalTo: self.placeholderView.stackView.topAnchor),
+            self.placeholderView.bottomAnchor.constraint(equalTo: self.placeholderView.stackView.bottomAnchor),
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 extension AddSourceViewController
 {
     private enum Section: Int
@@ -165,7 +190,8 @@ class AddSourceViewController: UICollectionViewController
         
         self.collectionView.keyboardDismissMode = .onDrag
         
-        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader)
+        self.collectionView.register(PlaceholderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: UICollectionView.elementKindSectionFooter)
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -259,8 +285,8 @@ private extension AddSourceViewController
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
         layoutConfig.contentInsetsReference = .safeArea
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            guard let section = Section(rawValue: sectionIndex) else { return nil }
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let self, let section = Section(rawValue: sectionIndex) else { return nil }
             switch section
             {
             case .add:
@@ -280,9 +306,21 @@ private extension AddSourceViewController
                 
             case .preview, .recommended:
                 var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-                configuration.headerMode = (section == .recommended) ? .supplementary : .none
                 configuration.showsSeparators = false
                 configuration.backgroundColor = .altBackground
+                
+                if case .recommended = section 
+                {
+                    switch self.fetchTrustedSourcesResult
+                    {
+                    case .none:
+                        configuration.headerMode = .supplementary
+                        configuration.footerMode = .supplementary
+                        
+                    case .failure: configuration.footerMode = .supplementary
+                    case .success: configuration.headerMode = .supplementary
+                    }
+                }
                 
                 let layoutSection = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
                 return layoutSection
@@ -529,7 +567,10 @@ extension AddSourceViewController
                         context.performAndWait {
                             switch result
                             {
-                            case .failure(let error): fetchError = error
+                            case .failure(let error): 
+                                print("Failed to load recommended source \(sourceURL.absoluteString):", error.localizedDescription)
+                                fetchError = error
+                                
                             case .success(let source): sourcesByURL[source.sourceURL] = source
                             }
                                                         
@@ -539,13 +580,14 @@ extension AddSourceViewController
                 }
                 
                 dispatchGroup.notify(queue: .main) {
-                    if let error = fetchError
+                    let sources = featuredSourceURLs.compactMap { sourcesByURL[$0] }
+                    
+                    if let error = fetchError, sources.isEmpty
                     {
                         finish(.failure(error))
                     }
                     else
                     {
-                        let sources = featuredSourceURLs.compactMap { sourcesByURL[$0] }
                         finish(.success(sources))
                     }
                 }
@@ -569,30 +611,61 @@ extension AddSourceViewController: UICollectionViewDelegateFlowLayout
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
-        let reuseIdentifier = (kind == UICollectionView.elementKindSectionHeader) ? "Header" : "Footer"
-        
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: reuseIdentifier, for: indexPath) as! UICollectionViewListCell
-        
-        switch Section(rawValue: indexPath.section)!
+        let section = Section(rawValue: indexPath.section)!
+        switch (section, kind)
         {
-        case .add:
+        case (.add, UICollectionView.elementKindSectionHeader):
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+            
             var configuation = UIListContentConfiguration.cell()
             configuation.text = NSLocalizedString("Enter a source's URL below, or add one of the recommended sources.", comment: "")
             configuation.textProperties.color = .secondaryLabel
             
             headerView.contentConfiguration = configuation
             
-        case .preview: break
+            return headerView
             
-        case .recommended:
+        case (.recommended, UICollectionView.elementKindSectionHeader):
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+            
             var configuation = UIListContentConfiguration.groupedHeader()
             configuation.text = NSLocalizedString("Recommended Sources", comment: "")
             configuation.textProperties.color = .secondaryLabel
             
             headerView.contentConfiguration = configuation
+            
+            return headerView
+            
+        case (.recommended, UICollectionView.elementKindSectionFooter):
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! PlaceholderCollectionReusableView
+            
+            footerView.placeholderView.stackView.spacing = 15
+            footerView.placeholderView.stackView.directionalLayoutMargins.top = 20
+            footerView.placeholderView.stackView.isLayoutMarginsRelativeArrangement = true
+            
+            if let result = self.fetchTrustedSourcesResult, case .failure(let error) = result
+            {
+                footerView.placeholderView.textLabel.isHidden = false
+                footerView.placeholderView.textLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+                footerView.placeholderView.textLabel.text = NSLocalizedString("Unable to Load Recommended Sources", comment: "")
+                
+                footerView.placeholderView.detailTextLabel.isHidden = false
+                footerView.placeholderView.detailTextLabel.text = error.localizedDescription
+                
+                footerView.placeholderView.activityIndicatorView.stopAnimating()
+            }
+            else
+            {
+                footerView.placeholderView.textLabel.isHidden = true
+                footerView.placeholderView.detailTextLabel.isHidden = true
+                
+                footerView.placeholderView.activityIndicatorView.startAnimating()
+            }
+            
+            return footerView
+            
+        default: fatalError()
         }
-        
-        return headerView
     }
 }
 
