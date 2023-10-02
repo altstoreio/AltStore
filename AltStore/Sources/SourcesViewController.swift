@@ -25,6 +25,11 @@ class SourcesViewController: UICollectionViewController
     
     private lazy var dataSource = self.makeDataSource()
     
+    private var placeholderCenterYConstraint: NSLayoutConstraint!
+    
+    private var placeholderView: RSTPlaceholderView!
+    private var placeholderViewButton: UIButton!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -42,7 +47,47 @@ class SourcesViewController: UICollectionViewController
         self.collectionView.prefetchDataSource = self.dataSource
         self.collectionView.allowsSelectionDuringEditing = false
         
+        let backgroundView = UIView(frame: .zero)
+        backgroundView.backgroundColor = .altBackground
+        self.collectionView.backgroundView = backgroundView
+        
+        self.placeholderView = RSTPlaceholderView(frame: .zero)
+        self.placeholderView.translatesAutoresizingMaskIntoConstraints = false
+        self.placeholderView.textLabel.text = NSLocalizedString("Add More Sources!", comment: "")
+        self.placeholderView.detailTextLabel.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis massa tortor, tempor vel est vitae, consequat luctus arcu."
+        backgroundView.addSubview(self.placeholderView)
+        
+        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).bolded()
+        self.placeholderView.textLabel.font = UIFont(descriptor: fontDescriptor, size: 0.0)
+        self.placeholderView.detailTextLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        self.placeholderView.detailTextLabel.textAlignment = .natural
+        
+        self.placeholderViewButton = UIButton(type: .system, primaryAction: UIAction(title: NSLocalizedString("View Recommended Sources", comment: "")) { [weak self] _ in
+            self?.performSegue(withIdentifier: "addSource", sender: nil)
+        })
+        self.placeholderViewButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        self.placeholderView.stackView.spacing = 15
+        self.placeholderView.stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
+        self.placeholderView.stackView.isLayoutMarginsRelativeArrangement = true
+        self.placeholderView.stackView.addArrangedSubview(self.placeholderViewButton)
+        
+        self.placeholderCenterYConstraint = self.placeholderView.safeAreaLayoutGuide.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 0)
+        
+        NSLayoutConstraint.activate([
+            self.placeholderCenterYConstraint,
+            self.placeholderView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            self.placeholderView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
+            self.placeholderView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
+            
+            self.placeholderView.leadingAnchor.constraint(equalTo: self.placeholderView.stackView.leadingAnchor),
+            self.placeholderView.trailingAnchor.constraint(equalTo: self.placeholderView.stackView.trailingAnchor),
+            self.placeholderView.topAnchor.constraint(equalTo: self.placeholderView.stackView.topAnchor),
+            self.placeholderView.bottomAnchor.constraint(equalTo: self.placeholderView.stackView.bottomAnchor),
+        ])
+
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        self.update()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -64,6 +109,22 @@ class SourcesViewController: UICollectionViewController
             self.addSource(url: sourceURL)
         }
     }
+    
+    override func viewDidLayoutSubviews() 
+    {
+        super.viewDidLayoutSubviews()
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        guard let layoutAttributes = self.collectionView.layoutAttributesForItem(at: indexPath) else { return }
+        
+        let maxY = layoutAttributes.frame.maxY
+        
+        let constant = maxY / 2
+        if self.placeholderCenterYConstraint.constant != constant
+        {
+            self.placeholderCenterYConstraint.constant = constant
+        }
+    }
 }
 
 private extension SourcesViewController
@@ -73,7 +134,7 @@ private extension SourcesViewController
         var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
         configuration.headerMode = .supplementary
         configuration.showsSeparators = false
-        configuration.backgroundColor = .altBackground
+        configuration.backgroundColor = .clear
         
         configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
             guard let self else { return UISwipeActionsConfiguration(actions: []) }
@@ -128,7 +189,10 @@ private extension SourcesViewController
                                         
                                         NSSortDescriptor(keyPath: \Source.identifier, ascending: true)]
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<Source, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<Source, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
         dataSource.cellConfigurationHandler = { [weak self] (cell, source, indexPath) in
             guard let self else { return }
@@ -345,6 +409,27 @@ private extension SourcesViewController
     {
         self.performSegue(withIdentifier: "showSourceDetails", sender: source)
     }
+    
+    func update()
+    {
+        if self.dataSource.itemCount < 2
+        {
+            // Show placeholder view
+            
+            self.placeholderView.isHidden = false
+            self.collectionView.alwaysBounceVertical = false
+            
+            self.setEditing(false, animated: true)
+            self.editButtonItem.isEnabled = false
+        }
+        else
+        {
+            self.placeholderView.isHidden = true
+            self.collectionView.alwaysBounceVertical = true
+            
+            self.editButtonItem.isEnabled = true
+        }
+    }
 }
 
 extension SourcesViewController
@@ -377,6 +462,39 @@ extension SourcesViewController
     }
 }
 
+extension SourcesViewController: NSFetchedResultsControllerDelegate
+{
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) 
+    {
+        self.dataSource.controllerWillChangeContent(controller)
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) 
+    {
+        self.update()
+        
+        self.dataSource.controllerDidChangeContent(controller)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) 
+    {
+        self.dataSource.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) 
+    {
+        self.dataSource.controller(controller, didChange: sectionInfo, atSectionIndex: UInt(sectionIndex), for: type)
+    }
+}
+
+extension UIFontDescriptor
+{
+    func bolded() -> UIFontDescriptor
+    {
+        guard let descriptor = self.withSymbolicTraits(.traitBold) else { return self }
+        return descriptor
+    }
+}
 @available(iOS 17, *)
 #Preview(traits: .portrait) {
     DatabaseManager.shared.startSynchronously()
