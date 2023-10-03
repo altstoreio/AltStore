@@ -14,6 +14,32 @@ import Roxas
 
 import Nuke
 
+class LoadingCollectionReusableView: UICollectionReusableView
+{
+    let activityIndicatorView: UIActivityIndicatorView
+    
+    override init(frame: CGRect)
+    {
+        self.activityIndicatorView = UIActivityIndicatorView(style: .medium)
+        self.activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        self.activityIndicatorView.startAnimating()
+        
+        super.init(frame: frame)
+                
+        self.addSubview(self.activityIndicatorView)
+        
+        NSLayoutConstraint.activate([
+            self.activityIndicatorView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            self.activityIndicatorView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.activityIndicatorView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class PlaceholderCollectionReusableView: UICollectionReusableView
 {
     let placeholderView: RSTPlaceholderView
@@ -145,9 +171,37 @@ class AddSourceViewController: UICollectionViewController
     @Published
     private var sourceURLString: String = ""
     
+    @Published
+    private var sourceURL: URL?
+    
+    @Published
+    private var isLoadingPreview: Bool = false
+//    {
+//        didSet {
+//            if oldValue != self.isLoadingPreview, !self.isLoadingPreview
+//            {
+//                self.collectionView.reloadSections([Section.preview.rawValue])
+//            }
+//        }
+//    }
+    
+//    @Published
+//    private var sourcePreviewResult: Result<AsyncManaged<Source>, Error>?
+    
     @AsyncManaged
     private var previewSource: Source? {
         didSet {
+            defer {
+                if self.previewSource == nil
+                {
+                    self.collectionView.reloadSections([Section.preview.rawValue])
+                }
+                else
+                {
+                    self.collectionView.collectionViewLayout.invalidateLayout()
+                }                
+            }
+            
             guard self.previewSource?.identifier != oldValue?.identifier else { return }
             
             let items = [self.previewSource].compactMap { $0 }
@@ -175,6 +229,48 @@ class AddSourceViewController: UICollectionViewController
         }
     }
     
+    @Published
+    private var previewSourceURL: URL?
+    
+    @Published
+    private var showPreviewErrorInline: Bool = false {
+        didSet {
+            if oldValue != false && self.showPreviewErrorInline != false
+            {
+//                self.collectionView.reloadSections([Section.preview.rawValue])
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            }
+            else
+            {
+                self.collectionView.performBatchUpdates {
+                    //self.collectionView.reloadSections([Section.preview.rawValue])
+                    self.collectionView.collectionViewLayout.invalidateLayout()
+                }
+            }
+        }
+    }
+    
+    private var previewError: Error? {
+        didSet {
+            if oldValue != nil && self.previewError != nil
+            {
+                print("[RSTLog] Requesting re-layout for error (non-animated)")
+                
+//                self.collectionView.reloadSections([Section.preview.rawValue])
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            }
+            else
+            {
+                print("[RSTLog] Requesting re-layout for error (animated)")
+                
+                self.collectionView.performBatchUpdates {
+//                    self.collectionView.reloadSections([Section.preview.rawValue])
+                    self.collectionView.collectionViewLayout.invalidateLayout()
+                }
+            }
+        }
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -186,6 +282,10 @@ class AddSourceViewController: UICollectionViewController
         
         self.collectionView.collectionViewLayout = self.makeLayout()
         
+//        let backgroundView = UIView(frame: .zero)
+//        backgroundView.backgroundColor = .yellow
+//        self.collectionView.backgroundView = backgroundView
+        
         self.collectionView.register(SourceTextFieldCell.self, forCellWithReuseIdentifier: "TextFieldCell")
         
         // Registered in Storyboard with Segue
@@ -194,7 +294,9 @@ class AddSourceViewController: UICollectionViewController
         self.collectionView.keyboardDismissMode = .onDrag
         
         self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader)
-        self.collectionView.register(PlaceholderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: UICollectionView.elementKindSectionFooter)
+        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: UICollectionView.elementKindSectionFooter)
+        self.collectionView.register(PlaceholderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "PlaceholderFooter")
+        self.collectionView.register(LoadingCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "LoadingFooter")
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -214,12 +316,29 @@ class AddSourceViewController: UICollectionViewController
 //        UIPasteboard.general.string = "apps.altstore.io"
     }
     
+    func fetchPreviewSource(sourceURL: URL) -> some Publisher<Managed<Source>, Error>
+    {
+        var fetchOperation: FetchSourceOperation?
+        
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
+        
+        return Future<Source, Error> { promise in
+            fetchOperation = AppManager.shared.fetchSource(sourceURL: sourceURL, managedObjectContext: context) { result in
+                promise(result)
+            }
+        }
+        .map { Managed(wrappedValue: $0) }
+        .handleEvents(receiveCancel: {
+            print("[RSTLog] Cancelling fetch source:", sourceURL)
+            fetchOperation?.cancel()
+        })
+    }
+    
     private func startPipeline()
     {
+        // Map UITextField -> URL
         self.$sourceURLString
-            .removeDuplicates()
-            .debounce(for: 0.2, scheduler: DispatchQueue.main)
-            .compactMap { (urlString: String) -> URL? in
+            .map { (urlString: String) -> URL? in
                 guard let sourceURL = URL(string: urlString) else { return nil }
                 
                 guard sourceURL.scheme != nil else {
@@ -229,30 +348,129 @@ class AddSourceViewController: UICollectionViewController
                 
                 return sourceURL
             }
-            .flatMap { (sourceURL: URL) in
-                let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
+            .assign(to: &$sourceURL)
+        
+        // Preview Source/Error inline
+        let showErrorPublisher = self.$showPreviewErrorInline
+            .filter { $0 == true }
+        
+        let sourceURLPublisher = self.$sourceURL
+            .removeDuplicates()
+            .debounce(for: 0.2, scheduler: RunLoop.main)
+        
+        // Map URL -> Source
+        Publishers.CombineLatest(sourceURLPublisher, showErrorPublisher.prepend(false))
+            .compactMap { (sourceURL: URL?, _) -> AnyPublisher<Managed<Source>?, Never> in
+                guard let sourceURL else {
+                    return Just(nil).eraseToAnyPublisher()
+                }
                 
-                return Future<Source?, Error> { promise in
-                    AppManager.shared.fetchSource(sourceURL: sourceURL, managedObjectContext: context) { result in
-                        print("Running pipeline 4!", result)
-                        promise(result.map { $0 as Source? })
+                print("[RSTLog] Loading source URL \(sourceURL) 1")
+                
+                self.previewSource = nil
+                self.isLoadingPreview = true
+                
+                return self.fetchPreviewSource(sourceURL: sourceURL)
+                    .map { source in
+                        self.previewError = nil
+                        return Optional(source)
                     }
-                }
-                .catch { error in
-                    print("Failed to fetch source for URL:", sourceURL)
-                    return Just(Source?.none)
-                }
-                .map { AsyncManaged(wrappedValue: $0) }
+                    .receive(on: RunLoop.main)
+                    .catch { error in
+                        print("[RSTLog] Failed to fetch source for URL \(sourceURL):", error.localizedDescription)
+                        self.previewError = error
+                        
+                        return Just<Managed<Source>?>(nil)
+                    }
+                    .map { source in
+                        self.previewSourceURL = sourceURL
+                        return source
+                    }
+                    .eraseToAnyPublisher()
             }
-            .receive(on: RunLoop.main)
-            .map { [weak self] source in
-                print("Running pipeline 5???", source)
-                self?.previewSource = source.wrappedValue
+            .switchToLatest()
+            .map { (source) in
+                print("[RSTLog] Loading source URL \(source?.perform { _ in source?.sourceURL }) 2")
                 
-                return source
+                self.isLoadingPreview = false
+                return source?.wrappedValue
             }
-            .assign(to: \._previewSource, on: self)
+            .assign(to: \AddSourceViewController.previewSource, on: self)
             .store(in: &self.cancellables)
+        
+//            .sink { [weak self] completion in
+//                        switch completion
+//                        {
+//                        case .finished: break
+//                        case .failure(let error): self?.previewError = error
+//                        }
+//
+//                        self?.isLoadingPreview = false
+//
+//                    }, receiveValue: { [weak self] source in
+//                        self?.previewSource = source
+//                        self?.isLoadingPreview = false
+//                    }
+        
+        
+//            .map { [weak self] (sourceURL: URL?) in
+//                Future<Source?, Error> { promise in
+//                    guard let sourceURL else { return promise(.success(nil)) }
+//                    
+//                    let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
+//                    AppManager.shared.fetchSource(sourceURL: sourceURL, managedObjectContext: context) { result in
+//                        promise(result.map { $0 as Source? })
+//                    }
+//                }
+//                .map { [weak self] source in
+//                    self?.previewError = nil
+//                    return source
+//                }
+//                .receive(on: RunLoop.main)
+////                .catch { error in
+////                    print("[RSTLog] Failed to fetch source for URL:", sourceURL ?? "nil", error)
+////                    
+////                    self?.previewError = error
+////                    return Empty()
+////                }
+//                .map { source in
+//                    self?.previewSourceURL = sourceURL
+//                    return source
+//                }
+//            }
+//            .sink { [weak self] completion in
+//                switch completion
+//                {
+//                case .finished: break
+//                case .failure(let error): self?.previewError = error
+//                }
+//            }, receiveValue: { [weak self] source in
+//                self?.previewSource = source
+//            }
+//            .switchToLatest()
+//            .map { [weak self] source in
+//                self?.isLoadingPreview = false
+//                return source
+//            }
+//            .assign(to: \AddSourceViewController.previewSource, on: self)
+//            .store(in: &self.cancellables)
+        
+        // Preview Source/Error inline
+//        let showErrorPublisher = self.$showPreviewErrorInline
+//            .filter { $0 == true }
+//        
+//        Publishers.CombineLatest($previewSource, showErrorPublisher)
+//            .removeDuplicates()
+//            .receive(on: RunLoop.main)
+//            .sink { [weak self] source in
+//                self?.previewSource = source.wrappedValue
+//                
+//                if source.wrappedValue != nil
+//                {
+//                    self?.previewError = nil
+//                }
+//            }
+//            .store(in: &self.cancellables)
         
         let addPublisher = NotificationCenter.default.publisher(for: AppManager.didAddSourceNotification)
         let removePublisher = NotificationCenter.default.publisher(for: AppManager.didRemoveSourceNotification)
@@ -310,7 +528,7 @@ private extension AddSourceViewController
             case .preview, .recommended:
                 var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
                 configuration.showsSeparators = false
-                configuration.backgroundColor = .altBackground
+                configuration.backgroundColor = .clear
                 
                 if case .recommended = section 
                 {
@@ -322,6 +540,17 @@ private extension AddSourceViewController
                         
                     case .failure: configuration.footerMode = .supplementary
                     case .success: configuration.headerMode = .supplementary
+                    }
+                }
+                else if case .preview = section 
+                {
+                    if self.showPreviewErrorInline && (self.previewError != nil || self.isLoadingPreview)
+                    {
+                        configuration.footerMode = .supplementary
+                    }
+                    else
+                    {
+                        configuration.footerMode = .none
                     }
                 }
                 
@@ -628,6 +857,27 @@ extension AddSourceViewController: UICollectionViewDelegateFlowLayout
             
             return headerView
             
+        case (.preview, UICollectionView.elementKindSectionFooter):
+            if let previewError, self.sourceURL == self.previewSourceURL
+            {
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+                
+                var configuation = UIListContentConfiguration.cell()
+                configuation.text = (previewError as NSError).localizedDebugDescription ?? previewError.localizedDescription
+                                
+                configuation.textProperties.color = .secondaryLabel
+                
+                headerView.contentConfiguration = configuation
+                
+                return headerView
+            }
+            else
+            {
+                // The current URL does not match the URL of the source/error being displayed, so show loading indicator.
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LoadingFooter", for: indexPath) as! LoadingCollectionReusableView
+                return headerView
+            }
+                        
         case (.recommended, UICollectionView.elementKindSectionHeader):
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
             
@@ -640,7 +890,7 @@ extension AddSourceViewController: UICollectionViewDelegateFlowLayout
             return headerView
             
         case (.recommended, UICollectionView.elementKindSectionFooter):
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! PlaceholderCollectionReusableView
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "PlaceholderFooter", for: indexPath) as! PlaceholderCollectionReusableView
             
             footerView.placeholderView.stackView.spacing = 15
             footerView.placeholderView.stackView.directionalLayoutMargins.top = 20
@@ -674,10 +924,22 @@ extension AddSourceViewController: UICollectionViewDelegateFlowLayout
 
 extension AddSourceViewController: UITextFieldDelegate
 {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool 
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool 
+    {
+        self.showPreviewErrorInline = false
+        
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         textField.resignFirstResponder()
         return false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) 
+    {
+        self.showPreviewErrorInline = true
     }
 }
 

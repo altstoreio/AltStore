@@ -23,6 +23,7 @@ class FetchSourceOperation: ResultOperation<Source>
     private var source: Source?
     
     private let session: URLSession
+    private var dataTask: URLSessionDataTask?
     
     private lazy var dateFormatter: ISO8601DateFormatter = {
         let dateFormatter = ISO8601DateFormatter()
@@ -52,6 +53,13 @@ class FetchSourceOperation: ResultOperation<Source>
         configuration.urlCache = nil
         
         self.session = URLSession(configuration: configuration)
+    }
+    
+    override func cancel() 
+    {
+        super.cancel()
+        
+        self.dataTask?.cancel()
     }
     
     override func main()
@@ -144,6 +152,8 @@ class FetchSourceOperation: ResultOperation<Source>
         self.progress.addChild(dataTask.progress, withPendingUnitCount: 1)
         
         dataTask.resume()
+        
+        self.dataTask = dataTask
     }
 }
 

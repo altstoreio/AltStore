@@ -400,10 +400,11 @@ extension AppManager
 extension AppManager
 {
     @available(*, renamed: "fetchSource(sourceURL:managedObjectContext:)")
+    @discardableResult
     func fetchSource(sourceURL: URL,
                      managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
                      dependencies: [Foundation.Operation] = [],
-                     completionHandler: @escaping (Result<Source, Error>) -> Void)
+                     completionHandler: @escaping (Result<Source, Error>) -> Void) -> FetchSourceOperation
     {
         let fetchSourceOperation = FetchSourceOperation(sourceURL: sourceURL, managedObjectContext: managedObjectContext)
         fetchSourceOperation.resultHandler = { (result) in
@@ -423,6 +424,8 @@ extension AppManager
         }
         
         self.run([fetchSourceOperation], context: nil)
+        
+        return fetchSourceOperation
     }
     
     @available(*, renamed: "fetchSources")
