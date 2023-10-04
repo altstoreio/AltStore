@@ -286,6 +286,9 @@ class AddSourceViewController: UICollectionViewController
         
         self.title = NSLocalizedString("Add Source", comment: "")
         
+//        self.collectionView.backgroundColor = .secondarySystemBackground
+        self.collectionView.backgroundColor = .altBackground
+        
         self.navigationController?.isModalInPresentation = true
         self.navigationController?.view.tintColor = .altPrimary
         
@@ -689,18 +692,25 @@ private extension AddSourceViewController
         cell.layoutMargins.left = self.view.layoutMargins.left
         cell.layoutMargins.right = self.view.layoutMargins.right
         cell.tintColor = tintColor
+        cell.contentView.backgroundColor = .altBackground
+        //cell.contentView.backgroundColor = .secondarySystemBackground
         
         cell.bannerView.iconImageView.image = nil
         cell.bannerView.iconImageView.isIndicatingActivity = true
         
         let config = UIImage.SymbolConfiguration(scale: .small)
-        let image = UIImage(systemName: "plus", withConfiguration: config)?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
+        let image = UIImage(systemName: "plus.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode: .alwaysOriginal)
         cell.bannerView.button.setImage(image, for: .normal)
+        cell.bannerView.button.setImage(image, for: .highlighted)
+        cell.bannerView.button.imageView?.contentMode = .scaleAspectFit
+        cell.bannerView.button.contentHorizontalAlignment = .fill // Fill entire button with imageView
+        cell.bannerView.button.contentVerticalAlignment = .fill
         cell.bannerView.button.setTitle(nil, for: .normal)
         
         cell.bannerView.button.isHidden = false
         cell.bannerView.button.style = .custom
-        cell.bannerView.button.tintColor = .white
+        cell.bannerView.button.contentEdgeInsets = .zero
+        cell.bannerView.button.tintColor = .clear
         cell.bannerView.stackView.directionalLayoutMargins.trailing = 20
         
         let action = UIAction(identifier: .addSource) { [weak self] _ in

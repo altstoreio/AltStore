@@ -67,6 +67,8 @@ class AppBannerView: RSTNibView
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
+    private var backgroundVibrancyView: UIVisualEffectView!
+    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
@@ -89,6 +91,14 @@ class AppBannerView: RSTNibView
         self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
         
         self.betaBadgeView.isHidden = true
+        
+        // Sources
+        let backgroundVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemChromeMaterialLight), style: .secondaryLabel)
+        self.backgroundVibrancyView = UIVisualEffectView(effect: backgroundVibrancyEffect)
+        self.backgroundVibrancyView.isHidden = true
+        self.backgroundEffectView.contentView.addSubview(self.backgroundVibrancyView, pinningEdgesWith: .zero)
+        
+        self.backgroundVibrancyView.contentView.backgroundColor = .white.withAlphaComponent(0.5)
     }
     
     override func tintColorDidChange()
@@ -173,14 +183,12 @@ private extension AppBannerView
             
             self.titleLabel.textColor = .white
             
-            self.accessibilityView.backgroundColor = self.originalTintColor ?? self.tintColor
+            self.backgroundEffectView.effect = nil
+            self.backgroundVibrancyView.isHidden = false
             
-            self.backgroundEffectView.backgroundColor = nil
-            self.backgroundEffectView.isHidden = true
-            
-            let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
-            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect, style: .secondaryLabel)
-            self.vibrancyView.effect = vibrancyEffect
+            // Thinner material == brighter text
+            let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemUltraThinMaterialDark), style: .secondaryLabel)
+            self.vibrancyView.effect = textVibrancyEffect
         }
     }
 }
