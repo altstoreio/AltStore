@@ -192,14 +192,16 @@ class AddSourceViewController: UICollectionViewController
     private var previewSource: Source? {
         didSet {
             defer {
-                if self.previewSource == nil
-                {
-                    self.collectionView.reloadSections([Section.preview.rawValue])
+                DispatchQueue.main.async {
+                    if self.previewSource == nil
+                    {
+                        self.collectionView.reloadSections([Section.preview.rawValue])
+                    }
+                    else
+                    {
+                        self.collectionView.collectionViewLayout.invalidateLayout()
+                    }
                 }
-                else
-                {
-                    self.collectionView.collectionViewLayout.invalidateLayout()
-                }                
             }
             
             guard self.previewSource?.identifier != oldValue?.identifier else { return }
@@ -233,43 +235,45 @@ class AddSourceViewController: UICollectionViewController
     private var previewSourceURL: URL?
     
     @Published
-    private var showPreviewErrorInline: Bool = false {
-        didSet {
-            if oldValue != false && self.showPreviewErrorInline != false
-            {
-//                self.collectionView.reloadSections([Section.preview.rawValue])
-                self.collectionView.collectionViewLayout.invalidateLayout()
-            }
-            else
-            {
-                self.collectionView.performBatchUpdates {
-                    //self.collectionView.reloadSections([Section.preview.rawValue])
-                    self.collectionView.collectionViewLayout.invalidateLayout()
-                }
-            }
-        }
-    }
+    private var showPreviewErrorInline: Bool = false 
+//    {
+//        didSet {
+//            if oldValue != false && self.showPreviewErrorInline != false
+//            {
+////                self.collectionView.reloadSections([Section.preview.rawValue])
+//                self.collectionView.collectionViewLayout.invalidateLayout()
+//            }
+//            else
+//            {
+//                self.collectionView.performBatchUpdates {
+//                    //self.collectionView.reloadSections([Section.preview.rawValue])
+//                    self.collectionView.collectionViewLayout.invalidateLayout()
+//                }
+//            }
+//        }
+//    }
     
-    private var previewError: Error? {
-        didSet {
-            if oldValue != nil && self.previewError != nil
-            {
-                print("[RSTLog] Requesting re-layout for error (non-animated)")
-                
-//                self.collectionView.reloadSections([Section.preview.rawValue])
-                self.collectionView.collectionViewLayout.invalidateLayout()
-            }
-            else
-            {
-                print("[RSTLog] Requesting re-layout for error (animated)")
-                
-                self.collectionView.performBatchUpdates {
-//                    self.collectionView.reloadSections([Section.preview.rawValue])
-                    self.collectionView.collectionViewLayout.invalidateLayout()
-                }
-            }
-        }
-    }
+    private var previewError: Error?
+//    {
+//        didSet {
+//            if oldValue != nil && self.previewError != nil
+//            {
+//                print("[RSTLog] Requesting re-layout for error (non-animated)")
+//                
+////                self.collectionView.reloadSections([Section.preview.rawValue])
+//                self.collectionView.collectionViewLayout.invalidateLayout()
+//            }
+//            else
+//            {
+//                print("[RSTLog] Requesting re-layout for error (animated)")
+//                
+//                self.collectionView.performBatchUpdates {
+////                    self.collectionView.reloadSections([Section.preview.rawValue])
+//                    self.collectionView.collectionViewLayout.invalidateLayout()
+//                }
+//            }
+//        }
+//    }
     
     override func viewDidLoad()
     {
@@ -312,8 +316,13 @@ class AddSourceViewController: UICollectionViewController
         {
             self.fetchTrustedSources()
         }
-        
-//        UIPasteboard.general.string = "apps.altstore.io"
+    }
+    
+    private func fetchPreviewSource()
+    {
+        Task {
+            
+        }
     }
     
     func fetchPreviewSource(sourceURL: URL) -> some Publisher<Managed<Source>, Error>
@@ -367,15 +376,14 @@ class AddSourceViewController: UICollectionViewController
                 
                 print("[RSTLog] Loading source URL \(sourceURL) 1")
                 
-                self.previewSource = nil
                 self.isLoadingPreview = true
+                self.previewSource = nil
                 
                 return self.fetchPreviewSource(sourceURL: sourceURL)
                     .map { source in
                         self.previewError = nil
                         return Optional(source)
                     }
-                    .receive(on: RunLoop.main)
                     .catch { error in
                         print("[RSTLog] Failed to fetch source for URL \(sourceURL):", error.localizedDescription)
                         self.previewError = error
@@ -866,6 +874,8 @@ extension AddSourceViewController: UICollectionViewDelegateFlowLayout
                 configuation.text = (previewError as NSError).localizedDebugDescription ?? previewError.localizedDescription
                                 
                 configuation.textProperties.color = .secondaryLabel
+                configuation.textProperties.font = .preferredFont(forTextStyle: .subheadline)
+                configuation.textProperties.alignment = .center
                 
                 headerView.contentConfiguration = configuation
                 
