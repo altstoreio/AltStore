@@ -14,6 +14,11 @@ import Roxas
 
 import Nuke
 
+private extension UIAction.Identifier
+{
+    static let addSource = UIAction.Identifier("io.altstore.AddSource")
+}
+
 class LoadingCollectionReusableView: UICollectionReusableView
 {
     let activityIndicatorView: UIActivityIndicatorView
@@ -315,13 +320,6 @@ class AddSourceViewController: UICollectionViewController
         if self.fetchTrustedSourcesOperation == nil
         {
             self.fetchTrustedSources()
-        }
-    }
-    
-    private func fetchPreviewSource()
-    {
-        Task {
-            
         }
     }
     
@@ -701,10 +699,14 @@ private extension AddSourceViewController
         cell.bannerView.button.setTitle(nil, for: .normal)
         
         cell.bannerView.button.isHidden = false
-        cell.bannerView.button.isUserInteractionEnabled = false
         cell.bannerView.button.style = .custom
         cell.bannerView.button.tintColor = .white
         cell.bannerView.stackView.directionalLayoutMargins.trailing = 20
+        
+        let action = UIAction(identifier: .addSource) { [weak self] _ in
+            self?.add(source)
+        }
+        cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
         
         cell.bannerView.titleLabel.text = source.name
         cell.bannerView.buttonLabel.isHidden = true
@@ -753,7 +755,7 @@ private extension AddSourceViewController
     }
 }
 
-extension AddSourceViewController
+private extension AddSourceViewController
 {
     func fetchTrustedSources()
     {
@@ -831,6 +833,41 @@ extension AddSourceViewController
                         finish(.success(sources))
                     }
                 }
+            }
+        }
+    }
+    
+    func add(_ source: Source)
+    {
+        let isTrusted = source.isTrusted
+        
+        Task<Void, Never>.detached {
+            do
+            {
+                if isTrusted
+                {
+                    try await AppManager.shared.add(source, message: nil, presentingViewController: self)
+                }
+                else
+                {
+                    // Use default message
+                    try await AppManager.shared.add(source, presentingViewController: self)
+                }
+                
+                await MainActor.run { [self] in
+                    if let navigationController = self.navigationController, let presentingViewController = navigationController.presentingViewController
+                    {
+                        //TODO: Should this be automatic? Or more explicit with callbacks?
+                        presentingViewController.dismiss(animated: true)
+                    }
+                }
+                
+            }
+            catch is CancellationError {}
+            catch
+            {
+                let errorTitle = NSLocalizedString("Unable to Add Source", comment: "")
+                await self.presentAlert(title: errorTitle, message: error.localizedDescription)
             }
         }
     }

@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct KnownSource: Decodable
+public struct KnownSource: Decodable
 {
-    var identifier: String
-    var sourceURL: URL?
-    var bundleIDs: [String]?
+    public var identifier: String
+    public var sourceURL: URL?
+    public var bundleIDs: [String]?
 }
 
 private extension KnownSource
@@ -42,7 +42,7 @@ private extension KnownSource
     }
 }
 
-extension UserDefaults
+public extension UserDefaults
 {
     // Cache trusted sources just in case we need to check whether source is trusted or not.
     @nonobjc var trustedSources: [KnownSource]? {

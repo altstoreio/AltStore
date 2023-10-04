@@ -237,6 +237,17 @@ public extension Source
         }
     }
     
+    var isTrusted: Bool {
+        guard let trustedSources = UserDefaults.shared.trustedSources else { return false }
+        
+        // TODO: Support alternate URLs
+        
+        let isTrusted = trustedSources.contains { source in
+            return source.identifier == self.identifier || source.sourceURL?.absoluteString.lowercased() == self.sourceURL.absoluteString
+        }
+        return isTrusted
+    }
+    
     var lastUpdatedDate: Date? {
         let allDates = self.apps.compactMap { $0.latestAvailableVersion?.date } + self.newsItems.map { $0.date }
         
