@@ -30,6 +30,8 @@ class AppBannerCollectionViewCell: UICollectionViewListCell
     
     private func initialize()
     {
+        self.selectedBackgroundView = UIView() // Disable selection highlighting
+        
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.preservesSuperviewLayoutMargins = true
         
