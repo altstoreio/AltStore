@@ -518,6 +518,10 @@ private extension HeaderContentViewController
             {
                 tintColor = .white
             }
+            else
+            {
+                tintColor = tintColor.adjustedForDisplay
+            }
             
             return tintColor
         }
