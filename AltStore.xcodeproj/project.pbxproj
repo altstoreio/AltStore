@@ -370,6 +370,7 @@
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
+		D5726BFA2ACDE98B00A1321B /* KnownSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F812A141E4900E767CD /* KnownSource.swift */; };
 		D5728CA72A0D79D30014E73C /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */; };
 		D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57968CA29CB99EF00539069 /* VibrantButton.swift */; };
 		D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D57DF637271E32F000677701 /* PatchApp.storyboard */; };
@@ -380,7 +381,6 @@
 		D586D39B28EF58B0000E101F /* AltTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D586D39A28EF58B0000E101F /* AltTests.swift */; };
 		D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58916FD28C7C55C00E39C8B /* LoggedError.swift */; };
 		D5893F802A1419E800E767CD /* NSManagedObjectContext+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */; };
-		D5893F822A141E4900E767CD /* KnownSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F812A141E4900E767CD /* KnownSource.swift */; };
 		D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */; };
 		D59162AB29BA60A9005CBF47 /* SourceHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59162AA29BA60A9005CBF47 /* SourceHeaderView.swift */; };
 		D59162AD29BA616A005CBF47 /* SourceHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D59162AC29BA616A005CBF47 /* SourceHeaderView.xib */; };
@@ -1111,7 +1111,6 @@
 				BF41B807233433C100C593A3 /* LoadingState.swift */,
 				D5DAE0932804B0B80034D8D4 /* ScreenshotProcessor.swift */,
 				D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */,
-				D5893F812A141E4900E767CD /* KnownSource.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -1353,6 +1352,7 @@
 			children = (
 				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 				D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */,
+				D5893F812A141E4900E767CD /* KnownSource.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
@@ -2747,6 +2747,7 @@
 				BF66EED12501AECA007EE018 /* AltStore3ToAltStore4.xcmappingmodel in Sources */,
 				D5F48B4C29CD0C48002B52A4 /* AsyncManaged.swift in Sources */,
 				BFAECC5C2501B0A400528F27 /* CFNotificationName+AltStore.m in Sources */,
+				D5726BFA2ACDE98B00A1321B /* KnownSource.swift in Sources */,
 				BF66EED82501AECA007EE018 /* SecureValueTransformer.swift in Sources */,
 				BF8B17EB250AC40000F8157F /* FileManager+SharedDirectories.swift in Sources */,
 				BF66EEE02501AECA007EE018 /* Account.swift in Sources */,
@@ -2802,7 +2803,6 @@
 				D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */,
 				D513F6162A12CE4E0061EAA1 /* SourceError.swift in Sources */,
 				BF56D2AC23DF8E170006506D /* FetchAppIDsOperation.swift in Sources */,
-				D5893F822A141E4900E767CD /* KnownSource.swift in Sources */,
 				BFC1F38D22AEE3A4003AC21A /* DownloadAppOperation.swift in Sources */,
 				BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */,
 				D57F2C9126E0070200B9FA39 /* EnableJITOperation.swift in Sources */,
