@@ -60,7 +60,7 @@ class SourceDetailContentViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
-        self.view.tintColor = self.source.effectiveTintColor
+//        self.view.tintColor = self.source.effectiveTintColor?.adjustedForDisplay
         
         let collectionViewLayout = self.makeLayout(source: self.source)
         self.collectionView.collectionViewLayout = collectionViewLayout

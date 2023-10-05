@@ -186,9 +186,32 @@ private extension AppBannerView
             self.backgroundEffectView.effect = nil
             self.backgroundVibrancyView.isHidden = false
             
+            let tintColor = self.originalTintColor ?? self.tintColor
+            self.accessibilityView.backgroundColor = tintColor?.adjustedForDisplay
+            
+//            self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor// UIColor.dynamicTintColor(self.originalTintColor ?? self.tintColor)
+            self.backgroundEffectView.isHidden = true
+            
             // Thinner material == brighter text
-            let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemUltraThinMaterialDark), style: .secondaryLabel)
-            self.vibrancyView.effect = textVibrancyEffect
+            
+            if tintColor?.isTooBright == true
+            {
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemChromeMaterialLight), style: .fill)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
+            else
+            {
+                // Ultra thin: Too bright
+                // Thuick
+                
+                // Thinner == more dull
+                
+                // .secondaryFill == darker than .secondaryLabel
+//                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemThinMaterialDark), style: .secondaryLabel)
+//                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemThickMaterialDark), style: .secondaryLabel)
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemThinMaterialDark), style: .secondaryLabel)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
         }
     }
 }
