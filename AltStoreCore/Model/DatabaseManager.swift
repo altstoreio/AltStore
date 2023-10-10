@@ -221,7 +221,7 @@ private extension DatabaseManager
             }
             
             // Make sure to always update source URL to be current.
-            altStoreSource.sourceURL = Source.altStoreSourceURL
+            try! altStoreSource.setSourceURL(Source.altStoreSourceURL)
             
             let storeApp: StoreApp
             

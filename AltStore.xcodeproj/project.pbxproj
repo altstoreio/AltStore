@@ -374,6 +374,7 @@
 		D561B2EB28EF5A4F006752E4 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; };
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D56915072AD5E91B00A2B747 /* Regex+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */; };
+		D56915092AD5F3E800A2B747 /* AltTests+Sources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
@@ -975,6 +976,7 @@
 		D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
 		D55467C42A8D72C300F4CE90 /* ActiveAppsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveAppsWidget.swift; sourceTree = "<group>"; };
 		D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Permissions.swift"; sourceTree = "<group>"; };
+		D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltTests+Sources.swift"; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
 		D571ADCD2A02FA7400B24B63 /* SourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceError.swift; sourceTree = "<group>"; };
 		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
@@ -2154,6 +2156,7 @@
 			isa = PBXGroup;
 			children = (
 				D586D39A28EF58B0000E101F /* AltTests.swift */,
+				D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */,
 				D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */,
 			);
 			path = AltTests;
@@ -3215,6 +3218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D586D39B28EF58B0000E101F /* AltTests.swift in Sources */,
+				D56915092AD5F3E800A2B747 /* AltTests+Sources.swift in Sources */,
 				D5F5AF2E28FDD2EC00C938F5 /* TestErrors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
