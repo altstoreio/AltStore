@@ -169,7 +169,8 @@ internal struct AppPermissions: Decodable
                 
                 let usageDescription = dictionary[CodingKeys.usageDescription.rawValue]
                 
-                let permission = AppPermission(permission: name, usageDescription: usageDescription, type: .privacy, context: context)
+                let convertedName = "NS" + name + "UsageDescription" // Convert legacy privacy permissions to their NS[Privacy]UsageDescription equivalent.
+                let permission = AppPermission(permission: convertedName, usageDescription: usageDescription, type: .privacy, context: context)
                 return permission
             }
             

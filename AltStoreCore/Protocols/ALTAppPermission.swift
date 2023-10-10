@@ -6,6 +6,8 @@
 //  Copyright © 2023 Riley Testut. All rights reserved.
 //
 
+import RegexBuilder
+
 import AltSign
 
 extension ALTAppPermissionType
@@ -156,5 +158,10 @@ extension ALTAppPrivacyPermission: ALTAppPermission
 {
     public var type: ALTAppPermissionType { .privacy }
     
-    public var synthesizedName: String? { nil }
+    public var synthesizedName: String? {
+        guard #available(iOS 16, *), let match = self.rawValue.wholeMatch(of: Regex.privacyPermission) else { return nil }
+        
+        let synthesizedNamed = String(match.1)
+        return synthesizedNamed
+    }
 }

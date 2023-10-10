@@ -865,291 +865,291 @@
 	</dict>
 	<key>privacy</key>
 	<dict>
-		<key>BluetoothAlways</key>
+		<key>NSBluetoothAlwaysUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Bluetooth</string>
 			<key>key</key>
-			<string>BluetoothAlways</string>
+			<string>NSBluetoothAlwaysUsageDescription</string>
 			<key>symbol</key>
 			<string>antenna.radiowaves.left.and.right</string>
 		</dict>
-		<key>BluetoothPeripheral</key>
+		<key>NSBluetoothPeripheralUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Bluetooth (Peripherals)</string>
 			<key>key</key>
-			<string>BluetoothPeripheral</string>
+			<string>NSBluetoothPeripheralUsageDescription</string>
 			<key>symbol</key>
 			<string>antenna.radiowaves.left.and.right</string>
 		</dict>
-		<key>Calendars</key>
+		<key>NSCalendarsUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Calendars</string>
 			<key>key</key>
-			<string>Calendars</string>
+			<string>NSCalendarsUsageDescription</string>
 			<key>symbol</key>
 			<string>calendar</string>
 		</dict>
-		<key>Reminders</key>
+		<key>NSRemindersUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Reminders</string>
 			<key>key</key>
-			<string>Reminders</string>
+			<string>NSRemindersUsageDescription</string>
 			<key>symbol</key>
 			<string>note.text</string>
 		</dict>
-		<key>Camera</key>
+		<key>NSCameraUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Camera</string>
 			<key>key</key>
-			<string>Camera</string>
+			<string>NSCameraUsageDescription</string>
 			<key>symbol</key>
 			<string>camera</string>
 		</dict>
-		<key>Microphone</key>
+		<key>NSMicrophoneUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Microphone</string>
 			<key>key</key>
-			<string>Microphone</string>
+			<string>NSMicrophoneUsageDescription</string>
 			<key>symbol</key>
 			<string>mic</string>
 		</dict>
-		<key>Contacts</key>
+		<key>NSContactsUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Contacts</string>
 			<key>key</key>
-			<string>Contacts</string>
+			<string>NSContactsUsageDescription</string>
 			<key>symbol</key>
 			<string>person.crop.circle</string>
 		</dict>
-		<key>FaceID</key>
+		<key>NSFaceIDUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Face ID</string>
 			<key>key</key>
-			<string>FaceID</string>
+			<string>NSFaceIDUsageDescription</string>
 			<key>symbol</key>
 			<string>faceid</string>
 		</dict>
-		<key>GKFriendList</key>
+		<key>NSGKFriendListUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Game Center Friends List</string>
 			<key>key</key>
-			<string>GKFriendList</string>
+			<string>NSGKFriendListUsageDescription</string>
 			<key>symbol</key>
 			<string>gamecontroller</string>
 		</dict>
-		<key>HealthClinicalHealthRecordsShare</key>
+		<key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Health (Clinical Records)</string>
 			<key>key</key>
-			<string>HealthClinicalHealthRecordsShare</string>
+			<string>NSHealthClinicalHealthRecordsShareUsageDescription</string>
 			<key>symbol</key>
 			<string>heart.text.square</string>
 		</dict>
-		<key>HealthShare</key>
+		<key>NSHealthShareUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Health</string>
 			<key>key</key>
-			<string>HealthShare</string>
+			<string>NSHealthShareUsageDescription</string>
 			<key>symbol</key>
 			<string>heart.text.square</string>
 		</dict>
-		<key>HealthUpdate</key>
+		<key>NSHealthUpdateUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Health (Add)</string>
 			<key>key</key>
-			<string>HealthUpdate</string>
+			<string>NSHealthUpdateUsageDescription</string>
 			<key>symbol</key>
 			<string>heart.text.square</string>
 		</dict>
-		<key>HomeKit</key>
+		<key>NSHomeKitUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>HomeKit</string>
 			<key>key</key>
-			<string>HomeKit</string>
+			<string>NSHomeKitUsageDescription</string>
 			<key>symbol</key>
 			<string>homekit</string>
 		</dict>
-		<key>LocationAlways</key>
+		<key>NSLocationAlwaysUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Location (Background)</string>
 			<key>key</key>
-			<string>LocationAlways</string>
+			<string>NSLocationAlwaysUsageDescription</string>
 			<key>symbol</key>
 			<string>location.fill</string>
 		</dict>
-		<key>LocationAlwaysAndWhenInUse</key>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Location (Always)</string>
 			<key>key</key>
-			<string>LocationAlwaysAndWhenInUse</string>
+			<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
 			<key>symbol</key>
 			<string>location.fill</string>
 		</dict>
-		<key>Location</key>
+		<key>NSLocationUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Location</string>
 			<key>key</key>
-			<string>Location</string>
+			<string>NSLocationUsageDescription</string>
 			<key>symbol</key>
 			<string>location.fill</string>
 		</dict>
-		<key>LocationWhenInUse</key>
+		<key>NSLocationWhenInUseUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Location (When Using)</string>
 			<key>key</key>
-			<string>LocationWhenInUse</string>
+			<string>NSLocationWhenInUseUsageDescription</string>
 			<key>symbol</key>
 			<string>location</string>
 		</dict>
-		<key>LocationTemporary</key>
+		<key>NSLocationTemporaryUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Location (Temporary)</string>
 			<key>key</key>
-			<string>LocationTemporary</string>
+			<string>NSLocationTemporaryUsageDescription</string>
 			<key>symbol</key>
 			<string>location</string>
 		</dict>
-		<key>AppleMusic</key>
+		<key>NSAppleMusicUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Apple Music</string>
 			<key>key</key>
-			<string>AppleMusic</string>
+			<string>NSAppleMusicUsageDescription</string>
 			<key>symbol</key>
 			<string>music.note</string>
 		</dict>
-		<key>Motion</key>
+		<key>NSMotionUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Motion</string>
 			<key>key</key>
-			<string>Motion</string>
+			<string>NSMotionUsageDescription</string>
 			<key>symbol</key>
 			<string>figure.run</string>
 		</dict>
-		<key>FallDetection</key>
+		<key>NSFallDetectionUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Fall Detection</string>
 			<key>key</key>
-			<string>FallDetection</string>
+			<string>NSFallDetectionUsageDescription</string>
 			<key>symbol</key>
 			<string>figure.fall</string>
 		</dict>
-		<key>LocalNetwork</key>
+		<key>NSLocalNetworkUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Local Network</string>
 			<key>key</key>
-			<string>LocalNetwork</string>
+			<string>NSLocalNetworkUsageDescription</string>
 			<key>symbol</key>
 			<string>network</string>
 		</dict>
-		<key>NearbyInteraction</key>
+		<key>NSNearbyInteractionUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Nearby Interaction</string>
 			<key>key</key>
-			<string>NearbyInteraction</string>
+			<string>NSNearbyInteractionUsageDescription</string>
 			<key>symbol</key>
 			<string>dot.radiowaves.left.and.right</string>
 		</dict>
-		<key>NearbyInteractionAllowOnce</key>
+		<key>NSNearbyInteractionAllowOnceUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Nearby Interaction (Once)</string>
 			<key>key</key>
-			<string>NearbyInteractionAllowOnce</string>
+			<string>NSNearbyInteractionAllowOnceUsageDescription</string>
 			<key>symbol</key>
 			<string>dot.radiowaves.left.and.right</string>
 		</dict>
-		<key>NFCReader</key>
+		<key>NFCReaderUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>NFC</string>
 			<key>key</key>
-			<string>NFCReader</string>
+			<string>NSNFCReaderUsageDescription</string>
 			<key>symbol</key>
 			<string>sensor.tag.radiowaves.forward</string>
 		</dict>
-		<key>PhotoLibraryAdd</key>
+		<key>NSPhotoLibraryAddUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Photos (Add)</string>
 			<key>key</key>
-			<string>PhotoLibraryAdd</string>
+			<string>NSPhotoLibraryAddUsageDescription</string>
 			<key>symbol</key>
 			<string>photo</string>
 		</dict>
-		<key>PhotoLibrary</key>
+		<key>NSPhotoLibraryUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Photos</string>
 			<key>key</key>
-			<string>PhotoLibrary</string>
+			<string>NSPhotoLibraryUsageDescription</string>
 			<key>symbol</key>
 			<string>photo.stack</string>
 		</dict>
-		<key>UserTracking</key>
+		<key>NSUserTrackingUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>User Tracking</string>
 			<key>key</key>
-			<string>UserTracking</string>
+			<string>NSUserTrackingUsageDescription</string>
 			<key>symbol</key>
 			<string>location.magnifyingglass</string>
 		</dict>
-		<key>SensorKit</key>
+		<key>NSSensorKitUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>SensorKit</string>
 			<key>key</key>
-			<string>SensorKit</string>
+			<string>NSSensorKitUsageDescription</string>
 			<key>symbol</key>
 			<string>sensor</string>
 		</dict>
-		<key>Siri</key>
+		<key>NSSiriUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Siri</string>
 			<key>key</key>
-			<string>Siri</string>
+			<string>NSSiriUsageDescription</string>
 			<key>symbol</key>
 			<string>mic.circle</string>
 		</dict>
-		<key>SpeechRecognition</key>
+		<key>NSSpeechRecognitionUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>Speech Recognition</string>
 			<key>key</key>
-			<string>SpeechRecognition</string>
+			<string>NSSpeechRecognitionUsageDescription</string>
 			<key>symbol</key>
 			<string>waveform.and.mic</string>
 		</dict>
-		<key>Identity</key>
+		<key>NSIdentityUsageDescription</key>
 		<dict>
 			<key>name</key>
 			<string>ID Cards</string>
 			<key>key</key>
-			<string>Identity</string>
+			<string>NSIdentityUsageDescription</string>
 			<key>symbol</key>
 			<string>wallet.pass</string>
 		</dict>

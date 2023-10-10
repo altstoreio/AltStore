@@ -9,7 +9,7 @@
 import RegexBuilder
 
 @available(iOS 16, *)
-extension Regex where Output == (Substring, Substring)
+public extension Regex where Output == (Substring, Substring)
 {
     static var privacyPermission: some RegexComponent<(Substring, Substring)> {
         Regex {
