@@ -50,7 +50,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                 case .failure(let error): self.finish(.failure(error))
                 case .success(let connection):
                     DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                        print("Sending refresh app request...")
+                        Logger.sideload.debug("Sending refresh app request...")
                         
                         var activeProfiles: Set<String>?
                         if UserDefaults.standard.activeAppsLimit != nil
@@ -65,20 +65,24 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                         
                         let request = InstallProvisioningProfilesRequest(udid: udid, provisioningProfiles: Set(profiles.values), activeProfiles: activeProfiles)
                         connection.send(request) { (result) in
-                            print("Sent refresh app request!")
+                            Logger.sideload.debug("Sent refresh app request!")
                             
                             switch result
                             {
                             case .failure(let error): self.finish(.failure(error))
                             case .success:
-                                print("Waiting for refresh app response...")
+                                Logger.sideload.debug("Waiting for refresh app response...")
+                                
                                 connection.receiveResponse() { (result) in
-                                    print("Receiving refresh app response:", result)
-                                    
                                     switch result
                                     {
-                                    case .failure(let error): self.finish(.failure(error))
-                                    case .success(.error(let response)): self.finish(.failure(response.error))
+                                    case .failure(let error):
+                                        Logger.sideload.error("Failed to receive refresh apps response. \(error.localizedDescription, privacy: .public)")
+                                        self.finish(.failure(error))
+                                        
+                                    case .success(.error(let response)):
+                                        Logger.sideload.debug("Received refresh app response!")
+                                        self.finish(.failure(response.error))
                                         
                                     case .success(.installProvisioningProfiles):
                                         self.managedObjectContext.perform {

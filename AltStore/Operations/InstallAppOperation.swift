@@ -192,7 +192,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             catch
             {
-                print("Failed to remove refreshed .ipa:", error)
+                Logger.sideload.error("Failed to remove refreshed .ipa: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -208,7 +208,8 @@ private extension InstallAppOperation
             do
             {
                 let response = try result.get()
-                print(response)
+                
+                Logger.sideload.debug("\(String(describing: response), privacy: .public)")
                 
                 switch response
                 {
@@ -249,7 +250,7 @@ private extension InstallAppOperation
         }
         catch
         {
-            print("Failed to remove temporary directory.", error)
+            Logger.sideload.error("Failed to remove temporary directory: \(error.localizedDescription, privacy: .public)")
         }
     }
 }

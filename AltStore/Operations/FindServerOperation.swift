@@ -113,7 +113,7 @@ fileprivate extension FindServerOperation
             connection.connect { (result) in
                 switch result
                 {
-                case .failure(let error): print("Could not connect to AltDaemon XPC service \(machServiceName).", error)
+                case .failure(let error): Logger.sideload.notice("Could not connect to AltDaemon XPC service \(machServiceName, privacy: .public). \(error.localizedDescription)")
                 case .success: self.localServerMachServiceName = machServiceName
                 }
             }

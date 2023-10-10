@@ -108,12 +108,12 @@ private extension ClearAppCacheOperation
                 {
                     do
                     {
-                        print("[ALTLog] Removing item from temporary directory:", fileURL.lastPathComponent)
+                        Logger.main.debug("Removing item from temporary directory: \(fileURL.lastPathComponent, privacy: .public)")
                         try FileManager.default.removeItem(at: fileURL)
                     }
                     catch
                     {
-                        print("[ALTLog] Failed to remove \(fileURL.lastPathComponent) from temporary directory.", error)
+                        Logger.main.error("Failed to remove \(fileURL.lastPathComponent) from temporary directory. \(error)")
                         errors.append(error)
                     }
                 }
@@ -171,13 +171,13 @@ private extension ClearAppCacheOperation
 
                             if isDirectory && !installedAppBundleIDs.contains(bundleID) && !AppManager.shared.isActivelyManagingApp(withBundleID: bundleID)
                             {
-                                print("[ALTLog] Removing backup directory for uninstalled app:", bundleID)
+                                Logger.main.debug("Removing backup directory for uninstalled app: \(bundleID, privacy: .public)")
                                 try FileManager.default.removeItem(at: backupDirectory)
                             }
                         }
                         catch
                         {
-                            print("[ALTLog] Failed to remove app backup directory:", error)
+                            Logger.main.error("Failed to remove app backup directory. \(error)")
                             errors.append(error)
                         }
                     }
@@ -194,7 +194,7 @@ private extension ClearAppCacheOperation
                 }
                 catch
                 {
-                    print("[ALTLog] Failed to remove app backup directory:", error)
+                    Logger.main.error("Failed to remove app backup directory. \(error)")
                     completion(.failure(error))
                 }
             }

@@ -50,7 +50,7 @@ class ResignAppOperation: ResultOperation<ALTApplication>
         let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
             guard let appBundleURL = self.process(result) else { return }
             
-            print("Resigning App:", self.context.bundleIdentifier)
+            Logger.sideload.notice("Resigning app \(self.context.bundleIdentifier, privacy: .public)...")
             
             // Resign app bundle
             let resignProgress = self.resignAppBundle(at: appBundleURL, team: team, certificate: certificate, profiles: Array(profiles.values)) { (result) in

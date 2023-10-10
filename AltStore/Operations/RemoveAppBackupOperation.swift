@@ -8,6 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
+
 @objc(RemoveAppBackupOperation)
 class RemoveAppBackupOperation: ResultOperation<Void>
 {
@@ -54,21 +56,21 @@ class RemoveAppBackupOperation: ResultOperation<Void>
                 }
                 catch let error as CocoaError where error.code == CocoaError.Code.fileNoSuchFile
                 {
-                    #if DEBUG
+                    #if !DEBUG
                     
                     // When debugging, it's expected that app groups don't match, so ignore.
                     self.finish(.success(()))
                     
                     #else
                     
-                    print("Failed to remove app backup directory:", error)
+                    Logger.sideload.error("Failed to remove app backup directory \(backupDirectoryURL.lastPathComponent, privacy: .public). \(error)")
                     self.finish(.failure(error))
                     
                     #endif
                 }
                 catch
                 {
-                    print("Failed to remove app backup directory:", error)
+                    Logger.sideload.error("Failed to remove app backup directory \(backupDirectoryURL.lastPathComponent, privacy: .public). \(error)")
                     self.finish(.failure(error))
                 }
             }

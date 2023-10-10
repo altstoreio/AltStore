@@ -40,25 +40,35 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
             case .failure(let error):
                 self.finish(.failure(error))
             case .success(let connection):
-                print("Sending anisette data request...")
+                Logger.sideload.notice("Sending anisette data request...")
                 
                 let request = AnisetteDataRequest()
                 connection.send(request) { (result) in
-                    print("Sent anisette data request!")
-                    
                     switch result
                     {
-                    case .failure(let error): self.finish(.failure(error))
+                    case .failure(let error):
+                        Logger.sideload.error("Failed to send anisette data request. \(error.localizedDescription, privacy: .public)")
+                        self.finish(.failure(error))
+                        
                     case .success:
-                        print("Waiting for anisette data...")
+                        Logger.sideload.debug("Waiting for anisette data...")
                         connection.receiveResponse() { (result) in
-                            print("Receiving anisette data:", result.error?.localizedDescription ?? "success")
+                            //Logger.sideload.result(result, success: "Successfully received anisette data!", failure: "Failed to receive anisette data.")
                             
                             switch result
                             {
-                            case .failure(let error): self.finish(.failure(error))
-                            case .success(.error(let response)): self.finish(.failure(response.error))
-                            case .success(.anisetteData(let response)): self.finish(.success(response.anisetteData))
+                            case .failure(let error): 
+                                Logger.sideload.error("Failed to receive anisette data. \(error.localizedDescription, privacy: .public)")
+                                self.finish(.failure(error))
+                                
+                            case .success(.error(let response)): 
+                                Logger.sideload.error("Failed to receive anisette data. \(response.error.localizedDescription, privacy: .public)")
+                                self.finish(.failure(response.error))
+                                
+                            case .success(.anisetteData(let response)):
+                                Logger.sideload.info("Successfully received anisette data!")
+                                self.finish(.success(response.anisetteData))
+                                
                             case .success: self.finish(.failure(ALTServerError(.unknownRequest)))
                             }
                         }

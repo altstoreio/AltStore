@@ -99,17 +99,17 @@ private extension SendAppOperation
                     }
                     else
                     {
-                        print("Sending app data (\(appData.count) bytes)...")
+                        Logger.sideload.notice("Sending app data (\(appData.count) bytes)...")
                         
                         connection.send(appData, prependSize: false) { (result) in
                             switch result
                             {
                             case .failure(let error):
-                                print("Failed to send app data (\(appData.count) bytes)")
+                                Logger.sideload.error("Failed to send app data (\(appData.count) bytes). \(error.localizedDescription, privacy: .public)")
                                 completionHandler(.failure(error))
                                 
                             case .success:
-                                print("Successfully sent app data (\(appData.count) bytes)")
+                                Logger.sideload.notice("Successfully sent app data (\(appData.count) bytes)!")
                                 completionHandler(.success(()))
                             }
                         }

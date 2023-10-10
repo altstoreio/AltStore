@@ -87,8 +87,8 @@ class BackupAppOperation: ResultOperation<Void>
                                 // Failed too quickly for human to respond to alert, possibly still finalizing installation.
                                 // Try again in a couple seconds.
                                 
-                                print("Failed too quickly, retrying after a few seconds...")
-                                
+                                Logger.sideload.notice("Failed to open app too quickly, retrying after a few seconds...")
+                                                                
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                     UIApplication.shared.open(openURL, options: [:]) { (success) in
                                         if success

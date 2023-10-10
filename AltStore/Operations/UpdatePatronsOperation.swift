@@ -87,10 +87,11 @@ class UpdatePatronsOperation: ResultOperation<Void>
                             
                             self.finish(.success(()))
                             
-                            print("Updated Friend Zone Patrons!")
+                            Logger.main.notice("Updated Friend Zone Patrons! Refresh ID=\(response.refreshID, privacy: .public)")
                         }
                         catch
                         {
+                            Logger.main.error("Failed to update Friend Zone Patrons. \(error)")
                             self.finish(.failure(error))
                         }
                     }

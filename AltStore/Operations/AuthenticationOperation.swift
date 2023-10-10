@@ -9,6 +9,7 @@
 import Foundation
 import Roxas
 import Network
+import OSLog
 
 import AltStoreCore
 import AltSign
@@ -202,7 +203,11 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
     {
         guard !self.isFinished else { return }
         
-        print("Finished authenticating with result:", result.error?.localizedDescription ?? "success")
+        switch result
+        {
+        case .failure(let error): Logger.sideload.error("Failed to authenticate account. \(error)")
+        case .success((let team, _, _)): Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .private(mask: .hash))!")
+        }
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         context.perform {
