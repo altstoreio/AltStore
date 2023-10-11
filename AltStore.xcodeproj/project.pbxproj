@@ -367,6 +367,7 @@
 		D54058B92A1D6269008CCC58 /* AppPermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */; };
 		D54058BB2A1D8FE3008CCC58 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */; };
 		D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */; };
+		D5418F172AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5418F162AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift */; };
 		D54DED1428CBC44B008B27A0 /* ErrorLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */; };
 		D552B1D82A042A740066216F /* AppPermissionsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D552B1D72A042A740066216F /* AppPermissionsCard.swift */; };
 		D55467B82A8D5E2600F4CE90 /* AppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */; };
@@ -436,6 +437,7 @@
 		D5F5AF2E28FDD2EC00C938F5 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */; };
 		D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */; };
 		D5F9821D2AB900060045751F /* AppScreenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F9821C2AB900060045751F /* AppScreenshot.swift */; };
+		D5F982212AB910180045751F /* AppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F982202AB910180045751F /* AppScreenshotsViewController.swift */; };
 		D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */; };
 		D5F99A1A28D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F99A1928D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift */; };
 		D5FB7A0E2AA25A4E00EF863D /* Previews.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5FB7A0D2AA25A4E00EF863D /* Previews.xcassets */; };
@@ -973,6 +975,7 @@
 		D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionProtocol.swift; sourceTree = "<group>"; };
 		D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AltStore.swift"; sourceTree = "<group>"; };
 		D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
+		D5418F162AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D552B1D72A042A740066216F /* AppPermissionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionsCard.swift; sourceTree = "<group>"; };
 		D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
@@ -1037,6 +1040,7 @@
 		D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
 		D5F9821C2AB900060045751F /* AppScreenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScreenshot.swift; sourceTree = "<group>"; };
+		D5F982202AB910180045751F /* AppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScreenshotsViewController.swift; sourceTree = "<group>"; };
 		D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore10ToAltStore11.xcmappingmodel; sourceTree = "<group>"; };
 		D5F99A1928D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreApp10ToStoreApp11Policy.swift; sourceTree = "<group>"; };
 		D5FB7A0D2AA25A4E00EF863D /* Previews.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Previews.xcassets; sourceTree = "<group>"; };
@@ -1250,6 +1254,7 @@
 				BF3D64AF22E8D4B800E9056B /* AppContentViewControllerCells.swift */,
 				D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */,
 				D552B1D72A042A740066216F /* AppPermissionsCard.swift */,
+				D5418F152AD740750014ABD6 /* Screenshots */,
 			);
 			path = "App Detail";
 			sourceTree = "<group>";
@@ -2120,6 +2125,15 @@
 				D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */,
 			);
 			path = Previews;
+			sourceTree = "<group>";
+		};
+		D5418F152AD740750014ABD6 /* Screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				D5F982202AB910180045751F /* AppScreenshotsViewController.swift */,
+				D5418F162AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift */,
+			);
+			path = Screenshots;
 			sourceTree = "<group>";
 		};
 		D55467B02A8D5E2600F4CE90 /* App Intents */ = {
@@ -3125,6 +3139,7 @@
 				BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */,
+				D5418F172AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift in Sources */,
 				BFCCB51A245E3401001853EA /* VerifyAppOperation.swift in Sources */,
 				BFF0B6982322CAB8007A79E1 /* InstructionsViewController.swift in Sources */,
 				BF9ABA4522DCFF43008935CF /* BrowseViewController.swift in Sources */,
@@ -3202,6 +3217,7 @@
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
+				D5F982212AB910180045751F /* AppScreenshotsViewController.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,

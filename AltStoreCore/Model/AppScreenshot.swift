@@ -8,6 +8,11 @@
 
 import CoreData
 
+public extension AppScreenshot
+{
+    static let defaultAspectRatio = CGSize(width: 9, height: 19.5)
+}
+
 @objc(AppScreenshot)
 public class AppScreenshot: NSManagedObject, Fetchable, Decodable
 {
