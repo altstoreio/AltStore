@@ -34,13 +34,15 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
         
         guard let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Fetching anisette data...")
+        
         ServerManager.shared.connect(to: server) { (result) in
             switch result
             {
             case .failure(let error):
                 self.finish(.failure(error))
             case .success(let connection):
-                Logger.sideload.notice("Sending anisette data request...")
+                Logger.sideload.debug("Sending anisette data request...")
                 
                 let request = AnisetteDataRequest()
                 connection.send(request) { (result) in
@@ -69,7 +71,7 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>
                                 Logger.sideload.info("Successfully received anisette data!")
                                 self.finish(.success(response.anisetteData))
                                 
-                            case .success: self.finish(.failure(ALTServerError(.unknownRequest)))
+                            case .success: self.finish(.failure(ALTServerError(.unknownResponse)))
                             }
                         }
                     }

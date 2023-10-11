@@ -45,6 +45,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Installing resigned app \(resignedApp.bundleIdentifier, privacy: .public)...")
+        
         @Managed var appVersion = self.context.appVersion
         let storeBuildVersion = $appVersion.buildVersion
         
@@ -156,19 +158,26 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             connection.send(request) { (result) in
                 switch result
                 {
-                case .failure(let error): self.finish(.failure(error))
+                case .failure(let error): 
+                    Logger.sideload.notice("Failed to send begin installation request for resigned app \(installedApp.resignedBundleIdentifier, privacy: .public). \(error)")
+                    self.finish(.failure(error))
+                    
                 case .success:
+                    Logger.sideload.notice("Sent begin installation request for resigned app \(installedApp.resignedBundleIdentifier, privacy: .public).")
                     
                     self.receive(from: connection) { (result) in
                         switch result
                         {
                         case .success:
                             backgroundContext.perform {
+                                Logger.sideload.notice("Successfully installed resigned app \(installedApp.resignedBundleIdentifier, privacy: .public)!")
+                                
                                 installedApp.refreshedDate = Date()
                                 self.finish(.success(installedApp))
                             }
                             
                         case .failure(let error):
+                            Logger.sideload.notice("Failed to install resigned app \(installedApp.resignedBundleIdentifier, privacy: .public). \(error)")
                             self.finish(.failure(error))
                         }
                     }
@@ -208,12 +217,12 @@ private extension InstallAppOperation
             do
             {
                 let response = try result.get()
-                
-                Logger.sideload.debug("\(String(describing: response), privacy: .public)")
-                
+                                
                 switch response
                 {
                 case .installationProgress(let response):
+                    Logger.sideload.debug("Installing \(self.context.resignedApp?.bundleIdentifier ?? self.context.bundleIdentifier, privacy: .public)... \(response.progress * 100)%")
+                    
                     if response.progress == 1.0
                     {
                         self.progress.completedUnitCount = self.progress.totalUnitCount

@@ -48,6 +48,8 @@ class FindServerOperation: ResultOperation<Server>
             return
         }
         
+        Logger.sideload.notice("Discovering AltServers...")
+        
         let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
         let observer = Unmanaged.passUnretained(self).toOpaque()
         
@@ -63,22 +65,30 @@ class FindServerOperation: ResultOperation<Server>
         DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
             if let machServiceName = self.localServerMachServiceName
             {
+                Logger.sideload.notice("Found AltDaemon!")
+                
                 // Prefer background daemon, if it exists and is running.
                 let server = Server(connectionType: .local, machServiceName: machServiceName)
                 self.finish(.success(server))
             }
             else if self.isWiredServerConnectionAvailable
             {
+                Logger.sideload.notice("Found AltServer connected via USB!")
+                
                 let server = Server(connectionType: .wired)
                 self.finish(.success(server))
             }
             else if let server = ServerManager.shared.discoveredServers.first(where: { $0.isPreferred })
             {
+                Logger.sideload.notice("Found preferred AltServer! \(server.identifier ?? "nil", privacy: .public)")
+                
                 // Preferred server.
                 self.finish(.success(server))
             }
             else if let server = ServerManager.shared.discoveredServers.first
             {
+                Logger.sideload.notice("Found AltServer! \(server.identifier ?? "nil", privacy: .public)")
+                
                 // Any available server.
                 self.finish(.success(server))
             }

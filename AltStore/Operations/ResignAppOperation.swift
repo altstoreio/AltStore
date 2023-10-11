@@ -43,14 +43,14 @@ class ResignAppOperation: ResultOperation<ALTApplication>
             let certificate = self.context.certificate
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Resigning app \(self.context.bundleIdentifier, privacy: .public)...")
+        
         // Prepare app bundle
         let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
         self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
         
         let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
             guard let appBundleURL = self.process(result) else { return }
-            
-            Logger.sideload.notice("Resigning app \(self.context.bundleIdentifier, privacy: .public)...")
             
             // Resign app bundle
             let resignProgress = self.resignAppBundle(at: appBundleURL, team: team, certificate: certificate, profiles: Array(profiles.values)) { (result) in
@@ -64,6 +64,9 @@ class ResignAppOperation: ResultOperation<ALTApplication>
                     
                     // Use appBundleURL since we need an app bundle, not .ipa.
                     guard let resignedApplication = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
+                    
+                    Logger.sideload.notice("Resigned app \(self.context.bundleIdentifier, privacy: .public) to \(resignedApplication.bundleIdentifier, privacy: .public).")
+                    
                     self.finish(.success(resignedApplication))
                 }
                 catch

@@ -41,6 +41,8 @@ class SendAppOperation: ResultOperation<ServerConnection>
         
         guard let resignedApp = self.context.resignedApp, let server = self.context.server else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Sending app \(self.context.bundleIdentifier) to AltServer \(server.service?.name ?? server.identifier ?? "nil")...")
+        
         // self.context.resignedApp.fileURL points to the app bundle, but we want the .ipa.
         let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
@@ -99,17 +101,17 @@ private extension SendAppOperation
                     }
                     else
                     {
-                        Logger.sideload.notice("Sending app data (\(appData.count) bytes)...")
+                        Logger.sideload.debug("Sending app data (\(appData.count) bytes)...")
                         
                         connection.send(appData, prependSize: false) { (result) in
                             switch result
                             {
                             case .failure(let error):
-                                Logger.sideload.error("Failed to send app data (\(appData.count) bytes). \(error.localizedDescription, privacy: .public)")
+                                Logger.sideload.error("Failed to send app to AltServer \(connection.server.service?.name ?? connection.server.identifier ?? "nil", privacy: .public). \(error.localizedDescription, privacy: .public)")
                                 completionHandler(.failure(error))
                                 
                             case .success:
-                                Logger.sideload.notice("Successfully sent app data (\(appData.count) bytes)!")
+                                Logger.sideload.notice("Finished sending app to AltServer \(connection.server.service?.name ?? connection.server.identifier ?? "nil", privacy: .public)!")
                                 completionHandler(.success(()))
                             }
                         }

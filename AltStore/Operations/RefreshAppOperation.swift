@@ -44,6 +44,8 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
             guard let app = self.context.app else { throw OperationError.appNotFound(name: nil) }
             guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
             
+            Logger.sideload.notice("Refreshing provisioning profiles for app \(self.context.bundleIdentifier, privacy: .public)...")
+            
             ServerManager.shared.connect(to: server) { (result) in
                 switch result
                 {
@@ -77,11 +79,11 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                                     switch result
                                     {
                                     case .failure(let error):
-                                        Logger.sideload.error("Failed to receive refresh apps response. \(error.localizedDescription, privacy: .public)")
+                                        Logger.sideload.error("Failed to receive refresh app response. \(error.localizedDescription, privacy: .public)")
                                         self.finish(.failure(error))
                                         
                                     case .success(.error(let response)):
-                                        Logger.sideload.debug("Received refresh app response!")
+                                        Logger.sideload.debug("Failed to refresh app \(self.context.bundleIdentifier, privacy: .public). \(response.error)")
                                         self.finish(.failure(response.error))
                                         
                                     case .success(.installProvisioningProfiles):
@@ -104,10 +106,13 @@ class RefreshAppOperation: ResultOperation<InstalledApp>
                                                 installedExtension.update(provisioningProfile: provisioningProfile)
                                             }
                                             
+                                            Logger.sideload.notice("Refreshed provisioning profiles for app \(self.context.bundleIdentifier, privacy: .public)")
                                             self.finish(.success(installedApp))
                                         }
                                         
-                                    case .success: self.finish(.failure(ALTServerError(.unknownRequest)))
+                                    case .success:
+                                        Logger.sideload.notice("Received unknown refresh app response for app \(self.context.bundleIdentifier, privacy: .public)")
+                                        self.finish(.failure(ALTServerError(.unknownResponse)))
                                     }
                                 }
                             }
