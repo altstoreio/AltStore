@@ -416,6 +416,7 @@
 		D5A299882AAB9E4E00A3988D /* JITError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E32AA50EB60066CACC /* JITError.swift */; };
 		D5A299892AAB9E5900A3988D /* AppProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B7D2AA9226C00F61259 /* AppProcess.swift */; };
 		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
+		D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */; };
 		D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */; };
 		D5C8ACDB2A956B2B00669F92 /* Process+STPrivilegedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */; };
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
@@ -1017,6 +1018,7 @@
 		D5A1D2EA2AA513410066CACC /* URL+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Tools.swift"; sourceTree = "<group>"; };
 		D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedAPIs.swift; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
+		D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Previews.swift"; sourceTree = "<group>"; };
 		D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JITManager.swift; sourceTree = "<group>"; };
 		D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Process+STPrivilegedTask.swift"; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
@@ -1589,6 +1591,7 @@
 				D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */,
 				D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */,
 				D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */,
+				D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3036,6 +3039,7 @@
 				BFAECC5A2501B0A400528F27 /* NetworkConnection.swift in Sources */,
 				D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
 				BF66EEE92501AED0007EE018 /* JSONDecoder+Properties.swift in Sources */,
+				D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */,
 				BF66EEEB2501AED0007EE018 /* UIApplication+AppExtension.swift in Sources */,
 				D5F48B4829CCF21B002B52A4 /* AltStore+Async.swift in Sources */,
 				BF66EED92501AECA007EE018 /* Team.swift in Sources */,
