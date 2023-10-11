@@ -68,6 +68,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 permission.sourceID = self.sourceIdentifier ?? ""
             }
+            
+            for screenshot in self.screenshots
+            {
+                screenshot.sourceID = self.sourceIdentifier ?? ""
+            }
         }
     }
     @NSManaged private var primitiveSourceIdentifier: String?
@@ -108,6 +113,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
+    @nonobjc public var screenshots: [AppScreenshot] {
+        return self._screenshots.array as! [AppScreenshot]
+    }
+    @NSManaged @objc(screenshots) private(set) var _screenshots: NSOrderedSet
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -119,18 +129,21 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case bundleIdentifier
         case developerName
         case localizedDescription
-        case version
-        case versionDescription
-        case versionDate
         case iconURL
-        case screenshotURLs
-        case downloadURL
+        case screenshots
         case tintColor
         case subtitle
         case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
+        
+        // Legacy
+        case version
+        case versionDescription
+        case versionDate
+        case downloadURL
+        case screenshotURLs
     }
     
     public required init(from decoder: Decoder) throws
@@ -151,7 +164,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             
             self.iconURL = try container.decode(URL.self, forKey: .iconURL)
-            self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -163,6 +175,33 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             }
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
+            
+            if let screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots)
+            {
+                for screenshot in screenshots
+                {
+                    screenshot.appBundleID = self.bundleIdentifier
+                }
+                
+                self.setScreenshots(screenshots)
+            }
+            else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+            {
+                // Assume 9:16 iPhone 8 screen dimensions for legacy screenshotURLs.
+                let legacyAspectRatio = CGSize(width: 750, height: 1334)
+                
+                let screenshots = screenshotURLs.map { imageURL in
+                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, context: context)
+                    screenshot.appBundleID = self.bundleIdentifier
+                    return screenshot
+                }
+                
+                self.setScreenshots(screenshots)
+            }
+            else
+            {
+                self.setScreenshots([])
+            }
             
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
@@ -269,6 +308,26 @@ internal extension StoreApp
         }
         
         self._permissions = permissions as NSSet
+    }
+    
+    func setScreenshots(_ screenshots: [AppScreenshot])
+    {
+        for case let screenshot as AppScreenshot in self._screenshots
+        {
+            if screenshots.contains(screenshot)
+            {
+                screenshot.app = self
+            }
+            else
+            {
+                screenshot.app = nil
+            }
+        }
+        
+        self._screenshots = NSOrderedSet(array: screenshots)
+        
+        // Backwards compatibility
+        self.screenshotURLs = screenshots.map { $0.imageURL }
     }
 }
 

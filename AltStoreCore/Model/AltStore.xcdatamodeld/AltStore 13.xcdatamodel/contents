@@ -42,6 +42,21 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="AppScreenshot" representedClassName="AppScreenshot" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <attribute name="imageURL" attributeType="URI"/>
+        <attribute name="sourceID" attributeType="String"/>
+        <attribute name="width" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="screenshots" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="imageURL"/>
+                <constraint value="appBundleID"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
         <attribute name="buildVersion" attributeType="String"/>
@@ -207,6 +222,7 @@
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
+        <relationship name="screenshots" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppScreenshot" inverseName="app" inverseEntity="AppScreenshot"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
         <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
         <uniquenessConstraints>
