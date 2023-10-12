@@ -142,6 +142,14 @@ class AppViewController: UIViewController
         self.view.layoutIfNeeded()
     }
     
+    override func viewIsAppearing(_ animated: Bool)
+    {
+        super.viewIsAppearing(animated)
+        
+        // Prevent banner temporarily flashing a color due to being added back to self.view.
+        self.bannerView.backgroundEffectView.backgroundColor = .clear
+    }
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
@@ -191,7 +199,7 @@ class AppViewController: UIViewController
             self._shouldResetLayout = false
         }
                 
-        let statusBarHeight = self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let statusBarHeight = (self.view.window ?? self.presentedViewController?.view.window)?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 12 as CGFloat

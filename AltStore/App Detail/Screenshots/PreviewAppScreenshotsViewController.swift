@@ -1,8 +1,8 @@
 //
-//  AppScreenshotsViewController.swift
+//  PreviewAppScreenshotsViewController.swift
 //  AltStore
 //
-//  Created by Riley Testut on 9/18/23.
+//  Created by Riley Testut on 9/19/23.
 //  Copyright © 2023 Riley Testut. All rights reserved.
 //
 
@@ -13,17 +13,19 @@ import Roxas
 
 import Nuke
 
-class AppScreenshotsViewController: UICollectionViewController
+class PreviewAppScreenshotsViewController: UICollectionViewController
 {
     let app: StoreApp
     
+    var currentScreenshot: AppScreenshot?
+    
     private lazy var dataSource = self.makeDataSource()
     
-    init?(app: StoreApp, coder: NSCoder)
+    init(app: StoreApp)
     {
         self.app = app
         
-        super.init(coder: coder)
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
     required init?(coder: NSCoder) {
@@ -34,49 +36,68 @@ class AppScreenshotsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
-        self.collectionView.showsHorizontalScrollIndicator = false
+        let tintColor = self.app.tintColor ?? .altPrimary
+        self.navigationController?.view.tintColor = tintColor
         
-        // Allow parent background color to show through.
+        self.view.backgroundColor = .systemBackground
         self.collectionView.backgroundColor = nil
-        
-        // Match the parent table view margins.
-        self.collectionView.directionalLayoutMargins.top = 0
-        self.collectionView.directionalLayoutMargins.bottom = 0
-        self.collectionView.directionalLayoutMargins.leading = 20
-        self.collectionView.directionalLayoutMargins.trailing = 20
         
         let collectionViewLayout = self.makeLayout()
         self.collectionView.collectionViewLayout = collectionViewLayout
         
+        self.collectionView.directionalLayoutMargins.leading = 20
+        self.collectionView.directionalLayoutMargins.trailing = 20
+        
+        self.collectionView.preservesSuperviewLayoutMargins = true
+        self.collectionView.insetsLayoutMarginsFromSafeArea = true
+        
+        self.collectionView.alwaysBounceVertical = false
         self.collectionView.register(AppScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
+        
+        let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in
+            self?.dismiss(animated: true)
+        })
+        self.navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    override func viewIsAppearing(_ animated: Bool)
+    {
+        super.viewIsAppearing(animated)
+        
+        if let screenshot = self.currentScreenshot, let index = self.dataSource.items.firstIndex(of: screenshot)
+        {
+            let indexPath = IndexPath(item: index, section: 0)
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        }
     }
 }
 
-private extension AppScreenshotsViewController
+private extension PreviewAppScreenshotsViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
         let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
-        layoutConfig.contentInsetsReference = .layoutMargins
+        layoutConfig.contentInsetsReference = .none
         
-        let preferredHeight = 400.0
-        let estimatedWidth = preferredHeight * (AppScreenshot.defaultAspectRatio.width / AppScreenshot.defaultAspectRatio.height)
-        
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let self else { return nil }
             
-            let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(estimatedWidth), heightDimension: .fractionalHeight(1.0))
+            let contentInsets = self.collectionView.directionalLayoutMargins
+            let groupWidth = layoutEnvironment.container.contentSize.width - (contentInsets.leading + contentInsets.trailing)
+            let groupHeight = layoutEnvironment.container.contentSize.height - (contentInsets.top + contentInsets.bottom)
+                        
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(estimatedWidth), heightDimension: .absolute(preferredHeight))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth), heightDimension: .absolute(groupHeight))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             
             let layoutSection = NSCollectionLayoutSection(group: group)
+            layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
             layoutSection.interGroupSpacing = 10
-            layoutSection.orthogonalScrollingBehavior = .groupPaging
-            
             return layoutSection
         }, configuration: layoutConfig)
         
@@ -129,21 +150,6 @@ private extension AppScreenshotsViewController
     }
 }
 
-extension AppScreenshotsViewController
-{
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    {
-        let screenshot = self.dataSource.item(at: indexPath)
-        
-        let previewViewController = PreviewAppScreenshotsViewController(app: self.app)
-        previewViewController.currentScreenshot = screenshot
-        
-        let navigationController = UINavigationController(rootViewController: previewViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-        self.present(navigationController, animated: true)
-    }
-}
-
 @available(iOS 17, *)
 #Preview(traits: .portrait) {
     DatabaseManager.shared.startForPreview()
@@ -151,10 +157,8 @@ extension AppScreenshotsViewController
     let fetchRequest = StoreApp.fetchRequest()
     let storeApp = try! DatabaseManager.shared.viewContext.fetch(fetchRequest).first!
     
-    let storyboard = UIStoryboard(name: "Main", bundle: .main)
-    let appViewConttroller = storyboard.instantiateViewController(withIdentifier: "appViewController") as! AppViewController
-    appViewConttroller.app = storeApp
+    let previewViewController = PreviewAppScreenshotsViewController(app: storeApp)
     
-    let navigationController = UINavigationController(rootViewController: appViewConttroller)
+    let navigationController = UINavigationController(rootViewController: previewViewController)
     return navigationController
 }
