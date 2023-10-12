@@ -65,12 +65,25 @@ private extension AppScreenshotsViewController
         let preferredHeight = 400.0
         let estimatedWidth = preferredHeight * (AppScreenshot.defaultAspectRatio.width / AppScreenshot.defaultAspectRatio.height)
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [dataSource] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            let screenshotWidths = dataSource.items.map { screenshot in
+                var aspectRatio = screenshot.size ?? AppScreenshot.defaultAspectRatio
+                if aspectRatio.width > aspectRatio.height
+                {
+                    aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                }
+                
+                let screenshotWidth = (preferredHeight * (aspectRatio.width / aspectRatio.height)).rounded()
+                return screenshotWidth
+            }
             
-            let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(estimatedWidth), heightDimension: .fractionalHeight(1.0))
+            let smallestWidth = screenshotWidths.sorted().first
+            let itemWidth = smallestWidth ?? estimatedWidth // Use smallestWidth to ensure we never overshoot an item when paging.
+            
+            let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(itemWidth), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(estimatedWidth), heightDimension: .absolute(preferredHeight))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(itemWidth), heightDimension: .absolute(preferredHeight))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             
             let layoutSection = NSCollectionLayoutSection(group: group)
