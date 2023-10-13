@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -44,6 +44,7 @@
     </entity>
     <entity name="AppScreenshot" representedClassName="AppScreenshot" syncable="YES">
         <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="deviceType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="height" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
         <attribute name="imageURL" attributeType="URI"/>
         <attribute name="sourceID" attributeType="String"/>
@@ -52,6 +53,7 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="imageURL"/>
+                <constraint value="deviceType"/>
                 <constraint value="appBundleID"/>
                 <constraint value="sourceID"/>
             </uniquenessConstraint>

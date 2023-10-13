@@ -106,16 +106,29 @@ private extension PreviewAppScreenshotsViewController
     
     func makeDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>
     {
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: self.app.screenshots)
-        dataSource.cellConfigurationHandler = { (cell, screenshot, indexPath) in
+        let screenshots = self.app.preferredScreenshots()
+        
+        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<AppScreenshot, UIImage>(items: screenshots)
+        dataSource.cellConfigurationHandler = { [weak self] (cell, screenshot, indexPath) in
             let cell = cell as! AppScreenshotCollectionViewCell
-            cell.imageView.image = nil
             cell.imageView.isIndicatingActivity = true
+            cell.setImage(nil)
             
             var aspectRatio = screenshot.size ?? AppScreenshot.defaultAspectRatio
             if aspectRatio.width > aspectRatio.height
             {
-                aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                switch screenshot.deviceType
+                {
+                case .iphone:
+                    // Always rotate landscape iPhone screenshots regardless of horizontal size class.
+                    aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                    
+                case .ipad where self?.traitCollection.horizontalSizeClass == .compact:
+                    // Only rotate landscape iPad screenshots if we're in horizontally compact environment.
+                    aspectRatio = CGSize(width: aspectRatio.height, height: aspectRatio.width)
+                    
+                default: break
+                }
             }
             
             cell.aspectRatio = aspectRatio
@@ -123,7 +136,7 @@ private extension PreviewAppScreenshotsViewController
         dataSource.prefetchHandler = { (screenshot, indexPath, completionHandler) in
             let imageURL = screenshot.imageURL
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL, processors: [.screenshot])
+                let request = ImageRequest(url: imageURL)
                 ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
@@ -138,7 +151,7 @@ private extension PreviewAppScreenshotsViewController
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
             let cell = cell as! AppScreenshotCollectionViewCell
             cell.imageView.isIndicatingActivity = false
-            cell.imageView.image = image
+            cell.setImage(image)
             
             if let error = error
             {

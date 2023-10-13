@@ -199,6 +199,12 @@ private extension FetchSourceOperation
                 // Privacy permissions MUST have a usage description.
                 guard permission.usageDescription != nil else { throw SourceError.missingPermissionUsageDescription(for: permission.permission, app: app, source: source) }
             }
+            
+            for screenshot in app.screenshots(for: .ipad)
+            {
+                // All iPad screenshots MUST have an explicit size.
+                guard screenshot.size != nil else { throw SourceError.missingScreenshotSize(for: screenshot, source: source) }
+            }
         }
         
         if let previousSourceID = self.$source.identifier

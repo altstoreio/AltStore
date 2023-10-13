@@ -69,7 +69,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 permission.sourceID = self.sourceIdentifier ?? ""
             }
             
-            for screenshot in self.screenshots
+            for screenshot in self.allScreenshots
             {
                 screenshot.sourceID = self.sourceIdentifier ?? ""
             }
@@ -113,7 +113,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
-    @nonobjc public var screenshots: [AppScreenshot] {
+    @nonobjc public var allScreenshots: [AppScreenshot] {
         return self._screenshots.array as! [AppScreenshot]
     }
     @NSManaged @objc(screenshots) private(set) var _screenshots: NSOrderedSet
@@ -176,32 +176,33 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
-            if let screenshots = try container.decodeIfPresent([AppScreenshot].self, forKey: .screenshots)
+            let appScreenshots: [AppScreenshot]
+            
+            if let screenshots = try container.decodeIfPresent(AppScreenshots.self, forKey: .screenshots)
             {
-                for screenshot in screenshots
-                {
-                    screenshot.appBundleID = self.bundleIdentifier
-                }
-                
-                self.setScreenshots(screenshots)
+                appScreenshots = screenshots.screenshots
             }
             else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
             {
                 // Assume 9:16 iPhone 8 screen dimensions for legacy screenshotURLs.
                 let legacyAspectRatio = CGSize(width: 750, height: 1334)
                 
-                let screenshots = screenshotURLs.map { imageURL in
-                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, context: context)
-                    screenshot.appBundleID = self.bundleIdentifier
+                appScreenshots = screenshotURLs.map { imageURL in
+                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, deviceType: .iphone, context: context)
                     return screenshot
                 }
-                
-                self.setScreenshots(screenshots)
             }
             else
             {
-                self.setScreenshots([])
+                appScreenshots = []
             }
+   
+            for screenshot in appScreenshots
+            {
+                screenshot.appBundleID = self.bundleIdentifier
+            }
+            
+            self.setScreenshots(appScreenshots)
             
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
@@ -328,6 +329,38 @@ internal extension StoreApp
         
         // Backwards compatibility
         self.screenshotURLs = screenshots.map { $0.imageURL }
+    }
+}
+
+public extension StoreApp
+{
+    func screenshots(for deviceType: ALTDeviceType) -> [AppScreenshot]
+    {
+        //TODO: Support multiple device types
+        let filteredScreenshots = self.allScreenshots.filter { $0.deviceType == deviceType }
+        return filteredScreenshots
+    }
+    
+    func preferredScreenshots() -> [AppScreenshot]
+    {
+        let deviceType: ALTDeviceType
+        
+        if UIDevice.current.model.contains("iPad")
+        {
+            deviceType = .ipad
+        }
+        else
+        {
+            deviceType = .iphone
+        }
+        
+        let preferredScreenshots = self.screenshots(for: deviceType)
+        guard !preferredScreenshots.isEmpty else {
+            // There are no screenshots for deviceType, so return _all_ screenshots instead.
+            return self.allScreenshots
+        }
+        
+        return preferredScreenshots
     }
 }
 

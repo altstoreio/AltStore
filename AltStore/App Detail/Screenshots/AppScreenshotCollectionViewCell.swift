@@ -93,6 +93,25 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
     }
 }
 
+extension AppScreenshotCollectionViewCell
+{
+    func setImage(_ image: UIImage?)
+    {
+        guard var image, let cgImage = image.cgImage else {
+            self.imageView.image = image
+            return
+        }
+                
+        if image.size.width > image.size.height && self.aspectRatio.width < self.aspectRatio.height
+        {
+            // Image is landscape, but cell has portrait aspect ratio, so rotate image to match.
+            image = UIImage(cgImage: cgImage, scale: image.scale, orientation: .right)
+        }
+        
+        self.imageView.image = image
+    }
+}
+
 private extension AppScreenshotCollectionViewCell
 {
     func updateAspectRatio()
