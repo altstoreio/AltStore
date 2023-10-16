@@ -166,18 +166,32 @@ private extension ServerManager
     
     func connectToRemoteServer(_ server: Server, connection: NWConnection, completion: @escaping (Result<Connection, Error>) -> Void)
     {
+        let serverName: String
+        if let name = server.service
+        {
+            serverName = String(format: NSLocalizedString("remote AltServer %@", comment: ""), name)
+        }
+        else if server.connectionType == .wired
+        {
+            serverName = NSLocalizedString("wired AltServer", comment: "")
+        }
+        else
+        {
+            serverName = NSLocalizedString("AltServer", comment: "")
+        }
+        
         connection.stateUpdateHandler = { [unowned connection] (state) in
             switch state
             {
             case .failed(let error):
-                Logger.sideload.error("Failed to connect to remote AltServer \(server.service?.name ?? "nil", privacy: .public). \(error)")
+                Logger.sideload.error("Failed to connect to \(serverName, privacy: .public). \(error)")
                 completion(.failure(OperationError.connectionFailed))
                 
             case .cancelled:
                 completion(.failure(OperationError.cancelled))
                 
             case .ready:
-                Logger.sideload.error("Connected to remote AltServer \(server.service?.name ?? "nil", privacy: .public)!")
+                Logger.sideload.notice("Connected to \(serverName, privacy: .public)!")
                 let connection = NetworkConnection(connection)
                 completion(.success(connection))
                 

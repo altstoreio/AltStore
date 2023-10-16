@@ -206,7 +206,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
         switch result
         {
         case .failure(let error): Logger.sideload.error("Failed to authenticate account. \(error)")
-        case .success((let team, _, _)): Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .private(mask: .hash))!")
+        case .success((let team, _, _)): Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .private(mask: .hash)).")
         }
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
