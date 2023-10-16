@@ -236,6 +236,16 @@ public extension Source
             return isAdded
         }
     }
+    
+    var isRecommended: Bool {
+        guard let recommendedSources = UserDefaults.shared.recommendedSources else { return false }
+        
+        // TODO: Support alternate URLs
+        let isRecommended = recommendedSources.contains { source in
+            return source.identifier == self.identifier || source.sourceURL?.absoluteString.lowercased() == self.sourceURL.absoluteString
+        }
+        return isRecommended
+    }
 }
 
 internal extension Source

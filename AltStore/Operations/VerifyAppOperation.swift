@@ -94,11 +94,11 @@ class VerifyAppOperation: ResultOperation<Void>
                         throw error
                         #endif
                         
-                        if let trustedSources = UserDefaults.shared.trustedSources, let sourceID = await self.context.$appVersion.sourceID
+                        if let recommendedSources = UserDefaults.shared.recommendedSources, let sourceID = await self.context.$appVersion.sourceID
                         {
-                            let isTrusted = trustedSources.contains { $0.identifier == sourceID }
-                            guard !isTrusted else {
-                                // Don't enforce permission checking for Trusted Sources while 2.0 is in beta.
+                            let isRecommended = recommendedSources.contains { $0.identifier == sourceID }
+                            guard !isRecommended else {
+                                // Don't enforce permission checking for Recommended Sources while 2.0 is in beta.
                                 return self.finish(.success(()))
                             }
                         }

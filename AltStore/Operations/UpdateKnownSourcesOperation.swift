@@ -8,6 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
+
 private extension URL
 {
     #if STAGING
@@ -66,7 +68,7 @@ class UpdateKnownSourcesOperation: ResultOperation<([KnownSource], [KnownSource]
                 let sources = (trusted: response.trusted ?? [], blocked: response.blocked ?? [])
                 
                 // Cache sources
-                UserDefaults.shared.trustedSources = sources.trusted
+                UserDefaults.shared.recommendedSources = sources.trusted
                 UserDefaults.shared.blockedSources = sources.blocked
                 
                 self.finish(.success(sources))
