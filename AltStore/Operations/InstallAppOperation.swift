@@ -154,30 +154,32 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 })
             }
             
-            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: installedApp.resignedBundleIdentifier)
+            let resignedBundleID = installedApp.resignedBundleIdentifier
+            
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: resignedBundleID)
             connection.send(request) { (result) in
                 switch result
                 {
                 case .failure(let error): 
-                    Logger.sideload.notice("Failed to send begin installation request for resigned app \(installedApp.resignedBundleIdentifier, privacy: .public). \(error)")
+                    Logger.sideload.notice("Failed to send begin installation request for resigned app \(resignedBundleID, privacy: .public). \(error)")
                     self.finish(.failure(error))
                     
                 case .success:
-                    Logger.sideload.notice("Sent begin installation request for resigned app \(installedApp.resignedBundleIdentifier, privacy: .public).")
+                    Logger.sideload.notice("Sent begin installation request for resigned app \(resignedBundleID, privacy: .public).")
                     
                     self.receive(from: connection) { (result) in
                         switch result
                         {
                         case .success:
                             backgroundContext.perform {
-                                Logger.sideload.notice("Successfully installed resigned app \(installedApp.resignedBundleIdentifier, privacy: .public)!")
+                                Logger.sideload.notice("Successfully installed resigned app \(resignedBundleID, privacy: .public)!")
                                 
                                 installedApp.refreshedDate = Date()
                                 self.finish(.success(installedApp))
                             }
                             
                         case .failure(let error):
-                            Logger.sideload.notice("Failed to install resigned app \(installedApp.resignedBundleIdentifier, privacy: .public). \(error)")
+                            Logger.sideload.notice("Failed to install resigned app \(resignedBundleID, privacy: .public). \(error)")
                             self.finish(.failure(error))
                         }
                     }
