@@ -11,6 +11,15 @@ import UIKit
 import AltStoreCore
 import Roxas
 
+extension AppBannerView
+{
+    enum Style
+    {
+        case app
+        case source
+    }
+}
+
 class AppBannerView: RSTNibView
 {
     override var accessibilityLabel: String? {
@@ -38,6 +47,8 @@ class AppBannerView: RSTNibView
         set { self.accessibilityView?.accessibilityTraits = newValue }
     }
     
+    var style: Style = .app
+    
     private var originalTintColor: UIColor?
     
     @IBOutlet var titleLabel: UILabel!
@@ -50,7 +61,10 @@ class AppBannerView: RSTNibView
     @IBOutlet var backgroundEffectView: UIVisualEffectView!
     
     @IBOutlet private var vibrancyView: UIVisualEffectView!
+    @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var accessibilityView: UIView!
+    
+    @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect)
     {
@@ -74,6 +88,10 @@ class AppBannerView: RSTNibView
         self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
         
         self.betaBadgeView.isHidden = true
+        
+        self.layoutMargins = self.stackView.layoutMargins
+        self.stackView.preservesSuperviewLayoutMargins = true
+        self.stackView.isLayoutMarginsRelativeArrangement = true
     }
     
     override func tintColorDidChange()
@@ -138,7 +156,40 @@ private extension AppBannerView
         self.clipsToBounds = true
         self.layer.cornerRadius = 22
         
-        self.subtitleLabel.textColor = self.originalTintColor ?? self.tintColor        
-        self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
+        let tintColor = self.originalTintColor ?? self.tintColor
+        self.subtitleLabel.textColor = tintColor
+        
+        switch self.style
+        {
+        case .app:
+            self.iconImageViewHeightConstraint.constant = 60
+            self.iconImageView.style = .icon
+            
+            self.titleLabel.textColor = .label
+            
+            self.backgroundEffectView.contentView.backgroundColor = UIColor(resource: .blurTint)
+            self.backgroundEffectView.backgroundColor = tintColor
+            
+        case .source:
+            self.iconImageViewHeightConstraint.constant = 44
+            self.iconImageView.style = .circular
+            
+            self.titleLabel.textColor = .white
+            
+            self.backgroundEffectView.contentView.backgroundColor = tintColor?.adjustedForDisplay
+            self.backgroundEffectView.backgroundColor = nil
+            
+            if let tintColor, tintColor.isTooBright
+            {
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemChromeMaterialLight), style: .fill)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
+            else
+            {
+                // Thinner == more dull
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemThinMaterialDark), style: .secondaryLabel)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
+        }
     }
 }
