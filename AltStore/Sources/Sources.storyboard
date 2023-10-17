@@ -1,150 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7We-99-yEv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7We-99-yEv">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Forwarding Navigation Controller-->
+        <!--Sources-->
         <scene sceneID="QxB-Dd-1xC">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7We-99-yEv" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Sources" image="Sources" id="xPv-dc-X4v"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="xWh-1U-u0q" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="5vR-Su-j54" kind="relationship" relationship="rootViewController" id="Kt6-Nl-WsS"/>
+                        <segue destination="Wm7-1O-FkD" kind="relationship" relationship="rootViewController" id="B9x-Lz-fg2"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ULL-gB-Cpt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-18" y="-13"/>
         </scene>
-        <!--Sources-->
-        <scene sceneID="hR0-Xj-lcc">
-            <objects>
-                <collectionViewController title="Sources" id="5vR-Su-j54" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="M2N-lD-Q3M">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="ldV-TM-Jx1">
-                            <size key="itemSize" width="375" height="80"/>
-                            <size key="headerReferenceSize" width="50" height="200"/>
-                            <size key="footerReferenceSize" width="50" height="50"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="mkn-CU-TaQ" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
-                                <rect key="frame" x="9" y="200" width="375" height="80"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </view>
-                            </collectionViewCell>
-                        </cells>
-                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Header" id="w5e-xs-D45" customClass="TextCollectionReusableView" customModule="AltStore" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage sources to control which apps are available to download through AltStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KCm-fD-Jy0">
-                                    <rect key="frame" x="8" y="14" width="377" height="171"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                    <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="bottom" secondItem="KCm-fD-Jy0" secondAttribute="bottom" priority="999" constant="15" id="1M7-ad-U2f"/>
-                                <constraint firstItem="KCm-fD-Jy0" firstAttribute="top" secondItem="w5e-xs-D45" secondAttribute="top" priority="999" constant="14" id="5h0-b0-UWE"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="KCm-fD-Jy0" secondAttribute="trailing" priority="999" id="K04-Ud-iGz"/>
-                                <constraint firstAttribute="leadingMargin" secondItem="KCm-fD-Jy0" secondAttribute="leading" priority="999" id="MN6-lr-3tF"/>
-                            </constraints>
-                            <connections>
-                                <outlet property="bottomLayoutConstraint" destination="1M7-ad-U2f" id="tej-O7-Lyh"/>
-                                <outlet property="leadingLayoutConstraint" destination="MN6-lr-3tF" id="Deq-Tk-7Lc"/>
-                                <outlet property="textLabel" destination="KCm-fD-Jy0" id="alm-sb-NAa"/>
-                                <outlet property="topLayoutConstraint" destination="5h0-b0-UWE" id="kHq-up-pCk"/>
-                                <outlet property="trailingLayoutConstraint" destination="K04-Ud-iGz" id="rS5-c5-EkL"/>
-                            </connections>
-                        </collectionReusableView>
-                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Footer" id="H5R-Ci-5aX" customClass="SourcesFooterView">
-                            <rect key="frame" x="0.0" y="280" width="393" height="50"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="oeg-V0-knE">
-                                    <rect key="frame" x="8" y="0.0" width="377" height="50"/>
-                                    <subviews>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="hnb-2l-24w">
-                                            <rect key="frame" x="0.0" y="0.0" width="377" height="0.0"/>
-                                        </activityIndicatorView>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="800" scrollEnabled="NO" contentInsetAdjustmentBehavior="never" editable="NO" text="Test" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4Mf-Ge-exp">
-                                            <rect key="frame" x="0.0" y="15" width="377" height="35"/>
-                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                        </textView>
-                                    </subviews>
-                                </stackView>
-                            </subviews>
-                            <constraints>
-                                <constraint firstItem="oeg-V0-knE" firstAttribute="top" secondItem="H5R-Ci-5aX" secondAttribute="top" priority="999" id="KK7-2G-rL0" propertyAccessControl="none"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="oeg-V0-knE" secondAttribute="trailing" priority="999" id="aG4-4x-ACP"/>
-                                <constraint firstAttribute="bottom" secondItem="oeg-V0-knE" secondAttribute="bottom" priority="999" id="ueD-zU-eSQ"/>
-                                <constraint firstItem="oeg-V0-knE" firstAttribute="leading" secondItem="H5R-Ci-5aX" secondAttribute="leadingMargin" priority="999" id="w2y-e8-rJG"/>
-                            </constraints>
-                            <connections>
-                                <outlet property="activityIndicatorView" destination="hnb-2l-24w" id="6Dp-gp-nlC"/>
-                                <outlet property="bottomLayoutConstraint" destination="ueD-zU-eSQ" id="ChX-d2-sRT"/>
-                                <outlet property="leadingLayoutConstraint" destination="w2y-e8-rJG" id="9j3-ao-bfA"/>
-                                <outlet property="textView" destination="4Mf-Ge-exp" id="XqS-CB-3ek"/>
-                                <outlet property="topLayoutConstraint" destination="KK7-2G-rL0" id="oFe-fV-BgO"/>
-                                <outlet property="trailingLayoutConstraint" destination="aG4-4x-ACP" id="YOc-HZ-1pw"/>
-                            </connections>
-                        </collectionReusableView>
-                        <connections>
-                            <outlet property="dataSource" destination="5vR-Su-j54" id="lGW-bH-xYZ"/>
-                            <outlet property="delegate" destination="5vR-Su-j54" id="bj3-kR-erl"/>
-                        </connections>
-                    </collectionView>
-                    <navigationItem key="navigationItem" title="Sources" id="UQX-GH-OMC">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="ox5-Bu-RLr">
-                            <connections>
-                                <action selector="addSource" destination="5vR-Su-j54" id="4s7-KQ-ume"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="QYt-Dn-SKf">
-                            <connections>
-                                <segue destination="wBZ-c2-miy" kind="unwind" unwindAction="unwindFromSourcesViewController:" id="Dc6-tD-Z2I"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <segue destination="7XE-Wv-lf9" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="dLj-Tf-ZjV"/>
-                    </connections>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="69z-hg-xF8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="wBZ-c2-miy" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="810" y="-13"/>
-        </scene>
         <!--All Apps-->
         <scene sceneID="d8a-U8-CPc">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ih5-9R-QX7" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <collectionViewController storyboardIdentifier="browseViewController" id="Nhf-Gw-Ukx" customClass="BrowseViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="oBI-6P-Lm3">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="783"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="50" minimumInteritemSpacing="10" id="pSh-Xl-aNg">
@@ -161,13 +52,13 @@
                     </collectionView>
                     <navigationItem key="navigationItem" title="All Apps" id="rUb-ON-AON"/>
                 </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ih5-9R-QX7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3404" y="-13"/>
         </scene>
         <!--Source Detail View Controller-->
         <scene sceneID="xbN-Mz-TtU">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cYc-NX-nF1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="sourceDetailViewController" id="7XE-Wv-lf9" customClass="SourceDetailViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eIv-0H-ZIq">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
@@ -177,13 +68,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="Ocv-bj-TfG"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cYc-NX-nF1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1646.5648854961833" y="-13.380281690140846"/>
         </scene>
         <!--Source Detail Content View Controller-->
         <scene sceneID="8nl-ly-jhT">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KEz-hK-u3f" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <collectionViewController storyboardIdentifier="sourceDetailContentViewController" id="MSh-hM-32I" customClass="SourceDetailContentViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="fiF-YD-Ing">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
@@ -223,16 +114,16 @@
                         <segue destination="Nhf-Gw-Ukx" kind="show" identifier="showAllApps" destinationCreationSelector="makeBrowseViewController:" id="On0-GP-kaE"/>
                     </connections>
                 </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KEz-hK-u3f" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2509" y="-13"/>
         </scene>
         <!--All News-->
         <scene sceneID="avV-5f-uNE">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7f5-vn-JrS" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <collectionViewController storyboardIdentifier="newsViewController" id="MVH-oB-c8m" customClass="NewsViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="p9p-rr-fbF">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="783"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="40" minimumInteritemSpacing="40" id="3cD-ax-3h6">
@@ -249,11 +140,53 @@
                     </collectionView>
                     <navigationItem key="navigationItem" title="All News" id="FGB-cd-Vkd"/>
                 </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7f5-vn-JrS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3404" y="-711"/>
         </scene>
+        <!--Sources-->
+        <scene sceneID="w2v-ek-6dY">
+            <objects>
+                <collectionViewController storyboardIdentifier="sourcesViewController" title="Sources" id="Wm7-1O-FkD" customClass="SourcesViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="VJr-nx-7Vh">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="10" id="Rlv-wJ-9Ef">
+                            <size key="itemSize" width="375" height="80"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="Cell" id="1Rm-Gf-VDt" customClass="AppBannerCollectionViewCell" customModule="AltStore" customModuleProvider="target">
+                                <rect key="frame" x="9" y="0.0" width="375" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="Wm7-1O-FkD" id="239-Tq-YUw"/>
+                            <outlet property="delegate" destination="Wm7-1O-FkD" id="UvE-ta-8ir"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Sources" largeTitleDisplayMode="always" id="Noh-fc-wch">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="y96-Ve-1gW"/>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="7XE-Wv-lf9" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="eVl-NI-lj3"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cR1-aE-0KX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="810" y="-13"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="Sources" width="20" height="20"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

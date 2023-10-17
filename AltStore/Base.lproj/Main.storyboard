@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -36,11 +35,11 @@
                     </tabBar>
                     <connections>
                         <segue destination="kjR-gi-fgT" kind="relationship" relationship="viewControllers" id="eWy-uk-nwG"/>
-                        <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="dXz-Tu-hW8"/>
-                        <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="zii-dF-qEt"/>
-                        <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="4Nf-rL-P4c"/>
                         <segue destination="bTL-bY-9Yq" kind="presentation" identifier="finishJailbreak" id="cIc-Ta-uNk"/>
-                        <segue destination="HCK-G6-KdY" kind="presentation" identifier="presentSources" id="SRd-VL-5nP"/>
+                        <segue destination="HCK-G6-KdY" kind="relationship" relationship="viewControllers" id="X0t-T6-JeA"/>
+                        <segue destination="faz-B4-Sub" kind="relationship" relationship="viewControllers" id="OLu-kM-z1J"/>
+                        <segue destination="3Ew-ox-i4n" kind="relationship" relationship="viewControllers" id="phQ-Pc-pqw"/>
+                        <segue destination="p3d-dP-Swg" kind="relationship" relationship="viewControllers" id="cQE-Az-fdo"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -67,16 +66,7 @@
                             <outlet property="delegate" destination="e3L-BF-iXp" id="Mdp-x4-hZe"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Browse" id="pUx-6k-rtr">
-                        <barButtonItem key="rightBarButtonItem" title="Sources" id="6Ul-JW-TMT">
-                            <connections>
-                                <segue destination="HCK-G6-KdY" kind="presentation" id="hBK-Tt-naZ"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="sourcesBarButtonItem" destination="6Ul-JW-TMT" id="99s-O4-OpX"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Browse" id="pUx-6k-rtr"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cMN-i4-Bxk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -520,7 +510,7 @@
         <scene sceneID="VHa-uP-bFU">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="faz-B4-Sub" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Browse" image="Browse" id="Uwh-Bg-Ymq"/>
+                    <tabBarItem key="tabBarItem" title="Browse" id="Uwh-Bg-Ymq"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="dIv-qd-9L5" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
@@ -862,20 +852,20 @@
         <!--Sources-->
         <scene sceneID="Vzf-tb-LIH">
             <objects>
-                <viewControllerPlaceholder storyboardName="Sources" id="HCK-G6-KdY" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Sources" id="HCK-G6-KdY" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="Q7y-bi-ncT"/>
+                </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VTd-he-VYb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2" y="-553"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="hBK-Tt-naZ"/>
         <segue reference="cnd-KK-o60"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" name="Primary"/>
     <resources>
         <image name="Back" width="18" height="18"/>
-        <image name="Browse" width="20" height="20"/>
         <image name="MyApps" width="20" height="20"/>
         <image name="News" width="19" height="20"/>
         <image name="Settings" width="20" height="20"/>

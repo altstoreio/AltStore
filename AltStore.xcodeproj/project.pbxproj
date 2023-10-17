@@ -434,6 +434,7 @@
 		D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */; };
 		D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */; };
 		D5F99A1A28D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F99A1928D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift */; };
+		D5FB28EC2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */; };
 		D5FB28EE2ADDF89800A1C337 /* KnownSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5893F812A141E4900E767CD /* KnownSource.swift */; };
 		D5FB7A0E2AA25A4E00EF863D /* Previews.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5FB7A0D2AA25A4E00EF863D /* Previews.xcassets */; };
 		D5FB7A212AA284ED00EF863D /* EnableJIT.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FB7A1A2AA284ED00EF863D /* EnableJIT.swift */; };
@@ -1033,6 +1034,7 @@
 		D5F5AF7C28ECEA990067C736 /* ErrorDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetailsViewController.swift; sourceTree = "<group>"; };
 		D5F99A1728D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore10ToAltStore11.xcmappingmodel; sourceTree = "<group>"; };
 		D5F99A1928D12B1400476A16 /* StoreApp10ToStoreApp11Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreApp10ToStoreApp11Policy.swift; sourceTree = "<group>"; };
+		D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFontDescriptor+Bold.swift"; sourceTree = "<group>"; };
 		D5FB7A0D2AA25A4E00EF863D /* Previews.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Previews.xcassets; sourceTree = "<group>"; };
 		D5FB7A132AA284BE00EF863D /* altjit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = altjit; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5FB7A1A2AA284ED00EF863D /* EnableJIT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EnableJIT.swift; path = AltJIT/Commands/EnableJIT.swift; sourceTree = SOURCE_ROOT; };
@@ -1900,6 +1902,7 @@
 				D57F2C9326E01BC700B9FA39 /* UIDevice+Vibration.swift */,
 				D5927D6529DCC89000D6898E /* UINavigationBarAppearance+TintColor.swift */,
 				D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */,
+				D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3111,6 +3114,7 @@
 				BFB6B21E231870160022A802 /* NewsViewController.swift in Sources */,
 				BFC57A652416C72400EB891E /* DeactivateAppOperation.swift in Sources */,
 				D5CD805D29CA2C1E00E591B0 /* HeaderContentViewController.swift in Sources */,
+				D5FB28EC2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift in Sources */,
 				BF3BEFC124086A1E00DE7D55 /* RefreshAppOperation.swift in Sources */,
 				BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */,
 				BF0DCA662433BDF500E3A595 /* AnalyticsManager.swift in Sources */,
