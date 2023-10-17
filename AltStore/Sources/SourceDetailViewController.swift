@@ -195,7 +195,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 
             case false?:
                 title = NSLocalizedString("ADD", comment: "")
-                self.navigationBarButton.tintColor = self.source.effectiveTintColor ?? .altPrimary
+                self.navigationBarButton.tintColor = self.source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
                 
                 self.addButton.isHidden = false
                 self.navigationBarButton.isHidden = false

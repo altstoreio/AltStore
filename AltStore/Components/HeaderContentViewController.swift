@@ -27,7 +27,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         didSet {
             guard self.isViewLoaded else { return }
             
-            self.view.tintColor = self.tintColor
+            self.view.tintColor = self.tintColor?.adjustedForDisplay
             self.update()
         }
     }
@@ -233,6 +233,8 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         
         // Start with navigation bar hidden.
         self.hideNavigationBar()
+        
+        self.view.tintColor = self.tintColor?.adjustedForDisplay
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -496,7 +498,22 @@ private extension HeaderContentViewController
         
         barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
         
-        let tintColor = isHidden ? UIColor.clear : self.tintColor ?? .altPrimary
+        let dynamicColor = UIColor { traitCollection in
+            var tintColor = self.tintColor ?? .altPrimary
+            
+            if traitCollection.userInterfaceStyle == .dark && tintColor.isTooDark
+            {
+                tintColor = .white
+            }
+            else
+            {
+                tintColor = tintColor.adjustedForDisplay
+            }
+            
+            return tintColor
+        }
+        
+        let tintColor = isHidden ? UIColor.clear : dynamicColor
         barAppearance.configureWithTintColor(tintColor)
         
         self.navigationItem.standardAppearance = barAppearance
