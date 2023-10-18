@@ -43,6 +43,8 @@ class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
         guard let server = self.context.server, let installedApp = self.context.installedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
         guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { return self.finish(.failure(OperationError.unknownUDID)) }
         
+        Logger.altjit.notice("Enabling JIT for app \(installedApp.bundleIdentifier, privacy: .public)...")
+        
         installedApp.managedObjectContext?.perform {
             guard let bundle = Bundle(url: installedApp.fileURL),
                   let processName = bundle.executableURL?.lastPathComponent
@@ -56,7 +58,7 @@ class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
                 {
                 case .failure(let error): self.finish(.failure(error))
                 case .success(let connection):
-                    print("Sending enable JIT request...")
+                    Logger.altjit.debug("Sending enable JIT request...")
                     
                     DispatchQueue.main.async {
                         
@@ -69,22 +71,31 @@ class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
                             let result = Future<Result<Void, Error>, Never> { promise in
                                 let request = EnableUnsignedCodeExecutionRequest(udid: udid, processName: processName)
                                 connection.send(request) { result in
-                                    print("Sent enable JIT request!")
+                                    Logger.altjit.debug("Sent enable JIT request!")
                                     
                                     switch result
                                     {
                                     case .failure(let error): promise(.success(.failure(error)))
                                     case .success:
-                                        print("Waiting for enable JIT response...")
+                                        Logger.altjit.debug("Waiting for enable JIT response...")
                                         connection.receiveResponse() { result in
-                                            print("Received enable JIT response:", result)
-                                            
                                             switch result
                                             {
-                                            case .failure(let error): promise(.success(.failure(error)))
-                                            case .success(.error(let response)): promise(.success(.failure(response.error)))
-                                            case .success(.enableUnsignedCodeExecution): promise(.success(.success(())))
-                                            case .success: promise(.success(.failure(ALTServerError(.unknownResponse))))
+                                            case .failure(let error):
+                                                Logger.altjit.error("Failed to receive enable JIT response. \(error.localizedDescription, privacy: .public)")
+                                                promise(.success(.failure(error)))
+                                                
+                                            case .success(.error(let response)): 
+                                                Logger.altjit.error("Failed to enable JIT. \(response.error.localizedDescription, privacy: .public)")
+                                                promise(.success(.failure(response.error)))
+                                                
+                                            case .success(.enableUnsignedCodeExecution): 
+                                                Logger.altjit.notice("Successfully enabled JIT!")
+                                                promise(.success(.success(())))
+                                                
+                                            case .success:
+                                                Logger.altjit.notice("Received unknown enable JIT response.")
+                                                promise(.success(.failure(ALTServerError(.unknownResponse))))
                                             }
                                         }
                                     }
