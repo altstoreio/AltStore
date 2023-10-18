@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7We-99-yEv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7We-99-yEv">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -109,6 +109,7 @@
                             <outlet property="delegate" destination="MSh-hM-32I" id="8SG-5v-iF2"/>
                         </connections>
                     </collectionView>
+                    <navigationItem key="navigationItem" id="SsY-RM-EFx"/>
                     <connections>
                         <segue destination="MVH-oB-c8m" kind="show" identifier="showAllNews" destinationCreationSelector="makeNewsViewController:" id="txA-ay-P7p"/>
                         <segue destination="Nhf-Gw-Ukx" kind="show" identifier="showAllApps" destinationCreationSelector="makeBrowseViewController:" id="On0-GP-kaE"/>
@@ -174,7 +175,11 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" title="Sources" largeTitleDisplayMode="always" id="Noh-fc-wch">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="y96-Ve-1gW"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="y96-Ve-1gW">
+                            <connections>
+                                <segue destination="i15-Jk-F75" kind="presentation" identifier="addSource" id="FGe-k6-H7c"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <segue destination="7XE-Wv-lf9" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="eVl-NI-lj3"/>
@@ -184,7 +189,75 @@
             </objects>
             <point key="canvasLocation" x="810" y="-13"/>
         </scene>
+        <!--Add Source-->
+        <scene sceneID="oCv-by-94o">
+            <objects>
+                <collectionViewController id="bbz-wy-kaK" customClass="AddSourceViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="lXl-N1-6cT">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Xgg-0U-PlW">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" reuseIdentifier="" id="W0l-zW-MjJ">
+                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="bbz-wy-kaK" id="Fcm-4b-KZC"/>
+                            <outlet property="delegate" destination="bbz-wy-kaK" id="RRO-hx-gbl"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Add Source" id="v46-dC-g7e">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="ozl-rj-JhC">
+                            <connections>
+                                <segue destination="qr8-ss-Ghz" kind="unwind" unwindAction="unwindFromAddSource:" id="Pba-Kh-qfH"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="qr8-ss-Ghz" kind="unwind" unwindAction="unwindFromAddSource:" id="nj3-eB-DML"/>
+                        <segue destination="7XE-Wv-lf9" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="LO9-iP-zZC"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RWS-LV-vih" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="qr8-ss-Ghz" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1647" y="-711"/>
+        </scene>
+        <!--Forwarding Navigation Controller-->
+        <scene sceneID="NAl-mP-f8p">
+            <objects>
+                <navigationController storyboardIdentifier="addSourceNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="i15-Jk-F75" customClass="ForwardingNavigationController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="Opx-Pr-Tyy"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="HLe-3g-P8I" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="108"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="bbz-wy-kaK" kind="relationship" relationship="rootViewController" id="uVn-Xo-Kjy"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WTH-Dd-NJP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="810" y="-711"/>
+        </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="LO9-iP-zZC"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="Sources" width="20" height="20"/>
         <systemColor name="systemBackgroundColor">

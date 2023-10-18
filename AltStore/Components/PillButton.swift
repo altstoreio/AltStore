@@ -66,6 +66,8 @@ class PillButton: UIButton
     
     var style: Style = .pill {
         didSet {
+            guard self.style != oldValue else { return }
+            
             if self.style == .custom
             {
                 // Reset insets for custom style.

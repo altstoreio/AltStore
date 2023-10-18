@@ -31,6 +31,30 @@ extension SourceDetailViewController
         {
             self.source = source
             
+            let sourceID = source.identifier
+            
+            let addedPublisher = NotificationCenter.default.publisher(for: AppManager.didAddSourceNotification, object: nil)
+            let removedPublisher = NotificationCenter.default.publisher(for: AppManager.didRemoveSourceNotification, object: nil)
+            
+            Publishers.Merge(addedPublisher, removedPublisher)
+                .filter { notification -> Bool in
+                    guard let source = notification.object as? Source, let context = source.managedObjectContext else { return false }
+                    
+                    let updatedSourceID = context.performAndWait { source.identifier }
+                    return sourceID == updatedSourceID
+                }
+                .compactMap { notification in
+                    switch notification.name
+                    {
+                    case AppManager.didAddSourceNotification: return true
+                    case AppManager.didRemoveSourceNotification: return false
+                    default: return nil
+                    }
+                }
+                .filter { $0 != nil }
+                .receive(on: RunLoop.main)
+                .assign(to: &self.$isSourceAdded)
+            
             Task<Void, Never> {
                 do
                 {
@@ -48,6 +72,8 @@ extension SourceDetailViewController
 class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, SourceDetailContentViewController>
 {
     @Managed private(set) var source: Source
+    
+    var addedSourceHandler: ((Source) -> Void)?
     
     private let viewModel: ViewModel
     
@@ -224,7 +250,6 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
         self.viewModel.isAddingSource = true
         
         Task<Void, Never> { /* @MainActor in */ // Already on MainActor, even though this function wasn't called from async context.
-            var isSourceAdded: Bool?
             var errorTitle = NSLocalizedString("Unable to Add Source", comment: "")
             
             do
@@ -238,9 +263,9 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 else
                 {
                     try await AppManager.shared.add(self.source, presentingViewController: self)
+                    
+                    self.addedSourceHandler?(self.source)
                 }
-               
-                isSourceAdded = try await self.source.isAdded
             }
             catch is CancellationError {}
             catch
@@ -249,11 +274,6 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
             }
             
             self.viewModel.isAddingSource = false
-            
-            if let isSourceAdded
-            {
-                self.viewModel.isSourceAdded = isSourceAdded
-            }
         }
     }
     

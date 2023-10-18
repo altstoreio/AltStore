@@ -154,9 +154,21 @@ extension AppBannerView
     {
         self.style = .source
         
-        self.titleLabel.text = source.name
+        let subtitle: String
+        if let text = source.subtitle
+        {
+            subtitle = text
+        }
+        else if let scheme = source.sourceURL.scheme
+        {
+            subtitle = source.sourceURL.absoluteString.replacingOccurrences(of: scheme + "://", with: "")
+        }
+        else
+        {
+            subtitle = source.sourceURL.absoluteString
+        }
         
-        let subtitle = source.subtitle ?? source.sourceURL.absoluteString
+        self.titleLabel.text = source.name
         self.subtitleLabel.text = subtitle
         
         let tintColor = source.effectiveTintColor ?? .altPrimary
