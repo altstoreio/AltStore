@@ -202,7 +202,11 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
     {
         guard !self.isFinished else { return }
         
-        print("Finished authenticating with result:", result.error?.localizedDescription ?? "success")
+        switch result
+        {
+        case .failure(let error): Logger.sideload.error("Failed to authenticate account. \(error.localizedDescription, privacy: .public)")
+        case .success((let team, _, _)): Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .public).")
+        }
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         context.perform {
@@ -347,6 +351,8 @@ private extension AuthenticationOperation
         
         if let appleID = Keychain.shared.appleIDEmailAddress, let password = Keychain.shared.appleIDPassword
         {
+            Logger.sideload.notice("Authenticating Apple ID...")
+            
             self.authenticate(appleID: appleID, password: password) { (result) in
                 switch result
                 {

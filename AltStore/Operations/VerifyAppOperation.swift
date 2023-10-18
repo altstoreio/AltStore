@@ -63,6 +63,8 @@ class VerifyAppOperation: ResultOperation<Void>
             
             guard let app = self.context.app else { throw OperationError.invalidParameters }
             
+            Logger.sideload.notice("Verifying app \(self.context.bundleIdentifier, privacy: .public)...")
+            
             guard app.bundleIdentifier == self.context.bundleIdentifier else {
                 throw VerificationError.mismatchedBundleIdentifiers(sourceBundleID: self.context.bundleIdentifier, app: app)
             }
@@ -149,9 +151,9 @@ private extension VerifyAppOperation
         let data = try Data(contentsOf: ipaURL)
         let sha256Hash = SHA256.hash(data: data)
         let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
-
-        print("[ALTLog] Comparing app hash (\(hashString)) against expected hash (\(expectedHash))...")
-
+        
+        Logger.sideload.debug("Comparing app hash (\(hashString, privacy: .public)) against expected hash (\(expectedHash, privacy: .public))...")
+        
         guard hashString == expectedHash else { throw VerificationError.mismatchedHash(hashString, expectedHash: expectedHash, app: app) }
     }
     

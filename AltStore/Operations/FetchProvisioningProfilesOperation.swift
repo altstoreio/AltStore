@@ -47,6 +47,8 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
         
         guard let app = self.context.app else { return self.finish(.failure(OperationError.appNotFound(name: nil))) }
         
+        Logger.sideload.notice("Fetching provisioning profiles for app \(self.context.bundleIdentifier, privacy: .public)...")
+        
         self.progress.totalUnitCount = Int64(1 + app.appExtensions.count)
         
         self.prepareProvisioningProfile(for: app, parentApp: nil, team: team, session: session) { (result) in
@@ -245,6 +247,8 @@ extension FetchProvisioningProfilesOperation
                 
                 if let appID = appIDs.first(where: { $0.bundleIdentifier.lowercased() == bundleIdentifier.lowercased() })
                 {
+                    Logger.sideload.notice("Using existing App ID \(appID.bundleIdentifier, privacy: .public)")
+                    
                     completionHandler(.success(appID))
                 }
                 else
@@ -275,6 +279,9 @@ extension FetchProvisioningProfilesOperation
                             do
                             {
                                 let appID = try Result(appID, error).get()
+                                
+                                Logger.sideload.notice("Registered new App ID \(appID.bundleIdentifier, privacy: .public)")
+                                
                                 completionHandler(.success(appID))
                             }
                             catch ALTAppleAPIError.maximumAppIDLimitReached
@@ -358,8 +365,15 @@ extension FetchProvisioningProfilesOperation
             let appID = appID.copy() as! ALTAppID
             appID.features = features
             
-            ALTAppleAPI.shared.update(appID, team: team, session: session) { (appID, error) in
-                completionHandler(Result(appID, error))
+            ALTAppleAPI.shared.update(appID, team: team, session: session) { (updatedAppID, error) in
+                let result = Result(updatedAppID, error)
+                switch result
+                {
+                case .success(let appID): Logger.sideload.notice("Updated features for App ID \(appID.bundleIdentifier, privacy: .public).")
+                case .failure(let error): Logger.sideload.error("Failed to update features for App ID \(appID.bundleIdentifier, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                }
+                
+                completionHandler(result)
             }
         }
         else
@@ -377,6 +391,7 @@ extension FetchProvisioningProfilesOperation
         }
                 
         guard var applicationGroups = entitlements[.appGroups] as? [String], !applicationGroups.isEmpty else {
+            Logger.sideload.notice("App ID \(appID.bundleIdentifier, privacy: .public) has no app groups, skipping assignment.")
             // Assigning an App ID to an empty app group array fails,
             // so just do nothing if there are no app groups.
             return completionHandler(.success(appID))
@@ -414,7 +429,10 @@ extension FetchProvisioningProfilesOperation
             ALTAppleAPI.shared.fetchAppGroups(for: team, session: session) { (groups, error) in
                 switch Result(groups, error)
                 {
-                case .failure(let error): finish(.failure(error))
+                case .failure(let error):
+                    Logger.sideload.error("Failed to fetch app groups for team \(team.identifier, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                    finish(.failure(error))
+                    
                 case .success(let fetchedGroups):
                     let dispatchGroup = DispatchGroup()
                     
@@ -439,8 +457,13 @@ extension FetchProvisioningProfilesOperation
                             ALTAppleAPI.shared.addAppGroup(withName: name, groupIdentifier: adjustedGroupIdentifier, team: team, session: session) { (group, error) in
                                 switch Result(group, error)
                                 {
-                                case .success(let group): groups.append(group)
-                                case .failure(let error): errors.append(error)
+                                case .success(let group):
+                                    Logger.sideload.notice("Created new App Group \(group.groupIdentifier, privacy: .public).")
+                                    groups.append(group)
+                                    
+                                case .failure(let error): 
+                                    Logger.sideload.notice("Failed to create new App Group \(adjustedGroupIdentifier, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                                    errors.append(error)
                                 }
                                 
                                 dispatchGroup.leave()
@@ -456,8 +479,17 @@ extension FetchProvisioningProfilesOperation
                         else
                         {
                             ALTAppleAPI.shared.assign(appID, to: Array(groups), team: team, session: session) { (success, error) in
-                                let result = Result(success, error)
-                                finish(result.map { _ in appID })
+                                let groupIDs = groups.map { $0.groupIdentifier }
+                                switch Result(success, error)
+                                {
+                                case .success:
+                                    Logger.sideload.notice("Assigned App ID \(appID.bundleIdentifier, privacy: .public) to App Groups \(groupIDs.description, privacy: .public).")
+                                    finish(.success(appID))
+                                    
+                                case .failure(let error):
+                                    Logger.sideload.error("Failed to assign App ID \(appID.bundleIdentifier, privacy: .public) to App Groups \(groupIDs.description, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                                    finish(.failure(error))
+                                }
                             }
                         }
                     }
@@ -484,6 +516,8 @@ extension FetchProvisioningProfilesOperation
                         completionHandler(.success(profile))
                         
                     case .success:
+                        Logger.sideload.notice("Generating new free provisioning profile for App ID \(appID.bundleIdentifier, privacy: .public).")
+                        
                         // Fetch new provisioning profile
                         ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
                             completionHandler(Result(profile, error))

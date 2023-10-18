@@ -355,6 +355,7 @@
 		D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */ = {isa = PBXBuildFile; fileRef = D51AD27C29356B7B00967AAA /* ALTWrappedError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
+		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
@@ -957,6 +958,7 @@
 		D5189C002A01BC6800F44625 /* UserInfoValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoValue.swift; sourceTree = "<group>"; };
 		D51AD27C29356B7B00967AAA /* ALTWrappedError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWrappedError.h; sourceTree = "<group>"; };
 		D51AD27D29356B7B00967AAA /* ALTWrappedError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWrappedError.m; sourceTree = "<group>"; };
+		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailCollectionViewController.swift; sourceTree = "<group>"; };
@@ -1581,6 +1583,7 @@
 				BF6A531F246DC1B0004F59C8 /* FileManager+SharedDirectories.swift */,
 				D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */,
 				D5893F7E2A14183200E767CD /* NSManagedObjectContext+Conveniences.swift */,
+				D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3001,6 +3004,7 @@
 				BFAECC572501B0A400528F27 /* ConnectionManager.swift in Sources */,
 				BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */,
 				D519AD46292D665B004B12F9 /* Managed.swift in Sources */,
+				D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */,
 				BFC712C42512D5F100AB5EBE /* XPCConnection.swift in Sources */,
 				D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */,
 				D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */,

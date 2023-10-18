@@ -31,6 +31,10 @@ struct Server: Equatable
 
 extension Server
 {
+    var localizedName: String? {
+        return self.service?.name ?? self.identifier
+    }
+    
     // Defined in extension so we can still use the automatically synthesized initializer.
     init?(service: NetService, txtData: Data)
     {
