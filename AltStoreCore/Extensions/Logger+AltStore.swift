@@ -12,6 +12,7 @@ public extension Logger
 {
     static let altstoreSubsystem = Bundle.main.bundleIdentifier!
     
+    static let main = Logger(subsystem: altstoreSubsystem, category: "Main")
     static let sideload = Logger(subsystem: altstoreSubsystem, category: "Sideload")
     static let altjit = Logger(subsystem: altstoreSubsystem, category: "AltJIT")
     

@@ -231,17 +231,17 @@ extension ServerManager: NetServiceBrowserDelegate
 {
     func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
     {
-        print("Discovering servers...")
+        Logger.main.notice("Discovering AltServers...")
     }
     
     func netServiceBrowserDidStopSearch(_ browser: NetServiceBrowser)
     {
-        print("Stopped discovering servers.")
+        Logger.main.notice("Stopped discovering AltServers.")
     }
     
     func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
     {
-        print("Failed to discovering servers.", errorDict)
+        Logger.main.error("Failed to discover AltServers. \(errorDict, privacy: .public)")
     }
     
     func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
@@ -280,12 +280,12 @@ extension ServerManager: NetServiceDelegate
     
     func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
     {
-        print("Error resolving net service \(sender).", errorDict)
+        Logger.main.error("Failed to resolve Bonjour service \(sender.name, privacy: .public). \(errorDict, privacy: .public)")
     }
     
     func netService(_ sender: NetService, didUpdateTXTRecord data: Data)
     {
         let txtDict = NetService.dictionary(fromTXTRecord: data)
-        print("Service \(sender) updated TXT Record:", txtDict)
+        Logger.main.debug("Bonjour service \(sender.name, privacy: .public) updated TXT Record: \(txtDict, privacy: .public)")
     }
 }
