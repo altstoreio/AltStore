@@ -43,6 +43,9 @@ class TabBarController: UITabBarController
     {
         super.viewDidLoad()
         
+        let browseNavigationController = self.viewControllers![Tab.browse.rawValue] as! UINavigationController
+        browseNavigationController.tabBarItem.image = UIImage(systemName: "bag")
+        
         let sourcesNavigationController = self.viewControllers![Tab.sources.rawValue] as! UINavigationController
         self.sourcesViewController = sourcesNavigationController.viewControllers.first as? SourcesViewController
     }
