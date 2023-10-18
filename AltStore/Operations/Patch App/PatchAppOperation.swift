@@ -198,7 +198,7 @@ private extension PatchAppOperation
                 }
             }
             
-            print("Downloaded OTA archive.")
+            Logger.fugu14.notice("Downloaded iOS OTA archive.")
             return archiveURL
             
             #endif
@@ -228,7 +228,7 @@ private extension PatchAppOperation
                 return .ok
             }
             
-            print("Extracted Spotlight from OTA archive.")
+            Logger.fugu14.notice("Extracted Spotlight from OTA archive.")
             return spotlightFileURL
             
             #endif
@@ -250,7 +250,7 @@ private extension PatchAppOperation
             let appBinaryURL = temporaryAppURL.appendingPathComponent(appName, isDirectory: false)
             try self.appPatcher.patchAppBinary(at: appBinaryURL, withBinaryAt: patchFileURL)
             
-            print("Patched \(app.name).")
+            Logger.fugu14.notice("Patched \(app.name, privacy: .public)!")
             return temporaryAppURL
         }
         .mapError { ($0 as NSError).withLocalizedFailure(String(format: NSLocalizedString("Could not patch %@ placeholder.", comment: ""), app.name)) }

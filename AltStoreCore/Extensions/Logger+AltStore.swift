@@ -13,6 +13,8 @@ public extension Logger
     static let altstoreSubsystem = Bundle.main.bundleIdentifier!
     
     static let sideload = Logger(subsystem: altstoreSubsystem, category: "Sideload")
+    
+    static let fugu14 = Logger(subsystem: altstoreSubsystem, category: "Fugu14")
 }
 
 @available(iOS 15, *)
