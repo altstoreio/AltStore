@@ -233,9 +233,13 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 self.navigationBarButton.isHidden = true
             }
             
-            if self.addButton.title != title
+            if title != self.addButton.title
             {
                 self.addButton.title = title
+            }
+            
+            if title != self.navigationBarButton.title(for: .normal) && !self.navigationBarButton.isIndicatingActivity
+            {
                 self.navigationBarButton.setTitle(title, for: .normal)
             }
             
