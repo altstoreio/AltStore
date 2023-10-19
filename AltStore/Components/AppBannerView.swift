@@ -90,8 +90,10 @@ class AppBannerView: RSTNibView
         self.betaBadgeView.isHidden = true
         
         self.layoutMargins = self.stackView.layoutMargins
-        self.stackView.preservesSuperviewLayoutMargins = true
+        self.insetsLayoutMarginsFromSafeArea = false
+        
         self.stackView.isLayoutMarginsRelativeArrangement = true
+        self.stackView.preservesSuperviewLayoutMargins = true
     }
     
     override func tintColorDidChange()
