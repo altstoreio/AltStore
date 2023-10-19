@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct KnownSource: Decodable
+public struct KnownSource: Decodable
 {
-    var identifier: String
-    var sourceURL: URL?
-    var bundleIDs: [String]?
+    public var identifier: String
+    public var sourceURL: URL?
+    public var bundleIDs: [String]?
 }
 
 private extension KnownSource
@@ -42,19 +42,19 @@ private extension KnownSource
     }
 }
 
-extension UserDefaults
+public extension UserDefaults
 {
-    // Cache trusted sources just in case we need to check whether source is trusted or not.
-    @nonobjc var trustedSources: [KnownSource]? {
+    // Cache recommended sources just in case we need to check whether source is recommended or not.
+    @nonobjc var recommendedSources: [KnownSource]? {
         get {
-            guard let sources = _trustedSources?.compactMap({ KnownSource(dictionary: $0) }) else { return nil }
+            guard let sources = _recommendedSources?.compactMap({ KnownSource(dictionary: $0) }) else { return nil }
             return sources
         }
         set {
-            _trustedSources = newValue?.map { $0.dictionaryRepresentation }
+            _recommendedSources = newValue?.map { $0.dictionaryRepresentation }
         }
     }
-    @NSManaged @objc(trustedSources) private var _trustedSources: [[String: Any]]?
+    @NSManaged @objc(recommendedSources) private var _recommendedSources: [[String: Any]]?
     
     @nonobjc var blockedSources: [KnownSource]? {
         get {

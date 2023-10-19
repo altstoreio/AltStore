@@ -14,6 +14,7 @@ extension TabBarController
     private enum Tab: Int, CaseIterable
     {
         case news
+        case sources
         case browse
         case myApps
         case settings
@@ -26,6 +27,8 @@ class TabBarController: UITabBarController
     
     private var _viewDidAppear = false
     
+    private var sourcesViewController: SourcesViewController!
+    
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
@@ -34,6 +37,17 @@ class TabBarController: UITabBarController
         NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.presentSources(_:)), name: AppDelegate.addSourceDeepLinkNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(TabBarController.openErrorLog(_:)), name: ToastView.openErrorLogNotification, object: nil)
+    }
+    
+    override func viewDidLoad() 
+    {
+        super.viewDidLoad()
+        
+        let browseNavigationController = self.viewControllers![Tab.browse.rawValue] as! UINavigationController
+        browseNavigationController.tabBarItem.image = UIImage(systemName: "bag")
+        
+        let sourcesNavigationController = self.viewControllers![Tab.sources.rawValue] as! UINavigationController
+        self.sourcesViewController = sourcesNavigationController.viewControllers.first as? SourcesViewController
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -63,15 +77,6 @@ class TabBarController: UITabBarController
         
         switch identifier
         {
-        case "presentSources":
-            guard let notification = sender as? Notification,
-                  let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
-            else { return }
-            
-            let navigationController = segue.destination as! UINavigationController
-            let sourcesViewController = navigationController.viewControllers.first as! SourcesViewController
-            sourcesViewController.deepLinkSourceURL = sourceURL
-            
         case "finishJailbreak":
             guard let installedApp = sender as? InstalledApp else { return }
             
@@ -104,30 +109,19 @@ extension TabBarController
     {
         if let presentedViewController = self.presentedViewController
         {
-            if let navigationController = presentedViewController as? UINavigationController,
-               let sourcesViewController = navigationController.viewControllers.first as? SourcesViewController
-            {
-                if let notification = (sender as? Notification),
-                   let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
-                {
-                    sourcesViewController.deepLinkSourceURL = sourceURL
-                }
-                else
-                {
-                    // Don't dismiss SourcesViewController if it's already presented.
-                }
-            }
-            else
-            {
-                presentedViewController.dismiss(animated: true) {
-                    self.presentSources(sender)
-                }
+            presentedViewController.dismiss(animated: true) {
+                self.presentSources(sender)
             }
             
             return
         }
+                
+        if let notification = (sender as? Notification), let sourceURL = notification.userInfo?[AppDelegate.addSourceDeepLinkURLKey] as? URL
+        {
+            self.sourcesViewController?.deepLinkSourceURL = sourceURL
+        }
         
-        self.performSegue(withIdentifier: "presentSources", sender: sender)
+        self.selectedIndex = Tab.sources.rawValue
     }
 }
 

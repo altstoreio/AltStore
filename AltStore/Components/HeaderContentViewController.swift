@@ -27,7 +27,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         didSet {
             guard self.isViewLoaded else { return }
             
-            self.view.tintColor = self.tintColor
+            self.view.tintColor = self.tintColor?.adjustedForDisplay
             self.update()
         }
     }
@@ -233,6 +233,8 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         
         // Start with navigation bar hidden.
         self.hideNavigationBar()
+        
+        self.view.tintColor = self.tintColor?.adjustedForDisplay
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -275,8 +277,21 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
             self._shouldResetLayout = false
         }
         
-        //TODO: Dynamically calculate status bar height.
-        let statusBarHeight = 20.0 //self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let statusBarHeight: Double
+        
+        if let navigationController, navigationController.presentingViewController != nil, navigationController.modalPresentationStyle != .fullScreen
+        {
+            statusBarHeight = 20
+        }
+        else if let statusBarManager = self.view.window?.windowScene?.statusBarManager
+        {
+            statusBarHeight = statusBarManager.statusBarFrame.height
+        }
+        else
+        {
+            statusBarHeight = 0
+        }
+        
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 15 as CGFloat
@@ -496,7 +511,22 @@ private extension HeaderContentViewController
         
         barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
         
-        let tintColor = isHidden ? UIColor.clear : self.tintColor ?? .altPrimary
+        let dynamicColor = UIColor { traitCollection in
+            var tintColor = self.tintColor ?? .altPrimary
+            
+            if traitCollection.userInterfaceStyle == .dark && tintColor.isTooDark
+            {
+                tintColor = .white
+            }
+            else
+            {
+                tintColor = tintColor.adjustedForDisplay
+            }
+            
+            return tintColor
+        }
+        
+        let tintColor = isHidden ? UIColor.clear : dynamicColor
         barAppearance.configureWithTintColor(tintColor)
         
         self.navigationItem.standardAppearance = barAppearance

@@ -85,6 +85,8 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewDidLoad()
         
+        self.collectionView.backgroundColor = .altBackground
+        
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -132,11 +134,6 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
             // since the database might not be loaded yet.
             self.collectionView.contentInset.bottom = 20
         }
-    }
-    
-    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
-    {
-        self.fetchSource()
     }
 }
 

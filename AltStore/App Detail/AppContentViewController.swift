@@ -31,13 +31,6 @@ class AppContentViewController: UITableViewController
     
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        return dateFormatter
-    }()
-    
     private lazy var byteCountFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
         return formatter
@@ -84,7 +77,7 @@ class AppContentViewController: UITableViewController
         {
             self.versionDescriptionTextView.text = version.localizedDescription
             self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.localizedVersion)
-            self.versionDateLabel.text = Date().relativeDateString(since: version.date, dateFormatter: self.dateFormatter)
+            self.versionDateLabel.text = Date().relativeDateString(since: version.date)
             self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: version.size)
         }
         else

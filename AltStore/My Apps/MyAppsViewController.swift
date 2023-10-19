@@ -62,13 +62,6 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
     // Cache
     private var cachedUpdateSizes = [String: CGSize]()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        return dateFormatter
-    }()
-    
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
@@ -236,7 +229,7 @@ private extension MyAppsViewController
             
             cell.bannerView.configure(for: app)
             
-            let versionDate = Date().relativeDateString(since: latestSupportedVersion.date, dateFormatter: self.dateFormatter)
+            let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
             cell.bannerView.subtitleLabel.text = versionDate
             
             let appName: String

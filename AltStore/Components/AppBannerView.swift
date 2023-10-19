@@ -11,6 +11,15 @@ import UIKit
 import AltStoreCore
 import Roxas
 
+extension AppBannerView
+{
+    enum Style
+    {
+        case app
+        case source
+    }
+}
+
 class AppBannerView: RSTNibView
 {
     override var accessibilityLabel: String? {
@@ -38,6 +47,8 @@ class AppBannerView: RSTNibView
         set { self.accessibilityView?.accessibilityTraits = newValue }
     }
     
+    var style: Style = .app
+    
     private var originalTintColor: UIColor?
     
     @IBOutlet var titleLabel: UILabel!
@@ -50,7 +61,10 @@ class AppBannerView: RSTNibView
     @IBOutlet var backgroundEffectView: UIVisualEffectView!
     
     @IBOutlet private var vibrancyView: UIVisualEffectView!
+    @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var accessibilityView: UIView!
+    
+    @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect)
     {
@@ -74,6 +88,10 @@ class AppBannerView: RSTNibView
         self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
         
         self.betaBadgeView.isHidden = true
+        
+        self.layoutMargins = self.stackView.layoutMargins
+        self.stackView.preservesSuperviewLayoutMargins = true
+        self.stackView.isLayoutMarginsRelativeArrangement = true
     }
     
     override func tintColorDidChange()
@@ -113,6 +131,8 @@ extension AppBannerView
                 }
             }
         }
+        
+        self.style = .app
 
         let values = AppValues(app: app)
         self.titleLabel.text = app.name // Don't use values.name since that already includes "beta".
@@ -129,6 +149,34 @@ extension AppBannerView
             self.accessibilityLabel = values.name
         }
     }
+    
+    func configure(for source: Source)
+    {
+        self.style = .source
+        
+        let subtitle: String
+        if let text = source.subtitle
+        {
+            subtitle = text
+        }
+        else if let scheme = source.sourceURL.scheme
+        {
+            subtitle = source.sourceURL.absoluteString.replacingOccurrences(of: scheme + "://", with: "")
+        }
+        else
+        {
+            subtitle = source.sourceURL.absoluteString
+        }
+        
+        self.titleLabel.text = source.name
+        self.subtitleLabel.text = subtitle
+        
+        let tintColor = source.effectiveTintColor ?? .altPrimary
+        self.tintColor = tintColor
+        
+        let accessibilityLabel = source.name + "\n" + subtitle
+        self.accessibilityLabel = accessibilityLabel
+    }
 }
 
 private extension AppBannerView
@@ -138,7 +186,48 @@ private extension AppBannerView
         self.clipsToBounds = true
         self.layer.cornerRadius = 22
         
-        self.subtitleLabel.textColor = self.originalTintColor ?? self.tintColor        
-        self.backgroundEffectView.backgroundColor = self.originalTintColor ?? self.tintColor
+        let tintColor = self.originalTintColor ?? self.tintColor
+        self.subtitleLabel.textColor = tintColor
+        
+        switch self.style
+        {
+        case .app:
+            self.directionalLayoutMargins.trailing = self.stackView.directionalLayoutMargins.trailing
+            
+            self.iconImageViewHeightConstraint.constant = 60
+            self.iconImageView.style = .icon
+            
+            self.titleLabel.textColor = .label
+            
+            self.button.style = .pill
+            
+            self.backgroundEffectView.contentView.backgroundColor = UIColor(resource: .blurTint)
+            self.backgroundEffectView.backgroundColor = tintColor
+            
+        case .source:
+            self.directionalLayoutMargins.trailing = 20
+            
+            self.iconImageViewHeightConstraint.constant = 44
+            self.iconImageView.style = .circular
+            
+            self.titleLabel.textColor = .white
+            
+            self.button.style = .custom
+            
+            self.backgroundEffectView.contentView.backgroundColor = tintColor?.adjustedForDisplay
+            self.backgroundEffectView.backgroundColor = nil
+            
+            if let tintColor, tintColor.isTooBright
+            {
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemChromeMaterialLight), style: .fill)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
+            else
+            {
+                // Thinner == more dull
+                let textVibrancyEffect = UIVibrancyEffect(blurEffect: .init(style: .systemThinMaterialDark), style: .secondaryLabel)
+                self.vibrancyView.effect = textVibrancyEffect
+            }
+        }
     }
 }

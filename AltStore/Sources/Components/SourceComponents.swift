@@ -87,3 +87,27 @@ class TextViewCollectionViewCell: UICollectionViewCell
         self.textView.textContainerInset.right = self.contentView.layoutMargins.right
     }
 }
+
+class PlaceholderCollectionReusableView: UICollectionReusableView
+{
+    let placeholderView: RSTPlaceholderView
+    
+    override init(frame: CGRect)
+    {
+        self.placeholderView = RSTPlaceholderView(frame: .zero)
+        self.placeholderView.activityIndicatorView.style = .medium
+        
+        super.init(frame: frame)
+        
+        self.addSubview(self.placeholderView, pinningEdgesWith: .zero)
+        
+        NSLayoutConstraint.activate([
+            self.placeholderView.stackView.topAnchor.constraint(equalTo: self.placeholderView.topAnchor),
+            self.placeholderView.stackView.bottomAnchor.constraint(equalTo: self.placeholderView.bottomAnchor),
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

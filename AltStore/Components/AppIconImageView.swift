@@ -8,8 +8,23 @@
 
 import UIKit
 
+extension AppIconImageView
+{
+    enum Style
+    {
+        case icon
+        case circular
+    }
+}
+
 class AppIconImageView: UIImageView
 {
+    var style: Style = .icon {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
@@ -25,8 +40,16 @@ class AppIconImageView: UIImageView
     {
         super.layoutSubviews()
         
-        // Based off of 60pt icon having 12pt radius.
-        let radius = self.bounds.height / 5
-        self.layer.cornerRadius = radius
+        switch self.style
+        {
+        case .icon:
+            // Based off of 60pt icon having 12pt radius.
+            let radius = self.bounds.height / 5
+            self.layer.cornerRadius = radius
+            
+        case .circular:
+            let radius = self.bounds.height / 2
+            self.layer.cornerRadius = radius
+        }
     }
 }

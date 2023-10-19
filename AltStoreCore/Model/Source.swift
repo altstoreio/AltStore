@@ -236,6 +236,23 @@ public extension Source
             return isAdded
         }
     }
+    
+    var isRecommended: Bool {
+        guard let recommendedSources = UserDefaults.shared.recommendedSources else { return false }
+        
+        // TODO: Support alternate URLs
+        let isRecommended = recommendedSources.contains { source in
+            return source.identifier == self.identifier || source.sourceURL?.absoluteString.lowercased() == self.sourceURL.absoluteString
+        }
+        return isRecommended
+    }
+    
+    var lastUpdatedDate: Date? {
+        let allDates = self.apps.compactMap { $0.latestAvailableVersion?.date } + self.newsItems.map { $0.date }
+        
+        let lastUpdatedDate = allDates.sorted().last
+        return lastUpdatedDate
+    }
 }
 
 internal extension Source
@@ -281,6 +298,16 @@ public extension Source
     class func fetchAltStoreSource(in context: NSManagedObjectContext) -> Source?
     {
         let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), Source.altStoreIdentifier), in: context)
+        return source
+    }
+    
+    class func make(name: String, identifier: String, sourceURL: URL, context: NSManagedObjectContext) -> Source
+    {
+        let source = Source(context: context)
+        source.name = name
+        source.identifier = identifier
+        source.sourceURL = sourceURL
+        
         return source
     }
 }

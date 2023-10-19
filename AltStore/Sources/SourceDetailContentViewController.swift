@@ -60,7 +60,7 @@ class SourceDetailContentViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
-        self.view.tintColor = self.source.effectiveTintColor
+        self.collectionView.backgroundColor = .altBackground
         
         let collectionViewLayout = self.makeLayout(source: self.source)
         self.collectionView.collectionViewLayout = collectionViewLayout
@@ -98,11 +98,13 @@ private extension SourceDetailContentViewController
             case .news:
                 guard !source.newsItems.isEmpty else { return nil }
                 
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)) // Underestimate height to prevent jumping size abruptly.
+                // Underestimate height to prevent jumping size abruptly.
+                let heightDimension: NSCollectionLayoutDimension = if #available(iOS 17, *) { .uniformAcrossSiblings(estimate: 50) } else { .estimated(50) }
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: heightDimension)
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
                 let groupWidth = layoutEnvironment.container.contentSize.width - sectionInset * 2
-                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth), heightDimension: .estimated(50))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth), heightDimension: heightDimension)
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 
                 let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(60), heightDimension: .estimated(20))
@@ -221,6 +223,7 @@ private extension SourceDetailContentViewController
             // For some reason, setting cell.layoutMargins = .zero does not update cell.contentView.layoutMargins.
             cell.layoutMargins = .zero
             cell.contentView.layoutMargins = .zero
+            cell.contentView.backgroundColor = .altBackground
             
             cell.bannerView.configure(for: storeApp)
             
@@ -300,6 +303,7 @@ private extension SourceDetailContentViewController
             cell.contentView.layoutMargins = .zero // Fixes incorrect margins if not initially on screen.
             cell.textView.text = source.localizedDescription
             cell.textView.isCollapsed = false
+            cell.textView.backgroundColor = .altBackground
         }
         
         return dataSource

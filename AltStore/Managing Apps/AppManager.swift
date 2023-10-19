@@ -22,6 +22,8 @@ extension AppManager
 {
     static let didFetchSourceNotification = Notification.Name("io.altstore.AppManager.didFetchSource")
     static let didUpdatePatronsNotification = Notification.Name("io.altstore.AppManager.didUpdatePatrons")
+    static let didAddSourceNotification = Notification.Name("io.altstore.AppManager.didAddSource")
+    static let didRemoveSourceNotification = Notification.Name("io.altstore.AppManager.didRemoveSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
@@ -344,7 +346,7 @@ extension AppManager
         }
     }
     
-    func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
+    func add(@AsyncManaged _ source: Source, message: String? = NSLocalizedString("Make sure to only add sources that you trust.", comment: ""), presentingViewController: UIViewController) async throws
     {
         let (sourceName, sourceURL) = await $source.perform { ($0.name, $0.sourceURL) }
         
@@ -352,9 +354,8 @@ extension AppManager
         async let fetchedSource = try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context) // Fetch source async while showing alert.
 
         let title = String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName)
-        let message = message ?? NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
         let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
-        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+        try await presentingViewController.presentConfirmationAlert(title: title, message: message ?? "", primaryAction: action)
 
         // Wait for fetch to finish before saving context to make
         // sure there isn't already a source with this identifier.
@@ -366,6 +367,8 @@ extension AppManager
         try await context.performAsync {
             try context.save()
         }
+        
+        NotificationCenter.default.post(name: AppManager.didAddSourceNotification, object: source)
     }
     
     func remove(@AsyncManaged _ source: Source, presentingViewController: UIViewController) async throws
@@ -388,16 +391,19 @@ extension AppManager
             context.delete(source)
             try context.save()
         }
+        
+        NotificationCenter.default.post(name: AppManager.didRemoveSourceNotification, object: source)
     }
 }
 
 extension AppManager
 {
     @available(*, renamed: "fetchSource(sourceURL:managedObjectContext:)")
+    @discardableResult
     func fetchSource(sourceURL: URL,
                      managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
                      dependencies: [Foundation.Operation] = [],
-                     completionHandler: @escaping (Result<Source, Error>) -> Void)
+                     completionHandler: @escaping (Result<Source, Error>) -> Void) -> FetchSourceOperation
     {
         let fetchSourceOperation = FetchSourceOperation(sourceURL: sourceURL, managedObjectContext: managedObjectContext)
         fetchSourceOperation.resultHandler = { (result) in
@@ -417,6 +423,8 @@ extension AppManager
         }
         
         self.run([fetchSourceOperation], context: nil)
+        
+        return fetchSourceOperation
     }
     
     @available(*, renamed: "fetchSources")
