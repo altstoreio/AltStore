@@ -27,8 +27,23 @@ class AppCardCollectionViewCell: UICollectionViewCell
     private var screenshots: [AppScreenshot] = [] {
         didSet {
             self.dataSource.items = self.screenshots
+            
+            if self.screenshots.isEmpty
+            {
+                // No screenshots, so hide collection view.
+                self.collectionViewAspectRatioConstraint.isActive = false
+                self.stackView.layoutMargins.bottom = 0
+            }
+            else
+            {
+                // At least one screenshot, so show collection view.
+                self.collectionViewAspectRatioConstraint.isActive = true
+                self.stackView.layoutMargins.bottom = self.screenshotsCollectionView.directionalLayoutMargins.leading
+            }
         }
     }
+    
+    private let collectionViewAspectRatioConstraint: NSLayoutConstraint
     
     override init(frame: CGRect)
     {
@@ -47,6 +62,12 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.stackView.axis = .vertical
         self.stackView.alignment = .fill
         self.stackView.distribution = .equalSpacing
+        
+        // Aspect ratio constraint to fit exactly 3 modern portrait iPhone screenshots side-by-side (with spacing).
+        let inset = 14.0 //TODO: Assign from bannerView's layoutMargins
+        let multiplier = (AppScreenshot.defaultAspectRatio.width * 3) / AppScreenshot.defaultAspectRatio.height
+        let spacing = (inset * 2) + (minimumItemSpacing * 2)
+        self.collectionViewAspectRatioConstraint = self.screenshotsCollectionView.widthAnchor.constraint(equalTo: self.screenshotsCollectionView.heightAnchor, multiplier: multiplier, constant: spacing)
         
         super.init(frame: frame)
         
@@ -70,20 +91,13 @@ class AppCardCollectionViewCell: UICollectionViewCell
         
         self.screenshotsCollectionView.register(AppScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         
-        let inset = 14.0 //TODO: Assign from bannerView's layoutMargins
         self.stackView.isLayoutMarginsRelativeArrangement = true
         self.stackView.layoutMargins.bottom = inset
         
         self.contentView.preservesSuperviewLayoutMargins = true
         self.screenshotsCollectionView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: inset, bottom: 0, trailing: inset)
-        
-        // Aspect ratio constraint to fit exactly 3 modern portrait iPhone screenshots side-by-side (with spacing).
-        let multiplier = (AppScreenshot.defaultAspectRatio.width * 3) / AppScreenshot.defaultAspectRatio.height
-        let spacing = (inset * 2) + (minimumItemSpacing * 2)
-        let aspectRatioConstraint = self.screenshotsCollectionView.widthAnchor.constraint(equalTo: self.screenshotsCollectionView.heightAnchor, multiplier: multiplier, constant: spacing)
-        
+
         NSLayoutConstraint.activate([
-            aspectRatioConstraint,
             self.bannerView.heightAnchor.constraint(equalToConstant: 88)
         ])
     }
