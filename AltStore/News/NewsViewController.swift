@@ -85,6 +85,8 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewDidLoad()
         
+        self.collectionView.backgroundColor = .altBackground
+        
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         

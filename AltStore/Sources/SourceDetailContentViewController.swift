@@ -60,6 +60,8 @@ class SourceDetailContentViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        self.collectionView.backgroundColor = .altBackground
+        
         let collectionViewLayout = self.makeLayout(source: self.source)
         self.collectionView.collectionViewLayout = collectionViewLayout
         
@@ -221,6 +223,7 @@ private extension SourceDetailContentViewController
             // For some reason, setting cell.layoutMargins = .zero does not update cell.contentView.layoutMargins.
             cell.layoutMargins = .zero
             cell.contentView.layoutMargins = .zero
+            cell.contentView.backgroundColor = .altBackground
             
             cell.bannerView.configure(for: storeApp)
             
@@ -300,6 +303,7 @@ private extension SourceDetailContentViewController
             cell.contentView.layoutMargins = .zero // Fixes incorrect margins if not initially on screen.
             cell.textView.text = source.localizedDescription
             cell.textView.isCollapsed = false
+            cell.textView.backgroundColor = .altBackground
         }
         
         return dataSource
