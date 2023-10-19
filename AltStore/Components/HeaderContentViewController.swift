@@ -277,8 +277,21 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
             self._shouldResetLayout = false
         }
         
-        //TODO: Dynamically calculate status bar height.
-        let statusBarHeight = 20.0 //self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let statusBarHeight: Double
+        
+        if let navigationController, navigationController.presentingViewController != nil, navigationController.modalPresentationStyle != .fullScreen
+        {
+            statusBarHeight = 20
+        }
+        else if let statusBarManager = self.view.window?.windowScene?.statusBarManager
+        {
+            statusBarHeight = statusBarManager.statusBarFrame.height
+        }
+        else
+        {
+            statusBarHeight = 0
+        }
+        
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 15 as CGFloat
