@@ -50,7 +50,7 @@
         <!--Browse-->
         <scene sceneID="rXq-UR-qQp">
             <objects>
-                <collectionViewController id="e3L-BF-iXp" customClass="BrowseViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="browseViewController" id="e3L-BF-iXp" customClass="BrowseViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="CaT-1q-qnx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

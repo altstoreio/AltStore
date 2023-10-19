@@ -10,6 +10,20 @@ import UIKit
 
 import AltStoreCore
 
+extension AppScreenshotCollectionViewCell
+{
+    private class ImageView: UIImageView
+    {
+        override func layoutSubviews()
+        {
+            super.layoutSubviews()
+            
+            // Explicitly layout cell to ensure rounded corners are accurate.
+            self.superview?.superview?.setNeedsLayout()
+        }
+    }
+}
+
 class AppScreenshotCollectionViewCell: UICollectionViewCell
 {
     let imageView: UIImageView
@@ -31,21 +45,21 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
     
     override init(frame: CGRect)
     {
-        self.imageView = UIImageView(frame: .zero)
+        self.imageView = ImageView(frame: .zero)
         self.imageView.clipsToBounds = true
         self.imageView.layer.cornerCurve = .continuous
         self.imageView.layer.borderColor = UIColor.tertiaryLabel.cgColor
-                
+        
         super.init(frame: frame)
         
         self.imageView.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(self.imageView)
         
         let widthConstraint = self.imageView.widthAnchor.constraint(equalTo: self.contentView.widthAnchor)
-        widthConstraint.priority = UILayoutPriority(999)
+        widthConstraint.priority = .defaultHigh
         
         let heightConstraint = self.imageView.heightAnchor.constraint(equalTo: self.contentView.heightAnchor)
-        heightConstraint.priority = UILayoutPriority(999)
+        heightConstraint.priority = .defaultHigh
         
         NSLayoutConstraint.activate([
             widthConstraint,
@@ -64,7 +78,7 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?)
     {
         super.traitCollectionDidChange(previousTraitCollection)
         
@@ -74,11 +88,6 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        
-        guard self.imageView.bounds.width != 0 else {
-            self.setNeedsLayout()
-            return
-        }
         
         if self.isRounded
         {

@@ -98,6 +98,13 @@ public class AppScreenshot: NSManagedObject, Fetchable, Decodable
     }
 }
 
+public extension AppScreenshot
+{
+    var aspectRatio: CGSize {
+        return self.size ?? AppScreenshot.defaultAspectRatio
+    }
+}
+
 extension AppScreenshot
 {
     var screenshotID: String {
