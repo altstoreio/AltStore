@@ -194,7 +194,7 @@ public extension DatabaseManager
             }
         }
         
-        semaphore.wait()
+        _ = semaphore.wait(timeout: .now() + 2.0)
     }
 }
 
