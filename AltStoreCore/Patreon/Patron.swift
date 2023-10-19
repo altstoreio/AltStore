@@ -14,7 +14,7 @@ extension PatreonAPI
     {
         struct Attributes: Decodable
         {
-            var full_name: String
+            var full_name: String?
             var patron_status: String?
         }
         
@@ -54,7 +54,7 @@ extension Patron
 
 public class Patron
 {
-    public var name: String
+    public var name: String?
     public var identifier: String
     
     public var status: Status

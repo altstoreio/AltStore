@@ -57,6 +57,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
     private let managedObjectContext: NSManagedObjectContext
     
     var presentsFinishedNotification: Bool = true
+    var ignoresServerNotFoundError: Bool = true
     
     private let refreshIdentifier: String = UUID().uuidString
     private var runningApplications: Set<String> = []
@@ -106,10 +107,10 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
             
             self.startListeningForRunningApps()
             
-            // Wait for 3 seconds (2 now, 1 later in FindServerOperation) to:
+            // Wait for 2 seconds (1 now, 1 later in FindServerOperation) to:
             // a) give us time to discover AltServers
             // b) give other processes a chance to respond to requestAppState notification
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.managedObjectContext.perform {
                     
                     let filteredApps = self.installedApps.filter { !self.runningApplications.contains($0.bundleIdentifier) }
@@ -141,6 +142,8 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
                     group.completionHandler = { (results) in
                         self.finish(.success(results))
                     }
+                    
+                    self.progress.addChild(group.progress, withPendingUnitCount: 1)
                 }
             }
         }
@@ -208,7 +211,11 @@ private extension BackgroundRefreshAppsOperation
                 content.title = NSLocalizedString("Refreshed Apps", comment: "")
                 content.body = NSLocalizedString("All apps have been refreshed.", comment: "")
             }
-            catch ~OperationError.Code.serverNotFound
+            catch is CancellationError
+            {
+                shouldPresentAlert = false
+            }
+            catch ~OperationError.Code.serverNotFound where self.ignoresServerNotFoundError
             {
                 shouldPresentAlert = false
             }
@@ -228,7 +235,8 @@ private extension BackgroundRefreshAppsOperation
             
             if shouldPresentAlert
             {
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
+                // Using nil if delay == 0 fixes race condition where multiple notifications can appear (or none).
+                let trigger = delay == 0 ? nil : UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
                 
                 let request = UNNotificationRequest(identifier: self.refreshIdentifier, content: content, trigger: trigger)
                 UNUserNotificationCenter.current().add(request)

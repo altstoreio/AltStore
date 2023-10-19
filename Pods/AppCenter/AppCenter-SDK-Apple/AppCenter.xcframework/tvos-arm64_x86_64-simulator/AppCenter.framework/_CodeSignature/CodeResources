@@ -6,15 +6,15 @@
 	<dict>
 		<key>Headers/AppCenter.h</key>
 		<data>
-		qaTNZSZUTXwLe2rrosDNCarRqAM=
+		MdFKslsEaiDj7VrHH0AK8RZFShc=
 		</data>
 		<key>Headers/MSACAbstractLog.h</key>
 		<data>
-		+Ikfy/fTOpqwPZM3Fpii3cpsx8Y=
+		w9/JsPqK7LLxwx1Sxsctf2HCN90=
 		</data>
 		<key>Headers/MSACAppCenter.h</key>
 		<data>
-		2cUgfgx3odOGivdk+n6FXq94KgU=
+		wHZGyUCGolziH5LQW/TKihfSwFQ=
 		</data>
 		<key>Headers/MSACAppCenterErrors.h</key>
 		<data>
@@ -36,13 +36,9 @@
 		<data>
 		d9HwKA0/VH3+pLRj1Pd49mqn2gI=
 		</data>
-		<key>Headers/MSACCustomProperties.h</key>
-		<data>
-		m7A9hEgL3d0gV4SyKmXJYRtwqoQ=
-		</data>
 		<key>Headers/MSACDevice.h</key>
 		<data>
-		suv4Wkt36Nkscy7jX2SSYzrkLRs=
+		iPrLks/hbmFcylQrriecHrU3d9I=
 		</data>
 		<key>Headers/MSACEnable.h</key>
 		<data>
@@ -54,11 +50,15 @@
 		</data>
 		<key>Headers/MSACLogWithProperties.h</key>
 		<data>
-		I4y13KVE36pyXv85mc5OWlCjplE=
+		nZREYu+zJ+9un5G2lgM97pECxW0=
 		</data>
 		<key>Headers/MSACLogger.h</key>
 		<data>
 		CaYHmB3+psy5/txfMvd2+bWGJkc=
+		</data>
+		<key>Headers/MSACSerializableObject.h</key>
+		<data>
+		or5nqKvOQVn2ZieUCmYK6fIZkWY=
 		</data>
 		<key>Headers/MSACService.h</key>
 		<data>
@@ -74,11 +74,11 @@
 		</data>
 		<key>Headers/MSACWrapperSdk.h</key>
 		<data>
-		W9sdhEGnIGk/aFHS3gWwQ6FxUfI=
+		seAbD8lMr3QnvkEJ+A2w4PKsJb0=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		gtsETy1VtCs8kXAQJ03MxRx9ne0=
+		PN0+1hr5oPwmoz7rPC0J458QZKc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -95,33 +95,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			qaTNZSZUTXwLe2rrosDNCarRqAM=
+			MdFKslsEaiDj7VrHH0AK8RZFShc=
 			</data>
 			<key>hash2</key>
 			<data>
-			2Wv2BhvzEcs7qHle8K3IXhWh7EVoAIrE2gOs4b0p39c=
+			RfqZWIVdKOxINHcdzLkKsHtMHY+KN9iyLcD5TX2Jgro=
 			</data>
 		</dict>
 		<key>Headers/MSACAbstractLog.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			+Ikfy/fTOpqwPZM3Fpii3cpsx8Y=
+			w9/JsPqK7LLxwx1Sxsctf2HCN90=
 			</data>
 			<key>hash2</key>
 			<data>
-			7hsXFv3UkGsJLcc3eh2pMUrGbGYP2hCUC854z05SzNQ=
+			FEVVgzB4Qg/YBlC3hdcsmmBZ5DmG2+SLLn4OHivrZGk=
 			</data>
 		</dict>
 		<key>Headers/MSACAppCenter.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			2cUgfgx3odOGivdk+n6FXq94KgU=
+			wHZGyUCGolziH5LQW/TKihfSwFQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			C10z0NrhN4J4qdWbypOdjlQ8QLlq4tvPMP21geOS4vI=
+			bzas4rtwYsHOrchA3GHb7dH+J6ibm6pns9HECn26uYc=
 			</data>
 		</dict>
 		<key>Headers/MSACAppCenterErrors.h</key>
@@ -179,26 +179,15 @@
 			xx69UfYa0qw6aSDuVsUAqd/1+t90QCPkQUae+elZwZ0=
 			</data>
 		</dict>
-		<key>Headers/MSACCustomProperties.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			m7A9hEgL3d0gV4SyKmXJYRtwqoQ=
-			</data>
-			<key>hash2</key>
-			<data>
-			FveTXq+kqUdHHlSdLAoQisgT+95bzAuXTrTOQG/b/P8=
-			</data>
-		</dict>
 		<key>Headers/MSACDevice.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			suv4Wkt36Nkscy7jX2SSYzrkLRs=
+			iPrLks/hbmFcylQrriecHrU3d9I=
 			</data>
 			<key>hash2</key>
 			<data>
-			i3TVX2C+DfcRKn2HTBaydWBYHjryX2Cy/eJJxjTFiT8=
+			lhauu1jG3n5lGaZv9JZqtDW6SMzWJ/nsZRMdS22YY6c=
 			</data>
 		</dict>
 		<key>Headers/MSACEnable.h</key>
@@ -227,11 +216,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			I4y13KVE36pyXv85mc5OWlCjplE=
+			nZREYu+zJ+9un5G2lgM97pECxW0=
 			</data>
 			<key>hash2</key>
 			<data>
-			WIrz7Xsi04AboAmZ5dA3d3t8D/8PomKLwsp7oorznVM=
+			GqEg32X1CSNzSjvKNpnzvoLDOS6P3H9GCb3mh79AXWI=
 			</data>
 		</dict>
 		<key>Headers/MSACLogger.h</key>
@@ -243,6 +232,17 @@
 			<key>hash2</key>
 			<data>
 			GipSaz+D+Z5eWauQP+10U8xvbAnxPeIRD4HTvn0F5DQ=
+			</data>
+		</dict>
+		<key>Headers/MSACSerializableObject.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			or5nqKvOQVn2ZieUCmYK6fIZkWY=
+			</data>
+			<key>hash2</key>
+			<data>
+			TdCeoNla8kUqc5HPES6WNwi7ycy+4vRr3HGDipEXNVE=
 			</data>
 		</dict>
 		<key>Headers/MSACService.h</key>
@@ -282,11 +282,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			W9sdhEGnIGk/aFHS3gWwQ6FxUfI=
+			seAbD8lMr3QnvkEJ+A2w4PKsJb0=
 			</data>
 			<key>hash2</key>
 			<data>
-			5x+0epJnQN2wZKY2xjvsjAYrr6H1QGYIGz0ptux72dU=
+			g1nF8ReO0h3vIyjBxCcfcnjGvOgDLES8RxN8ydPRDDM=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

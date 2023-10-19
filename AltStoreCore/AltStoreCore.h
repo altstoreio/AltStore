@@ -16,7 +16,7 @@ FOUNDATION_EXPORT const unsigned char AltStoreCoreVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <AltStoreCore/PublicHeader.h>
 
-#import <AltStoreCore/ALTAppPermission.h>
+#import <AltStoreCore/ALTAppPermissions.h>
 #import <AltStoreCore/ALTSourceUserInfoKey.h>
 #import <AltStoreCore/ALTPatreonBenefitType.h>
 

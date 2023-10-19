@@ -9,48 +9,38 @@
 import CoreData
 import UIKit
 
-public extension ALTAppPermissionType
-{
-    var localizedShortName: String? {
-        switch self
-        {
-        case .photos: return NSLocalizedString("Photos", comment: "")
-        case .backgroundAudio: return NSLocalizedString("Audio (BG)", comment: "")
-        case .backgroundFetch: return NSLocalizedString("Fetch (BG)", comment: "")
-        default: return nil
-        }
-    }
-    
-    var localizedName: String? {
-        switch self
-        {
-        case .photos: return NSLocalizedString("Photos", comment: "")
-        case .backgroundAudio: return NSLocalizedString("Background Audio", comment: "")
-        case .backgroundFetch: return NSLocalizedString("Background Fetch", comment: "")
-        default: return nil
-        }
-    }
-    
-    var icon: UIImage? {
-        switch self
-        {
-        case .photos: return UIImage(named: "PhotosPermission")
-        case .backgroundAudio: return UIImage(named: "BackgroundAudioPermission")
-        case .backgroundFetch: return UIImage(named: "BackgroundFetchPermission")
-        default: return nil
-        }
-    }
-}
+import AltSign
 
-@objc(AppPermission)
+@objc(AppPermission) @dynamicMemberLookup
 public class AppPermission: NSManagedObject, Decodable, Fetchable
 {
     /* Properties */
     @NSManaged public var type: ALTAppPermissionType
-    @NSManaged public var usageDescription: String
+    
+    // usageDescription must be non-optional for backwards compatibility,
+    // so we store non-optional value and provide public accessor with optional return type.
+    @nonobjc public var usageDescription: String? {
+        get { _usageDescription.isEmpty ? nil : _usageDescription }
+        set { _usageDescription = newValue ?? "" }
+    }
+    @NSManaged @objc(usageDescription) private var _usageDescription: String
+    
+    @nonobjc public var permission: any ALTAppPermission {
+        switch self.type
+        {
+        case .entitlement: return ALTEntitlement(rawValue: self._permission)
+        case .privacy: return ALTAppPrivacyPermission(rawValue: self._permission)
+        default: return UnknownAppPermission(rawValue: self._permission)
+        }
+    }
+    @NSManaged @objc(permission) private var _permission: String
+    
+    // Set by StoreApp.
+    @NSManaged public var appBundleID: String
+    @NSManaged public var sourceID: String
     
     /* Relationships */
-    @NSManaged public private(set) var app: StoreApp!
+    @NSManaged public internal(set) var app: StoreApp?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -59,7 +49,7 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
     
     private enum CodingKeys: String, CodingKey
     {
-        case type
+        case name
         case usageDescription
     }
     
@@ -72,10 +62,12 @@ public class AppPermission: NSManagedObject, Decodable, Fetchable
         do
         {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.usageDescription = try container.decode(String.self, forKey: .usageDescription)
             
-            let rawType = try container.decode(String.self, forKey: .type)
-            self.type = ALTAppPermissionType(rawValue: rawType)
+            self._permission = try container.decode(String.self, forKey: .name)
+            self.usageDescription = try container.decodeIfPresent(String.self, forKey: .usageDescription)
+            
+            // Will be updated from StoreApp.
+            self.type = .unknown
         }
         catch
         {
@@ -94,5 +86,16 @@ public extension AppPermission
     @nonobjc class func fetchRequest() -> NSFetchRequest<AppPermission>
     {
         return NSFetchRequest<AppPermission>(entityName: "AppPermission")
+    }
+}
+
+// @dynamicMemberLookup
+public extension AppPermission
+{
+    // Convenience for accessing .permission properties.
+    subscript<T>(dynamicMember keyPath: KeyPath<any ALTAppPermission, T>) -> T {
+        get {
+            return self.permission[keyPath: keyPath]
+        }
     }
 }

@@ -46,10 +46,7 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
     
     private lazy var navigationController: UINavigationController = {
         let navigationController = self.storyboard.instantiateViewController(withIdentifier: "navigationController") as! UINavigationController
-        if #available(iOS 13.0, *)
-        {
-            navigationController.isModalInPresentation = true
-        }
+        navigationController.isModalInPresentation = true
         return navigationController
     }()
     

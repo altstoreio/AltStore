@@ -48,7 +48,7 @@ extension Error
 
 extension URL
 {
-    static let testFileURL = URL(filePath: "~/Desktop/TestApp.ipa")
+    static let testFileURL = URL(fileURLWithPath: "~/Desktop/TestApp.ipa")
 }
 
 final class AltTests: XCTestCase
@@ -1226,7 +1226,7 @@ extension AltTests
     
     func testAddingLocalizedFailureThenSerializing() async throws
     {
-        let error = CocoaError(.fileReadNoSuchFile, userInfo: [NSURLErrorKey: URL(filePath: "~/Users/rileytestut/delta")])
+        let error = CocoaError(.fileReadNoSuchFile, userInfo: [NSURLErrorKey: URL(fileURLWithPath: "~/Users/rileytestut/delta")])
         let nsError = (error as NSError).withLocalizedFailure(.testOriginalLocalizedFailure)
 
         let receivedError = try self.send(nsError)

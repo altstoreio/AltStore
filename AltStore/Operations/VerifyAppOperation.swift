@@ -7,120 +7,41 @@
 //
 
 import Foundation
+import CryptoKit
 
 import AltStoreCore
 import AltSign
 import Roxas
 
-extension VerificationError
+import RegexBuilder
+
+private extension ALTEntitlement
 {
-    enum Code: Int, ALTErrorCode, CaseIterable
-    {
-        typealias Error = VerificationError
-        
-        case privateEntitlements
-        case mismatchedBundleIdentifiers
-        case iOSVersionNotSupported
-    }
-    
-    static func privateEntitlements(_ entitlements: [String: Any], app: ALTApplication) -> VerificationError { VerificationError(code: .privateEntitlements, app: app, entitlements: entitlements) }
-    static func mismatchedBundleIdentifiers(sourceBundleID: String, app: ALTApplication) -> VerificationError  { VerificationError(code: .mismatchedBundleIdentifiers, app: app, sourceBundleID: sourceBundleID) }
-    
-    static func iOSVersionNotSupported(app: AppProtocol, osVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion, requiredOSVersion: OperatingSystemVersion?) -> VerificationError {
-        VerificationError(code: .iOSVersionNotSupported, app: app, deviceOSVersion: osVersion, requiredOSVersion: requiredOSVersion)
-    }
+    static var ignoredEntitlements: Set<ALTEntitlement> = [
+        .applicationIdentifier,
+        .teamIdentifier
+    ]
 }
 
-struct VerificationError: ALTLocalizedError
+extension VerifyAppOperation
 {
-    let code: Code
-    
-    var errorTitle: String?
-    var errorFailure: String?
-    
-    @Managed var app: AppProtocol?
-    var entitlements: [String: Any]?
-    var sourceBundleID: String?
-    var deviceOSVersion: OperatingSystemVersion?
-    var requiredOSVersion: OperatingSystemVersion?
-    
-    var errorDescription: String? {
-        //TODO: Make this automatic somehow with ALTLocalizedError
-        guard self.errorFailure == nil else { return nil }
-        
-        switch self.code
-        {
-        case .iOSVersionNotSupported:
-            guard let deviceOSVersion else { break }
-            
-            var failureReason = self.errorFailureReason
-            if self.app == nil
-            {
-                // failureReason does not start with app name, so make first letter lowercase.
-                let firstLetter = failureReason.prefix(1).lowercased()
-                failureReason = firstLetter + failureReason.dropFirst()
-            }
-            
-            let localizedDescription = String(format: NSLocalizedString("This device is running iOS %@, but %@", comment: ""), deviceOSVersion.stringValue, failureReason)
-            return localizedDescription
-            
-        default: break
-        }
-        
-        return self.errorFailureReason
-    }
-    
-    var errorFailureReason: String {
-        switch self.code
-        {
-        case .privateEntitlements:
-            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
-            return String(format: NSLocalizedString("%@ requires private permissions.", comment: ""), appName)
-            
-        case .mismatchedBundleIdentifiers:
-            if let appBundleID = self.$app.bundleIdentifier, let bundleID = self.sourceBundleID
-            {
-                return String(format: NSLocalizedString("The bundle ID “%@” does not match the one specified by the source (“%@”).", comment: ""), appBundleID, bundleID)
-            }
-            else
-            {
-                return NSLocalizedString("The bundle ID does not match the one specified by the source.", comment: "")
-            }
-            
-        case .iOSVersionNotSupported:
-            let appName = self.$app.name ?? NSLocalizedString("The app", comment: "")
-            let deviceOSVersion = self.deviceOSVersion ?? ProcessInfo.processInfo.operatingSystemVersion
-            
-            guard let requiredOSVersion else {
-                return String(format: NSLocalizedString("%@ does not support iOS %@.", comment: ""), appName, deviceOSVersion.stringValue)
-            }
-            
-            if deviceOSVersion > requiredOSVersion
-            {
-                // Device OS version is higher than maximum supported OS version.
-                
-                let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or earlier.", comment: ""), appName, requiredOSVersion.stringValue)
-                return failureReason
-            }
-            else
-            {
-                // Device OS version is lower than minimum supported OS version.
-                
-                let failureReason = String(format: NSLocalizedString("%@ requires iOS %@ or later.", comment: ""), appName, requiredOSVersion.stringValue)
-                return failureReason
-            }
-        }
+    enum PermissionReviewMode
+    {
+        case none
+        case all
+        case added
     }
 }
 
 @objc(VerifyAppOperation)
 class VerifyAppOperation: ResultOperation<Void>
 {
-    let context: AppOperationContext
-    var verificationHandler: ((VerificationError) -> Bool)?
+    let permissionsMode: PermissionReviewMode
+    let context: InstallAppOperationContext
     
-    init(context: AppOperationContext)
+    init(permissionsMode: PermissionReviewMode, context: InstallAppOperationContext)
     {
+        self.permissionsMode = permissionsMode
         self.context = context
         
         super.init()
@@ -150,48 +71,66 @@ class VerifyAppOperation: ResultOperation<Void>
                 throw VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: app.minimumiOSVersion)
             }
             
-            if #available(iOS 13.5, *)
-            {
-                // No psychic paper, so we can ignore private entitlements
-                app.hasPrivateEntitlements = false
-            }
-            else
-            {
-                // Make sure this goes last, since once user responds to alert we don't do any more app verification.
-                if let commentStart = app.entitlementsString.range(of: "<!---><!-->"), let commentEnd = app.entitlementsString.range(of: "<!-- -->")
-                {
-                    // Psychic Paper private entitlements.
-                    
-                    let entitlementsStart = app.entitlementsString.index(after: commentStart.upperBound)
-                    let rawEntitlements = String(app.entitlementsString[entitlementsStart ..< commentEnd.lowerBound])
-                    
-                    let plistTemplate = """
-                        <?xml version="1.0" encoding="UTF-8"?>
-                        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-                        <plist version="1.0">
-                            <dict>
-                            %@
-                            </dict>
-                        </plist>
-                        """
-                    let entitlementsPlist = String(format: plistTemplate, rawEntitlements)
-                    let entitlements = try PropertyListSerialization.propertyList(from: entitlementsPlist.data(using: .utf8)!, options: [], format: nil) as! [String: Any]
-                    
-                    app.hasPrivateEntitlements = true
-                    let error = VerificationError.privateEntitlements(entitlements, app: app)
-                    self.process(error) { (result) in
-                        self.finish(result.mapError { $0 as Error })
-                    }
-                    
-                    return
-                }
-                else
-                {
-                    app.hasPrivateEntitlements = false
-                }
+            guard let appVersion = self.context.appVersion else {
+                return self.finish(.success(()))
             }
             
-            self.finish(.success(()))
+            Task<Void, Never>  {
+                do
+                {
+                    do
+                    {
+                        guard let ipaURL = self.context.ipaURL else { throw OperationError.appNotFound(name: app.name) }
+                        
+                        try await self.verifyHash(of: app, at: ipaURL, matches: appVersion)
+                        try await self.verifyDownloadedVersion(of: app, matches: appVersion)
+                        
+                        // Verify permissions last in case user bypasses error.
+                        try await self.verifyPermissions(of: app, match: appVersion)
+                    }
+                    catch let error as VerificationError where error.code == .undeclaredPermissions
+                    {
+                        #if !BETA
+                        throw error
+                        #endif
+                        
+                        if let trustedSources = UserDefaults.shared.trustedSources, let sourceID = await self.context.$appVersion.sourceID
+                        {
+                            let isTrusted = trustedSources.contains { $0.identifier == sourceID }
+                            guard !isTrusted else {
+                                // Don't enforce permission checking for Trusted Sources while 2.0 is in beta.
+                                return self.finish(.success(()))
+                            }
+                        }
+                        
+                        // While in beta, allow users to temporarily bypass permissions alert
+                        // so source maintainers have time to update their sources.
+                        guard let presentingViewController = self.context.presentingViewController else { throw error }
+                        
+                        let message = NSLocalizedString("While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated.", comment: "")
+                        
+                        let ignoreAction = await UIAlertAction(title: NSLocalizedString("Install Anyway", comment: ""), style: .destructive)
+                        let viewPermissionsAction = await UIAlertAction(title: NSLocalizedString("View Permisions", comment: ""), style: .default)
+                        
+                        while true
+                        {
+                            let action = try await presentingViewController.presentConfirmationAlert(title: error.errorFailureReason,
+                                                                                                     message: message,
+                                                                                                     actions: [ignoreAction, viewPermissionsAction])
+                            
+                            guard action == viewPermissionsAction else { break } // break loop to continue with installation (unless we're viewing permissions).
+                            
+                            await presentingViewController.presentAlert(title: NSLocalizedString("Undeclared Permissions", comment: ""), message: error.recoverySuggestion)
+                        }
+                    }
+                    
+                    self.finish(.success(()))
+                }
+                catch
+                {
+                    self.finish(.failure(error))
+                }
+            }
         }
         catch
         {
@@ -202,35 +141,120 @@ class VerifyAppOperation: ResultOperation<Void>
 
 private extension VerifyAppOperation
 {
-    func process(_ error: VerificationError, completion: @escaping (Result<Void, VerificationError>) -> Void)
+    func verifyHash(of app: ALTApplication, at ipaURL: URL, @AsyncManaged matches appVersion: AppVersion) async throws
     {
-        guard let presentingViewController = self.context.presentingViewController else { return completion(.failure(error)) }
+        // Do nothing if source doesn't provide hash.
+        guard let expectedHash = await $appVersion.sha256 else { return }
+
+        let data = try Data(contentsOf: ipaURL)
+        let sha256Hash = SHA256.hash(data: data)
+        let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
+
+        print("[ALTLog] Comparing app hash (\(hashString)) against expected hash (\(expectedHash))...")
+
+        guard hashString == expectedHash else { throw VerificationError.mismatchedHash(hashString, expectedHash: expectedHash, app: app) }
+    }
+    
+    func verifyDownloadedVersion(of app: ALTApplication, @AsyncManaged matches appVersion: AppVersion) async throws
+    {
+        let (version, buildVersion) = await $appVersion.perform { ($0.version, $0.buildVersion) }
         
-        DispatchQueue.main.async {
-            switch error.code
-            {
-            case .privateEntitlements:
-                guard let entitlements = error.entitlements else { return completion(.failure(error)) }
-                let permissions = entitlements.keys.sorted().joined(separator: "\n")
-                let message = String(format: NSLocalizedString("""
-                    You must allow access to these private permissions before continuing:
-                    
-                    %@
-                    
-                    Private permissions allow apps to do more than normally allowed by iOS, including potentially accessing sensitive private data. Make sure to only install apps from sources you trust.
-                    """, comment: ""), permissions)
-                
-                let alertController = UIAlertController(title: error.failureReason ?? error.localizedDescription, message: message, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Allow Access", comment: ""), style: .destructive) { (action) in
-                    completion(.success(()))
-                })
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Deny Access", comment: ""), style: .default, handler: { (action) in
-                    completion(.failure(error))
-                }))
-                presentingViewController.present(alertController, animated: true, completion: nil)
-                
-            case .mismatchedBundleIdentifiers, .iOSVersionNotSupported: return completion(.failure(error))
-            }
+        guard version == app.version else { throw VerificationError.mismatchedVersion(app.version, expectedVersion: version, app: app) }
+        
+        if let buildVersion
+        {
+            guard buildVersion == app.buildVersion else { throw VerificationError.mismatchedBuildVersion(app.buildVersion, expectedVersion: buildVersion, app: app) }
         }
+    }
+    
+    func verifyPermissions(of app: ALTApplication, @AsyncManaged match appVersion: AppVersion) async throws
+    {
+        guard self.permissionsMode != .none else { return }
+        guard let storeApp = await $appVersion.app else { throw OperationError.invalidParameters }
+        
+        // Verify source permissions match first.
+        _ = try await self.verifyPermissions(of: app, match: storeApp)
+        
+        // TODO: Uncomment to verify added permissions.
+        // switch self.permissionsMode
+        // {
+        // case .none, .all: break
+        // case .added:
+        //     let installedAppURL = InstalledApp.fileURL(for: app)
+        //     guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
+        //
+        //     var previousEntitlements = Set(previousApp.entitlements.keys)
+        //     for appExtension in previousApp.appExtensions
+        //     {
+        //         previousEntitlements.formUnion(appExtension.entitlements.keys)
+        //     }
+        //
+        //     // Make sure all entitlements already exist in previousApp.
+        //     let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
+        //     guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
+        // }
+    }
+    
+    @discardableResult
+    func verifyPermissions(of app: ALTApplication, @AsyncManaged match storeApp: StoreApp) async throws -> [any ALTAppPermission]
+    {
+        // Entitlements
+        var allEntitlements = Set(app.entitlements.keys)
+        for appExtension in app.appExtensions
+        {
+            allEntitlements.formUnion(appExtension.entitlements.keys)
+        }
+             
+        // Filter out ignored entitlements.
+        allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
+        
+        
+        // Privacy
+        let allPrivacyPermissions: Set<ALTAppPrivacyPermission>
+        if #available(iOS 16, *)
+        {
+            let regex = Regex {
+                "NS"
+                
+                // Capture permission "name"
+                Capture {
+                    OneOrMore(.anyGraphemeCluster)
+                }
+                
+                "UsageDescription"
+                
+                // Optional suffix
+                Optionally(OneOrMore(.anyGraphemeCluster))
+            }
+            
+            let privacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
+                let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
+                    guard let match = key.wholeMatch(of: regex) else { return nil }
+                    
+                    let permission = ALTAppPrivacyPermission(rawValue: String(match.1))
+                    return permission
+                } ?? []
+                 
+                return permissions
+            }
+            
+            allPrivacyPermissions = Set(privacyPermissions)
+        }
+        else
+        {
+            allPrivacyPermissions = []
+        }
+        
+        
+        // Verify permissions.
+        let sourcePermissions: Set<AnyHashable> = Set(await $storeApp.perform { $0.permissions.map { AnyHashable($0.permission) } })
+        let localPermissions: [any ALTAppPermission] = Array(allEntitlements) + Array(allPrivacyPermissions)
+        
+        // To pass: EVERY permission in localPermissions must also appear in sourcePermissions.
+        // If there is a single missing permission, throw error.
+        let missingPermissions: [any ALTAppPermission] = localPermissions.filter { !sourcePermissions.contains(AnyHashable($0)) }
+        guard missingPermissions.isEmpty else { throw VerificationError.undeclaredPermissions(missingPermissions, app: app) }
+        
+        return localPermissions
     }
 }

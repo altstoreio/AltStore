@@ -11,7 +11,7 @@ import Foundation
 public extension FileManager
 {
     var altstoreSharedDirectory: URL? {
-        guard let appGroup = Bundle.main.appGroups.first else { return nil }
+        guard let appGroup = Bundle.main.altstoreAppGroup else { return nil }
         
         let sharedDirectoryURL = self.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
         return sharedDirectoryURL

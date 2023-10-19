@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -16,7 +16,7 @@
     <entity name="AppID" representedClassName="AppID" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
         <attribute name="expirationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="features" attributeType="Transformable"/>
+        <attribute name="features" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="appIDs" inverseEntity="Team"/>
@@ -105,7 +105,7 @@
         <attribute name="isSilent" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
-        <attribute name="tintColor" optional="YES" attributeType="Transformable"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="title" attributeType="String"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="newsItems" inverseEntity="Source"/>
         <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="newsItems" inverseEntity="StoreApp"/>
@@ -168,12 +168,12 @@
         <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="localizedDescription" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="screenshotURLs" attributeType="Transformable"/>
+        <attribute name="screenshotURLs" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
         <attribute name="subtitle" optional="YES" attributeType="String"/>
-        <attribute name="tintColor" optional="YES" attributeType="Transformable"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="version" attributeType="String"/>
         <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="versionDescription" optional="YES" attributeType="String"/>

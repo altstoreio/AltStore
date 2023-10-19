@@ -14,8 +14,7 @@ public extension UIColor
     
     static let altPrimary = UIColor(named: "Primary", in: colorBundle, compatibleWith: nil)!
     static let deltaPrimary = UIColor(named: "DeltaPrimary", in: colorBundle, compatibleWith: nil)
-    
-    static let altPink = UIColor(named: "Pink", in: colorBundle, compatibleWith: nil)!
+    static let clipPrimary = UIColor(named: "ClipPrimary", in: colorBundle, compatibleWith: nil)
     
     static let refreshRed = UIColor(named: "RefreshRed", in: colorBundle, compatibleWith: nil)!
     static let refreshOrange = UIColor(named: "RefreshOrange", in: colorBundle, compatibleWith: nil)!

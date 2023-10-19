@@ -10,6 +10,7 @@ import UIKit
 import MobileCoreServices
 import Intents
 import Combine
+import UniformTypeIdentifiers
 
 import AltStoreCore
 import AltSign
@@ -30,7 +31,7 @@ extension MyAppsViewController
     }
 }
 
-class MyAppsViewController: UICollectionViewController
+class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
 {
     private let coordinator = NSFileCoordinator()
     private let operationQueue = OperationQueue()
@@ -40,7 +41,7 @@ class MyAppsViewController: UICollectionViewController
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
     private lazy var activeAppsDataSource = self.makeActiveAppsDataSource()
     private lazy var inactiveAppsDataSource = self.makeInactiveAppsDataSource()
-    private lazy var hiddenUpdatesFetchedResultsController = self.makeHiddenUpdatesFetchedResultsController()
+    private lazy var unsupportedUpdates = Set<StoreApp>()
     
     private var prototypeUpdateCell: UpdateCollectionViewCell!
     private var sideloadingProgressView: UIProgressView!
@@ -53,8 +54,10 @@ class MyAppsViewController: UICollectionViewController
     private var sideloadingProgress: Progress?
     private var dropDestinationIndexPath: IndexPath?
     private var isCheckingForUpdates = false
+    private var didChangeActiveApps = false
     
     private var _imagePickerInstalledApp: InstalledApp?
+    private var _viewDidAppear = false
     
     // Cache
     private var cachedUpdateSizes = [String: CGSize]()
@@ -80,7 +83,7 @@ class MyAppsViewController: UICollectionViewController
         
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
-        self.hiddenUpdatesFetchedResultsController.delegate = self
+        self.activeAppsDataSource.fetchedResultsController.delegate = self
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -113,11 +116,7 @@ class MyAppsViewController: UICollectionViewController
                                          self.sideloadingProgressView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)])
         }
         
-        if #available(iOS 13, *) {}
-        else
-        {
-            self.registerForPreviewing(with: self, sourceView: self.collectionView)
-        }
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -125,8 +124,16 @@ class MyAppsViewController: UICollectionViewController
         super.viewWillAppear(animated)
         
         self.updateDataSource()
+        self.update()
         
         self.fetchAppIDs()
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        
+        _viewDidAppear = true
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -188,7 +195,7 @@ private extension MyAppsViewController
             
             cell.button.addTarget(self, action: #selector(MyAppsViewController.showHiddenUpdatesAlert(_:)), for: .primaryActionTriggered)
             
-            if let fetchedObjects = self.hiddenUpdatesFetchedResultsController.fetchedObjects, !fetchedObjects.isEmpty
+            if !self.unsupportedUpdates.isEmpty
             {
                 cell.textLabel.text = NSLocalizedString("Unsupported Updates Available", comment: "")
                 cell.button.isHidden = false
@@ -243,7 +250,7 @@ private extension MyAppsViewController
                 appName = app.name
             }
             
-            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.version, versionDate)
+            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.localizedVersion, versionDate)
             
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
@@ -269,18 +276,15 @@ private extension MyAppsViewController
             guard let iconURL = installedApp.storeApp?.iconURL else { return nil }
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: iconURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -479,16 +483,6 @@ private extension MyAppsViewController
         return dataSource
     }
     
-    func makeHiddenUpdatesFetchedResultsController() -> NSFetchedResultsController<InstalledApp>
-    {
-        let fetchRequest = InstalledApp.updatesFetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.bundleIdentifier, ascending: true),
-                                        NSSortDescriptor(keyPath: \InstalledApp.storeApp?.sourceIdentifier, ascending: true)] // Sorting doesn't matter as long as it's stable.
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        return fetchedResultsController
-    }
-    
     func updateDataSource()
     {
         do
@@ -496,11 +490,6 @@ private extension MyAppsViewController
             if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
             {
                 try self.updatesDataSource.fetchedResultsController.performFetch()
-            }
-            
-            if self.hiddenUpdatesFetchedResultsController.fetchedObjects == nil
-            {
-                try self.hiddenUpdatesFetchedResultsController.performFetch()
             }
         }
         catch
@@ -526,15 +515,7 @@ private extension MyAppsViewController
 {
     func update()
     {
-        do
-        {
-            try self.hiddenUpdatesFetchedResultsController.performFetch()
-            try self.updatesDataSource.fetchedResultsController.performFetch()
-        }
-        catch
-        {
-            print("[ALTLog] Failed to fetch updates:", error)
-        }
+        self.updateUnsupportedUpdates()
         
         if self.updatesDataSource.itemCount > 0
         {
@@ -546,6 +527,44 @@ private extension MyAppsViewController
             self.navigationController?.tabBarItem.badgeValue = nil
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        
+        // Reloading collection view when not visible can mess with cell margins.
+        guard self.isViewLoaded && self.view.window != nil else { return }
+        
+        if #available(iOS 15, *)
+        {
+            // Don't reconfigureItems() while checking for updates to avoid incorrect UIRefreshControl animation.
+            // update() will be called again once we've finished checking.
+            if !self.isCheckingForUpdates
+            {
+                let indexPath = IndexPath(row: 0, section: Section.noUpdates.rawValue)
+                self.collectionView.reconfigureItems(at: [indexPath])
+            }
+        }
+        else
+        {
+            // Might not work if already reloading collection view,
+            // but hopefully iOS 14 users won't notice...
+            self.collectionView.reloadSections(IndexSet([Section.noUpdates.rawValue]))
+        }
+    }
+    
+    func updateUnsupportedUpdates()
+    {
+        // TIL includesPendingChanges does not apply to relationships, so we NEED to fetch InstalledApp to check isActive.
+        // let fetchRequest = StoreApp.fetchRequest()
+        // fetchRequest.includesPendingChanges = true // isActive might not be persisted to disk
+        
+        let predicate = NSPredicate(format: "%K == YES AND %K != nil", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp))
+        let activeSourceApps = InstalledApp.all(satisfying: predicate, in: DatabaseManager.shared.viewContext)
+                    
+        let unsupportedUpdates = activeSourceApps.compactMap { (installedApp) -> StoreApp? in
+            guard let storeApp = installedApp.storeApp, let appVersion = storeApp.latestAvailableVersion, !appVersion.isSupported else { return nil }
+            return storeApp
+        }
+        
+        // Keep StoreApp, not AppVersion, to prevent us accidentally holding onto AppVersions that may be deleted.
+        self.unsupportedUpdates = Set(unsupportedUpdates)
     }
     
     func fetchAppIDs()
@@ -710,13 +729,10 @@ private extension MyAppsViewController
             }
         }
         
-        if #available(iOS 14, *)
-        {
-            let interaction = INInteraction.refreshAllApps()
-            interaction.donate { (error) in
-                guard let error = error else { return }
-                print("Failed to donate intent \(interaction.intent).", error)
-            }
+        let interaction = INInteraction.refreshAllApps()
+        interaction.donate { (error) in
+            guard let error = error else { return }
+            print("Failed to donate intent \(interaction.intent).", error)
         }
     }
     
@@ -761,18 +777,9 @@ private extension MyAppsViewController
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
     {
-        let supportedTypes: [String]
+        let supportedTypes = UTType.types(tag: "ipa", tagClass: .filenameExtension, conformingTo: nil)
         
-        if let types = UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, "ipa" as CFString, nil)?.takeRetainedValue()
-        {
-            supportedTypes = (types as NSArray).map { $0 as! String }
-        }
-        else
-        {
-            supportedTypes = ["com.apple.itunes.ipa"] // Declared by the system.
-        }
-        
-        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: supportedTypes, in: .import)
+        let documentPickerViewController = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
         documentPickerViewController.delegate = self
         self.present(documentPickerViewController, animated: true, completion: nil)
     }
@@ -1076,22 +1083,20 @@ private extension MyAppsViewController
     
     @objc func showHiddenUpdatesAlert(_ sender: UIButton)
     {
-        guard let installedApps = self.hiddenUpdatesFetchedResultsController.fetchedObjects, !installedApps.isEmpty, self.updatesDataSource.itemCount == 0 else { return }
+        guard !self.unsupportedUpdates.isEmpty else { return }
         
-        let numberOfHiddenUpdates = installedApps.count
+        let sortedHiddenUpdates = self.unsupportedUpdates.sorted(by: { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
         
-        let title = numberOfHiddenUpdates == 1 ? NSLocalizedString("Unsupported Update Available", comment: "") : String(format: NSLocalizedString("%@ Unsupported Updates Available", comment: ""), numberOfHiddenUpdates as NSNumber)
+        let title = sortedHiddenUpdates.count == 1 ? NSLocalizedString("Unsupported Update Available", comment: "") : String(format: NSLocalizedString("%@ Unsupported Updates Available", comment: ""), sortedHiddenUpdates.count as NSNumber)
         var message = String(format: NSLocalizedString("These updates don't support iOS %@. Please update your device to the latest iOS version to install them.", comment: ""), ProcessInfo.processInfo.operatingSystemVersion.stringValue)
         message += "\n"
         
-        for installedApp in installedApps
+        for storeApp in sortedHiddenUpdates
         {
-            guard let storeApp = installedApp.storeApp else { continue }
-            
             var title = storeApp.name
             if let appVersion = storeApp.latestAvailableVersion
             {
-                title += " " + appVersion.version
+                title += " " + appVersion.localizedVersion
                 
                 var osVersion: String? = nil
                 if let minOSVersion = appVersion.minOSVersion, !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion)
@@ -1166,6 +1171,9 @@ private extension MyAppsViewController
             catch OperationError.cancelled
             {
                 // Ignore
+                DispatchQueue.main.async {
+                    installedApp.isActive = false
+                }
             }
             catch
             {
@@ -1181,10 +1189,8 @@ private extension MyAppsViewController
             }
         }
                 
-        if UserDefaults.standard.activeAppsLimit != nil, #available(iOS 13, *)
+        if UserDefaults.standard.activeAppsLimit != nil
         {
-            // UserDefaults.standard.activeAppsLimit is only non-nil on iOS 13.3.1 or later, so the #available check is just so we can use Combine.
-            
             guard let app = ALTApplication(fileURL: installedApp.fileURL) else { return finish(.failure(OperationError.invalidApp)) }
             
             var cancellable: AnyCancellable?
@@ -1240,6 +1246,13 @@ private extension MyAppsViewController
                 try? app.managedObjectContext?.save()
                 
                 print("Finished deactivating app:", app.bundleIdentifier)
+            }
+            catch OperationError.cancelled
+            {
+                // Ignore
+                DispatchQueue.main.async {
+                    installedApp.isActive = true
+                }
             }
             catch
             {
@@ -1370,8 +1383,11 @@ private extension MyAppsViewController
     {
         guard let backupURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return }
         
-        let documentPicker = UIDocumentPickerViewController(url: backupURL, in: .exportToService)
-        documentPicker.delegate = self
+        let documentPicker = UIDocumentPickerViewController(forExporting: [backupURL], asCopy: true)
+        
+        // Don't set delegate to avoid conflicting with import callbacks.
+        // documentPicker.delegate = self
+        
         self.present(documentPicker, animated: true, completion: nil)
     }
     
@@ -1432,7 +1448,6 @@ private extension MyAppsViewController
         }
     }
     
-    @available(iOS 14, *)
     func enableJIT(for installedApp: InstalledApp)
     {
         AppManager.shared.enableJIT(for: installedApp) { result in
@@ -1485,25 +1500,41 @@ private extension MyAppsViewController
         guard !self.isCheckingForUpdates else { return }
         self.isCheckingForUpdates = true
         
-        AppManager.shared.fetchSources() { (result) in
+        Task<Void, Never> {
             do
             {
+                // async-let so the for-loop below runs first, ensuring we catch didFetchSourceNotification.
+                async let result = try await AppManager.shared.fetchSources()
+                                
+                if #available(iOS 15, *)
+                {
+                    // .map { $0.name } to avoid "non-sendable type 'Notification?' cannot cross actor boundary" warning.
+                    for await _ in NotificationCenter.default.notifications(named: AppManager.didFetchSourceNotification).map({ $0.name })
+                    {
+                        // Wait until _after_ didFetchSourceNotification
+                        // to prevent incorrect update() animations.
+                        break
+                    }
+                }
+                
                 do
                 {
-                    defer {
-                        DispatchQueue.main.async {
-                            self.isCheckingForUpdates = false
-                            sender.endRefreshing()
+                    do
+                    {
+                        let (_, context) = try await result
+                        
+                        try await context.performAsync {
+                            try context.save()
                         }
                     }
-                    
-                    let (_, context) = try result.get()
-                    try context.save()
-                }
-                catch let error as AppManager.FetchSourcesError
-                {
-                    try error.managedObjectContext?.save()
-                    throw error
+                    catch let error as AppManager.FetchSourcesError
+                    {
+                        try await error.managedObjectContext?.performAsync {
+                            try error.managedObjectContext?.save()
+                        }
+                        
+                        throw error
+                    }
                 }
                 catch let mergeError as MergeError
                 {
@@ -1529,12 +1560,18 @@ private extension MyAppsViewController
             }
             catch let error as NSError
             {
-                DispatchQueue.main.async {
-                    let toastView = ToastView(error: error.withLocalizedTitle(NSLocalizedString("Unable to Check for Updates", comment: "")))
-                    toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
-                    toastView.show(in: self)
-                }
+                let toastView = ToastView(error: error.withLocalizedTitle(NSLocalizedString("Unable to Check for Updates", comment: "")))
+                toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+                toastView.show(in: self)
             }
+            
+            self.isCheckingForUpdates = false
+            
+            // Call update() _after_ setting isCheckingForUpdates to false so it will actually update collection view,
+            // but _before_ calling sender.endRefreshing() to avoid weird animation.
+            self.update()
+            
+            sender.endRefreshing()
         }
     }
 }
@@ -1621,12 +1658,7 @@ extension MyAppsViewController
                 
                 headerView.textLabel.text = NSLocalizedString("Inactive", comment: "")
                 headerView.button.setTitle(nil, for: .normal)
-                
-                if #available(iOS 13.0, *)
-                {
-                    headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
-                }
-                
+                headerView.button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
                 headerView.button.addTarget(self, action: #selector(MyAppsViewController.presentInactiveAppsAlert), for: .primaryActionTriggered)
             }
             
@@ -1677,7 +1709,6 @@ extension MyAppsViewController
     }
 }
 
-@available(iOS 13.0, *)
 extension MyAppsViewController
 {
     private func actions(for installedApp: InstalledApp) -> [UIMenuElement]
@@ -1707,7 +1738,6 @@ extension MyAppsViewController
         }
         
         let jitAction = UIAction(title: NSLocalizedString("Enable JIT", comment: ""), image: UIImage(systemName: "bolt")) { (action) in
-            guard #available(iOS 14, *) else { return }
             self.enableJIT(for: installedApp)
         }
         
@@ -1757,7 +1787,7 @@ extension MyAppsViewController
             actions.append(activateAction)
         }
         
-        if installedApp.isActive, #available(iOS 14, *)
+        if installedApp.isActive
         {
             actions.append(jitAction)
         }
@@ -2179,43 +2209,64 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
-        // Responding to NSFetchedResultsController updates before the collection view has
-        // been shown may throw exceptions because the collection view cannot accurately
-        // count the number of items before the update. However, if we manually call
-        // performBatchUpdates _before_ responding to updates, the collection view can get
-        // an accurate pre-update item count.
-        self.collectionView.performBatchUpdates(nil, completion: nil)
+        guard let dataSource = self.dataSource(for: controller) else { return }
         
-        if controller == self.updatesDataSource.fetchedResultsController
+        switch dataSource
         {
-            self.updatesDataSource.controllerWillChangeContent(controller)
+        case self.activeAppsDataSource: self.didChangeActiveApps = false
+        case self.updatesDataSource where !_viewDidAppear:
+            // Responding to NSFetchedResultsController updates before the collection view has
+            // been shown may throw exceptions because the collection view cannot accurately
+            // count the number of items before the update. However, if we manually call
+            // performBatchUpdates _before_ responding to updates, the collection view can get
+            // an accurate pre-update item count.
+            self.collectionView.performBatchUpdates(nil, completion: nil)
+            
+        default: break
         }
+        
+        dataSource.controllerWillChangeContent(controller)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType)
     {
-        guard controller == self.updatesDataSource.fetchedResultsController else { return }
+        guard let dataSource = self.dataSource(for: controller) else { return }
         
-        self.updatesDataSource.controller(controller, didChange: sectionInfo, atSectionIndex: UInt(sectionIndex), for: type)
+        dataSource.controller(controller, didChange: sectionInfo, atSectionIndex: UInt(sectionIndex), for: type)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?)
     {
-        guard controller == self.updatesDataSource.fetchedResultsController else { return }
+        guard let dataSource = self.dataSource(for: controller) else { return }
         
-        self.updatesDataSource.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
+        switch dataSource
+        {
+        case self.activeAppsDataSource where type == .insert || type == .delete:
+            // Update unsupportedUpdates if there is insertion or deletion in active apps section.
+            self.didChangeActiveApps = true
+            
+        default: break
+        }
+        
+        dataSource.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
-        if controller == self.hiddenUpdatesFetchedResultsController && self.updatesDataSource.itemCount == 0
+        guard let dataSource = self.dataSource(for: controller) else { return }
+        
+        switch dataSource
         {
-            // Reload noUpdates section whenever hiddenUpdatesFetchedResultsController changes (and there are no supported updates).
-            // This ensures the cell correctly switches between "No Updates Available" and "Unsupported Updates Available".
-            self.collectionView.reloadSections([Section.noUpdates.rawValue])
-        }
-        else if controller == self.updatesDataSource.fetchedResultsController
-        {
+        case self.activeAppsDataSource:
+            guard self.didChangeActiveApps else { break }
+            
+            DispatchQueue.main.async {
+                // Update after dataSource.controllerDidChangeContent(),
+                // or else pre-iOS 15 users might crash due to reloadSections().
+                self.update()
+            }
+            
+        case self.updatesDataSource:
             let previousUpdateCount = self.collectionView.numberOfItems(inSection: Section.updates.rawValue)
             let updateCount = Int(self.updatesDataSource.itemCount)
             
@@ -2230,9 +2281,24 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
                 // Insert "No Updates Available" cell.
                 let change = RSTCellContentChange(type: .insert, currentIndexPath: nil, destinationIndexPath: IndexPath(item: 0, section: Section.noUpdates.rawValue))
                 self.collectionView.add(change)
+                
+                // Update unsupported updates _before_ calling controllerDidChangeContent()
+                self.updateUnsupportedUpdates()
             }
-            
-            self.updatesDataSource.controllerDidChangeContent(controller)
+        
+        default: break
+        }
+        
+        dataSource.controllerDidChangeContent(controller)
+    }
+    
+    private func dataSource(for controller: NSFetchedResultsController<NSFetchRequestResult>) -> RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>?
+    {
+        switch controller
+        {
+        case self.updatesDataSource.fetchedResultsController: return self.updatesDataSource
+        case self.activeAppsDataSource.fetchedResultsController: return self.activeAppsDataSource
+        default: return nil
         }
     }
 }
@@ -2243,21 +2309,15 @@ extension MyAppsViewController: UIDocumentPickerDelegate
     {
         guard let fileURL = urls.first else { return }
         
-        switch controller.documentPickerMode
-        {
-        case .import, .open:
-            self.sideloadApp(at: fileURL) { (result) in
-                print("Sideloaded app at \(fileURL) with result:", result)
-            }
-        
-        case .exportToService, .moveToService: break
-        @unknown default: break
+        self.sideloadApp(at: fileURL) { (result) in
+            print("Sideloaded app at \(fileURL) with result:", result)
         }
     }
 }
 
 extension MyAppsViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         guard
@@ -2281,6 +2341,7 @@ extension MyAppsViewController: UIViewControllerPreviewingDelegate
         }
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         let point = CGPoint(x: previewingContext.sourceRect.midX, y: previewingContext.sourceRect.midY)

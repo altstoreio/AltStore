@@ -85,7 +85,20 @@ public extension NSError
         
         // Remove userInfo values that don't conform to NSSecureEncoding.
         userInfo = userInfo.filter { (key, value) in
-            return (value as AnyObject) is NSSecureCoding
+            guard let secureCodable = value as? NSSecureCoding else { return false }
+            
+            switch secureCodable
+            {
+            case let array as NSArray:
+                let isSecureCodable = array.allSatisfy({ $0 is NSSecureCoding })
+                return isSecureCodable
+                
+            case let dictionary as NSDictionary:
+                let isSecureCodable = dictionary.allValues.allSatisfy({ $0 is NSSecureCoding })
+                return isSecureCodable
+                
+            default: return true
+            }
         }
         
         // Sanitize underlying errors.
@@ -196,10 +209,7 @@ public extension NSError
         
         // Support dark mode
         #if canImport(UIKit)
-        if #available(iOS 13, *)
-        {
-            detailedDescription.addAttribute(.foregroundColor, value: UIColor.label, range: NSMakeRange(0, detailedDescription.length))
-        }
+        detailedDescription.addAttribute(.foregroundColor, value: UIColor.label, range: NSMakeRange(0, detailedDescription.length))
         #else
         detailedDescription.addAttribute(.foregroundColor, value: NSColor.labelColor, range: NSMakeRange(0, detailedDescription.length))
         #endif

@@ -131,11 +131,7 @@ public extension PatreonAPI
             }
         }
         
-        if #available(iOS 13.0, *)
-        {
-            self.authenticationSession?.presentationContextProvider = self
-        }
-        
+        self.authenticationSession?.presentationContextProvider = self
         self.authenticationSession?.start()
     }
     
@@ -412,11 +408,25 @@ private extension PatreonAPI
     }
 }
 
-@available(iOS 13.0, *)
 extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
 {
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
     {
-        return UIApplication.alt_shared?.keyWindow ?? UIWindow()
+        //TODO: Properly support multiple scenes.
+        
+        guard let windowScene = UIApplication.alt_shared?.connectedScenes.lazy.compactMap({ $0 as? UIWindowScene }).first else { return UIWindow() }
+
+        if #available(iOS 15, *), let keyWindow = windowScene.keyWindow
+        {
+            return keyWindow
+        }
+        else if let delegate = windowScene.delegate as? UIWindowSceneDelegate,
+                let optionalWindow = delegate.window,
+                let window = optionalWindow
+        {
+            return window
+        }
+
+        return UIWindow()
     }
 }

@@ -41,8 +41,11 @@ private class AppBannerFooterView: UICollectionReusableView
     }
 }
 
-class NewsViewController: UICollectionViewController
+class NewsViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == Show news from all sources.
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -57,10 +60,24 @@ class NewsViewController: UICollectionViewController
     // Cache
     private var cachedCellSizes = [String: CGSize]()
     
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+        
+        self.initialize()
+    }
+    
     required init?(coder: NSCoder)
     {
         super.init(coder: coder)
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         NotificationCenter.default.addObserver(self, selector: #selector(NewsViewController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
     }
     
@@ -77,7 +94,23 @@ class NewsViewController: UICollectionViewController
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         self.collectionView.register(AppBannerFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AppBanner")
         
-        self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
+        
+        if let source = self.source
+        {
+            let tintColor = source.effectiveTintColor ?? .altPrimary
+            self.view.tintColor = tintColor
+            
+            let appearance = NavigationBarAppearance()
+            appearance.configureWithTintColor(tintColor)
+            appearance.configureWithDefaultBackground()
+            
+            let edgeAppearance = appearance.copy()
+            edgeAppearance.configureWithTransparentBackground()
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = edgeAppearance
+        }
         
         self.update()
     }
@@ -111,12 +144,11 @@ private extension NewsViewController
 {
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>
     {
-        let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.date, ascending: false),
-                                        NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
-                                        NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
+        let fetchRequest = NewsItem.sortedFetchRequest(for: self.source)
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
+        // Use fetchedResultsController to split NewsItems up into sections.
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
@@ -158,18 +190,15 @@ private extension NewsViewController
             guard let imageURL = newsItem.imageURL else { return nil }
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: imageURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: imageURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -453,6 +482,10 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
             return previousSize
         }
         
+        // Take layout margins into account.
+        self.prototypeCell.layoutMargins.left = self.view.layoutMargins.left
+        self.prototypeCell.layoutMargins.right = self.view.layoutMargins.right
+        
         let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
         NSLayoutConstraint.activate([widthConstraint])
         defer { NSLayoutConstraint.deactivate([widthConstraint]) }
@@ -493,6 +526,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
 
 extension NewsViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         if let indexPath = self.collectionView.indexPathForItem(at: location), let cell = self.collectionView.cellForItem(at: indexPath)
@@ -539,6 +573,7 @@ extension NewsViewController: UIViewControllerPreviewingDelegate
         }
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         if let safariViewController = viewControllerToCommit as? SFSafariViewController

@@ -13,8 +13,11 @@ import Roxas
 
 import Nuke
 
-class BrowseViewController: UICollectionViewController
+class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == Show apps from all sources.
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -24,6 +27,18 @@ class BrowseViewController: UICollectionViewController
         didSet {
             self.update()
         }
+    }
+    
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
     }
     
     private var cachedItemSizes = [String: CGSize]()
@@ -46,7 +61,23 @@ class BrowseViewController: UICollectionViewController
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
         
-        self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
+        
+        if let source = self.source
+        {
+            let tintColor = source.effectiveTintColor ?? .altPrimary
+            self.view.tintColor = tintColor
+            
+            let appearance = NavigationBarAppearance()
+            appearance.configureWithTintColor(tintColor)
+            appearance.configureWithDefaultBackground()
+            
+            let edgeAppearance = appearance.copy()
+            edgeAppearance.configureWithTransparentBackground()
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = edgeAppearance
+        }
         
         self.update()
     }
@@ -77,9 +108,20 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        if let source = self.source
+        {
+            let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
+        }
+        else
+        {
+            fetchRequest.predicate = predicate
+        }
+        
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
         dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
             let cell = cell as! BrowseCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
@@ -94,7 +136,8 @@ private extension BrowseViewController
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
             cell.bannerView.button.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
-            cell.bannerView.button.activityIndicatorView.style = .white
+            cell.bannerView.button.activityIndicatorView.style = .medium
+            cell.bannerView.button.activityIndicatorView.color = .white
             
             // Explicitly set to false to ensure we're starting from a non-activity indicating state.
             // Otherwise, cell reuse can mess up some cached values.
@@ -135,18 +178,15 @@ private extension BrowseViewController
             let iconURL = storeApp.iconURL
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: iconURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: iconURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -376,6 +416,7 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
 
 extension BrowseViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         guard
@@ -391,6 +432,7 @@ extension BrowseViewController: UIViewControllerPreviewingDelegate
         return appViewController
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         self.navigationController?.pushViewController(viewControllerToCommit, animated: true)

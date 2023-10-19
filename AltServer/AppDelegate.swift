@@ -109,16 +109,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 UserDefaults.standard.didPresentInitialNotification = true
             }
         }
-        
-        self.pluginManager.isUpdateAvailable { result in
-            guard let isUpdateAvailable = try? result.get() else { return }
-            self.isAltPluginUpdateAvailable = isUpdateAvailable
-            
-            if isUpdateAvailable
-            {
-                self.installMailPlugin()
-            }
-        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
@@ -150,41 +140,53 @@ private extension AppDelegate
     
     func enableJIT(for app: InstalledApp, on device: ALTDevice)
     {
-        func finish(_ result: Result<Void, Error>)
-        {
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(let error as NSError):
-                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
-                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
-                    
-                case .success:
+        Task<Void, Never> {
+            do
+            {
+                try await JITManager.shared.enableUnsignedCodeExecution(process: .name(app.executableName), device: device)
+                
+                await MainActor.run {
                     let alert = NSAlert()
                     alert.messageText = String(format: NSLocalizedString("Successfully enabled JIT for %@.", comment: ""), app.name)
                     alert.informativeText = String(format: NSLocalizedString("JIT will remain enabled until you quit the app. You can now disconnect %@ from your computer.", comment: ""), device.name)
+                    
+                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                    
                     alert.runModal()
                 }
             }
-        }
-        
-        ALTDeviceManager.shared.prepare(device) { (result) in
-            switch result
+            catch let error as JITError where error.code == .dependencyNotFound
             {
-            case .failure(let error as NSError): return finish(.failure(error))
-            case .success:
-                ALTDeviceManager.shared.startDebugConnection(to: device) { (connection, error) in
-                    guard let connection = connection else {
-                        return finish(.failure(error! as NSError))
-                    }
+                var errorMessage = error.localizedDescription
+                if let recoverySuggestion = error.recoverySuggestion
+                {
+                    errorMessage += "\n\n" + recoverySuggestion
+                }
+                
+                await MainActor.run { [errorMessage] in
+                    let alert = NSAlert()
+                    alert.alertStyle = .critical
+                    alert.messageText = NSLocalizedString("Missing AltJIT Dependencies", comment: "")
+                    alert.informativeText = errorMessage
                     
-                    connection.enableUnsignedCodeExecutionForProcess(withName: app.executableName) { (success, error) in
-                        guard success else {
-                            return finish(.failure(error!))
-                        }
-                        
-                        finish(.success(()))
+                    alert.addButton(withTitle: NSLocalizedString("View Instructions", comment: ""))
+                    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+                    
+                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+                    
+                    let response = alert.runModal()
+                    if response == .alertFirstButtonReturn
+                    {
+                        let faqURL = URL(string: "https://faq.altstore.io/how-to-use-altstore/altjit")!
+                        NSWorkspace.shared.open(faqURL)
                     }
+                }
+            }
+            catch let error as NSError
+            {
+                await MainActor.run {
+                    let localizedTitle = String(format: NSLocalizedString("JIT could not be enabled for %@.", comment: ""), app.name)
+                    self.showErrorAlert(error: error.withLocalizedTitle(localizedTitle))
                 }
             }
         }
@@ -235,8 +237,7 @@ private extension AppDelegate
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
         
-        func finish(_ result: Result<ALTApplication, Error>)
-        {
+        ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password) { (result) in
             switch result
             {
             case .success(let application):
@@ -254,49 +255,6 @@ private extension AppDelegate
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.showErrorAlert(error: error)
-                }
-            }
-        }
-                
-        func install()
-        {
-            ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password, completion: finish(_:))
-        }
-        
-        AnisetteDataManager.shared.isXPCAvailable { isAvailable in
-            if isAvailable
-            {
-                // XPC service is available, so we don't need to install/update Mail plug-in.
-                // Users can still manually do so from the AltServer menu.
-                install()
-            }
-            else
-            {
-                self.pluginManager.isUpdateAvailable { result in
-                    switch result
-                    {
-                    case .failure(let error):
-                        let error = (error as NSError).withLocalizedTitle(NSLocalizedString("Could not check for Mail plug-in updates.", comment: ""))
-                        finish(.failure(error))
-                        
-                    case .success(let isUpdateAvailable):
-                        self.isAltPluginUpdateAvailable = isUpdateAvailable
-                        
-                        if !self.pluginManager.isMailPluginInstalled || isUpdateAvailable
-                        {
-                            self.installMailPlugin { result in
-                                switch result
-                                {
-                                case .failure: break
-                                case .success: install()
-                                }
-                            }
-                        }
-                        else
-                        {
-                            install()
-                        }
-                    }
                 }
             }
         }
@@ -364,46 +322,7 @@ private extension AppDelegate
         LaunchAtLogin.isEnabled.toggle()
     }
     
-    @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
-    {
-        if !self.pluginManager.isMailPluginInstalled || self.isAltPluginUpdateAvailable
-        {
-            self.installMailPlugin()
-        }
-        else
-        {
-            self.uninstallMailPlugin()
-        }
-    }
-    
-    private func installMailPlugin(completion: ((Result<Void, Error>) -> Void)? = nil)
-    {
-        self.pluginManager.installMailPlugin { (result) in
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(PluginError.cancelled): break
-                case .failure(let error):
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Failed to Install Mail Plug-in", comment: "")
-                    alert.informativeText = error.localizedDescription
-                    alert.runModal()
-                    
-                case .success:
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Mail Plug-in Installed", comment: "")
-                    alert.informativeText = NSLocalizedString("Please restart Mail and enable AltPlugin in Mail's Preferences. Mail must be running when installing or refreshing apps with AltServer.", comment: "")
-                    alert.runModal()
-                    
-                    self.isAltPluginUpdateAvailable = false
-                }
-                
-                completion?(result)
-            }
-        }
-    }
-    
-    private func uninstallMailPlugin()
+    @IBAction private func uninstallMailPlugin(_ sender: NSMenuItem)
     {
         self.pluginManager.uninstallMailPlugin { (result) in
             DispatchQueue.main.async {
@@ -419,11 +338,31 @@ private extension AppDelegate
                 case .success:
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("Mail Plug-in Uninstalled", comment: "")
-                    alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect. You will not be able to use AltServer until the plug-in is reinstalled.", comment: "")
+                    alert.informativeText = NSLocalizedString("Please restart Mail for changes to take effect.", comment: "")
                     alert.runModal()
                 }
             }
         }
+    }
+    
+    @IBAction private func showAboutPanel(_ sender: NSMenuItem)
+    {
+        let options: [NSApplication.AboutPanelOptionKey: Any]
+        
+        if #available(macOS 12, *)
+        {
+            var credits = try! AttributedString(markdown: "Thanks to [pymobiledevice3](https://github.com/doronz88/pymobiledevice3) for their work on the iOS 17 Developer Disk format.")
+            credits.font = .systemFont(ofSize: NSFont.smallSystemFontSize) // YOLO ignore Sendable warning.
+            
+            options = [.credits: NSAttributedString(credits)]
+        }
+        else
+        {
+            options = [:]
+        }
+                
+        NSApplication.shared.orderFrontStandardAboutPanel(options: options)
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
     }
 }
 
@@ -446,20 +385,11 @@ extension AppDelegate: NSMenuDelegate
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
 
-        if self.isAltPluginUpdateAvailable
+        if !self.pluginManager.isMailPluginInstalled
         {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Update Mail Plug-in…", comment: "")
+            // Hide "Install Mail Plug-In" option now that it's not required.
+            self.installMailPluginMenuItem.isHidden = true
         }
-        else if self.pluginManager.isMailPluginInstalled
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Uninstall Mail Plug-in…", comment: "")
-        }
-        else
-        {
-            self.installMailPluginMenuItem.title = NSLocalizedString("Install Mail Plug-in…", comment: "")
-        }
-        self.installMailPluginMenuItem.target = self
-        self.installMailPluginMenuItem.action = #selector(AppDelegate.handleInstallMailPluginMenuItem(_:))
         
         // Need to re-set this every time menu appears so we can refresh device app list.
         self.enableJITMenuController.submenuHandler = { [weak self] device in

@@ -32,14 +32,7 @@ extension SettingsViewController
     fileprivate enum AppRefreshRow: Int, CaseIterable
     {
         case backgroundRefresh
-        
-        @available(iOS 14, *)
         case addToSiri
-        
-        static var allCases: [AppRefreshRow] {
-            guard #available(iOS 14, *) else { return [.backgroundRefresh] }
-            return [.backgroundRefresh, .addToSiri]
-        }
     }
     
     fileprivate enum CreditsRow: Int, CaseIterable
@@ -60,6 +53,7 @@ extension SettingsViewController
     {
         case sendFeedback
         case refreshAttempts
+        case responseCaching
     }
 }
 
@@ -78,6 +72,7 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
+    @IBOutlet private var disableResponseCachingSwitch: UISwitch!
     
     @IBOutlet private var versionLabel: UILabel!
     
@@ -108,7 +103,18 @@ class SettingsViewController: UITableViewController
         debugModeGestureRecognizer.numberOfTouchesRequired = 3
         self.tableView.addGestureRecognizer(debugModeGestureRecognizer)
         
-        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        if let installedApp = InstalledApp.fetchAltStore(in: DatabaseManager.shared.viewContext)
+        {
+            #if BETA
+            // Only show build version for BETA builds.
+            let localizedVersion = installedApp.localizedVersion
+            #else
+            let localizedVersion = installedApp.version
+            #endif
+            
+            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", localizedVersion), comment: "AltStore Version")
+        }
+        else if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         {
             self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
         }
@@ -155,6 +161,7 @@ private extension SettingsViewController
         
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
+        self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
         
         if self.isViewLoaded
         {
@@ -327,7 +334,11 @@ private extension SettingsViewController
         }
     }
     
-    @available(iOS 14, *)
+    @IBAction func toggleDisableResponseCaching(_ sender: UISwitch)
+    {
+        UserDefaults.standard.responseCachingDisabled = sender.isOn
+    }
+    
     @IBAction func addRefreshAppsShortcut()
     {
         guard let shortcut = INShortcut(intent: INInteraction.refreshAllApps().intent) else { return }
@@ -460,22 +471,6 @@ extension SettingsViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        
-        if #available(iOS 14, *) {}
-        else if let cell = cell as? InsetGroupTableViewCell,
-                indexPath.section == Section.appRefresh.rawValue,
-                indexPath.row == AppRefreshRow.backgroundRefresh.rawValue
-        {
-            // Only one row is visible pre-iOS 14.
-            cell.style = .single
-        }
-        
-        return cell
-    }
-    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let section = Section.allCases[section]
@@ -555,9 +550,7 @@ extension SettingsViewController
             switch row
             {
             case .backgroundRefresh: break
-            case .addToSiri:
-                guard #available(iOS 14, *) else { return }
-                self.addRefreshAppsShortcut()
+            case .addToSiri: self.addRefreshAppsShortcut()
             }
             
         case .techyThings:
@@ -606,7 +599,7 @@ extension SettingsViewController
                     toastView.show(in: self)
                 }
                 
-            case .refreshAttempts: break
+            case .refreshAttempts, .responseCaching: break
             }
             
         case .account, .patreon, .instructions, .macDirtyCow: break

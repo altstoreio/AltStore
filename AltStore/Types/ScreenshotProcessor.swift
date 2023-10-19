@@ -10,7 +10,9 @@ import Nuke
 
 struct ScreenshotProcessor: ImageProcessing
 {
-    func process(image: Image, context: ImageProcessingContext) -> Image?
+    var identifier: String { "io.altstore.ScreenshotProcessor" }
+    
+    func process(_ image: PlatformImage) -> PlatformImage?
     {
         guard let cgImage = image.cgImage, image.size.width > image.size.height else { return image }
         

@@ -95,41 +95,33 @@ private extension ErrorLogViewController
             let displayScale = (self.traitCollection.displayScale == 0.0) ? 1.0 : self.traitCollection.displayScale // 0.0 == "unspecified"
             cell.appIconImageView.layer.borderWidth = 1.0 / displayScale
                         
-            if #available(iOS 14, *)
+            let menu = UIMenu(title: "", children: [
+                UIAction(title: NSLocalizedString("Copy Error Message", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
+                    self?.copyErrorMessage(for: loggedError)
+                },
+                UIAction(title: NSLocalizedString("Copy Error Code", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
+                    self?.copyErrorCode(for: loggedError)
+                },
+                UIAction(title: NSLocalizedString("Search FAQ", comment: ""), image: UIImage(systemName: "magnifyingglass")) { [weak self] _ in
+                    self?.searchFAQ(for: loggedError)
+                },
+                UIAction(title: NSLocalizedString("View More Details", comment: ""), image: UIImage(systemName: "ellipsis.circle")) { [weak self] _ in
+                    self?.viewMoreDetails(for: loggedError)
+                },
+            ])
+
+            cell.menuButton.menu = menu
+
+            if self.isScrolling
             {
-                let menu = UIMenu(title: "", children: [
-                    UIAction(title: NSLocalizedString("Copy Error Message", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
-                        self?.copyErrorMessage(for: loggedError)
-                    },
-                    UIAction(title: NSLocalizedString("Copy Error Code", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
-                        self?.copyErrorCode(for: loggedError)
-                    },
-                    UIAction(title: NSLocalizedString("Search FAQ", comment: ""), image: UIImage(systemName: "magnifyingglass")) { [weak self] _ in
-                        self?.searchFAQ(for: loggedError)
-                    },
-                    UIAction(title: NSLocalizedString("View More Details", comment: ""), image: UIImage(systemName: "ellipsis.circle")) { [weak self] _ in
-                        self?.viewMoreDetails(for: loggedError)
-                    },
-                ])
-
-                cell.menuButton.menu = menu
-
-                if self.isScrolling
-                {
-                    cell.menuButton.showsMenuAsPrimaryAction = false
-                }
-                else
-                {
-                    cell.menuButton.showsMenuAsPrimaryAction = true
-                }
-                
-                cell.selectionStyle = .none
+                cell.menuButton.showsMenuAsPrimaryAction = false
             }
             else
             {
-                // Allow table view selections
-                cell.menuButton.isUserInteractionEnabled = false
+                cell.menuButton.showsMenuAsPrimaryAction = true
             }
+            
+            cell.selectionStyle = .none
             
             // Include errorDescriptionTextView's text in cell summary.
             cell.accessibilityLabel = [cell.errorFailureLabel.text, cell.dateLabel.text, cell.errorCodeLabel.text, cell.errorDescriptionTextView.text].compactMap { $0 }.joined(separator: ". ")
@@ -152,16 +144,13 @@ private extension ErrorLogViewController
                     }
                     else if let storeApp = loggedError.storeApp
                     {
-                        ImagePipeline.shared.loadImage(with: storeApp.iconURL, progress: nil) { (response, error) in
+                        ImagePipeline.shared.loadImage(with: storeApp.iconURL, progress: nil) { result in
                             guard !operation.isCancelled else { return operation.finish() }
                             
-                            if let image = response?.image
+                            switch result
                             {
-                                completion(image, nil)
-                            }
-                            else
-                            {
-                                completion(nil, error)
+                            case .success(let response): completion(response.image, nil)
+                            case .failure(let error): completion(nil, error)
                             }
                         }
                     }
@@ -275,31 +264,6 @@ private extension ErrorLogViewController
 
 extension ErrorLogViewController
 {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {
-        guard #unavailable(iOS 14) else { return }
-        
-        let loggedError = self.dataSource.item(at: indexPath)
-        
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
-            tableView.deselectRow(at: indexPath, animated: true)
-        })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Copy Error Message", comment: ""), style: .default) { [weak self] _ in
-            self?.copyErrorMessage(for: loggedError)
-            tableView.deselectRow(at: indexPath, animated: true)
-        })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Copy Error Code", comment: ""), style: .default) { [weak self] _ in
-            self?.copyErrorCode(for: loggedError)
-            tableView.deselectRow(at: indexPath, animated: true)
-        })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Search FAQ", comment: ""), style: .default) { [weak self] _ in
-            self?.searchFAQ(for: loggedError)
-            tableView.deselectRow(at: indexPath, animated: true)
-        })
-        self.present(alertController, animated: true)
-    }
-    
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
         let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("Delete", comment: "")) { _, _, completion in
@@ -362,8 +326,6 @@ extension ErrorLogViewController
     
     private func updateButtonInteractivity()
     {
-        guard #available(iOS 14, *) else { return }
-
         for case let cell as ErrorLogTableViewCell in self.tableView.visibleCells
         {
             if self.isScrolling

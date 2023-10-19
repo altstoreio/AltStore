@@ -23,6 +23,12 @@ public extension StoreApp
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
+    
+    private struct AppPermissions: Decodable
+    {
+        var entitlements: [AppPermission]?
+        var privacy: [AppPermission]?
+    }
 }
 
 @objc(StoreApp)
@@ -40,13 +46,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
-    @NSManaged @objc(version) public private(set) var latestVersionString: String
-    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
-    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
-    
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
+    
+    @NSManaged public var sortIndex: Int32
     
     @objc public internal(set) var sourceIdentifier: String? {
         get {
@@ -65,18 +69,26 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 version.sourceID = newValue
             }
+            
+            for permission in self.permissions
+            {
+                permission.sourceID = self.sourceIdentifier ?? ""
+            }
         }
     }
     @NSManaged private var primitiveSourceIdentifier: String?
     
-    @NSManaged public var sortIndex: Int32
+    // Legacy (kept for backwards compatibility)
+    @NSManaged @objc(version) internal private(set) var _version: String
+    @NSManaged @objc(versionDate) internal private(set) var _versionDate: Date
+    @NSManaged @objc(versionDescription) internal private(set) var _versionDescription: String?
     
     /* Relationships */
     @NSManaged public var installedApp: InstalledApp?
     @NSManaged public var newsItems: Set<NewsItem>
     
     @NSManaged @objc(source) public var _source: Source?
-    @NSManaged @objc(permissions) public var _permissions: NSOrderedSet
+    @NSManaged public internal(set) var featuringSource: Source?
     
     @NSManaged @objc(latestVersion) public private(set) var latestSupportedVersion: AppVersion?
     @NSManaged @objc(versions) public private(set) var _versions: NSOrderedSet
@@ -93,9 +105,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         }
     }
     
-    @nonobjc public var permissions: [AppPermission] {
-        return self._permissions.array as! [AppPermission]
+    @nonobjc public var permissions: Set<AppPermission> {
+        return self._permissions as! Set<AppPermission>
     }
+    @NSManaged @objc(permissions) internal private(set) var _permissions: NSSet // Use NSSet to avoid eagerly fetching values.
     
     @nonobjc public var versions: [AppVersion] {
         return self._versions.array as! [AppVersion]
@@ -120,7 +133,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case downloadURL
         case tintColor
         case subtitle
-        case permissions
+        case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
@@ -157,8 +170,23 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
-            let permissions = try container.decodeIfPresent([AppPermission].self, forKey: .permissions) ?? []
-            self._permissions = NSOrderedSet(array: permissions)
+            if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
+            {
+                appPermissions.entitlements?.forEach { $0.type = .entitlement }
+                appPermissions.privacy?.forEach { $0.type = .privacy }
+                
+                let allPermissions = (appPermissions.entitlements ?? []) + (appPermissions.privacy ?? [])
+                for permission in allPermissions
+                {
+                    permission.appBundleID = self.bundleIdentifier
+                }
+                
+                self._permissions = NSSet(array: allPermissions)
+            }
+            else
+            {
+                self._permissions = NSSet()
+            }
             
             if let versions = try container.decodeIfPresent([AppVersion].self, forKey: .versions)
             {
@@ -179,6 +207,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 let size = try container.decode(Int32.self, forKey: .size)
                 
                 let appVersion = AppVersion.makeAppVersion(version: version,
+                                                           buildVersion: nil,
                                                            date: versionDate,
                                                            localizedDescription: versionDescription,
                                                            downloadURL: downloadURL,
@@ -227,11 +256,28 @@ internal extension StoreApp
         }
                 
         // Preserve backwards compatibility by assigning legacy property values.
-        self.latestVersionString = latestVersion.version
+        self._version = latestVersion.version
         self._versionDate = latestVersion.date
         self._versionDescription = latestVersion.localizedDescription
         self._downloadURL = latestVersion.downloadURL
         self._size = Int32(latestVersion.size)
+    }
+    
+    func setPermissions(_ permissions: Set<AppPermission>)
+    {
+        for case let permission as AppPermission in self._permissions
+        {
+            if permissions.contains(permission)
+            {
+                permission.app = self
+            }
+            else
+            {
+                permission.app = nil
+            }
+        }
+        
+        self._permissions = permissions as NSSet
     }
 }
 
@@ -241,12 +287,19 @@ public extension StoreApp
         return self._versions.firstObject as? AppVersion
     }
     
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceIdentifier else { return nil }
+        
+        let globallyUniqueID = self.bundleIdentifier + "|" + sourceIdentifier
+        return globallyUniqueID
+    }
+    
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
     }
     
-    class func makeAltStoreApp(in context: NSManagedObjectContext) -> StoreApp
+    class func makeAltStoreApp(version: String, buildVersion: String?, in context: NSManagedObjectContext) -> StoreApp
     {
         let app = StoreApp(context: context)
         app.name = "AltStore"
@@ -257,7 +310,8 @@ public extension StoreApp
         app.screenshotURLs = []
         app.sourceIdentifier = Source.altStoreIdentifier
         
-        let appVersion = AppVersion.makeAppVersion(version: "1.0",
+        let appVersion = AppVersion.makeAppVersion(version: version,
+                                                   buildVersion: buildVersion,
                                                    date: Date(),
                                                    downloadURL: URL(string: "http://rileytestut.com")!,
                                                    size: 0,

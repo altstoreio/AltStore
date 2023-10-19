@@ -25,15 +25,8 @@ extension AppManager
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
-    
-    enum PreferredAppVersion
-    {
-        case latestSupportedVersion
-        case latestAvailableVersionWithFallback
-    }
 }
 
-@available(iOS 13, *)
 class AppManagerPublisher: ObservableObject
 {
     @Published
@@ -51,16 +44,14 @@ class AppManager
     
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
-
+    
     private var installationProgress = [String: Progress]() {
         didSet {
-            guard #available(iOS 13, *) else { return }
             self.publisher.installationProgress = self.installationProgress
         }
     }
     private var refreshProgress = [String: Progress]() {
         didSet {
-            guard #available(iOS 13, *) else { return }
             self.publisher.refreshProgress = self.refreshProgress
         }
     }
@@ -74,27 +65,8 @@ class AppManager
         return lock
     }()
     
-    @available(iOS 13, *)
-    private(set) var publisher: AppManagerPublisher {
-        get { _publisher as! AppManagerPublisher }
-        set { _publisher = newValue }
-    }
-    
-    @available(iOS 13, *)
-    private(set) var cancellables: Set<AnyCancellable> {
-        get { _cancellables as! Set<AnyCancellable> }
-        set { _cancellables = newValue }
-    }
-    
-    private lazy var _publisher: Any = {
-        guard #available(iOS 13, *) else { fatalError() }
-        return AppManagerPublisher()
-    }()
-    
-    private lazy var _cancellables: Any = {
-        guard #available(iOS 13, *) else { fatalError() }
-        return Set<AnyCancellable>()
-    }()
+    private let publisher = AppManagerPublisher()
+    private var cancellables: Set<AnyCancellable> = []
     
     private init()
     {
@@ -103,10 +75,7 @@ class AppManager
         self.serialOperationQueue.name = "com.altstore.AppManager.serialOperationQueue"
         self.serialOperationQueue.maxConcurrentOperationCount = 1
         
-        if #available(iOS 13, *)
-        {
-            self.prepareSubscriptions()
-        }
+        self.prepareSubscriptions()
     }
     
     deinit
@@ -116,7 +85,6 @@ class AppManager
         self.progressLock.deallocate()
     }
     
-    @available(iOS 13, *)
     func prepareSubscriptions()
     {
         /// Every time refreshProgress is changed, update all InstalledApps in memory
@@ -358,6 +326,74 @@ extension AppManager
 
 extension AppManager
 {
+    func fetchSource(sourceURL: URL, managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()) async throws -> Source
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSource(sourceURL: sourceURL, managedObjectContext: managedObjectContext) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
+    func fetchSources() async throws -> (Set<Source>, NSManagedObjectContext)
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSources { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
+    func add(@AsyncManaged _ source: Source, message: String? = nil, presentingViewController: UIViewController) async throws
+    {
+        let (sourceName, sourceURL) = await $source.perform { ($0.name, $0.sourceURL) }
+        
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        async let fetchedSource = try await self.fetchSource(sourceURL: sourceURL, managedObjectContext: context) // Fetch source async while showing alert.
+
+        let title = String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName)
+        let message = message ?? NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
+        let action = await UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: .default)
+        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+
+        // Wait for fetch to finish before saving context to make
+        // sure there isn't already a source with this identifier.
+        let sourceExists = try await fetchedSource.isAdded
+        
+        // This is just a sanity check, so pass nil for existingSource to keep code simple.
+        guard !sourceExists else { throw SourceError.duplicate(source, existingSource: nil) }
+        
+        try await context.performAsync {
+            try context.save()
+        }
+    }
+    
+    func remove(@AsyncManaged _ source: Source, presentingViewController: UIViewController) async throws
+    {
+        let (sourceName, sourceID) = await $source.perform { ($0.name, $0.identifier) }
+        guard sourceID != Source.altStoreIdentifier else {
+            throw OperationError.forbidden(failureReason: NSLocalizedString("The default AltStore source cannot be removed.", comment: ""))
+        }
+        
+        let title = String(format: NSLocalizedString("Are you sure you want to remove the source “%@”?", comment: ""), sourceName)
+        let message = NSLocalizedString("Any apps you've installed from this source will remain, but they'll no longer receive any app updates.", comment: "")
+        let action = await UIAlertAction(title: NSLocalizedString("Remove Source", comment: ""), style: .destructive)
+        try await presentingViewController.presentConfirmationAlert(title: title, message: message, primaryAction: action)
+        
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        try await context.performAsync {
+            let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID)
+            guard let source = Source.first(satisfying: predicate, in: context) else { return } // Doesn't exist == success.
+            
+            context.delete(source)
+            try context.save()
+        }
+    }
+}
+
+extension AppManager
+{
+    @available(*, renamed: "fetchSource(sourceURL:managedObjectContext:)")
     func fetchSource(sourceURL: URL,
                      managedObjectContext: NSManagedObjectContext = DatabaseManager.shared.persistentContainer.newBackgroundContext(),
                      dependencies: [Foundation.Operation] = [],
@@ -383,6 +419,7 @@ extension AppManager
         self.run([fetchSourceOperation], context: nil)
     }
     
+    @available(*, renamed: "fetchSources")
     func fetchSources(completionHandler: @escaping (Result<(Set<Source>, NSManagedObjectContext), FetchSourcesError>) -> Void)
     {
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
@@ -399,7 +436,7 @@ extension AppManager
             let operations = sources.map { (source) -> FetchSourceOperation in
                 dispatchGroup.enter()
                 
-                let fetchSourceOperation = FetchSourceOperation(sourceURL: source.sourceURL, managedObjectContext: managedObjectContext)
+                let fetchSourceOperation = FetchSourceOperation(source: source, managedObjectContext: managedObjectContext)
                 fetchSourceOperation.resultHandler = { (result) in
                     switch result
                     {
@@ -452,13 +489,13 @@ extension AppManager
     }
     
     @discardableResult
-    func fetchTrustedSources(completionHandler: @escaping (Result<[FetchTrustedSourcesOperation.TrustedSource], Error>) -> Void) -> FetchTrustedSourcesOperation
+    func updateKnownSources(completionHandler: @escaping (Result<([KnownSource], [KnownSource]), Error>) -> Void) -> UpdateKnownSourcesOperation
     {
-        let fetchTrustedSourcesOperation = FetchTrustedSourcesOperation()
-        fetchTrustedSourcesOperation.resultHandler = completionHandler
-        self.run([fetchTrustedSourcesOperation], context: nil)
+        let updateKnownSourcesOperation = UpdateKnownSourcesOperation()
+        updateKnownSourcesOperation.resultHandler = completionHandler
+        self.run([updateKnownSourcesOperation], context: nil)
         
-        return fetchTrustedSourcesOperation
+        return updateKnownSourcesOperation
     }
     
     func updatePatronsIfNeeded()
@@ -512,16 +549,9 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ installedApp: InstalledApp, to preferredAppVersion: PreferredAppVersion = .latestSupportedVersion, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        let preferredApp: AppProtocol?
-        switch preferredAppVersion
-        {
-        case .latestSupportedVersion: preferredApp = installedApp.storeApp?.latestSupportedVersion
-        case .latestAvailableVersionWithFallback: preferredApp = installedApp.storeApp // Use StoreApp directly to correctly handle min/max OS versions in DownloadAppOperation.
-        }
-        
-        guard let app = preferredApp else {
+        guard let appVersion = installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
@@ -539,7 +569,7 @@ extension AppManager
             }
         }
         
-        let operation = AppOperation.update(app)
+        let operation = AppOperation.update(appVersion)
         assert(operation.app as AnyObject !== installedApp) // Make sure we never accidentally "update" to already installed app.
         
         self.perform([operation], presentingViewController: presentingViewController, group: group)
@@ -721,7 +751,6 @@ extension AppManager
         self.run([removeAppOperation, removeAppBackupOperation], context: authenticationContext)
     }
     
-    @available(iOS 14, *)
     func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         class Context: OperationContext, EnableJITContext
@@ -754,7 +783,6 @@ extension AppManager
         self.run([enableJITOperation], context: context, requiresSerialQueue: true)
     }
     
-    @available(iOS 14.0, *)
     func patch(resignedApp: ALTApplication, presentingViewController: UIViewController, context authContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> PatchAppOperation
     {
         class Context: InstallAppOperationContext, PatchAppContext
@@ -954,11 +982,17 @@ private extension AppManager
                 
                 switch operation
                 {
-                case .install(let app), .update(let app):
-                    let installProgress = self._install(app, operation: operation, group: group) { (result) in
+                case .install(let app):
+                    let installProgress = self._install(app, operation: operation, group: group, reviewPermissions: .all) { (result) in
                         self.finish(operation, result: result, group: group, progress: progress)
                     }
                     progress?.addChild(installProgress, withPendingUnitCount: 80)
+                    
+                case .update(let app):
+                    let updateProgress = self._install(app, operation: operation, group: group, reviewPermissions: .added) { (result) in
+                        self.finish(operation, result: result, group: group, progress: progress)
+                    }
+                    progress?.addChild(updateProgress, withPendingUnitCount: 80)
                     
                 case .activate(let app) where UserDefaults.standard.isLegacyDeactivationSupported: fallthrough
                 case .refresh(let app):
@@ -1044,7 +1078,14 @@ private extension AppManager
         return group
     }
     
-    private func _install(_ app: AppProtocol, operation appOperation: AppOperation, group: RefreshGroup, context: InstallAppOperationContext? = nil, additionalEntitlements: [ALTEntitlement: Any]? = nil, cacheApp: Bool = true, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func _install(_ app: AppProtocol,
+                          operation appOperation: AppOperation,
+                          group: RefreshGroup,
+                          context: InstallAppOperationContext? = nil,
+                          reviewPermissions permissionReviewMode: VerifyAppOperation.PermissionReviewMode = .none,
+                          additionalEntitlements: [ALTEntitlement: Any]? = nil,
+                          cacheApp: Bool = true,
+                          completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
@@ -1091,11 +1132,6 @@ private extension AppManager
             {
                 let app = try result.get()
                 context.app = app
-                
-                if cacheApp
-                {
-                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
-                }
             }
             catch
             {
@@ -1106,12 +1142,22 @@ private extension AppManager
         
         
         /* Verify App */
-        let verifyOperation = VerifyAppOperation(context: context)
+        let permissionsMode = UserDefaults.shared.permissionCheckingDisabled ? .none : permissionReviewMode
+        let verifyOperation = VerifyAppOperation(permissionsMode: permissionsMode, context: context)
         verifyOperation.resultHandler = { (result) in
-            switch result
+            do
             {
-            case .failure(let error): context.error = error
-            case .success: break
+                try result.get()
+                
+                // Wait until we've finished verifying app before caching it.
+                if let app = context.app, cacheApp
+                {
+                    try FileManager.default.copyItem(at: app.fileURL, to: InstalledApp.fileURL(for: app), shouldReplace: true)
+                }
+            }
+            catch
+            {
+                context.error = error
             }
         }
         verifyOperation.addDependency(downloadOperation)
@@ -1166,7 +1212,7 @@ private extension AppManager
                     return
                 }
                 
-                guard let presentingViewController = context.presentingViewController, #available(iOS 14, *) else { return operation.finish() }
+                guard let presentingViewController = context.presentingViewController else { return operation.finish() }
                 
                 if let error = context.error
                 {
@@ -1775,10 +1821,7 @@ private extension AppManager
                 AnalyticsManager.shared.trackEvent(event)
             }
             
-            if #available(iOS 14, *)
-            {                
-                WidgetCenter.shared.reloadAllTimelines()
-            }
+            WidgetCenter.shared.reloadAllTimelines()
             
             do { try installedApp.managedObjectContext?.save() }
             catch { print("Error saving installed app.", error) }
@@ -1848,7 +1891,7 @@ private extension AppManager
     {
         switch error
         {
-        case ~OperationError.Code.cancelled: return // Don't log OperationError.cancelled
+        case is CancellationError: return // Don't log CancellationErrors
         default: break
         }
         

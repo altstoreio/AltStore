@@ -13,7 +13,7 @@ import Roxas
 public extension UserDefaults
 {
     static let shared: UserDefaults = {
-        guard let appGroup = Bundle.main.appGroups.first else { return .standard }
+        guard let appGroup = Bundle.main.altstoreAppGroup else { return .standard }
         
         let sharedUserDefaults = UserDefaults(suiteName: appGroup)!
         return sharedUserDefaults
@@ -39,8 +39,6 @@ public extension UserDefaults
     
     @NSManaged var patronsRefreshID: String?
     
-    @NSManaged var trustedSourceIDs: [String]?
-    
     @nonobjc
     var activeAppsLimit: Int? {
         get {
@@ -64,6 +62,9 @@ public extension UserDefaults
     // Including "MacDirtyCow" in name triggers false positives with malware detectors 🤷‍♂️
     @NSManaged var isCowExploitSupported: Bool
     
+    @NSManaged var permissionCheckingDisabled: Bool
+    @NSManaged var responseCachingDisabled: Bool
+    
     class func registerDefaults()
     {
         let ios13_5 = OperatingSystemVersion(majorVersion: 13, minorVersion: 5, patchVersion: 0)
@@ -82,6 +83,12 @@ public extension UserDefaults
         (ProcessInfo.processInfo.isOperatingSystemAtLeast(ios14) && !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios15_7_2)) ||
         (ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16) && !ProcessInfo.processInfo.isOperatingSystemAtLeast(ios16_2))
         
+        #if DEBUG
+        let permissionCheckingDisabled = true
+        #else
+        let permissionCheckingDisabled = false
+        #endif
+        
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
@@ -90,6 +97,7 @@ public extension UserDefaults
             #keyPath(UserDefaults.requiresAppGroupMigration): true,
             #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
             #keyPath(UserDefaults.isCowExploitSupported): isMacDirtyCowSupported,
+            #keyPath(UserDefaults.permissionCheckingDisabled): permissionCheckingDisabled,
         ]
         
         UserDefaults.standard.register(defaults: defaults)
@@ -100,5 +108,9 @@ public extension UserDefaults
             // Disable ignoreActiveAppsLimit if running iOS version that doesn't support MacDirtyCow.
             UserDefaults.standard.ignoreActiveAppsLimit = false
         }
+        
+        #if !BETA
+        UserDefaults.standard.responseCachingDisabled = false
+        #endif
     }
 }

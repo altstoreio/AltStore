@@ -48,6 +48,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var bundleIdentifier: String
     @NSManaged public var resignedBundleIdentifier: String
     @NSManaged public var version: String
+    @NSManaged public var buildVersion: String
     
     @NSManaged public var refreshedDate: Date
     @NSManaged public var expirationDate: Date
@@ -58,6 +59,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var hasAlternateIcon: Bool
     
     @NSManaged public var certificateSerialNumber: String?
+    @NSManaged public var storeBuildVersion: String?
     
     /* Transient */
     @NSManaged public var isRefreshing: Bool
@@ -87,7 +89,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         super.init(entity: entity, insertInto: context)
     }
     
-    public init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
+    public init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, storeBuildVersion: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -98,31 +100,46 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
         
-        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
+        // In practice this update() is redundant because we always call update() again after init from callers,
+        // but better to have an init that is guaranteed to successfully initialize an object
+        // than one that has a hidden assumption a second method will be called.
+        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber, storeBuildVersion: storeBuildVersion)
+    }
+}
+
+public extension InstalledApp
+{
+    var localizedVersion: String {
+        guard let storeBuildVersion else { return self.version }
+        
+        let localizedVersion = "\(self.version) (\(storeBuildVersion))"
+        return localizedVersion
     }
     
-    public func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?, storeBuildVersion: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        self.buildVersion = resignedApp.buildVersion
+        self.storeBuildVersion = storeBuildVersion
         
         self.certificateSerialNumber = certificateSerialNumber
-
+        
         if let provisioningProfile = resignedApp.provisioningProfile
         {
             self.update(provisioningProfile: provisioningProfile)
         }
     }
     
-    public func update(provisioningProfile: ALTProvisioningProfile)
+    func update(provisioningProfile: ALTProvisioningProfile)
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
     }
     
-    public func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
+    func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
     {
         let hasAlternateIcon = self.hasAlternateIcon
         let alternateIconURL = self.alternateIconURL
@@ -147,6 +164,12 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
             }
         }
     }
+    
+    func matches(_ appVersion: AppVersion) -> Bool
+    {
+        let matchesAppVersion = (self.version == appVersion.version && self.storeBuildVersion == appVersion.buildVersion)
+        return matchesAppVersion
+    }
 }
 
 public extension InstalledApp
@@ -156,25 +179,28 @@ public extension InstalledApp
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
     }
     
-    class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
-    {
-        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
-                                             #keyPath(InstalledApp.isActive),
-                                             #keyPath(InstalledApp.storeApp),
-                                             #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestVersionString))
-        return fetchRequest
-    }
-    
     class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
-        let predicate = NSPredicate(format: "%K != nil AND %K != %K",
-                                    #keyPath(InstalledApp.storeApp.latestSupportedVersion),
-                                    #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version))
+        let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
         
-        let fetchRequest = InstalledApp.updatesFetchRequest()
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [fetchRequest.predicate, predicate].compactMap { $0 })
+        let predicateFormat = [
+            // isActive && storeApp != nil && latestSupportedVersion != nil
+            "%K == YES AND %K != nil AND %K != nil",
+            
+            "AND",
+            
+            // latestSupportedVersion.version != installedApp.version || latestSupportedVersion.buildVersion != installedApp.storeBuildVersion
+            //
+            // We have to also check !(latestSupportedVersion.buildVersion == '' && installedApp.storeBuildVersion == nil)
+            // because latestSupportedVersion.buildVersion stores an empty string for nil, while installedApp.storeBuildVersion uses NULL.
+            "(%K != %K OR (%K != %K AND NOT (%K == '' AND %K == nil)))",
+        ].joined(separator: " ")
         
+        fetchRequest.predicate = NSPredicate(format: predicateFormat,
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.latestSupportedVersion),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion.version), #keyPath(InstalledApp.version),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion))
         return fetchRequest
     }
     

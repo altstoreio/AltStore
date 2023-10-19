@@ -231,8 +231,7 @@ private extension DatabaseManager
             }
             else
             {
-                storeApp = StoreApp.makeAltStoreApp(in: context)
-                storeApp.latestSupportedVersion?.version = localApp.version
+                storeApp = StoreApp.makeAltStoreApp(version: localApp.version, buildVersion: nil, in: context)
                 storeApp.source = altStoreSource
             }
                         
@@ -245,7 +244,10 @@ private extension DatabaseManager
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, context: context)
+                //TODO: Support build versions.
+                // For backwards compatibility reasons, we cannot use localApp's buildVersion as storeBuildVersion,
+                // or else the latest update will _always_ be considered new because we don't use buildVersions in our source (yet).
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, storeBuildVersion: nil, context: context)
                 installedApp.storeApp = storeApp
             }
             
@@ -280,7 +282,7 @@ private extension DatabaseManager
             #if DEBUG
             let replaceCachedApp = true
             #else
-            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
+            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version || installedApp.buildVersion != localApp.buildVersion
             #endif
             
             if replaceCachedApp
@@ -325,7 +327,7 @@ private extension DatabaseManager
             let cachedExpirationDate = installedApp.expirationDate
                         
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
+            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber, storeBuildVersion: nil)
             
             if installedApp.refreshedDate < cachedRefreshedDate
             {
@@ -351,7 +353,8 @@ private extension DatabaseManager
     
     func migrateDatabaseToAppGroupIfNeeded(completion: @escaping (Result<Void, Error>) -> Void)
     {
-        guard UserDefaults.shared.requiresAppGroupMigration else { return completion(.success(())) }
+        // Only migrate if we haven't migrated yet and there's a valid AltStore app group.
+        guard UserDefaults.shared.requiresAppGroupMigration && Bundle.main.altstoreAppGroup != nil else { return completion(.success(())) }
 
         func finish(_ result: Result<Void, Error>)
         {

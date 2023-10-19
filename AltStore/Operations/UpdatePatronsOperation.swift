@@ -70,7 +70,7 @@ class UpdatePatronsOperation: ResultOperation<Void>
                         do
                         {
                             let patrons = try result.get()
-                            let managedPatrons = patrons.map { ManagedPatron(patron: $0, context: self.context) }
+                            let managedPatrons = patrons.compactMap { ManagedPatron(patron: $0, context: self.context) }
                             
                             let patronIDs = Set(managedPatrons.map { $0.identifier })
                             let nonFriendZonePredicate = NSPredicate(format: "NOT (%K IN %@)", #keyPath(ManagedPatron.identifier), patronIDs)

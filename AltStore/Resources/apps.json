@@ -1,13 +1,37 @@
 {
   "name": "AltStore",
   "identifier": "com.rileytestut.AltStore",
-  "sourceURL": "https://cdn.altstore.io/file/altstore/apps.json",
+  "subtitle": "A home for apps that push the boundaries of iOS.",
+  "description": "This is the default source for AltStore. You can add additional sources to manage what apps appear in AltStore.\n\nFor more info, check out our FAQ: https://faq.altstore.io/patreon/beta-access/sources",
+  "website": "https://altstore.io",
   "apps": [
     {
       "name": "AltStore",
       "bundleIdentifier": "com.rileytestut.AltStore",
       "developerName": "Riley Testut",
       "versions": [
+        {
+          "version": "1.7",
+          "date": "2023-09-18T12:00:00-05:00",
+          "localizedDescription": "NEW\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nIMPROVED\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n• Fully compatible with macOS Sonoma\n\nFIXED\n• Fixed AltJIT on iOS 17*\n• Fixed updating apps with manually removed extensions (e.g. uYou+)\n• Fixed not refreshing AltStore last when refreshing via Shortcut\n• Fixed Error Log not displaying all detailed info for certain errors\n\n*Requires AltServer 1.7 (macOS)",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_7.ipa",
+          "size": 5809750,
+          "minOSVersion": "15.0"
+        },
+        {
+          "version": "1.6.3",
+          "date": "2023-04-12T12:00:00-05:00",
+          "localizedDescription": "• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_3.ipa",
+          "size": 5625134
+        },
+        {
+          "version": "1.6.2",
+          "date": "2023-03-22T12:00:00-05:00",
+          "localizedDescription": "⚠️ You must manually install this update by re-installing AltStore with AltServer. You do NOT need to delete AltStore first.\n\nThis update fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2.ipa",
+          "size": 5624498
+        },
         {
           "version": "1.6.1",
           "date": "2023-02-20T12:00:00-06:00",
@@ -23,14 +47,14 @@
           "size": 5614798
         }
       ],
-      "version": "1.6.1",
-      "versionDate": "2023-02-20T12:00:00-06:00",
-      "versionDescription": "• “Clear Cache” button removes non-essential data to free up disk space\n• Sideload more than 3 apps via MacDirtyCow exploit*†\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 16.1.2 (excluding 15.7.2). iOS 16.2+ not supported.\n†Visit faq.altstore.io for detailed instructions.\n",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1.ipa",
+      "version": "1.6.3",
+      "versionDate": "2023-04-12T12:00:00-05:00",
+      "versionDescription": "• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_3.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis version of AltStore allows you to install Delta, an all-in-one emulator for iOS, as well as sideload other .ipa files from the Files app.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5626583,
+      "size": 5625134,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
         "https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG",
@@ -45,7 +69,29 @@
           "type": "background-audio",
           "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
         }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          {
+          "name": "get-task-allow"
+        },
+        {
+          "name": "com.apple.security.application-groups"
+        },
+        {
+          "name": "aps-environment"
+        },
+        {
+          "name": "com.apple.developer.siri"
+        }
+        ],
+        "privacy": [
+          {
+          "name": "LocalNetwork",
+          "usageDescription": "AltStore uses the local network to find and communicate with AltServer."
+        }
       ]
+      }
     },
     {
       "name": "AltStore",
@@ -53,6 +99,49 @@
       "developerName": "Riley Testut",
       "subtitle": "An alternative App Store for iOS.",
       "versions": [
+        {
+          "version": "2.0b4",
+          "date": "2023-09-15T13:30:00-05:00",
+          "localizedDescription": "• Updates Home Screen widget names & descriptions\n• Fixed returning empty dialog from Refresh Apps shortcut\n\nPREVIOUS BETA\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n\nBug Fixes\n• Fixed AltJIT on iOS 17*\n\n*Requires AltServer 1.7rc (macOS) from latest Patreon post",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b4.ipa",
+          "size": 5950900,
+          "sha256": "5f2546be957509532675f4827185d8ec071eaf3a6a5785dc01efcc1e0c88890d",
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.0b3",
+          "date": "2023-09-11T12:30:00-05:00",
+          "localizedDescription": "NEW\n\n\"Active Apps\" Widget (iOS 17+)\n• View remaining days for ALL active apps from Home Screen\n• Refresh apps directly from home screen by tapping countdown timers\n\nIMPROVED\n\nShortcuts\n• Converted existing \"Refresh All Apps\" shortcut into App Shortcut\n• Available by default in \"App Shortcuts\" section of Shortcuts app\n• Displays accurate progress when refreshing apps via Shortcuts app\n\nWidgets\n• Updated existing home screen widget to support refreshing apps by tapping countdown (iOS 17+)\n\nFIXED\n• Fixed AltJIT on iOS 17*\n• Fixed not refreshing AltStore last when refreshing via Shortcut\n• Fixed Error Log not displaying all detailed info for certain errors\n\n*Requires AltServer 1.7b1 (macOS) from latest Patreon post",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b3.ipa",
+          "size": 5951325,
+          "sha256": "e9bb9b126f7acb1c18f22c28f1970b308e5850cf23bf1bb01da7933a97e7d17d",
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.0b2",
+          "date": "2023-05-31T15:30:00-05:00",
+          "localizedDescription": "NEW\n\nApp Permissions\n• View all entitlements and privacy permissions on an app's store page\n• Tap a permission to view description\n• Shows error alert if downloaded app's permissions don't match source*\n\nSources\n• SHA-256 hashes for app downloads\n• Supports updating apps by build version\n• Supports remotely blocking sources\n\nFIXED\n• Fixed updating apps with manually removed extensions (e.g. uYou+)\n• Fixed showing \"Update\" button on store page when no update is available\n• Fixed \"More\" button appearing unnecessarily in Error Log\n• Fixed various memory leaks\n• Fixed incorrectly showing \"Unsupported Updates Available\"\n\n*While AltStore 2.0 is in beta, you can choose to ignore this alert.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b2.ipa",
+          "size": 5963157,
+          "sha256": "8cd9d2a68f20e03b0501d2def9fabdbe2113e113a305a6824535e47b6bfd5bcf",
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.0b1",
+          "date": "2023-04-06T09:30:00-05:00",
+          "localizedDescription": "The first beta of AltStore 2.0 is finally here! 🎉\n\nAltStore 2.0 will unlock third-party sources for everyone, allowing anyone to distribute their apps with AltStore.\n\nNEW\n\nSource \"About\" Page\n• Preview sources before adding them to AltStore\n• Browse all apps and news for a source\n• \"About\" section includes detailed information and additional links\n• \"Featured Apps\" showcases a source's best apps\n• Customizable with updated source JSON format\n\nFIXED\n• Fixed error fetching Friend Zone patrons due to unexpected nil name\n• Fixed incorrect cell height for some News items\n• Fixed incorrectly merging app versions for same app from different sources",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/2_0_b1.ipa",
+          "size": 5793338,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.6.2b",
+          "date": "2023-03-21T12:00:00-05:00",
+          "localizedDescription": "This beta fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.\n\n⚠️ You must manually install this update by downloading the latest AltServer beta from Patreon and using it to re-install AltStore. You do not need to delete AltStore first.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2_b.ipa",
+          "size": 5624104,
+          "minOSVersion": "12.2"
+        },
         {
           "version": "1.6.1b2",
           "date": "2023-02-17T12:00:00-06:00",
@@ -101,14 +190,14 @@
           "size": 5608964
         }
       ],
-      "version": "1.6.1b2",
-      "versionDate": "2023-02-17T12:00:00-06:00",
-      "versionDescription": "This beta fixes Windows Defender blocking AltStore from updating.\n\nPREVIOUS BETA:\n• Sideload more than 3 apps via MacDirtyCow exploit*\n• “Clear Cache” button removes non-essential data to free up disk space\n• Fixes crash when viewing Sources on iOS 12\n\n*Requires iOS 14.0 - 15.7.1 or 16.0 - 16.1.2. See Patreon post for instructions.",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_1_b2.ipa",
+      "version": "1.6.2b",
+      "versionDate": "2023-03-21T12:00:00-05:00",
+      "versionDescription": "This beta fixes the \"no provisioning profile with the requested identifier…\" error when sideloading or refreshing apps.\n\n⚠️ You must manually install this update by downloading the latest AltServer beta from Patreon and using it to re-reinstall AltStore. You do not need to delete AltStore first.",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2_b.ipa",
       "localizedDescription": "AltStore is an alternative app store for non-jailbroken devices. \n\nThis beta release of AltStore adds support for 3rd party sources, allowing you to download apps from other developers directly through AltStore.",
       "iconURL": "https://user-images.githubusercontent.com/705880/65270980-1eb96f80-dad1-11e9-9367-78ccd25ceb02.png",
       "tintColor": "018084",
-      "size": 5626076,
+      "size": 5624104,
       "beta": true,
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG",
@@ -124,27 +213,93 @@
           "type": "background-audio",
           "usageDescription": "Allows AltStore to run longer than 30 seconds when refreshing apps in background."
         }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          {
+          "name": "get-task-allow"
+        },
+        {
+          "name": "com.apple.security.application-groups"
+        },
+        {
+          "name": "aps-environment"
+        },
+        {
+          "name": "com.apple.developer.siri"
+        }
+        ],
+        "privacy": [
+          {
+          "name": "LocalNetwork",
+          "usageDescription": "AltStore uses the local network to find and communicate with AltServer."
+        }
       ]
+      }
     },
     {
       "name": "Delta",
       "bundleIdentifier": "com.rileytestut.Delta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
-      "version": "1.3.2",
-      "versionDate": "2022-10-18T12:00:00-05:00",
-      "versionDescription": "• Fixes external keyboard support\n• Fixes invisible system name when remapping game controllers on iOS 16\n• Fixes previous game controller remaining selected after changing controller",
-      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_3_2.ipa",
+      "versions": [
+        {
+          "version": "1.4.2",
+          "date": "2023-09-19T12:30:00-05:00",
+          "localizedDescription": "• Fixed crash when loading save states on iOS 17\n• Fixed displaying system name in dark text when remapping inputs on iOS 17",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_2.ipa",
+          "size": 46319655
+        },
+        {
+          "version": "1.4.1",
+          "date": "2023-05-10T12:00:00-05:00",
+          "localizedDescription": "• Fixed translucent controller skins resetting opacity after rotating device\n• Fixed incorrect thumbstick size after rotating device",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_1.ipa",
+          "size": 46315257
+        },
+        {
+          "version": "1.4",
+          "date": "2023-02-28T09:00:00-06:00",
+          "localizedDescription": "NEW\n\nCheatBase (thanks Noah Keck @horn978)\n• Browse and add all known cheats for supported games\n• Limited to DS games for now, but will be expanded in the future\n\n“Respect Silent Mode” setting\n• When enabled, game audio will only play when your device isn’t muted\n• Automatically mutes game audio if another app is playing audio\n\n“Contributors” screen\n• See everyone who has contributed to Delta\n• View associated Pull Requests for contributed features\n\nIMPROVED\n• Automatically pauses + resumes emulation when switching between foreground apps with Stage Manager\n• Uses modern menu UI when importing games\n• Updated \"Copy Deep Link\" icon when sharing a game\n\nFIXED\n• Fixed error sharing games via certain share methods\n• Fixed exporting save files for games with names containing special characters\n• Fixed using Xbox controller analog sticks as D-pad inputs\n• Fixed incorrect font size for Credits section in Settings",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4.ipa",
+          "size": 46299474
+        }
+      ],
+      "version": "1.4.2",
+      "versionDate": "2023-09-19T12:30:00-05:00",
+      "versionDescription": "• Fixed crash when loading save states on iOS 17\n• Fixed displaying system name in dark text when remapping inputs on iOS 17",
+      "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_2.ipa",
       "localizedDescription": "Delta is an all-in-one emulator for iOS. Delta builds upon the strengths of its predecessor, GBA4iOS, while expanding to include support for more game systems such as NES, SNES, and N64.\n\nFEATURES\n\nSupported Game Systems\n• Nintendo Entertainment System\n• Super Nintendo Entertainment System\n• Nintendo 64\n• Game Boy (Color)\n• Game Boy Advance\n• Nintendo DS\n• And plenty more to come!\n\nController Support\n• Supports PS4, PS5, Xbox One S, Xbox Series X, and MFi game controllers.\n• Supports bluetooth (and wired) keyboards, as well as the Apple Smart Keyboard.\n• Completely customize button mappings on a per-system, per-controller basis.\n• Map buttons to special “Quick Save”, “Quick Load,” and “Fast Forward” actions.\n\nSave States\n• Save and load save states for any game from the pause menu.\n• Lock save states to prevent them from being accidentally overwritten.\n• Automatically makes backup save states to ensure you never lose your progress.\n• Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller).\n\nCheats\n• Supports various types of cheat codes for each supported system:\n• NES: Game Genie\n• SNES: Game Genie, Pro Action Replay\n• N64: GameShark\n• GBC: Game Genie, GameShark\n• GBA: Action Replay, Code Breaker, GameShark\n• DS: Action Replay\n\nDelta Sync\n• Sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices.\n• View version histories of everything you sync and optionally restore them to earlier versions.\n• Supports both Google Drive and Dropbox.\n\nCustom Controller Skins\n• Beautiful built-in controller skins for all systems.\n• Import controller skins made by others, or even make your own to share with the world!\n\nHold Button\n• Choose buttons for Delta to hold down on your behalf, freeing up your thumbs to press other buttons instead.\n• Perfect for games that typically require one button be held down constantly (ex: run button in Mario games, or the A button in Mario Kart).\n\nFast Forward\n• Speed through slower parts of games by running the game much faster than normal.\n• Easily enable or disable from the pause menu, or optionally with a mapped button on an external controller.\n\n3D/Haptic Touch\n• Use 3D or Haptic Touch to “peek” at games, save states, and cheat codes.\n• App icon shortcuts allow quick access to your most recently played games, or optionally customize the shortcuts to always include certain games.\n\nGame Artwork\n• Automatically displays appropriate box art for imported games.\n• Change a game’s artwork to anything you want, or select from the built-in game artwork database.\n\nMisc.\n• Gyroscope support (WarioWare: Twisted! only)\n• Microphone support (DS only)\n• Support for delta:// URL scheme to jump directly into a specific game.\n\n**Delta and AltStore LLC are in no way affiliated with Nintendo. The name \"Nintendo\" and all associated game console names are registered trademarks of Nintendo Co., Ltd.**",
       "iconURL": "https://user-images.githubusercontent.com/705880/63391976-4d311700-c37a-11e9-91a8-4fb0c454413d.png",
       "tintColor": "8A28F7",
-      "size": 19742740,
+      "size": 46319655,
       "permissions": [
         {
           "type": "photos",
           "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "get-task-allow"
+          }
+        ],
+        "privacy": [
+          {
+            "name": "Microphone",
+            "usageDescription": "Delta uses your microphone to emulate the Nintendo DS microphone."
+          },
+          {
+            "name": "LocalNetwork",
+            "usageDescription": "Delta uses the local network to communicate with AltServer and enable JIT."
+          },
+          {
+            "name": "PhotoLibrary",
+            "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
         "https://user-images.githubusercontent.com/705880/65813009-f2ae8600-e183-11e9-9eb7-704effc11173.png",
@@ -157,6 +312,49 @@
       "bundleIdentifier": "com.rileytestut.Delta.Beta",
       "developerName": "Riley Testut",
       "subtitle": "Classic games in your pocket.",
+      "versions": [
+        {
+          "version": "1.5b4",
+          "date": "2023-08-12T15:30:00-05:00",
+          "localizedDescription": "⚠️ This beta fixes a critical bug that could cause corrupted save files and save states to be uploaded to Google Drive/Dropbox.\n\nPlease update ASAP to ensure you don't lose any data. You can read more about this bug fix in today's Patreon post.",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_5_b4.ipa",
+          "size": 48565606,
+          "sha256": "ca271c488da8399f977d6d5b5051a92d01431374ca545fb952e9b62256629d58",
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.5b3",
+          "date": "2023-07-18T12:30:00-05:00",
+          "localizedDescription": "IMPROVED\n\nDelta Sync\n• Automatically resolves cheat + controller skin sync conflicts\n• Syncs game save hash between devices to prevent redundant uploads\n• Displays activity indicator when signing in\n• Delays seeding sync database until initial sync\n• Uses local modification date when uploading changes\n• Signs out from previous service when switching services\n• Improved error message when remote storage is out of free space (Dropbox only)\n\nSettings\n• Revised UI to use modern \"inset grouped\" style\n• Uses large titles where appropriate\n\nMisc.\n• Replaces `UIDocumentBrowserViewController` with `UIDocumentPickerViewController` on iOS 17+\n• Skips checksum verification when importing zipped games\n\nFIXED\n\nDelta Sync\n• Fixed incorrect mass conflicts when signing out then back in\n• Fixed “Harmony.sqlite couldn’t be opened” sync error when there are more than 1000 games\n• Fixed “file does not exist” sync error after restoring previous version\n• Fixed Delta Sync switch remaining OFF if users cancels \"Disable Syncing?\" warning alert\n• Fixed missing references to remote files when signing out then back in\n• Fixed queued syncs sometimes fetching outdated changes\n• Fixed accidentally using wrong account when signed-in to multiple services\n\niPad\n• Fixed crash when resolving Delta Sync merge conflicts\n• Fixed crash when disabling Delta Sync or switching services\n\nExperimental Features\n• Fixed saving screenshots to Photos with .limited authorization\n• Fixed saving screenshots to Photos as JPEGs\n\nMisc.\n• Fixed accidentally deleting Games directory during sync in rare circumstances\n• Fixed crash loading save states on iOS 17\n• Fixed displaying system name in dark text when remapping inputs on iOS 17",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_5_b3.ipa",
+          "size": 46221055,
+          "sha256": "7e809c5d3193f7e85232dcc649d72c24496d78e42111b070fe413d3437578e12",
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.5b2",
+          "date": "2023-05-03T14:00:00-05:00",
+          "localizedDescription": "NEW\n\nAirPlay Support \n• Stream your games to the big screen with AirPlay\n• [DS] Optionally AirPlay just top screen for true multi-screen experience\n\nExperimental Features\n• New section in Settings for features by third-party contributors\n• Features are WIP and should be used at user’s discretion\n\nInitial Experimental Features\n• Show Status Bar: View time/WiFi/battery while playing a game (@LitRitt)\n• Game Screenshots: Take screenshots from pause menu (@LitRitt)\n• In-Game Notifications: Show pop-up alerts when performing certain actions (@LitRitt)\n• AirPlay Skins: Customize appearance of games on TV when AirPlaying\n• Variable Fast Forward: Change the Fast Forward speed per-system\n\nFIXED\n• Fixed translucent controller skins resetting opacity after rotating device\n• Fixed incorrect thumbstick size after rotating device",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_5_b2.ipa",
+          "size": 46120077,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.5b1",
+          "date": "2023-03-02T10:00:00-06:00",
+          "localizedDescription": "Local Multiplayer (thanks Ian Clawson @ThatClawsonBoy!)\n• Play NES, SNES, N64, and Genesis games with friends\n• Supports up to 4 players\n\nImproved Non-MFi Controller Support\n• New default mappings for single Joy-Cons and Switch NES/SNES controllers\n• Uses Logo/Home button as Delta pause button if possible",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_5_b1.ipa",
+          "size": 46055442,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "1.4rc",
+          "date": "2023-02-13T09:41:00-08:00",
+          "localizedDescription": "\"Contributors\" screen\n• See everyone who has contributed to Delta\n• View associated Pull Requests for contributed features\n\nPREVIOUS BETA\n• “Respect Silent Mode” setting\n• Automatically mutes game audio if another app is playing audio\n• Browse CheatBase for all known cheats for games (thanks Noah Keck @horn978)",
+          "downloadURL": "https://cdn.altstore.io/file/altstore/apps/delta/1_4_rc.ipa",
+          "size": 46299284
+        }
+      ],
       "version": "1.4rc",
       "versionDate": "2023-02-13T09:41:00-08:00",
       "versionDescription": "\"Contributors\" screen\n• See everyone who has contributed to Delta\n• View associated Pull Requests for contributed features\n\nPREVIOUS BETA\n• “Respect Silent Mode” setting\n• Automatically mutes game audio if another app is playing audio\n• Browse CheatBase for all known cheats for games (thanks Noah Keck @horn978)",
@@ -172,6 +370,27 @@
           "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "get-task-allow"
+          }
+        ],
+        "privacy": [
+          {
+            "name": "Microphone",
+            "usageDescription": "Delta uses your microphone to emulate the Nintendo DS microphone."
+          },
+          {
+            "name": "LocalNetwork",
+            "usageDescription": "Delta uses the local network to communicate with AltServer and enable JIT."
+          },
+          {
+            "name": "PhotoLibrary",
+            "usageDescription": "Allows Delta to use images from your Photo Library as game artwork."
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/65600448-f7d9be00-df54-11e9-9e3e-d4c31296da94.PNG",
         "https://user-images.githubusercontent.com/705880/65601942-e5ad4f00-df57-11e9-9255-1463e0296e46.PNG",
@@ -198,6 +417,19 @@
           "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "inter-app-audio"
+          },
+          {
+            "name": "get-task-allow"
+          },
+          {
+            "name": "com.apple.security.application-groups"
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png"
@@ -223,6 +455,19 @@
           "usageDescription": "Allows Clip to continuously monitor your clipboard in the background."
         }
       ],
+      "appPermissions": {
+        "entitlements": [
+          {
+            "name": "inter-app-audio"
+          },
+          {
+            "name": "get-task-allow"
+          },
+          {
+            "name": "com.apple.security.application-groups"
+          }
+        ]
+      },
       "screenshotURLs": [
         "https://user-images.githubusercontent.com/705880/63391950-34286600-c37a-11e9-965f-832efe3da507.png",
         "https://user-images.githubusercontent.com/705880/70830209-8e738980-1da4-11ea-8b3b-6e5fbc78adff.png",
@@ -230,6 +475,10 @@
         "https://user-images.githubusercontent.com/705880/84842231-7271ce80-aff9-11ea-9272-e128aeceb95b.PNG"
       ]
     }
+  ],
+  "featuredApps": [
+    "com.rileytestut.Delta",
+    "com.rileytestut.Clip"
   ],
   "news": [
     {

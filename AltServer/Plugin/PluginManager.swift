@@ -149,92 +149,11 @@ class PluginManager
 
 extension PluginManager
 {
-    func installMailPlugin(completionHandler: @escaping (Result<Void, Error>) -> Void)
-    {
-        self.isUpdateAvailable(useCache: true) { result in
-            DispatchQueue.main.async {
-                do
-                {
-                    let isUpdateAvailable = try result.get()
-                    
-                    let alert = NSAlert()
-                    if isUpdateAvailable
-                    {
-                        alert.messageText = NSLocalizedString("Update Mail Plug-in", comment: "")
-                        alert.informativeText = NSLocalizedString("An update is available for AltServer's Mail plug-in. Please update the plug-in now in order to keep using AltStore.", comment: "")
-                        
-                        alert.addButton(withTitle: NSLocalizedString("Update Plug-in", comment: ""))
-                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-                    }
-                    else
-                    {
-                        alert.messageText = NSLocalizedString("Install Mail Plug-in", comment: "")
-                        alert.informativeText = NSLocalizedString("AltServer requires a Mail plug-in in order to retrieve necessary information about your Apple ID. Would you like to install it now?", comment: "")
-                        
-                        alert.addButton(withTitle: NSLocalizedString("Install Plug-in", comment: ""))
-                        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-                    }
-                    
-                    NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
-                    
-                    let response = alert.runModal()
-                    guard response == .alertFirstButtonReturn else { throw PluginError.cancelled }
-                    
-                    self.downloadPlugin { (result) in
-                        do
-                        {
-                            let fileURL = try result.get()
-                            
-                            // Ensure plug-in directory exists.
-                            let authorization = try self.runAndKeepAuthorization("mkdir", arguments: ["-p", pluginDirectoryURL.path])
-                            
-                            // Create temporary directory.
-                            let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-                            try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-                            defer { try? FileManager.default.removeItem(at: temporaryDirectoryURL) }
-                                
-                            // Unzip AltPlugin to temporary directory.
-                            try self.runAndKeepAuthorization("unzip", arguments: ["-o", fileURL.path, "-d", temporaryDirectoryURL.path], authorization: authorization)
-                            
-                            if FileManager.default.fileExists(atPath: pluginURL.path)
-                            {
-                                // Delete existing Mail plug-in.
-                                try self.runAndKeepAuthorization("rm", arguments: ["-rf", pluginURL.path], authorization: authorization)
-                            }
-                            
-                            // Copy AltPlugin to Mail plug-ins directory.
-                            // Must be separate step than unzip to prevent macOS from considering plug-in corrupted.
-                            let unzippedPluginURL = temporaryDirectoryURL.appendingPathComponent(pluginURL.lastPathComponent)
-                            try self.runAndKeepAuthorization("cp", arguments: ["-R", unzippedPluginURL.path, pluginDirectoryURL.path], authorization: authorization)
-                            
-                            guard self.isMailPluginInstalled else { throw PluginError.unknown() }
-                            
-                            // Enable Mail plug-in preferences.
-                            try self.run("defaults", arguments: ["write", "/Library/Preferences/com.apple.mail", "EnableBundles", "-bool", "YES"], authorization: authorization)
-                            
-                            print("Finished installing Mail plug-in!")
-                            
-                            completionHandler(.success(()))
-                        }
-                        catch
-                        {
-                            completionHandler(.failure(error))
-                        }
-                    }
-                }
-                catch
-                {
-                    completionHandler(.failure(error))
-                }
-            }
-        }
-    }
-    
     func uninstallMailPlugin(completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Uninstall Mail Plug-in", comment: "")
-        alert.informativeText = NSLocalizedString("Are you sure you want to uninstall the AltServer Mail plug-in? You will no longer be able to install or refresh apps with AltStore.", comment: "")
+        alert.informativeText = NSLocalizedString("Are you sure you want to uninstall the AltServer Mail plug-in?", comment: "")
         
         alert.addButton(withTitle: NSLocalizedString("Uninstall Plug-in", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
@@ -272,12 +191,6 @@ private extension PluginManager
             return completionHandler(.success(pluginVersion))
         }
         
-        guard #available(macOS 11, *) else {
-            // macOS versions prior to 11.0 require Mail plug-ins be *unsigned*,
-            // so we hardcode these versions to use the unsigned AltPlugin v1.0.
-            return completionHandler(.success(.v1_0))
-        }
-        
         let dataTask = self.session.dataTask(with: .altPluginUpdateURL) { (data, response, error) in
             do
             {
@@ -313,16 +226,12 @@ private extension PluginManager
                     do
                     {
                         let fileURL = try result.get()
+                        let data = try Data(contentsOf: fileURL)
+                        let sha256Hash = SHA256.hash(data: data)
+                        let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
                         
-                        if #available(OSX 10.15, *)
-                        {
-                            let data = try Data(contentsOf: fileURL)
-                            let sha256Hash = SHA256.hash(data: data)
-                            let hashString = sha256Hash.compactMap { String(format: "%02x", $0) }.joined()
-                            
-                            print("Comparing Mail plug-in hash (\(hashString)) against expected hash (\(pluginVersion.sha256Hash))...")
-                            guard hashString == pluginVersion.sha256Hash else { throw PluginError.mismatchedHash(hash: hashString, expectedHash: pluginVersion.sha256Hash) }
-                        }
+                        print("Comparing Mail plug-in hash (\(hashString)) against expected hash (\(pluginVersion.sha256Hash))...")
+                        guard hashString == pluginVersion.sha256Hash else { throw PluginError.mismatchedHash(hash: hashString, expectedHash: pluginVersion.sha256Hash) }
                         
                         completion(.success(fileURL))
                     }

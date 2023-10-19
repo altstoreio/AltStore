@@ -73,6 +73,7 @@ class AppViewController: UIViewController
         self.contentViewController.view.layer.masksToBounds = true
         
         self.contentViewController.tableView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
+        self.contentViewController.appDetailCollectionViewController.collectionView.panGestureRecognizer.require(toFail: self.scrollView.panGestureRecognizer)
         self.contentViewController.tableView.showsVerticalScrollIndicator = false
         
         // Bring to front so the scroll indicators are visible.
@@ -94,7 +95,6 @@ class AppViewController: UIViewController
         
         self.backButtonContainerView.tintColor = self.app.tintColor
         
-        self.navigationController?.navigationBar.tintColor = self.app.tintColor
         self.navigationBarDownloadButton.tintColor = self.app.tintColor
         self.navigationBarAppNameLabel.text = self.app.name
         self.navigationBarAppIconImageView.tintColor = self.app.tintColor
@@ -118,13 +118,17 @@ class AppViewController: UIViewController
         {
             imageView.isIndicatingActivity = true
             
-            Nuke.loadImage(with: self.app.iconURL, options: .shared, into: imageView, progress: nil) { [weak imageView] (response, error) in
-                if response?.image != nil
+            Nuke.loadImage(with: self.app.iconURL, options: .shared, into: imageView, progress: nil) { [weak imageView] (result) in
+                switch result
                 {
-                    imageView?.isIndicatingActivity = false
+                case .success: imageView?.isIndicatingActivity = false
+                case .failure(let error): print("[ALTLog] Failed to load app icons.", error)
                 }
             }
         }
+        
+        // Start with navigation bar hidden.
+        self.hideNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -136,10 +140,6 @@ class AppViewController: UIViewController
         // Update blur immediately.
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.hideNavigationBar()
-        }, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -149,27 +149,6 @@ class AppViewController: UIViewController
         self._shouldResetLayout = true
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        super.viewWillDisappear(animated)
-
-        // Guard against "dismissing" when presenting via 3D Touch pop.
-        guard self.navigationController != nil else { return }
-
-        // Store reference since self.navigationController will be nil after disappearing.
-        let navigationController = self.navigationController
-        navigationController?.navigationBar.barStyle = .default // Don't animate, or else status bar might appear messed-up.
-
-        self.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            self.showNavigationBar(for: navigationController)
-        }, completion: { (context) in
-            if !context.isCancelled
-            {
-                self.showNavigationBar(for: navigationController)
-            }
-        })
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -193,7 +172,6 @@ class AppViewController: UIViewController
         {
             // Fix navigation bar + tab bar appearance on iOS 15.
             self.setContentScrollView(self.scrollView)
-            self.navigationItem.scrollEdgeAppearance = self.navigationController?.navigationBar.standardAppearance
         }
     }
     
@@ -205,11 +183,6 @@ class AppViewController: UIViewController
         {
             // Various events can cause UI to mess up, so reset affected components now.
             
-            if self.navigationController?.topViewController == self
-            {
-                self.hideNavigationBar()
-            }
-            
             self.prepareBlur()
             
             // Reset navigation bar animation, and create a new one later in this method if necessary.
@@ -217,8 +190,8 @@ class AppViewController: UIViewController
                         
             self._shouldResetLayout = false
         }
-        
-        let statusBarHeight = UIApplication.shared.statusBarFrame.height
+                
+        let statusBarHeight = self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
         let inset = 12 as CGFloat
@@ -284,6 +257,7 @@ class AppViewController: UIViewController
         }
         else
         {
+            self.navigationBarAnimator?.fractionComplete = 0.0
             self.resetNavigationBarAnimation()
         }
         
@@ -323,7 +297,7 @@ class AppViewController: UIViewController
         
         self.backButtonContainerView.layer.cornerRadius = self.backButtonContainerView.bounds.midY
         
-        self.scrollView.scrollIndicatorInsets.top = statusBarHeight
+        self.scrollView.verticalScrollIndicatorInsets.top = statusBarHeight
         
         // Adjust content offset + size.
         let contentOffset = self.scrollView.contentOffset
@@ -373,7 +347,7 @@ private extension AppViewController
             
             if let installedApp = self.app.installedApp
             {
-                if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+                if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
                 {
                     button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
                 }
@@ -391,7 +365,7 @@ private extension AppViewController
             button.progress = progress
         }
         
-        if let versionDate = self.app.latestAvailableVersion?.date, versionDate > Date()
+        if let versionDate = self.app.latestSupportedVersion?.date, versionDate > Date()
         {
             self.bannerView.button.countdownDate = versionDate
             self.navigationBarDownloadButton.countdownDate = versionDate
@@ -407,12 +381,13 @@ private extension AppViewController
         self.navigationItem.rightBarButtonItem = barButtonItem
     }
     
-    func showNavigationBar(for navigationController: UINavigationController? = nil)
+    func showNavigationBar()
     {
-        let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.alpha = 1.0
-        navigationController?.navigationBar.tintColor = .altPrimary
-        navigationController?.navigationBar.setNeedsLayout()
+        self.navigationBarAppIconImageView.alpha = 1.0
+        self.navigationBarAppNameLabel.alpha = 1.0
+        self.navigationBarDownloadButton.alpha = 1.0
+        
+        self.updateNavigationBarAppearance(isHidden: false)
         
         if self.traitCollection.userInterfaceStyle == .dark
         {
@@ -423,16 +398,45 @@ private extension AppViewController
             self._preferredStatusBarStyle = .default
         }
         
-        navigationController?.setNeedsStatusBarAppearanceUpdate()
+        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
     }
     
-    func hideNavigationBar(for navigationController: UINavigationController? = nil)
+    func hideNavigationBar()
     {
-        let navigationController = navigationController ?? self.navigationController
-        navigationController?.navigationBar.alpha = 0.0
+        self.navigationBarAppIconImageView.alpha = 0.0
+        self.navigationBarAppNameLabel.alpha = 0.0
+        self.navigationBarDownloadButton.alpha = 0.0
+        
+        self.updateNavigationBarAppearance(isHidden: true)
         
         self._preferredStatusBarStyle = .lightContent
-        navigationController?.setNeedsStatusBarAppearanceUpdate()
+        
+        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    // Copied from HeaderContentViewController
+    func updateNavigationBarAppearance(isHidden: Bool)
+    {
+        let barAppearance = self.navigationItem.standardAppearance as? NavigationBarAppearance ?? NavigationBarAppearance()
+        
+        if isHidden
+        {
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.ignoresUserInteraction = true
+        }
+        else
+        {
+            barAppearance.configureWithDefaultBackground()
+            barAppearance.ignoresUserInteraction = false
+        }
+        
+        barAppearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        
+        let tintColor = isHidden ? UIColor.clear : self.app.tintColor ?? .altPrimary
+        barAppearance.configureWithTintColor(tintColor)
+        
+        self.navigationItem.standardAppearance = barAppearance
+        self.navigationItem.scrollEdgeAppearance = barAppearance
     }
     
     func prepareBlur()
@@ -460,8 +464,10 @@ private extension AppViewController
         
         self.navigationBarAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .linear) { [weak self] in
             self?.showNavigationBar()
-            self?.navigationController?.navigationBar.tintColor = self?.app.tintColor
-            self?.navigationController?.navigationBar.barTintColor = nil
+            
+            // Must call layoutIfNeeded() to animate appearance change.
+            self?.navigationController?.navigationBar.layoutIfNeeded()
+            
             self?.contentViewController.view.layer.cornerRadius = 0
         }
         
@@ -473,6 +479,8 @@ private extension AppViewController
     
     func resetNavigationBarAnimation()
     {
+        guard self.navigationBarAnimator != nil else { return }
+        
         self.navigationBarAnimator?.stopAnimation(true)
         self.navigationBarAnimator = nil
         
@@ -493,7 +501,7 @@ extension AppViewController
     {
         if let installedApp = self.app.installedApp
         {
-            if let latestVersion = self.app.latestAvailableVersion, installedApp.version != latestVersion.version
+            if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
             {
                 self.updateApp(installedApp)
             }
@@ -555,7 +563,7 @@ extension AppViewController
             return
         }
         
-        _ = AppManager.shared.update(installedApp, to: .latestAvailableVersionWithFallback, presentingViewController: self) { (result) in
+        _ = AppManager.shared.update(installedApp, presentingViewController: self) { (result) in
             DispatchQueue.main.async {
                 switch result
                 {

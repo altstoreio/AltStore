@@ -30,7 +30,6 @@ class AppContentViewController: UITableViewController
     var app: StoreApp!
     
     private lazy var screenshotsDataSource = self.makeScreenshotsDataSource()
-    private lazy var permissionsDataSource = self.makePermissionsDataSource()
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -52,7 +51,9 @@ class AppContentViewController: UITableViewController
     @IBOutlet private var sizeLabel: UILabel!
     
     @IBOutlet private var screenshotsCollectionView: UICollectionView!
-    @IBOutlet private var permissionsCollectionView: UICollectionView!
+    
+    @IBOutlet private(set) var appDetailCollectionViewController: AppDetailCollectionViewController!
+    @IBOutlet private var appDetailCollectionViewHeightConstraint: NSLayoutConstraint!
     
     var preferredScreenshotSize: CGSize? {        
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
@@ -76,15 +77,13 @@ class AppContentViewController: UITableViewController
         self.screenshotsCollectionView.dataSource = self.screenshotsDataSource
         self.screenshotsCollectionView.prefetchDataSource = self.screenshotsDataSource
         
-        self.permissionsCollectionView.dataSource = self.permissionsDataSource
-        
         self.subtitleLabel.text = self.app.subtitle
         self.descriptionTextView.text = self.app.localizedDescription
         
         if let version = self.app.latestAvailableVersion
         {
             self.versionDescriptionTextView.text = version.localizedDescription
-            self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.version)
+            self.versionLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), version.localizedVersion)
             self.versionDateLabel.text = Date().relativeDateString(since: version.date, dateFormatter: self.dateFormatter)
             self.sizeLabel.text = self.byteCountFormatter.string(fromByteCount: version.size)
         }
@@ -112,28 +111,18 @@ class AppContentViewController: UITableViewController
         
         let layout = self.screenshotsCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = size
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        guard segue.identifier == "showPermission" else { return }
         
-        guard let cell = sender as? UICollectionViewCell, let indexPath = self.permissionsCollectionView.indexPath(for: cell) else { return }
-        
-        let permission = self.permissionsDataSource.item(at: indexPath)
-        
-        let maximumWidth = self.view.bounds.width - 20
-        
-        let permissionPopoverViewController = segue.destination as! PermissionPopoverViewController
-        permissionPopoverViewController.permission = permission
-        permissionPopoverViewController.view.widthAnchor.constraint(lessThanOrEqualToConstant: maximumWidth).isActive = true
-        
-        let size = permissionPopoverViewController.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        permissionPopoverViewController.preferredContentSize = size
-        
-        permissionPopoverViewController.popoverPresentationController?.delegate = self
-        permissionPopoverViewController.popoverPresentationController?.sourceRect = cell.frame
-        permissionPopoverViewController.popoverPresentationController?.sourceView = self.permissionsCollectionView
+        let permissionsHeight = self.appDetailCollectionViewController.collectionView.contentSize.height
+        if self.appDetailCollectionViewHeightConstraint.constant != permissionsHeight && permissionsHeight > 0
+        {
+            self.appDetailCollectionViewHeightConstraint.constant = permissionsHeight
+            
+            UIView.performWithoutAnimation {
+                // Update row height without animation.
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+            }
+        }
     }
 }
 
@@ -149,19 +138,16 @@ private extension AppContentViewController
         }
         dataSource.prefetchHandler = { (imageURL, indexPath, completionHandler) in
             return RSTAsyncBlockOperation() { (operation) in
-                let request = ImageRequest(url: imageURL as URL, processor: .screenshot)
-                ImagePipeline.shared.loadImage(with: request, progress: nil, completion: { (response, error) in
+                let request = ImageRequest(url: imageURL as URL, processors: [.screenshot])
+                ImagePipeline.shared.loadImage(with: request, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -178,16 +164,12 @@ private extension AppContentViewController
         return dataSource
     }
     
-    func makePermissionsDataSource() -> RSTArrayCollectionViewDataSource<AppPermission>
-    {        
-        let dataSource = RSTArrayCollectionViewDataSource(items: self.app.permissions)
-        dataSource.cellConfigurationHandler = { (cell, permission, indexPath) in
-            let cell = cell as! PermissionCollectionViewCell
-            cell.button.setImage(permission.type.icon, for: .normal)
-            cell.textLabel.text = permission.type.localizedShortName
-        }
-        
-        return dataSource
+    @IBSegueAction
+    func makeAppDetailCollectionViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        let appDetailViewController = AppDetailCollectionViewController(app: self.app, coder: coder)
+        self.appDetailCollectionViewController = appDetailViewController
+        return appDetailViewController
     }
 }
 
@@ -228,18 +210,10 @@ extension AppContentViewController
             
         case .permissions:
             guard !self.app.permissions.isEmpty else { return 0.0 }
-            return super.tableView(tableView, heightForRowAt: indexPath)
+            return UITableView.automaticDimension
             
         default:
             return super.tableView(tableView, heightForRowAt: indexPath)
         }
-    }
-}
-
-extension AppContentViewController: UIPopoverPresentationControllerDelegate
-{
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
-    {
-        return .none
     }
 }

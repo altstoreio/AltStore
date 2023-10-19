@@ -15,6 +15,8 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+extension UIApplication: LegacyBackgroundFetching {}
+
 extension AppDelegate
 {
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
@@ -33,27 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    @available(iOS 14, *)
-    private var intentHandler: IntentHandler {
-        get { _intentHandler as! IntentHandler }
-        set { _intentHandler = newValue }
-    }
-    
-    @available(iOS 14, *)
-    private var viewAppIntentHandler: ViewAppIntentHandler {
-        get { _viewAppIntentHandler as! ViewAppIntentHandler }
-        set { _viewAppIntentHandler = newValue }
-    }
-    
-    private lazy var _intentHandler: Any = {
-        guard #available(iOS 14, *) else { fatalError() }
-        return IntentHandler()
-    }()
-    
-    private lazy var _viewAppIntentHandler: Any = {
-        guard #available(iOS 14, *) else { fatalError() }
-        return ViewAppIntentHandler()
-    }()
+    private let intentHandler = IntentHandler()
+    private let viewAppIntentHandler = ViewAppIntentHandler()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
@@ -129,8 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any?
     {
-        guard #available(iOS 14, *) else { return nil }
-        
         switch intent
         {
         case is RefreshAllIntent: return self.intentHandler
@@ -140,7 +121,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 13, *)
 extension AppDelegate
 {
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration
@@ -246,7 +226,7 @@ extension AppDelegate
     private func prepareForBackgroundFetch()
     {
         // "Fetch" every hour, but then refresh only those that need to be refreshed (so we don't drain the battery).
-        UIApplication.shared.setMinimumBackgroundFetchInterval(1 * 60 * 60)
+        (UIApplication.shared as LegacyBackgroundFetching).setMinimumBackgroundFetchInterval(1 * 60 * 60)
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }
@@ -363,7 +343,9 @@ private extension AppDelegate
                 let previousUpdatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
-                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier), #keyPath(InstalledApp.storeApp.latestSupportedVersion.version)]
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion.version),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)]
                 
                 let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
                 previousNewsItemsFetchRequest.includesPendingChanges = false
@@ -387,13 +369,19 @@ private extension AppDelegate
                     
                     if let previousUpdate = previousUpdates.first(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier })
                     {
-                        // An update for this app was already available, so check whether the version # is different.
-                        guard let version = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)], version != latestSupportedVersion.version else { continue }
+                        // An update for this app was already available, so check whether the version or build version is different.
+                        guard let previousVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)] else { continue }
+                        
+                        // previousUpdate might not contain buildVersion, but if it does then map empty string to nil to match AppVersion.
+                        let previousBuildVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)].map { $0.isEmpty ? nil : "" }
+                        
+                        // Only show notification if previous latestSupportedVersion does not _exactly_ match current latestSupportedVersion.
+                        guard previousVersion != latestSupportedVersion.version || previousBuildVersion != latestSupportedVersion.buildVersion  else { continue }
                     }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.localizedVersion)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)

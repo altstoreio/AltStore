@@ -478,10 +478,13 @@ extension FetchProvisioningProfilesOperation
                 ALTAppleAPI.shared.delete(profile, for: team, session: session) { (success, error) in
                     switch Result(success, error)
                     {
-                    case .failure(let error): completionHandler(.failure(error))
-                    case .success:
+                    case .failure:
+                        // As of March 20, 2023, the free provisioning profile is re-generated each fetch, and you can no longer delete it.
+                        // So instead, we just return the fetched profile from above.
+                        completionHandler(.success(profile))
                         
-                        // Fetch new provisiong profile
+                    case .success:
+                        // Fetch new provisioning profile
                         ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
                             completionHandler(Result(profile, error))
                         }

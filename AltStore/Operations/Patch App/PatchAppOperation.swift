@@ -15,7 +15,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-@available(iOS 14, *)
 protocol PatchAppContext
 {
     var bundleIdentifier: String { get }
@@ -71,7 +70,6 @@ private struct OTAUpdate
     var archivePath: String
 }
 
-@available(iOS 14, *)
 class PatchAppOperation: ResultOperation<Void>
 {
     let context: PatchAppContext
@@ -148,7 +146,6 @@ private let ALTFragmentZipCallback: @convention(c) (UInt32) -> Void = { (percent
     progress.completedUnitCount = Int64(percentageComplete)
 }
 
-@available(iOS 14, *)
 private extension PatchAppOperation
 {
     func fetchOTAUpdate() -> AnyPublisher<OTAUpdate, Error>

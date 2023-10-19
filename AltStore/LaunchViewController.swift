@@ -8,6 +8,7 @@
 
 import UIKit
 import Roxas
+import WidgetKit
 
 import AltStoreCore
 
@@ -81,8 +82,12 @@ extension LaunchViewController
         guard !self.didFinishLaunching else { return }
         
         AppManager.shared.update()
-        AppManager.shared.updatePatronsIfNeeded()        
+        AppManager.shared.updatePatronsIfNeeded()
         PatreonAPI.shared.refreshPatreonAccount()
+        
+        self.updateKnownSources()
+        
+        WidgetCenter.shared.reloadAllTimelines()
         
         // Add view controller as child (rather than presenting modally)
         // so tint adjustment + card presentations works correctly.
@@ -97,5 +102,44 @@ extension LaunchViewController
         }
         
         self.didFinishLaunching = true
+    }
+}
+
+private extension LaunchViewController
+{
+    func updateKnownSources()
+    {
+        AppManager.shared.updateKnownSources { result in
+            switch result
+            {
+            case .failure(let error): print("[ALTLog] Failed to update known sources:", error)
+            case .success((_, let blockedSources)):
+                DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+                    let blockedSourceIDs = Set(blockedSources.lazy.map { $0.identifier })
+                    let blockedSourceURLs = Set(blockedSources.lazy.compactMap { $0.sourceURL })
+                    
+                    let predicate = NSPredicate(format: "%K IN %@ OR %K IN %@",
+                                                #keyPath(Source.identifier), blockedSourceIDs,
+                                                #keyPath(Source.sourceURL), blockedSourceURLs)
+                    
+                    let sourceErrors = Source.all(satisfying: predicate, in: context).map { (source) in
+                        let blockedSource = blockedSources.first { $0.identifier == source.identifier }
+                        return SourceError.blocked(source, bundleIDs: blockedSource?.bundleIDs, existingSource: source)
+                    }
+                    
+                    guard !sourceErrors.isEmpty else { return }
+                                        
+                    Task {
+                        for error in sourceErrors
+                        {
+                            let title = String(format: NSLocalizedString("“%@” Blocked", comment: ""), error.$source.name)
+                            let message = [error.localizedDescription, error.recoverySuggestion].compactMap { $0 }.joined(separator: "\n\n")
+                            
+                            await self.presentAlert(title: title, message: message)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

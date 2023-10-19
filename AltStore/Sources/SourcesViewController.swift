@@ -41,13 +41,23 @@ class SourcesViewController: UICollectionViewController
     private lazy var addedSourcesDataSource = self.makeAddedSourcesDataSource()
     private lazy var trustedSourcesDataSource = self.makeTrustedSourcesDataSource()
     
-    private var fetchTrustedSourcesOperation: FetchTrustedSourcesOperation?
+    private var fetchTrustedSourcesOperation: UpdateKnownSourcesOperation?
     private var fetchTrustedSourcesResult: Result<Void, Error>?
     private var _fetchTrustedSourcesContext: NSManagedObjectContext?
         
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        self.view.tintColor = .altPrimary
+        self.navigationController?.view.tintColor = .altPrimary
+        
+        if let navigationBar = self.navigationController?.navigationBar as? NavigationBar
+        {
+            // Don't automatically adjust item positions when being presented non-full screen,
+            // or else the navigation bar content won't be vertically centered.
+            navigationBar.automaticallyAdjustsItemPositions = false
+        }
         
         self.collectionView.dataSource = self.dataSource
         
@@ -89,10 +99,12 @@ private extension SourcesViewController
     {
         let dataSource = RSTCompositeCollectionViewDataSource<Source>(dataSources: [self.addedSourcesDataSource, self.trustedSourcesDataSource])
         dataSource.proxy = self
-        dataSource.cellConfigurationHandler = { (cell, source, indexPath) in
+        dataSource.cellConfigurationHandler = { [weak self] (cell, source, indexPath) in
+            guard let self else { return }
+            
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! BannerCollectionViewCell
+            let cell = cell as! AppBannerCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
@@ -113,18 +125,15 @@ private extension SourcesViewController
                     // Source exists in .added section, so hide the button.
                     cell.bannerView.button.isHidden = true
                     
-                    if #available(iOS 13.0, *)
-                    {
-                        let configuation = UIImage.SymbolConfiguration(pointSize: 24)
-                        
-                        let imageAttachment = NSTextAttachment()
-                        imageAttachment.image = UIImage(systemName: "checkmark.circle", withConfiguration: configuation)?.withTintColor(.altPrimary)
+                    let configuation = UIImage.SymbolConfiguration(pointSize: 24)
+                    
+                    let imageAttachment = NSTextAttachment()
+                    imageAttachment.image = UIImage(systemName: "checkmark.circle", withConfiguration: configuation)?.withTintColor(.altPrimary)
 
-                        let attributedText = NSAttributedString(attachment: imageAttachment)
-                        cell.bannerView.buttonLabel.attributedText = attributedText
-                        cell.bannerView.buttonLabel.textAlignment = .center
-                        cell.bannerView.buttonLabel.isHidden = false
-                    }
+                    let attributedText = NSAttributedString(attachment: imageAttachment)
+                    cell.bannerView.buttonLabel.attributedText = attributedText
+                    cell.bannerView.buttonLabel.textAlignment = .center
+                    cell.bannerView.buttonLabel.isHidden = false
                 }
                 else
                 {
@@ -159,7 +168,10 @@ private extension SourcesViewController
         let fetchRequest = Source.fetchRequest() as NSFetchRequest<Source>
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Source.name, ascending: true),
-                                        NSSortDescriptor(keyPath: \Source.sourceURL, ascending: true),
+                                        
+                                        // Can't sort by URLs or else app will crash.
+                                        // NSSortDescriptor(keyPath: \Source.sourceURL, ascending: true),
+                                        
                                         NSSortDescriptor(keyPath: \Source.identifier, ascending: true)]
         
         let dataSource = RSTFetchedResultsCollectionViewDataSource<Source>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
@@ -170,6 +182,15 @@ private extension SourcesViewController
     {
         let dataSource = RSTArrayCollectionViewDataSource<Source>(items: [])
         return dataSource
+    }
+    
+    @IBSegueAction
+    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        guard let source = sender as? Source else { return nil }
+        
+        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
+        return sourceDetailViewController
     }
 }
 
@@ -201,7 +222,7 @@ private extension SourcesViewController
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func addSource(url: URL, isTrusted: Bool = false, completionHandler: ((Result<Void, Error>) -> Void)? = nil)
+    func addSource(url: URL, completionHandler: ((Result<Void, Error>) -> Void)? = nil)
     {
         guard self.view.window != nil else { return }
         
@@ -245,33 +266,30 @@ private extension SourcesViewController
         AppManager.shared.fetchSource(sourceURL: url, dependencies: dependencies) { (result) in
             do
             {
-                let source = try result.get()
-                let sourceName = source.name
-                let managedObjectContext = source.managedObjectContext
+                // Use @Managed before calling perform() to keep
+                // strong reference to source.managedObjectContext.
+                @Managed var source = try result.get()
                 
-                // Hide warning when adding a featured trusted source.
-                let message = isTrusted ? nil : NSLocalizedString("Make sure to only add sources that you trust.", comment: "")
-                
-                DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: String(format: NSLocalizedString("Would you like to add the source “%@”?", comment: ""), sourceName),
-                                                            message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
-                        finish(.failure(OperationError.cancelled))
-                    })
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Add Source", comment: ""), style: UIAlertAction.ok.style) { _ in
-                        managedObjectContext?.perform {
-                            do
-                            {
-                                try managedObjectContext?.save()
-                                finish(.success(()))
-                            }
-                            catch
-                            {
-                                finish(.failure(error))
-                            }
+                let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                backgroundContext.perform {
+                    do
+                    {
+                        let predicate = NSPredicate(format: "%K == %@", #keyPath(Source.identifier), $source.identifier)
+                        if let existingSource = Source.first(satisfying: predicate, in: backgroundContext)
+                        {
+                            throw SourceError.duplicate(source, existingSource: existingSource)
                         }
-                    })
-                    self.present(alertController, animated: true, completion: nil)
+                        
+                        DispatchQueue.main.async {
+                            self.showSourceDetails(for: source)
+                        }
+                        
+                        finish(.success(()))
+                    }
+                    catch
+                    {
+                        finish(.failure(error))
+                    }
                 }
             }
             catch
@@ -303,9 +321,9 @@ private extension SourcesViewController
     
     func fetchTrustedSources()
     {
-        func finish(_ result: Result<[Source], Error>)
-        {
-            self.fetchTrustedSourcesResult = result.map { _ in () }
+        // Closure instead of local function so we can capture `self` weakly.
+        let finish: (Result<[Source], Error>) -> Void = { [weak self] result in
+            self?.fetchTrustedSourcesResult = result.map { _ in () }
             
             DispatchQueue.main.async {
                 do
@@ -314,32 +332,29 @@ private extension SourcesViewController
                     print("Fetched trusted sources:", sources.map { $0.identifier })
 
                     let sectionUpdate = RSTCellContentChange(type: .update, sectionIndex: 0)
-                    self.trustedSourcesDataSource.setItems(sources, with: [sectionUpdate])
+                    self?.trustedSourcesDataSource.setItems(sources, with: [sectionUpdate])
                 }
                 catch
                 {
                     print("Error fetching trusted sources:", error)
                     
                     let sectionUpdate = RSTCellContentChange(type: .update, sectionIndex: 0)
-                    self.trustedSourcesDataSource.setItems([], with: [sectionUpdate])
+                    self?.trustedSourcesDataSource.setItems([], with: [sectionUpdate])
                 }
             }
         }
         
-        self.fetchTrustedSourcesOperation = AppManager.shared.fetchTrustedSources { result in
+        self.fetchTrustedSourcesOperation = AppManager.shared.updateKnownSources { [weak self] result in
             switch result
             {
             case .failure(let error): finish(.failure(error))
-            case .success(let trustedSources):
-                // Cache trusted source IDs.
-                UserDefaults.shared.trustedSourceIDs = trustedSources.map { $0.identifier }
-                
+            case .success((let trustedSources, _)):
                 // Don't show sources without a sourceURL.
                 let featuredSourceURLs = trustedSources.compactMap { $0.sourceURL }
                 
                 // This context is never saved, but keeps the managed sources alive.
                 let context = DatabaseManager.shared.persistentContainer.newBackgroundSavingViewContext()
-                self._fetchTrustedSourcesContext = context
+                self?._fetchTrustedSourcesContext = context
                 
                 let dispatchGroup = DispatchGroup()
                 
@@ -389,7 +404,7 @@ private extension SourcesViewController
         sender.progress = completedProgress
         
         let source = self.dataSource.item(at: indexPath)
-        self.addSource(url: source.sourceURL, isTrusted: true) { _ in
+        self.addSource(url: source.sourceURL) { _ in
             //FIXME: Handle cell reuse.
             sender.progress = nil
         }
@@ -424,6 +439,11 @@ private extension SourcesViewController
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    func showSourceDetails(for source: Source)
+    {
+        self.performSegue(withIdentifier: "showSourceDetails", sender: source)
+    }
 }
 
 extension SourcesViewController
@@ -433,9 +453,7 @@ extension SourcesViewController
         self.collectionView.deselectItem(at: indexPath, animated: true)
         
         let source = self.dataSource.item(at: indexPath)
-        guard let error = source.error else { return }
-        
-        self.present(error)
+        self.showSourceDetails(for: source)
     }
 }
 
@@ -569,7 +587,6 @@ extension SourcesViewController: UICollectionViewDelegateFlowLayout
     }
 }
 
-@available(iOS 13, *)
 extension SourcesViewController
 {
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
@@ -587,7 +604,7 @@ extension SourcesViewController
             }
             
             let addAction = UIAction(title: String(format: NSLocalizedString("Add “%@”", comment: ""), source.name), image: UIImage(systemName: "plus")) { (action) in
-                self.addSource(url: source.sourceURL, isTrusted: true)
+                self.addSource(url: source.sourceURL)
             }
             
             var actions: [UIAction] = []
@@ -606,7 +623,7 @@ extension SourcesViewController
                 }
                 
             case .trusted:
-                if let cell = collectionView.cellForItem(at: indexPath) as? BannerCollectionViewCell, !cell.bannerView.button.isHidden
+                if let cell = collectionView.cellForItem(at: indexPath) as? AppBannerCollectionViewCell, !cell.bannerView.button.isHidden
                 {
                     actions.append(addAction)
                 }
@@ -622,7 +639,7 @@ extension SourcesViewController
     override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
         guard let indexPath = configuration.identifier as? NSIndexPath else { return nil }
-        guard let cell = collectionView.cellForItem(at: indexPath as IndexPath) as? BannerCollectionViewCell else { return nil }
+        guard let cell = collectionView.cellForItem(at: indexPath as IndexPath) as? AppBannerCollectionViewCell else { return nil }
 
         let parameters = UIPreviewParameters()
         parameters.backgroundColor = .clear

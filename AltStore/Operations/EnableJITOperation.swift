@@ -11,7 +11,6 @@ import Combine
 
 import AltStoreCore
 
-@available(iOS 14, *)
 protocol EnableJITContext
 {
     var server: Server? { get }
@@ -20,7 +19,6 @@ protocol EnableJITContext
     var error: Error? { get }
 }
 
-@available(iOS 14, *)
 class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
 {
     let context: Context
