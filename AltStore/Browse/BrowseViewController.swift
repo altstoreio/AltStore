@@ -61,6 +61,9 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
         
+        let collectionViewLayout = self.collectionViewLayout as! UICollectionViewFlowLayout
+        collectionViewLayout.minimumLineSpacing = 30
+        
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
         if let source = self.source
