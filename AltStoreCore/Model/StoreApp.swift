@@ -23,12 +23,6 @@ public extension StoreApp
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
-    
-    private struct AppPermissions: Decodable
-    {
-        var entitlements: [AppPermission]?
-        var privacy: [AppPermission]?
-    }
 }
 
 @objc(StoreApp)
@@ -74,6 +68,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 permission.sourceID = self.sourceIdentifier ?? ""
             }
+            
+            for screenshot in self.allScreenshots
+            {
+                screenshot.sourceID = self.sourceIdentifier ?? ""
+            }
         }
     }
     @NSManaged private var primitiveSourceIdentifier: String?
@@ -114,6 +113,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         return self._versions.array as! [AppVersion]
     }
     
+    @nonobjc public var allScreenshots: [AppScreenshot] {
+        return self._screenshots.array as! [AppScreenshot]
+    }
+    @NSManaged @objc(screenshots) private(set) var _screenshots: NSOrderedSet
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -125,18 +129,21 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case bundleIdentifier
         case developerName
         case localizedDescription
-        case version
-        case versionDescription
-        case versionDate
         case iconURL
-        case screenshotURLs
-        case downloadURL
+        case screenshots
         case tintColor
         case subtitle
         case permissions = "appPermissions"
         case size
         case isBeta = "beta"
         case versions
+        
+        // Legacy
+        case version
+        case versionDescription
+        case versionDate
+        case downloadURL
+        case screenshotURLs
     }
     
     public required init(from decoder: Decoder) throws
@@ -157,7 +164,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             
             self.iconURL = try container.decode(URL.self, forKey: .iconURL)
-            self.screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs) ?? []
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -170,12 +176,37 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
+            let appScreenshots: [AppScreenshot]
+            
+            if let screenshots = try container.decodeIfPresent(AppScreenshots.self, forKey: .screenshots)
+            {
+                appScreenshots = screenshots.screenshots
+            }
+            else if let screenshotURLs = try container.decodeIfPresent([URL].self, forKey: .screenshotURLs)
+            {
+                // Assume 9:16 iPhone 8 screen dimensions for legacy screenshotURLs.
+                let legacyAspectRatio = CGSize(width: 750, height: 1334)
+                
+                appScreenshots = screenshotURLs.map { imageURL in
+                    let screenshot = AppScreenshot(imageURL: imageURL, size: legacyAspectRatio, deviceType: .iphone, context: context)
+                    return screenshot
+                }
+            }
+            else
+            {
+                appScreenshots = []
+            }
+   
+            for screenshot in appScreenshots
+            {
+                screenshot.appBundleID = self.bundleIdentifier
+            }
+            
+            self.setScreenshots(appScreenshots)
+            
             if let appPermissions = try container.decodeIfPresent(AppPermissions.self, forKey: .permissions)
             {
-                appPermissions.entitlements?.forEach { $0.type = .entitlement }
-                appPermissions.privacy?.forEach { $0.type = .privacy }
-                
-                let allPermissions = (appPermissions.entitlements ?? []) + (appPermissions.privacy ?? [])
+                let allPermissions = appPermissions.entitlements + appPermissions.privacy
                 for permission in allPermissions
                 {
                     permission.appBundleID = self.bundleIdentifier
@@ -278,6 +309,58 @@ internal extension StoreApp
         }
         
         self._permissions = permissions as NSSet
+    }
+    
+    func setScreenshots(_ screenshots: [AppScreenshot])
+    {
+        for case let screenshot as AppScreenshot in self._screenshots
+        {
+            if screenshots.contains(screenshot)
+            {
+                screenshot.app = self
+            }
+            else
+            {
+                screenshot.app = nil
+            }
+        }
+        
+        self._screenshots = NSOrderedSet(array: screenshots)
+        
+        // Backwards compatibility
+        self.screenshotURLs = screenshots.map { $0.imageURL }
+    }
+}
+
+public extension StoreApp
+{
+    func screenshots(for deviceType: ALTDeviceType) -> [AppScreenshot]
+    {
+        //TODO: Support multiple device types
+        let filteredScreenshots = self.allScreenshots.filter { $0.deviceType == deviceType }
+        return filteredScreenshots
+    }
+    
+    func preferredScreenshots() -> [AppScreenshot]
+    {
+        let deviceType: ALTDeviceType
+        
+        if UIDevice.current.model.contains("iPad")
+        {
+            deviceType = .ipad
+        }
+        else
+        {
+            deviceType = .iphone
+        }
+        
+        let preferredScreenshots = self.screenshots(for: deviceType)
+        guard !preferredScreenshots.isEmpty else {
+            // There are no screenshots for deviceType, so return _all_ screenshots instead.
+            return self.allScreenshots
+        }
+        
+        return preferredScreenshots
     }
 }
 

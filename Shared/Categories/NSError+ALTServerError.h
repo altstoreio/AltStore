@@ -19,6 +19,8 @@ extern NSErrorUserInfoKey const ALTDeviceNameErrorKey;
 extern NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey;
 extern NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey;
 
+extern NSErrorUserInfoKey const ALTNSCodingPathKey;
+
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
     ALTServerErrorUnderlyingError = -1,

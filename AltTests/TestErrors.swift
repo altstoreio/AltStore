@@ -31,7 +31,7 @@ enum TestErrorCode: Int, ALTErrorEnum, CaseIterable
     }
 }
 
-extension TestError
+extension DefaultLocalizedError<TestErrorCode>
 {
     static var allErrors: [TestError] {
         return Code.allCases.map { TestError($0) }
@@ -70,12 +70,16 @@ extension VerificationError
     static var testErrors: [VerificationError] {
         let app = ALTApplication(fileURL: Bundle.main.bundleURL)!
         
-        return VerificationError.Code.allCases.map { code -> VerificationError in
+        return VerificationError.Code.allCases.compactMap { code -> VerificationError? in
             switch code
             {
-            case .privateEntitlements: return VerificationError.privateEntitlements(["dynamic-codesigning": true], app: app)
             case .mismatchedBundleIdentifiers: return VerificationError.mismatchedBundleIdentifiers(sourceBundleID: "com.rileytestut.App", app: app)
             case .iOSVersionNotSupported: return VerificationError.iOSVersionNotSupported(app: app, requiredOSVersion: OperatingSystemVersion(majorVersion: 21, minorVersion: 1, patchVersion: 0))
+            case .mismatchedHash: return VerificationError.mismatchedHash("12345", expectedHash: "67890", app: app)
+            case .mismatchedVersion: return VerificationError.mismatchedVersion("1.0", expectedVersion: "1.1", app: app)
+            case .mismatchedBuildVersion: return VerificationError.mismatchedBuildVersion("1", expectedVersion: "28", app: app)
+            case .undeclaredPermissions: return VerificationError.undeclaredPermissions([ALTEntitlement.appGroups, ALTAppPrivacyPermission.bluetooth], app: app)
+            case .addedPermissions: return nil //VerificationError.addedPermissions([ALTAppPrivacyPermission.appleMusic, ALTEntitlement.interAppAudio], appVersion: app)
             }
         }
     }
@@ -219,7 +223,6 @@ extension OperationError
             {
             case .unknown: return .unknown()
             case .unknownResult: return .unknownResult
-            case .cancelled: return .cancelled
             case .timedOut: return .timedOut
             case .notAuthenticated: return .notAuthenticated
             case .appNotFound: return .appNotFound(name: "Delta")
@@ -233,6 +236,7 @@ extension OperationError
             case .serverNotFound: return .serverNotFound
             case .connectionFailed: return .connectionFailed
             case .connectionDropped: return .connectionDropped
+            case .forbidden: return .forbidden()
             }
         }
     }

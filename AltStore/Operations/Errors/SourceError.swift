@@ -23,6 +23,7 @@ extension SourceError
         case duplicate
         
         case missingPermissionUsageDescription
+        case missingScreenshotSize
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
@@ -35,6 +36,10 @@ extension SourceError
     
     static func missingPermissionUsageDescription(for permission: any ALTAppPermission, app: StoreApp, source: Source) -> SourceError {
         SourceError(code: .missingPermissionUsageDescription, source: source, app: app, permission: permission)
+    }
+    
+    static func missingScreenshotSize(for screenshot: AppScreenshot, source: Source) -> SourceError {
+        SourceError(code: .missingScreenshotSize, source: source, app: screenshot.app, screenshotURL: screenshot.imageURL)
     }
 }
 
@@ -58,6 +63,9 @@ struct SourceError: ALTLocalizedError
     
     @UserInfoValue
     var permission: (any ALTAppPermission)?
+    
+    @UserInfoValue
+    var screenshotURL: URL?
     
     var errorFailureReason: String {
         switch self.code
@@ -111,6 +119,14 @@ struct SourceError: ALTLocalizedError
             
             let permissionType = permission.type.localizedName ?? NSLocalizedString("Permission", comment: "")
             let failureReason = String(format: NSLocalizedString("The %@ '%@' for %@ is missing a usage description.", comment: ""), permissionType.lowercased(), permission.rawValue, appName)
+            return failureReason
+            
+        case .missingScreenshotSize:
+            let appName = self.$app.name ?? String(format: NSLocalizedString("an app in source “%@”", comment: ""), self.$source.name)
+            let baseMessage = String(format: NSLocalizedString("An iPad screenshot for %@ does not specify its size", comment: ""), appName)
+            guard let screenshotURL else { return baseMessage + "." }
+            
+            let failureReason = baseMessage + ": \(screenshotURL.absoluteString)"
             return failureReason
         }
     }

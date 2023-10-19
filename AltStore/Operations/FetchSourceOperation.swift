@@ -122,7 +122,35 @@ class FetchSourceOperation: ResultOperation<Source>
                     decoder.managedObjectContext = childContext
                     decoder.sourceURL = self.sourceURL
                     
-                    let source = try decoder.decode(Source.self, from: data)
+                    let source: Source
+                    
+                    do
+                    {
+                        source = try decoder.decode(Source.self, from: data)
+                    }
+                    catch let error as DecodingError
+                    {
+                        let nsError = error as NSError
+                        guard let codingPath = nsError.userInfo[ALTNSCodingPathKey] as? [CodingKey] else { throw error }
+                        
+                        let rawComponents = codingPath.map { $0.intValue?.description ?? $0.stringValue }
+                        let pathDescription = rawComponents.joined(separator: " > ")
+                        
+                        var userInfo = nsError.userInfo
+                        
+                        if let debugDescription = nsError.localizedDebugDescription
+                        {
+                            let detailedDescription = debugDescription + "\n\n" + pathDescription
+                            userInfo[NSDebugDescriptionErrorKey] = detailedDescription
+                        }
+                        else
+                        {
+                            userInfo[NSDebugDescriptionErrorKey] = pathDescription
+                        }
+                        
+                        throw NSError(domain: nsError.domain, code: nsError.code, userInfo: userInfo)
+                    }
+                    
                     let identifier = source.identifier
                     
                     try self.verify(source, response: response)
@@ -180,6 +208,12 @@ private extension FetchSourceOperation
             {
                 // Privacy permissions MUST have a usage description.
                 guard permission.usageDescription != nil else { throw SourceError.missingPermissionUsageDescription(for: permission.permission, app: app, source: source) }
+            }
+            
+            for screenshot in app.screenshots(for: .ipad)
+            {
+                // All iPad screenshots MUST have an explicit size.
+                guard screenshot.size != nil else { throw SourceError.missingScreenshotSize(for: screenshot, source: source) }
             }
         }
         

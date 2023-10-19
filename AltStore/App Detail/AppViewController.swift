@@ -142,6 +142,14 @@ class AppViewController: UIViewController
         self.view.layoutIfNeeded()
     }
     
+    override func viewIsAppearing(_ animated: Bool)
+    {
+        super.viewIsAppearing(animated)
+        
+        // Prevent banner temporarily flashing a color due to being added back to self.view.
+        self.bannerView.backgroundEffectView.backgroundColor = .clear
+    }
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
@@ -197,7 +205,7 @@ class AppViewController: UIViewController
         {
             statusBarHeight = 20
         }
-        else if let statusBarManager = self.view.window?.windowScene?.statusBarManager
+        else if let statusBarManager = (self.view.window ?? self.presentedViewController?.view.window)?.windowScene?.statusBarManager
         {
             statusBarHeight = statusBarManager.statusBarFrame.height
         }

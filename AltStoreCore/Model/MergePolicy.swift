@@ -156,6 +156,12 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                         {
                             appVersion.managedObjectContext?.delete(appVersion)
                         }
+                        
+                        // Delete previous screenshots (different than below).
+                        for case let appScreenshot as AppScreenshot in previousApp._screenshots where appScreenshot.app == nil
+                        {
+                            appScreenshot.managedObjectContext?.delete(appScreenshot)
+                        }
                     }
                     
                 case is AppVersion where conflict.conflictingObjects.count == 2:
@@ -181,8 +187,9 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
             return
         }
         
-        var sortedVersionIDsByGlobalAppID = [String: NSOrderedSet]()
         var permissionsByGlobalAppID = [String: Set<AnyHashable>]()
+        var sortedVersionIDsByGlobalAppID = [String: NSOrderedSet]()
+        var sortedScreenshotIDsByGlobalAppID = [String: NSOrderedSet]()
         
         var featuredAppIDsBySourceID = [String: [String]]()
         
@@ -212,10 +219,19 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     databaseVersion.managedObjectContext?.delete(databaseVersion)
                 }
                 
+                // Screenshots
+                let contextScreenshotIDs = NSOrderedSet(array: contextApp._screenshots.lazy.compactMap { $0 as? AppScreenshot }.map { $0.screenshotID })
+                for case let databaseScreenshot as AppScreenshot in databaseObject._screenshots where !contextScreenshotIDs.contains(databaseScreenshot.screenshotID)
+                {
+                    // Screenshot ID does NOT exist in context, so delete existing databaseScreenshot.
+                    databaseScreenshot.managedObjectContext?.delete(databaseScreenshot)
+                }
+                
                 if let globallyUniqueID = contextApp.globallyUniqueID
                 {
                     permissionsByGlobalAppID[globallyUniqueID] = contextPermissions
                     sortedVersionIDsByGlobalAppID[globallyUniqueID] = contextVersionIDs
+                    sortedScreenshotIDsByGlobalAppID[globallyUniqueID] = contextScreenshotIDs
                 }
                 
             case let databaseObject as Source:
@@ -294,6 +310,31 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                             }
                             
                             appVersions = fixedAppVersions
+                        }
+                        
+                        // Screenshots
+                        if let sortedScreenshotIDs = sortedScreenshotIDsByGlobalAppID[globallyUniqueID],
+                           let sortedScreenshotIDsArray = sortedScreenshotIDs.array as? [String],
+                           case let databaseScreenshotIDs = databaseObject.allScreenshots.map({ $0.screenshotID }),
+                           databaseScreenshotIDs != sortedScreenshotIDsArray
+                        {
+                            // Screenshot order is incorrect, so attempt to fix by re-sorting.
+                            let fixedScreenshots = databaseObject.allScreenshots.sorted { (screenshotA, screenshotB) in
+                                let indexA = sortedScreenshotIDs.index(of: screenshotA.screenshotID)
+                                let indexB = sortedScreenshotIDs.index(of: screenshotB.screenshotID)
+                                return indexA < indexB
+                            }
+                            
+                            let appScreenshotIDs = fixedScreenshots.map { $0.screenshotID }
+                            if appScreenshotIDs == sortedScreenshotIDsArray
+                            {
+                                databaseObject.setScreenshots(fixedScreenshots)
+                            }
+                            else
+                            {
+                                // Screenshots are still not in correct order, but not worth throwing error so ignore.
+                                print("Failed to re-sort screenshots into correct order. Expected:", sortedScreenshotIDsArray)
+                            }
                         }
                     }
                     
