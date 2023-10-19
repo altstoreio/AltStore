@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -38,6 +38,23 @@
                 <constraint value="appBundleID"/>
                 <constraint value="permission"/>
                 <constraint value="type"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppScreenshot" representedClassName="AppScreenshot" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="deviceType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="height" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <attribute name="imageURL" attributeType="URI"/>
+        <attribute name="sourceID" attributeType="String"/>
+        <attribute name="width" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="screenshots" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="imageURL"/>
+                <constraint value="deviceType"/>
+                <constraint value="appBundleID"/>
                 <constraint value="sourceID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
@@ -207,6 +224,7 @@
         <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
         <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
         <relationship name="permissions" toMany="YES" deletionRule="Cascade" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
+        <relationship name="screenshots" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppScreenshot" inverseName="app" inverseEntity="AppScreenshot"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
         <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
         <uniquenessConstraints>
