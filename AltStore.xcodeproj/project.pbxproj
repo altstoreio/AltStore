@@ -839,7 +839,6 @@
 		BFAD678D25E0649500D4C4D1 /* ALTDebugConnection.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ALTDebugConnection.mm; sourceTree = "<group>"; };
 		BFAD679525E064D400D4C4D1 /* ALTDebugConnection+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ALTDebugConnection+Private.h"; sourceTree = "<group>"; };
 		BFAD67A225E0854500D4C4D1 /* DeveloperDiskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperDiskManager.swift; sourceTree = "<group>"; };
-		BFB1169C22932DB100BB457C /* apps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = apps.json; sourceTree = "<group>"; };
 		BFB364592325985F00CD0EB1 /* FindServerOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindServerOperation.swift; sourceTree = "<group>"; };
 		BFB39B5B252BC10E00D1BE50 /* Managed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managed.swift; sourceTree = "<group>"; };
 		BFB4323E22DE852000B7F8BC /* UpdateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -1870,7 +1869,6 @@
 			isa = PBXGroup;
 			children = (
 				BF44EEF2246B3A17002A52F2 /* AltBackup.ipa */,
-				BFB1169C22932DB100BB457C /* apps.json */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
