@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5Rz-4h-jJ8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5Rz-4h-jJ8">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -1095,13 +1095,22 @@ Settings by i cons from the Noun Project</string>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Error Log" largeTitleDisplayMode="never" id="a1p-3W-bSi">
-                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="BnQ-Eh-1gC">
-                            <connections>
-                                <action selector="clearLoggedErrors:" destination="g8a-Rf-zWa" id="faq-89-H5j"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="trash" id="BnQ-Eh-1gC">
+                                <connections>
+                                    <action selector="clearLoggedErrors:" destination="g8a-Rf-zWa" id="faq-89-H5j"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="action" id="BNj-HE-KHr">
+                                <connections>
+                                    <action selector="exportDetailedLog:" destination="g8a-Rf-zWa" id="Kbw-Q5-9WO"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="clearLogButton" destination="BnQ-Eh-1gC" id="MHl-Kh-ick"/>
+                        <outlet property="exportLogButton" destination="BNj-HE-KHr" id="w9g-yA-0Yx"/>
                         <segue destination="7gm-d1-zWK" kind="presentation" identifier="showErrorDetails" id="9vz-y6-evp"/>
                     </connections>
                 </tableViewController>

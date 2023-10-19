@@ -33,6 +33,9 @@ class ErrorLogViewController: UITableViewController
         return dateFormatter
     }()
     
+    @IBOutlet private var exportLogButton: UIBarButtonItem!
+    @IBOutlet private var clearLogButton: UIBarButtonItem!
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -43,6 +46,14 @@ class ErrorLogViewController: UITableViewController
         
         self.tableView.dataSource = self.dataSource
         self.tableView.prefetchDataSource = self.dataSource
+        
+        self.exportLogButton.activityIndicatorView.color = .white
+        
+        if #unavailable(iOS 15)
+        {
+            // Assign just clearLogButton to hide export button.
+            self.navigationItem.rightBarButtonItems = [self.clearLogButton]
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -259,6 +270,77 @@ private extension ErrorLogViewController
     func viewMoreDetails(for loggedError: LoggedError)
     {
         self.performSegue(withIdentifier: "showErrorDetails", sender: loggedError)
+    }
+    
+    @available(iOS 15, *)
+    @IBAction func exportDetailedLog(_ sender: UIBarButtonItem)
+    {
+        self.exportLogButton.isIndicatingActivity = true
+        
+        Task<Void, Never>.detached(priority: .userInitiated) {
+            do
+            {
+                let store = try OSLogStore(scope: .currentProcessIdentifier)
+                
+                // All logs since the app launched.
+                let position = store.position(timeIntervalSinceLatestBoot: 0)
+                
+                let entries = try store.getEntries(at: position)
+                    .compactMap { $0 as? OSLogEntryLog }
+                    .filter { $0.subsystem.contains(Logger.altstoreSubsystem) }
+                    .map { "[\($0.date.formatted())] [\($0.category)] [\($0.level.localizedName)] \($0.composedMessage)" }
+                
+                let outputText = entries.joined(separator: "\n")
+                
+                let outputDirectory = FileManager.default.uniqueTemporaryURL()
+                try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
+                
+                defer {
+                    do
+                    {
+                        try FileManager.default.removeItem(at: outputDirectory)
+                    }
+                    catch
+                    {
+                        Logger.main.error("Failed to remove temporary log directory \(outputDirectory.lastPathComponent, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                    }
+                }
+                
+                let outputURL = outputDirectory.appendingPathComponent("altlog.txt")
+                try outputText.write(to: outputURL, atomically: true, encoding: .utf8)
+                
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    Task<Void, Never> { @MainActor in
+                        let activityViewController = UIActivityViewController(activityItems: [outputURL], applicationActivities: nil)
+                        activityViewController.completionWithItemsHandler = { (activityType, completed, _, error) in
+                            if let error
+                            {
+                                continuation.resume(throwing: error)
+                            }
+                            else
+                            {
+                                continuation.resume()
+                            }
+                        }
+                        self.present(activityViewController, animated: true)
+                    }
+                }
+            }
+            catch
+            {
+                Logger.main.error("Failed to export OSLog entries. \(error.localizedDescription, privacy: .public)")
+                
+                await MainActor.run {
+                    let alertController = UIAlertController(title: NSLocalizedString("Unable to Export Detailed Log", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                    alertController.addAction(.ok)
+                    self.present(alertController, animated: true)
+                }
+            }
+            
+            await MainActor.run {
+                self.exportLogButton.isIndicatingActivity = false
+            }
+        }
     }
 }
 
