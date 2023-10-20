@@ -96,8 +96,7 @@ class AppScreenshotCollectionViewCell: UICollectionViewCell
         }
         else
         {
-            let cornerRadius = self.imageView.bounds.width / 25.0 // Based on iPhone 8
-            self.imageView.layer.cornerRadius = cornerRadius
+            self.imageView.layer.cornerRadius = 5
         }
     }
 }
