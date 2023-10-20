@@ -161,9 +161,19 @@ private extension AppCardCollectionViewCell
             
             // Use .estimated(1) to ensure we don't over-estimate widths, which can cause incorrect layouts for the last group.
             let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(1), heightDimension: .fractionalHeight(1.0))
-            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: .flexible(0), top: nil, trailing: nil, bottom: nil)
+            
+            if numberOfVisibleScreenshots == 1
+            {
+                // If there's only one screenshot visible initially, we'll (reluctantly) opt-in to flexible spacing on both sides.
+                // This ensures the items are always centered, but may result in larger spacings between items than we'd prefer.
+                item.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: .flexible(0), top: nil, trailing: .flexible(0), bottom: nil)
+            }
+            else
+            {
+                // Otherwise, only have flexible spacing on the leading edge, which will be balanced by trailingGroup's flexible trailing spacing.
+                item.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: .flexible(0), top: nil, trailing: nil, bottom: nil)
+            }
             
             let groupItem = NSCollectionLayoutItem(layoutSize: itemSize)
             let trailingGroup = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [groupItem])
