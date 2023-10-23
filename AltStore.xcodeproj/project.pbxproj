@@ -3812,7 +3812,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = AltWidget/Previews.xcassets;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
@@ -3844,7 +3844,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltWidget/AltWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = AltWidget/Previews.xcassets;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				INFOPLIST_FILE = AltWidget/Info.plist;
@@ -4003,7 +4003,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AltStore/Info.plist;
@@ -4037,7 +4037,7 @@
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AltStore/Info.plist;
