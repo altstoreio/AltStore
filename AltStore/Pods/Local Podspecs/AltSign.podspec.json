@@ -1,0 +1,94 @@
+{
+  "name": "AltSign",
+  "version": "0.1",
+  "summary": "Open source iOS code-signing framework.",
+  "description": "iOS framework to manage Apple developer accounts and resign apps.",
+  "homepage": "https://github.com/rileytestut/altsign",
+  "license": "MIT",
+  "platforms": {
+    "ios": "12.0"
+  },
+  "source": {
+    "git": "https://github.com/rileytestut/AltSign.git"
+  },
+  "authors": {
+    "Riley Testut": "riley@rileytestut.com"
+  },
+  "social_media_url": "https://twitter.com/rileytestut",
+  "source_files": [
+    "AltSign",
+    "AltSign/**/*.{h,m,mm,hpp,cpp,swift}"
+  ],
+  "public_header_files": "AltSign/**/*.h",
+  "resources": "AltSign/Resources/apple.pem",
+  "libraries": "c++",
+  "xcconfig": {
+    "OTHER_CFLAGS": "-DCORECRYPTO_DONOT_USE_TRANSPARENT_UNION=1",
+    "GCC_PREPROCESSOR_DEFINITIONS": "INCLUDE_PRIVATE_API=1 CORECRYPTO_DONOT_USE_TRANSPARENT_UNION=1",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) INCLUDE_PRIVATE_API",
+    "SWIFT_INCLUDE_PATHS": "$(PODS_ROOT)/../Dependencies/AltSign/Dependencies/corecrypto/",
+    "SYSTEM_HEADER_SEARCH_PATHS": "$(PODS_ROOT)/Headers/Private/AltSign/"
+  },
+  "subspecs": [
+    {
+      "name": "OpenSSL",
+      "source_files": "Dependencies/OpenSSL/ios/include/openssl/*.h",
+      "header_mappings_dir": "Dependencies/OpenSSL/ios/include",
+      "private_header_files": "Dependencies/OpenSSL/ios/include/openssl/*.h",
+      "vendored_libraries": [
+        "Dependencies/OpenSSL/ios/lib/libcrypto.a",
+        "Dependencies/OpenSSL/ios/lib/libssl.a"
+      ]
+    },
+    {
+      "name": "ldid",
+      "source_files": [
+        "AltSign/ldid/*.{hpp,h,c,cpp}",
+        "Dependencies/ldid/*.{hpp,h,c,cpp}"
+      ],
+      "private_header_files": [
+        "AltSign/ldid/*.hpp",
+        "Dependencies/ldid/*.{hpp,h}"
+      ],
+      "header_mappings_dir": ""
+    },
+    {
+      "name": "plist",
+      "source_files": [
+        "Dependencies/ldid/libplist/include/plist/*.h",
+        "Dependencies/ldid/libplist/src/*.{c,cpp}",
+        "Dependencies/ldid/libplist/libcnary/**/*.{h,c}"
+      ],
+      "exclude_files": [
+        "Dependencies/ldid/libplist/include/plist/String.h",
+        "Dependencies/ldid/libplist/include/plist/Node.h"
+      ],
+      "private_header_files": [
+        "Dependencies/ldid/libplist/include/plist/*.h",
+        "Dependencies/ldid/libplist/libcnary/**/*.h"
+      ],
+      "header_mappings_dir": "Dependencies/ldid/libplist",
+      "xcconfig": {
+        "HEADER_SEARCH_PATHS": "\"$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/include\" \"$(SRCROOT)/../Dependencies/AltSign/Dependencies/ldid/libplist/src\""
+      }
+    },
+    {
+      "name": "minizip",
+      "source_files": "Dependencies/minizip/*.{h,c}",
+      "exclude_files": [
+        "Dependencies/minizip/iowin32.*",
+        "Dependencies/minizip/minizip.c",
+        "Dependencies/minizip/miniunz.c"
+      ],
+      "private_header_files": "Dependencies/minizip/*.h",
+      "header_mappings_dir": "Dependencies"
+    },
+    {
+      "name": "CoreCrypto",
+      "source_files": "Dependencies/corecrypto/*.{h,m,swift,modulemap}",
+      "exclude_files": "Dependencies/corecrypto/ccperf.h",
+      "private_header_files": "Dependencies/corecrypto/*.h",
+      "header_mappings_dir": "Dependencies"
+    }
+  ]
+}

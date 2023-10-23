@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="fMJ-OF-djb" customClass="SettingsHeaderFooterView" customModule="AltStore" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="197.5" height="62"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lwu-4e-pWM">
+                    <rect key="frame" x="30" y="8" width="137.5" height="46"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="kEr-mf-Jw4">
+                            <rect key="frame" x="0.0" y="0.0" width="137.5" height="29"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="ACCOUNT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rLj-Ff-ZTt">
+                                    <rect key="frame" x="0.0" y="0.0" width="68.5" height="29"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" white="1" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="meg-d6-dbz">
+                                    <rect key="frame" x="68.5" y="0.0" width="69" height="29"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                    <state key="normal" title="SIGN OUT">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eet-Hi-RU4">
+                            <rect key="frame" x="0.0" y="29" width="137.5" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="lwu-4e-pWM" firstAttribute="trailing" secondItem="fMJ-OF-djb" secondAttribute="trailingMargin" placeholder="YES" id="1Im-8l-aLX"/>
+                <constraint firstItem="lwu-4e-pWM" firstAttribute="bottom" secondItem="fMJ-OF-djb" secondAttribute="bottomMargin" placeholder="YES" id="QbJ-4L-kbL"/>
+                <constraint firstItem="lwu-4e-pWM" firstAttribute="top" secondItem="fMJ-OF-djb" secondAttribute="topMargin" placeholder="YES" id="U4a-l9-6gw"/>
+                <constraint firstItem="lwu-4e-pWM" firstAttribute="leading" secondItem="fMJ-OF-djb" secondAttribute="leadingMargin" placeholder="YES" id="vSr-R6-hXw"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+            <connections>
+                <outlet property="button" destination="meg-d6-dbz" id="1fo-bc-DZp"/>
+                <outlet property="primaryLabel" destination="rLj-Ff-ZTt" id="CwM-fL-2vl"/>
+                <outlet property="secondaryLabel" destination="eet-Hi-RU4" id="eup-eh-q5E"/>
+                <outlet property="stackView" destination="lwu-4e-pWM" id="qu7-UX-6tI"/>
+            </connections>
+        </view>
+    </objects>
+</document>

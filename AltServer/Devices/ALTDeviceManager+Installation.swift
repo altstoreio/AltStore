@@ -406,7 +406,7 @@ private extension ALTDeviceManager
                 alert.messageText = NSLocalizedString("Two-Factor Authentication Enabled", comment: "")
                 alert.informativeText = NSLocalizedString("Please enter the 6-digit verification code that was sent to your Apple devices.", comment: "")
                 
-                let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 22))
+                let textField = NSTextField(frame: NSRect(x: 0, y: 0, inline-size,300, block-size: 22))
                 textField.delegate = self
                 textField.translatesAutoresizingMaskIntoConstraints = false
                 textField.placeholderString = NSLocalizedString("123456", comment: "")

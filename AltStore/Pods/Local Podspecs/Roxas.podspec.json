@@ -1,0 +1,22 @@
+{
+  "name": "Roxas",
+  "version": "0.1",
+  "summary": "Private iOS Development Framework",
+  "description": "Private iOS Development Framework used by me in my projects.",
+  "homepage": "https://github.com/rileytestut/roxas",
+  "platforms": {
+    "ios": "12.0"
+  },
+  "source": {
+    "git": "http://github.com/rileytestut/Roxas.git"
+  },
+  "authors": {
+    "Riley Testut": "riley@rileytestut.com"
+  },
+  "social_media_url": "https://twitter.com/rileytestut",
+  "source_files": "Roxas/*.{h,m}",
+  "public_header_files": "Roxas/*.h",
+  "private_header_files": "Roxas/RSTCellContentDataSource_Subclasses.h",
+  "prefix_header_file": "Roxas/Roxas-Prefix.pch",
+  "resources": "Roxas/*.xib"
+}

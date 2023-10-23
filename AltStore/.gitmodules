@@ -1,0 +1,18 @@
+[submodule "Dependencies/Roxas"]
+	path = Dependencies/Roxas
+	url = https://github.com/rileytestut/Roxas.git
+[submodule "Dependencies/AltSign"]
+	path = Dependencies/AltSign
+	url = https://github.com/rileytestut/AltSign.git
+[submodule "Dependencies/libimobiledevice"]
+	path = Dependencies/libimobiledevice
+	url = https://github.com/rileytestut/libimobiledevice.git
+[submodule "Dependencies/libusbmuxd"]
+	path = Dependencies/libusbmuxd
+	url = https://github.com/libimobiledevice/libusbmuxd.git
+[submodule "Dependencies/libplist"]
+	path = Dependencies/libplist
+	url = https://github.com/libimobiledevice/libplist.git
+[submodule "Dependencies/MarkdownAttributedString"]
+	path = Dependencies/MarkdownAttributedString
+	url = https://github.com/chockenberry/MarkdownAttributedString.git

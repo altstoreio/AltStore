@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16092.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16082.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="InstalledAppsHeader" id="eyV-eW-aLi" customClass="InstalledAppsCollectionHeaderView" customModule="AltStore" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Installed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zhW-Re-WNf">
+                    <rect key="frame" x="20" y="21" width="96.5" height="29"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMf-wr-wRV">
+                    <rect key="frame" x="274" y="23" width="81" height="32"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                    <state key="normal" title="Refresh All"/>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="zhW-Re-WNf" firstAttribute="leading" secondItem="eyV-eW-aLi" secondAttribute="leading" constant="20" id="Fo0-fL-UpD"/>
+                <constraint firstAttribute="bottom" secondItem="zhW-Re-WNf" secondAttribute="bottom" id="OWw-FY-KOh"/>
+                <constraint firstAttribute="trailing" secondItem="iMf-wr-wRV" secondAttribute="trailing" constant="20" id="dJM-7c-k31"/>
+                <constraint firstItem="iMf-wr-wRV" firstAttribute="firstBaseline" secondItem="zhW-Re-WNf" secondAttribute="firstBaseline" id="iU7-F2-XDu"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="N3q-SZ-Vyv"/>
+            <connections>
+                <outlet property="button" destination="iMf-wr-wRV" id="kWT-cc-BjS"/>
+                <outlet property="textLabel" destination="zhW-Re-WNf" id="UOg-4X-rWx"/>
+            </connections>
+            <point key="canvasLocation" x="19.565217391304348" y="30.803571428571427"/>
+        </collectionReusableView>
+    </objects>
+</document>

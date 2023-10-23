@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.rileytestut.altdaemon</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/env</string>
+		<string>_MSSafeMode=1</string>
+		<string>_SafeMode=1</string>
+		<string>/usr/bin/AltDaemon</string>
+	</array>
+	<key>UserName</key>
+	<string>mobile</string>
+	<key>KeepAlive</key>
+	<false/>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>MachServices</key>
+	<dict>
+		<key>cy:io.altstore.altdaemon</key>
+		<true/>
+		<key>lh:io.altstore.altdaemon</key>
+		<true/>
+	</dict>
+</dict>
+</plist>
