@@ -51,7 +51,6 @@ class SourcesViewController: UICollectionViewController
         self.navigationController?.view.tintColor = .altPrimary
         
         self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
-        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader)
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -64,7 +63,8 @@ class SourcesViewController: UICollectionViewController
         self.placeholderView = RSTPlaceholderView(frame: .zero)
         self.placeholderView.translatesAutoresizingMaskIntoConstraints = false
         self.placeholderView.textLabel.text = NSLocalizedString("Add More Sources!", comment: "")
-        self.placeholderView.detailTextLabel.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis massa tortor, tempor vel est vitae, consequat luctus arcu."
+        self.placeholderView.detailTextLabel.text = NSLocalizedString("Sources determine what apps are available in AltStore. The more sources you add, the better your AltStore experience will be.\n\nDon’t know where to start? Try adding one of our Recommended Sources!", comment: "")
+        self.placeholderView.detailTextLabel.textAlignment = .natural
         backgroundView.addSubview(self.placeholderView)
         
         let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).bolded()
@@ -129,7 +129,6 @@ private extension SourcesViewController
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
         var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-        configuration.headerMode = .supplementary
         configuration.showsSeparators = false
         configuration.backgroundColor = .clear
         
@@ -456,20 +455,6 @@ extension SourcesViewController
         
         let source = self.dataSource.item(at: indexPath)
         self.showSourceDetails(for: source)
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
-    {
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
-        
-        var configuation = UIListContentConfiguration.cell()
-        configuation.text = NSLocalizedString("Sources control what apps are available to download through AltStore.", comment: "")
-        configuation.textProperties.color = .secondaryLabel
-        configuation.textProperties.alignment = .natural
-        
-        headerView.contentConfiguration = configuation
-        
-        return headerView
     }
 }
 
