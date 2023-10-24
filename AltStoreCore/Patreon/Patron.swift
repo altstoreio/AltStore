@@ -16,10 +16,22 @@ extension PatreonAPI
         {
             var full_name: String?
             var patron_status: String?
+            var currently_entitled_amount_cents: Int32?
         }
         
         struct Relationships: Decodable
         {
+            struct Campaign: Decodable
+            {
+                struct CampaignID: Decodable
+                {
+                    var id: String
+                    var type: String
+                }
+                
+                var data: CampaignID
+            }
+            
             struct Tiers: Decodable
             {
                 struct TierID: Decodable
@@ -31,7 +43,8 @@ extension PatreonAPI
                 var data: [TierID]
             }
             
-            var currently_entitled_tiers: Tiers
+            var campaign: Campaign?
+            var currently_entitled_tiers: Tiers?
         }
         
         var id: String

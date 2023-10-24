@@ -45,8 +45,33 @@ extension PatreonAPI
     {
         case tier(TierResponse)
         case benefit(BenefitResponse)
+        case patron(PatronResponse)
+        case campaign(CampaignResponse)
+        case unknown(UnknownResponse)
         
-        enum CodingKeys: String, CodingKey
+        var id: String {
+            switch self
+            {
+            case .tier(let response): return response.id
+            case .benefit(let response): return response.id
+            case .patron(let response): return response.id
+            case .campaign(let response): return response.id
+            case .unknown(let response): return response.id
+            }
+        }
+        
+//        var type: String {
+//            switch self
+//            {
+//            case .tier(let response): return response.type
+//            case .benefit(let response): return response.id
+//            case .patron(let response): return response.id
+//            case .campaign(let response): return response.id
+//            case .unknown(let response): return response.id
+//            }
+//        }
+        
+        private enum CodingKeys: String, CodingKey
         {
             case type
         }
@@ -59,16 +84,34 @@ extension PatreonAPI
             switch type
             {
             case "tier":
-                let tier = try TierResponse(from: decoder)
-                self = .tier(tier)
+                let response = try TierResponse(from: decoder)
+                self = .tier(response)
                 
             case "benefit":
-                let benefit = try BenefitResponse(from: decoder)
-                self = .benefit(benefit)
+                let response = try BenefitResponse(from: decoder)
+                self = .benefit(response)
                 
-            default: throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unrecognized Patreon response type.")
+            case "member":
+                let response = try PatronResponse(from: decoder)
+                self = .patron(response)
+                
+            case "campaign":
+                let response = try CampaignResponse(from: decoder)
+                self = .campaign(response)
+                
+            default:
+                Logger.main.error("Unrecognized PatreonAPI response type: \(type, privacy: .public).")
+                
+                let response = try UnknownResponse(from: decoder)
+                self = .unknown(response)
             }
         }
+    }
+    
+    struct UnknownResponse: Decodable
+    {
+        var id: String
+        var type: String
     }
 }
 
@@ -98,7 +141,9 @@ public extension PatreonAPI
         var components = URLComponents(string: "/oauth2/authorize")!
         components.queryItems = [URLQueryItem(name: "response_type", value: "code"),
                                  URLQueryItem(name: "client_id", value: clientID),
-                                 URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore")]
+                                 URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore"),
+                                 URLQueryItem(name: "scope", value: "identity identity[email] identity.memberships campaigns.posts")
+        ]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         
@@ -138,9 +183,12 @@ public extension PatreonAPI
     func fetchAccount(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
         var components = URLComponents(string: "/api/oauth2/v2/identity")!
-        components.queryItems = [URLQueryItem(name: "include", value: "memberships"),
+        components.queryItems = [URLQueryItem(name: "include", value: "memberships.campaign.tiers,memberships.currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[user]", value: "first_name,full_name"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
+                                 URLQueryItem(name: "fields[tier]", value: "title,amount_cents"),
+                                 URLQueryItem(name: "fields[benefit]", value: "title"),
+                                 URLQueryItem(name: "fields[campaign]", value: "url"),
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status,currently_entitled_amount_cents")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         let request = URLRequest(url: requestURL)
@@ -153,7 +201,10 @@ public extension PatreonAPI
                     completion(.failure(PatreonAPIError(.notAuthenticated)))
                 }
                 
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error as NSError):
+                Logger.main.error("Failed to load account. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
+                
             case .success(let response):
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                     let account = PatreonAccount(response: response, context: context)
@@ -196,7 +247,7 @@ public extension PatreonAPI
                         switch response
                         {
                         case .tier(let tierResponse): return Tier(response: tierResponse)
-                        case .benefit: return nil
+                        case .benefit, .campaign, .patron, .unknown: return nil
                         }
                     }
                     
@@ -205,7 +256,7 @@ public extension PatreonAPI
                     let patrons = response.data.map { (response) -> Patron in
                         let patron = Patron(response: response)
                         
-                        for tierID in response.relationships?.currently_entitled_tiers.data ?? []
+                        for tierID in response.relationships?.currently_entitled_tiers?.data ?? []
                         {
                             guard let tier = tiersByIdentifier[tierID.id] else { continue }
                             patron.benefits.formUnion(tier.benefits)

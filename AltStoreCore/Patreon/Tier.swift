@@ -15,6 +15,7 @@ extension PatreonAPI
         struct Attributes: Decodable
         {
             var title: String
+            var amount_cents: Int32
         }
         
         struct Relationships: Decodable
@@ -30,7 +31,7 @@ extension PatreonAPI
         var id: String
         var attributes: Attributes
         
-        var relationships: Relationships
+        var relationships: Relationships?
     }
 }
 
@@ -45,6 +46,6 @@ public struct Tier
     {
         self.name = response.attributes.title
         self.identifier = response.id
-        self.benefits = response.relationships.benefits.data.map(Benefit.init(response:))
+        self.benefits = response.relationships?.benefits.data.map(Benefit.init(response:)) ?? []
     }
 }

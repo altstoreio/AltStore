@@ -12,7 +12,15 @@ extension PatreonAPI
 {
     struct BenefitResponse: Decodable
     {
+        struct Attributes: Decodable
+        {
+            var title: String
+        }
+        
         var id: String
+        var type: String
+        
+        var attributes: Attributes?
     }
 }
 

@@ -25,7 +25,7 @@ extension PatreonAPI
         }
         
         var data: Data
-        var included: [PatronResponse]?
+        var included: [AnyResponse]?
     }
 }
 
@@ -38,6 +38,12 @@ public class PatreonAccount: NSManagedObject, Fetchable
     @NSManaged public var firstName: String?
     
     @NSManaged public var isPatron: Bool
+    
+    /* Relationships */
+    @nonobjc public var pledges: Set<Pledge> {
+        return self._pledges as! Set<Pledge>
+    }
+    @NSManaged @objc(pledges) private var _pledges: NSSet
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -52,15 +58,44 @@ public class PatreonAccount: NSManagedObject, Fetchable
         self.name = response.data.attributes.full_name
         self.firstName = response.data.attributes.first_name
         
-        if let patronResponse = response.included?.first
+        var campaignsByID = [String: PatreonAPI.CampaignResponse]()
+        var patronsByID = [String: PatreonAPI.PatronResponse]()
+        var tiersByID = [String: PatreonAPI.TierResponse]()
+        var benefitsByID = [String: PatreonAPI.BenefitResponse]()
+        
+        for response in response.included ?? []
         {
-            let patron = Patron(response: patronResponse)
-            self.isPatron = (patron.status == .active)
+            switch response
+            {
+            case .campaign(let response): campaignsByID[response.id] = response
+            case .patron(let response): patronsByID[response.id] = response
+            case .tier(let response): tiersByID[response.id] = response
+            case .benefit(let response): benefitsByID[response.id] = response
+            case .unknown: break // Ignore
+            }
         }
-        else
-        {
-            self.isPatron = false
+        
+        let pledges = patronsByID.values.compactMap { patron -> Pledge? in
+            guard let relationships = patron.relationships, let campaignID = relationships.campaign?.data, let tierIDs = relationships.currently_entitled_tiers?.data else { return nil }
+            guard let campaign = campaignsByID[campaignID.id] else { return nil }
+            
+            let amount = Decimal(patron.attributes.currently_entitled_amount_cents ?? 0) / 100
+            let tierID = tierIDs.last?.id
+            
+            let tiers = tierIDs.compactMap { tiersByID[$0.id] }
+            let rewards = tiers.flatMap { tier in
+                let benefits = tier.relationships?.benefits.data.compactMap { benefitsByID[$0.id] } ?? []
+                
+                let rewards = benefits.map { PledgeReward(response: $0, context: context) }
+                return rewards
+            }
+            
+            let pledge = Pledge(identifier: patron.id, amount: amount, campaignURL: campaign.attributes.url, tierID: tierID, context: context)
+            pledge._rewards = NSSet(array: rewards)
+            return pledge
         }
+        
+        self._pledges = NSSet(array: pledges)
     }
 }
 
