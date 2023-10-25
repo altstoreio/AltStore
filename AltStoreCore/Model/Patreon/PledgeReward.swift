@@ -16,19 +16,8 @@ public class PledgeReward: NSManagedObject, Fetchable
     @NSManaged public private(set) var name: String
     @NSManaged public private(set) var identifier: String
     
-    @NSManaged public private(set) var pledgeID: String?
-    
     /* Relationships */
-    @nonobjc public private(set) var pledge: Pledge? {
-        set {
-            self._pledge = newValue
-            self.pledgeID = newValue?.identifier
-        }
-        get {
-            return self._pledge
-        }
-    }
-    @objc(pledge) private var _pledge: Pledge?
+    @NSManaged public private(set) var pledge: Pledge?
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {

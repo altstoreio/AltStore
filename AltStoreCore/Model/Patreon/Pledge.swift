@@ -17,17 +17,17 @@ public class Pledge: NSManagedObject, Fetchable
     /* Properties */
     @NSManaged public private(set) var identifier: String
     @NSManaged public private(set) var campaignURL: URL
-    @NSManaged public private(set) var tierID: String?
     
-    @nonobjc public var amount: Decimal {
-        return (_amount ?? .zero) as Decimal
-    }
-    @objc(amount) private var _amount: NSDecimalNumber?
+    @nonobjc public var amount: Decimal { _amount as Decimal }
+    @NSManaged @objc(amount) private var _amount: NSDecimalNumber
     
     /* Relationships */
-    @nonobjc public var rewards: Set<PledgeReward> {
-        return self._rewards as! Set<PledgeReward>
-    }
+    @NSManaged public private(set) var account: PatreonAccount?
+    
+    @nonobjc public var tiers: Set<PledgeTier> { _tiers as! Set<PledgeTier> }
+    @NSManaged @objc(tiers) internal var _tiers: NSSet
+    
+    @nonobjc public var rewards: Set<PledgeReward> { _rewards as! Set<PledgeReward> }
     @NSManaged @objc(rewards) internal var _rewards: NSSet
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
@@ -35,14 +35,13 @@ public class Pledge: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    init(identifier: String, amount: Decimal, campaignURL: URL, tierID: String?, context: NSManagedObjectContext)
+    init(identifier: String, amount: Decimal, campaignURL: URL, context: NSManagedObjectContext)
     {
         super.init(entity: Pledge.entity(), insertInto: context)
         
         self.identifier = identifier
         self._amount = amount as NSDecimalNumber
         self.campaignURL = campaignURL
-        self.tierID = tierID
     }
 }
 

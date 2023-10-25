@@ -75,22 +75,29 @@ public class PatreonAccount: NSManagedObject, Fetchable
             }
         }
         
+        // TODO: Check if patron is active or not before saving
+        
         let pledges = patronsByID.values.compactMap { patron -> Pledge? in
             guard let relationships = patron.relationships, let campaignID = relationships.campaign?.data, let tierIDs = relationships.currently_entitled_tiers?.data else { return nil }
             guard let campaign = campaignsByID[campaignID.id] else { return nil }
             
             let amount = Decimal(patron.attributes.currently_entitled_amount_cents ?? 0) / 100
-            let tierID = tierIDs.last?.id
+            let rawTiers = tierIDs.compactMap { tiersByID[$0.id] }
             
-            let tiers = tierIDs.compactMap { tiersByID[$0.id] }
-            let rewards = tiers.flatMap { tier in
+            let tiers = rawTiers.map { tier in
+                let tier = PledgeTier(response: tier, context: context)
+                return tier
+            }
+            
+            let rewards = rawTiers.flatMap { tier in
                 let benefits = tier.relationships?.benefits.data.compactMap { benefitsByID[$0.id] } ?? []
                 
                 let rewards = benefits.map { PledgeReward(response: $0, context: context) }
                 return rewards
             }
-            
-            let pledge = Pledge(identifier: patron.id, amount: amount, campaignURL: campaign.attributes.url, tierID: tierID, context: context)
+                        
+            let pledge = Pledge(identifier: patron.id, amount: amount, campaignURL: campaign.attributes.url, context: context)
+            pledge._tiers = NSSet(array: tiers)
             pledge._rewards = NSSet(array: rewards)
             return pledge
         }
