@@ -250,6 +250,7 @@
         <attribute name="localizedDescription" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="pledgeAmount" optional="YES" attributeType="Decimal"/>
+        <attribute name="pledgeCurrency" optional="YES" attributeType="String"/>
         <attribute name="screenshotURLs" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>

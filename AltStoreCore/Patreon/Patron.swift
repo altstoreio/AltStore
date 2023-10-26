@@ -16,7 +16,7 @@ extension PatreonAPI
         {
             var full_name: String?
             var patron_status: String?
-            var currently_entitled_amount_cents: Int32?
+            var currently_entitled_amount_cents: Int32? // campaign currency
         }
         
         struct Relationships: Decodable

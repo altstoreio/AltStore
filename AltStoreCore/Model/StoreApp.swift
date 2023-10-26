@@ -27,6 +27,7 @@ public extension StoreApp
     private struct PatreonParameters: Decodable
     {
         var pledge: Decimal?
+        var currency: String?
         var tiers: Set<String>?
         var benefit: String?
     }
@@ -53,6 +54,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public private(set) var isPledgeRequired: Bool
     @NSManaged public internal(set) var isPledged: Bool
+    @NSManaged public internal(set) var pledgeCurrency: String?
     
     @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
@@ -274,7 +276,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 else
                 {
                     self._pledgeAmount = patreon.pledge as? NSDecimalNumber
-                }                
+                }
+                
+                self.pledgeCurrency = patreon.currency ?? "USD" // Default to US Dollar
                 
                 if let patreonAccount = decoder.patreonAccount
                 {

@@ -145,10 +145,31 @@ private extension BrowseViewController
             
             if app.installedApp == nil
             {
-                let buttonTitle = NSLocalizedString("Free", comment: "")
-                cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = buttonTitle
+                if app.isPledgeRequired
+                {
+                    if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
+                    {
+                        let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
+                        
+                        let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
+                        cell.bannerView.button.setTitle(buttonTitle, for: .normal)
+                        cell.bannerView.buttonLabel.text = NSLocalizedString("Pledge", comment: "")
+                        cell.bannerView.buttonLabel.isHidden = false
+                    }
+                    else
+                    {
+                        cell.bannerView.button.setTitle(NSLocalizedString("PLEDGE", comment: ""), for: .normal)
+                        cell.bannerView.buttonLabel.isHidden = true
+                    }
+                }
+                else
+                {
+                    let buttonTitle = NSLocalizedString("Free", comment: "")
+                    cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                    cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+                    cell.bannerView.button.accessibilityValue = buttonTitle
+                    cell.bannerView.buttonLabel.isHidden = true
+                }
                 
                 let progress = AppManager.shared.installationProgress(for: app)
                 cell.bannerView.button.progress = progress
@@ -169,6 +190,8 @@ private extension BrowseViewController
                 cell.bannerView.button.accessibilityValue = nil
                 cell.bannerView.button.progress = nil
                 cell.bannerView.button.countdownDate = nil
+                
+                cell.bannerView.buttonLabel.isHidden = true
             }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
