@@ -127,6 +127,10 @@ private extension BrowseViewController
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             
+            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
+            // Otherwise, cell reuse can mess up some cached values.
+            cell.bannerView.button.isIndicatingActivity = false
+            
             cell.configure(for: app)
             
             cell.bannerView.iconImageView.image = nil
@@ -136,63 +140,8 @@ private extension BrowseViewController
             cell.bannerView.button.activityIndicatorView.style = .medium
             cell.bannerView.button.activityIndicatorView.color = .white
             
-            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
-            // Otherwise, cell reuse can mess up some cached values.
-            cell.bannerView.button.isIndicatingActivity = false
-            
             let tintColor = app.tintColor ?? .altPrimary
             cell.tintColor = tintColor
-            
-            if app.installedApp == nil
-            {
-                if app.isPledgeRequired
-                {
-                    if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
-                    {
-                        let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
-                        
-                        let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
-                        cell.bannerView.button.setTitle(buttonTitle, for: .normal)
-                        cell.bannerView.buttonLabel.text = NSLocalizedString("Pledge", comment: "")
-                        cell.bannerView.buttonLabel.isHidden = false
-                    }
-                    else
-                    {
-                        cell.bannerView.button.setTitle(NSLocalizedString("PLEDGE", comment: ""), for: .normal)
-                        cell.bannerView.buttonLabel.isHidden = true
-                    }
-                }
-                else
-                {
-                    let buttonTitle = NSLocalizedString("Free", comment: "")
-                    cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-                    cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
-                    cell.bannerView.button.accessibilityValue = buttonTitle
-                    cell.bannerView.buttonLabel.isHidden = true
-                }
-                
-                let progress = AppManager.shared.installationProgress(for: app)
-                cell.bannerView.button.progress = progress
-                
-                if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
-                {
-                    cell.bannerView.button.countdownDate = versionDate
-                }
-                else
-                {
-                    cell.bannerView.button.countdownDate = nil
-                }
-            }
-            else
-            {
-                cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = nil
-                cell.bannerView.button.progress = nil
-                cell.bannerView.button.countdownDate = nil
-                
-                cell.bannerView.buttonLabel.isHidden = true
-            }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
             let iconURL = storeApp.iconURL

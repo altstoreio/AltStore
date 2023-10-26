@@ -229,6 +229,9 @@ private extension MyAppsViewController
             
             cell.bannerView.configure(for: app)
             
+            cell.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
+            cell.bannerView.buttonLabel.isHidden = true
+            
             let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
             cell.bannerView.subtitleLabel.text = versionDate
             
