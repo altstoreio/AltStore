@@ -122,6 +122,11 @@ class FetchSourceOperation: ResultOperation<Source>
                     decoder.managedObjectContext = childContext
                     decoder.sourceURL = self.sourceURL
                     
+                    if let patreonAccount = DatabaseManager.shared.patreonAccount(in: childContext)
+                    {
+                        decoder.patreonAccount = patreonAccount
+                    }
+                    
                     let source: Source
                     
                     do

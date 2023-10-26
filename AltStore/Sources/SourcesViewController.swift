@@ -205,13 +205,13 @@ private extension SourcesViewController
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
             let numberOfApps: Int
-            if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
+            if PatreonAPI.shared.isAuthenticated
             {
-                numberOfApps = source.apps.count
+                numberOfApps = source.apps.filter { !$0.isPledgeRequired || $0.isPledged }.count
             }
             else
             {
-                numberOfApps = source.apps.filter { !$0.isBeta }.count
+                numberOfApps = source.apps.filter { !$0.isPledgeRequired }.count
             }
             
             if let error = source.error

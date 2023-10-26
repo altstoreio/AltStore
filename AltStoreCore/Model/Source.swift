@@ -63,8 +63,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
     
     /* Source Detail */
     @NSManaged public var subtitle: String?
-    @NSManaged public var websiteURL: URL?
     @NSManaged public var localizedDescription: String?
+    @NSManaged public var websiteURL: URL?
+    @NSManaged public var patreonURL: URL?
     
     // Optional properties with fallbacks.
     // `private` to prevent accidentally using instead of `effective[PropertyName]`
@@ -117,6 +118,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
         case headerImageURL = "headerURL"
         case websiteURL = "website"
         case tintColor
+        case patreonURL
         
         case apps
         case news
@@ -147,6 +149,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
+            self.patreonURL = try container.decodeIfPresent(URL.self, forKey: .patreonURL)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -166,6 +169,26 @@ public class Source: NSManagedObject, Fetchable, Decodable
             for (index, app) in apps.enumerated()
             {
                 app.sortIndex = Int32(index)
+                
+                if let patreonURL = self.patreonURL, let requiredPledgeAmount = app.pledgeAmount, let patreonAccount = decoder.patreonAccount
+                {
+                    for pledge in patreonAccount.pledges
+                    {
+                        let patreonID = try Source.sourceID(from: patreonURL)
+                        let campaignID = try Source.sourceID(from: pledge.campaignURL)
+                        
+                        guard patreonID == campaignID else { continue }
+                        
+                        // This pledge is for this source's campaign
+                        
+                        if pledge.amount >= requiredPledgeAmount
+                        {
+                            // The pledge value >= the required pledge amount, so mark it as pledged.
+                            app.isPledged = true
+                            break
+                        }
+                    }
+                }
             }
             self._apps = NSMutableOrderedSet(array: apps)
             

@@ -13,6 +13,7 @@ public extension CodingUserInfoKey
 {
     static let managedObjectContext = CodingUserInfoKey(rawValue: "managedObjectContext")!
     static let sourceURL = CodingUserInfoKey(rawValue: "sourceURL")!
+    static let patreonAccount = CodingUserInfoKey(rawValue: "patreonAccount")!
 }
 
 public final class JSONDecoder: Foundation.JSONDecoder
@@ -22,12 +23,16 @@ public final class JSONDecoder: Foundation.JSONDecoder
     
     @DecoderItem(key: .sourceURL)
     public var sourceURL: URL?
+    
+    @DecoderItem(key: .patreonAccount)
+    public var patreonAccount: PatreonAccount?
 }
 
 public extension Decoder
 {
     var managedObjectContext: NSManagedObjectContext? { self.userInfo[.managedObjectContext] as? NSManagedObjectContext }
     var sourceURL: URL? { self.userInfo[.sourceURL] as? URL }
+    var patreonAccount: PatreonAccount? { self.userInfo[.patreonAccount] as? PatreonAccount }
 }
 
 @propertyWrapper

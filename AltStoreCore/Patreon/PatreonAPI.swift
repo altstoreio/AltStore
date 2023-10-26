@@ -316,11 +316,11 @@ public extension PatreonAPI
             {
                 let account = try result.get()
                 
-                if let context = account.managedObjectContext, !account.isPatron
-                {
-                    // Deactivate all beta apps now that we're no longer a patron.
-                    self.deactivateBetaApps(in: context)
-                }
+//                if let context = account.managedObjectContext, !account.isPatron
+//                {
+//                    // Deactivate all beta apps now that we're no longer a patron.
+////                    self.deactivateBetaApps(in: context)
+//                }
                 
                 try account.managedObjectContext?.save()
             }
@@ -451,8 +451,9 @@ private extension PatreonAPI
     
     func deactivateBetaApps(in context: NSManagedObjectContext)
     {
+        //TODO: DON'T deactivate apps when logged out, it causes too many issues
         let predicate = NSPredicate(format: "%K != %@ AND %K != nil AND %K == YES",
-                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isPledgeRequired))
         
         let installedApps = InstalledApp.all(satisfying: predicate, in: context)
         installedApps.forEach { $0.isActive = false }

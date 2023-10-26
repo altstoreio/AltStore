@@ -204,13 +204,13 @@ private extension BrowseViewController
     
     func updateDataSource()
     {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
+        if PatreonAPI.shared.isAuthenticated
         {
-            self.dataSource.predicate = nil
+            self.dataSource.predicate = StoreApp.availableAppsPredicate
         }
         else
         {
-            self.dataSource.predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isBeta))
+            self.dataSource.predicate = StoreApp.nonPatreonAppsPredicate
         }
     }
     

@@ -23,6 +23,13 @@ public extension StoreApp
     #endif
     
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
+    
+    private struct PatreonParameters: Decodable
+    {
+        var pledge: Decimal?
+        var tiers: Set<String>?
+        var benefit: String?
+    }
 }
 
 @objc(StoreApp)
@@ -43,6 +50,12 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
+    
+    @NSManaged public private(set) var isPledgeRequired: Bool
+    @NSManaged public internal(set) var isPledged: Bool
+    
+    @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
+    @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
     
     @NSManaged public var sortIndex: Int32
     
@@ -137,6 +150,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case size
         case isBeta = "beta"
         case versions
+        case patreon
         
         // Legacy
         case version
@@ -246,6 +260,44 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                                                            appBundleID: self.bundleIdentifier,
                                                            in: context)
                 try self.setVersions([appVersion])
+            }
+            
+            if let patreon = try container.decodeIfPresent(PatreonParameters.self, forKey: .patreon)
+            {
+                self.isPledgeRequired = true
+                
+                if patreon.pledge == nil && patreon.tiers == nil && patreon.benefit == nil
+                {
+                    // No conditions, so assign internal pledgeAmount of 0 to simplify logic
+                    self._pledgeAmount = 0 as NSDecimalNumber
+                }
+                else
+                {
+                    self._pledgeAmount = patreon.pledge as? NSDecimalNumber
+                }                
+                
+                if let patreonAccount = decoder.patreonAccount
+                {
+                    if let tierIDs = patreon.tiers
+                    {
+                        let tier = patreonAccount.pledges.flatMap { $0.tiers }.first { tierIDs.contains($0.identifier) }
+                        if tier != nil
+                        {
+                            // Only assign isPledged to true, otherwise leave alone to prevent replacing earlier check
+                            self.isPledged = true
+                        }
+                    }
+                    
+                    if let rewardID = patreon.benefit
+                    {
+                        let reward = patreonAccount.pledges.flatMap { $0.rewards }.first { $0.identifier == rewardID }
+                        if reward != nil
+                        {
+                            // Only assign isPledged to true, otherwise leave alone to prevent replacing earlier check
+                            self.isPledged = true
+                        }
+                    }
+                }
             }
         }
         catch
@@ -380,6 +432,18 @@ public extension StoreApp
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
+    }
+    
+    class var availableAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "(%K == NO) OR (%K == YES AND %K == YES)",
+                                    #keyPath(StoreApp.isPledgeRequired),
+                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isPledged))
+        return predicate
+    }
+    
+    class var nonPatreonAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isPledgeRequired))
+        return predicate
     }
     
     class func makeAltStoreApp(version: String, buildVersion: String?, in context: NSManagedObjectContext) -> StoreApp

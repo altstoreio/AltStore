@@ -138,7 +138,7 @@ private extension PatreonViewController
             headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.signOut(_:)), for: .primaryActionTriggered)
             headerView.accountButton.setTitle(String(format: NSLocalizedString("Unlink %@", comment: ""), account.name), for: .normal)
             
-            if account.isPatron
+            if account.isAltStorePatron
             {
                 headerView.supportButton.setTitle(isPatronSupportButtonTitle, for: .normal)
                 

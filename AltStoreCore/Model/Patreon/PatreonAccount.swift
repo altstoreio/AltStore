@@ -37,13 +37,13 @@ public class PatreonAccount: NSManagedObject, Fetchable
     @NSManaged public var name: String
     @NSManaged public var firstName: String?
     
-    @NSManaged public var isPatron: Bool
+    @NSManaged @objc(isPatron) public var isAltStorePatron: Bool
     
     /* Relationships */
     @nonobjc public var pledges: Set<Pledge> {
         return self._pledges as! Set<Pledge>
     }
-    @NSManaged @objc(pledges) private var _pledges: NSSet
+    @NSManaged @objc(pledges) public internal(set) var _pledges: NSSet
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
@@ -74,12 +74,12 @@ public class PatreonAccount: NSManagedObject, Fetchable
             case .unknown: break // Ignore
             }
         }
-        
-        // TODO: Check if patron is active or not before saving
-        
+                
         let pledges = patronsByID.values.compactMap { patron -> Pledge? in
             guard let relationships = patron.relationships, let campaignID = relationships.campaign?.data, let tierIDs = relationships.currently_entitled_tiers?.data else { return nil }
             guard let campaign = campaignsByID[campaignID.id] else { return nil }
+            
+            guard patron.attributes.patron_status == "active_patron" else { return nil }
             
             let amount = Decimal(patron.attributes.currently_entitled_amount_cents ?? 0) / 100
             let rawTiers = tierIDs.compactMap { tiersByID[$0.id] }

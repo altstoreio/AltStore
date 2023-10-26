@@ -226,7 +226,7 @@ public extension DatabaseManager
             
         let predicate = NSPredicate(format: "%K == %@", #keyPath(PatreonAccount.identifier), patreonAccountID)
         
-        let patreonAccount = PatreonAccount.first(satisfying: predicate, in: context)
+        let patreonAccount = PatreonAccount.first(satisfying: predicate, in: context, requestProperties: [\.relationshipKeyPathsForPrefetching: [#keyPath(PatreonAccount._pledges)]])
         return patreonAccount
     }
 }
