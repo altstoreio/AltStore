@@ -362,6 +362,14 @@ private extension AppViewController
     {
         self.bannerView.configure(for: self.app)
         
+        let progress = self.bannerView.button.progress
+        
+        for button in [self.bannerView.button!, self.navigationBarDownloadButton!]
+        {
+            button.tintColor = self.app.tintColor
+            button.isIndicatingActivity = false
+        }
+        
         var buttonTitle = self.bannerView.button.title(for: .normal) ?? NSLocalizedString("FREE", comment: "")
         if let installedApp = self.app.installedApp, let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
         {
@@ -372,20 +380,10 @@ private extension AppViewController
         for button in [self.bannerView.button!, self.navigationBarDownloadButton!]
         {
             button.setTitle(buttonTitle, for: .normal)
-            button.tintColor = self.app.tintColor
-            button.isIndicatingActivity = false
+            button.progress = progress
         }
         
-        if let versionDate = self.app.latestSupportedVersion?.date, versionDate > Date()
-        {
-            self.bannerView.button.countdownDate = versionDate
-            self.navigationBarDownloadButton.countdownDate = versionDate
-        }
-        else
-        {
-            self.bannerView.button.countdownDate = nil
-            self.navigationBarDownloadButton.countdownDate = nil
-        }
+        self.navigationBarDownloadButton.countdownDate = self.bannerView.button.countdownDate
         
         let barButtonItem = self.navigationItem.rightBarButtonItem
         self.navigationItem.rightBarButtonItem = nil

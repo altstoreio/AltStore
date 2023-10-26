@@ -228,8 +228,6 @@ private extension MyAppsViewController
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
             cell.bannerView.configure(for: app)
-            
-            cell.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
             cell.bannerView.buttonLabel.isHidden = true
             
             let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
@@ -249,6 +247,7 @@ private extension MyAppsViewController
             cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.localizedVersion, versionDate)
             
             cell.bannerView.button.isIndicatingActivity = false
+            cell.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
             cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Update %@", comment: ""), installedApp.name)
             
@@ -262,6 +261,9 @@ private extension MyAppsViewController
             }
             
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
+            
+            // Ensure PillButton is correct size before assigning progress.
+            cell.layoutIfNeeded()
             
             let progress = AppManager.shared.installationProgress(for: app)
             cell.bannerView.button.progress = progress

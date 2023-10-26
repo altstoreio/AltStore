@@ -184,18 +184,6 @@ extension AppBannerView
                     self.buttonLabel.isHidden = true
                 }
                 
-                // Ensure PillButton is correct size before assigning progress.
-                self.layoutIfNeeded()
-                
-                if let progress = AppManager.shared.installationProgress(for: app), progress.fractionCompleted < 1.0
-                {
-                    self.button.progress = progress
-                }
-                else
-                {
-                    self.button.progress = nil
-                }
-                
                 if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
                 {
                     self.button.countdownDate = versionDate
@@ -214,6 +202,18 @@ extension AppBannerView
                 self.button.countdownDate = nil
                 
                 self.buttonLabel.isHidden = true
+            }
+            
+            // Ensure PillButton is correct size before assigning progress.
+            self.layoutIfNeeded()
+            
+            if let progress = AppManager.shared.installationProgress(for: app), progress.fractionCompleted < 1.0
+            {
+                self.button.progress = progress
+            }
+            else
+            {
+                self.button.progress = nil
             }
         }
     }
