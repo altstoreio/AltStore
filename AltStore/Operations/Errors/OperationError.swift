@@ -31,6 +31,7 @@ extension OperationError
         case openAppFailed = 1011
         case missingAppGroup = 1012
         case forbidden = 1013
+        case pledgeRequired
         
         /* Connection */
         case serverNotFound = 1200
@@ -66,6 +67,10 @@ extension OperationError
     
     static func forbidden(failureReason: String? = nil, file: String = #fileID, line: UInt = #line) -> OperationError {
         OperationError(code: .forbidden, failureReason: failureReason, sourceFile: file, sourceLine: line)
+    }
+    
+    static func pledgeRequired(name: String, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .pledgeRequired, appName: name, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -128,6 +133,10 @@ struct OperationError: ALTLocalizedError
         case .openAppFailed:
             let appName = self.appName ?? NSLocalizedString("the app", comment: "")
             return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), appName)
+            
+        case .pledgeRequired:
+            let appName = self.appName ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("You must be a patron in order to download %@.", comment: ""), appName)
 
         case .serverNotFound: return NSLocalizedString("AltServer could not be found.", comment: "")
         case .connectionFailed: return NSLocalizedString("A connection to AltServer could not be established.", comment: "")

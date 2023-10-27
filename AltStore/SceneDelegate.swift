@@ -83,7 +83,14 @@ private extension SceneDelegate
             guard context.url.pathExtension.lowercased() == "ipa" else { return }
             
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
+                if AppManager.shared.isDownloadingPatreonApp
+                {
+                    NotificationCenter.default.post(name: AppDelegate.importPatreonAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
+                }
+                else
+                {
+                    NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
+                }
             }
         }
         else

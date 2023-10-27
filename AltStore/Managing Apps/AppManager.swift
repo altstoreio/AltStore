@@ -43,6 +43,7 @@ class AppManager
     static let shared = AppManager()
     
     private(set) var updatePatronsResult: Result<Void, Error>?
+    var isDownloadingPatreonApp: Bool = false
     
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
@@ -1246,7 +1247,7 @@ private extension AppManager
                       let patchAppURL = URL(string: patchAppLink)
                 else { throw OperationError.invalidApp }
                 
-                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL)
+                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL, storeApp: nil)
                 
                 DispatchQueue.main.async {
                     let storyboard = UIStoryboard(name: "PatchApp", bundle: nil)
@@ -1949,6 +1950,10 @@ private extension AppManager
                     installAltStoreOperation.addDependency(operation)
                 }
                 
+                self.serialOperationQueue.addOperation(operation)
+                
+            case let operation as DownloadAppOperation where operation.isPatreonApp:
+                // Patreon apps may display SFSafariViewController
                 self.serialOperationQueue.addOperation(operation)
                 
             default: self.operationQueue.addOperation(operation)
