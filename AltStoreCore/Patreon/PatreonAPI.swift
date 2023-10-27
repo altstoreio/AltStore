@@ -10,6 +10,7 @@ import Foundation
 import AuthenticationServices
 import CoreData
 
+import SafariServices
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
 
@@ -128,6 +129,9 @@ public class PatreonAPI: NSObject
     private let session = URLSession(configuration: .ephemeral)
     private let baseURL = URL(string: "https://www.patreon.com/")!
     
+    private var authHandlers = [(Result<PatreonAccount, Swift.Error>) -> Void]()
+    private weak var safariViewController: SFSafariViewController?
+    
     private override init()
     {
         super.init()
@@ -136,48 +140,33 @@ public class PatreonAPI: NSObject
 
 public extension PatreonAPI
 {
-    func authenticate(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
+    func authenticate(presentingViewController: UIViewController, completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
-        var components = URLComponents(string: "/oauth2/authorize")!
-        components.queryItems = [URLQueryItem(name: "response_type", value: "code"),
-                                 URLQueryItem(name: "client_id", value: clientID),
-                                 URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore"),
-                                 URLQueryItem(name: "scope", value: "identity identity[email] identity.memberships campaigns.posts")
-        ]
-        
-        let requestURL = components.url(relativeTo: self.baseURL)!
-        
-        self.authenticationSession = ASWebAuthenticationSession(url: requestURL, callbackURLScheme: "altstore") { (callbackURL, error) in
-            do
-            {
-                let callbackURL = try Result(callbackURL, error).get()
-                
-                guard
-                    let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
-                    let codeQueryItem = components.queryItems?.first(where: { $0.name == "code" }),
-                    let code = codeQueryItem.value
-                else { throw PatreonAPIError(.unknown) }
-                
-                self.fetchAccessToken(oauthCode: code) { (result) in
-                    switch result
-                    {
-                    case .failure(let error): completion(.failure(error))
-                    case .success((let accessToken, let refreshToken)):
-                        Keychain.shared.patreonAccessToken = accessToken
-                        Keychain.shared.patreonRefreshToken = refreshToken
-                        
-                        self.fetchAccount(completion: completion)
-                    }
-                }
+        DispatchQueue.main.async {
+            guard self.authHandlers.isEmpty else {
+                self.authHandlers.append(completion)
+                return
             }
-            catch
-            {
-                completion(.failure(error))
-            }
+            
+            self.authHandlers.append(completion)
+            
+            var components = URLComponents(string: "/oauth2/authorize")!
+            components.queryItems = [URLQueryItem(name: "response_type", value: "code"),
+                                     URLQueryItem(name: "client_id", value: clientID),
+                                     URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore"),
+                                     URLQueryItem(name: "scope", value: "identity identity[email] identity.memberships campaigns.posts")
+            ]
+            
+            let requestURL = components.url(relativeTo: self.baseURL)!
+            
+            let safariViewController = SFSafariViewController(url: requestURL)
+            safariViewController.delegate = self
+            safariViewController.preferredControlTintColor = .altPrimary
+            safariViewController.dismissButtonStyle = .cancel
+            presentingViewController.present(safariViewController, animated: true)
+            
+            self.safariViewController = safariViewController
         }
-        
-        self.authenticationSession?.presentationContextProvider = self
-        self.authenticationSession?.start()
     }
     
     func fetchAccount(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
@@ -290,7 +279,7 @@ public extension PatreonAPI
                 let accounts = PatreonAccount.all(in: context, requestProperties: [\.returnsObjectsAsFaults: true])
                 accounts.forEach(context.delete(_:))
                 
-                self.deactivateBetaApps(in: context)
+//                self.deactivateBetaApps(in: context)
                 
                 try context.save()
                 
@@ -298,7 +287,17 @@ public extension PatreonAPI
                 Keychain.shared.patreonRefreshToken = nil
                 Keychain.shared.patreonAccountID = nil
                 
-                completion(.success(()))
+                if #available(iOS 16, *)
+                {
+                    //TODO: Unify implementation w/ logging
+                    SFSafariViewController.DataStore.default.clearWebsiteData {
+                        completion(.success(()))
+                    }
+                }
+                else
+                {
+                    completion(.success(()))
+                }
             }
             catch
             {
@@ -329,6 +328,60 @@ public extension PatreonAPI
                 print("Failed to fetch Patreon account.", error)
             }
         }
+    }
+}
+
+public extension PatreonAPI
+{
+    func handleOAuthCallbackURL(_ callbackURL: URL)
+    {
+        do
+        {
+            guard
+                let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
+                let codeQueryItem = components.queryItems?.first(where: { $0.name == "code" }),
+                let code = codeQueryItem.value
+            else { throw PatreonAPIError(.unknown) }
+            
+            self.fetchAccessToken(oauthCode: code) { (result) in
+                switch result
+                {
+                case .failure(let error): self.finishAuthentication(.failure(error))
+                case .success((let accessToken, let refreshToken)):
+                    Keychain.shared.patreonAccessToken = accessToken
+                    Keychain.shared.patreonRefreshToken = refreshToken
+                    
+                    self.fetchAccount(completion: self.finishAuthentication)
+                }
+            }
+        }
+        catch
+        {
+            self.finishAuthentication(.failure(error))
+        }
+    }
+    
+    private func finishAuthentication(_ result: Result<PatreonAccount, Swift.Error>)
+    {
+        for callback in self.authHandlers
+        {
+            callback(result)
+        }
+        
+        self.authHandlers = []
+        
+        DispatchQueue.main.async {
+            self.safariViewController?.dismiss(animated: true)
+            self.safariViewController = nil
+        }
+    }
+}
+
+extension PatreonAPI: SFSafariViewControllerDelegate
+{
+    public func safariViewControllerDidFinish(_ controller: SFSafariViewController) 
+    {
+        self.finishAuthentication(.failure(CancellationError()))
     }
 }
 

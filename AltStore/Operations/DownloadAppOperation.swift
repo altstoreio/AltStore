@@ -7,10 +7,11 @@
 //
 
 import Foundation
-import Roxas
+import SafariServices
 
 import AltStoreCore
 import AltSign
+import Roxas
 
 @objc(DownloadAppOperation)
 class DownloadAppOperation: ResultOperation<ALTApplication>
@@ -24,6 +25,8 @@ class DownloadAppOperation: ResultOperation<ALTApplication>
     
     private let session = URLSession(configuration: .default)
     private let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+    
+    private var patreonContinuation: CheckedContinuation<URL, Error>?
     
     init(app: AppProtocol, destinationURL: URL, context: InstallAppOperationContext)
     {
@@ -244,28 +247,106 @@ private extension DownloadAppOperation
         }
         else
         {
-            let downloadTask = self.session.downloadTask(with: sourceURL) { (fileURL, response, error) in
-                do
+            Task<Void, Never>.detached(priority: .userInitiated) {
+                
+                var downloadURL = sourceURL
+                
+                if let host = sourceURL.host, host.lowercased().hasSuffix("patreon.com") && sourceURL.path.lowercased() == "/file"
                 {
-                    if let response = response as? HTTPURLResponse
+                    do
                     {
-                        guard response.statusCode != 404 else { throw CocoaError(.fileNoSuchFile, userInfo: [NSURLErrorKey: sourceURL]) }
+                        downloadURL = try await self.fetchPatreonDownloadURL(for: sourceURL)
                     }
-                    
-                    let (fileURL, _) = try Result((fileURL, response), error).get()
-                    finishOperation(.success(fileURL))
-                    
-                    try? FileManager.default.removeItem(at: fileURL)
+                    catch
+                    {
+                        finishOperation(.failure(error))
+                        return
+                    }
                 }
-                catch
-                {
-                    finishOperation(.failure(error))
+                
+                let downloadTask = self.session.downloadTask(with: downloadURL) { (fileURL, response, error) in
+                    do
+                    {
+                        if let response = response as? HTTPURLResponse
+                        {
+                            guard response.statusCode != 404 else { throw CocoaError(.fileNoSuchFile, userInfo: [NSURLErrorKey: sourceURL]) }
+                        }
+                        
+                        let (fileURL, _) = try Result((fileURL, response), error).get()
+                        finishOperation(.success(fileURL))
+                        
+                        try? FileManager.default.removeItem(at: fileURL)
+                    }
+                    catch
+                    {
+                        finishOperation(.failure(error))
+                    }
                 }
+                self.progress.addChild(downloadTask.progress, withPendingUnitCount: 3)
+                
+                downloadTask.resume()
             }
-            self.progress.addChild(downloadTask.progress, withPendingUnitCount: 3)
-            
-            downloadTask.resume()
         }
+    }
+    
+    @MainActor
+    func fetchPatreonDownloadURL(for patreonURL: URL) async throws -> URL
+    {
+        guard let presentingViewController = self.context.presentingViewController else { throw OperationError.noSources }
+        
+        // HACKS!!
+        
+        do
+        {
+            let safariViewController = SFSafariViewController(url: patreonURL)
+            safariViewController.delegate = self
+            
+            let downloadURL = try await withCheckedThrowingContinuation { continuation in
+                // Escape continuation so we can resume it from delegate callbacks
+                self.patreonContinuation = continuation
+                                
+                presentingViewController.addChild(safariViewController)
+                
+                safariViewController.view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+                presentingViewController.view.addSubview(safariViewController.view)
+                
+                safariViewController.didMove(toParent: presentingViewController)
+            }
+            
+            safariViewController.willMove(toParent: nil)
+            safariViewController.view.removeFromSuperview()
+            safariViewController.removeFromParent()
+            
+            return downloadURL
+        }
+        catch
+        {
+            //TODO: Fallback web browser
+            throw error
+        }
+    }
+}
+
+extension DownloadAppOperation: SFSafariViewControllerDelegate
+{
+    public func safariViewController(_ controller: SFSafariViewController, initialLoadDidRedirectTo url: URL)
+    {
+        guard let continuation = self.patreonContinuation else { return }
+        self.patreonContinuation = nil
+        
+        Logger.main.debug("Redirecting to URL: \(url, privacy: .public)")
+        
+        continuation.resume(returning: url)
+    }
+    
+    public func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool)
+    {
+        guard let continuation = self.patreonContinuation else { return }
+        self.patreonContinuation = nil
+        
+        continuation.resume(throwing: OperationError.appNotFound(name: "Patreon App"))
+        
+        Logger.main.debug("Did load initial URL!")
     }
 }
 

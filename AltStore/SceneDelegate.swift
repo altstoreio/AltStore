@@ -94,8 +94,15 @@ private extension SceneDelegate
             switch host
             {
             case "patreon":
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                if let queryItems = components.queryItems, queryItems.contains(where: { $0.name == "code" })
+                {
+                    PatreonAPI.shared.handleOAuthCallbackURL(context.url)
+                }
+                else
+                {
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+                    }
                 }
                 
             case "appbackupresponse":
