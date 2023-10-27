@@ -1960,25 +1960,31 @@ private extension AppManager
     
     func progress(for operation: AppOperation) -> Progress?
     {
+        // Access outside critical section to avoid deadlock due to `bundleIdentifier` potentially calling performAndWait() on main thread.
+        let bundleID = operation.bundleIdentifier
+        
         os_unfair_lock_lock(self.progressLock)
         defer { os_unfair_lock_unlock(self.progressLock) }
         
         switch operation
         {
-        case .install, .update: return self.installationProgress[operation.bundleIdentifier]
-        case .refresh, .activate, .deactivate, .backup, .restore: return self.refreshProgress[operation.bundleIdentifier]
+        case .install, .update: return self.installationProgress[bundleID]
+        case .refresh, .activate, .deactivate, .backup, .restore: return self.refreshProgress[bundleID]
         }
     }
     
     func set(_ progress: Progress?, for operation: AppOperation)
     {
+        // Access outside critical section to avoid deadlock due to `bundleIdentifier` potentially calling performAndWait() on main thread.
+        let bundleID = operation.bundleIdentifier
+        
         os_unfair_lock_lock(self.progressLock)
         defer { os_unfair_lock_unlock(self.progressLock) }
         
         switch operation
         {
-        case .install, .update: self.installationProgress[operation.bundleIdentifier] = progress
-        case .refresh, .activate, .deactivate, .backup, .restore: self.refreshProgress[operation.bundleIdentifier] = progress
+        case .install, .update: self.installationProgress[bundleID] = progress
+        case .refresh, .activate, .deactivate, .backup, .restore: self.refreshProgress[bundleID] = progress
         }
     }
 }
