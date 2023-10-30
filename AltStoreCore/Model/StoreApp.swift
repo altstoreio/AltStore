@@ -30,6 +30,7 @@ public extension StoreApp
         var currency: String?
         var tiers: Set<String>?
         var benefit: String?
+        var hidden: Bool?
     }
 }
 
@@ -53,11 +54,13 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var isBeta: Bool
     
     @NSManaged public private(set) var isPledgeRequired: Bool
-    @NSManaged public internal(set) var isPledged: Bool
-    @NSManaged public internal(set) var pledgeCurrency: String?
+    @NSManaged public private(set) var isHiddenWithoutPledge: Bool
+    @NSManaged public private(set) var pledgeCurrency: String?
     
     @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
+    
+    @NSManaged public internal(set) var isPledged: Bool
     
     @NSManaged public var sortIndex: Int32
     
@@ -279,6 +282,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 }
                 
                 self.pledgeCurrency = patreon.currency ?? "USD" // Default to US Dollar
+                self.isHiddenWithoutPledge = patreon.hidden ?? false // Default to showing Patreon apps
                 
                 if let patreonAccount = decoder.patreonAccount
                 {
@@ -438,15 +442,17 @@ public extension StoreApp
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
     }
     
-    class var availableAppsPredicate: NSPredicate {
-        let predicate = NSPredicate(format: "(%K == NO) OR (%K == YES AND %K == YES)",
+    class var visibleAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "(%K == NO) OR (%K == NO) OR (%K == YES)",
                                     #keyPath(StoreApp.isPledgeRequired),
-                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isPledged))
+                                    #keyPath(StoreApp.isHiddenWithoutPledge),
+                                    #keyPath(StoreApp.isPledged))
         return predicate
     }
     
-    class var nonPatreonAppsPredicate: NSPredicate {
-        let predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isPledgeRequired))
+    class var availableAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "(%K == NO) OR (%K == YES)",
+                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isPledged))
         return predicate
     }
     

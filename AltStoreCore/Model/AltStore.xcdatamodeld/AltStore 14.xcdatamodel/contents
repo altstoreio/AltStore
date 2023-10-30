@@ -245,6 +245,7 @@
         <attribute name="downloadURL" attributeType="URI"/>
         <attribute name="iconURL" attributeType="URI"/>
         <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isHiddenWithoutPledge" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isPledged" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isPledgeRequired" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="localizedDescription" attributeType="String"/>

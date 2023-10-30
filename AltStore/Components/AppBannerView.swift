@@ -157,7 +157,15 @@ extension AppBannerView
             {
                 if app.isPledgeRequired
                 {
-                    if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
+                    if app.isPledged
+                    {
+                        let buttonTitle = NSLocalizedString("Install", comment: "")
+                        self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                        self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
+                        self.button.accessibilityValue = buttonTitle
+                        self.buttonLabel.isHidden = true
+                    }
+                    else if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
                     {
                         let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
                         

@@ -92,7 +92,6 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         super.viewWillAppear(animated)
         
         self.fetchSource()
-        self.updateDataSource()
         
         self.update()
     }
@@ -109,7 +108,11 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
-        let predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        let predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [
+            StoreApp.visibleAppsPredicate,
+            NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        ])
+        
         if let source = self.source
         {
             let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
@@ -172,18 +175,6 @@ private extension BrowseViewController
         dataSource.placeholderView = self.placeholderView
         
         return dataSource
-    }
-    
-    func updateDataSource()
-    {
-        if PatreonAPI.shared.isAuthenticated
-        {
-            self.dataSource.predicate = StoreApp.availableAppsPredicate
-        }
-        else
-        {
-            self.dataSource.predicate = StoreApp.nonPatreonAppsPredicate
-        }
     }
     
     func fetchSource()
