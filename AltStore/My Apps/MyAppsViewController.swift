@@ -112,9 +112,12 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
-    override func viewWillAppear(_ animated: Bool)
+    override func viewIsAppearing(_ animated: Bool)
     {
-        super.viewWillAppear(animated)
+        super.viewIsAppearing(animated)
+        
+        // Ensure Patreon status for each app is accurate.
+        self.collectionView.reloadData()
         
         self.update()
         
@@ -362,6 +365,17 @@ private extension MyAppsViewController
             cell.bannerView.button.setTitle(numberOfDaysText.uppercased(), for: .normal)
             cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Refresh %@", comment: ""), installedApp.name)
             
+            if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
+            {
+                cell.bannerView.button.isEnabled = false
+                cell.bannerView.button.alpha = 0.5
+            }
+            else
+            {
+                cell.bannerView.button.isEnabled = true
+                cell.bannerView.button.alpha = 1.0
+            }
+            
             cell.bannerView.accessibilityLabel? += ". " + String(format: NSLocalizedString("Expires in %@", comment: ""), numberOfDaysText)
             
             // Make sure refresh button is correct size.
@@ -442,6 +456,17 @@ private extension MyAppsViewController
             cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.activateApp(_:)), for: .primaryActionTriggered)
             cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Activate %@", comment: ""), installedApp.name)
+            
+            if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
+            {
+                cell.bannerView.button.isEnabled = false
+                cell.bannerView.button.alpha = 0.5
+            }
+            else
+            {
+                cell.bannerView.button.isEnabled = true
+                cell.bannerView.button.alpha = 1.0
+            }
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()

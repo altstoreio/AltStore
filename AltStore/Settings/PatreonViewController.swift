@@ -197,8 +197,21 @@ private extension PatreonViewController
                 let account = try result.get()
                 try account.managedObjectContext?.save()
                 
-                DispatchQueue.main.async {
-                    self.update()
+                // Update sources to show any Patreon-only apps.
+                AppManager.shared.fetchSources { result in
+                    do
+                    {
+                        let (_, context) = try result.get()
+                        try context.save()
+                    }
+                    catch
+                    {
+                        Logger.main.error("Failed to update sources after authenticating Patreon account. \(error.localizedDescription, privacy: .public)")
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.update()
+                    }
                 }
             }
             catch ASWebAuthenticationSessionError.canceledLogin, CancellationError()
