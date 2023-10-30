@@ -116,7 +116,6 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewWillAppear(animated)
         
-        self.updateDataSource()
         self.update()
         
         self.fetchAppIDs()
@@ -479,33 +478,6 @@ private extension MyAppsViewController
         }
         
         return dataSource
-    }
-    
-    func updateDataSource()
-    {
-        do
-        {
-            if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
-            {
-                try self.updatesDataSource.fetchedResultsController.performFetch()
-            }
-        }
-        catch
-        {
-            print("[ALTLog] Failed to fetch updates:", error)
-        }
-        
-        if PatreonAPI.shared.isAuthenticated
-        {
-            self.dataSource.predicate = nil
-        }
-        else
-        {
-            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO OR %K == %@",
-                                                    #keyPath(InstalledApp.storeApp),
-                                                    #keyPath(InstalledApp.storeApp.isPledgeRequired),
-                                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        }
     }
 }
 
