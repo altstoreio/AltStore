@@ -762,17 +762,31 @@ extension AppManager
     
     func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        class Context: OperationContext, EnableJITContext
+        class Context: OperationContext, EnableJITContext, VerifyAppPledgeContext
         {
             var installedApp: InstalledApp?
+            
+            @AsyncManaged
+            var storeApp: StoreApp?
         }
         
         let appName = installedApp.name
         
         let context = Context()
         context.installedApp = installedApp
+        context.storeApp = installedApp.storeApp
+        
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: context)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
         
         let findServerOperation = self.findServer(context: context) { _ in }
+        findServerOperation.addDependency(verifyPledgeOperation)
         
         let enableJITOperation = EnableJITOperation(context: context)
         enableJITOperation.resultHandler = { (result) in
@@ -789,7 +803,7 @@ extension AppManager
         }
         enableJITOperation.addDependency(findServerOperation)
         
-        self.run([enableJITOperation], context: context, requiresSerialQueue: true)
+        self.run([verifyPledgeOperation, enableJITOperation], context: context, requiresSerialQueue: true)
     }
     
     func patch(resignedApp: ALTApplication, presentingViewController: UIViewController, context authContext: AuthenticatedOperationContext, completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> PatchAppOperation
@@ -1370,8 +1384,25 @@ private extension AppManager
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
-        let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        class RefreshAppContext: AppOperationContext, VerifyAppPledgeContext
+        {
+            @AsyncManaged
+            var storeApp: StoreApp?
+        }
+        
+        let context = RefreshAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
         context.app = ALTApplication(fileURL: app.fileURL)
+        context.storeApp = app.storeApp
+        
+        /* Verify Pledge */
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: context)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
         
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
@@ -1383,6 +1414,7 @@ private extension AppManager
             }
         }
         progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 60)
+        fetchProvisioningProfilesOperation.addDependency(verifyPledgeOperation)
         
         /* Refresh */
         let refreshAppOperation = RefreshAppOperation(context: context)
@@ -1409,7 +1441,7 @@ private extension AppManager
         progress.addChild(refreshAppOperation.progress, withPendingUnitCount: 40)
         refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)
         
-        let operations = [fetchProvisioningProfilesOperation, refreshAppOperation]
+        let operations = [verifyPledgeOperation, fetchProvisioningProfilesOperation, refreshAppOperation]
         group.add(operations)
         self.run(operations, context: group.context)
 
@@ -1420,8 +1452,28 @@ private extension AppManager
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
-        let restoreContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
-        let appContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        class ActivateAppContext: InstallAppOperationContext, VerifyAppPledgeContext
+        {
+            @AsyncManaged
+            var storeApp: StoreApp?
+        }
+        
+        let restoreContext = ActivateAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        restoreContext.storeApp = app.storeApp
+        
+        let appContext = ActivateAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        appContext.storeApp = app.storeApp
+        
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: restoreContext)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error):
+                restoreContext.error = error
+                appContext.error = error
+            }
+        }
         
         let installBackupAppProgress = Progress.discreteProgress(totalUnitCount: 100)
         let installBackupAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
@@ -1443,6 +1495,7 @@ private extension AppManager
             }
         }
         progress.addChild(installBackupAppProgress, withPendingUnitCount: 30)
+        installBackupAppOperation.addDependency(verifyPledgeOperation)
         
         let restoreAppOperation = BackupAppOperation(action: .restore, context: restoreContext)
         restoreAppOperation.resultHandler = { (result) in
@@ -1539,8 +1592,8 @@ private extension AppManager
         cleanUpOperation.addDependency(installAppOperation)
         progress.addChild(cleanUpProgress, withPendingUnitCount: 5)
         
-        group.add([installBackupAppOperation, restoreAppOperation, installAppOperation, cleanUpOperation])
-        self.run([installBackupAppOperation, installAppOperation, restoreAppOperation, cleanUpOperation], context: group.context)
+        group.add([verifyPledgeOperation, installBackupAppOperation, restoreAppOperation, installAppOperation, cleanUpOperation])
+        self.run([verifyPledgeOperation, installBackupAppOperation, installAppOperation, restoreAppOperation, cleanUpOperation], context: group.context)
         
         return progress
     }

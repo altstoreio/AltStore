@@ -432,6 +432,7 @@
 		D5CD805D29CA2C1E00E591B0 /* HeaderContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */; };
 		D5CD805F29CA755E00E591B0 /* SourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805E29CA755E00E591B0 /* SourceDetailViewController.swift */; };
 		D5CF568C2A0D8EEC006D93E2 /* VerificationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CF56812A0D83F9006D93E2 /* VerificationError.swift */; };
+		D5D2986A2AF051900077372C /* VerifyAppPledgeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5D298692AF051900077372C /* VerifyAppPledgeOperation.swift */; };
 		D5DAE0962804DF430034D8D4 /* UpdatePatronsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */; };
 		D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
 		D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
@@ -1046,6 +1047,7 @@
 		D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContentViewController.swift; sourceTree = "<group>"; };
 		D5CD805E29CA755E00E591B0 /* SourceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailViewController.swift; sourceTree = "<group>"; };
 		D5CF56812A0D83F9006D93E2 /* VerificationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationError.swift; sourceTree = "<group>"; };
+		D5D298692AF051900077372C /* VerifyAppPledgeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAppPledgeOperation.swift; sourceTree = "<group>"; };
 		D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePatronsOperation.swift; sourceTree = "<group>"; };
 		D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTLocalizedError.swift; sourceTree = "<group>"; };
 		D5E1E7C028077DE90016FC96 /* UpdateKnownSourcesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateKnownSourcesOperation.swift; sourceTree = "<group>"; };
@@ -1998,6 +2000,7 @@
 				D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */,
 				D5E1E7C028077DE90016FC96 /* UpdateKnownSourcesOperation.swift */,
 				D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */,
+				D5D298692AF051900077372C /* VerifyAppPledgeOperation.swift */,
 				BF7B44062725A4B8005288A4 /* Patch App */,
 			);
 			path = Operations;
@@ -3240,6 +3243,7 @@
 				D593F1942717749A006E82DE /* PatchAppOperation.swift in Sources */,
 				BF770E5122BB1CF6002A40FE /* InstallAppOperation.swift in Sources */,
 				BF9ABA4B22DD1380008935CF /* NavigationBar.swift in Sources */,
+				D5D2986A2AF051900077372C /* VerifyAppPledgeOperation.swift in Sources */,
 				BF6C8FAC242935ED00125131 /* NSAttributedString+Markdown.m in Sources */,
 				BFF00D322501BDA100746320 /* BackgroundRefreshAppsOperation.swift in Sources */,
 				BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */,
