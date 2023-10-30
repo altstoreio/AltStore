@@ -1681,7 +1681,7 @@ extension MyAppsViewController
 
 extension MyAppsViewController
 {
-    private func actions(for installedApp: InstalledApp) -> [UIMenuElement]
+    private func contextMenu(for installedApp: InstalledApp) -> UIMenu
     {
         var actions = [UIMenuElement]()
         
@@ -1741,9 +1741,9 @@ extension MyAppsViewController
         
         guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
             #if BETA
-            return [refreshAction, changeIconMenu]
+            return UIMenu(children: [refreshAction, changeIconMenu])
             #else
-            return [refreshAction]
+            return UIMenu(children: [refreshAction])
             #endif
         }
         
@@ -1835,7 +1835,25 @@ extension MyAppsViewController
         
         #endif
         
-        return actions
+        var title: String?
+                
+        if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
+        {
+            let error = OperationError.pledgeInactive(appName: installedApp.name)
+            title = error.localizedDescription
+            
+            // Limit options for apps requiring pledges that we are no longer pledged to.
+            actions = actions.filter {
+                $0 == openMenu ||
+                $0 == deactivateAction ||
+                $0 == removeAction ||
+                $0 == backupAction ||
+                $0 == exportBackupAction
+            }
+        }
+        
+        let menu = UIMenu(title: title ?? "", children: actions)
+        return menu
     }
     
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
@@ -1848,9 +1866,7 @@ extension MyAppsViewController
             let installedApp = self.dataSource.item(at: indexPath)
             
             return UIContextMenuConfiguration(identifier: indexPath as NSIndexPath, previewProvider: nil) { (suggestedActions) -> UIMenu? in
-                let actions = self.actions(for: installedApp)
-                
-                let menu = UIMenu(title: "", children: actions)
+                let menu = self.contextMenu(for: installedApp)
                 return menu
             }
         }

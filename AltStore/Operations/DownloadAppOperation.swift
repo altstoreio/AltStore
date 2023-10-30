@@ -316,7 +316,7 @@ private extension DownloadAppOperation
     
     func downloadPatreonApp(from patreonURL: URL) async throws -> URL
     {
-        guard let presentingViewController = self.context.presentingViewController else { throw OperationError.pledgeRequired(name: self.appName) }
+        guard let presentingViewController = self.context.presentingViewController else { throw OperationError.pledgeRequired(appName: self.appName) }
         
         if let isPledged = await self.context.$appVersion.perform({ $0?.app?.isPledged }), isPledged
         {
@@ -396,7 +396,7 @@ private extension DownloadAppOperation
         else
         {
             // Not pledged, so just show Patreon page
-            guard let patreonURL = await self.context.$appVersion.perform({ $0?.app?.source?.patreonURL }) else { throw OperationError.pledgeRequired(name: self.appName) }
+            guard let patreonURL = await self.context.$appVersion.perform({ $0?.app?.source?.patreonURL }) else { throw OperationError.pledgeRequired(appName: self.appName) }
             
             await MainActor.run {
                 let safariViewController = SFSafariViewController(url: patreonURL)
@@ -468,7 +468,7 @@ extension DownloadAppOperation: SFSafariViewControllerDelegate
         guard let continuation = self.fetchPatreonURLContinuation else { return }
         self.fetchPatreonURLContinuation = nil
         
-        continuation.resume(throwing: OperationError.pledgeRequired(name: self.appName))
+        continuation.resume(throwing: OperationError.pledgeRequired(appName: self.appName))
         
         Logger.main.debug("Did load initial URL!")
     }

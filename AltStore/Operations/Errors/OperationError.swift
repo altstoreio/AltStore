@@ -31,12 +31,15 @@ extension OperationError
         case openAppFailed = 1011
         case missingAppGroup = 1012
         case forbidden = 1013
-        case pledgeRequired
         
         /* Connection */
         case serverNotFound = 1200
         case connectionFailed = 1201
         case connectionDropped = 1202
+        
+        /* Pledges */
+        case pledgeRequired = 1401
+        case pledgeInactive = 1402
     }
     
     static var cancelled: CancellationError { CancellationError() }
@@ -69,8 +72,12 @@ extension OperationError
         OperationError(code: .forbidden, failureReason: failureReason, sourceFile: file, sourceLine: line)
     }
     
-    static func pledgeRequired(name: String, file: String = #fileID, line: UInt = #line) -> OperationError {
-        OperationError(code: .pledgeRequired, appName: name, sourceFile: file, sourceLine: line)
+    static func pledgeRequired(appName: String, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .pledgeRequired, appName: appName, sourceFile: file, sourceLine: line)
+    }
+    
+    static func pledgeInactive(appName: String, file: String = #fileID, line: UInt = #line) -> OperationError {
+        OperationError(code: .pledgeInactive, appName: appName, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -133,14 +140,18 @@ struct OperationError: ALTLocalizedError
         case .openAppFailed:
             let appName = self.appName ?? NSLocalizedString("the app", comment: "")
             return String(format: NSLocalizedString("AltStore was denied permission to launch %@.", comment: ""), appName)
-            
-        case .pledgeRequired:
-            let appName = self.appName ?? NSLocalizedString("The app", comment: "")
-            return String(format: NSLocalizedString("You must be a patron in order to download %@.", comment: ""), appName)
 
         case .serverNotFound: return NSLocalizedString("AltServer could not be found.", comment: "")
         case .connectionFailed: return NSLocalizedString("A connection to AltServer could not be established.", comment: "")
         case .connectionDropped: return NSLocalizedString("The connection to AltServer was dropped.", comment: "")
+            
+        case .pledgeRequired:
+            let appName = self.appName ?? NSLocalizedString("The app", comment: "")
+            return String(format: NSLocalizedString("%@ requires an active pledge in order to be installed.", comment: ""), appName)
+            
+        case .pledgeInactive:
+            let appName = self.appName ?? NSLocalizedString("this app", comment: "")
+            return String(format: NSLocalizedString("Your pledge is no longer active. Please renew it to continue using %@ normally.", comment: ""), appName)
         }
     }
     private var _failureReason: String?
