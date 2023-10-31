@@ -319,15 +319,15 @@ private extension DownloadAppOperation
     
     func downloadPatreonApp(from patreonURL: URL) async throws -> URL
     {
-        guard let presentingViewController = self.context.presentingViewController else { throw OperationError.pledgeRequired(appName: self.appName) }
-                
         do
         {
             let fileURL = try await self.downloadFile(from: patreonURL)
             return fileURL
         }
-        catch ~OperationError.Code.pledgeRequired
+        catch let error as OperationError where error.code == .pledgeRequired
         {
+            guard let presentingViewController = self.context.presentingViewController else { throw error }
+            
             // Attempt to sign-in again in case our session has expired
             try await withCheckedThrowingContinuation { continuation in
                 PatreonAPI.shared.authenticate(presentingViewController: presentingViewController) { result in

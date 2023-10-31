@@ -216,15 +216,8 @@ private extension PatreonViewController
             }
             catch ASWebAuthenticationSessionError.canceledLogin, CancellationError()
             {
-                if #available(iOS 16, *)
-                {
-                    // Clear in-app browser cache in case they are signed into wrong account.
-                    Logger.main.info("Clearing SFSafariViewController cache...")
-                    
-                    SFSafariViewController.DataStore.default.clearWebsiteData {
-                        Logger.main.info("Cleared SFSafariViewController cache!")
-                    }
-                }
+                // Clear in-app browser cache in case they are signed into wrong account.
+                PatreonAPI.shared.clearCookies()
             }
             catch
             {

@@ -9,6 +9,7 @@
 import Foundation
 import AuthenticationServices
 import CoreData
+import WebKit
 
 import SafariServices
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
@@ -169,6 +170,28 @@ public extension PatreonAPI
         }
     }
     
+    func clearCookies()
+    {
+        Logger.main.info("Clearing WebViewController cookie cache...")
+                        
+        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: "https://www.patreon.com")!)
+        {
+            for cookie in cookies
+            {
+                Logger.main.debug("\(cookie.domain, privacy: .public) \(cookie.name, privacy: .public), \(cookie.value, privacy: .public), \(cookie.expiresDate?.description ?? "nil", privacy: .public)")
+                
+                HTTPCookieStorage.shared.deleteCookie(cookie)
+                WKWebsiteDataStore.default().httpCookieStore.delete(cookie) //TODO: Clear from main thread
+            }
+            
+            Logger.main.info("Cleared WebViewController cookie cache!")
+        }
+        else
+        {
+            Logger.main.info("No WebViewController cookies to clear.")
+        }
+    }
+    
     func fetchAccount(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
         var components = URLComponents(string: "/api/oauth2/v2/identity")!
@@ -288,17 +311,9 @@ public extension PatreonAPI
                 Keychain.shared.patreonRefreshToken = nil
                 Keychain.shared.patreonAccountID = nil
                 
-                if #available(iOS 16, *)
-                {
-                    //TODO: Unify implementation w/ logging
-                    SFSafariViewController.DataStore.default.clearWebsiteData {
-                        completion(.success(()))
-                    }
-                }
-                else
-                {
-                    completion(.success(()))
-                }
+                self.clearCookies()
+                
+                completion(.success(()))
             }
             catch
             {
