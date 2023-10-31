@@ -130,7 +130,7 @@ public class PatreonAPI: NSObject
     private let baseURL = URL(string: "https://www.patreon.com/")!
     
     private var authHandlers = [(Result<PatreonAccount, Swift.Error>) -> Void]()
-    private weak var safariViewController: SFSafariViewController?
+    private weak var webViewController: WebViewController?
     
     private override init()
     {
@@ -159,13 +159,13 @@ public extension PatreonAPI
             
             let requestURL = components.url(relativeTo: self.baseURL)!
             
-            let safariViewController = SFSafariViewController(url: requestURL)
-            safariViewController.delegate = self
-            safariViewController.preferredControlTintColor = .altPrimary
-            safariViewController.dismissButtonStyle = .cancel
-            presentingViewController.present(safariViewController, animated: true)
+            let webViewController = WebViewController(url: requestURL)
+            webViewController.delegate = self
             
-            self.safariViewController = safariViewController
+            let navigationController = UINavigationController(rootViewController: webViewController)
+            presentingViewController.present(navigationController, animated: true)
+            
+            self.webViewController = webViewController
         }
     }
     
@@ -365,15 +365,15 @@ public extension PatreonAPI
         self.authHandlers = []
         
         DispatchQueue.main.async {
-            self.safariViewController?.dismiss(animated: true)
-            self.safariViewController = nil
+            self.webViewController?.dismiss(animated: true)
+            self.webViewController = nil
         }
     }
 }
 
-extension PatreonAPI: SFSafariViewControllerDelegate
+extension PatreonAPI: WebViewControllerDelegate
 {
-    public func safariViewControllerDidFinish(_ controller: SFSafariViewController) 
+    public func webViewControllerDidFinish(_ webViewController: WebViewController)
     {
         self.finishAuthentication(.failure(CancellationError()))
     }

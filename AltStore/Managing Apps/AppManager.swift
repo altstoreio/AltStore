@@ -43,7 +43,6 @@ class AppManager
     static let shared = AppManager()
     
     private(set) var updatePatronsResult: Result<Void, Error>?
-    var isDownloadingPatreonApp: Bool = false
     
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()

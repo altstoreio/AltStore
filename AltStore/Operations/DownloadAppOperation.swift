@@ -8,6 +8,8 @@
 
 import Foundation
 import SafariServices
+import WebKit
+import UniformTypeIdentifiers
 
 import AltStoreCore
 import AltSign
@@ -297,6 +299,7 @@ private extension DownloadAppOperation
                 {
                     if let response = response as? HTTPURLResponse
                     {
+                        guard response.statusCode != 403 else { throw OperationError.pledgeRequired(appName: self.appName) }
                         guard response.statusCode != 404 else { throw CocoaError(.fileNoSuchFile, userInfo: [NSURLErrorKey: downloadURL]) }
                     }
                     
@@ -317,168 +320,133 @@ private extension DownloadAppOperation
     func downloadPatreonApp(from patreonURL: URL) async throws -> URL
     {
         guard let presentingViewController = self.context.presentingViewController else { throw OperationError.pledgeRequired(appName: self.appName) }
-        
-        if let isPledged = await self.context.$appVersion.perform({ $0?.app?.isPledged }), isPledged
+                
+        do
         {
-            let downloadURL: URL
+            let fileURL = try await self.downloadFile(from: patreonURL)
+            return fileURL
+        }
+        catch ~OperationError.Code.pledgeRequired
+        {
+            // Attempt to sign-in again in case our session has expired
+            try await withCheckedThrowingContinuation { continuation in
+                PatreonAPI.shared.authenticate(presentingViewController: presentingViewController) { result in
+                    do
+                    {
+                        let account = try result.get()
+                        try account.managedObjectContext?.save()
+                        
+                        continuation.resume()
+                    }
+                    catch
+                    {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
             
             do
             {
-                downloadURL = try await self.fetchPatreonDownloadURL(for: patreonURL, presentingViewController: presentingViewController)
-            }
-            catch ~OperationError.Code.pledgeRequired
-            {
-                // Attempt to sign-in again in case our session has expired
-                try await withCheckedThrowingContinuation { continuation in
-                    PatreonAPI.shared.authenticate(presentingViewController: presentingViewController) { result in
-                        do
-                        {
-                            let account = try result.get()
-                            try account.managedObjectContext?.save()
-                            
-                            continuation.resume()
-                        }
-                        catch
-                        {
-                            continuation.resume(throwing: error)
-                        }
-                    }
-                }
+                // Success, so try to download once more.
                 
-                do
-                {
-                    // Success, so try to download once more.
-                    downloadURL = try await self.fetchPatreonDownloadURL(for: patreonURL, presentingViewController: presentingViewController)
-                }
-                catch let error as OperationError where error.code == .pledgeRequired
-                {
-                    guard
-                        let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false),
-                        let postItem = components.queryItems?.first(where: { $0.name == "h" }),
-                        let postID = postItem.value,
-                        let patreonPostURL = URL(string: "https://www.patreon.com/posts/" + postID)
-                    else { throw error }
-                    
-                    // We know authentication succeeded, so failure must mean user isn't patron/on the correct tier,
-                    // or that our hacky workaround for downloading Patreon attachments has failed.
-                    // Either way, taking them directly to the post serves as a decent fallback.
-                    
-                    @MainActor
-                    func showPost() async throws -> URL
-                    {
-                        AppManager.shared.isDownloadingPatreonApp = true
-                        
-                        let safariViewController = SFSafariViewController(url: patreonPostURL)
-                        safariViewController.delegate = self
-                        safariViewController.preferredControlTintColor = .altPrimary
-                        presentingViewController.present(safariViewController, animated: true)
-                        
-                        defer {
-                            AppManager.shared.isDownloadingPatreonApp = false
-                            safariViewController.dismiss(animated: true)
-                        }
-                        
-                        let fileURL = try await withCheckedThrowingContinuation { continuation in
-                            self.importPatreonAppContinuation = continuation
-                            NotificationCenter.default.addObserver(self, selector: #selector(DownloadAppOperation.importPatreonApp(_:)), name: AppDelegate.importPatreonAppDeepLinkNotification, object: nil)
-                        }
-                        
-                        return fileURL
-                    }
-                    
-                    return try await showPost()
-                }
+                let fileURL = try await self.downloadFile(from: patreonURL)
+                return fileURL
             }
-            
-            let fileURL = try await self.downloadFile(from: downloadURL)
-            return fileURL
-        }
-        else
-        {
-            // Not pledged, so just show Patreon page
-            guard let patreonURL = await self.context.$appVersion.perform({ $0?.app?.source?.patreonURL }) else { throw OperationError.pledgeRequired(appName: self.appName) }
-            
-            await MainActor.run {
-                let safariViewController = SFSafariViewController(url: patreonURL)
-                safariViewController.preferredControlTintColor = .altPrimary
-                presentingViewController.present(safariViewController, animated: true)
+            catch let error as OperationError where error.code == .pledgeRequired
+            {
+                guard
+                    let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false),
+                    let postItem = components.queryItems?.first(where: { $0.name == "h" }),
+                    let postID = postItem.value,
+                    let patreonPostURL = URL(string: "https://www.patreon.com/posts/" + postID)
+                else { throw error }
+                
+                // We know authentication succeeded, so failure must mean user isn't patron/on the correct tier,
+                // or that our hacky workaround for downloading Patreon attachments has failed.
+                // Either way, taking them directly to the post serves as a decent fallback.
+                
+                return try await self.downloadFromPatreonPost(patreonPostURL, presentingViewController: presentingViewController)
             }
-            
-            throw CancellationError()
         }
     }
     
     @MainActor
-    func fetchPatreonDownloadURL(for patreonURL: URL, presentingViewController: UIViewController) async throws -> URL
+    func downloadFromPatreonPost(_ postURL: URL, presentingViewController: UIViewController) async throws -> URL
     {
-        // HACKS!!
-        let safariViewController = SFSafariViewController(url: patreonURL)
-        safariViewController.delegate = self
+        let webViewController = WebViewController(url: postURL)
+        webViewController.delegate = self
+        webViewController.webView.navigationDelegate = self
         
-        let downloadURL = try await withCheckedThrowingContinuation { continuation in
-            // Escape continuation so we can resume it from delegate callbacks
-            self.fetchPatreonURLContinuation = continuation
-                            
-            presentingViewController.addChild(safariViewController)
-            
-            safariViewController.view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
-            presentingViewController.view.addSubview(safariViewController.view)
-            
-            safariViewController.didMove(toParent: presentingViewController)
-        }
+        let navigationController = UINavigationController(rootViewController: webViewController)
+        presentingViewController.present(navigationController, animated: true)
         
-        safariViewController.willMove(toParent: nil)
-        safariViewController.view.removeFromSuperview()
-        safariViewController.removeFromParent()
+        let downloadURL: URL
         
-        return downloadURL
-    }
-    
-    @objc
-    func importPatreonApp(_ notification: Notification)
-    {
-        guard let continuation = self.importPatreonAppContinuation else { return }
-        self.importPatreonAppContinuation = nil
-        
-        if let fileURL = notification.userInfo?[AppDelegate.importAppDeepLinkURLKey] as? URL
+        do
         {
-            continuation.resume(returning: fileURL)
+            defer {
+                navigationController.dismiss(animated: true)
+            }
+            
+            downloadURL = try await withCheckedThrowingContinuation { continuation in
+                self.importPatreonAppContinuation = continuation
+            }
         }
-        else
-        {
-            continuation.resume(throwing: OperationError.appNotFound(name: self.appName))
-        }
+        
+        let fileURL = try await self.downloadFile(from: downloadURL)
+        return fileURL
     }
 }
 
-extension DownloadAppOperation: SFSafariViewControllerDelegate
+extension DownloadAppOperation: WebViewControllerDelegate
 {
-    public func safariViewController(_ controller: SFSafariViewController, initialLoadDidRedirectTo url: URL)
-    {
-        guard let continuation = self.fetchPatreonURLContinuation else { return }
-        self.fetchPatreonURLContinuation = nil
-        
-        Logger.main.debug("Redirecting to URL: \(url, privacy: .public)")
-        
-        continuation.resume(returning: url)
-    }
-    
-    public func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool)
-    {
-        guard let continuation = self.fetchPatreonURLContinuation else { return }
-        self.fetchPatreonURLContinuation = nil
-        
-        continuation.resume(throwing: OperationError.pledgeRequired(appName: self.appName))
-        
-        Logger.main.debug("Did load initial URL!")
-    }
-    
-    public func safariViewControllerDidFinish(_ controller: SFSafariViewController)
+    func webViewControllerDidFinish(_ webViewController: WebViewController) 
     {
         guard let continuation = self.importPatreonAppContinuation else { return }
         self.importPatreonAppContinuation = nil
         
         continuation.resume(throwing: CancellationError())
+    }
+}
+
+extension DownloadAppOperation: WKNavigationDelegate
+{
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy 
+    {
+        guard #available(iOS 14.5, *), navigationAction.shouldPerformDownload else { return .allow }
+        
+        guard let continuation = self.importPatreonAppContinuation else { return .allow }
+        self.importPatreonAppContinuation = nil
+        
+        if let downloadURL = navigationAction.request.url
+        {
+            continuation.resume(returning: downloadURL)
+        }
+        
+        return .cancel
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy 
+    {
+        // Called for Patreon attachments specifically
+        
+        guard !navigationResponse.canShowMIMEType else { return .allow }
+        
+        guard let continuation = self.importPatreonAppContinuation else { return .allow }
+        self.importPatreonAppContinuation = nil
+        
+        let itunesUTType = UTType(importedAs: "com.apple.itunes.ipa")
+        guard let response = navigationResponse.response as? HTTPURLResponse, let responseURL = response.url,
+              let mimeType = response.mimeType, let type = UTType(mimeType: mimeType),
+              type.conforms(to: itunesUTType) || type.conforms(to: .zip) || type.conforms(to: .application)
+        else {
+            continuation.resume(throwing: OperationError.invalidApp)
+            return .cancel
+        }
+        
+        continuation.resume(returning: responseURL)
+        
+        return .cancel
     }
 }
 

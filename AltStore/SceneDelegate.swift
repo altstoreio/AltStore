@@ -83,14 +83,7 @@ private extension SceneDelegate
             guard context.url.pathExtension.lowercased() == "ipa" else { return }
             
             DispatchQueue.main.async {
-                if AppManager.shared.isDownloadingPatreonApp
-                {
-                    NotificationCenter.default.post(name: AppDelegate.importPatreonAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
-                }
-                else
-                {
-                    NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
-                }
+                NotificationCenter.default.post(name: AppDelegate.importAppDeepLinkNotification, object: nil, userInfo: [AppDelegate.importAppDeepLinkURLKey: context.url])
             }
         }
         else
@@ -101,15 +94,8 @@ private extension SceneDelegate
             switch host
             {
             case "patreon":
-                if let queryItems = components.queryItems, queryItems.contains(where: { $0.name == "code" })
-                {
-                    PatreonAPI.shared.handleOAuthCallbackURL(context.url)
-                }
-                else
-                {
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
-                    }
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
                 }
                 
             case "appbackupresponse":

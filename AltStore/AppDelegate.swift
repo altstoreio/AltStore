@@ -21,7 +21,6 @@ extension AppDelegate
 {
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
     static let importAppDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.ImportAppDeepLinkNotification")
-    static let importPatreonAppDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.ImportPatreonAppDeepLinkNotification")
     static let addSourceDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.AddSourceDeepLinkNotification")
     
     static let appBackupDidFinish = Notification.Name("com.rileytestut.AltStore.AppBackupDidFinish")
