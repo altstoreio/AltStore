@@ -319,61 +319,74 @@ private extension DownloadAppOperation
     
     func downloadPatreonApp(from patreonURL: URL) async throws -> URL
     {
-        do
+        if let isPledged = await self.context.$appVersion.perform({ $0?.app?.isPledged }), isPledged
         {
-            let fileURL = try await self.downloadFile(from: patreonURL)
-            return fileURL
-        }
-        catch let error as OperationError where error.code == .pledgeRequired
-        {
-            guard let presentingViewController = self.context.presentingViewController else { throw error }
-            
-            // Attempt to sign-in again in case our session has expired
-            try await withCheckedThrowingContinuation { continuation in
-                PatreonAPI.shared.authenticate(presentingViewController: presentingViewController) { result in
-                    do
-                    {
-                        let account = try result.get()
-                        try account.managedObjectContext?.save()
-                        
-                        continuation.resume()
-                    }
-                    catch
-                    {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-            
             do
             {
-                // Success, so try to download once more.
-                
+                // User has pledged to this app, attempt to download
                 let fileURL = try await self.downloadFile(from: patreonURL)
                 return fileURL
             }
             catch let error as OperationError where error.code == .pledgeRequired
             {
-                guard
-                    let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false),
-                    let postItem = components.queryItems?.first(where: { $0.name == "h" }),
-                    let postID = postItem.value,
-                    let patreonPostURL = URL(string: "https://www.patreon.com/posts/" + postID)
-                else { throw error }
+                guard let presentingViewController = self.context.presentingViewController else { throw error }
                 
-                // We know authentication succeeded, so failure must mean user isn't patron/on the correct tier,
-                // or that our hacky workaround for downloading Patreon attachments has failed.
-                // Either way, taking them directly to the post serves as a decent fallback.
+                // Attempt to sign-in again in case our Patreon session has expired
+                try await withCheckedThrowingContinuation { continuation in
+                    PatreonAPI.shared.authenticate(presentingViewController: presentingViewController) { result in
+                        do
+                        {
+                            let account = try result.get()
+                            try account.managedObjectContext?.save()
+                            
+                            continuation.resume()
+                        }
+                        catch
+                        {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                }
                 
-                return try await self.downloadFromPatreonPost(patreonPostURL, presentingViewController: presentingViewController)
+                do
+                {
+                    // Success, so try to download once more now that we're definitely authenticated.
+                                        
+                    let fileURL = try await self.downloadFile(from: patreonURL)
+                    return fileURL
+                }
+                catch let error as OperationError where error.code == .pledgeRequired
+                {
+                    guard
+                        let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false),
+                        let postItem = components.queryItems?.first(where: { $0.name == "h" }),
+                        let postID = postItem.value,
+                        let patreonPostURL = URL(string: "https://www.patreon.com/posts/" + postID)
+                    else { throw error }
+                    
+                    // We know authentication succeeded, so failure must mean user isn't patron/on the correct tier,
+                    // or that our hacky workaround for downloading Patreon attachments has failed.
+                    // Either way, taking them directly to the post serves as a decent fallback.
+                    
+                    return try await self.downloadFromPatreon(patreonPostURL, presentingViewController: presentingViewController)
+                }
             }
+        }
+        else
+        {
+            // Not pledged, so just show Patreon page
+            guard let presentingViewController = self.context.presentingViewController,
+                  let patreonURL = await self.context.$appVersion.perform({ $0?.app?.source?.patreonURL })
+            else { throw OperationError.pledgeRequired(appName: self.appName) }
+            
+            return try await self.downloadFromPatreon(patreonURL, presentingViewController: presentingViewController)
         }
     }
     
     @MainActor
-    func downloadFromPatreonPost(_ postURL: URL, presentingViewController: UIViewController) async throws -> URL
+    func downloadFromPatreon(_ patreonURL: URL, presentingViewController: UIViewController) async throws -> URL
     {
-        let webViewController = WebViewController(url: postURL)
+        let webViewController = WebViewController(url: patreonURL)
         webViewController.delegate = self
         webViewController.webView.navigationDelegate = self
         
