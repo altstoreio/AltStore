@@ -63,6 +63,7 @@ class AppBannerView: RSTNibView
     @IBOutlet private var vibrancyView: UIVisualEffectView!
     @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var accessibilityView: UIView!
+    @IBOutlet private var patreonBadgeImageView: UIImageView!
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
@@ -88,6 +89,7 @@ class AppBannerView: RSTNibView
         self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
         
         self.betaBadgeView.isHidden = true
+        self.patreonBadgeImageView.isHidden = true
         
         self.layoutMargins = self.stackView.layoutMargins
         self.insetsLayoutMarginsFromSafeArea = false
@@ -151,10 +153,33 @@ extension AppBannerView
             self.accessibilityLabel = values.name
         }
         
+        if let storeApp = app.storeApp
+        {
+            // Always show Patreon badge if pledge is required.
+            // Unlike below, this applies for both StoreApp's and InstalledApp's.
+            self.patreonBadgeImageView.isHidden = !storeApp.isPledgeRequired
+        }
+        else
+        {
+            self.patreonBadgeImageView.isHidden = true
+        }
+        
         if let app = app as? StoreApp
         {
-            if app.installedApp == nil
+            if let installedApp = app.installedApp
             {
+                // App is installed
+                
+                self.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                self.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), installedApp.name)
+                self.button.accessibilityValue = nil
+                self.button.progress = nil
+                self.button.countdownDate = nil
+            }
+            else
+            {
+                // App is not installed
+                
                 if app.isPledgeRequired
                 {
                     if app.isPledged
@@ -163,7 +188,6 @@ extension AppBannerView
                         self.button.setTitle(buttonTitle.uppercased(), for: .normal)
                         self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
                         self.button.accessibilityValue = buttonTitle
-                        self.buttonLabel.isHidden = true
                     }
                     else if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
                     {
@@ -172,15 +196,12 @@ extension AppBannerView
                         let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
                         self.button.setTitle(buttonTitle, for: .normal)
                         self.button.accessibilityLabel = String(format: NSLocalizedString("Pledge %@ a month", comment: ""), price)
-                        self.buttonLabel.text = NSLocalizedString("Pledge", comment: "")
-                        self.buttonLabel.isHidden = false
                     }
                     else
                     {
                         let buttonTitle = NSLocalizedString("Pledge", comment: "")
                         self.button.setTitle(buttonTitle.uppercased(), for: .normal)
                         self.button.accessibilityLabel = buttonTitle
-                        self.buttonLabel.isHidden = true
                     }
                 }
                 else
@@ -189,7 +210,6 @@ extension AppBannerView
                     self.button.setTitle(buttonTitle.uppercased(), for: .normal)
                     self.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
                     self.button.accessibilityValue = buttonTitle
-                    self.buttonLabel.isHidden = true
                 }
                 
                 if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
@@ -200,16 +220,6 @@ extension AppBannerView
                 {
                     self.button.countdownDate = nil
                 }
-            }
-            else
-            {
-                self.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                self.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
-                self.button.accessibilityValue = nil
-                self.button.progress = nil
-                self.button.countdownDate = nil
-                
-                self.buttonLabel.isHidden = true
             }
             
             // Ensure PillButton is correct size before assigning progress.
