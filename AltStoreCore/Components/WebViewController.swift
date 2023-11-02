@@ -30,7 +30,7 @@ public class WebViewController: UIViewController
     public private(set) lazy var reloadButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(WebViewController.refresh(_:)))
     public private(set) lazy var stopLoadingButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(WebViewController.refresh(_:)))
     
-    public private(set) lazy var doneButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(WebViewController.dismissWebViewController(_:)))
+    public private(set) lazy var doneButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(WebViewController.dismissWebViewController(_:)))
     
     //MARK: Private Properties
     private let progressView = UIProgressView()
@@ -237,11 +237,12 @@ private extension WebViewController
         }
         else
         {
-            // We have to set rightBarButtonItems instead of simply rightBarButtonItem to properly clear previous buttons
-            self.navigationItem.rightBarButtonItems = [self.doneButton]
+            self.navigationItem.leftBarButtonItems = [self.doneButton]
             
-            let flexibleSpaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            self.toolbarItems = [self.backButton, flexibleSpaceItem, self.forwardButton, flexibleSpaceItem, self.refreshButton, flexibleSpaceItem, self.shareButton]
+            // We have to set rightBarButtonItems instead of simply rightBarButtonItem to properly clear previous buttons
+            self.navigationItem.rightBarButtonItems = [self.refreshButton]
+            
+            self.toolbarItems = [self.backButton, .fixedSpace(70), self.forwardButton, .flexibleSpace(), self.shareButton]
         }
     }
     
