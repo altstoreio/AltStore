@@ -158,6 +158,11 @@ class FetchSourceOperation: ResultOperation<Source>
                     
                     let identifier = source.identifier
                     
+                    if identifier == Source.altStoreIdentifier, let skipPatreonDownloads = source.userInfo?[.skipPatreonDownloads]
+                    {
+                        UserDefaults.shared.skipPatreonDownloads = (skipPatreonDownloads == "true")
+                    }
+                    
                     try self.verify(source, response: response)
                     
                     try childContext.save()
