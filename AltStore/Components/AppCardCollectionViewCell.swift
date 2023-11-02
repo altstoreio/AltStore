@@ -55,7 +55,7 @@ class AppCardCollectionViewCell: UICollectionViewCell
         let captionVibrancyView = UIVisualEffectView(effect: vibrancyEffect)
         
         self.captionLabel = UILabel(frame: .zero)
-        self.captionLabel.font = UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).bolded(), size: 0)
+        self.captionLabel.font = UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .footnote).bolded(), size: 0)
         self.captionLabel.textAlignment = .center
         self.captionLabel.numberOfLines = 0
         captionVibrancyView.contentView.addSubview(self.captionLabel, pinningEdgesWith: .zero)
