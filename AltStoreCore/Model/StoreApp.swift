@@ -25,6 +25,18 @@ public extension StoreApp
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
 }
 
+extension StoreApp
+{
+    private struct PatreonParameters: Decodable
+    {
+        var pledge: Decimal?
+        var currency: String?
+        var tiers: Set<String>?
+        var benefit: String?
+        var hidden: Bool?
+    }
+}
+
 @objc(StoreApp)
 public class StoreApp: NSManagedObject, Decodable, Fetchable
 {
@@ -43,6 +55,14 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(downloadURL) internal var _downloadURL: URL
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
+    
+    @NSManaged public var isPledged: Bool
+    @NSManaged public private(set) var isPledgeRequired: Bool
+    @NSManaged public private(set) var isHiddenWithoutPledge: Bool
+    @NSManaged public private(set) var pledgeCurrency: String?
+    
+    @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
+    @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
     
     @NSManaged public var sortIndex: Int32
     
@@ -94,6 +114,12 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
     
+    /* Non-Core Data Properties */
+    
+    // Used to set isPledged after fetching source.
+    public var _tierIDs: Set<String>?
+    public var _rewardID: String?
+    
     @nonobjc public var source: Source? {
         set {
             self._source = newValue
@@ -137,6 +163,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case size
         case isBeta = "beta"
         case versions
+        case patreon
         
         // Legacy
         case version
@@ -246,6 +273,26 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                                                            appBundleID: self.bundleIdentifier,
                                                            in: context)
                 try self.setVersions([appVersion])
+            }
+            
+            if let patreon = try container.decodeIfPresent(PatreonParameters.self, forKey: .patreon)
+            {
+                self.isPledgeRequired = true
+                self.isHiddenWithoutPledge = patreon.hidden ?? false // Default to showing Patreon apps
+                                
+                if let pledge = patreon.pledge
+                {
+                    self._pledgeAmount = pledge as NSDecimalNumber
+                    self.pledgeCurrency = patreon.currency ?? "USD" // Only set pledge currency if explicitly given pledge.
+                }
+                else if patreon.pledge == nil && patreon.tiers == nil && patreon.benefit == nil
+                {
+                    // No conditions, so default to pledgeAmount of 0 to simplify logic.
+                    self._pledgeAmount = 0 as NSDecimalNumber
+                }
+                
+                self._tierIDs = patreon.tiers
+                self._rewardID = patreon.benefit
             }
         }
         catch
@@ -380,6 +427,21 @@ public extension StoreApp
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
+    }
+    
+    class var visibleAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "(%K != %@) AND ((%K == NO) OR (%K == NO) OR (%K == YES))",
+                                    #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                    #keyPath(StoreApp.isPledgeRequired),
+                                    #keyPath(StoreApp.isHiddenWithoutPledge),
+                                    #keyPath(StoreApp.isPledged))
+        return predicate
+    }
+    
+    class var availableAppsPredicate: NSPredicate {
+        let predicate = NSPredicate(format: "(%K == NO) OR (%K == YES)",
+                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isPledged))
+        return predicate
     }
     
     class func makeAltStoreApp(version: String, buildVersion: String?, in context: NSManagedObjectContext) -> StoreApp

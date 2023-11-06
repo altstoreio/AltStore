@@ -92,7 +92,6 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         super.viewWillAppear(animated)
         
         self.fetchSource()
-        self.updateDataSource()
         
         self.update()
     }
@@ -109,7 +108,8 @@ private extension BrowseViewController
                                         NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
-        let predicate = NSPredicate(format: "%K != %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID)
+        let predicate = StoreApp.visibleAppsPredicate
+        
         if let source = self.source
         {
             let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
@@ -127,6 +127,10 @@ private extension BrowseViewController
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             
+            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
+            // Otherwise, cell reuse can mess up some cached values.
+            cell.bannerView.button.isIndicatingActivity = false
+            
             cell.configure(for: app)
             
             cell.bannerView.iconImageView.image = nil
@@ -136,40 +140,8 @@ private extension BrowseViewController
             cell.bannerView.button.activityIndicatorView.style = .medium
             cell.bannerView.button.activityIndicatorView.color = .white
             
-            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
-            // Otherwise, cell reuse can mess up some cached values.
-            cell.bannerView.button.isIndicatingActivity = false
-            
             let tintColor = app.tintColor ?? .altPrimary
             cell.tintColor = tintColor
-            
-            if app.installedApp == nil
-            {
-                let buttonTitle = NSLocalizedString("Free", comment: "")
-                cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = buttonTitle
-                
-                let progress = AppManager.shared.installationProgress(for: app)
-                cell.bannerView.button.progress = progress
-                
-                if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
-                {
-                    cell.bannerView.button.countdownDate = versionDate
-                }
-                else
-                {
-                    cell.bannerView.button.countdownDate = nil
-                }
-            }
-            else
-            {
-                cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = nil
-                cell.bannerView.button.progress = nil
-                cell.bannerView.button.countdownDate = nil
-            }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
             let iconURL = storeApp.iconURL
@@ -200,18 +172,6 @@ private extension BrowseViewController
         dataSource.placeholderView = self.placeholderView
         
         return dataSource
-    }
-    
-    func updateDataSource()
-    {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            self.dataSource.predicate = nil
-        }
-        else
-        {
-            self.dataSource.predicate = NSPredicate(format: "%K == NO", #keyPath(StoreApp.isBeta))
-        }
     }
     
     func fetchSource()

@@ -153,7 +153,13 @@ class FetchSourceOperation: ResultOperation<Source>
                     
                     let identifier = source.identifier
                     
+                    if identifier == Source.altStoreIdentifier, let skipPatreonDownloads = source.userInfo?[.skipPatreonDownloads]
+                    {
+                        UserDefaults.shared.skipPatreonDownloads = (skipPatreonDownloads == "true")
+                    }
+                    
                     try self.verify(source, response: response)
+                    try self.verifyPledges(for: source, in: childContext)
                     
                     try childContext.save()
                     
@@ -220,6 +226,52 @@ private extension FetchSourceOperation
         if let previousSourceID = self.$source.identifier
         {
             guard source.identifier == previousSourceID else { throw SourceError.changedID(source.identifier, previousID: previousSourceID, source: source) }
+        }
+    }
+    
+    func verifyPledges(for source: Source, in context: NSManagedObjectContext) throws
+    {
+        guard let patreonURL = source.patreonURL, let patreonAccount = DatabaseManager.shared.patreonAccount(in: context) else { return }
+        
+        let normalizedPatreonURL = try patreonURL.normalized()
+        
+        guard let pledge = patreonAccount.pledges.first(where: { pledge in
+            guard let normalizedCampaignURL = try? pledge.campaignURL.normalized() else { return false }
+            return normalizedCampaignURL == normalizedPatreonURL
+        }) else { return }
+        
+        // User is pledged to this source's Patreon, so check which apps they're pledged to.
+        
+        for app in source.apps where app.isPledgeRequired
+        {
+            if let requiredAppPledge = app.pledgeAmount
+            {
+                if pledge.amount >= requiredAppPledge
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
+            
+            if let tierIDs = app._tierIDs
+            {
+                let tier = patreonAccount.pledges.flatMap { $0.tiers }.first { tierIDs.contains($0.identifier) }
+                if tier != nil
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
+                                
+            if let rewardID = app._rewardID
+            {
+                let reward = patreonAccount.pledges.flatMap { $0.rewards }.first { $0.identifier == rewardID }
+                if reward != nil
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
         }
     }
     

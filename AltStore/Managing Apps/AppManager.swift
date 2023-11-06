@@ -761,17 +761,31 @@ extension AppManager
     
     func enableJIT(for installedApp: InstalledApp, completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        class Context: OperationContext, EnableJITContext
+        class Context: OperationContext, EnableJITContext, VerifyAppPledgeContext
         {
             var installedApp: InstalledApp?
+            
+            @AsyncManaged
+            var storeApp: StoreApp?
         }
         
         let appName = installedApp.name
         
         let context = Context()
         context.installedApp = installedApp
+        context.storeApp = installedApp.storeApp
+        
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: context)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
         
         let findServerOperation = self.findServer(context: context) { _ in }
+        findServerOperation.addDependency(verifyPledgeOperation)
         
         let enableJITOperation = EnableJITOperation(context: context)
         enableJITOperation.resultHandler = { (result) in
@@ -788,6 +802,7 @@ extension AppManager
         }
         enableJITOperation.addDependency(findServerOperation)
         
+        self.run([verifyPledgeOperation], context: context)
         self.run([enableJITOperation], context: context, requiresSerialQueue: true)
     }
     
@@ -1246,7 +1261,7 @@ private extension AppManager
                       let patchAppURL = URL(string: patchAppLink)
                 else { throw OperationError.invalidApp }
                 
-                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL)
+                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL, storeApp: nil)
                 
                 DispatchQueue.main.async {
                     let storyboard = UIStoryboard(name: "PatchApp", bundle: nil)
@@ -1358,8 +1373,22 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        let operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        var operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
+        
+        if let storeApp = downloadingApp.storeApp, storeApp.isPledgeRequired
+        {
+            // Patreon apps may require authenticating with WebViewController,
+            // so make sure to run DownloadAppOperation serially.
+            self.run([downloadOperation], context: group.context, requiresSerialQueue: true)
+            
+            if let index = operations.firstIndex(of: downloadOperation)
+            {
+                // Remove downloadOperation from operations to prevent running it twice.
+                operations.remove(at: index)
+            }
+        }
+
         self.run(operations, context: group.context)
         
         return progress
@@ -1369,8 +1398,25 @@ private extension AppManager
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
-        let context = AppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        class RefreshAppContext: AppOperationContext, VerifyAppPledgeContext
+        {
+            @AsyncManaged
+            var storeApp: StoreApp?
+        }
+        
+        let context = RefreshAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
         context.app = ALTApplication(fileURL: app.fileURL)
+        context.storeApp = app.storeApp
+        
+        /* Verify Pledge */
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: context)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .failure(let error): context.error = error
+            case .success: break
+            }
+        }
         
         /* Fetch Provisioning Profiles */
         let fetchProvisioningProfilesOperation = FetchProvisioningProfilesOperation(context: context)
@@ -1382,6 +1428,7 @@ private extension AppManager
             }
         }
         progress.addChild(fetchProvisioningProfilesOperation.progress, withPendingUnitCount: 60)
+        fetchProvisioningProfilesOperation.addDependency(verifyPledgeOperation)
         
         /* Refresh */
         let refreshAppOperation = RefreshAppOperation(context: context)
@@ -1408,7 +1455,7 @@ private extension AppManager
         progress.addChild(refreshAppOperation.progress, withPendingUnitCount: 40)
         refreshAppOperation.addDependency(fetchProvisioningProfilesOperation)
         
-        let operations = [fetchProvisioningProfilesOperation, refreshAppOperation]
+        let operations = [verifyPledgeOperation, fetchProvisioningProfilesOperation, refreshAppOperation]
         group.add(operations)
         self.run(operations, context: group.context)
 
@@ -1419,8 +1466,28 @@ private extension AppManager
     {
         let progress = Progress.discreteProgress(totalUnitCount: 100)
         
-        let restoreContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
-        let appContext = InstallAppOperationContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        class ActivateAppContext: InstallAppOperationContext, VerifyAppPledgeContext
+        {
+            @AsyncManaged
+            var storeApp: StoreApp?
+        }
+        
+        let restoreContext = ActivateAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        restoreContext.storeApp = app.storeApp
+        
+        let appContext = ActivateAppContext(bundleIdentifier: app.bundleIdentifier, authenticatedContext: group.context)
+        appContext.storeApp = app.storeApp
+        
+        let verifyPledgeOperation = VerifyAppPledgeOperation(context: restoreContext)
+        verifyPledgeOperation.resultHandler = { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error):
+                restoreContext.error = error
+                appContext.error = error
+            }
+        }
         
         let installBackupAppProgress = Progress.discreteProgress(totalUnitCount: 100)
         let installBackupAppOperation = RSTAsyncBlockOperation { [weak self] (operation) in
@@ -1442,6 +1509,7 @@ private extension AppManager
             }
         }
         progress.addChild(installBackupAppProgress, withPendingUnitCount: 30)
+        installBackupAppOperation.addDependency(verifyPledgeOperation)
         
         let restoreAppOperation = BackupAppOperation(action: .restore, context: restoreContext)
         restoreAppOperation.resultHandler = { (result) in
@@ -1538,8 +1606,8 @@ private extension AppManager
         cleanUpOperation.addDependency(installAppOperation)
         progress.addChild(cleanUpProgress, withPendingUnitCount: 5)
         
-        group.add([installBackupAppOperation, restoreAppOperation, installAppOperation, cleanUpOperation])
-        self.run([installBackupAppOperation, installAppOperation, restoreAppOperation, cleanUpOperation], context: group.context)
+        group.add([verifyPledgeOperation, installBackupAppOperation, restoreAppOperation, installAppOperation, cleanUpOperation])
+        self.run([verifyPledgeOperation, installBackupAppOperation, installAppOperation, restoreAppOperation, cleanUpOperation], context: group.context)
         
         return progress
     }

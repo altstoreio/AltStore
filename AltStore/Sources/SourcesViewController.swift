@@ -204,15 +204,7 @@ private extension SourcesViewController
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
             
-            let numberOfApps: Int
-            if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-            {
-                numberOfApps = source.apps.count
-            }
-            else
-            {
-                numberOfApps = source.apps.filter { !$0.isBeta }.count
-            }
+            let numberOfApps = source.apps.filter { StoreApp.visibleAppsPredicate.evaluate(with: $0) }.count
             
             if let error = source.error
             {

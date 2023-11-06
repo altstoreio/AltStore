@@ -10,3 +10,4 @@
 
 typedef NSString *ALTSourceUserInfoKey NS_TYPED_EXTENSIBLE_ENUM;
 extern ALTSourceUserInfoKey const ALTSourceUserInfoKeyPatreonAccessToken;
+extern ALTSourceUserInfoKey const ALTSourceUserInfoKeySkipPatreonDownloads;

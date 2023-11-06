@@ -44,7 +44,7 @@ class SendAppOperation: ResultOperation<ServerConnection>
         Logger.sideload.notice("Sending app \(self.context.bundleIdentifier, privacy: .public) to AltServer \(server.localizedName ?? "nil", privacy: .public)...")
         
         // self.context.resignedApp.fileURL points to the app bundle, but we want the .ipa.
-        let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL)
+        let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL, storeApp: nil)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
         
         // Connect to server.

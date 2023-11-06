@@ -107,7 +107,7 @@ public extension LoggedError
 {
     var app: AppProtocol {
         // `as AppProtocol` needed to fix "cannot convert AnyApp to StoreApp" compiler error with Xcode 14.
-        let app = self.installedApp ?? self.storeApp ?? AnyApp(name: self.appName, bundleIdentifier: self.appBundleID, url: nil) as AppProtocol
+        let app = self.installedApp ?? self.storeApp ?? AnyApp(name: self.appName, bundleIdentifier: self.appBundleID, url: nil, storeApp: nil) as AppProtocol
         return app
     }
     

@@ -63,6 +63,7 @@ class AppBannerView: RSTNibView
     @IBOutlet private var vibrancyView: UIVisualEffectView!
     @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var accessibilityView: UIView!
+    @IBOutlet private var patreonBadgeImageView: UIImageView!
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
     
@@ -88,6 +89,7 @@ class AppBannerView: RSTNibView
         self.accessibilityElements = [self.accessibilityView, self.button].compactMap { $0 }
         
         self.betaBadgeView.isHidden = true
+        self.patreonBadgeImageView.isHidden = true
         
         self.layoutMargins = self.stackView.layoutMargins
         self.insetsLayoutMarginsFromSafeArea = false
@@ -149,6 +151,89 @@ extension AppBannerView
         {
             self.subtitleLabel.text = NSLocalizedString("Sideloaded", comment: "")
             self.accessibilityLabel = values.name
+        }
+        
+        if let storeApp = app.storeApp
+        {
+            // Always show Patreon badge if pledge is required.
+            // Unlike below, this applies for both StoreApp's and InstalledApp's.
+            self.patreonBadgeImageView.isHidden = !storeApp.isPledgeRequired
+        }
+        else
+        {
+            self.patreonBadgeImageView.isHidden = true
+        }
+        
+        if let app = app as? StoreApp
+        {
+            if let installedApp = app.installedApp
+            {
+                // App is installed
+                
+                self.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
+                self.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), installedApp.name)
+                self.button.accessibilityValue = nil
+                self.button.countdownDate = nil
+            }
+            else
+            {
+                // App is not installed
+                
+                if app.isPledgeRequired
+                {
+                    if app.isPledged
+                    {
+                        let buttonTitle = NSLocalizedString("Install", comment: "")
+                        self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                        self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
+                        self.button.accessibilityValue = buttonTitle
+                    }
+                    else if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
+                    {
+                        let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
+                        
+                        let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
+                        self.button.setTitle(buttonTitle, for: .normal)
+                        self.button.accessibilityLabel = String(format: NSLocalizedString("Pledge %@ a month", comment: ""), price)
+                        self.button.accessibilityValue = buttonTitle
+                    }
+                    else
+                    {
+                        let buttonTitle = NSLocalizedString("Pledge", comment: "")
+                        self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                        self.button.accessibilityLabel = buttonTitle
+                        self.button.accessibilityValue = buttonTitle
+                    }
+                }
+                else
+                {
+                    let buttonTitle = NSLocalizedString("Free", comment: "")
+                    self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                    self.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+                    self.button.accessibilityValue = buttonTitle
+                }
+                
+                if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
+                {
+                    self.button.countdownDate = versionDate
+                }
+                else
+                {
+                    self.button.countdownDate = nil
+                }
+            }
+            
+            // Ensure PillButton is correct size before assigning progress.
+            self.layoutIfNeeded()
+            
+            if let progress = AppManager.shared.installationProgress(for: app), progress.fractionCompleted < 1.0
+            {
+                self.button.progress = progress
+            }
+            else
+            {
+                self.button.progress = nil
+            }
         }
     }
     

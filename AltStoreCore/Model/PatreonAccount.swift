@@ -8,27 +8,6 @@
 
 import CoreData
 
-extension PatreonAPI
-{
-    struct AccountResponse: Decodable
-    {
-        struct Data: Decodable
-        {
-            struct Attributes: Decodable
-            {
-                var first_name: String?
-                var full_name: String
-            }
-            
-            var id: String
-            var attributes: Attributes
-        }
-        
-        var data: Data
-        var included: [PatronResponse]?
-    }
-}
-
 @objc(PatreonAccount)
 public class PatreonAccount: NSManagedObject, Fetchable
 {
@@ -37,29 +16,51 @@ public class PatreonAccount: NSManagedObject, Fetchable
     @NSManaged public var name: String
     @NSManaged public var firstName: String?
     
-    @NSManaged public var isPatron: Bool
+    // Use `isPatron` for backwards compatibility.
+    @NSManaged @objc(isPatron) public var isAltStorePatron: Bool
+    
+    /* Relationships */
+    @nonobjc public var pledges: Set<Pledge> { _pledges as! Set<Pledge> }
+    @NSManaged @objc(pledges) internal var _pledges: NSSet
     
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(response: PatreonAPI.AccountResponse, context: NSManagedObjectContext)
+    init(account: PatreonAPI.UserAccount, context: NSManagedObjectContext)
     {
         super.init(entity: PatreonAccount.entity(), insertInto: context)
         
-        self.identifier = response.data.id
-        self.name = response.data.attributes.full_name
-        self.firstName = response.data.attributes.first_name
+        self.identifier = account.identifier
+        self.name = account.name
+        self.firstName = account.firstName
         
-        if let patronResponse = response.included?.first
+        let pledges = account.pledges?.compactMap { patron -> Pledge? in
+            // First ensure pledge is active.
+            guard patron.status == .active else { return nil }
+            
+            guard let pledge = Pledge(patron: patron, context: context) else { return nil }
+            
+            let tiers = patron.tiers.map { PledgeTier(tier: $0, context: context) }
+            pledge._tiers = Set(tiers) as NSSet
+            
+            let rewards = patron.benefits.map { PledgeReward(benefit: $0, context: context) }
+            pledge._rewards = Set(rewards) as NSSet
+            
+            return pledge
+        } ?? []
+        
+        self._pledges = Set(pledges) as NSSet
+        
+        if let altstorePledge = account.pledges?.first(where: { $0.campaign?.identifier == PatreonAPI.altstoreCampaignID })
         {
-            let patron = Patron(response: patronResponse)
-            self.isPatron = (patron.status == .active)
+            let isActivePatron = (altstorePledge.status == .active)
+            self.isAltStorePatron = isActivePatron
         }
         else
         {
-            self.isPatron = false
+            self.isAltStorePatron = false
         }
     }
 }

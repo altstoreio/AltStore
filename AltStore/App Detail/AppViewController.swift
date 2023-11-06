@@ -87,8 +87,6 @@ class AppViewController: UIViewController
         self.bannerView.iconImageView.tintColor = self.app.tintColor
         self.bannerView.button.tintColor = self.app.tintColor
         self.bannerView.tintColor = self.app.tintColor
-        
-        self.bannerView.configure(for: self.app)
         self.bannerView.accessibilityTraits.remove(.button)
         
         self.bannerView.button.addTarget(self, action: #selector(AppViewController.performAppAction(_:)), for: .primaryActionTriggered)
@@ -362,41 +360,30 @@ private extension AppViewController
 {
     func update()
     {
+        self.bannerView.configure(for: self.app)
+        
+        let progress = self.bannerView.button.progress
+        
         for button in [self.bannerView.button!, self.navigationBarDownloadButton!]
         {
             button.tintColor = self.app.tintColor
             button.isIndicatingActivity = false
-            
-            if let installedApp = self.app.installedApp
-            {
-                if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
-                {
-                    button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
-                }
-                else
-                {
-                    button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                }
-            }
-            else
-            {
-                button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-            }
-            
-            let progress = AppManager.shared.installationProgress(for: self.app)
+        }
+        
+        var buttonTitle = self.bannerView.button.title(for: .normal) ?? NSLocalizedString("FREE", comment: "")
+        if let installedApp = self.app.installedApp, let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
+        {
+            // Explicitly set button title to UPDATE if there is an update available, even if it's not supported.
+            buttonTitle = NSLocalizedString("UPDATE", comment: "")
+        }
+        
+        for button in [self.bannerView.button!, self.navigationBarDownloadButton!]
+        {
+            button.setTitle(buttonTitle, for: .normal)
             button.progress = progress
         }
         
-        if let versionDate = self.app.latestSupportedVersion?.date, versionDate > Date()
-        {
-            self.bannerView.button.countdownDate = versionDate
-            self.navigationBarDownloadButton.countdownDate = versionDate
-        }
-        else
-        {
-            self.bannerView.button.countdownDate = nil
-            self.navigationBarDownloadButton.countdownDate = nil
-        }
+        self.navigationBarDownloadButton.countdownDate = self.bannerView.button.countdownDate
         
         let barButtonItem = self.navigationItem.rightBarButtonItem
         self.navigationItem.rightBarButtonItem = nil
@@ -523,7 +510,7 @@ extension AppViewController
     {
         if let installedApp = self.app.installedApp
         {
-            if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
+            if let latestVersion = self.app.latestAvailableVersion, !installedApp.matches(latestVersion)
             {
                 self.updateApp(installedApp)
             }

@@ -181,6 +181,8 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<string>ipa</string>
+                <key>public.mime-type</key>
+                <string>application/x-ios-app</string>
 			</dict>
 		</dict>
 	</array>
