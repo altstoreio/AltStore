@@ -581,7 +581,7 @@
 			<key>name</key>
 			<string>App Groups</string>
 			<key>description</key>
-			<string>Allows app to share files with other apps and app extensions in same App Group.</string>
+			<string>Share files with other apps and app extensions in same App Group.</string>
 			<key>key</key>
 			<string>com.apple.security.application-groups</string>
 			<key>symbol</key>
@@ -592,7 +592,7 @@
 			<key>name</key>
 			<string>Keychain</string>
 			<key>description</key>
-			<string>Allows app to read and write secure data to the system&apos;s keychain.</string>
+			<string>Read and write secure data to the system&apos;s keychain.</string>
 			<key>key</key>
 			<string>keychain-access-groups</string>
 			<key>symbol</key>
@@ -845,7 +845,7 @@
 			<key>name</key>
 			<string>Debuggable</string>
 			<key>description</key>
-			<string>Allows developers to attach a debugger to this app. This permission is required for JIT to work.</string>
+			<string>Attach debuggers to this app. Required for JIT to work.</string>
 			<key>key</key>
 			<string>get-task-allow</string>
 			<key>symbol</key>
@@ -856,7 +856,7 @@
 			<key>name</key>
 			<string>Inter-App Audio</string>
 			<key>description</key>
-			<string>Allows sharing real-time audio between apps.</string>
+			<string>Share real-time audio with other apps.</string>
 			<key>key</key>
 			<string>inter-app-audio</string>
 			<key>symbol</key>
