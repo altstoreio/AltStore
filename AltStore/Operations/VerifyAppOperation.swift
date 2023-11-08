@@ -124,6 +124,8 @@ class VerifyAppOperation: ResultOperation<Void>
                             
                             await presentingViewController.presentAlert(title: NSLocalizedString("Undeclared Permissions", comment: ""), message: error.recoverySuggestion)
                         }
+                        
+                        // TODO: We still need to review permissions, even for trusted sources.
                     }
                     
                     self.finish(.success(()))
@@ -175,26 +177,49 @@ private extension VerifyAppOperation
         guard let storeApp = await $appVersion.app else { throw OperationError.invalidParameters }
         
         // Verify source permissions match first.
-        _ = try await self.verifyPermissions(of: app, match: storeApp)
+        let allPermissions = try await self.verifyPermissions(of: app, match: storeApp)
         
-        // TODO: Uncomment to verify added permissions.
-        // switch self.permissionsMode
-        // {
-        // case .none, .all: break
-        // case .added:
-        //     let installedAppURL = InstalledApp.fileURL(for: app)
-        //     guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
-        //
-        //     var previousEntitlements = Set(previousApp.entitlements.keys)
-        //     for appExtension in previousApp.appExtensions
-        //     {
-        //         previousEntitlements.formUnion(appExtension.entitlements.keys)
-        //     }
-        //
-        //     // Make sure all entitlements already exist in previousApp.
-        //     let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
-        //     guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
-        // }
+        do
+        {
+            switch self.permissionsMode
+            {
+            case .none: break
+            case .all:
+                guard #available(iOS 15, *) else {
+                    // Only review permissions on iOS 15 and above.
+                    return
+                }
+                
+                guard let presentingViewController = self.context.presentingViewController else { break } // Don't fail just because we can't show permissions.
+                
+                let allEntitlements = allPermissions.compactMap { $0 as? ALTEntitlement }
+                try await self.review(allEntitlements, for: app, mode: .all, presentingViewController: presentingViewController)
+                
+            case .added:
+                let installedAppURL = InstalledApp.fileURL(for: app)
+                guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
+                
+                var previousEntitlements = Set(previousApp.entitlements.keys)
+                for appExtension in previousApp.appExtensions
+                {
+                    previousEntitlements.formUnion(appExtension.entitlements.keys)
+                }
+                
+                // Make sure all entitlements already exist in previousApp.
+                let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
+                guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
+            }
+        }
+        catch let error as VerificationError where error.code == .addedPermissions
+        {
+            guard #available(iOS 15, *) else {
+                // Ignore added permissions on iOS 15 and below.
+                return
+            }
+            
+            guard let permissions = error.permissions, let presentingViewController = self.context.presentingViewController else { throw error }
+            try await self.review(permissions, for: app, mode: .added, presentingViewController: presentingViewController)
+        }
     }
     
     @discardableResult
@@ -269,5 +294,24 @@ private extension VerifyAppOperation
         }
         
         return localPermissions
+    }
+    
+    @MainActor @available(iOS 15, *)
+    func review(_ permissions: [any ALTAppPermission], for app: AppProtocol, mode: PermissionReviewMode, presentingViewController: UIViewController) async throws
+    {
+        let reviewPermissionsViewController = ReviewPermissionsViewController(app: app, permissions: permissions, mode: mode)
+        let navigationController = UINavigationController(rootViewController: reviewPermissionsViewController)
+        
+        defer {
+            navigationController.dismiss(animated: true)
+        }
+        
+        try await withCheckedThrowingContinuation { continuation in
+            reviewPermissionsViewController.completionHandler = { result in
+                continuation.resume(with: result)
+            }
+            
+            presentingViewController.present(navigationController, animated: true)
+        }
     }
 }

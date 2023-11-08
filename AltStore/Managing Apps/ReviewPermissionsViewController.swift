@@ -31,7 +31,7 @@ class Box<T>
     }
 }
 
-@available(iOS 16, *)
+@available(iOS 15, *)
 extension ReviewPermissionsViewController
 {
     private enum Section: Int
@@ -45,24 +45,18 @@ extension ReviewPermissionsViewController
     }
 }
 
-@available(iOS 16, *)
+@available(iOS 15, *)
 class ReviewPermissionsViewController: UICollectionViewController
 {
-    var app: AppProtocol!
+    let app: AppProtocol
+    let permissions: [any ALTAppPermission]
     
-    var permissions: [any ALTAppPermission] = [] {
-        didSet {
-            let permissions = self.permissions.sorted {
-                $0.localizedDisplayName.localizedStandardCompare($1.localizedDisplayName) == .orderedAscending
-            }.map(Box.init)
-            
-            let knownPermissions = permissions.filter { $0.value.isKnown }
-            let unknownPermissions = permissions.filter { !$0.value.isKnown }
-            
-            self.knownPermissionsDataSource.items = knownPermissions
-            self.unknownPermissionsDataSource.items = unknownPermissions
-        }
-    }
+    let permissionsMode: VerifyAppOperation.PermissionReviewMode
+    
+    var completionHandler: ((Result<Void, Error>) -> Void)?
+    
+    private let knownPermissions: [any ALTAppPermission]
+    private let unknownPermissions: [any ALTAppPermission]
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var knownPermissionsDataSource = self.makeKnownPermissionsDataSource()
@@ -70,19 +64,42 @@ class ReviewPermissionsViewController: UICollectionViewController
     
     private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionViewListCell>!
     
+    init(app: AppProtocol, permissions: [any ALTAppPermission], mode: VerifyAppOperation.PermissionReviewMode)
+    {
+        self.app = app
+        self.permissions = permissions
+        self.permissionsMode = mode
+        
+        let sortedPermissions = permissions.sorted {
+            $0.localizedDisplayName.localizedStandardCompare($1.localizedDisplayName) == .orderedAscending
+        }
+        
+        let knownPermissions = sortedPermissions.filter { $0.isKnown }
+        let unknownPermissions = sortedPermissions.filter { !$0.isKnown }
+        
+        self.knownPermissions = knownPermissions
+        self.unknownPermissions = unknownPermissions
+        
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        if let navigationBar = self.navigationController?.navigationBar
-        {
-            let appearance = navigationBar.standardAppearance
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = UIColor(resource: .gradientTop)
-            appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-            appearance.buttonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
-            navigationBar.standardAppearance = appearance
-        }
+        let buttonAppearance = UIBarButtonItemAppearance(style: .plain)
+        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(resource: .gradientTop)
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.buttonAppearance = buttonAppearance
+        self.navigationItem.standardAppearance = appearance
         
         self.title = NSLocalizedString("Review Permissions", comment: "")
         
@@ -92,11 +109,20 @@ class ReviewPermissionsViewController: UICollectionViewController
         
         //guard #available(iOS 16, *) else { return }
         
-        self.collectionView.backgroundView = UIHostingConfiguration {
-            LinearGradient(colors: [Color(.gradientTop), Color(.gradientBottom)], startPoint: .top, endPoint: .bottom)
+        if #available(iOS 16, *)
+        {
+            self.collectionView.backgroundView = UIHostingConfiguration {
+                LinearGradient(colors: [Color(.gradientTop), Color(.gradientBottom)], startPoint: .top, endPoint: .bottom)
+            }
+            .margins(.all, 0)
+            .makeContentView()
         }
-        .margins(.all, 0)
-        .makeContentView()
+        else
+        {
+            self.collectionView.backgroundColor = UIColor(resource: .gradientBottom)
+        }
+        
+        self.collectionView.backgroundColor = UIColor(resource: .gradientBottom)
         
         self.dataSource.proxy = self
         self.collectionView.dataSource = self.dataSource
@@ -104,8 +130,10 @@ class ReviewPermissionsViewController: UICollectionViewController
         self.collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader)
         
-        let cancelButton = UIBarButtonItem(systemItem: .cancel)
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReviewPermissionsViewController.cancel))
         self.navigationItem.leftBarButtonItem = cancelButton
+        
+        self.navigationController?.isModalInPresentation = true
         
         self.prepareCollectionView()
     }
@@ -139,7 +167,7 @@ class ReviewPermissionsViewController: UICollectionViewController
     }
 }
 
-@available(iOS 16, *)
+@available(iOS 15, *)
 extension ReviewPermissionsViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
@@ -176,12 +204,26 @@ extension ReviewPermissionsViewController
             
             layoutSection.contentInsets.top = 15
             
-            switch section
+            if self.unknownPermissions.isEmpty
             {
-            case .known, .approve: layoutSection.contentInsets.bottom = 44
-            case .unknown: layoutSection.contentInsets.bottom = 20
+                switch section
+                {
+                case .known: layoutSection.contentInsets.bottom = 20
+                case .unknown:
+                    layoutSection.contentInsets.top = 0
+                    layoutSection.contentInsets.bottom = 0
+                case .approve: layoutSection.contentInsets.bottom = 44
+                }
             }
-
+            else
+            {
+                switch section
+                {
+                case .known, .approve: layoutSection.contentInsets.bottom = 44
+                case .unknown: layoutSection.contentInsets.bottom = 20
+                }
+            }
+            
             return layoutSection
         }, configuration: config)
         
@@ -239,7 +281,7 @@ extension ReviewPermissionsViewController
     
     func makeKnownPermissionsDataSource() -> RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>
     {
-        let dataSource = RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>(items: [])
+        let dataSource = RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>(items: self.knownPermissions.map(Box.init))
         dataSource.cellConfigurationHandler = { [weak self] cell, permission, indexPath in
             let cell = cell as! UICollectionViewListCell
             self?.configure(cell, permission: permission)
@@ -250,7 +292,7 @@ extension ReviewPermissionsViewController
     
     func makeUnknownPermissionsDataSource() -> RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>
     {
-        let dataSource = RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>(items: [])
+        let dataSource = RSTArrayCollectionViewDataSource<Box<any ALTAppPermission>>(items: self.unknownPermissions.map(Box.init))
         dataSource.cellConfigurationHandler = { [weak self] cell, permission, indexPath in
             let cell = cell as! UICollectionViewListCell
             self?.configure(cell, permission: permission)
@@ -302,13 +344,32 @@ extension ReviewPermissionsViewController
     }
 }
 
-@available(iOS 16, *)
+@available(iOS 15, *)
+private extension ReviewPermissionsViewController
+{
+    @objc
+    func cancel()
+    {
+        self.completionHandler?(.failure(CancellationError()))
+        self.completionHandler = nil
+    }
+}
+
+@available(iOS 15, *)
 extension ReviewPermissionsViewController
 {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         let headerView = self.collectionView.dequeueConfiguredReusableSupplementary(using: self.headerRegistration, for: indexPath)
         return headerView
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
+    {
+        guard let section = Section(rawValue: indexPath.section), section == .approve else { return }
+        
+        self.completionHandler?(.success(()))
+        self.completionHandler = nil
     }
 }
 
@@ -321,16 +382,17 @@ extension ReviewPermissionsViewController
 //        BrowseViewController(source: nil, coder: coder)
 //    }
     
-    let reviewPermissionsViewController = ReviewPermissionsViewController(collectionViewLayout: UICollectionViewFlowLayout())
-    reviewPermissionsViewController.app = AnyApp(name: "Delta", bundleIdentifier: "com.rileytestut.Delta", url: nil, storeApp: nil)
-    reviewPermissionsViewController.permissions = [
-        ALTEntitlement.getTaskAllow,
-        ALTEntitlement.appGroups,
-        ALTEntitlement.interAppAudio,
-        ALTEntitlement.keychainAccessGroups,
-        ALTEntitlement("com.apple.developer.virtual-addressing"),
-        ALTEntitlement("com.apple.developer.increased-memory-limit")
+    let app = AnyApp(name: "Delta", bundleIdentifier: "com.rileytestut.Delta", url: nil, storeApp: nil)
+    let permissions: [ALTEntitlement] = [
+        .getTaskAllow,
+        .appGroups,
+        .interAppAudio,
+        .keychainAccessGroups,
+        .init("com.apple.developer.extended-virtual-addressing"),
+        .init("com.apple.developer.increased-memory-limit")
     ]
+    
+    let reviewPermissionsViewController = ReviewPermissionsViewController(app: app, permissions: permissions, mode: .all)
     
     let navigationController = UINavigationController(rootViewController: reviewPermissionsViewController)
     return navigationController
