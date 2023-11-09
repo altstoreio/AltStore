@@ -15,10 +15,12 @@
                 <outlet property="backgroundEffectView" destination="rZk-be-tiI" id="fzU-VT-JeW"/>
                 <outlet property="betaBadgeView" destination="qQl-Ez-zC5" id="6O1-Cx-7qz"/>
                 <outlet property="button" destination="tVx-3G-dcu" id="joa-AH-syX"/>
+                <outlet property="buttonCaptionLabel" destination="e0A-Lk-fAp" id="Tjn-Ym-CYn"/>
                 <outlet property="buttonLabel" destination="Yd9-jw-faD" id="o7g-Gb-CIt"/>
                 <outlet property="iconImageView" destination="avS-dx-4iy" id="TQs-Ej-gin"/>
                 <outlet property="iconImageViewHeightConstraint" destination="6lU-H8-nEw" id="PSt-Xa-lQT"/>
                 <outlet property="patreonBadgeImageView" destination="sM4-xj-raZ" id="EJa-YF-YXI"/>
+                <outlet property="sourceIconImageView" destination="dku-SJ-aay" id="rA0-y1-dIb"/>
                 <outlet property="stackView" destination="d1T-UD-gWG" id="E7N-Zb-lm1"/>
                 <outlet property="subtitleLabel" destination="oN5-vu-Dnw" id="gA4-iJ-Tix"/>
                 <outlet property="titleLabel" destination="mFe-zJ-eva" id="2OH-f8-cid"/>
@@ -78,30 +80,42 @@
                                         </imageView>
                                     </subviews>
                                 </stackView>
-                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC4-1V-iMn">
-                                    <rect key="frame" x="0.0" y="21.5" width="184" height="16"/>
-                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LQh-pN-ePC">
-                                        <rect key="frame" x="0.0" y="0.0" width="184" height="16"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oN5-vu-Dnw">
-                                                <rect key="frame" x="0.0" y="0.0" width="184" height="16"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="oN5-vu-Dnw" firstAttribute="top" secondItem="LQh-pN-ePC" secondAttribute="top" id="7RH-WP-LzL"/>
-                                            <constraint firstItem="oN5-vu-Dnw" firstAttribute="leading" secondItem="LQh-pN-ePC" secondAttribute="leading" id="By8-cR-kTu"/>
-                                            <constraint firstAttribute="trailing" secondItem="oN5-vu-Dnw" secondAttribute="trailing" id="Hiv-6y-XrH"/>
-                                            <constraint firstAttribute="bottom" secondItem="oN5-vu-Dnw" secondAttribute="bottom" id="yc2-Dr-Qnv"/>
-                                        </constraints>
-                                    </view>
-                                    <vibrancyEffect style="secondaryLabel">
-                                        <blurEffect style="systemChromeMaterial"/>
-                                    </vibrancyEffect>
-                                </visualEffectView>
+                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NGz-KU-rYD">
+                                    <rect key="frame" x="0.0" y="21.5" width="82" height="16"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dku-SJ-aay" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="dku-SJ-aay" secondAttribute="height" id="VKw-lc-8NQ"/>
+                                                <constraint firstAttribute="width" constant="16" id="hAe-gc-Ehh"/>
+                                            </constraints>
+                                        </imageView>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC4-1V-iMn">
+                                            <rect key="frame" x="20" y="0.0" width="62" height="16"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LQh-pN-ePC">
+                                                <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oN5-vu-Dnw">
+                                                        <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="oN5-vu-Dnw" firstAttribute="top" secondItem="LQh-pN-ePC" secondAttribute="top" id="7RH-WP-LzL"/>
+                                                    <constraint firstItem="oN5-vu-Dnw" firstAttribute="leading" secondItem="LQh-pN-ePC" secondAttribute="leading" id="By8-cR-kTu"/>
+                                                    <constraint firstAttribute="trailing" secondItem="oN5-vu-Dnw" secondAttribute="trailing" id="Hiv-6y-XrH"/>
+                                                    <constraint firstAttribute="bottom" secondItem="oN5-vu-Dnw" secondAttribute="bottom" id="yc2-Dr-Qnv"/>
+                                                </constraints>
+                                            </view>
+                                            <vibrancyEffect style="secondaryLabel">
+                                                <blurEffect style="systemChromeMaterial"/>
+                                            </vibrancyEffect>
+                                        </visualEffectView>
+                                    </subviews>
+                                </stackView>
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3ox-Q2-Rnd" userLabel="Button Stack View">
@@ -123,6 +137,12 @@
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                     <state key="normal" title="FREE"/>
                                 </button>
+                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e0A-Lk-fAp">
+                                    <rect key="frame" x="0.0" y="0.0" width="77" height="0.0"/>
+                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
+                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                         </stackView>
                     </subviews>

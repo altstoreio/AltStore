@@ -11,6 +11,8 @@ import UIKit
 import AltStoreCore
 import Roxas
 
+import Nuke
+
 extension AppBannerView
 {
     enum Style
@@ -56,7 +58,9 @@ class AppBannerView: RSTNibView
     @IBOutlet var iconImageView: AppIconImageView!
     @IBOutlet var button: PillButton!
     @IBOutlet var buttonLabel: UILabel!
+    @IBOutlet var buttonCaptionLabel: UILabel!
     @IBOutlet var betaBadgeView: UIView!
+    @IBOutlet var sourceIconImageView: AppIconImageView!
     
     @IBOutlet var backgroundEffectView: UIVisualEffectView!
     
@@ -66,6 +70,7 @@ class AppBannerView: RSTNibView
     @IBOutlet private var patreonBadgeImageView: UIImageView!
     
     @IBOutlet private var iconImageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private var buttonImageViewAspectRatioConstraint: NSLayoutConstraint?
     
     override init(frame: CGRect)
     {
@@ -96,6 +101,15 @@ class AppBannerView: RSTNibView
         
         self.stackView.isLayoutMarginsRelativeArrangement = true
         self.stackView.preservesSuperviewLayoutMargins = true
+        
+        self.sourceIconImageView.style = .circular
+        self.sourceIconImageView.isHidden = true
+        
+//        if let imageView = self.button.imageView
+//        {
+//            self.buttonImageViewAspectRatioConstraint = imageView.widthAnchor.constraint(lessThanOrEqualTo: self.button.heightAnchor)
+//            self.buttonImageViewAspectRatioConstraint?.isActive = true
+//        }
     }
     
     override func tintColorDidChange()
@@ -158,11 +172,33 @@ extension AppBannerView
             // Always show Patreon badge if pledge is required.
             // Unlike below, this applies for both StoreApp's and InstalledApp's.
             self.patreonBadgeImageView.isHidden = !storeApp.isPledgeRequired
+            
+            self.sourceIconImageView.isHidden = false
+            
+            if let iconURL = storeApp.source?.effectiveIconURL
+            {
+                ImagePipeline.shared.loadImage(with: iconURL) { result in
+                    switch result
+                    {
+                    case .success(let image): self.sourceIconImageView.image = image.image
+                    case .failure: break
+                    }
+                }
+            }
         }
         else
         {
             self.patreonBadgeImageView.isHidden = true
+            self.sourceIconImageView.isHidden = true
         }
+        
+        self.patreonBadgeImageView.isHidden = true
+        
+        self.button.contentEdgeInsets = .zero
+        self.button.titleEdgeInsets = .zero
+        self.button.setImage(nil, for: .normal)
+        
+        self.buttonCaptionLabel.isHidden = true
         
         if let app = app as? StoreApp
         {
@@ -181,28 +217,41 @@ extension AppBannerView
                 
                 if app.isPledgeRequired
                 {
+                    let patreonLogo = UIImage(resource: .patreonLogo2).withTintColor(.white, renderingMode: .alwaysOriginal)
+                    self.button.imageView?.contentMode = .scaleAspectFit
+                    self.button.setImage(patreonLogo, for: .normal)
+                    
+                    let imageTextSpacing = 2.0
+                    self.button.contentEdgeInsets.right = PillButton.contentInsets.trailing + imageTextSpacing
+                    self.button.titleEdgeInsets.left = imageTextSpacing
+                    self.button.titleEdgeInsets.right = -imageTextSpacing
+                    
                     if app.isPledged
                     {
-                        let buttonTitle = NSLocalizedString("Install", comment: "")
-                        self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                        self.button.setTitle(nil, for: .normal)
                         self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
-                        self.button.accessibilityValue = buttonTitle
+                        self.button.accessibilityValue = NSLocalizedString("Install", comment: "")
                     }
                     else if let amount = app.pledgeAmount, let currencyCode = app.pledgeCurrency, #available(iOS 15, *)
                     {
                         let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
                         
-                        let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
-                        self.button.setTitle(buttonTitle, for: .normal)
+                        self.button.setTitle(price, for: .normal)
                         self.button.accessibilityLabel = String(format: NSLocalizedString("Pledge %@ a month", comment: ""), price)
-                        self.button.accessibilityValue = buttonTitle
+                        self.button.accessibilityValue = price
+                        
+                        self.buttonCaptionLabel.text = NSLocalizedString("monthly", comment: "")
+                        self.buttonCaptionLabel.isHidden = false
                     }
                     else
                     {
-                        let buttonTitle = NSLocalizedString("Pledge", comment: "")
-                        self.button.setTitle(buttonTitle.uppercased(), for: .normal)
-                        self.button.accessibilityLabel = buttonTitle
-                        self.button.accessibilityValue = buttonTitle
+                        let buttonLabel = NSLocalizedString("PLEDGE", comment: "")
+                        self.button.setTitle(buttonLabel, for: .normal)
+                        self.button.accessibilityLabel = buttonLabel
+                        self.button.accessibilityValue = buttonLabel
+                        
+                        self.buttonCaptionLabel.text = NSLocalizedString("monthly", comment: "")
+                        self.buttonCaptionLabel.isHidden = false
                     }
                 }
                 else
