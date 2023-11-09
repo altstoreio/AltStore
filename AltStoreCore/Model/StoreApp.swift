@@ -49,6 +49,14 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var localizedDescription: String
     @NSManaged @objc(size) internal var _size: Int32
     
+    @nonobjc public var category: StoreCategory? {
+        guard let _category else { return nil }
+        
+        let category = StoreCategory(rawValue: _category)
+        return category
+    }
+    @NSManaged @objc(category) public private(set) var _category: String?
+    
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     

@@ -359,6 +359,8 @@
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
 		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
+		D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */; };
+		D52C8F032AFC56F000CA0BDD /* StoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -983,6 +985,8 @@
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
 		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedViewController.swift; sourceTree = "<group>"; };
+		D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCategory.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailCollectionViewController.swift; sourceTree = "<group>"; };
 		D533E8B62727841800A9B5DD /* libAppleArchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libAppleArchive.tbd; path = usr/lib/libAppleArchive.tbd; sourceTree = SDKROOT; };
@@ -1517,6 +1521,7 @@
 				BFB39B5B252BC10E00D1BE50 /* Managed.swift */,
 				D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */,
 				D5893F812A141E4900E767CD /* KnownSource.swift */,
+				D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */,
@@ -1732,6 +1737,7 @@
 			children = (
 				BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */,
 				BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */,
+				D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */,
 			);
 			path = Browse;
 			sourceTree = "<group>";
@@ -3160,6 +3166,7 @@
 				D5927D6929DCE28700D6898E /* AltStore11ToAltStore12.xcmappingmodel in Sources */,
 				BF66EED62501AECA007EE018 /* NewsItem.swift in Sources */,
 				BF66EEA72501AEC5007EE018 /* Campaign.swift in Sources */,
+				D52C8F032AFC56F000CA0BDD /* StoreCategory.swift in Sources */,
 				BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */,
 				D557A4812AE85BB0007D0DCF /* Pledge.swift in Sources */,
 				D557A4852AE88227007D0DCF /* PledgeTier.swift in Sources */,
@@ -3301,6 +3308,7 @@
 				BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
+				D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

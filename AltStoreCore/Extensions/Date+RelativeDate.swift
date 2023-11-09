@@ -10,7 +10,14 @@ import Foundation
 
 public extension Date
 {
-    private static let mediumDateFormatter: DateFormatter = {
+    static let shortDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }()
+    
+    static let mediumDateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
@@ -26,6 +33,7 @@ public extension Date
         return components.day!
     }
     
+    // TODO: Take DateFormat instead of DateFormatter?
     func relativeDateString(since date: Date, dateFormatter: DateFormatter? = nil) -> String
     {
         let dateFormatter = dateFormatter ?? Date.mediumDateFormatter

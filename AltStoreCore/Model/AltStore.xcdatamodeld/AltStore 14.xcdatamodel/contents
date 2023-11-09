@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23A5328b" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -239,6 +239,7 @@
     </entity>
     <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="developerName" attributeType="String"/>
         <attribute name="downloadURL" attributeType="URI"/>
         <attribute name="iconURL" attributeType="URI"/>
