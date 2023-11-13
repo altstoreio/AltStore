@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -61,8 +61,8 @@
                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="caL-vN-Svn">
                             <rect key="frame" x="87" y="25.5" width="184" height="37.5"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
-                                    <rect key="frame" x="0.0" y="0.0" width="126" height="19.5"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
+                                    <rect key="frame" x="0.0" y="0.0" width="149" height="19.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="mFe-zJ-eva">
                                             <rect key="frame" x="0.0" y="0.0" width="79" height="19.5"/>
@@ -71,8 +71,15 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dku-SJ-aay" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
+                                            <rect key="frame" x="85" y="1" width="17" height="17"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="dku-SJ-aay" secondAttribute="height" id="VKw-lc-8NQ"/>
+                                                <constraint firstAttribute="width" constant="17" id="hAe-gc-Ehh"/>
+                                            </constraints>
+                                        </imageView>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="qQl-Ez-zC5">
-                                            <rect key="frame" x="85" y="0.0" width="41" height="19.5"/>
+                                            <rect key="frame" x="108" y="1" width="41" height="17"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Beta Badge">
                                                 <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                                 <bool key="isElement" value="YES"/>
@@ -81,17 +88,10 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NGz-KU-rYD">
-                                    <rect key="frame" x="0.0" y="21.5" width="82" height="16"/>
+                                    <rect key="frame" x="0.0" y="21.5" width="62" height="16"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dku-SJ-aay" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="dku-SJ-aay" secondAttribute="height" id="VKw-lc-8NQ"/>
-                                                <constraint firstAttribute="width" constant="16" id="hAe-gc-Ehh"/>
-                                            </constraints>
-                                        </imageView>
                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC4-1V-iMn">
-                                            <rect key="frame" x="20" y="0.0" width="62" height="16"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LQh-pN-ePC">
                                                 <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
