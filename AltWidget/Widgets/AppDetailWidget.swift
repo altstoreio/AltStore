@@ -171,6 +171,7 @@ private extension AppDetailWidgetView
     }
 }
 
+@available(iOS 17, *)
 #Preview(as: .systemSmall) {
     AppDetailWidget()
 } timeline: {

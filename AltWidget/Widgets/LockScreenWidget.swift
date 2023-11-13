@@ -136,6 +136,7 @@ private struct ComplicationView: View
 
 private let widgetFamily = if #available(iOS 16, *) { WidgetFamily.accessoryCircular } else { WidgetFamily.systemSmall }
 
+@available(iOS 17, *)
 #Preview("Text", as: widgetFamily) {
     TextLockScreenWidget()
 } timeline: {
@@ -148,6 +149,7 @@ private let widgetFamily = if #available(iOS 16, *) { WidgetFamily.accessoryCirc
     AppsEntry(date: expiredDate, apps: [altstore])
 }
 
+@available(iOS 17, *)
 #Preview("Icon", as: widgetFamily) {
     IconLockScreenWidget()
 } timeline: {
