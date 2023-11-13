@@ -35,7 +35,18 @@ public enum StoreCategory: String
         case .developer: return "hammer"
         case .games: return "gamecontroller"
         case .entertainment: return "tv"
-        case .other: return "questionmark"
+        case .other: return "bag.badge.questionmark"
+        }
+    }
+    
+    public var filledSymbolName: String {
+        switch self
+        {
+        case .utilities: return "paperclip"
+        case .developer: return "hammer.fill"
+        case .games: return "gamecontroller.fill"
+        case .entertainment: return "tv.fill"
+        case .other: return "bag.fill.badge.questionmark"
         }
     }
     

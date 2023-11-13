@@ -173,10 +173,10 @@ extension AppBannerView
             // Unlike below, this applies for both StoreApp's and InstalledApp's.
             self.patreonBadgeImageView.isHidden = !storeApp.isPledgeRequired
             
-            self.sourceIconImageView.isHidden = false
-            
             if let iconURL = storeApp.source?.effectiveIconURL
             {
+                self.sourceIconImageView.isHidden = false
+                
                 ImagePipeline.shared.loadImage(with: iconURL) { result in
                     switch result
                     {

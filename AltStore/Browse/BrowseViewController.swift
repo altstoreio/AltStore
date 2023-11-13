@@ -16,7 +16,8 @@ import Nuke
 class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
     // Nil == Show apps from all sources.
-    var source: Source?
+    let source: Source?
+    let category: StoreCategory?
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
@@ -32,12 +33,24 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     init?(source: Source?, coder: NSCoder)
     {
         self.source = source
+        self.category = nil
+        
+        super.init(coder: coder)
+    }
+    
+    init?(category: StoreCategory?, coder: NSCoder)
+    {
+        self.source = nil
+        self.category = category
         
         super.init(coder: coder)
     }
     
     required init?(coder: NSCoder)
     {
+        self.source = nil
+        self.category = nil
+        
         super.init(coder: coder)
     }
     
@@ -113,6 +126,14 @@ private extension BrowseViewController
         if let source = self.source
         {
             let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
+        }
+        else if let category = self.category
+        {
+            let filterPredicate = switch category {
+            case .other: NSPredicate(format: "%K == %@ OR %K == nil", #keyPath(StoreApp._category), category.rawValue, #keyPath(StoreApp._category))
+            default: NSPredicate(format: "%K == %@", #keyPath(StoreApp._category), category.rawValue)
+            }
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
         }
         else
@@ -265,6 +286,22 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
+        
+        if let source = self.source
+        {
+            self.title = NSLocalizedString("All Apps", comment: "")
+            self.navigationController?.navigationBar.tintColor = source.effectiveTintColor ?? .altPrimary
+        }
+        else if let category = self.category
+        {
+            self.title = category.localizedName
+            self.navigationController?.navigationBar.tintColor = .altPrimary
+        }
+        else
+        {
+            self.title = NSLocalizedString("Browse", comment: "")
+            self.navigationController?.navigationBar.tintColor = .altPrimary
+        }
     }
 }
 
@@ -394,5 +431,6 @@ extension BrowseViewController: UIViewControllerPreviewingDelegate
     }
     
     let navigationController = UINavigationController(rootViewController: browseViewController)
+    navigationController.navigationBar.prefersLargeTitles = true
     return navigationController
 }

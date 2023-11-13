@@ -13,6 +13,11 @@ import Roxas
 
 import Nuke
 
+extension UIAction.Identifier
+{
+    fileprivate static let showAllApps = Self("io.altstore.ShowAllApps")
+}
+
 class LargeIconCollectionViewCell: UICollectionViewCell
 {
     let textLabel = UILabel(frame: .zero)
@@ -25,9 +30,10 @@ class LargeIconCollectionViewCell: UICollectionViewCell
         self.textLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         
         self.imageView.translatesAutoresizingMaskIntoConstraints = false
-        self.imageView.contentMode = .scaleAspectFit
+        self.imageView.contentMode = .center
         self.imageView.tintColor = .white
         self.imageView.alpha = 0.4
+        self.imageView.preferredSymbolConfiguration = .init(pointSize: 80)
         
         super.init(frame: frame)
         
@@ -39,12 +45,12 @@ class LargeIconCollectionViewCell: UICollectionViewCell
         self.contentView.addSubview(self.imageView)
         
         NSLayoutConstraint.activate([
-            self.textLabel.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
-            self.textLabel.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
+            self.textLabel.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor, constant: 4),
+            self.textLabel.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor, constant: -4),
             
             self.imageView.centerXAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-            self.imageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor, constant: -15),
-            self.imageView.heightAnchor.constraint(equalTo: self.contentView.heightAnchor),
+            self.imageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor, constant: 0),
+            self.imageView.heightAnchor.constraint(equalTo: self.contentView.heightAnchor, constant: 0),
             self.imageView.widthAnchor.constraint(equalTo: self.imageView.heightAnchor)
         ])
     }
@@ -65,6 +71,10 @@ extension FeaturedViewController
         
         let rawValue: Int
         
+        var isFeaturedAppsSection: Bool {
+            return self.rawValue > Section.featured.rawValue
+        }
+        
         init(rawValue: Int)
         {
             self.rawValue = rawValue
@@ -80,11 +90,13 @@ extension FeaturedViewController
     {
         case recent = "RecentCell"
         case category = "CategoryCell"
+        case featuredApp = "FeaturedAppCell"
     }
     
     private enum ElementKind: String
     {
         case sectionHeader
+        case sourceHeader
         case button
     }
 }
@@ -101,6 +113,8 @@ class FeaturedViewController: UICollectionViewController
     private lazy var dataSource = self.makeDataSource()
     private lazy var recentlyUpdatedDataSource = self.makeRecentlyUpdatedDataSource()
     private lazy var categoriesDataSource = self.makeCategoriesDataSource()
+    private lazy var featuredDataSource = self.makeFeaturedDataSource()
+    private lazy var featuredAppsDataSource = self.makeFeaturedAppsDataSource()
     
     override func viewDidLoad()
     {
@@ -108,6 +122,13 @@ class FeaturedViewController: UICollectionViewController
         
         self.title = NSLocalizedString("Browse", comment: "")
         self.navigationItem.largeTitleDisplayMode = .always
+        
+        if #available(iOS 16, *)
+        {
+            //self.navigationItem.largeTitleDisplayMode = .inline
+            self.navigationItem.preferredSearchBarPlacement = .inline
+            self.navigationItem.rightBarButtonItems = [.fixedSpace(100), .flexibleSpace()]
+        }
         
         self.collectionView.backgroundColor = .altBackground
         
@@ -120,8 +141,11 @@ class FeaturedViewController: UICollectionViewController
         
         self.collectionView.register(AppBannerCollectionViewCell.self, forCellWithReuseIdentifier: ReuseID.recent.rawValue)
         self.collectionView.register(LargeIconCollectionViewCell.self, forCellWithReuseIdentifier: ReuseID.category.rawValue)
+        self.collectionView.register(AppCardCollectionViewCell.self, forCellWithReuseIdentifier: ReuseID.featuredApp.rawValue)
         
-        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader)
+        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: ElementKind.sectionHeader.rawValue, withReuseIdentifier: ElementKind.sectionHeader.rawValue)
+        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: ElementKind.sourceHeader.rawValue, withReuseIdentifier: ElementKind.sourceHeader.rawValue)
+        self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
         self.collectionView.directionalLayoutMargins.leading = 20
         self.collectionView.directionalLayoutMargins.trailing = 20
@@ -145,7 +169,7 @@ private extension FeaturedViewController
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
         let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.interSectionSpacing = 30
+        config.interSectionSpacing = 0
         config.contentInsetsReference = .layoutMargins
         
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
@@ -164,13 +188,14 @@ private extension FeaturedViewController
                 group.interItemSpacing = .fixed(8)
                 
                 let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
-                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.sectionHeader.rawValue, alignment: .topLeading)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 10
                 //layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sectionInset, bottom: 4, trailing: sectionInset)
                 layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
                 layoutSection.boundarySupplementaryItems = [titleHeader]
+                layoutSection.contentInsets.bottom = 30
                 return layoutSection
                 
             case .categories:
@@ -185,28 +210,55 @@ private extension FeaturedViewController
                 group.interItemSpacing = .fixed(spacing)
                 
                 let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
-                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.sectionHeader.rawValue, alignment: .topLeading)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 10
                 layoutSection.orthogonalScrollingBehavior = .none
                 layoutSection.boundarySupplementaryItems = [titleHeader]
+                layoutSection.contentInsets.bottom = 30
+                return layoutSection
+                
+            case .featured:
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(0.0))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
+                
+                let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.sectionHeader.rawValue, alignment: .topLeading)
+                
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.boundarySupplementaryItems = [titleHeader]
+                layoutSection.contentInsets.top = 0
+                layoutSection.contentInsets.bottom = 0
+                return layoutSection
+                
+            case _ where section.isFeaturedAppsSection:
+                let itemHeight: NSCollectionLayoutDimension = if #available(iOS 17, *) { .uniformAcrossSiblings(estimate: 100) } else { .estimated(100) }
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: itemHeight)
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: itemHeight)
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+                group.interItemSpacing = .fixed(10)
+                
+                let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(75), heightDimension: .estimated(40))
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.sourceHeader.rawValue, alignment: .topLeading)
+                
+                let buttonSize = NSCollectionLayoutSize(widthDimension: .estimated(44), heightDimension: .estimated(20))
+                let buttonHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: buttonSize, elementKind: ElementKind.button.rawValue, alignment: .topTrailing)
+                
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.interGroupSpacing = 10
+                layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+                layoutSection.boundarySupplementaryItems = [titleHeader, buttonHeader]
+                layoutSection.contentInsets.top = 8
+                layoutSection.contentInsets.bottom = 30
                 return layoutSection
                 
             default: return nil
             }
-            
-//            var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-//            configuration.showsSeparators = true
-//            configuration.separatorConfiguration.color = UIColor(resource: .gradientBottom).withAlphaComponent(0.7) //.white.withAlphaComponent(0.8)
-//            configuration.separatorConfiguration.bottomSeparatorInsets.leading = 20
-//            configuration.backgroundColor = .clear
-//            
-//            let layoutSection = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
-//            
-////            layoutSection.contentInsets.top = 15
-//            
-//            return layoutSection
         }, configuration: config)
         
         return layout
@@ -216,7 +268,7 @@ private extension FeaturedViewController
     {
         let categoriesDataSource = self.categoriesDataSource as! RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>
         
-        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [self.recentlyUpdatedDataSource, categoriesDataSource])
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [self.recentlyUpdatedDataSource, categoriesDataSource, self.featuredDataSource, self.featuredAppsDataSource])
         return dataSource
     }
     
@@ -256,6 +308,7 @@ private extension FeaturedViewController
             
             //cell.bannerView.button.addTarget(self, action: #selector(SourceDetailContentViewController.performAppAction(_:)), for: .primaryActionTriggered)
             
+            cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
             cell.bannerView.button.tintColor = storeApp.tintColor
 
@@ -330,6 +383,38 @@ private extension FeaturedViewController
 //        flattenedDataSource.shouldFlattenSections = true
 //        return flattenedDataSource
     }
+    
+    func makeFeaturedDataSource() -> RSTDynamicCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    {
+        let dataSource = RSTDynamicCollectionViewPrefetchingDataSource<StoreApp, UIImage>()
+        dataSource.numberOfSectionsHandler = { 1 }
+        dataSource.numberOfItemsHandler = { _ in 0 }
+        return dataSource
+    }
+    
+    func makeFeaturedAppsDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    {
+        let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.predicate = StoreApp.visibleAppsPredicate
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true), // Sort by Source first for grouping
+            NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+            NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)
+        ]
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp.sourceIdentifier), cacheName: nil)
+        
+        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchedResultsController: fetchedResultsController)
+        dataSource.cellIdentifierHandler = { _ in ReuseID.featuredApp.rawValue }
+        dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
+            let cell = cell as! AppCardCollectionViewCell
+            cell.configure(for: storeApp)
+            cell.bannerView.sourceIconImageView.isHidden = true
+        }
+        
+        return dataSource
+    }
 }
 
 private extension FeaturedViewController
@@ -371,6 +456,31 @@ private extension FeaturedViewController
             self.updateCategories()
         }
     }
+    
+    @IBSegueAction
+    func makeBrowseViewController(_ coder: NSCoder, sender: Any) -> UIViewController?
+    {
+        if let category = sender as? StoreCategory
+        {
+            let browseViewController = BrowseViewController(category: category, coder: coder)
+            return browseViewController
+        }
+        else if let source = sender as? Source
+        {
+            let browseViewController = BrowseViewController(source: source, coder: coder)
+            return browseViewController
+        }
+        else
+        {
+            let browseViewController = BrowseViewController(coder: coder)
+            return browseViewController
+        }
+    }
+    
+    func showAllApps(for source: Source)
+    {
+        self.performSegue(withIdentifier: "showBrowseViewController", sender: source)
+    }
 }
 
 extension FeaturedViewController
@@ -379,24 +489,121 @@ extension FeaturedViewController
     {
         let section = Section(rawValue: indexPath.section)
         
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: UICollectionView.elementKindSectionHeader, for: indexPath) as! UICollectionViewListCell
-        
-        var content: UIListContentConfiguration = if #available(iOS 15, *) {
-            .prominentInsetGroupedHeader()
+        switch kind
+        {
+        case ElementKind.sourceHeader.rawValue:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+            
+            var content = UIListContentConfiguration.plainHeader()
+            
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            let storeApp = self.dataSource.item(at: indexPath) // Safe?
+            content.text = storeApp.source?.name ?? NSLocalizedString("Unknown Source", comment: "")
+            //content.textProperties.color = .label//.withAlphaComponent(0.7)
+//            content.textProperties.font = UIFont.preferredFont(forTextStyle: .body)
+//            content.textProperties.transform = .none
+//            content.textProperties.alignment = .natural
+            content.textProperties.numberOfLines = 1
+            
+            content.directionalLayoutMargins.leading = 0
+            content.imageToTextPadding = 8
+            content.imageProperties.reservedLayoutSize = CGSize(width: 26, height: 26)
+            content.imageProperties.maximumSize = CGSize(width: 26, height: 26)
+            content.imageProperties.cornerRadius = 13
+            
+            if let iconURL = storeApp.source?.effectiveIconURL, #available(iOS 15, *)
+            {
+                ImagePipeline.shared.loadImage(with: iconURL) { result in
+                    headerView.setNeedsUpdateConfiguration()
+                }
+                
+                headerView.configurationUpdateHandler = { cell, state in
+                    var content = content.updated(for: state)
+                    
+                    if let image = ImagePipeline.shared.cache[iconURL]
+                    {
+                        content.image = image.image
+                    }
+                    
+                    cell.contentConfiguration = content
+                }
+            }
+            else if #available(iOS 15, *)
+            {
+                headerView.configurationUpdateHandler = nil
+            }
+            
+            return headerView
+            
+        case ElementKind.sectionHeader.rawValue:
+            // Regular section header
+            
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+            
+            var content: UIListContentConfiguration = if #available(iOS 15, *) {
+                .prominentInsetGroupedHeader()
+            }
+            else {
+                .groupedHeader()
+            }
+            
+            switch section
+            {
+            case .recentlyUpdated: content.text = NSLocalizedString("New & Updated", comment: "")
+            case .categories: content.text = NSLocalizedString("Categories", comment: "")
+            case .featured: content.text = NSLocalizedString("Featured", comment: "")
+            default: break
+            }
+            
+            headerView.contentConfiguration = content
+            return headerView
+            
+        case ElementKind.button.rawValue where section.isFeaturedAppsSection:
+            let buttonView = collectionView.dequeueReusableSupplementaryView(ofKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue, for: indexPath) as! ButtonCollectionReusableView
+            
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            let storeApp = self.dataSource.item(at: indexPath) // Safe?
+            buttonView.button.setTitle(NSLocalizedString("See All", comment: ""), for: .normal)
+            buttonView.button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+            buttonView.tintColor = storeApp.source?.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
+            buttonView.button.contentEdgeInsets.bottom = 8
+            
+            buttonView.button.removeAction(identifiedBy: .showAllApps, for: .primaryActionTriggered)
+            
+            if let source = storeApp.source
+            {
+                let action = UIAction(identifier: .showAllApps) { [weak self] _ in
+                    self?.showAllApps(for: source)
+                }
+                buttonView.button.addAction(action, for: .primaryActionTriggered)
+            }
+            
+            return buttonView
+            
+        default: return UICollectionReusableView(frame: .zero)
         }
-        else {
-            .groupedHeader()
-        }
-        
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
+    {
+        let section = Section(rawValue: indexPath.section)
         switch section
         {
-        case .recentlyUpdated: content.text = NSLocalizedString("New & Updated", comment: "")
-        case .categories: content.text = NSLocalizedString("Categories", comment: "")
+        case _ where section.isFeaturedAppsSection: fallthrough
+        case .recentlyUpdated:
+            let storeApp = self.dataSource.item(at: indexPath)
+            let appViewController = AppViewController.makeAppViewController(app: storeApp)
+            self.navigationController?.pushViewController(appViewController, animated: true)
+            
+        case .categories:
+            let categoryIndexPath = IndexPath(item: indexPath.item, section: 0)
+            let rawCategory = self.categoriesDataSource.item(at: categoryIndexPath)
+            
+            let category = StoreCategory(rawValue: rawCategory as String) ?? .other
+            self.performSegue(withIdentifier: "showBrowseViewController", sender: category)
+            
         default: break
         }
-        
-        headerView.contentConfiguration = content
-        return headerView
     }
 }
 
@@ -415,6 +622,36 @@ extension FeaturedViewController
         catch let error as NSError
         {
             Logger.main.error("Failed to fetch sources for preview. \(error.localizedDescription, privacy: .public)")
+        }
+    }
+    
+    AppManager.shared.updateKnownSources { result in
+        Task {
+            do
+            {
+                let knownSources = try result.get()
+                
+                let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                
+                try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+                    for source in knownSources.0
+                    {
+                        guard let sourceURL = source.sourceURL else { continue }
+                        
+                        taskGroup.addTask {
+                            _ = try await AppManager.shared.fetchSource(sourceURL: sourceURL, managedObjectContext: context)
+                        }
+                    }
+                }
+                
+                await context.performAsync {
+                    try! context.save()
+                }
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch known sources for preview. \(error.localizedDescription, privacy: .public)")
+            }
         }
     }
         

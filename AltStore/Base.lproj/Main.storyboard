@@ -533,7 +533,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="e3L-BF-iXp" kind="relationship" relationship="rootViewController" id="EVp-fA-PvU"/>
+                        <segue destination="KKu-kI-2kg" kind="relationship" relationship="rootViewController" id="2Dm-Oy-wu0"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OkH-49-O0J" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -733,6 +733,44 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kiO-UO-esV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1728.8" y="716.49175412293857"/>
+        </scene>
+        <!--Featured View Controller-->
+        <scene sceneID="1eF-L7-aZz">
+            <objects>
+                <collectionViewController id="KKu-kI-2kg" customClass="FeaturedViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="2HL-eH-weG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PI1-YC-d4l">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Eo1-84-9m0">
+                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="4ra-vw-qNw">
+                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </collectionViewCellContentView>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="KKu-kI-2kg" id="tXR-fi-SxU"/>
+                            <outlet property="delegate" destination="KKu-kI-2kg" id="XC4-MP-Zdr"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="zft-Mo-I7C"/>
+                    <connections>
+                        <segue destination="e3L-BF-iXp" kind="show" identifier="showBrowseViewController" destinationCreationSelector="makeBrowseViewController:sender:" id="qDq-A7-sdW"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hwb-Di-x8C" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1729" y="1459"/>
         </scene>
         <!--App IDs-->
         <scene sceneID="kvf-US-rRe">
