@@ -41,6 +41,34 @@ public extension UserDefaults
     
     @NSManaged var skipPatreonDownloads: Bool
     
+    @nonobjc var preferredAppSorting: AppSorting {
+        get {
+            let sorting = _preferredAppSorting.flatMap { AppSorting(rawValue: $0) } ?? .name
+            return sorting
+        }
+        set {
+            _preferredAppSorting = newValue.rawValue
+        }
+    }
+    @NSManaged @objc(preferredAppSorting) private var _preferredAppSorting: String?
+    
+    @nonobjc var preferredSortOrders: [AppSorting: AppSortOrder] {
+        get {
+            guard let rawSortOrders = _preferredSortOrders as? [String: Int] else { return [:] }
+            
+            let sortOrders = rawSortOrders.compactMap { (rawSorting, rawSortOrder) -> (AppSorting, AppSortOrder?)? in
+                guard let sorting = AppSorting(rawValue: rawSorting) else { return nil }
+                return (sorting, AppSortOrder(rawValue: rawSortOrder))
+            }.reduce(into: [AppSorting: AppSortOrder]()) { $0[$1.0] = $1.1 }
+            return sortOrders
+        }
+        set {
+            let rawSortOrders = newValue.map { ($0.key.rawValue as String, $0.value.rawValue) }.reduce(into: [String: Int]()) { $0[$1.0] = $1.1 }
+            _preferredSortOrders = rawSortOrders as NSDictionary
+        }
+    }
+    @NSManaged @objc(preferredSortOrders) private var _preferredSortOrders: NSDictionary?
+    
     @nonobjc
     var activeAppsLimit: Int? {
         get {
@@ -91,6 +119,10 @@ public extension UserDefaults
         let permissionCheckingDisabled = false
         #endif
         
+        // Pre-iOS 15 doesn't support custom sorting, so default to sorting by name.
+        // Otherwise, default to sorting by last updated.
+        let preferredAppSorting: AppSorting = if #available(iOS 15, *) { .lastUpdated } else { .name }
+        
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
@@ -100,7 +132,8 @@ public extension UserDefaults
             #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
             #keyPath(UserDefaults.isCowExploitSupported): isMacDirtyCowSupported,
             #keyPath(UserDefaults.permissionCheckingDisabled): permissionCheckingDisabled,
-        ]
+            #keyPath(UserDefaults._preferredAppSorting): preferredAppSorting.rawValue,
+        ] as [String: Any]
         
         UserDefaults.standard.register(defaults: defaults)
         UserDefaults.shared.register(defaults: defaults)

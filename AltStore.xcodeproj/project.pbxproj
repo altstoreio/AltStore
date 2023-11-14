@@ -445,6 +445,7 @@
 		D5DAE0962804DF430034D8D4 /* UpdatePatronsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */; };
 		D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
 		D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
+		D5DB81642B0410BC003F5F8B /* AppSorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB81632B0410BC003F5F8B /* AppSorting.swift */; };
 		D5E1E7C128077DE90016FC96 /* UpdateKnownSourcesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E1E7C028077DE90016FC96 /* UpdateKnownSourcesOperation.swift */; };
 		D5E3FB9828FDFAD90034B72C /* NSError+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C336124197D700034FD24 /* NSError+AltStore.swift */; };
 		D5F2F6A92720B7C20081CCF5 /* PatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */; };
@@ -1068,6 +1069,7 @@
 		D5D298692AF051900077372C /* VerifyAppPledgeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAppPledgeOperation.swift; sourceTree = "<group>"; };
 		D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePatronsOperation.swift; sourceTree = "<group>"; };
 		D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTLocalizedError.swift; sourceTree = "<group>"; };
+		D5DB81632B0410BC003F5F8B /* AppSorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSorting.swift; sourceTree = "<group>"; };
 		D5E1E7C028077DE90016FC96 /* UpdateKnownSourcesOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateKnownSourcesOperation.swift; sourceTree = "<group>"; };
 		D5F2F6A82720B7C20081CCF5 /* PatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchViewController.swift; sourceTree = "<group>"; };
 		D5F48B4729CCF21B002B52A4 /* AltStore+Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltStore+Async.swift"; sourceTree = "<group>"; };
@@ -1522,6 +1524,7 @@
 				D5F48B4929CD0B67002B52A4 /* AsyncManaged.swift */,
 				D5893F812A141E4900E767CD /* KnownSource.swift */,
 				D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */,
+				D5DB81632B0410BC003F5F8B /* AppSorting.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */,
@@ -3123,6 +3126,7 @@
 				D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */,
 				D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */,
 				BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */,
+				D5DB81642B0410BC003F5F8B /* AppSorting.swift in Sources */,
 				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */,
 				BFAECC5A2501B0A400528F27 /* NetworkConnection.swift in Sources */,
 				D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
