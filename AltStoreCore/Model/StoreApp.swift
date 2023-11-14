@@ -302,6 +302,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 self._tierIDs = patreon.tiers
                 self._rewardID = patreon.benefit
             }
+            
+            // Must explicitly set to false to ensure it updates cached value.
+            self.isPledged = false
         }
         catch
         {
