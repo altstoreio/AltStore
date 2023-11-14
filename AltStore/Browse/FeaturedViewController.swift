@@ -116,6 +116,9 @@ class FeaturedViewController: UICollectionViewController
     private lazy var featuredDataSource = self.makeFeaturedDataSource()
     private lazy var featuredAppsDataSource = self.makeFeaturedAppsDataSource()
     
+    private var searchController: RSTSearchController!
+    private var searchBrowseViewController: BrowseViewController!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -126,8 +129,8 @@ class FeaturedViewController: UICollectionViewController
         if #available(iOS 16, *)
         {
             //self.navigationItem.largeTitleDisplayMode = .inline
-            self.navigationItem.preferredSearchBarPlacement = .inline
-            self.navigationItem.rightBarButtonItems = [.fixedSpace(100), .flexibleSpace()]
+            self.navigationItem.preferredSearchBarPlacement = .automatic
+            //self.navigationItem.rightBarButtonItems = [.fixedSpace(100), .flexibleSpace()]
         }
         
         self.collectionView.backgroundColor = .altBackground
@@ -147,10 +150,26 @@ class FeaturedViewController: UICollectionViewController
         self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: ElementKind.sourceHeader.rawValue, withReuseIdentifier: ElementKind.sourceHeader.rawValue)
         self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
-        self.collectionView.directionalLayoutMargins.leading = 20
-        self.collectionView.directionalLayoutMargins.trailing = 20
+        self.collectionView.directionalLayoutMargins.leading = 15
+        self.collectionView.directionalLayoutMargins.trailing = 15
         
-        self.navigationItem.searchController = self.recentlyUpdatedDataSource.searchController
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        self.searchBrowseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
+            let browseViewController = BrowseViewController(coder: coder)
+            return browseViewController
+        }
+        
+        self.searchController = RSTSearchController(searchResultsController: self.searchBrowseViewController)
+        self.searchController.searchableKeyPaths = [#keyPath(StoreApp.name),
+                                                    #keyPath(StoreApp.developerName),
+                                                    #keyPath(StoreApp.subtitle),
+                                                    #keyPath(StoreApp.bundleIdentifier)]
+        self.searchController.searchHandler = { [weak searchBrowseViewController] (searchValue, _) in
+            searchBrowseViewController?.predicate = searchValue.predicate
+            return nil
+        }
+        
+        self.navigationItem.searchController = self.searchController
         self.navigationItem.hidesSearchBarWhenScrolling = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(FeaturedViewController.didFetchSources(_:)), name: AppManager.didFetchSourceNotification, object: nil)

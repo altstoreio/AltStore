@@ -19,6 +19,12 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     let source: Source?
     let category: StoreCategory?
     
+    var predicate: NSPredicate? {
+        didSet {
+            self.updateDataSource()
+        }
+    }
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -64,10 +70,11 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         self.collectionView.backgroundColor = .altBackground
         
-        #if BETA
-        self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
+        self.dataSource.searchController.searchableKeyPaths = [#keyPath(StoreApp.name),
+                                                               #keyPath(StoreApp.subtitle),
+                                                               #keyPath(StoreApp.developerName),
+                                                               #keyPath(StoreApp.bundleIdentifier)]
         self.navigationItem.searchController = self.dataSource.searchController
-        #endif
         
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -97,6 +104,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.scrollEdgeAppearance = edgeAppearance
         }
         
+        self.updateDataSource()
         self.update()
     }
     
@@ -193,6 +201,11 @@ private extension BrowseViewController
         dataSource.placeholderView = self.placeholderView
         
         return dataSource
+    }
+    
+    func updateDataSource()
+    {
+        self.dataSource.predicate = self.predicate
     }
     
     func fetchSource()
