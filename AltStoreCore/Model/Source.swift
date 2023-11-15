@@ -63,8 +63,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
     
     /* Source Detail */
     @NSManaged public var subtitle: String?
-    @NSManaged public var websiteURL: URL?
     @NSManaged public var localizedDescription: String?
+    @NSManaged public var websiteURL: URL?
+    @NSManaged public var patreonURL: URL?
     
     // Optional properties with fallbacks.
     // `private` to prevent accidentally using instead of `effective[PropertyName]`
@@ -117,6 +118,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
         case headerImageURL = "headerURL"
         case websiteURL = "website"
         case tintColor
+        case patreonURL
         
         case apps
         case news
@@ -147,6 +149,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
+            self.patreonURL = try container.decodeIfPresent(URL.self, forKey: .patreonURL)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
