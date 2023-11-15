@@ -10,38 +10,22 @@ import Foundation
 
 extension PatreonAPI
 {
-    struct PatronResponse: Decodable
+    typealias PatronResponse = DataResponse<PatronAttributes, PatronRelationships>
+    
+    struct PatronAttributes: Decodable
     {
-        struct Attributes: Decodable
-        {
-            var full_name: String?
-            var patron_status: String?
-        }
-        
-        struct Relationships: Decodable
-        {
-            struct Tiers: Decodable
-            {
-                struct TierID: Decodable
-                {
-                    var id: String
-                    var type: String
-                }
-                
-                var data: [TierID]
-            }
-            
-            var currently_entitled_tiers: Tiers
-        }
-        
-        var id: String
-        var attributes: Attributes
-        
-        var relationships: Relationships?
+        var full_name: String?
+        var patron_status: String?
+    }
+    
+    struct PatronRelationships: Decodable
+    {
+        var campaign: Response<AnyItemResponse>?
+        var currently_entitled_tiers: Response<[AnyItemResponse]>?
     }
 }
 
-extension Patron
+extension PatreonAPI
 {
     public enum Status: String, Decodable
     {
@@ -50,29 +34,46 @@ extension Patron
         case former = "former_patron"
         case unknown = "unknown"
     }
-}
-
-public class Patron
-{
-    public var name: String?
-    public var identifier: String
     
-    public var status: Status
-    
-    public var benefits: Set<Benefit> = []
-    
-    init(response: PatreonAPI.PatronResponse)
+    // Roughly equivalent to AltStoreCore.Pledge
+    public class Patron
     {
-        self.name = response.attributes.full_name
-        self.identifier = response.id
+        public var name: String?
+        public var identifier: String
+        public var status: Status
         
-        if let status = response.attributes.patron_status
+        // Relationships
+        public var campaign: Campaign?
+        public var tiers: Set<Tier> = []
+        public var benefits: Set<Benefit> = []
+        
+        internal init(response: PatronResponse, including included: IncludedResponses?)
         {
-            self.status = Status(rawValue: status) ?? .unknown
-        }
-        else
-        {
-            self.status = .unknown
+            self.name = response.attributes.full_name
+            self.identifier = response.id
+            
+            if let status = response.attributes.patron_status
+            {
+                self.status = Status(rawValue: status) ?? .unknown
+            }
+            else
+            {
+                self.status = .unknown
+            }
+            
+            guard let included, let relationships = response.relationships else { return }
+            
+            if let campaignID = relationships.campaign?.data.id, let response = included.campaigns[campaignID]
+            {
+                let campaign = Campaign(response: response)
+                self.campaign = campaign
+            }
+                        
+            let tiers = (relationships.currently_entitled_tiers?.data ?? []).compactMap { included.tiers[$0.id] }.map { Tier(response: $0, including: included) }
+            self.tiers = Set(tiers)
+            
+            let benefits = tiers.flatMap { $0.benefits }
+            self.benefits = Set(benefits)
         }
     }
 }

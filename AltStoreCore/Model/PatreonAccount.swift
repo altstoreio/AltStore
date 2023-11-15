@@ -8,27 +8,6 @@
 
 import CoreData
 
-extension PatreonAPI
-{
-    struct AccountResponse: Decodable
-    {
-        struct Data: Decodable
-        {
-            struct Attributes: Decodable
-            {
-                var first_name: String?
-                var full_name: String
-            }
-            
-            var id: String
-            var attributes: Attributes
-        }
-        
-        var data: Data
-        var included: [PatronResponse]?
-    }
-}
-
 @objc(PatreonAccount)
 public class PatreonAccount: NSManagedObject, Fetchable
 {
@@ -44,18 +23,18 @@ public class PatreonAccount: NSManagedObject, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    init(response: PatreonAPI.AccountResponse, context: NSManagedObjectContext)
+    init(account: PatreonAPI.UserAccount, context: NSManagedObjectContext)
     {
         super.init(entity: PatreonAccount.entity(), insertInto: context)
         
-        self.identifier = response.data.id
-        self.name = response.data.attributes.full_name
-        self.firstName = response.data.attributes.first_name
+        self.identifier = account.identifier
+        self.name = account.name
+        self.firstName = account.firstName
         
-        if let patronResponse = response.included?.first
+        if let altstorePledge = account.pledges?.first(where: { $0.campaign?.identifier == PatreonAPI.altstoreCampaignID })
         {
-            let patron = Patron(response: patronResponse)
-            self.isPatron = (patron.status == .active)
+            let isActivePatron = (altstorePledge.status == .active)
+            self.isPatron = isActivePatron
         }
         else
         {
