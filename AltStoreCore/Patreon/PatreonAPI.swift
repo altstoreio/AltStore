@@ -13,8 +13,6 @@ import CoreData
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
 
-private let campaignID = "2863968"
-
 typealias PatreonAPIError = PatreonAPIErrorCode.Error
 enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
 {
@@ -34,41 +32,16 @@ enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
 
 extension PatreonAPI
 {
+    static let altstoreCampaignID = "2863968"
+    
+    typealias FetchAccountResponse = Response<UserAccountResponse>
+    typealias FriendZonePatronsResponse = Response<[PatronResponse]>
+    
     enum AuthorizationType
     {
         case none
         case user
         case creator
-    }
-    
-    enum AnyResponse: Decodable
-    {
-        case tier(TierResponse)
-        case benefit(BenefitResponse)
-        
-        enum CodingKeys: String, CodingKey
-        {
-            case type
-        }
-        
-        init(from decoder: Decoder) throws
-        {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            
-            let type = try container.decode(String.self, forKey: .type)
-            switch type
-            {
-            case "tier":
-                let tier = try TierResponse(from: decoder)
-                self = .tier(tier)
-                
-            case "benefit":
-                let benefit = try BenefitResponse(from: decoder)
-                self = .benefit(benefit)
-                
-            default: throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unrecognized Patreon response type.")
-            }
-        }
     }
 }
 
@@ -138,14 +111,17 @@ public extension PatreonAPI
     func fetchAccount(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
         var components = URLComponents(string: "/api/oauth2/v2/identity")!
-        components.queryItems = [URLQueryItem(name: "include", value: "memberships"),
+        components.queryItems = [URLQueryItem(name: "include", value: "memberships.campaign.tiers,memberships.currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[user]", value: "first_name,full_name"),
                                  URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
+                                 URLQueryItem(name: "fields[tier]", value: "title"),
+                                 URLQueryItem(name: "fields[benefit]", value: "title"),
+                                 URLQueryItem(name: "fields[campaign]", value: "url"),
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         let request = URLRequest(url: requestURL)
         
-        self.send(request, authorizationType: .user) { (result: Result<AccountResponse, Swift.Error>) in
+        self.send(request, authorizationType: .user) { (result: Result<FetchAccountResponse, Swift.Error>) in
             switch result
             {
             case .failure(~PatreonAPIErrorCode.notAuthenticated):
@@ -153,10 +129,15 @@ public extension PatreonAPI
                     completion(.failure(PatreonAPIError(.notAuthenticated)))
                 }
                 
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error as NSError):
+                Logger.main.error("Failed to fetch Patreon account. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
+                
             case .success(let response):
+                let account = PatreonAPI.UserAccount(response: response.data, including: response.included)
+                
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                    let account = PatreonAccount(response: response, context: context)
+                    let account = PatreonAccount(account: account, context: context)
                     Keychain.shared.patreonAccountID = account.identifier
                     completion(.success(account))
                 }
@@ -166,20 +147,14 @@ public extension PatreonAPI
     
     func fetchPatrons(completion: @escaping (Result<[Patron], Swift.Error>) -> Void)
     {
-        var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(campaignID)/members")!
+        var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(PatreonAPI.altstoreCampaignID)/members")!
         components.queryItems = [URLQueryItem(name: "include", value: "currently_entitled_tiers,currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[tier]", value: "title"),
+                                 URLQueryItem(name: "fields[benefit]", value: "title"),
                                  URLQueryItem(name: "fields[member]", value: "full_name,patron_status"),
                                  URLQueryItem(name: "page[size]", value: "1000")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
-        
-        struct Response: Decodable
-        {
-            var data: [PatronResponse]
-            var included: [AnyResponse]
-            var links: [String: URL]?
-        }
         
         var allPatrons = [Patron]()
         
@@ -187,36 +162,19 @@ public extension PatreonAPI
         {
             let request = URLRequest(url: url)
             
-            self.send(request, authorizationType: .creator) { (result: Result<Response, Swift.Error>) in
+            self.send(request, authorizationType: .creator) { (result: Result<FriendZonePatronsResponse, Swift.Error>) in
                 switch result
                 {
                 case .failure(let error): completion(.failure(error))
-                case .success(let response):
-                    let tiers = response.included.compactMap { (response) -> Tier? in
-                        switch response
-                        {
-                        case .tier(let tierResponse): return Tier(response: tierResponse)
-                        case .benefit: return nil
-                        }
-                    }
-                    
-                    let tiersByIdentifier = Dictionary(tiers.map { ($0.identifier, $0) }, uniquingKeysWith: { (a, b) in return a })
-                    
-                    let patrons = response.data.map { (response) -> Patron in
-                        let patron = Patron(response: response)
-                        
-                        for tierID in response.relationships?.currently_entitled_tiers.data ?? []
-                        {
-                            guard let tier = tiersByIdentifier[tierID.id] else { continue }
-                            patron.benefits.formUnion(tier.benefits)
-                        }
-                        
+                case .success(let patronsResponse):
+                    let patrons = patronsResponse.data.map { (response) -> Patron in
+                        let patron = Patron(response: response, including: patronsResponse.included)
                         return patron
-                    }.filter { $0.benefits.contains(where: { $0.type == .credits }) }
+                    }.filter { $0.benefits.contains(where: { $0.identifier == .credits }) }
                     
                     allPatrons.append(contentsOf: patrons)
                     
-                    if let nextURL = response.links?["next"]
+                    if let nextURL = patronsResponse.links?["next"]
                     {
                         fetchPatrons(url: nextURL)
                     }

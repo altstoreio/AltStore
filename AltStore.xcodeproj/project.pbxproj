@@ -133,9 +133,9 @@
 		BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE8B2501AEB1007EE018 /* Keychain.swift */; };
 		BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE952501AEBC007EE018 /* ALTSourceUserInfoKey.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF66EE962501AEBC007EE018 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */; };
+		BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */; };
 		BF66EE972501AEBC007EE018 /* ALTAppPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */; };
-		BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF66EE982501AEBC007EE018 /* ALTPatreonBenefitID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */; };
 		BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */; };
 		BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE9C2501AEC1007EE018 /* Fetchable.swift */; };
@@ -419,6 +419,8 @@
 		D5A299872AAB9E4E00A3988D /* ProcessError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FB7A1B2AA284ED00EF863D /* ProcessError.swift */; };
 		D5A299882AAB9E4E00A3988D /* JITError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E32AA50EB60066CACC /* JITError.swift */; };
 		D5A299892AAB9E5900A3988D /* AppProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B7D2AA9226C00F61259 /* AppProcess.swift */; };
+		D5A645232AF5B5C50047D980 /* PatreonAPI+Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */; };
+		D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645242AF5BC7F0047D980 /* UserAccount.swift */; };
 		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
 		D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */; };
 		D5B6F6AB2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */; };
@@ -754,9 +756,9 @@
 		BF66EE8B2501AEB1007EE018 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTAppPermissions.h; sourceTree = "<group>"; };
 		BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTSourceUserInfoKey.h; sourceTree = "<group>"; };
-		BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
+		BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitID.m; sourceTree = "<group>"; };
 		BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermissions.m; sourceTree = "<group>"; };
-		BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
+		BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitID.h; sourceTree = "<group>"; };
 		BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppProtocol.swift; sourceTree = "<group>"; };
 		BF66EE9C2501AEC1007EE018 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
@@ -1030,6 +1032,8 @@
 		D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteServiceDiscoveryTunnel.swift; sourceTree = "<group>"; };
 		D5A1D2EA2AA513410066CACC /* URL+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Tools.swift"; sourceTree = "<group>"; };
 		D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedAPIs.swift; sourceTree = "<group>"; };
+		D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PatreonAPI+Responses.swift"; sourceTree = "<group>"; };
+		D5A645242AF5BC7F0047D980 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Previews.swift"; sourceTree = "<group>"; };
 		D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppScreenshotsViewController.swift; sourceTree = "<group>"; };
@@ -1498,8 +1502,8 @@
 				D5893F812A141E4900E767CD /* KnownSource.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
-				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
-				BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */,
+				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */,
+				BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */,
 				BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */,
 				BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */,
 			);
@@ -1520,11 +1524,13 @@
 		BF66EE9F2501AEC5007EE018 /* Patreon */ = {
 			isa = PBXGroup;
 			children = (
+				BF66EEA12501AEC5007EE018 /* PatreonAPI.swift */,
+				D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */,
 				BF66EEA02501AEC5007EE018 /* Benefit.swift */,
 				BF66EEA22501AEC5007EE018 /* Campaign.swift */,
-				BF66EEA12501AEC5007EE018 /* PatreonAPI.swift */,
 				BF66EEA32501AEC5007EE018 /* Patron.swift */,
 				BF66EEA42501AEC5007EE018 /* Tier.swift */,
+				D5A645242AF5BC7F0047D980 /* UserAccount.swift */,
 			);
 			path = Patreon;
 			sourceTree = "<group>";
@@ -2331,7 +2337,7 @@
 			files = (
 				BF66EE822501AE50007EE018 /* AltStoreCore.h in Headers */,
 				BF66EE952501AEBC007EE018 /* ALTSourceUserInfoKey.h in Headers */,
-				BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */,
+				BF66EE982501AEBC007EE018 /* ALTPatreonBenefitID.h in Headers */,
 				BFAECC5F2501B0BF00528F27 /* ALTConstants.h in Headers */,
 				BFAECC5D2501B0BF00528F27 /* ALTConnection.h in Headers */,
 				BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */,
@@ -3040,6 +3046,7 @@
 				BF66EED32501AECA007EE018 /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF66EEA52501AEC5007EE018 /* Benefit.swift in Sources */,
 				BF66EED22501AECA007EE018 /* AltStore4ToAltStore5.xcmappingmodel in Sources */,
+				D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */,
 				D5189C022A01BC6800F44625 /* UserInfoValue.swift in Sources */,
 				BFAECC5B2501B0A400528F27 /* Bundle+AltStore.swift in Sources */,
 				BF66EECD2501AECA007EE018 /* StoreAppPolicy.swift in Sources */,
@@ -3076,7 +3083,7 @@
 				D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */,
 				D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */,
 				BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */,
-				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitType.m in Sources */,
+				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */,
 				BFAECC5A2501B0A400528F27 /* NetworkConnection.swift in Sources */,
 				D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
 				BF66EEE92501AED0007EE018 /* JSONDecoder+Properties.swift in Sources */,
@@ -3108,6 +3115,7 @@
 				BF66EECC2501AECA007EE018 /* Source.swift in Sources */,
 				BF66EED72501AECA007EE018 /* InstalledApp.swift in Sources */,
 				D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */,
+				D5A645232AF5B5C50047D980 /* PatreonAPI+Responses.swift in Sources */,
 				D5185B822AE1E71D00646E33 /* Source13To14MigrationPolicy.swift in Sources */,
 				BF66EECE2501AECA007EE018 /* InstalledAppPolicy.swift in Sources */,
 				BF1FE359251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */,

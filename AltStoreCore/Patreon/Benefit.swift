@@ -10,18 +10,25 @@ import Foundation
 
 extension PatreonAPI
 {
-    struct BenefitResponse: Decodable
+    typealias BenefitResponse = DataResponse<BenefitAttributes, AnyRelationships>
+    
+    struct BenefitAttributes: Decodable
     {
-        var id: String
+        var title: String
     }
 }
 
-public struct Benefit: Hashable
+extension PatreonAPI
 {
-    public var type: ALTPatreonBenefitType
-    
-    init(response: PatreonAPI.BenefitResponse)
+    public struct Benefit: Hashable
     {
-        self.type = ALTPatreonBenefitType(response.id)
+        public var name: String
+        public var identifier: ALTPatreonBenefitID
+        
+        internal init(response: BenefitResponse)
+        {
+            self.name = response.attributes.title
+            self.identifier = ALTPatreonBenefitID(response.id)
+        }
     }
 }
