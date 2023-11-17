@@ -429,6 +429,8 @@ private extension FeaturedViewController
         dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
             let cell = cell as! AppCardCollectionViewCell
             cell.configure(for: storeApp)
+            cell.prefersPagingScreenshots = true
+            
             cell.bannerView.sourceIconImageView.isHidden = true
         }
         
