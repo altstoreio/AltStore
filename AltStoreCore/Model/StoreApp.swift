@@ -287,9 +287,6 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                     // No conditions, so default to pledgeAmount of 0 to simplify logic.
                     self._pledgeAmount = 0 as NSDecimalNumber
                 }
-                
-                self._tierIDs = patreon.tiers
-                self._rewardID = patreon.benefit
             }
             else
             {
