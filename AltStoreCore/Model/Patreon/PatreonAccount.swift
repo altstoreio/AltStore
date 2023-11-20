@@ -18,6 +18,10 @@ public class PatreonAccount: NSManagedObject, Fetchable
     
     @NSManaged public var isPatron: Bool
     
+    /* Relationships */
+    @nonobjc public var pledges: Set<Pledge> { _pledges as! Set<Pledge> }
+    @NSManaged @objc(pledges) internal var _pledges: NSSet
+    
     private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?)
     {
         super.init(entity: entity, insertInto: context)
@@ -30,6 +34,23 @@ public class PatreonAccount: NSManagedObject, Fetchable
         self.identifier = account.identifier
         self.name = account.name
         self.firstName = account.firstName
+        
+        let pledges = account.pledges?.compactMap { patron -> Pledge? in
+            // First ensure pledge is active.
+            guard patron.status == .active else { return nil }
+            
+            guard let pledge = Pledge(patron: patron, context: context) else { return nil }
+            
+            let tiers = patron.tiers.map { PledgeTier(tier: $0, context: context) }
+            pledge._tiers = Set(tiers) as NSSet
+            
+            let rewards = patron.benefits.map { PledgeReward(benefit: $0, context: context) }
+            pledge._rewards = Set(rewards) as NSSet
+            
+            return pledge
+        } ?? []
+        
+        self._pledges = Set(pledges) as NSSet
         
         if let altstorePledge = account.pledges?.first(where: { $0.campaign?.identifier == PatreonAPI.altstoreCampaignID })
         {

@@ -15,6 +15,7 @@ extension PatreonAPI
     struct TierAttributes: Decodable
     {
         var title: String
+        var amount_cents: Int32 // In USD
     }
     
     struct TierRelationships: Decodable
@@ -29,6 +30,7 @@ extension PatreonAPI
     {
         public var name: String
         public var identifier: String
+        public var amount: Decimal
         
         // Relationships
         public var benefits: [Benefit] = []
@@ -37,6 +39,9 @@ extension PatreonAPI
         {
             self.name = response.attributes.title
             self.identifier = response.id
+            
+            let amount = Decimal(response.attributes.amount_cents) / 100
+            self.amount = amount
             
             guard let included, let benefitIDs = response.relationships?.benefits?.data.map(\.id) else { return }
             

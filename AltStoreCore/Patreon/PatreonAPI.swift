@@ -113,10 +113,10 @@ public extension PatreonAPI
         var components = URLComponents(string: "/api/oauth2/v2/identity")!
         components.queryItems = [URLQueryItem(name: "include", value: "memberships.campaign.tiers,memberships.currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[user]", value: "first_name,full_name"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
-                                 URLQueryItem(name: "fields[tier]", value: "title"),
+                                 URLQueryItem(name: "fields[tier]", value: "title,amount_cents"),
                                  URLQueryItem(name: "fields[benefit]", value: "title"),
                                  URLQueryItem(name: "fields[campaign]", value: "url"),
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status,currently_entitled_amount_cents")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         let request = URLRequest(url: requestURL)
@@ -149,9 +149,9 @@ public extension PatreonAPI
     {
         var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(PatreonAPI.altstoreCampaignID)/members")!
         components.queryItems = [URLQueryItem(name: "include", value: "currently_entitled_tiers,currently_entitled_tiers.benefits"),
-                                 URLQueryItem(name: "fields[tier]", value: "title"),
+                                 URLQueryItem(name: "fields[tier]", value: "title,amount_cents"),
                                  URLQueryItem(name: "fields[benefit]", value: "title"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status"),
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status,currently_entitled_amount_cents"),
                                  URLQueryItem(name: "page[size]", value: "1000")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
