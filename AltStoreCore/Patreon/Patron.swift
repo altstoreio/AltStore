@@ -16,6 +16,7 @@ extension PatreonAPI
     {
         var full_name: String?
         var patron_status: String?
+        var currently_entitled_amount_cents: Int32 // In campaign's currency
     }
     
     struct PatronRelationships: Decodable
@@ -40,6 +41,7 @@ extension PatreonAPI
     {
         public var name: String?
         public var identifier: String
+        public var pledgeAmount: Decimal?
         public var status: Status
         
         // Relationships
@@ -51,6 +53,7 @@ extension PatreonAPI
         {
             self.name = response.attributes.full_name
             self.identifier = response.id
+            self.pledgeAmount = Decimal(response.attributes.currently_entitled_amount_cents) / 100
             
             if let status = response.attributes.patron_status
             {

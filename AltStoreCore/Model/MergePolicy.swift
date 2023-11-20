@@ -262,7 +262,36 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 {
                     featuredAppIDsBySourceID[databaseObject.identifier] = contextSource.featuredApps?.map { $0.bundleIdentifier }
                 }
-                    
+                
+            case let databasePledge as Pledge:
+                guard let contextPledge = conflict.conflictingObjects.first as? Pledge else { break }
+                
+                // Tiers
+                let contextTierIDs = Set(contextPledge._tiers.lazy.compactMap { $0 as? PledgeTier }.map { $0.identifier })
+                for case let databaseTier as PledgeTier in databasePledge._tiers where !contextTierIDs.contains(databaseTier.identifier)
+                {
+                    // Tier ID does NOT exist in context, so delete existing databaseTier.
+                    databaseTier.managedObjectContext?.delete(databaseTier)
+                }
+                
+                // Rewards
+                let contextRewardIDs = Set(contextPledge._rewards.lazy.compactMap { $0 as? PledgeReward }.map { $0.identifier })
+                for case let databaseReward as PledgeReward in databasePledge._rewards where !contextRewardIDs.contains(databaseReward.identifier)
+                {
+                    // Reward ID does NOT exist in context, so delete existing databaseReward.
+                    databaseReward.managedObjectContext?.delete(databaseReward)
+                }
+                
+            case let databaseAccount as PatreonAccount:
+                guard let contextAccount = conflict.conflictingObjects.first as? PatreonAccount else { break }
+                
+                let contextPledgeIDs = Set(contextAccount._pledges.lazy.compactMap { $0 as? Pledge }.map { $0.identifier })
+                for case let databasePledge as Pledge in databaseAccount._pledges where !contextPledgeIDs.contains(databasePledge.identifier)
+                {
+                    // Pledge ID does NOT exist in context, so delete existing databasePledge.
+                    databasePledge.managedObjectContext?.delete(databasePledge)
+                }
+                
             default: break
             }
         }
