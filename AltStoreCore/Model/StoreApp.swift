@@ -114,6 +114,12 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
     
+    /* Non-Core Data Properties */
+    
+    // Used to set isPledged after fetching source.
+    public var _tierIDs: Set<String>?
+    public var _rewardID: String?
+    
     @nonobjc public var source: Source? {
         set {
             self._source = newValue
@@ -287,6 +293,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                     // No conditions, so default to pledgeAmount of 0 to simplify logic.
                     self._pledgeAmount = 0 as NSDecimalNumber
                 }
+                
+                self._tierIDs = patreon.tiers
+                self._rewardID = patreon.benefit
             }
             else
             {
@@ -294,6 +303,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 self.isHiddenWithoutPledge = false
                 self._pledgeAmount = nil
                 self.pledgeCurrency = nil
+                
+                self._tierIDs = nil
+                self._rewardID = nil
             }
         }
         catch
