@@ -154,6 +154,7 @@ class FetchSourceOperation: ResultOperation<Source>
                     let identifier = source.identifier
                     
                     try self.verify(source, response: response)
+                    try self.verifyPledges(for: source, in: childContext)
                     
                     try childContext.save()
                     
@@ -220,6 +221,63 @@ private extension FetchSourceOperation
         if let previousSourceID = self.$source.identifier
         {
             guard source.identifier == previousSourceID else { throw SourceError.changedID(source.identifier, previousID: previousSourceID, source: source) }
+        }
+    }
+    
+    func verifyPledges(for source: Source, in context: NSManagedObjectContext) throws
+    {
+        guard let patreonURL = source.patreonURL, let patreonAccount = DatabaseManager.shared.patreonAccount(in: context) else { return }
+        
+        let normalizedPatreonURL = try patreonURL.normalized()
+        
+        guard let pledge = patreonAccount.pledges.first(where: { pledge in
+            do
+            {
+                let normalizedCampaignURL = try pledge.campaignURL.normalized()
+                return normalizedCampaignURL == normalizedPatreonURL
+            }
+            catch
+            {
+                Logger.main.error("Failed to normalize Patreon URL \(pledge.campaignURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                return false
+            }
+        }) else { return }
+        
+        // User is pledged to this source's Patreon, so check which apps they're pledged to.
+        
+        // We only assign `isPledged = true` because false is already the default,
+        // and only one check needs to be true for isPledged to be true.
+        
+        for app in source.apps where app.isPledgeRequired
+        {
+            if let requiredAppPledge = app.pledgeAmount
+            {
+                if pledge.amount >= requiredAppPledge
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
+            
+            if let tierIDs = app._tierIDs
+            {
+                let tier = pledge.tiers.first { tierIDs.contains($0.identifier) }
+                if tier != nil
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
+                                
+            if let rewardID = app._rewardID
+            {
+                let reward = pledge.rewards.first { $0.identifier == rewardID }
+                if reward != nil
+                {
+                    app.isPledged = true
+                    continue
+                }
+            }
         }
     }
     
