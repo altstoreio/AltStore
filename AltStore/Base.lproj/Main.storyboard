@@ -766,11 +766,22 @@
                     <navigationItem key="navigationItem" id="zft-Mo-I7C"/>
                     <connections>
                         <segue destination="e3L-BF-iXp" kind="show" identifier="showBrowseViewController" destinationCreationSelector="makeBrowseViewController:sender:" id="qDq-A7-sdW"/>
+                        <segue destination="177-gr-dJU" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="dmC-aP-9Hg"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hwb-Di-x8C" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1729" y="1459"/>
+        </scene>
+        <!--sourceDetailViewController-->
+        <scene sceneID="nDc-kS-RDF">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Sources" referencedIdentifier="sourceDetailViewController" id="177-gr-dJU" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7hT-A6-bBi"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bhw-oh-Eeq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2526" y="1519"/>
         </scene>
         <!--App IDs-->
         <scene sceneID="kvf-US-rRe">

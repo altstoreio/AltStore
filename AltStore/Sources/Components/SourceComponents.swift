@@ -51,6 +51,48 @@ class ButtonCollectionReusableView: UICollectionReusableView
     }
 }
 
+class IconButtonCollectionReusableView: UICollectionReusableView
+{
+    let iconButton: UIButton
+    let titleButton: UIButton
+    
+    private let stackView: UIStackView
+    
+    override init(frame: CGRect)
+    {
+        let iconHeight = 26.0
+        
+        self.iconButton = UIButton(type: .custom)
+        self.iconButton.translatesAutoresizingMaskIntoConstraints = false
+        self.iconButton.clipsToBounds = true
+        self.iconButton.layer.cornerRadius = iconHeight / 2
+        
+        let content = UIListContentConfiguration.plainHeader()
+        self.titleButton = UIButton(type: .system)
+        self.titleButton.translatesAutoresizingMaskIntoConstraints = false
+        self.titleButton.titleLabel?.font = content.textProperties.font
+        self.titleButton.setTitleColor(content.textProperties.color, for: .normal)
+        
+        self.stackView = UIStackView(arrangedSubviews: [self.iconButton, self.titleButton])
+        self.stackView.axis = .horizontal
+        self.stackView.alignment = .center
+        self.stackView.spacing = UIStackView.spacingUseSystem
+        
+        super.init(frame: frame)
+        
+        self.addSubview(self.stackView, pinningEdgesWith: .zero)
+        
+        NSLayoutConstraint.activate([
+            self.iconButton.heightAnchor.constraint(equalToConstant: iconHeight),
+            self.iconButton.widthAnchor.constraint(equalTo: self.iconButton.heightAnchor)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class TextViewCollectionViewCell: UICollectionViewCell
 {
     let textView = CollapsingTextView(frame: .zero)

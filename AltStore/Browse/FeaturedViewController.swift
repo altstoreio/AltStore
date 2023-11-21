@@ -16,6 +16,7 @@ import Nuke
 extension UIAction.Identifier
 {
     fileprivate static let showAllApps = Self("io.altstore.ShowAllApps")
+    fileprivate static let showSourceDetails = Self("io.altstore.ShowSourceDetails")
 }
 
 class LargeIconCollectionViewCell: UICollectionViewCell
@@ -147,7 +148,7 @@ class FeaturedViewController: UICollectionViewController
         self.collectionView.register(AppCardCollectionViewCell.self, forCellWithReuseIdentifier: ReuseID.featuredApp.rawValue)
         
         self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: ElementKind.sectionHeader.rawValue, withReuseIdentifier: ElementKind.sectionHeader.rawValue)
-        self.collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: ElementKind.sourceHeader.rawValue, withReuseIdentifier: ElementKind.sourceHeader.rawValue)
+        self.collectionView.register(IconButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.sourceHeader.rawValue, withReuseIdentifier: ElementKind.sourceHeader.rawValue)
         self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
         self.collectionView.directionalLayoutMargins.leading = 15
@@ -498,9 +499,23 @@ private extension FeaturedViewController
         }
     }
     
+    @IBSegueAction
+    func makeSourceDetailViewController(_ coder: NSCoder, sender: Any?) -> UIViewController?
+    {
+        guard let source = sender as? Source else { return nil }
+        
+        let sourceDetailViewController = SourceDetailViewController(source: source, coder: coder)
+        return sourceDetailViewController
+    }
+    
     func showAllApps(for source: Source)
     {
         self.performSegue(withIdentifier: "showBrowseViewController", sender: source)
+    }
+    
+    func showSourceDetails(for source: Source)
+    {
+        self.performSegue(withIdentifier: "showSourceDetails", sender: source)
     }
 }
 
@@ -513,17 +528,13 @@ extension FeaturedViewController
         switch kind
         {
         case ElementKind.sourceHeader.rawValue:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! UICollectionViewListCell
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! IconButtonCollectionReusableView
             
             var content = UIListContentConfiguration.plainHeader()
             
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             let storeApp = self.dataSource.item(at: indexPath) // Safe?
             content.text = storeApp.source?.name ?? NSLocalizedString("Unknown Source", comment: "")
-            //content.textProperties.color = .label//.withAlphaComponent(0.7)
-//            content.textProperties.font = UIFont.preferredFont(forTextStyle: .body)
-//            content.textProperties.transform = .none
-//            content.textProperties.alignment = .natural
             content.textProperties.numberOfLines = 1
             
             content.directionalLayoutMargins.leading = 0
@@ -532,26 +543,30 @@ extension FeaturedViewController
             content.imageProperties.maximumSize = CGSize(width: 26, height: 26)
             content.imageProperties.cornerRadius = 13
             
-            if let iconURL = storeApp.source?.effectiveIconURL, #available(iOS 15, *)
+            headerView.titleButton.setTitle(content.text, for: .normal)
+        
+            headerView.iconButton.backgroundColor = storeApp.source?.effectiveTintColor?.adjustedForDisplay
+            headerView.iconButton.setImage(nil, for: .normal)
+            
+            if let iconURL = storeApp.source?.effectiveIconURL
             {
                 ImagePipeline.shared.loadImage(with: iconURL) { result in
-                    headerView.setNeedsUpdateConfiguration()
-                }
-                
-                headerView.configurationUpdateHandler = { cell, state in
-                    var content = content.updated(for: state)
-                    
-                    if let image = ImagePipeline.shared.cache[iconURL]
-                    {
-                        content.image = image.image
-                    }
-                    
-                    cell.contentConfiguration = content
+                    headerView.iconButton.setImage(result.value?.image, for: .normal)
                 }
             }
-            else if #available(iOS 15, *)
+            
+            let buttons = [headerView.iconButton, headerView.titleButton]
+            for button in buttons
             {
-                headerView.configurationUpdateHandler = nil
+                button.removeAction(identifiedBy: .showSourceDetails, for: .primaryActionTriggered)
+                
+                if let source = storeApp.source
+                {
+                    let action = UIAction(identifier: .showSourceDetails) { [weak self] _ in
+                        self?.showSourceDetails(for: source)
+                    }
+                    button.addAction(action, for: .primaryActionTriggered)
+                }
             }
             
             return headerView
