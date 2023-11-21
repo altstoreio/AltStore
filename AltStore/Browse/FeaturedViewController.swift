@@ -151,8 +151,8 @@ class FeaturedViewController: UICollectionViewController
         self.collectionView.register(IconButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.sourceHeader.rawValue, withReuseIdentifier: ElementKind.sourceHeader.rawValue)
         self.collectionView.register(ButtonCollectionReusableView.self, forSupplementaryViewOfKind: ElementKind.button.rawValue, withReuseIdentifier: ElementKind.button.rawValue)
         
-        self.collectionView.directionalLayoutMargins.leading = 15
-        self.collectionView.directionalLayoutMargins.trailing = 15
+        self.collectionView.directionalLayoutMargins.leading = 20
+        self.collectionView.directionalLayoutMargins.trailing = 20
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         self.searchBrowseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
