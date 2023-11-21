@@ -240,7 +240,7 @@ private extension FeaturedViewController
                 return layoutSection
                 
             case .featured:
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(0.0))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
@@ -255,7 +255,7 @@ private extension FeaturedViewController
                 return layoutSection
                 
             case _ where section.isFeaturedAppsSection:
-                let itemHeight: NSCollectionLayoutDimension = if #available(iOS 17, *) { .uniformAcrossSiblings(estimate: 100) } else { .estimated(100) }
+                let itemHeight: NSCollectionLayoutDimension = if #available(iOS 17, *) { .uniformAcrossSiblings(estimate: 350) } else { .estimated(350) }
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: itemHeight)
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
