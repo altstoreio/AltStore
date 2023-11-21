@@ -104,13 +104,6 @@ extension FeaturedViewController
 
 class FeaturedViewController: UICollectionViewController
 {
-    private var categories: [StoreCategory] = [] {
-        didSet {
-            let items = self.categories.map { $0.rawValue as NSString }
-            self.categoriesDataSource.items = items
-        }
-    }
-    
     private lazy var dataSource = self.makeDataSource()
     private lazy var recentlyUpdatedDataSource = self.makeRecentlyUpdatedDataSource()
     private lazy var categoriesDataSource = self.makeCategoriesDataSource()
@@ -172,15 +165,6 @@ class FeaturedViewController: UICollectionViewController
         
         self.navigationItem.searchController = self.searchController
         self.navigationItem.hidesSearchBarWhenScrolling = true
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(FeaturedViewController.didFetchSources(_:)), name: AppManager.didFetchSourceNotification, object: nil)
-    }
-    
-    override func viewIsAppearing(_ animated: Bool) 
-    {
-        super.viewIsAppearing(animated)
-        
-        self.updateCategories()
     }
 }
 
@@ -286,9 +270,7 @@ private extension FeaturedViewController
     
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
-        let categoriesDataSource = self.categoriesDataSource as! RSTArrayCollectionViewPrefetchingDataSource<StoreApp, UIImage>
-        
-        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [self.recentlyUpdatedDataSource, categoriesDataSource, self.featuredDataSource, self.featuredAppsDataSource])
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [self.recentlyUpdatedDataSource, self.categoriesDataSource, self.featuredDataSource, self.featuredAppsDataSource])
         return dataSource
     }
     
@@ -364,30 +346,35 @@ private extension FeaturedViewController
         return dataSource
     }
     
-    func makeCategoriesDataSource() -> RSTArrayCollectionViewPrefetchingDataSource<NSString, UIImage>
+    func makeCategoriesDataSource() -> RSTCompositeCollectionViewDataSource<StoreApp>
     {
-//        let fetchRequest = StoreApp.fetchRequest()
-//        fetchRequest.resultType = .dictionaryResultType
-//        fetchRequest.returnsDistinctResults = true
-//        fetchRequest.propertiesToFetch = [#keyPath(StoreApp._category)]
-//        //fetchRequest.returnsObjectsAsFaults = false
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
+        let knownCategories = StoreCategory.allCases.filter { $0 != .other }.map { $0.rawValue }
         
-//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._category), cacheName: nil)
+        let knownFetchRequest = StoreApp.fetchRequest()
+        knownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
+        knownFetchRequest.predicate = NSPredicate(format: "%K IN %@", #keyPath(StoreApp._category), knownCategories)
         
-        let dataSource = RSTArrayCollectionViewPrefetchingDataSource<NSString, UIImage>(items: [])
+        let unknownFetchRequest = StoreApp.fetchRequest()
+        unknownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
+        unknownFetchRequest.predicate = NSPredicate(format: "%K == nil OR NOT (%K IN %@)",
+                                                    #keyPath(StoreApp._category),
+                                                    #keyPath(StoreApp._category), knownCategories)
+        
+        let knownController = NSFetchedResultsController(fetchRequest: knownFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._category), cacheName: nil)
+        let knownDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: knownController)
+        knownDataSource.liveFetchLimit = 1
+        
+        let unknownController = NSFetchedResultsController(fetchRequest: unknownFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        let unknownDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: unknownController)
+        unknownDataSource.liveFetchLimit = 1
+        
+        let dataSource = RSTCompositeCollectionViewDataSource<StoreApp>(dataSources: [knownDataSource, unknownDataSource])
+        dataSource.shouldFlattenSections = true // Combine into single section, with one StoreApp per section.
         dataSource.cellIdentifierHandler = { _ in ReuseID.category.rawValue }
-        //dataSource.liveFetchLimit = 1 // Show 1 cell per category
-        dataSource.cellConfigurationHandler = { cell, rawCategory, indexPath in
-            guard let category = StoreCategory(rawValue: rawCategory as String) else { return }
+        dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
+            let category = storeApp.category ?? .other
             
             let cell = cell as! LargeIconCollectionViewCell
-            
-//            var content = cell.defaultContentConfiguration()
-//            content.text = category.localizedName
-//            content.textProperties.font = UIFont.preferredFont(forTextStyle: .largeTitle)
-//            cell.contentConfiguration = content
-            
             cell.textLabel.text = category.localizedName
             cell.imageView.image = UIImage(systemName: category.symbolName)
             
@@ -398,10 +385,6 @@ private extension FeaturedViewController
         }
         
         return dataSource
-        
-//        let flattenedDataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [dataSource])
-//        flattenedDataSource.shouldFlattenSections = true
-//        return flattenedDataSource
     }
     
     func makeFeaturedDataSource() -> RSTDynamicCollectionViewPrefetchingDataSource<StoreApp, UIImage>
@@ -441,44 +424,6 @@ private extension FeaturedViewController
 
 private extension FeaturedViewController
 {
-    func updateCategories()
-    {
-        let fetchRequest = NSFetchRequest(entityName: StoreApp.entity().name!) as NSFetchRequest<NSDictionary>
-        fetchRequest.resultType = .dictionaryResultType
-        fetchRequest.returnsDistinctResults = true
-        fetchRequest.propertiesToFetch = [#keyPath(StoreApp._category)]
-        fetchRequest.predicate = StoreApp.visibleAppsPredicate
-        //fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
-        
-        do
-        {
-            let dictionaries = try DatabaseManager.shared.viewContext.fetch(fetchRequest)
-            
-            // Keep nil values
-            let categories = dictionaries.map { $0[#keyPath(StoreApp._category)] as? String? ?? nil }.map { rawCategory -> StoreCategory in
-                guard let rawCategory else { return .other }
-                return StoreCategory(rawValue: rawCategory) ?? .other
-            }
-            
-            let sortedCategories = Set(categories).sorted(by: { $0.localizedName.localizedStandardCompare($1.localizedName) == .orderedAscending })
-            self.categories = sortedCategories
-        }
-        catch
-        {
-            Logger.main.error("Failed to update categories. \(error.localizedDescription, privacy: .public)")
-        }
-    }
-}
-
-private extension FeaturedViewController
-{
-    @objc func didFetchSources(_ notification: Notification)
-    {
-        DispatchQueue.main.async {
-            self.updateCategories()
-        }
-    }
-    
     @IBSegueAction
     func makeBrowseViewController(_ coder: NSCoder, sender: Any) -> UIViewController?
     {
@@ -622,20 +567,18 @@ extension FeaturedViewController
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) 
     {
+        let storeApp = self.dataSource.item(at: indexPath)
+        
         let section = Section(rawValue: indexPath.section)
         switch section
         {
         case _ where section.isFeaturedAppsSection: fallthrough
         case .recentlyUpdated:
-            let storeApp = self.dataSource.item(at: indexPath)
             let appViewController = AppViewController.makeAppViewController(app: storeApp)
             self.navigationController?.pushViewController(appViewController, animated: true)
             
         case .categories:
-            let categoryIndexPath = IndexPath(item: indexPath.item, section: 0)
-            let rawCategory = self.categoriesDataSource.item(at: categoryIndexPath)
-            
-            let category = StoreCategory(rawValue: rawCategory as String) ?? .other
+            let category = storeApp.category ?? .other
             self.performSegue(withIdentifier: "showBrowseViewController", sender: category)
             
         default: break
