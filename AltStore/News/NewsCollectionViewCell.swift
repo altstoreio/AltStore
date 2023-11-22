@@ -19,6 +19,9 @@ class NewsCollectionViewCell: UICollectionViewCell
     {
         super.awakeFromNib()
         
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title2).bolded()
+        self.titleLabel.font = UIFont(descriptor: descriptor, size: 0.0)
+        
         self.contentView.preservesSuperviewLayoutMargins = true
         
         self.contentBackgroundView.layer.cornerRadius = 30
