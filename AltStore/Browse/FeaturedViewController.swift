@@ -271,6 +271,7 @@ private extension FeaturedViewController
     func makeDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
         let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [self.recentlyUpdatedDataSource, self.categoriesDataSource, self.featuredDataSource, self.featuredAppsDataSource])
+        dataSource.predicate = StoreApp.visibleAppsPredicate // Ensure we never accidentally show hidden apps
         return dataSource
     }
     
@@ -278,7 +279,6 @@ private extension FeaturedViewController
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = StoreApp.visibleAppsPredicate
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \StoreApp.latestSupportedVersion?.date, ascending: false),
             NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
