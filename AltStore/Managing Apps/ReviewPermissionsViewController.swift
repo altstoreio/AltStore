@@ -106,13 +106,11 @@ class ReviewPermissionsViewController: UICollectionViewController
         let collectionViewLayout = self.makeLayout()
         collectionViewLayout.register(VibrantBackgroundView.self, forDecorationViewOfKind: "Background")
         self.collectionView.collectionViewLayout = collectionViewLayout
-        
-        //guard #available(iOS 16, *) else { return }
-        
+                
         if #available(iOS 16, *)
         {
             self.collectionView.backgroundView = UIHostingConfiguration {
-                LinearGradient(colors: [Color(.gradientTop), Color(.gradientBottom)], startPoint: .top, endPoint: .bottom)
+                LinearGradient(colors: [Color(UIColor(resource: .gradientTop)), Color(.gradientBottom)], startPoint: .top, endPoint: .bottom)
             }
             .margins(.all, 0)
             .makeContentView()
@@ -121,9 +119,7 @@ class ReviewPermissionsViewController: UICollectionViewController
         {
             self.collectionView.backgroundColor = UIColor(resource: .gradientBottom)
         }
-        
-        self.collectionView.backgroundColor = UIColor(resource: .gradientBottom)
-        
+                
         self.dataSource.proxy = self
         self.collectionView.dataSource = self.dataSource
         
