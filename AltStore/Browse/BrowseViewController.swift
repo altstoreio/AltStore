@@ -291,14 +291,15 @@ private extension BrowseViewController
                 }
             }
         }
-        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+        dataSource.prefetchCompletionHandler = { [weak dataSource] (cell, image, indexPath, error) in
             let cell = cell as! AppCardCollectionViewCell
             cell.bannerView.iconImageView.isIndicatingActivity = false
             cell.bannerView.iconImageView.image = image
             
-            if let error = error
+            if let error = error, let dataSource
             {
-                print("Error loading image:", error)
+                let app = dataSource.item(at: indexPath)
+                Logger.main.debug("Failed to app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
             }
         }
         
