@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public enum StoreCategory: String
+public enum StoreCategory: String, CaseIterable
 {
     case other = "Other"
     case utilities = "Utilities"
