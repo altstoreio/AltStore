@@ -80,53 +80,13 @@ class VerifyAppOperation: ResultOperation<Void>
             Task<Void, Never>  {
                 do
                 {
-                    do
-                    {
-                        guard let ipaURL = self.context.ipaURL else { throw OperationError.appNotFound(name: app.name) }
-                        
-                        try await self.verifyHash(of: app, at: ipaURL, matches: appVersion)
-                        try await self.verifyDownloadedVersion(of: app, matches: appVersion)
-                        
-                        // Verify permissions last in case user bypasses error.
-                        try await self.verifyPermissions(of: app, match: appVersion)
-                    }
-                    catch let error as VerificationError where error.code == .undeclaredPermissions
-                    {
-                        #if !BETA
-                        throw error
-                        #endif
-                        
-                        if let recommendedSources = UserDefaults.shared.recommendedSources, let sourceID = await self.context.$appVersion.sourceID
-                        {
-                            let isRecommended = recommendedSources.contains { $0.identifier == sourceID }
-                            guard !isRecommended else {
-                                // Don't enforce permission checking for Recommended Sources while 2.0 is in beta.
-                                return self.finish(.success(()))
-                            }
-                        }
-                        
-                        // While in beta, allow users to temporarily bypass permissions alert
-                        // so source maintainers have time to update their sources.
-                        guard let presentingViewController = self.context.presentingViewController else { throw error }
-                        
-                        let message = NSLocalizedString("While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated.", comment: "")
-                        
-                        let ignoreAction = await UIAlertAction(title: NSLocalizedString("Install Anyway", comment: ""), style: .destructive)
-                        let viewPermissionsAction = await UIAlertAction(title: NSLocalizedString("View Permisions", comment: ""), style: .default)
-                        
-                        while true
-                        {
-                            let action = try await presentingViewController.presentConfirmationAlert(title: error.errorFailureReason,
-                                                                                                     message: message,
-                                                                                                     actions: [ignoreAction, viewPermissionsAction])
-                            
-                            guard action == viewPermissionsAction else { break } // break loop to continue with installation (unless we're viewing permissions).
-                            
-                            await presentingViewController.presentAlert(title: NSLocalizedString("Undeclared Permissions", comment: ""), message: error.recoverySuggestion)
-                        }
-                        
-                        // TODO: We still need to review permissions, even for trusted sources.
-                    }
+                    guard let ipaURL = self.context.ipaURL else { throw OperationError.appNotFound(name: app.name) }
+                    
+                    try await self.verifyHash(of: app, at: ipaURL, matches: appVersion)
+                    try await self.verifyDownloadedVersion(of: app, matches: appVersion)
+                    
+                    // Verify permissions last in case user bypasses error.
+                    try await self.verifyPermissions(of: app, match: appVersion)
                     
                     self.finish(.success(()))
                 }
@@ -179,46 +139,39 @@ private extension VerifyAppOperation
         // Verify source permissions match first.
         let allPermissions = try await self.verifyPermissions(of: app, match: storeApp)
         
-        do
-        {
-            switch self.permissionsMode
-            {
-            case .none: break
-            case .all:
-                guard #available(iOS 15, *) else {
-                    // Only review permissions on iOS 15 and above.
-                    return
-                }
-                
-                guard let presentingViewController = self.context.presentingViewController else { break } // Don't fail just because we can't show permissions.
-                
-                let allEntitlements = allPermissions.compactMap { $0 as? ALTEntitlement }
-                try await self.review(allEntitlements, for: app, mode: .all, presentingViewController: presentingViewController)
-                
-            case .added:
-                let installedAppURL = InstalledApp.fileURL(for: app)
-                guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
-                
-                var previousEntitlements = Set(previousApp.entitlements.keys)
-                for appExtension in previousApp.appExtensions
-                {
-                    previousEntitlements.formUnion(appExtension.entitlements.keys)
-                }
-                
-                // Make sure all entitlements already exist in previousApp.
-                let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
-                guard addedEntitlements.isEmpty else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
-            }
+        guard #available(iOS 15, *) else {
+            // Only review downloaded app permissions on iOS 15 and above.
+            return
         }
-        catch let error as VerificationError where error.code == .addedPermissions
+        
+        switch self.permissionsMode
         {
-            guard #available(iOS 15, *) else {
-                // Ignore added permissions on iOS 15 and below.
-                return
+        case .none: break
+        case .all:
+            guard let presentingViewController = self.context.presentingViewController else { break } // Don't fail just because we can't show permissions.
+            
+            let allEntitlements = allPermissions.compactMap { $0 as? ALTEntitlement }
+            try await self.review(allEntitlements, for: app, mode: .all, presentingViewController: presentingViewController)
+            
+        case .added:
+            let installedAppURL = InstalledApp.fileURL(for: app)
+            guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
+            
+            var previousEntitlements = Set(previousApp.entitlements.keys)
+            for appExtension in previousApp.appExtensions
+            {
+                previousEntitlements.formUnion(appExtension.entitlements.keys)
             }
             
-            guard let permissions = error.permissions, let presentingViewController = self.context.presentingViewController else { throw error }
-            try await self.review(permissions, for: app, mode: .added, presentingViewController: presentingViewController)
+            // Make sure all entitlements already exist in previousApp.
+            let addedEntitlements = Array(allPermissions.lazy.compactMap { $0 as? ALTEntitlement }.filter { !previousEntitlements.contains($0) })
+            if !addedEntitlements.isEmpty
+            {
+                // _DO_ throw error if there isn't a presentingViewController.
+                guard let presentingViewController = self.context.presentingViewController else { throw VerificationError.addedPermissions(addedEntitlements, appVersion: appVersion) }
+                
+                try await self.review(addedEntitlements, for: app, mode: .added, presentingViewController: presentingViewController)
+            }
         }
     }
     
@@ -288,9 +241,49 @@ private extension VerifyAppOperation
             return true
         }
         
-        guard missingPermissions.isEmpty else {
-            // There is at least one undeclared permission, so throw error.
-            throw VerificationError.undeclaredPermissions(missingPermissions, app: app)
+        do
+        {
+            guard missingPermissions.isEmpty else {
+                // There is at least one undeclared permission, so throw error.
+                throw VerificationError.undeclaredPermissions(missingPermissions, app: app)
+            }
+        }
+        catch let error as VerificationError where error.code == .undeclaredPermissions
+        {
+            #if !BETA
+            throw error
+            #endif
+                        
+            if let recommendedSources = UserDefaults.shared.recommendedSources, let (sourceID, sourceURL) = await $storeApp.perform({ $0.source.map { ($0.identifier, $0.sourceURL) } })
+            {
+                let normalizedSourceURL = try? sourceURL.normalized()
+                
+                let isRecommended = recommendedSources.contains { $0.identifier == sourceID || (try? $0.sourceURL?.normalized()) == normalizedSourceURL }
+                guard !isRecommended else {
+                    // Don't enforce permission checking for Recommended Sources while 2.0 is in beta.
+                    return localPermissions
+                }
+            }
+            
+            // While in beta, allow users to temporarily bypass permissions alert
+            // so source maintainers have time to update their sources.
+            guard let presentingViewController = self.context.presentingViewController else { throw error }
+            
+            let message = NSLocalizedString("While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated.", comment: "")
+            
+            let ignoreAction = await UIAlertAction(title: NSLocalizedString("Install Anyway", comment: ""), style: .destructive)
+            let viewPermissionsAction = await UIAlertAction(title: NSLocalizedString("View Permisions", comment: ""), style: .default)
+            
+            while true
+            {
+                let action = try await presentingViewController.presentConfirmationAlert(title: error.errorFailureReason,
+                                                                                         message: message,
+                                                                                         actions: [ignoreAction, viewPermissionsAction])
+                
+                guard action == viewPermissionsAction else { break } // break loop to continue with installation (unless we're viewing permissions).
+                
+                await presentingViewController.presentAlert(title: NSLocalizedString("Undeclared Permissions", comment: ""), message: error.recoverySuggestion)
+            }
         }
         
         return localPermissions
