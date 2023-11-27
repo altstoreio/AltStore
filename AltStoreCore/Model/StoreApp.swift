@@ -73,6 +73,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
     
     @NSManaged public var sortIndex: Int32
+    @NSManaged public var featuredSortID: String?
     
     @objc public internal(set) var sourceIdentifier: String? {
         get {
@@ -323,6 +324,13 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             throw error
         }
+    }
+    
+    public override func awakeFromInsert()
+    {
+        super.awakeFromInsert()
+        
+        self.featuredSortID = UUID().uuidString
     }
 }
 

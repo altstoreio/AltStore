@@ -387,28 +387,74 @@ private extension FeaturedViewController
         return dataSource
     }
     
-    func makeFeaturedDataSource() -> RSTDynamicCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    func makeFeaturedDataSource() -> RSTDynamicCollectionViewDataSource<StoreApp>
     {
-        let dataSource = RSTDynamicCollectionViewPrefetchingDataSource<StoreApp, UIImage>()
+        let dataSource = RSTDynamicCollectionViewDataSource<StoreApp>()
         dataSource.numberOfSectionsHandler = { 1 }
         dataSource.numberOfItemsHandler = { _ in 0 }
         return dataSource
     }
     
-    func makeFeaturedAppsDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    func makeFeaturedAppsDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.predicate = StoreApp.visibleAppsPredicate
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true), // Sort by Source first for grouping
-            NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+            // Sort by Source first to group into sections.
+            NSSortDescriptor(keyPath: \StoreApp._source?.featuredSortID, ascending: true),
+            
+            // Show uninstalled apps first.
+            // Sorting by StoreApp.installedApp crashes because InstalledApp does not respond to compare:
+            // Instead, sort by StoreApp.installedApp.storeApp.source.sourceIdentifier, which will be either nil OR source ID.
+            NSSortDescriptor(keyPath: \StoreApp.installedApp?.storeApp?.sourceIdentifier, ascending: true),
+            
+            // Show featured apps first.
+            // Sorting by StoreApp.featuringSource crashes because Source does not respond to compare:
+            // Instead, sort by StoreApp.featuringSource.identifier, which will be either nil OR source ID.
+            NSSortDescriptor(keyPath: \StoreApp.featuringSource?.identifier, ascending: false),
+            
+            // Randomize order within sections.
+            NSSortDescriptor(keyPath: \StoreApp.featuredSortID, ascending: true),
+            
+            // Sanity check to ensure unique sorting
             NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)
         ]
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp.sourceIdentifier), cacheName: nil)
+        let primaryFetchRequest = fetchRequest.copy() as! NSFetchRequest<StoreApp>
+        primaryFetchRequest.predicate = NSPredicate(format:
+            """
+            SUBQUERY(%K, $app,
+                ($app.%K != %@) AND ($app.%K == nil) AND (($app.%K == NO) OR ($app.%K == NO) OR ($app.%K == YES))
+            ).@count > 0
+            """,
+                                                    #keyPath(StoreApp._source._apps),
+                                                    #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                                    #keyPath(StoreApp.installedApp),
+                                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isHiddenWithoutPledge), #keyPath(StoreApp.isPledged)
+        )
         
-        let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchedResultsController: fetchedResultsController)
+        let primaryController = NSFetchedResultsController(fetchRequest: primaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._source.featuredSortID), cacheName: nil)
+        let primaryDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: primaryController)
+        primaryDataSource.liveFetchLimit = 5
+        
+        let secondaryFetchRequest = fetchRequest.copy() as! NSFetchRequest<StoreApp>
+        secondaryFetchRequest.predicate = NSPredicate(format:
+            """
+            SUBQUERY(%K, $app,
+                ($app.%K != %@) AND ($app.%K == nil) AND (($app.%K == NO) OR ($app.%K == NO) OR ($app.%K == YES))
+            ).@count == 0
+            """,
+                                                    #keyPath(StoreApp._source._apps),
+                                                    #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                                    #keyPath(StoreApp.installedApp),
+                                                    #keyPath(StoreApp.isPledgeRequired), #keyPath(StoreApp.isHiddenWithoutPledge), #keyPath(StoreApp.isPledged)
+        )
+        
+        let secondaryController = NSFetchedResultsController(fetchRequest: secondaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._source.featuredSortID), cacheName: nil)
+        let secondaryDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: secondaryController)
+        secondaryDataSource.liveFetchLimit = 5
+        
+        let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [primaryDataSource, secondaryDataSource])
         dataSource.cellIdentifierHandler = { _ in ReuseID.featuredApp.rawValue }
         dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
             let cell = cell as! AppCardCollectionViewCell

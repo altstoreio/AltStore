@@ -180,6 +180,49 @@ public extension DatabaseManager
             }
         }
     }
+    
+    func updateFeaturedSortIDs() async
+    {
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // DON'T use our custom merge policy, because that one ignores changes to featuredSortID.
+        await context.performAsync {
+            do
+            {
+                // Randomize source order
+                let fetchRequest = Source.fetchRequest()
+                let sources = try context.fetch(fetchRequest)
+                
+                for source in sources
+                {
+                    source.featuredSortID = UUID().uuidString
+                }
+                
+                try context.save()
+            }
+            catch
+            {
+                Logger.main.error("Failed to update source order. \(error.localizedDescription, privacy: .public)")
+            }
+            
+            do
+            {
+                // Randomize app order
+                let fetchRequest = StoreApp.fetchRequest()
+                let apps = try context.fetch(fetchRequest)
+                
+                for app in apps
+                {
+                    app.featuredSortID = UUID().uuidString
+                }
+                
+                try context.save()
+            }
+            catch
+            {
+                Logger.main.error("Failed to update app order. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+    }
 }
 
 public extension DatabaseManager
@@ -374,7 +417,11 @@ private extension DatabaseManager
             do
             {
                 try context.save()
-                completionHandler(.success(()))
+                
+                Task(priority: .high) {
+                    await self.updateFeaturedSortIDs()
+                    completionHandler(.success(()))
+                }
             }
             catch
             {
