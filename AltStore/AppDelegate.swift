@@ -15,6 +15,8 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+import Nuke
+
 extension UIApplication: LegacyBackgroundFetching {}
 
 extension AppDelegate
@@ -57,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AnalyticsManager.shared.start()
         
         self.setTintColor()
+        self.prepareImageCache()
         
         ServerManager.shared.startDiscovering()
         
@@ -143,6 +146,33 @@ private extension AppDelegate
     func setTintColor()
     {
         self.window?.tintColor = .altPrimary
+    }
+    
+    func prepareImageCache()
+    {
+        // Avoid caching responses twice.
+        DataLoader.sharedUrlCache.diskCapacity = 0
+        
+        let pipeline = ImagePipeline { configuration in
+            do
+            {
+                let dataCache = try DataCache(name: "io.altstore.Nuke")
+                dataCache.sizeLimit = 300 * 1024 * 1024 // 300MB
+                
+                configuration.dataCache = dataCache
+            }
+            catch
+            {
+                Logger.main.error("Failed to create image disk cache. Falling back to URL cache. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        
+        ImagePipeline.shared = pipeline
+        
+        if let dataCache = ImagePipeline.shared.configuration.dataCache as? DataCache, #available(iOS 15, *)
+        {
+            Logger.main.info("Current image cache size: \(dataCache.totalSize.formatted(.byteCount(style: .file)), privacy: .public)")
+        }
     }
     
     func open(_ url: URL) -> Bool
