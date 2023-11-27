@@ -308,7 +308,7 @@ private extension FeaturedViewController
                 cell.bannerView.subtitleLabel.text = Date().relativeDateString(since: versionDate, dateFormatter: Date.mediumDateFormatter)
             }
             
-            //cell.bannerView.button.addTarget(self, action: #selector(SourceDetailContentViewController.performAppAction(_:)), for: .primaryActionTriggered)
+            cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -415,6 +415,7 @@ private extension FeaturedViewController
             cell.configure(for: storeApp)
             cell.prefersPagingScreenshots = true
             
+            cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
             cell.bannerView.sourceIconImageView.isHidden = true
         }
         
@@ -461,6 +462,86 @@ private extension FeaturedViewController
     func showSourceDetails(for source: Source)
     {
         self.performSegue(withIdentifier: "showSourceDetails", sender: source)
+    }
+}
+
+private extension FeaturedViewController
+{
+    @objc func performAppAction(_ sender: PillButton)
+    {
+        let point = self.collectionView.convert(sender.center, from: sender.superview)
+        guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
+        
+        let storeApp = self.dataSource.item(at: indexPath)
+        
+        if let installedApp = storeApp.installedApp
+        {
+            self.open(installedApp)
+        }
+        else
+        {
+            self.install(storeApp, at: indexPath)
+        }
+    }
+    
+    @objc func install(_ storeApp: StoreApp, at indexPath: IndexPath)
+    {
+        let previousProgress = AppManager.shared.installationProgress(for: storeApp)
+        guard previousProgress == nil else {
+            previousProgress?.cancel()
+            return
+        }
+        
+        _ = AppManager.shared.install(storeApp, presentingViewController: self) { (result) in
+            DispatchQueue.main.async {
+                switch result
+                {
+                case .failure(OperationError.cancelled): break // Ignore
+                case .failure(let error):
+                    let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
+                    toastView.show(in: self)
+                    
+                case .success:
+                    Logger.main.info("Installed app \(storeApp.bundleIdentifier, privacy: .public) from FeaturedViewController.")
+                }
+                
+                for indexPath in self.collectionView.indexPathsForVisibleItems
+                {
+                    // Only need to reload if it's still visible.
+                    
+                    let item = self.dataSource.item(at: indexPath)
+                    guard item == storeApp else { continue }
+                    
+                    UIView.performWithoutAnimation {
+                        if #available(iOS 15, *)
+                        {
+                            self.collectionView.reconfigureItems(at: [indexPath])
+                        }
+                        else
+                        {
+                            self.collectionView.reloadItems(at: [indexPath])
+                        }
+                    }
+                }
+            }
+        }
+        
+        UIView.performWithoutAnimation {
+            if #available(iOS 15, *)
+            {
+                self.collectionView.reconfigureItems(at: [indexPath])
+            }
+            else
+            {
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+        }
+    }
+    
+    func open(_ installedApp: InstalledApp)
+    {
+        UIApplication.shared.open(installedApp.openAppURL)
     }
 }
 
