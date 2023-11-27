@@ -29,7 +29,12 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
     // Nil == Show apps from all sources.
     let source: Source?
-    let category: StoreCategory?
+    private(set) var category: StoreCategory? {
+        didSet {
+            self.updateDataSource()
+            self.update()
+        }
+    }
     
     var predicate: NSPredicate? {
         didSet {
@@ -43,6 +48,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     private let prototypeCell = AppCardCollectionViewCell(frame: .zero)
     
     private var sortButton: UIBarButtonItem?
+    private var preferredAppSorting: AppSorting = UserDefaults.shared.preferredAppSorting
     
     private var loadingState: LoadingState = .loading {
         didSet {
@@ -120,7 +126,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         if #available(iOS 15, *)
         {
-            self.showSortButton()
+            self.prepareAppSorting()
         }
         
         if #available(iOS 16, *)
@@ -152,7 +158,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 
 private extension BrowseViewController
 {
-    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    func makeFetchRequest() -> NSFetchRequest<StoreApp>
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
@@ -180,6 +186,47 @@ private extension BrowseViewController
         {
             fetchRequest.predicate = predicate
         }
+        
+        switch self.preferredAppSorting
+        {
+        case .default:
+            fetchRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+            ]
+            
+        case .name:
+            fetchRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+            ]
+            
+        case .developer:
+            fetchRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \StoreApp.developerName, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+            ]
+            
+        case .lastUpdated:
+            fetchRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \StoreApp.latestSupportedVersion?.date, ascending: false),
+                NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+            ]
+        }
+        
+        return fetchRequest
+    }
+    
+    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    {
+        let fetchRequest = self.makeFetchRequest()
         
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
@@ -237,36 +284,7 @@ private extension BrowseViewController
     
     func updateDataSource()
     {
-        let fetchRequest = self.dataSource.fetchedResultsController.fetchRequest
-        
-        let sorting = UserDefaults.shared.preferredAppSorting
-        let isAscending = (UserDefaults.shared.preferredSortOrders[sorting] ?? sorting.defaultSortOrder) == .ascending
-        
-        switch sorting
-        {
-        case .name: 
-            fetchRequest.sortDescriptors = [
-                NSSortDescriptor(keyPath: \StoreApp.name, ascending: isAscending),
-                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
-                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
-            ]
-            
-        case .developer: 
-            fetchRequest.sortDescriptors = [
-                NSSortDescriptor(keyPath: \StoreApp.developerName, ascending: isAscending),
-                NSSortDescriptor(keyPath: \StoreApp.name, ascending: isAscending),
-                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
-                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
-            ]
-            
-        case .lastUpdated: 
-            fetchRequest.sortDescriptors = [
-                NSSortDescriptor(keyPath: \StoreApp.latestSupportedVersion?.date, ascending: isAscending),
-                NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
-                NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
-                NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
-            ]
-        }
+        let fetchRequest = self.makeFetchRequest()
         
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -385,39 +403,33 @@ private extension BrowseViewController
     }
     
     @available(iOS 15, *)
-    func showSortButton()
+    func prepareAppSorting()
     {
-        let children = UIDeferredMenuElement.uncached { completion in
-            let actions = AppSorting.allCases.map { sorting in
-                let sortOrder = UserDefaults.shared.preferredSortOrders[sorting] ?? sorting.defaultSortOrder
-                
-                let state: UIMenuElement.State = switch sorting {
-                    case .name where UserDefaults.shared.preferredAppSorting == .name: .on
-                    case .developer where UserDefaults.shared.preferredAppSorting == .developer: .on
-                    case .lastUpdated where UserDefaults.shared.preferredAppSorting == .lastUpdated: .on
-                    default: .off
-                }
-                
-                let image: UIImage? = switch sortOrder {
-                    case .ascending where state == .on: UIImage(systemName: "chevron.up")
-                    case .descending where state == .on: UIImage(systemName: "chevron.down")
-                    default: nil
-                }
-                
-                let action = UIAction(title: sorting.localizedName, image: image, state: state) { [previousState = state] action in
-                    if previousState == .on
-                    {
-                        // Toggle sort order
-                        switch sortOrder
-                        {
-                        case .ascending: UserDefaults.shared.preferredSortOrders[sorting] = .descending
-                        case .descending: UserDefaults.shared.preferredSortOrders[sorting] = .ascending
-                        }
-                    }
-                    else
-                    {
-                        UserDefaults.shared.preferredAppSorting = sorting
-                    }
+        if self.preferredAppSorting == .default && self.source == nil
+        {
+            // Only allow `default` sorting if source is non-nil.
+            // Otherwise, fall back to `lastUpdated` sorting.
+            self.preferredAppSorting = .lastUpdated
+            
+            // Don't update UserDefaults unless explicitly changed by user.
+            // UserDefaults.shared.preferredAppSorting = .lastUpdated
+        }
+        
+        let children = UIDeferredMenuElement.uncached { [weak self] completion in
+            guard let self else { return completion([]) }
+            
+            var sortingOptions = AppSorting.allCases
+            if self.source == nil
+            {
+                // Only allow `default` sorting when source is non-nil.
+                sortingOptions = sortingOptions.filter { $0 != .default }
+            }
+            
+            let actions = sortingOptions.map { sorting in
+                let state: UIMenuElement.State = (sorting == self.preferredAppSorting) ? .on : .off
+                let action = UIAction(title: sorting.localizedName, image: nil, state: state) { action in
+                    self.preferredAppSorting = sorting
+                    UserDefaults.shared.preferredAppSorting = sorting // Update separately to save change.
                     
                     self.updateDataSource()
                 }

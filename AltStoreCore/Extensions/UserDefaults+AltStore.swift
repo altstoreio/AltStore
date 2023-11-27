@@ -120,8 +120,8 @@ public extension UserDefaults
         #endif
         
         // Pre-iOS 15 doesn't support custom sorting, so default to sorting by name.
-        // Otherwise, default to sorting by last updated.
-        let preferredAppSorting: AppSorting = if #available(iOS 15, *) { .lastUpdated } else { .name }
+        // Otherwise, default to `default` sorting (a.k.a. "source order").
+        let preferredAppSorting: AppSorting = if #available(iOS 15, *) { .default } else { .name }
         
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,

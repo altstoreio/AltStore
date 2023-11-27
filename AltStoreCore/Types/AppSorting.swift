@@ -16,6 +16,7 @@ import Foundation
 
 public enum AppSorting: String, CaseIterable
 {
+    case `default`
     case name
     case developer
     case lastUpdated
@@ -23,6 +24,7 @@ public enum AppSorting: String, CaseIterable
     public var localizedName: String {
         switch self
         {
+        case .default: return NSLocalizedString("Default", comment: "")
         case .name: return NSLocalizedString("Name", comment: "")
         case .developer: return NSLocalizedString("Developer", comment: "")
         case .lastUpdated: return NSLocalizedString("Last Updated", comment: "")
@@ -32,7 +34,7 @@ public enum AppSorting: String, CaseIterable
     public var defaultSortOrder: AppSortOrder {
         switch self
         {
-        case .name, .developer: return .ascending
+        case .name, .developer, .default: return .ascending
         case .lastUpdated: return .descending
         }
     }
