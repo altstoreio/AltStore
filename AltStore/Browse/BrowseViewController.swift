@@ -362,7 +362,6 @@ private extension BrowseViewController
         
         if let source = self.source
         {
-            self.title = NSLocalizedString("All Apps", comment: "")
             self.navigationController?.navigationBar.tintColor = source.effectiveTintColor ?? .altPrimary
         }
         else if let category = self.category
