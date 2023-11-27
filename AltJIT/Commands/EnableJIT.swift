@@ -90,7 +90,7 @@ private extension EnableJIT
             
             do
             {
-                let rsdTunnel = try await withTimeout(seconds: 20) {
+                let rsdTunnel = try await withTimeout(seconds: 90) {
                     let regex = Regex {
                         "--rsd"
                         
@@ -152,7 +152,7 @@ private extension EnableJIT
         {
             Logger.main.info("Starting debugserver...")
             
-            return try await withTimeout(seconds: 10) {
+            return try await withTimeout(seconds: 90) {
                 let arguments = ["-u", "-m", "pymobiledevice3", "developer", "debugserver", "start-server"] + rsdTunnel.commandArguments
                 
                 let output = try await Process.launchAndWait(.python3, arguments: arguments, environment: self.processEnvironment)
