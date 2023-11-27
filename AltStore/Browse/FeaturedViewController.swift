@@ -299,8 +299,8 @@ private extension FeaturedViewController
             // Otherwise, cell reuse can mess up some cached values.
             cell.bannerView.button.isIndicatingActivity = false
             
-            cell.bannerView.configure(for: storeApp)
-            
+            cell.bannerView.configure(for: storeApp, showIconLoadingIndicators: true)
+                        
             if let versionDate = storeApp.latestSupportedVersion?.date
             {
                 cell.bannerView.subtitleLabel.text = Date().relativeDateString(since: versionDate, dateFormatter: Date.mediumDateFormatter)
@@ -308,10 +308,6 @@ private extension FeaturedViewController
             
             cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
             
-            cell.bannerView.iconImageView.image = nil
-            cell.bannerView.iconImageView.isIndicatingActivity = true
-            cell.bannerView.button.tintColor = storeApp.tintColor
-
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
         }
@@ -644,14 +640,20 @@ extension FeaturedViewController
             content.imageProperties.maximumSize = CGSize(width: 26, height: 26)
             content.imageProperties.cornerRadius = 13
             
-            headerView.titleButton.setTitle(content.text, for: .normal)
-        
-            headerView.iconButton.backgroundColor = storeApp.source?.effectiveTintColor?.adjustedForDisplay
-            headerView.iconButton.setImage(nil, for: .normal)
+            // Disable implicit button animations.
+            UIView.performWithoutAnimation {
+                headerView.titleButton.setTitle(content.text, for: .normal)
+                headerView.layoutIfNeeded()
+                
+                headerView.iconButton.backgroundColor = storeApp.source?.effectiveTintColor?.adjustedForDisplay
+                headerView.iconButton.setImage(nil, for: .normal)
+                headerView.iconButton.layoutIfNeeded()
+            }
             
             if let iconURL = storeApp.source?.effectiveIconURL
             {
                 ImagePipeline.shared.loadImage(with: iconURL) { result in
+                    headerView.iconButton.backgroundColor = .white
                     headerView.iconButton.setImage(result.value?.image, for: .normal)
                 }
             }
@@ -749,7 +751,14 @@ extension FeaturedViewController
 #Preview(traits: .portrait) {
     DatabaseManager.shared.startForPreview()
     
-    let featuredViewController = FeaturedViewController(collectionViewLayout: UICollectionViewFlowLayout())
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    let featuredViewController = storyboard.instantiateViewController(identifier: "featuredViewController")
+    
+    let navigationController = UINavigationController(rootViewController: featuredViewController)
+    navigationController.navigationBar.prefersLargeTitles = true
+    navigationController.modalPresentationStyle = .fullScreen
+    
+    let viewController = UIViewController()
     
     AppManager.shared.fetchSources() { (result) in
         do
@@ -785,6 +794,10 @@ extension FeaturedViewController
                 await context.performAsync {
                     try! context.save()
                 }
+                
+                await MainActor.run {
+                    viewController.present(navigationController, animated: true)
+                }
             }
             catch
             {
@@ -792,8 +805,6 @@ extension FeaturedViewController
             }
         }
     }
-        
-    let navigationController = UINavigationController(rootViewController: featuredViewController)
-    navigationController.navigationBar.prefersLargeTitles = true
-    return navigationController
+    
+    return viewController
 }
