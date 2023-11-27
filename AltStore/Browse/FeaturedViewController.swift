@@ -330,14 +330,15 @@ private extension FeaturedViewController
                 }
             }
         }
-        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+        dataSource.prefetchCompletionHandler = { [weak dataSource] (cell, image, indexPath, error) in
             let cell = cell as! AppBannerCollectionViewCell
             cell.bannerView.iconImageView.image = image
             cell.bannerView.iconImageView.isIndicatingActivity = false
             
-            if let error
+            if let error, let dataSource
             {
-                print("[ALTLog] Error loading source icon:", error)
+                let app = dataSource.item(at: indexPath)
+                Logger.main.debug("Failed to app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
             }
         }
         
