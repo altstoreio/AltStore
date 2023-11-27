@@ -128,11 +128,28 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.standardAppearance = appearance
             self.navigationItem.scrollEdgeAppearance = edgeAppearance
         }
+        else if let category = self.category, #available(iOS 16, *)
+        {
+            self.title = category.localizedName
+            
+            let menu = UIMenu(children: [
+                UIDeferredMenuElement.uncached { completion in
+                    let actions = self.makeCategoryActions()
+                    completion(actions)
+                }
+            ])
+            
+            self.navigationItem.titleMenuProvider = { _ in
+                return menu
+            }
+        }
         
         if #available(iOS 15, *)
         {
             self.prepareAppSorting()
         }
+        
+        self.navigationItem.largeTitleDisplayMode = .never
         
         if #available(iOS 16, *)
         {
@@ -365,6 +382,47 @@ private extension BrowseViewController
         {
             self.title = NSLocalizedString("Browse", comment: "")
             self.navigationController?.navigationBar.tintColor = .altPrimary
+        }
+    }
+    
+    func makeCategoryActions() -> [UIAction]
+    {
+        let handler = { [weak self] (category: StoreCategory) in
+            self?.category = category
+        }
+        
+        let fetchRequest = NSFetchRequest(entityName: StoreApp.entity().name!) as NSFetchRequest<NSDictionary>
+        fetchRequest.resultType = .dictionaryResultType
+        fetchRequest.returnsDistinctResults = true
+        fetchRequest.propertiesToFetch = [#keyPath(StoreApp._category)]
+        fetchRequest.predicate = StoreApp.visibleAppsPredicate
+        
+        do
+        {
+            let dictionaries = try DatabaseManager.shared.viewContext.fetch(fetchRequest)
+            
+            // Keep nil values
+            let categories = dictionaries.map { $0[#keyPath(StoreApp._category)] as? String? ?? nil }.map { rawCategory -> StoreCategory in
+                guard let rawCategory else { return .other }
+                return StoreCategory(rawValue: rawCategory) ?? .other
+            }
+            
+            let sortedCategories = Set(categories).sorted(by: { $0.localizedName.localizedStandardCompare($1.localizedName) == .orderedAscending })
+            
+            let actions = sortedCategories.map { category in
+                let state: UIAction.State = (category == self.category) ? .on : .off
+                return UIAction(title: category.localizedName, image: UIImage(systemName: category.symbolName), state: state) { _ in
+                    handler(category)
+                }
+            }
+            
+            return actions
+        }
+        catch
+        {
+            Logger.main.error("Failed to fetch categories. \(error.localizedDescription, privacy: .public)")
+            
+            return []
         }
     }
     
