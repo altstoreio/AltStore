@@ -418,6 +418,32 @@ private extension FeaturedViewController
             cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
             cell.bannerView.sourceIconImageView.isHidden = true
         }
+        dataSource.prefetchHandler = { (storeApp, indexPath, completion) -> Foundation.Operation? in
+            return RSTAsyncBlockOperation { (operation) in
+                storeApp.managedObjectContext?.perform {
+                    ImagePipeline.shared.loadImage(with: storeApp.iconURL, progress: nil) { result in
+                        guard !operation.isCancelled else { return operation.finish() }
+                        
+                        switch result
+                        {
+                        case .success(let response): completion(response.image, nil)
+                        case .failure(let error): completion(nil, error)
+                        }
+                    }
+                }
+            }
+        }
+        dataSource.prefetchCompletionHandler = { [weak dataSource] (cell, image, indexPath, error) in
+            let cell = cell as! AppCardCollectionViewCell
+            cell.bannerView.iconImageView.image = image
+            cell.bannerView.iconImageView.isIndicatingActivity = false
+            
+            if let error = error, let dataSource
+            {
+                let app = dataSource.item(at: indexPath)
+                Logger.main.debug("Failed to app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+            }
+        }
         
         return dataSource
     }
