@@ -129,7 +129,7 @@ class FeaturedViewController: UICollectionViewController
         
         self.collectionView.backgroundColor = .altBackground
         
-        let layout = self.makeLayout()
+        let layout = Self.makeLayout()
         self.collectionView.collectionViewLayout = layout
         
         self.dataSource.proxy = self
@@ -170,15 +170,13 @@ class FeaturedViewController: UICollectionViewController
 
 private extension FeaturedViewController
 {
-    func makeLayout() -> UICollectionViewCompositionalLayout
+    class func makeLayout() -> UICollectionViewCompositionalLayout
     {
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = 0
         config.contentInsetsReference = .layoutMargins
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            guard let self else { return nil }
-            
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             let section = Section(rawValue: sectionIndex)
             
             switch section
