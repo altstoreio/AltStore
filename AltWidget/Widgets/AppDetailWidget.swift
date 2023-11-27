@@ -176,7 +176,7 @@ private extension AppDetailWidgetView
     AppDetailWidget()
 } timeline: {
     let expiredDate = Date().addingTimeInterval(1 * 60 * 60 * 24 * 7)
-    let (altstore, delta, clip, _, longDelta, _) = AppSnapshot.makePreviewSnapshots()
+    let (altstore, delta, _, _, longDelta, _) = AppSnapshot.makePreviewSnapshots()
     
     AppsEntry(date: Date(), apps: [altstore])
     AppsEntry(date: Date(), apps: [delta])
