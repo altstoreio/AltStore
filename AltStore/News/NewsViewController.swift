@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 import AltStoreCore
 import Roxas
@@ -48,17 +49,13 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
+    private var retryButton: UIButton!
     
     private var prototypeCell: NewsCollectionViewCell!
     
-    private var loadingState: LoadingState = .loading {
-        didSet {
-            self.update()
-        }
-    }
-    
     // Cache
     private var cachedCellSizes = [String: CGSize]()
+    private var cancellables = Set<AnyCancellable>()
     
     init?(source: Source?, coder: NSCoder)
     {
@@ -108,6 +105,15 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
         
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(NewsViewController.updateSources), for: .primaryActionTriggered)
+        self.collectionView.refreshControl = refreshControl
+        
+        self.retryButton = UIButton(type: .system)
+        self.retryButton.setTitle(NSLocalizedString("Try Again", comment: ""), for: .normal)
+        self.retryButton.addTarget(self, action: #selector(NewsViewController.updateSources), for: .primaryActionTriggered)
+        self.placeholderView.stackView.addArrangedSubview(self.retryButton)
+        
         if let source = self.source
         {
             let tintColor = source.effectiveTintColor ?? .altPrimary
@@ -124,14 +130,8 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.scrollEdgeAppearance = edgeAppearance
         }
         
+        self.preparePipeline()
         self.update()
-    }
-    
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        
-        self.fetchSource()
     }
     
     override func viewWillLayoutSubviews()
@@ -149,6 +149,16 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
 
 private extension NewsViewController
 {
+    func preparePipeline()
+    {
+        AppManager.shared.$updateSourcesResult
+            .receive(on: RunLoop.main) // Delay to next run loop so we receive _current_ value (not previous value).
+            .sink { result in
+                self.update()
+            }
+            .store(in: &self.cancellables)
+    }
+    
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>
     {
         let fetchRequest = NewsItem.sortedFetchRequest(for: self.source)
@@ -225,96 +235,51 @@ private extension NewsViewController
         
         return dataSource
     }
-
-    func fetchSource()
+    
+    @objc func updateSources()
     {
-        self.loadingState = .loading
-        
-        AppManager.shared.fetchSources() { (result) in
-            do
+        AppManager.shared.updateAllSources() { result in
+            self.collectionView.refreshControl?.endRefreshing()
+            
+            guard case .failure(let error) = result else { return }
+            
+            if self.dataSource.itemCount > 0
             {
-                do
-                {
-                    let (_, context) = try result.get()
-                    try context.save()
-                    
-                    DispatchQueue.main.async {
-                        self.loadingState = .finished(.success(()))
-                    }
-                }
-                catch let error as AppManager.FetchSourcesError
-                {
-                    try error.managedObjectContext?.save()
-                    throw error
-                }
-                catch let mergeError as MergeError
-                {
-                    guard let sourceID = mergeError.sourceID else { throw mergeError }
-                    
-                    let sanitizedError = (mergeError as NSError).sanitizedForSerialization()
-                    DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
-                        do
-                        {
-                            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID), in: context) else { return }
-                            
-                            source.error = sanitizedError
-                            try context.save()
-                        }
-                        catch
-                        {
-                            print("[ALTLog] Failed to assign error \(sanitizedError.localizedErrorCode) to source \(sourceID).", error)
-                        }
-                    }
-                    
-                    throw mergeError
-                }
-            }
-            catch var error as NSError
-            {
-                if error.localizedTitle == nil
-                {
-                    error = error.withLocalizedTitle(NSLocalizedString("Unable to Refresh Store", comment: ""))
-                }
-                
-                DispatchQueue.main.async {
-                    if self.dataSource.itemCount > 0
-                    {
-                        let toastView = ToastView(error: error)
-                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
-                        toastView.show(in: self)
-                    }
-                    
-                    self.loadingState = .finished(.failure(error))
-                }
+                let toastView = ToastView(error: error)
+                toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+                toastView.show(in: self)
             }
         }
     }
     
     func update()
     {
-        switch self.loadingState
+        switch AppManager.shared.updateSourcesResult
         {
-        case .loading:
+        case nil:
             self.placeholderView.textLabel.isHidden = true
             self.placeholderView.detailTextLabel.isHidden = false
             
             self.placeholderView.detailTextLabel.text = NSLocalizedString("Loading...", comment: "")
             
+            self.retryButton.isHidden = true
             self.placeholderView.activityIndicatorView.startAnimating()
             
-        case .finished(.failure(let error)):
+        case .failure(let error):
             self.placeholderView.textLabel.isHidden = false
             self.placeholderView.detailTextLabel.isHidden = false
             
             self.placeholderView.textLabel.text = NSLocalizedString("Unable to Fetch News", comment: "")
             self.placeholderView.detailTextLabel.text = error.localizedDescription
             
+            self.retryButton.isHidden = false
             self.placeholderView.activityIndicatorView.stopAnimating()
             
-        case .finished(.success):
+        case .success:
             self.placeholderView.textLabel.isHidden = true
             self.placeholderView.detailTextLabel.isHidden = true
             
+            self.retryButton.isHidden = true
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
     }
