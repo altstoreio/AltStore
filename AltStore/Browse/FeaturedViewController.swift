@@ -350,14 +350,18 @@ private extension FeaturedViewController
         let knownCategories = StoreCategory.allCases.filter { $0 != .other }.map { $0.rawValue }
         
         let knownFetchRequest = StoreApp.fetchRequest()
-        knownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
         knownFetchRequest.predicate = NSPredicate(format: "%K IN %@", #keyPath(StoreApp._category), knownCategories)
+        knownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true),
+                                             NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                                             NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true)]
         
         let unknownFetchRequest = StoreApp.fetchRequest()
-        unknownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true)]
         unknownFetchRequest.predicate = NSPredicate(format: "%K == nil OR NOT (%K IN %@)",
                                                     #keyPath(StoreApp._category),
                                                     #keyPath(StoreApp._category), knownCategories)
+        unknownFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp._category, ascending: true),
+                                               NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                                               NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true)]
         
         let knownController = NSFetchedResultsController(fetchRequest: knownFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._category), cacheName: nil)
         let knownDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: knownController)
