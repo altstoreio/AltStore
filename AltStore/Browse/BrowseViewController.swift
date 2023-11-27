@@ -255,7 +255,7 @@ private extension BrowseViewController
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
         dataSource.placeholderView = self.placeholderView
-        dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
+        dataSource.cellConfigurationHandler = { [source] (cell, app, indexPath) in
             let cell = cell as! AppCardCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
@@ -268,6 +268,12 @@ private extension BrowseViewController
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
+            
+            if source != nil
+            {
+                // Hide source icon if redundant
+                cell.bannerView.sourceIconImageView.isHidden = true
+            }
             
             cell.bannerView.button.addTarget(self, action: #selector(BrowseViewController.performAppAction(_:)), for: .primaryActionTriggered)
             cell.bannerView.button.activityIndicatorView.style = .medium
