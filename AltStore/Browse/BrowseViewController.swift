@@ -168,14 +168,6 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         self.update()
     }
-    
-    override func viewIsAppearing(_ animated: Bool) 
-    {
-        super.viewIsAppearing(animated)
-        
-        // Update sort ordering in case it has been changed from another view.
-        self.collectionView.reloadData()
-    }
 }
 
 private extension BrowseViewController
