@@ -29,15 +29,6 @@ extension AppManager
     static let enableJITResultNotificationID = "altstore-enable-jit"
 }
 
-class AppManagerPublisher: ObservableObject
-{
-    @Published
-    fileprivate(set) var installationProgress = [String: Progress]()
-    
-    @Published
-    fileprivate(set) var refreshProgress = [String: Progress]()
-}
-
 class AppManager: ObservableObject
 {
     static let shared = AppManager()
@@ -50,16 +41,9 @@ class AppManager: ObservableObject
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
     
-    private var installationProgress = [String: Progress]() {
-        didSet {
-            self.publisher.installationProgress = self.installationProgress
-        }
-    }
-    private var refreshProgress = [String: Progress]() {
-        didSet {
-            self.publisher.refreshProgress = self.refreshProgress
-        }
-    }
+    @Published private var installationProgress = [String: Progress]()
+    @Published private var refreshProgress = [String: Progress]()
+    private var cancellables: Set<AnyCancellable> = []
     
     private lazy var progressLock: UnsafeMutablePointer<os_unfair_lock> = {
         // Can't safely pass &os_unfair_lock to os_unfair_lock functions in Swift,
@@ -69,9 +53,6 @@ class AppManager: ObservableObject
         lock.initialize(to: .init())
         return lock
     }()
-    
-    private let publisher = AppManagerPublisher()
-    private var cancellables: Set<AnyCancellable> = []
     
     private init()
     {
@@ -95,7 +76,7 @@ class AppManager: ObservableObject
         /// Every time refreshProgress is changed, update all InstalledApps in memory
         /// so that app.isRefreshing == refreshProgress.keys.contains(app.bundleID)
         
-        self.publisher.$refreshProgress
+        self.$refreshProgress
             .receive(on: RunLoop.main)
             .map(\.keys)
             .flatMap { (bundleIDs) in
