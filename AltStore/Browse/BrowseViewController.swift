@@ -113,7 +113,9 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         if let source = self.source
         {
-            let tintColor = source.effectiveTintColor ?? .altPrimary
+            self.title = source.name
+            
+            let tintColor = source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
             self.view.tintColor = tintColor
             
             let appearance = NavigationBarAppearance()
