@@ -74,17 +74,24 @@ class IconButtonCollectionReusableView: UICollectionReusableView
         self.titleButton.setTitleColor(content.textProperties.color, for: .normal)
         
         self.stackView = UIStackView(arrangedSubviews: [self.iconButton, self.titleButton])
+        self.stackView.translatesAutoresizingMaskIntoConstraints = false
         self.stackView.axis = .horizontal
         self.stackView.alignment = .center
         self.stackView.spacing = UIStackView.spacingUseSystem
+        self.stackView.isLayoutMarginsRelativeArrangement = false
         
         super.init(frame: frame)
         
-        self.addSubview(self.stackView, pinningEdgesWith: .zero)
+        self.addSubview(self.stackView)
         
         NSLayoutConstraint.activate([
             self.iconButton.heightAnchor.constraint(equalToConstant: iconHeight),
-            self.iconButton.widthAnchor.constraint(equalTo: self.iconButton.heightAnchor)
+            self.iconButton.widthAnchor.constraint(equalTo: self.iconButton.heightAnchor),
+            
+            self.stackView.topAnchor.constraint(equalTo: self.topAnchor),
+            self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
         ])
     }
     

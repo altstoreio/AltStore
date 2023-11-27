@@ -689,6 +689,9 @@ extension FeaturedViewController
             default: break
             }
             
+            content.directionalLayoutMargins.leading = .zero
+            content.directionalLayoutMargins.trailing = .zero
+            
             headerView.contentConfiguration = content
             return headerView
             
