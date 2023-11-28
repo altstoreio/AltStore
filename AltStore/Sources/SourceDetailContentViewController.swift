@@ -225,14 +225,10 @@ private extension SourceDetailContentViewController
             cell.contentView.layoutMargins = .zero
             cell.contentView.backgroundColor = .altBackground
             
-            cell.bannerView.configure(for: storeApp)
+            cell.bannerView.configure(for: storeApp, resetAppIcon: true)
+            cell.bannerView.sourceIconImageView.isHidden = true // Redundant
+            
             cell.bannerView.button.addTarget(self, action: #selector(SourceDetailContentViewController.performAppAction(_:)), for: .primaryActionTriggered)
-            
-            cell.bannerView.iconImageView.isIndicatingActivity = true
-            cell.bannerView.buttonLabel.isHidden = true
-            
-            cell.bannerView.button.isIndicatingActivity = false
-            cell.bannerView.button.tintColor = storeApp.tintColor
 
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()

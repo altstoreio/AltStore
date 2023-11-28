@@ -266,8 +266,6 @@ private extension BrowseViewController
             
             cell.configure(for: app)
             
-            cell.bannerView.iconImageView.image = nil
-            cell.bannerView.iconImageView.isIndicatingActivity = true
             
             if source != nil
             {

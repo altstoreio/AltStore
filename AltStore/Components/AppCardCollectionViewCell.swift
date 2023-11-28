@@ -314,8 +314,7 @@ extension AppCardCollectionViewCell
     {
         self.screenshots = storeApp.preferredScreenshots()
         
-        self.bannerView.tintColor = storeApp.tintColor
-        self.bannerView.configure(for: storeApp)
+        self.bannerView.configure(for: storeApp, resetAppIcon: true)
         
         self.bannerView.subtitleLabel.numberOfLines = 1
         self.bannerView.subtitleLabel.lineBreakMode = .byTruncatingTail

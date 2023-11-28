@@ -226,11 +226,7 @@ private extension MyAppsViewController
             cell.tintColor = app.tintColor ?? .altPrimary
             cell.versionDescriptionTextView.text = latestSupportedVersion.localizedDescription
             
-            cell.bannerView.iconImageView.image = nil
-            cell.bannerView.iconImageView.isIndicatingActivity = true
-            
-            cell.bannerView.configure(for: app)
-            cell.bannerView.buttonLabel.isHidden = true
+            cell.bannerView.configure(for: app, resetAppIcon: true)
             
             let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
             cell.bannerView.subtitleLabel.text = versionDate
@@ -246,12 +242,14 @@ private extension MyAppsViewController
                 appName = app.name
             }
             
-            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.localizedVersion, versionDate)
+            if !cell.bannerView.button.isIndicatingActivity
+            {
+                cell.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
+                cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
+                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Update %@", comment: ""), installedApp.name)
+            }
             
-            cell.bannerView.button.isIndicatingActivity = false
-            cell.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
-            cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
-            cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Update %@", comment: ""), installedApp.name)
+            cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.localizedVersion, versionDate)
             
             if self.expandedAppUpdates.contains(app.bundleIdentifier)
             {
@@ -263,12 +261,6 @@ private extension MyAppsViewController
             }
             
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
-            
-            // Ensure PillButton is correct size before assigning progress.
-            cell.layoutIfNeeded()
-            
-            let progress = AppManager.shared.installationProgress(for: app)
-            cell.bannerView.button.progress = progress
             
             cell.setNeedsLayout()
         }
@@ -337,9 +329,7 @@ private extension MyAppsViewController
                 cell.deactivateBadge?.transform = CGAffineTransform.identity.scaledBy(x: 0.33, y: 0.33)
             }
             
-            cell.bannerView.configure(for: installedApp)
-            
-            cell.bannerView.iconImageView.isIndicatingActivity = true
+            cell.bannerView.configure(for: installedApp, resetAppIcon: true)
             
             cell.bannerView.buttonLabel.isHidden = false
             cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
@@ -440,7 +430,6 @@ private extension MyAppsViewController
             cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = UIColor.gray
             
-            cell.bannerView.iconImageView.isIndicatingActivity = true
             cell.bannerView.buttonLabel.isHidden = true
             cell.bannerView.alpha = 1.0
             
@@ -448,7 +437,7 @@ private extension MyAppsViewController
             cell.deactivateBadge?.alpha = 0.0
             cell.deactivateBadge?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
             
-            cell.bannerView.configure(for: installedApp)
+            cell.bannerView.configure(for: installedApp, resetAppIcon: true)
             
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.tintColor = tintColor

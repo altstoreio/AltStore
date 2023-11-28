@@ -127,7 +127,7 @@ class AppBannerView: RSTNibView
 
 extension AppBannerView
 {
-    func configure(for app: AppProtocol)
+    func configure(for app: AppProtocol, resetAppIcon: Bool = false)
     {
         struct AppValues
         {
@@ -167,23 +167,48 @@ extension AppBannerView
             self.accessibilityLabel = values.name
         }
         
+        if resetAppIcon
+        {
+            self.iconImageView.image = nil
+            self.iconImageView.isIndicatingActivity = true
+        }
+        
         if let storeApp = app.storeApp
         {
-            // Always show Patreon badge if pledge is required.
             // Unlike below, this applies for both StoreApp's and InstalledApp's.
+            
+            // Always show Patreon badge if pledge is required.
             self.patreonBadgeImageView.isHidden = !storeApp.isPledgeRequired
             
-            if let iconURL = storeApp.source?.effectiveIconURL
+            if let source = storeApp.source
             {
                 self.sourceIconImageView.isHidden = false
+                self.sourceIconImageView.backgroundColor = source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
                 
-                ImagePipeline.shared.loadImage(with: iconURL) { result in
-                    switch result
+                if let iconURL = storeApp.source?.effectiveIconURL
+                {
+                    if let image = ImageCache.shared[iconURL]
                     {
-                    case .success(let image): self.sourceIconImageView.image = image.image
-                    case .failure: break
+                        self.sourceIconImageView.backgroundColor = .white
+                        self.sourceIconImageView.image = image.image
+                    }
+                    else
+                    {
+                        self.sourceIconImageView.image = nil
+                        
+                        Nuke.loadImage(with: iconURL, into: self.sourceIconImageView) { result in
+                            switch result
+                            {
+                            case .failure(let error): Logger.main.error("Failed to fetch source icon from \(iconURL). \(error.localizedDescription, privacy: .public)")
+                            case .success: self.sourceIconImageView.backgroundColor = .white // In case icon has transparent background.
+                            }
+                        }
                     }
                 }
+            }
+            else
+            {
+                self.sourceIconImageView.isHidden = true
             }
         }
         else
@@ -202,6 +227,15 @@ extension AppBannerView
         
         if let app = app as? StoreApp
         {
+            // Only if app _itself_ is StoreApp, unlike above.
+            
+            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
+            // Otherwise, cell reuse can mess up some cached values.
+            self.button.isIndicatingActivity = false
+            
+            self.tintColor = app.tintColor ?? .altPrimary
+            self.button.tintColor = app.tintColor
+            
             if let installedApp = app.installedApp
             {
                 // App is installed

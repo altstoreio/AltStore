@@ -294,12 +294,8 @@ private extension FeaturedViewController
             
             cell.contentView.preservesSuperviewLayoutMargins = false
             cell.contentView.layoutMargins = .zero
-                        
-            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
-            // Otherwise, cell reuse can mess up some cached values.
-            cell.bannerView.button.isIndicatingActivity = false
             
-            cell.bannerView.configure(for: storeApp, showIconLoadingIndicators: true)
+            cell.bannerView.configure(for: storeApp, resetAppIcon: true)
                         
             if let versionDate = storeApp.latestSupportedVersion?.date
             {
@@ -307,9 +303,6 @@ private extension FeaturedViewController
             }
             
             cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
-            
-            // Make sure refresh button is correct size.
-            cell.layoutIfNeeded()
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completion) -> Foundation.Operation? in
             return RSTAsyncBlockOperation { (operation) in

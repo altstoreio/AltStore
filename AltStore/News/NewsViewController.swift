@@ -403,43 +403,14 @@ extension NewsViewController
         footerView.layoutMargins.left = self.view.layoutMargins.left
         footerView.layoutMargins.right = self.view.layoutMargins.right
         
-        footerView.bannerView.configure(for: storeApp)
+        footerView.bannerView.configure(for: storeApp, resetAppIcon: true)
         
-        footerView.bannerView.tintColor = storeApp.tintColor
         footerView.bannerView.button.addTarget(self, action: #selector(NewsViewController.performAppAction(_:)), for: .primaryActionTriggered)
         footerView.tapGestureRecognizer.addTarget(self, action: #selector(NewsViewController.handleTapGesture(_:)))
-        
-        footerView.bannerView.button.isIndicatingActivity = false
-        
-        if storeApp.installedApp == nil
-        {
-            let buttonTitle = NSLocalizedString("Free", comment: "")
-            footerView.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = buttonTitle
-            
-            let progress = AppManager.shared.installationProgress(for: storeApp)
-            footerView.bannerView.button.progress = progress
-            
-            if let versionDate = storeApp.latestSupportedVersion?.date, versionDate > Date()
-            {
-                footerView.bannerView.button.countdownDate = versionDate
-            }
-            else
-            {
-                footerView.bannerView.button.countdownDate = nil
-            }
+                
+        Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView) { result in
+            footerView.bannerView.iconImageView.isIndicatingActivity = false
         }
-        else
-        {
-            footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = nil
-            footerView.bannerView.button.progress = nil
-            footerView.bannerView.button.countdownDate = nil
-        }
-        
-        Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView)
         
         return footerView
     }
