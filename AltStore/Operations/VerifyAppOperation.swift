@@ -151,7 +151,10 @@ private extension VerifyAppOperation
             guard let presentingViewController = self.context.presentingViewController else { break } // Don't fail just because we can't show permissions.
             
             let allEntitlements = allPermissions.compactMap { $0 as? ALTEntitlement }
-            try await self.review(allEntitlements, for: app, mode: .all, presentingViewController: presentingViewController)
+            if !allEntitlements.isEmpty
+            {
+                try await self.review(allEntitlements, for: app, mode: .all, presentingViewController: presentingViewController)
+            }
             
         case .added:
             let installedAppURL = InstalledApp.fileURL(for: app)
