@@ -137,6 +137,11 @@ private extension JITManager
             }
             arguments += ["--udid", device.identifier]
             
+            if let timeout = UserDefaults.standard.altJITTimeout
+            {
+                arguments += ["--timeout", String(timeout)]
+            }
+            
             self.authorization = try Process.runAsAdmin(URL.altjit.path, arguments: arguments, authorization: self.authorization)
         }
         catch

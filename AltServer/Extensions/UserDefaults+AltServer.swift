@@ -36,3 +36,16 @@ extension UserDefaults
         }
     }
 }
+
+// "Public" defaults configurable via CLI.
+extension UserDefaults
+{
+    private static let altJITTimeoutKey = "JITTimeout"
+    
+    var altJITTimeout: TimeInterval? {
+        let timeout = self.double(forKey: UserDefaults.altJITTimeoutKey) // Coerces strings into doubles.
+        guard timeout != 0 else { return nil }
+        
+        return timeout
+    }
+}
