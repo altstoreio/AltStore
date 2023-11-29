@@ -22,6 +22,9 @@ struct EnableJIT: PythonCommand
     @Option(help: "Your iOS device's UDID.")
     var udid: String
     
+    @Option(name: .shortAndLong, help: "Number of seconds to wait when connecting to an iOS device before operation is cancelled.")
+    var timeout: TimeInterval = 90.0
+    
     // PythonCommand
     var pythonPath: String?
     
@@ -84,13 +87,13 @@ private extension EnableJIT
     {
         do
         {
-            Logger.main.info("Starting RSD tunnel...")
+            Logger.main.info("Starting RSD tunnel with timeout: \(self.timeout)")
             
             let process = try Process.launch(.python3, arguments: ["-u", "-m", "pymobiledevice3", "remote", "start-quic-tunnel", "--udid", self.udid], environment: self.processEnvironment)
             
             do
             {
-                let rsdTunnel = try await withTimeout(seconds: 90) {
+                let rsdTunnel = try await withTimeout(seconds: self.timeout) {
                     let regex = Regex {
                         "--rsd"
                         
@@ -150,9 +153,9 @@ private extension EnableJIT
     {
         do
         {
-            Logger.main.info("Starting debugserver...")
+            Logger.main.info("Starting debugserver with timeout: \(self.timeout)")
             
-            return try await withTimeout(seconds: 90) {
+            return try await withTimeout(seconds: self.timeout) {
                 let arguments = ["-u", "-m", "pymobiledevice3", "developer", "debugserver", "start-server"] + rsdTunnel.commandArguments
                 
                 let output = try await Process.launchAndWait(.python3, arguments: arguments, environment: self.processEnvironment)
