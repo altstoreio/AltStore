@@ -242,7 +242,8 @@ public extension PatreonAPI
                 let accounts = PatreonAccount.all(in: context, requestProperties: [\.returnsObjectsAsFaults: true])
                 accounts.forEach(context.delete(_:))
                 
-                self.deactivateBetaApps(in: context)
+                let pledgeRequiredApps = StoreApp.all(satisfying: NSPredicate(format: "%K == YES", #keyPath(StoreApp.isPledgeRequired)), in: context)
+                pledgeRequiredApps.forEach { $0.isPledged = false }
                 
                 try context.save()
                 
@@ -270,13 +271,6 @@ public extension PatreonAPI
             do
             {
                 let account = try result.get()
-                
-                if let context = account.managedObjectContext, !account.isPatron
-                {
-                    // Deactivate all beta apps now that we're no longer a patron.
-                    self.deactivateBetaApps(in: context)
-                }
-                
                 try account.managedObjectContext?.save()
             }
             catch
@@ -452,15 +446,6 @@ private extension PatreonAPI
         }
         
         task.resume()
-    }
-    
-    func deactivateBetaApps(in context: NSManagedObjectContext)
-    {
-        let predicate = NSPredicate(format: "%K != %@ AND %K != nil AND %K == YES",
-                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
-        
-        let installedApps = InstalledApp.all(satisfying: predicate, in: context)
-        installedApps.forEach { $0.isActive = false }
     }
 }
 
