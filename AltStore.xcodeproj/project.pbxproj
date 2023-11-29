@@ -357,6 +357,7 @@
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
+		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
@@ -976,6 +977,7 @@
 		D51AD27C29356B7B00967AAA /* ALTWrappedError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWrappedError.h; sourceTree = "<group>"; };
 		D51AD27D29356B7B00967AAA /* ALTWrappedError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWrappedError.m; sourceTree = "<group>"; };
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
+		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailCollectionViewController.swift; sourceTree = "<group>"; };
@@ -1496,6 +1498,7 @@
 			isa = PBXGroup;
 			children = (
 				BF66EE8B2501AEB1007EE018 /* Keychain.swift */,
+				D52B4ABE2AF183F0005991C3 /* WebViewController.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -3062,6 +3065,7 @@
 				D5FB28EE2ADDF89800A1C337 /* KnownSource.swift in Sources */,
 				BF66EED32501AECA007EE018 /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF66EEA52501AEC5007EE018 /* Benefit.swift in Sources */,
+				D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */,
 				BF66EED22501AECA007EE018 /* AltStore4ToAltStore5.xcmappingmodel in Sources */,
 				D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */,
 				D5189C022A01BC6800F44625 /* UserInfoValue.swift in Sources */,
