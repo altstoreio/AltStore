@@ -16,7 +16,8 @@ public class PatreonAccount: NSManagedObject, Fetchable
     @NSManaged public var name: String
     @NSManaged public var firstName: String?
     
-    @NSManaged public var isPatron: Bool
+    // Use `isPatron` for backwards compatibility.
+    @NSManaged @objc(isPatron) public var isAltStorePatron: Bool
     
     /* Relationships */
     @nonobjc public var pledges: Set<Pledge> { _pledges as! Set<Pledge> }
@@ -55,11 +56,11 @@ public class PatreonAccount: NSManagedObject, Fetchable
         if let altstorePledge = account.pledges?.first(where: { $0.campaign?.identifier == PatreonAPI.altstoreCampaignID })
         {
             let isActivePatron = (altstorePledge.status == .active)
-            self.isPatron = isActivePatron
+            self.isAltStorePatron = isActivePatron
         }
         else
         {
-            self.isPatron = false
+            self.isAltStorePatron = false
         }
     }
 }
