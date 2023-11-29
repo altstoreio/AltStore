@@ -191,7 +191,7 @@ private extension PatreonViewController
     
     @IBAction func authenticate(_ sender: UIBarButtonItem)
     {
-        PatreonAPI.shared.authenticate { (result) in
+        PatreonAPI.shared.authenticate(presentingViewController: self) { (result) in
             do
             {
                 let account = try result.get()
@@ -201,9 +201,12 @@ private extension PatreonViewController
                     self.update()
                 }
             }
-            catch ASWebAuthenticationSessionError.canceledLogin
+            catch is CancellationError
             {
-                // Ignore
+                // Clear in-app browser cache in case they are signed into wrong account.
+                Task<Void, Never>.detached {
+                    await PatreonAPI.shared.deleteAuthCookies()
+                }
             }
             catch
             {
