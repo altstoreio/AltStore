@@ -1246,7 +1246,7 @@ private extension AppManager
                       let patchAppURL = URL(string: patchAppLink)
                 else { throw OperationError.invalidApp }
                 
-                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL)
+                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL, storeApp: nil)
                 
                 DispatchQueue.main.async {
                     let storyboard = UIStoryboard(name: "PatchApp", bundle: nil)
