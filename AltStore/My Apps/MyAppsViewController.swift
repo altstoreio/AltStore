@@ -112,11 +112,10 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
     }
     
-    override func viewWillAppear(_ animated: Bool)
+    override func viewIsAppearing(_ animated: Bool)
     {
-        super.viewWillAppear(animated)
+        super.viewIsAppearing(animated)
         
-        self.updateDataSource()
         self.update()
         
         self.fetchAppIDs()
@@ -474,33 +473,6 @@ private extension MyAppsViewController
         }
         
         return dataSource
-    }
-    
-    func updateDataSource()
-    {
-        do
-        {
-            if self.updatesDataSource.fetchedResultsController.fetchedObjects == nil
-            {
-                try self.updatesDataSource.fetchedResultsController.performFetch()
-            }
-        }
-        catch
-        {
-            print("[ALTLog] Failed to fetch updates:", error)
-        }
-        
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            self.dataSource.predicate = nil
-        }
-        else
-        {
-            self.dataSource.predicate = NSPredicate(format: "%K == nil OR %K == NO OR %K == %@",
-                                                    #keyPath(InstalledApp.storeApp),
-                                                    #keyPath(InstalledApp.storeApp.isBeta),
-                                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        }
     }
 }
 
