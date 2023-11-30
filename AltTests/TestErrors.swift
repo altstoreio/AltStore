@@ -237,6 +237,8 @@ extension OperationError
             case .connectionFailed: return .connectionFailed
             case .connectionDropped: return .connectionDropped
             case .forbidden: return .forbidden()
+            case .pledgeRequired: return .pledgeRequired(appName: "Delta")
+            case .pledgeInactive: return .pledgeInactive(appName: "Delta")
             }
         }
     }

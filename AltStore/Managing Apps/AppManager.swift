@@ -1358,8 +1358,22 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        let operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        var operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
+        
+        if let storeApp = downloadingApp.storeApp, storeApp.isPledgeRequired
+        {
+            // Patreon apps may require authenticating with WebViewController,
+            // so make sure to run DownloadAppOperation serially.
+            self.run([downloadOperation], context: group.context, requiresSerialQueue: true)
+            
+            if let index = operations.firstIndex(of: downloadOperation)
+            {
+                // Remove downloadOperation from operations to prevent running it twice.
+                operations.remove(at: index)
+            }
+        }
+
         self.run(operations, context: group.context)
         
         return progress
