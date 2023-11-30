@@ -707,10 +707,29 @@ private extension MyAppsViewController
     
     @IBAction func refreshAllApps(_ sender: UIBarButtonItem)
     {
+        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
+        guard !installedApps.isEmpty else {
+            let error: Error
+            
+            if let altstoreApp = InstalledApp.fetchAltStore(in: DatabaseManager.shared.viewContext),
+               let storeApp = altstoreApp.storeApp, storeApp.isPledgeRequired && !storeApp.isPledged
+            {
+                // Assume the reason there are no apps is because we are no longer pledged to AltStore beta.
+                error = OperationError(.pledgeInactive(appName: altstoreApp.name))
+            }
+            else
+            {
+                // Otherwise, fall back to generic noInstalledApps.
+                error = RefreshError(.noInstalledApps)
+            }
+            
+            let toastView = ToastView(error: error)
+            toastView.show(in: self)
+            return
+        }
+        
         self.isRefreshingAllApps = true
         self.collectionView.collectionViewLayout.invalidateLayout()
-
-        let installedApps = InstalledApp.fetchAppsForRefreshingAll(in: DatabaseManager.shared.viewContext)
         
         self.refresh(installedApps) { (result) in
             DispatchQueue.main.async {

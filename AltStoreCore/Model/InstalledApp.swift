@@ -248,10 +248,13 @@ public extension InstalledApp
         {
             // Refresh AltStore last since it causes app to quit.
             
-            if let storeApp = altStoreApp.storeApp, !storeApp.isPledgeRequired || storeApp.isPledged
+            if let storeApp = altStoreApp.storeApp
             {
-                // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
-                installedApps.append(altStoreApp)
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
             }
             else
             {
@@ -283,10 +286,13 @@ public extension InstalledApp
         
         if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
         {
-            if let storeApp = altStoreApp.storeApp, !storeApp.isPledgeRequired || storeApp.isPledged
+            if let storeApp = altStoreApp.storeApp
             {
-                // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
-                installedApps.append(altStoreApp)
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
             }
             else
             {
