@@ -208,7 +208,7 @@ private extension DownloadAppOperation
                     fileURL = sourceURL
                     self.progress.completedUnitCount += 3
                 }
-                else if let isPledged = await self.context.$appVersion.perform({ $0?.app?.isPledged }), !isPledged
+                else if let (isPledged, isPledgeRequired) = await self.context.$appVersion.perform({ $0?.app.map { ($0.isPledged, $0.isPledgeRequired) } }), isPledgeRequired && !isPledged
                 {
                     // Not pledged, so just show Patreon page.
                     guard let presentingViewController = self.context.presentingViewController,
