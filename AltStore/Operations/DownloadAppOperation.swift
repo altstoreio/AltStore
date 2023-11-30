@@ -301,6 +301,11 @@ private extension DownloadAppOperation
     
     func downloadPatreonApp(from patreonURL: URL) async throws -> URL
     {
+        guard !UserDefaults.shared.skipPatreonDownloads else {
+            // Skip all hacks, take user straight to Patreon post.
+            return try await downloadFromPatreonPost()
+        }
+        
         do
         {
             // User is pledged to this app, attempt to download.
