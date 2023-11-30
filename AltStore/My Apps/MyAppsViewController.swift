@@ -116,6 +116,9 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewIsAppearing(animated)
         
+        // Ensure the button for each app reflects correct Patreon status.
+        self.collectionView.reloadData()
+        
         self.update()
         
         self.fetchAppIDs()
@@ -357,6 +360,17 @@ private extension MyAppsViewController
             cell.bannerView.button.setTitle(numberOfDaysText.uppercased(), for: .normal)
             cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Refresh %@", comment: ""), installedApp.name)
             
+            if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
+            {
+                cell.bannerView.button.isEnabled = false
+                cell.bannerView.button.alpha = 0.5
+            }
+            else
+            {
+                cell.bannerView.button.isEnabled = true
+                cell.bannerView.button.alpha = 1.0
+            }
+            
             cell.bannerView.accessibilityLabel? += ". " + String(format: NSLocalizedString("Expires in %@", comment: ""), numberOfDaysText)
             
             // Make sure refresh button is correct size.
@@ -437,6 +451,17 @@ private extension MyAppsViewController
             cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.activateApp(_:)), for: .primaryActionTriggered)
             cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Activate %@", comment: ""), installedApp.name)
+            
+            if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
+            {
+                cell.bannerView.button.isEnabled = false
+                cell.bannerView.button.alpha = 0.5
+            }
+            else
+            {
+                cell.bannerView.button.isEnabled = true
+                cell.bannerView.button.alpha = 1.0
+            }
             
             // Make sure refresh button is correct size.
             cell.layoutIfNeeded()
@@ -1676,7 +1701,7 @@ extension MyAppsViewController
 
 extension MyAppsViewController
 {
-    private func actions(for installedApp: InstalledApp) -> [UIMenuElement]
+    private func contextMenu(for installedApp: InstalledApp) -> UIMenu
     {
         var actions = [UIMenuElement]()
         
@@ -1734,103 +1759,128 @@ extension MyAppsViewController
         
         let changeIconMenu = UIMenu(title: NSLocalizedString("Change Icon", comment: ""), image: UIImage(systemName: "photo"), children: changeIconActions)
         
-        guard installedApp.bundleIdentifier != StoreApp.altstoreAppID else {
-            #if BETA
-            return [refreshAction, changeIconMenu]
-            #else
-            return [refreshAction]
-            #endif
-        }
-        
-        if installedApp.isActive
+        if installedApp.bundleIdentifier == StoreApp.altstoreAppID
         {
-            actions.append(openMenu)
-            actions.append(refreshAction)
+            #if BETA
+            actions = [refreshAction, changeIconMenu]
+            #else
+            actions = [refreshAction]
+            #endif
         }
         else
         {
-            actions.append(activateAction)
-        }
-        
-        if installedApp.isActive
-        {
-            actions.append(jitAction)
-        }
-        
-        #if BETA
-        actions.append(changeIconMenu)
-        #endif
-        
-        if installedApp.isActive
-        {
-            actions.append(backupAction)
-        }
-        else if let _ = UTTypeCopyDeclaration(installedApp.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?, !UserDefaults.standard.isLegacyDeactivationSupported
-        {
-            // Allow backing up inactive apps if they are still installed,
-            // but on an iOS version that no longer supports legacy deactivation.
-            // This handles edge case where you can't install more apps until you
-            // delete some, but can't activate inactive apps again to back them up first.
-            actions.append(backupAction)
-        }
-                
-        if let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp)
-        {
-            var backupExists = false
-            var outError: NSError? = nil
-            
-            self.coordinator.coordinate(readingItemAt: backupDirectoryURL, options: [.withoutChanges], error: &outError) { (backupDirectoryURL) in
-                #if DEBUG
-                backupExists = true
-                #else
-                backupExists = FileManager.default.fileExists(atPath: backupDirectoryURL.path)
-                #endif
+            if installedApp.isActive
+            {
+                actions.append(openMenu)
+                actions.append(refreshAction)
+            }
+            else
+            {
+                actions.append(activateAction)
             }
             
-            if backupExists
+            if installedApp.isActive
             {
-                actions.append(exportBackupAction)
+                actions.append(jitAction)
+            }
+            
+            #if BETA
+            actions.append(changeIconMenu)
+            #endif
+            
+            if installedApp.isActive
+            {
+                actions.append(backupAction)
+            }
+            else if let _ = UTTypeCopyDeclaration(installedApp.installedAppUTI as CFString)?.takeRetainedValue() as NSDictionary?, !UserDefaults.standard.isLegacyDeactivationSupported
+            {
+                // Allow backing up inactive apps if they are still installed,
+                // but on an iOS version that no longer supports legacy deactivation.
+                // This handles edge case where you can't install more apps until you
+                // delete some, but can't activate inactive apps again to back them up first.
+                actions.append(backupAction)
+            }
+                    
+            if let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp)
+            {
+                var backupExists = false
+                var outError: NSError? = nil
                 
-                if installedApp.isActive
+                self.coordinator.coordinate(readingItemAt: backupDirectoryURL, options: [.withoutChanges], error: &outError) { (backupDirectoryURL) in
+                    #if DEBUG
+                    backupExists = true
+                    #else
+                    backupExists = FileManager.default.fileExists(atPath: backupDirectoryURL.path)
+                    #endif
+                }
+                
+                if backupExists
                 {
-                    actions.append(restoreBackupAction)
+                    actions.append(exportBackupAction)
+                    
+                    if installedApp.isActive
+                    {
+                        actions.append(restoreBackupAction)
+                    }
+                }
+                else if let error = outError
+                {
+                    print("Unable to check if backup exists:", error)
                 }
             }
-            else if let error = outError
+            
+            if installedApp.isActive
             {
-                print("Unable to check if backup exists:", error)
+                actions.append(deactivateAction)
             }
+            
+            #if DEBUG
+            
+            if installedApp.bundleIdentifier != StoreApp.altstoreAppID
+            {
+                actions.append(removeAction)
+            }
+            
+            #else
+            
+            if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
+            {
+                // Legacy sideloaded app, so can't detect if it's deleted.
+                actions.append(removeAction)
+            }
+            else if !UserDefaults.standard.isLegacyDeactivationSupported && !installedApp.isActive
+            {
+                // Inactive apps are actually deleted, so we need another way
+                // for user to remove them from AltStore.
+                actions.append(removeAction)
+            }
+            
+            #endif
         }
         
-        if installedApp.isActive
+        var title: String?
+                
+        if let storeApp = installedApp.storeApp, storeApp.isPledgeRequired, !storeApp.isPledged
         {
-            actions.append(deactivateAction)
+            let error = OperationError.pledgeInactive(appName: installedApp.name)
+            title = error.localizedDescription
+            
+            // Limit options for apps requiring pledges that we are no longer pledged to.
+            actions = actions.filter {
+                $0 == openMenu ||
+                $0 == deactivateAction ||
+                $0 == removeAction ||
+                $0 == backupAction ||
+                $0 == exportBackupAction ||
+                ($0 == refreshAction && storeApp.bundleIdentifier == StoreApp.altstoreAppID) // Always show refresh option for AltStore so the menu will be shown.
+            }
+            
+            // Disable refresh action for AltStore.
+            refreshAction.attributes = .disabled
         }
         
-        #if DEBUG
-        
-        if installedApp.bundleIdentifier != StoreApp.altstoreAppID
-        {
-            actions.append(removeAction)
-        }
-        
-        #else
-        
-        if (UserDefaults.standard.legacySideloadedApps ?? []).contains(installedApp.bundleIdentifier)
-        {
-            // Legacy sideloaded app, so can't detect if it's deleted.
-            actions.append(removeAction)
-        }
-        else if !UserDefaults.standard.isLegacyDeactivationSupported && !installedApp.isActive
-        {
-            // Inactive apps are actually deleted, so we need another way
-            // for user to remove them from AltStore.
-            actions.append(removeAction)
-        }
-        
-        #endif
-        
-        return actions
+        let menu = UIMenu(title: title ?? "", children: actions)
+        return menu
     }
     
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
@@ -1843,9 +1893,7 @@ extension MyAppsViewController
             let installedApp = self.dataSource.item(at: indexPath)
             
             return UIContextMenuConfiguration(identifier: indexPath as NSIndexPath, previewProvider: nil) { (suggestedActions) -> UIMenu? in
-                let actions = self.actions(for: installedApp)
-                
-                let menu = UIMenu(title: "", children: actions)
+                let menu = self.contextMenu(for: installedApp)
                 return menu
             }
         }
