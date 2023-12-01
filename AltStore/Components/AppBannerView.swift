@@ -182,7 +182,7 @@ extension AppBannerView
             {
                 // App is installed
                 
-                if installedApp.isUpdateAvailable
+                if installedApp.isUpdateAvailable && (!storeApp.isPledgeRequired || storeApp.isPledged)
                 {
                     buttonAction = .update
                 }
