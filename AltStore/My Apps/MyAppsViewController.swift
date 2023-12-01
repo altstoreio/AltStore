@@ -1879,18 +1879,30 @@ extension MyAppsViewController
             let error = OperationError.pledgeInactive(appName: installedApp.name)
             title = error.localizedDescription
             
-            // Limit options for apps requiring pledges that we are no longer pledged to.
-            actions = actions.filter {
-                $0 == openMenu ||
-                $0 == deactivateAction ||
-                $0 == removeAction ||
-                $0 == backupAction ||
-                $0 == exportBackupAction ||
-                ($0 == refreshAction && storeApp.bundleIdentifier == StoreApp.altstoreAppID) // Always show refresh option for AltStore so the menu will be shown.
-            }
+            let allowedActions: Set<UIMenuElement> = [
+                openMenu,
+                deactivateAction,
+                removeAction,
+                backupAction,
+                exportBackupAction
+            ]
             
-            // Disable refresh action for AltStore.
-            refreshAction.attributes = .disabled
+            for action in actions where !allowedActions.contains(action)
+            {
+                // Disable options for Patreon apps that we are no longer pledged to.
+                
+                if let action = action as? UIAction
+                {
+                    action.attributes = .disabled
+                }
+                else if let menu = action as? UIMenu
+                {
+                    for case let action as UIAction in menu.children
+                    {
+                        action.attributes = .disabled
+                    }
+                }
+            }
         }
         
         let menu = UIMenu(title: title ?? "", children: actions)
