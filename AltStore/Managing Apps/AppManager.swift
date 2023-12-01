@@ -557,9 +557,9 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ installedApp: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        guard let appVersion = installedApp.storeApp?.latestSupportedVersion else {
+        guard let appVersion = version ?? installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
