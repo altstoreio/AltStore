@@ -87,8 +87,6 @@ class AppViewController: UIViewController
         self.bannerView.iconImageView.tintColor = self.app.tintColor
         self.bannerView.button.tintColor = self.app.tintColor
         self.bannerView.tintColor = self.app.tintColor
-        
-        self.bannerView.configure(for: self.app)
         self.bannerView.accessibilityTraits.remove(.button)
         
         self.bannerView.button.addTarget(self, action: #selector(AppViewController.performAppAction(_:)), for: .primaryActionTriggered)
@@ -366,37 +364,14 @@ private extension AppViewController
         {
             button.tintColor = self.app.tintColor
             button.isIndicatingActivity = false
-            
-            if let installedApp = self.app.installedApp
-            {
-                if let latestVersion = self.app.latestSupportedVersion, !installedApp.matches(latestVersion)
-                {
-                    button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
-                }
-                else
-                {
-                    button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                }
-            }
-            else
-            {
-                button.setTitle(NSLocalizedString("FREE", comment: ""), for: .normal)
-            }
-            
-            let progress = AppManager.shared.installationProgress(for: self.app)
-            button.progress = progress
         }
         
-        if let versionDate = self.app.latestSupportedVersion?.date, versionDate > Date()
-        {
-            self.bannerView.button.countdownDate = versionDate
-            self.navigationBarDownloadButton.countdownDate = versionDate
-        }
-        else
-        {
-            self.bannerView.button.countdownDate = nil
-            self.navigationBarDownloadButton.countdownDate = nil
-        }
+        self.bannerView.configure(for: self.app)
+        
+        let title = self.bannerView.button.title(for: .normal)
+        self.navigationBarDownloadButton.setTitle(title, for: .normal)
+        self.navigationBarDownloadButton.progress = self.bannerView.button.progress
+        self.navigationBarDownloadButton.countdownDate = self.bannerView.button.countdownDate
         
         let barButtonItem = self.navigationItem.rightBarButtonItem
         self.navigationItem.rightBarButtonItem = nil

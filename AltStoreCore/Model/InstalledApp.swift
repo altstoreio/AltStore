@@ -317,6 +317,13 @@ public extension InstalledApp
         let openAppURL = URL(string: "altstore-" + app.bundleIdentifier + "://")!
         return openAppURL
     }
+    
+    var isUpdateAvailable: Bool {
+        guard let storeApp = self.storeApp, let latestVersion = storeApp.latestSupportedVersion else { return false }
+        
+        let isUpdateAvailable = !self.matches(latestVersion)
+        return isUpdateAvailable
+    }
 }
 
 public extension InstalledApp

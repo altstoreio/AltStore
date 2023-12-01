@@ -136,40 +136,8 @@ private extension BrowseViewController
             cell.bannerView.button.activityIndicatorView.style = .medium
             cell.bannerView.button.activityIndicatorView.color = .white
             
-            // Explicitly set to false to ensure we're starting from a non-activity indicating state.
-            // Otherwise, cell reuse can mess up some cached values.
-            cell.bannerView.button.isIndicatingActivity = false
-            
             let tintColor = app.tintColor ?? .altPrimary
             cell.tintColor = tintColor
-            
-            if app.installedApp == nil
-            {
-                let buttonTitle = NSLocalizedString("Free", comment: "")
-                cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = buttonTitle
-                
-                let progress = AppManager.shared.installationProgress(for: app)
-                cell.bannerView.button.progress = progress
-                
-                if let versionDate = app.latestSupportedVersion?.date, versionDate > Date()
-                {
-                    cell.bannerView.button.countdownDate = versionDate
-                }
-                else
-                {
-                    cell.bannerView.button.countdownDate = nil
-                }
-            }
-            else
-            {
-                cell.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-                cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), app.name)
-                cell.bannerView.button.accessibilityValue = nil
-                cell.bannerView.button.progress = nil
-                cell.bannerView.button.countdownDate = nil
-            }
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completionHandler) -> Foundation.Operation? in
             let iconURL = storeApp.iconURL
@@ -305,7 +273,7 @@ private extension BrowseViewController
         
         let app = self.dataSource.item(at: indexPath)
         
-        if let installedApp = app.installedApp
+        if let installedApp = app.installedApp, !installedApp.isUpdateAvailable
         {
             self.open(installedApp)
         }
@@ -323,7 +291,21 @@ private extension BrowseViewController
             return
         }
         
-        _ = AppManager.shared.install(app, presentingViewController: self) { (result) in
+        if let installedApp = app.installedApp, installedApp.isUpdateAvailable
+        {
+            AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+        }
+        else
+        {
+            AppManager.shared.install(app, presentingViewController: self, completionHandler: finish(_:))
+        }
+        
+        UIView.performWithoutAnimation {
+            self.collectionView.reloadItems(at: [indexPath])
+        }
+        
+        func finish(_ result: Result<InstalledApp, Error>)
+        {
             DispatchQueue.main.async {
                 switch result
                 {
@@ -332,15 +314,22 @@ private extension BrowseViewController
                     let toastView = ToastView(error: error)
                     toastView.opensErrorLog = true
                     toastView.show(in: self)
-                
+                    
                 case .success: print("Installed app:", app.bundleIdentifier)
                 }
                 
-                self.collectionView.reloadItems(at: [indexPath])
+                UIView.performWithoutAnimation {
+                    if let indexPath = self.dataSource.fetchedResultsController.indexPath(forObject: app)
+                    {
+                        self.collectionView.reloadItems(at: [indexPath])
+                    }
+                    else
+                    {
+                        self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+                    }
+                }
             }
         }
-        
-        self.collectionView.reloadItems(at: [indexPath])
     }
     
     func open(_ installedApp: InstalledApp)

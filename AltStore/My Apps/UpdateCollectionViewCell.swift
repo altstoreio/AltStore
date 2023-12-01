@@ -42,8 +42,7 @@ extension UpdateCollectionViewCell
         self.contentView.preservesSuperviewLayoutMargins = true
         
         self.bannerView.backgroundEffectView.isHidden = true
-        self.bannerView.button.setTitle(NSLocalizedString("UPDATE", comment: ""), for: .normal)
-                
+        
         self.blurView.layer.cornerRadius = 20
         self.blurView.layer.masksToBounds = true
         

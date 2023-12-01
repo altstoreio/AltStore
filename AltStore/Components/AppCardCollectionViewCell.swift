@@ -289,6 +289,10 @@ extension AppCardCollectionViewCell
     {
         self.screenshots = storeApp.preferredScreenshots()
         
+        // Explicitly set to false to ensure we're starting from a non-activity indicating state.
+        // Otherwise, cell reuse can mess up some cached values.
+        self.bannerView.button.isIndicatingActivity = false
+        
         self.bannerView.tintColor = storeApp.tintColor
         self.bannerView.configure(for: storeApp)
         

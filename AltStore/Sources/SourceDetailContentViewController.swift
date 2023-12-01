@@ -225,43 +225,13 @@ private extension SourceDetailContentViewController
             cell.contentView.layoutMargins = .zero
             cell.contentView.backgroundColor = .altBackground
             
+            cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.configure(for: storeApp)
             
-            cell.bannerView.iconImageView.isIndicatingActivity = true
-            cell.bannerView.buttonLabel.isHidden = true
-            
-            cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.button.tintColor = storeApp.tintColor
+            cell.bannerView.button.addTarget(self, action: #selector(SourceDetailContentViewController.performAppAction(_:)), for: .primaryActionTriggered)
             
-            let buttonTitle = NSLocalizedString("Free", comment: "")
-            cell.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-            cell.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), storeApp.name)
-            cell.bannerView.button.accessibilityValue = buttonTitle
-            cell.bannerView.button.addTarget(self, action: #selector(SourceDetailContentViewController.addSourceThenDownloadApp(_:)), for: .primaryActionTriggered)
-            
-            let progress = AppManager.shared.installationProgress(for: storeApp)
-            cell.bannerView.button.progress = progress
-            
-            if let versionDate = storeApp.latestSupportedVersion?.date, versionDate > Date()
-            {
-                cell.bannerView.button.countdownDate = versionDate
-            }
-            else
-            {
-                cell.bannerView.button.countdownDate = nil
-            }
-
-            // Make sure refresh button is correct size.
-            cell.layoutIfNeeded()
-            
-            if let progress = AppManager.shared.installationProgress(for: storeApp), progress.fractionCompleted < 1.0
-            {
-                cell.bannerView.button.progress = progress
-            }
-            else
-            {
-                cell.bannerView.button.progress = nil
-            }
+            cell.bannerView.iconImageView.isIndicatingActivity = true
         }
         dataSource.prefetchHandler = { (storeApp, indexPath, completion) -> Foundation.Operation? in
             return RSTAsyncBlockOperation { (operation) in
@@ -404,63 +374,92 @@ extension SourceDetailContentViewController
 
 private extension SourceDetailContentViewController
 {
-    @objc func addSourceThenDownloadApp(_ sender: UIButton)
+    @objc func performAppAction(_ sender: PillButton)
     {
         let point = self.collectionView.convert(sender.center, from: sender.superview)
         guard let indexPath = self.collectionView.indexPathForItem(at: point) else { return }
         
-        sender.isIndicatingActivity = true
-        
         let storeApp = self.dataSource.item(at: indexPath) as! StoreApp
         
-        Task<Void, Never> {
+        if let installedApp = storeApp.installedApp, !installedApp.isUpdateAvailable
+        {
+            self.open(installedApp)
+        }
+        else
+        {
+            sender.isIndicatingActivity = true
+            
+            Task<Void, Never> {
+                await self.addSourceThenDownloadApp(storeApp)
+                sender.isIndicatingActivity = false
+            }
+        }
+    }
+    
+    func addSourceThenDownloadApp(_ storeApp: StoreApp) async
+    {
+        do
+        {
+            let isAdded = try await self.source.isAdded
+            if !isAdded
+            {
+                let message = String(format: NSLocalizedString("You must add this source before you can install apps from it.\n\n“%@” will begin downloading once it has been added.", comment: ""), storeApp.name)
+                try await AppManager.shared.add(self.source, message: message, presentingViewController: self)
+            }
+            
             do
             {
-                let isAdded = try await self.source.isAdded
-                if !isAdded
-                {
-                    let message = String(format: NSLocalizedString("You must add this source before you can install apps from it.\n\n“%@” will begin downloading once it has been added.", comment: ""), storeApp.name)
-                    try await AppManager.shared.add(self.source, message: message, presentingViewController: self)
-                }
-                
-                do
-                {
-                    try await self.downloadApp(storeApp)
-                }
-                catch OperationError.cancelled {}
-                catch
-                {
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                }
+                try await self.downloadApp(storeApp)
             }
             catch is CancellationError {}
             catch
             {
-                await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
             }
-            
-            sender.isIndicatingActivity = false
-            self.collectionView.reloadSections([Section.featuredApps.rawValue])
         }
+        catch is CancellationError {}
+        catch
+        {
+            await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+        }
+        
+        self.collectionView.reloadSections([Section.featuredApps.rawValue])
     }
     
+    @MainActor
     func downloadApp(_ storeApp: StoreApp) async throws
     {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            AppManager.shared.install(storeApp, presentingViewController: self) { result in
-                continuation.resume(with: result.map { _ in })
+            if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+            {
+                AppManager.shared.update(installedApp, presentingViewController: self) { result in
+                    continuation.resume(with: result.map { _ in () })
+                }
+            }
+            else
+            {
+                AppManager.shared.install(storeApp, presentingViewController: self) { result in
+                    continuation.resume(with: result.map { _ in () })
+                }
             }
             
-            guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
-                self.collectionView.reloadSections([Section.featuredApps.rawValue])
-                return
+            UIView.performWithoutAnimation {
+                guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
+                    self.collectionView.reloadSections([Section.featuredApps.rawValue])
+                    return
+                }
+                
+                let indexPath = IndexPath(item: index, section: Section.featuredApps.rawValue)
+                self.collectionView.reloadItems(at: [indexPath])
             }
-            
-            let indexPath = IndexPath(item: index, section: Section.featuredApps.rawValue)
-            self.collectionView.reloadItems(at: [indexPath])
         }
+    }
+    
+    func open(_ installedApp: InstalledApp)
+    {
+        UIApplication.shared.open(installedApp.openAppURL)
     }
 }
 

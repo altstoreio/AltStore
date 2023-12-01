@@ -341,7 +341,7 @@ private extension NewsViewController
         let app = self.dataSource.item(at: indexPath)
         guard let storeApp = app.storeApp else { return }
         
-        if let installedApp = app.storeApp?.installedApp
+        if let installedApp = storeApp.installedApp, !installedApp.isUpdateAvailable
         {
             self.open(installedApp)
         }
@@ -359,7 +359,21 @@ private extension NewsViewController
             return
         }
         
-        _ = AppManager.shared.install(storeApp, presentingViewController: self) { (result) in
+        if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+        {
+            AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+        }
+        else
+        {
+            AppManager.shared.install(storeApp, presentingViewController: self, completionHandler: finish(_:))
+        }
+        
+        UIView.performWithoutAnimation {
+            self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+        }
+        
+        func finish(_ result: Result<InstalledApp, Error>)
+        {
             DispatchQueue.main.async {
                 switch result
                 {
@@ -376,10 +390,6 @@ private extension NewsViewController
                     self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
                 }
             }
-        }
-        
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
         }
     }
     
@@ -426,41 +436,12 @@ extension NewsViewController
         footerView.layoutMargins.left = self.view.layoutMargins.left
         footerView.layoutMargins.right = self.view.layoutMargins.right
         
+        footerView.bannerView.button.isIndicatingActivity = false
         footerView.bannerView.configure(for: storeApp)
         
         footerView.bannerView.tintColor = storeApp.tintColor
         footerView.bannerView.button.addTarget(self, action: #selector(NewsViewController.performAppAction(_:)), for: .primaryActionTriggered)
         footerView.tapGestureRecognizer.addTarget(self, action: #selector(NewsViewController.handleTapGesture(_:)))
-        
-        footerView.bannerView.button.isIndicatingActivity = false
-        
-        if storeApp.installedApp == nil
-        {
-            let buttonTitle = NSLocalizedString("Free", comment: "")
-            footerView.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = buttonTitle
-            
-            let progress = AppManager.shared.installationProgress(for: storeApp)
-            footerView.bannerView.button.progress = progress
-            
-            if let versionDate = storeApp.latestSupportedVersion?.date, versionDate > Date()
-            {
-                footerView.bannerView.button.countdownDate = versionDate
-            }
-            else
-            {
-                footerView.bannerView.button.countdownDate = nil
-            }
-        }
-        else
-        {
-            footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = nil
-            footerView.bannerView.button.progress = nil
-            footerView.bannerView.button.countdownDate = nil
-        }
         
         Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView)
         
