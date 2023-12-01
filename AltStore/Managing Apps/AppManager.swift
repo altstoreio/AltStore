@@ -557,9 +557,9 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ installedApp: InstalledApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    func update(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
     {
-        guard let appVersion = installedApp.storeApp?.latestSupportedVersion else {
+        guard let appVersion = version ?? installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
             return Progress.discreteProgress(totalUnitCount: 1)
         }
@@ -1246,7 +1246,7 @@ private extension AppManager
                       let patchAppURL = URL(string: patchAppLink)
                 else { throw OperationError.invalidApp }
                 
-                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL)
+                let patchApp = AnyApp(name: app.name, bundleIdentifier: app.bundleIdentifier, url: patchAppURL, storeApp: nil)
                 
                 DispatchQueue.main.async {
                     let storyboard = UIStoryboard(name: "PatchApp", bundle: nil)
@@ -1358,8 +1358,22 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        let operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        var operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
         group.add(operations)
+        
+        if let storeApp = downloadingApp.storeApp, storeApp.isPledgeRequired
+        {
+            // Patreon apps may require authenticating with WebViewController,
+            // so make sure to run DownloadAppOperation serially.
+            self.run([downloadOperation], context: group.context, requiresSerialQueue: true)
+            
+            if let index = operations.firstIndex(of: downloadOperation)
+            {
+                // Remove downloadOperation from operations to prevent running it twice.
+                operations.remove(at: index)
+            }
+        }
+
         self.run(operations, context: group.context)
         
         return progress

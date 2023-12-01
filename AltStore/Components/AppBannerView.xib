@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -78,13 +78,13 @@
                                     </subviews>
                                 </stackView>
                                 <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC4-1V-iMn">
-                                    <rect key="frame" x="0.0" y="21.5" width="184" height="16"/>
+                                    <rect key="frame" x="0.0" y="21.5" width="62" height="16"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LQh-pN-ePC">
-                                        <rect key="frame" x="0.0" y="0.0" width="184" height="16"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oN5-vu-Dnw">
-                                                <rect key="frame" x="0.0" y="0.0" width="184" height="16"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="750" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oN5-vu-Dnw">
+                                                <rect key="frame" x="0.0" y="0.0" width="62" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -103,36 +103,33 @@
                                 </visualEffectView>
                             </subviews>
                         </stackView>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3ox-Q2-Rnd" userLabel="Button Stack View">
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="900" horizontalCompressionResistancePriority="900" placeholderIntrinsicWidth="77" placeholderIntrinsicHeight="31" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tVx-3G-dcu" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
                             <rect key="frame" x="282" y="28.5" width="77" height="31"/>
-                            <subviews>
-                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yd9-jw-faD">
-                                    <rect key="frame" x="0.0" y="0.0" width="77" height="0.0"/>
-                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
-                                    <color key="textColor" systemColor="secondaryLabelColor"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="900" horizontalCompressionResistancePriority="900" placeholderIntrinsicWidth="77" placeholderIntrinsicHeight="31" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tVx-3G-dcu" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="77" height="31"/>
-                                    <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="tVx-3G-dcu" secondAttribute="height" priority="999" id="Vbk-VH-5eU"/>
-                                        <constraint firstAttribute="height" constant="31" id="Zwh-yQ-GTu"/>
-                                    </constraints>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                    <state key="normal" title="FREE"/>
-                                </button>
-                            </subviews>
-                        </stackView>
+                            <color key="backgroundColor" red="0.22352941179999999" green="0.4941176471" blue="0.39607843139999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="tVx-3G-dcu" secondAttribute="height" priority="999" id="Vbk-VH-5eU"/>
+                                <constraint firstAttribute="height" constant="31" id="Zwh-yQ-GTu"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                            <state key="normal" title="FREE"/>
+                        </button>
                     </subviews>
                     <edgeInsets key="layoutMargins" top="14" left="14" bottom="14" right="12"/>
                 </stackView>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yd9-jw-faD">
+                    <rect key="frame" x="307" y="12.5" width="27" height="12"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
+                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <constraints>
                 <constraint firstItem="d1T-UD-gWG" firstAttribute="leading" secondItem="FxI-Fh-ll5" secondAttribute="leading" id="5tv-QN-ZWU"/>
                 <constraint firstAttribute="bottom" secondItem="bJL-Yw-i4u" secondAttribute="bottom" id="FRq-ZD-2rE"/>
                 <constraint firstItem="rZk-be-tiI" firstAttribute="top" secondItem="FxI-Fh-ll5" secondAttribute="top" id="N6R-B2-Rie"/>
+                <constraint firstItem="Yd9-jw-faD" firstAttribute="centerX" secondItem="tVx-3G-dcu" secondAttribute="centerX" id="acx-pf-8hH"/>
                 <constraint firstItem="bJL-Yw-i4u" firstAttribute="top" secondItem="FxI-Fh-ll5" secondAttribute="top" id="h6T-q1-YV9"/>
+                <constraint firstItem="tVx-3G-dcu" firstAttribute="top" secondItem="Yd9-jw-faD" secondAttribute="bottom" constant="4" id="hTD-wh-KV8"/>
                 <constraint firstAttribute="trailing" secondItem="d1T-UD-gWG" secondAttribute="trailing" id="mlG-w3-Ly6"/>
                 <constraint firstAttribute="trailing" secondItem="rZk-be-tiI" secondAttribute="trailing" id="nEy-pm-Fcs"/>
                 <constraint firstAttribute="bottom" secondItem="d1T-UD-gWG" secondAttribute="bottom" priority="999" id="nJo-To-LmX"/>

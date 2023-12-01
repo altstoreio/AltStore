@@ -9,11 +9,10 @@
 import Foundation
 import AuthenticationServices
 import CoreData
+import WebKit
 
 private let clientID = "ZMx0EGUWe4TVWYXNZZwK_fbIK5jHFVWoUf1Qb-sqNXmT-YzAGwDPxxq7ak3_W5Q2"
 private let clientSecret = "1hktsZB89QyN69cB4R0tu55R4TCPQGXxvebYUUh7Y-5TLSnRswuxs6OUjdJ74IJt"
-
-private let campaignID = "2863968"
 
 typealias PatreonAPIError = PatreonAPIErrorCode.Error
 enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
@@ -34,41 +33,16 @@ enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
 
 extension PatreonAPI
 {
+    static let altstoreCampaignID = "2863968"
+    
+    typealias FetchAccountResponse = Response<UserAccountResponse>
+    typealias FriendZonePatronsResponse = Response<[PatronResponse]>
+    
     enum AuthorizationType
     {
         case none
         case user
         case creator
-    }
-    
-    enum AnyResponse: Decodable
-    {
-        case tier(TierResponse)
-        case benefit(BenefitResponse)
-        
-        enum CodingKeys: String, CodingKey
-        {
-            case type
-        }
-        
-        init(from decoder: Decoder) throws
-        {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            
-            let type = try container.decode(String.self, forKey: .type)
-            switch type
-            {
-            case "tier":
-                let tier = try TierResponse(from: decoder)
-                self = .tier(tier)
-                
-            case "benefit":
-                let benefit = try BenefitResponse(from: decoder)
-                self = .benefit(benefit)
-                
-            default: throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unrecognized Patreon response type.")
-            }
-        }
     }
 }
 
@@ -85,6 +59,10 @@ public class PatreonAPI: NSObject
     private let session = URLSession(configuration: .ephemeral)
     private let baseURL = URL(string: "https://www.patreon.com/")!
     
+    private var authHandlers = [(Result<PatreonAccount, Swift.Error>) -> Void]()
+    private var authContinuation: CheckedContinuation<URL, Error>?
+    private weak var webViewController: WebViewController?
+    
     private override init()
     {
         super.init()
@@ -93,19 +71,40 @@ public class PatreonAPI: NSObject
 
 public extension PatreonAPI
 {
-    func authenticate(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
+    func authenticate(presentingViewController: UIViewController, completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
-        var components = URLComponents(string: "/oauth2/authorize")!
-        components.queryItems = [URLQueryItem(name: "response_type", value: "code"),
-                                 URLQueryItem(name: "client_id", value: clientID),
-                                 URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore")]
-        
-        let requestURL = components.url(relativeTo: self.baseURL)!
-        
-        self.authenticationSession = ASWebAuthenticationSession(url: requestURL, callbackURLScheme: "altstore") { (callbackURL, error) in
+        Task<Void, Never>.detached { @MainActor in
+            guard self.authHandlers.isEmpty else {
+                self.authHandlers.append(completion)
+                return
+            }
+            
+            self.authHandlers.append(completion)
+            
             do
             {
-                let callbackURL = try Result(callbackURL, error).get()
+                var components = URLComponents(string: "/oauth2/authorize")!
+                components.queryItems = [URLQueryItem(name: "response_type", value: "code"),
+                                         URLQueryItem(name: "client_id", value: clientID),
+                                         URLQueryItem(name: "redirect_uri", value: "https://rileytestut.com/patreon/altstore"),
+                                         URLQueryItem(name: "scope", value: "identity identity[email] identity.memberships campaigns.posts")]
+                
+                let requestURL = components.url(relativeTo: self.baseURL)
+                
+                let configuration = WKWebViewConfiguration()
+                configuration.setURLSchemeHandler(self, forURLScheme: "altstore")
+                configuration.websiteDataStore = .default()
+                
+                let webViewController = WebViewController(url: requestURL, configuration: configuration)
+                webViewController.delegate = self
+                self.webViewController = webViewController
+                
+                let callbackURL = try await withCheckedThrowingContinuation { continuation in
+                    self.authContinuation = continuation
+                    
+                    let navigationController = UINavigationController(rootViewController: webViewController)
+                    presentingViewController.present(navigationController, animated: true)
+                }
                 
                 guard
                     let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
@@ -113,39 +112,61 @@ public extension PatreonAPI
                     let code = codeQueryItem.value
                 else { throw PatreonAPIError(.unknown) }
                 
-                self.fetchAccessToken(oauthCode: code) { (result) in
-                    switch result
+                let (accessToken, refreshToken) = try await withCheckedThrowingContinuation { continuation in
+                    self.fetchAccessToken(oauthCode: code) { result in
+                        continuation.resume(with: result)
+                    }
+                }
+                Keychain.shared.patreonAccessToken = accessToken
+                Keychain.shared.patreonRefreshToken = refreshToken
+                
+                let patreonAccount = try await withCheckedThrowingContinuation { continuation in
+                    self.fetchAccount { result in
+                        let result = result.map { AsyncManaged(wrappedValue: $0) }
+                        continuation.resume(with: result)
+                    }
+                }
+                
+                await self.saveAuthCookies()
+                
+                await patreonAccount.perform { patreonAccount in
+                    for callback in self.authHandlers
                     {
-                    case .failure(let error): completion(.failure(error))
-                    case .success((let accessToken, let refreshToken)):
-                        Keychain.shared.patreonAccessToken = accessToken
-                        Keychain.shared.patreonRefreshToken = refreshToken
-                        
-                        self.fetchAccount(completion: completion)
+                        callback(.success(patreonAccount))
                     }
                 }
             }
             catch
             {
-                completion(.failure(error))
+                for callback in self.authHandlers
+                {
+                    callback(.failure(error))
+                }
+            }
+            
+            self.authHandlers = []
+            
+            await MainActor.run {
+                self.webViewController?.dismiss(animated: true)
+                self.webViewController = nil
             }
         }
-        
-        self.authenticationSession?.presentationContextProvider = self
-        self.authenticationSession?.start()
     }
     
     func fetchAccount(completion: @escaping (Result<PatreonAccount, Swift.Error>) -> Void)
     {
         var components = URLComponents(string: "/api/oauth2/v2/identity")!
-        components.queryItems = [URLQueryItem(name: "include", value: "memberships"),
+        components.queryItems = [URLQueryItem(name: "include", value: "memberships.campaign.tiers,memberships.currently_entitled_tiers.benefits"),
                                  URLQueryItem(name: "fields[user]", value: "first_name,full_name"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status")]
+                                 URLQueryItem(name: "fields[tier]", value: "title,amount_cents"),
+                                 URLQueryItem(name: "fields[benefit]", value: "title"),
+                                 URLQueryItem(name: "fields[campaign]", value: "url"),
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status,currently_entitled_amount_cents")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
         let request = URLRequest(url: requestURL)
         
-        self.send(request, authorizationType: .user) { (result: Result<AccountResponse, Swift.Error>) in
+        self.send(request, authorizationType: .user) { (result: Result<FetchAccountResponse, Swift.Error>) in
             switch result
             {
             case .failure(~PatreonAPIErrorCode.notAuthenticated):
@@ -153,10 +174,15 @@ public extension PatreonAPI
                     completion(.failure(PatreonAPIError(.notAuthenticated)))
                 }
                 
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error as NSError):
+                Logger.main.error("Failed to fetch Patreon account. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
+                
             case .success(let response):
+                let account = PatreonAPI.UserAccount(response: response.data, including: response.included)
+                
                 DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
-                    let account = PatreonAccount(response: response, context: context)
+                    let account = PatreonAccount(account: account, context: context)
                     Keychain.shared.patreonAccountID = account.identifier
                     completion(.success(account))
                 }
@@ -166,20 +192,14 @@ public extension PatreonAPI
     
     func fetchPatrons(completion: @escaping (Result<[Patron], Swift.Error>) -> Void)
     {
-        var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(campaignID)/members")!
+        var components = URLComponents(string: "/api/oauth2/v2/campaigns/\(PatreonAPI.altstoreCampaignID)/members")!
         components.queryItems = [URLQueryItem(name: "include", value: "currently_entitled_tiers,currently_entitled_tiers.benefits"),
-                                 URLQueryItem(name: "fields[tier]", value: "title"),
-                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status"),
+                                 URLQueryItem(name: "fields[tier]", value: "title,amount_cents"),
+                                 URLQueryItem(name: "fields[benefit]", value: "title"),
+                                 URLQueryItem(name: "fields[member]", value: "full_name,patron_status,currently_entitled_amount_cents"),
                                  URLQueryItem(name: "page[size]", value: "1000")]
         
         let requestURL = components.url(relativeTo: self.baseURL)!
-        
-        struct Response: Decodable
-        {
-            var data: [PatronResponse]
-            var included: [AnyResponse]
-            var links: [String: URL]?
-        }
         
         var allPatrons = [Patron]()
         
@@ -187,36 +207,19 @@ public extension PatreonAPI
         {
             let request = URLRequest(url: url)
             
-            self.send(request, authorizationType: .creator) { (result: Result<Response, Swift.Error>) in
+            self.send(request, authorizationType: .creator) { (result: Result<FriendZonePatronsResponse, Swift.Error>) in
                 switch result
                 {
                 case .failure(let error): completion(.failure(error))
-                case .success(let response):
-                    let tiers = response.included.compactMap { (response) -> Tier? in
-                        switch response
-                        {
-                        case .tier(let tierResponse): return Tier(response: tierResponse)
-                        case .benefit: return nil
-                        }
-                    }
-                    
-                    let tiersByIdentifier = Dictionary(tiers.map { ($0.identifier, $0) }, uniquingKeysWith: { (a, b) in return a })
-                    
-                    let patrons = response.data.map { (response) -> Patron in
-                        let patron = Patron(response: response)
-                        
-                        for tierID in response.relationships?.currently_entitled_tiers.data ?? []
-                        {
-                            guard let tier = tiersByIdentifier[tierID.id] else { continue }
-                            patron.benefits.formUnion(tier.benefits)
-                        }
-                        
+                case .success(let patronsResponse):
+                    let patrons = patronsResponse.data.map { (response) -> Patron in
+                        let patron = Patron(response: response, including: patronsResponse.included)
                         return patron
-                    }.filter { $0.benefits.contains(where: { $0.type == .credits }) }
+                    }.filter { $0.benefits.contains(where: { $0.identifier == .credits }) }
                     
                     allPatrons.append(contentsOf: patrons)
                     
-                    if let nextURL = response.links?["next"]
+                    if let nextURL = patronsResponse.links?["next"]
                     {
                         fetchPatrons(url: nextURL)
                     }
@@ -239,7 +242,8 @@ public extension PatreonAPI
                 let accounts = PatreonAccount.all(in: context, requestProperties: [\.returnsObjectsAsFaults: true])
                 accounts.forEach(context.delete(_:))
                 
-                self.deactivateBetaApps(in: context)
+                let pledgeRequiredApps = StoreApp.all(satisfying: NSPredicate(format: "%K == YES", #keyPath(StoreApp.isPledgeRequired)), in: context)
+                pledgeRequiredApps.forEach { $0.isPledged = false }
                 
                 try context.save()
                 
@@ -247,7 +251,10 @@ public extension PatreonAPI
                 Keychain.shared.patreonRefreshToken = nil
                 Keychain.shared.patreonAccountID = nil
                 
-                completion(.success(()))
+                Task<Void, Never>.detached {
+                    await self.deleteAuthCookies()
+                    completion(.success(()))
+                }
             }
             catch
             {
@@ -264,13 +271,6 @@ public extension PatreonAPI
             do
             {
                 let account = try result.get()
-                
-                if let context = account.managedObjectContext, !account.isPatron
-                {
-                    // Deactivate all beta apps now that we're no longer a patron.
-                    self.deactivateBetaApps(in: context)
-                }
-                
                 try account.managedObjectContext?.save()
             }
             catch
@@ -278,6 +278,56 @@ public extension PatreonAPI
                 print("Failed to fetch Patreon account.", error)
             }
         }
+    }
+}
+
+extension PatreonAPI
+{
+    private func saveAuthCookies() async
+    {
+        let cookieStore = await MainActor.run { WKWebsiteDataStore.default().httpCookieStore } // Must access from main actor
+        
+        let cookies = await cookieStore.allCookies()
+        for cookie in cookies where cookie.domain.lowercased().hasSuffix("patreon.com")
+        {
+            Logger.main.debug("Saving Patreon cookie \(cookie.name, privacy: .public): \(cookie.value, privacy: .private(mask: .hash)) (Expires: \(cookie.expiresDate?.description ?? "nil", privacy: .public))")
+            HTTPCookieStorage.shared.setCookie(cookie)
+        }
+    }
+    
+    public func deleteAuthCookies() async
+    {
+        Logger.main.info("Clearing Patreon cookie cache...")
+        
+        let cookieStore = await MainActor.run { WKWebsiteDataStore.default().httpCookieStore } // Must access from main actor
+                        
+        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: "https://www.patreon.com")!)
+        {
+            for cookie in cookies
+            {
+                Logger.main.debug("Deleting Patreon cookie \(cookie.name, privacy: .public) (Expires: \(cookie.expiresDate?.description ?? "nil", privacy: .public))")
+                
+                await cookieStore.deleteCookie(cookie)
+                HTTPCookieStorage.shared.deleteCookie(cookie)
+            }
+            
+            Logger.main.info("Cleared Patreon cookie cache!")
+        }
+        else
+        {
+            Logger.main.info("No Patreon cookies to clear.")
+        }
+    }
+}
+
+extension PatreonAPI: WebViewControllerDelegate
+{
+    public func webViewControllerDidFinish(_ webViewController: WebViewController)
+    {
+        guard let authContinuation else { return }
+        self.authContinuation = nil
+        
+        authContinuation.resume(throwing: CancellationError())
     }
 }
 
@@ -397,36 +447,27 @@ private extension PatreonAPI
         
         task.resume()
     }
-    
-    func deactivateBetaApps(in context: NSManagedObjectContext)
-    {
-        let predicate = NSPredicate(format: "%K != %@ AND %K != nil AND %K == YES",
-                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID, #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))
-        
-        let installedApps = InstalledApp.all(satisfying: predicate, in: context)
-        installedApps.forEach { $0.isActive = false }
-    }
 }
 
-extension PatreonAPI: ASWebAuthenticationPresentationContextProviding
+extension PatreonAPI: WKURLSchemeHandler
 {
-    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor
+    public func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask)
     {
-        //TODO: Properly support multiple scenes.
-        
-        guard let windowScene = UIApplication.alt_shared?.connectedScenes.lazy.compactMap({ $0 as? UIWindowScene }).first else { return UIWindow() }
-
-        if #available(iOS 15, *), let keyWindow = windowScene.keyWindow
+        guard let authContinuation else { return }
+        self.authContinuation = nil
+                
+        if let callbackURL = urlSchemeTask.request.url
         {
-            return keyWindow
+            authContinuation.resume(returning: callbackURL)
         }
-        else if let delegate = windowScene.delegate as? UIWindowSceneDelegate,
-                let optionalWindow = delegate.window,
-                let window = optionalWindow
+        else
         {
-            return window
+            authContinuation.resume(throwing: URLError(.badURL))
         }
-
-        return UIWindow()
+    }
+    
+    public func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask)
+    {
+        Logger.main.debug("WKWebView stopped handling url scheme.")
     }
 }

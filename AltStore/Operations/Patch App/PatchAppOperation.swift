@@ -110,7 +110,7 @@ class PatchAppOperation: ResultOperation<Void>
             .flatMap { self.patch(resignedApp, withBinaryAt: $0) }
             .tryMap { try FileManager.default.zipAppBundle(at: $0) }
             .tryMap { (fileURL) in
-                let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL)
+                let app = AnyApp(name: resignedApp.name, bundleIdentifier: self.context.bundleIdentifier, url: resignedApp.fileURL, storeApp: nil)
                 
                 let destinationURL = InstalledApp.refreshedIPAURL(for: app)
                 try FileManager.default.copyItem(at: fileURL, to: destinationURL, shouldReplace: true)

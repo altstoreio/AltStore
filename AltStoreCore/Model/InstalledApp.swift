@@ -194,13 +194,19 @@ public extension InstalledApp
             // We have to also check !(latestSupportedVersion.buildVersion == '' && installedApp.storeBuildVersion == nil)
             // because latestSupportedVersion.buildVersion stores an empty string for nil, while installedApp.storeBuildVersion uses NULL.
             "(%K != %K OR (%K != %K AND NOT (%K == '' AND %K == nil)))",
+            
+            "AND",
+            
+            // !isPledgeRequired || isPledged
+            "(%K == NO OR %K == YES)"
         ].joined(separator: " ")
         
         fetchRequest.predicate = NSPredicate(format: predicateFormat,
                                              #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.latestSupportedVersion),
                                              #keyPath(InstalledApp.storeApp.latestSupportedVersion.version), #keyPath(InstalledApp.version),
                                              #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion),
-                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion))
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion),
+                                             #keyPath(InstalledApp.storeApp.isPledgeRequired), #keyPath(InstalledApp.storeApp.isPledged))
         return fetchRequest
     }
     
@@ -227,17 +233,12 @@ public extension InstalledApp
     
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        var predicate = NSPredicate(format: "%K == YES AND %K != %@", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            // No additional predicate
-        }
-        else
-        {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
-                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
-        }
+        let predicate = NSPredicate(format: "(%K == YES AND %K != %@) AND (%K == nil OR %K == NO OR %K == YES)",
+                                    #keyPath(InstalledApp.isActive),
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                    #keyPath(InstalledApp.storeApp),
+                                    #keyPath(InstalledApp.storeApp.isPledgeRequired),
+                                    #keyPath(InstalledApp.storeApp.isPledged))
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -246,7 +247,20 @@ public extension InstalledApp
         if let altStoreApp = InstalledApp.fetchAltStore(in: context)
         {
             // Refresh AltStore last since it causes app to quit.
-            installedApps.append(altStoreApp)
+            
+            if let storeApp = altStoreApp.storeApp
+            {
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
+            }
+            else
+            {
+                // No associated storeApp, so add it just to be safe.
+                installedApps.append(altStoreApp)
+            }
         }
         
         return installedApps
@@ -257,20 +271,14 @@ public extension InstalledApp
         // Date 6 hours before now.
         let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
         
-        var predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@)",
+        let predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@) AND (%K == nil OR %K == NO OR %K == YES)",
                                     #keyPath(InstalledApp.isActive),
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
-                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            // No additional predicate
-        }
-        else
-        {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
-                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
-        }
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                    #keyPath(InstalledApp.storeApp),
+                                    #keyPath(InstalledApp.storeApp.isPledgeRequired),
+                                    #keyPath(InstalledApp.storeApp.isPledged)
+        )
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -278,8 +286,19 @@ public extension InstalledApp
         
         if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
         {
-            // Refresh AltStore last since it may cause app to quit.
-            installedApps.append(altStoreApp)
+            if let storeApp = altStoreApp.storeApp
+            {
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
+            }
+            else
+            {
+                // No associated storeApp, so add it just to be safe.
+                installedApps.append(altStoreApp)
+            }
         }
         
         return installedApps
@@ -297,6 +316,13 @@ public extension InstalledApp
     {
         let openAppURL = URL(string: "altstore-" + app.bundleIdentifier + "://")!
         return openAppURL
+    }
+    
+    var isUpdateAvailable: Bool {
+        guard let storeApp = self.storeApp, let latestVersion = storeApp.latestSupportedVersion else { return false }
+        
+        let isUpdateAvailable = !self.matches(latestVersion)
+        return isUpdateAvailable
     }
 }
 

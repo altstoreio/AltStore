@@ -10,18 +10,25 @@ import Foundation
 
 extension PatreonAPI
 {
-    struct CampaignResponse: Decodable
+    typealias CampaignResponse = DataResponse<CampaignAttributes, AnyRelationships>
+    
+    struct CampaignAttributes: Decodable
     {
-        var id: String
+        var url: URL
     }
 }
 
-public struct Campaign
+extension PatreonAPI
 {
-    public var identifier: String
-        
-    init(response: PatreonAPI.CampaignResponse)
+    public struct Campaign
     {
-        self.identifier = response.id
+        public var identifier: String
+        public var url: URL
+        
+        internal init(response: PatreonAPI.CampaignResponse)
+        {
+            self.identifier = response.id
+            self.url = response.attributes.url
+        }
     }
 }

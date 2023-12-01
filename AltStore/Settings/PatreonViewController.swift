@@ -138,7 +138,7 @@ private extension PatreonViewController
             headerView.accountButton.addTarget(self, action: #selector(PatreonViewController.signOut(_:)), for: .primaryActionTriggered)
             headerView.accountButton.setTitle(String(format: NSLocalizedString("Unlink %@", comment: ""), account.name), for: .normal)
             
-            if account.isPatron
+            if account.isAltStorePatron
             {
                 headerView.supportButton.setTitle(isPatronSupportButtonTitle, for: .normal)
                 
@@ -191,19 +191,35 @@ private extension PatreonViewController
     
     @IBAction func authenticate(_ sender: UIBarButtonItem)
     {
-        PatreonAPI.shared.authenticate { (result) in
+        PatreonAPI.shared.authenticate(presentingViewController: self) { (result) in
             do
             {
                 let account = try result.get()
                 try account.managedObjectContext?.save()
                 
-                DispatchQueue.main.async {
-                    self.update()
+                // Update sources to show any Patreon-only apps.
+                AppManager.shared.fetchSources { result in
+                    do
+                    {
+                        let (_, context) = try result.get()
+                        try context.save()
+                    }
+                    catch
+                    {
+                        Logger.main.error("Failed to update sources after authenticating Patreon account. \(error.localizedDescription, privacy: .public)")
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.update()
+                    }
                 }
             }
-            catch ASWebAuthenticationSessionError.canceledLogin
+            catch is CancellationError
             {
-                // Ignore
+                // Clear in-app browser cache in case they are signed into wrong account.
+                Task<Void, Never>.detached {
+                    await PatreonAPI.shared.deleteAuthCookies()
+                }
             }
             catch
             {

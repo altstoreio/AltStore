@@ -63,8 +63,9 @@ public class Source: NSManagedObject, Fetchable, Decodable
     
     /* Source Detail */
     @NSManaged public var subtitle: String?
-    @NSManaged public var websiteURL: URL?
     @NSManaged public var localizedDescription: String?
+    @NSManaged public var websiteURL: URL?
+    @NSManaged public var patreonURL: URL?
     
     // Optional properties with fallbacks.
     // `private` to prevent accidentally using instead of `effective[PropertyName]`
@@ -117,6 +118,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
         case headerImageURL = "headerURL"
         case websiteURL = "website"
         case tintColor
+        case patreonURL
         
         case apps
         case news
@@ -147,6 +149,7 @@ public class Source: NSManagedObject, Fetchable, Decodable
             self.localizedDescription = try container.decodeIfPresent(String.self, forKey: .localizedDescription)
             self.iconURL = try container.decodeIfPresent(URL.self, forKey: .iconURL)
             self.headerImageURL = try container.decodeIfPresent(URL.self, forKey: .headerImageURL)
+            self.patreonURL = try container.decodeIfPresent(URL.self, forKey: .patreonURL)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -252,50 +255,8 @@ internal extension Source
 {
     class func sourceID(from sourceURL: URL) throws -> String
     {
-        // Based on https://encyclopedia.pub/entry/29841
-
-        guard var components = URLComponents(url: sourceURL, resolvingAgainstBaseURL: true) else { throw URLError(.badURL, userInfo: [NSURLErrorKey: sourceURL]) }
-        
-        if components.scheme == nil && components.host == nil
-        {
-            // Special handling for URLs without explicit scheme & incorrectly assumed to have nil host (e.g. "altstore.io/my/path")
-            guard let updatedComponents = URLComponents(string: "https://" + sourceURL.absoluteString) else { throw URLError(.cannotFindHost, userInfo: [NSURLErrorKey: sourceURL]) }
-            components = updatedComponents
-        }
-        
-        // 1. Don't use percent encoding
-        guard let host = components.host else { throw URLError(.cannotFindHost, userInfo: [NSURLErrorKey: sourceURL]) }
-        
-        // 2. Ignore scheme
-        var standardizedID = host
-        
-        // 3. Add port (if not default)
-        if let port = components.port, port != 80 && port != 443
-        {
-            standardizedID += ":" + String(port)
-        }
-        
-        // 4. Add path without fragment or query parameters
-        // 5. Remove duplicate slashes
-        let path = components.path.replacingOccurrences(of: "//", with: "/") // Only remove duplicate slashes from path, not entire URL.
-        standardizedID += path // path has leading `/`
-                
-        // 6. Convert to lowercase
-        standardizedID = standardizedID.lowercased()
-        
-        // 7. Remove trailing `/`
-        if standardizedID.hasSuffix("/")
-        {
-            standardizedID.removeLast()
-        }
-        
-        // 8. Remove leading "www"
-        if standardizedID.hasPrefix("www.")
-        {
-            standardizedID.removeFirst(4)
-        }
-        
-        return standardizedID
+        let sourceID = try sourceURL.normalized()
+        return sourceID
     }
     
     func setFeaturedApps(_ featuredApps: [StoreApp]?)

@@ -133,9 +133,9 @@
 		BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE8B2501AEB1007EE018 /* Keychain.swift */; };
 		BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE952501AEBC007EE018 /* ALTSourceUserInfoKey.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF66EE962501AEBC007EE018 /* ALTPatreonBenefitType.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */; };
+		BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */; };
 		BF66EE972501AEBC007EE018 /* ALTAppPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */; };
-		BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF66EE982501AEBC007EE018 /* ALTPatreonBenefitID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */; };
 		BF66EE9D2501AEC1007EE018 /* AppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */; };
 		BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF66EE9C2501AEC1007EE018 /* Fetchable.swift */; };
@@ -357,6 +357,7 @@
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
+		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
@@ -373,8 +374,12 @@
 		D5418F172AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5418F162AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift */; };
 		D54DED1428CBC44B008B27A0 /* ErrorLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */; };
 		D552B1D82A042A740066216F /* AppPermissionsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D552B1D72A042A740066216F /* AppPermissionsCard.swift */; };
+		D552EB062AF453F900A3AB4D /* URL+Normalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = D552EB052AF453F900A3AB4D /* URL+Normalized.swift */; };
 		D55467B82A8D5E2600F4CE90 /* AppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */; };
 		D55467C52A8D72C300F4CE90 /* ActiveAppsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55467C42A8D72C300F4CE90 /* ActiveAppsWidget.swift */; };
+		D557A4812AE85BB0007D0DCF /* Pledge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4802AE85BB0007D0DCF /* Pledge.swift */; };
+		D557A4832AE85DB7007D0DCF /* PledgeReward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4822AE85DB7007D0DCF /* PledgeReward.swift */; };
+		D557A4852AE88227007D0DCF /* PledgeTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4842AE88227007D0DCF /* PledgeTier.swift */; };
 		D561B2EB28EF5A4F006752E4 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; };
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D56915072AD5E91B00A2B747 /* Regex+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */; };
@@ -418,6 +423,9 @@
 		D5A299872AAB9E4E00A3988D /* ProcessError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FB7A1B2AA284ED00EF863D /* ProcessError.swift */; };
 		D5A299882AAB9E4E00A3988D /* JITError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E32AA50EB60066CACC /* JITError.swift */; };
 		D5A299892AAB9E5900A3988D /* AppProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B7D2AA9226C00F61259 /* AppProcess.swift */; };
+		D5A645212AF591980047D980 /* UTType+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645202AF591980047D980 /* UTType+AltStore.swift */; };
+		D5A645232AF5B5C50047D980 /* PatreonAPI+Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */; };
+		D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645242AF5BC7F0047D980 /* UserAccount.swift */; };
 		D5ACE84528E3B8450021CAB9 /* ClearAppCacheOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */; };
 		D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */; };
 		D5B6F6AB2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */; };
@@ -753,9 +761,9 @@
 		BF66EE8B2501AEB1007EE018 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTAppPermissions.h; sourceTree = "<group>"; };
 		BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTSourceUserInfoKey.h; sourceTree = "<group>"; };
-		BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitType.m; sourceTree = "<group>"; };
+		BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTPatreonBenefitID.m; sourceTree = "<group>"; };
 		BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTAppPermissions.m; sourceTree = "<group>"; };
-		BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitType.h; sourceTree = "<group>"; };
+		BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALTPatreonBenefitID.h; sourceTree = "<group>"; };
 		BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALTSourceUserInfoKey.m; sourceTree = "<group>"; };
 		BF66EE9B2501AEC1007EE018 /* AppProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppProtocol.swift; sourceTree = "<group>"; };
 		BF66EE9C2501AEC1007EE018 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
@@ -970,6 +978,7 @@
 		D51AD27C29356B7B00967AAA /* ALTWrappedError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWrappedError.h; sourceTree = "<group>"; };
 		D51AD27D29356B7B00967AAA /* ALTWrappedError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWrappedError.m; sourceTree = "<group>"; };
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
+		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailCollectionViewController.swift; sourceTree = "<group>"; };
@@ -986,8 +995,12 @@
 		D5418F162AD740890014ABD6 /* AppScreenshotCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScreenshotCollectionViewCell.swift; sourceTree = "<group>"; };
 		D54DED1328CBC44B008B27A0 /* ErrorLogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogTableViewCell.swift; sourceTree = "<group>"; };
 		D552B1D72A042A740066216F /* AppPermissionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPermissionsCard.swift; sourceTree = "<group>"; };
+		D552EB052AF453F900A3AB4D /* URL+Normalized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Normalized.swift"; sourceTree = "<group>"; };
 		D55467B12A8D5E2600F4CE90 /* AppShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
 		D55467C42A8D72C300F4CE90 /* ActiveAppsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveAppsWidget.swift; sourceTree = "<group>"; };
+		D557A4802AE85BB0007D0DCF /* Pledge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pledge.swift; sourceTree = "<group>"; };
+		D557A4822AE85DB7007D0DCF /* PledgeReward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PledgeReward.swift; sourceTree = "<group>"; };
+		D557A4842AE88227007D0DCF /* PledgeTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PledgeTier.swift; sourceTree = "<group>"; };
 		D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Permissions.swift"; sourceTree = "<group>"; };
 		D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltTests+Sources.swift"; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
@@ -1028,6 +1041,9 @@
 		D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteServiceDiscoveryTunnel.swift; sourceTree = "<group>"; };
 		D5A1D2EA2AA513410066CACC /* URL+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Tools.swift"; sourceTree = "<group>"; };
 		D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedAPIs.swift; sourceTree = "<group>"; };
+		D5A645202AF591980047D980 /* UTType+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UTType+AltStore.swift"; sourceTree = "<group>"; };
+		D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PatreonAPI+Responses.swift"; sourceTree = "<group>"; };
+		D5A645242AF5BC7F0047D980 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearAppCacheOperation.swift; sourceTree = "<group>"; };
 		D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Previews.swift"; sourceTree = "<group>"; };
 		D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppScreenshotsViewController.swift; sourceTree = "<group>"; };
@@ -1484,6 +1500,7 @@
 			isa = PBXGroup;
 			children = (
 				BF66EE8B2501AEB1007EE018 /* Keychain.swift */,
+				D52B4ABE2AF183F0005991C3 /* WebViewController.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1496,8 +1513,8 @@
 				D5893F812A141E4900E767CD /* KnownSource.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
-				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitType.h */,
-				BF66EE902501AEBC007EE018 /* ALTPatreonBenefitType.m */,
+				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */,
+				BF66EE902501AEBC007EE018 /* ALTPatreonBenefitID.m */,
 				BF66EE8F2501AEBC007EE018 /* ALTSourceUserInfoKey.h */,
 				BF66EE932501AEBC007EE018 /* ALTSourceUserInfoKey.m */,
 			);
@@ -1518,11 +1535,13 @@
 		BF66EE9F2501AEC5007EE018 /* Patreon */ = {
 			isa = PBXGroup;
 			children = (
+				BF66EEA12501AEC5007EE018 /* PatreonAPI.swift */,
+				D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */,
 				BF66EEA02501AEC5007EE018 /* Benefit.swift */,
 				BF66EEA22501AEC5007EE018 /* Campaign.swift */,
-				BF66EEA12501AEC5007EE018 /* PatreonAPI.swift */,
 				BF66EEA32501AEC5007EE018 /* Patron.swift */,
 				BF66EEA42501AEC5007EE018 /* Tier.swift */,
+				D5A645242AF5BC7F0047D980 /* UserAccount.swift */,
 			);
 			path = Patreon;
 			sourceTree = "<group>";
@@ -1543,13 +1562,13 @@
 				D58916FD28C7C55C00E39C8B /* LoggedError.swift */,
 				BF66EEC52501AECA007EE018 /* MergePolicy.swift */,
 				BF66EEBF2501AECA007EE018 /* NewsItem.swift */,
-				BF66EEC82501AECA007EE018 /* PatreonAccount.swift */,
 				D5CA0C4A280E141900469595 /* ManagedPatron.swift */,
 				BF66EEC32501AECA007EE018 /* RefreshAttempt.swift */,
 				BF66EEC12501AECA007EE018 /* SecureValueTransformer.swift */,
 				BF66EEAB2501AECA007EE018 /* Source.swift */,
 				BF66EEC42501AECA007EE018 /* StoreApp.swift */,
 				BF66EEC22501AECA007EE018 /* Team.swift */,
+				D557A4862AE88232007D0DCF /* Patreon */,
 				BF66EEAC2501AECA007EE018 /* Migrations */,
 			);
 			path = Model;
@@ -1609,6 +1628,7 @@
 				D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */,
 				D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */,
 				D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */,
+				D552EB052AF453F900A3AB4D /* URL+Normalized.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1923,6 +1943,7 @@
 				D5927D6529DCC89000D6898E /* UINavigationBarAppearance+TintColor.swift */,
 				D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */,
 				D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */,
+				D5A645202AF591980047D980 /* UTType+AltStore.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2168,6 +2189,17 @@
 			path = "App Intents";
 			sourceTree = "<group>";
 		};
+		D557A4862AE88232007D0DCF /* Patreon */ = {
+			isa = PBXGroup;
+			children = (
+				BF66EEC82501AECA007EE018 /* PatreonAccount.swift */,
+				D557A4802AE85BB0007D0DCF /* Pledge.swift */,
+				D557A4842AE88227007D0DCF /* PledgeTier.swift */,
+				D557A4822AE85DB7007D0DCF /* PledgeReward.swift */,
+			);
+			path = Patreon;
+			sourceTree = "<group>";
+		};
 		D55FEC9C2A8FEC600057D6E6 /* Legacy */ = {
 			isa = PBXGroup;
 			children = (
@@ -2328,7 +2360,7 @@
 			files = (
 				BF66EE822501AE50007EE018 /* AltStoreCore.h in Headers */,
 				BF66EE952501AEBC007EE018 /* ALTSourceUserInfoKey.h in Headers */,
-				BF66EE982501AEBC007EE018 /* ALTPatreonBenefitType.h in Headers */,
+				BF66EE982501AEBC007EE018 /* ALTPatreonBenefitID.h in Headers */,
 				BFAECC5F2501B0BF00528F27 /* ALTConstants.h in Headers */,
 				BFAECC5D2501B0BF00528F27 /* ALTConnection.h in Headers */,
 				BF66EE942501AEBC007EE018 /* ALTAppPermissions.h in Headers */,
@@ -3036,12 +3068,15 @@
 				D5FB28EE2ADDF89800A1C337 /* KnownSource.swift in Sources */,
 				BF66EED32501AECA007EE018 /* AltStore2ToAltStore3.xcmappingmodel in Sources */,
 				BF66EEA52501AEC5007EE018 /* Benefit.swift in Sources */,
+				D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */,
 				BF66EED22501AECA007EE018 /* AltStore4ToAltStore5.xcmappingmodel in Sources */,
+				D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */,
 				D5189C022A01BC6800F44625 /* UserInfoValue.swift in Sources */,
 				BFAECC5B2501B0A400528F27 /* Bundle+AltStore.swift in Sources */,
 				BF66EECD2501AECA007EE018 /* StoreAppPolicy.swift in Sources */,
 				BF66EEE82501AED0007EE018 /* UserDefaults+AltStore.swift in Sources */,
 				BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */,
+				D552EB062AF453F900A3AB4D /* URL+Normalized.swift in Sources */,
 				BFAECC522501B0A400528F27 /* CodableError.swift in Sources */,
 				D5F9821D2AB900060045751F /* AppScreenshot.swift in Sources */,
 				BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */,
@@ -3068,11 +3103,12 @@
 				D58916FE28C7C55C00E39C8B /* LoggedError.swift in Sources */,
 				BFBF331B2526762200B7B8C9 /* AltStore8ToAltStore9.xcmappingmodel in Sources */,
 				D5FD4ECB2A9532960097BEE8 /* DatabaseManager+Async.swift in Sources */,
+				D557A4832AE85DB7007D0DCF /* PledgeReward.swift in Sources */,
 				D5893F802A1419E800E767CD /* NSManagedObjectContext+Conveniences.swift in Sources */,
 				D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */,
 				D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */,
 				BF989184250AACFC002ACF50 /* Date+RelativeDate.swift in Sources */,
-				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitType.m in Sources */,
+				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */,
 				BFAECC5A2501B0A400528F27 /* NetworkConnection.swift in Sources */,
 				D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
 				BF66EEE92501AED0007EE018 /* JSONDecoder+Properties.swift in Sources */,
@@ -3104,6 +3140,7 @@
 				BF66EECC2501AECA007EE018 /* Source.swift in Sources */,
 				BF66EED72501AECA007EE018 /* InstalledApp.swift in Sources */,
 				D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */,
+				D5A645232AF5B5C50047D980 /* PatreonAPI+Responses.swift in Sources */,
 				D5185B822AE1E71D00646E33 /* Source13To14MigrationPolicy.swift in Sources */,
 				BF66EECE2501AECA007EE018 /* InstalledAppPolicy.swift in Sources */,
 				BF1FE359251A9FB000C3CE09 /* NSXPCConnection+MachServices.swift in Sources */,
@@ -3115,6 +3152,8 @@
 				BF66EED62501AECA007EE018 /* NewsItem.swift in Sources */,
 				BF66EEA72501AEC5007EE018 /* Campaign.swift in Sources */,
 				BF66EE992501AEBC007EE018 /* ALTSourceUserInfoKey.m in Sources */,
+				D557A4812AE85BB0007D0DCF /* Pledge.swift in Sources */,
+				D557A4852AE88227007D0DCF /* PledgeTier.swift in Sources */,
 				BF989185250AAD1D002ACF50 /* UIColor+AltStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3244,6 +3283,7 @@
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
+				D5A645212AF591980047D980 /* UTType+AltStore.swift in Sources */,
 				D5F982212AB910180045751F /* AppScreenshotsViewController.swift in Sources */,
 				BFF0B69023219C6D007A79E1 /* PatreonComponents.swift in Sources */,
 				BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */,

@@ -9,3 +9,4 @@
 #import "ALTSourceUserInfoKey.h"
 
 ALTSourceUserInfoKey const ALTSourceUserInfoKeyPatreonAccessToken = @"patreonAccessToken";
+ALTSourceUserInfoKey const ALTSourceUserInfoKeySkipPatreonDownloads = @"skipPatreonDownloads";
