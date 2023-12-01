@@ -159,7 +159,16 @@ extension AppBannerView
             self.accessibilityLabel = values.name
         }
         
-        self.buttonLabel.isHidden = true
+        if let storeApp = app.storeApp, storeApp.isPledgeRequired
+        {
+            // Always show button label for Patreon apps.
+            self.buttonLabel.isHidden = false
+            self.buttonLabel.text = storeApp.isPledged ? NSLocalizedString("Pledged", comment: "") : NSLocalizedString("Join Patreon", comment: "")
+        }
+        else
+        {
+            self.buttonLabel.isHidden = true
+        }
         
         let buttonAction: AppAction
         
@@ -220,10 +229,43 @@ extension AppBannerView
             self.button.countdownDate = nil
             
         case .install:
-            let buttonTitle = NSLocalizedString("Free", comment: "")
-            self.button.setTitle(buttonTitle.uppercased(), for: .normal)
-            self.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
-            self.button.accessibilityValue = buttonTitle
+            if let storeApp = app.storeApp, storeApp.isPledgeRequired
+            {
+                // Pledge required
+                
+                if storeApp.isPledged
+                {
+                    let buttonTitle = NSLocalizedString("Install", comment: "")
+                    self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                    self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
+                    self.button.accessibilityValue = buttonTitle
+                }
+                else if let amount = storeApp.pledgeAmount, let currencyCode = storeApp.pledgeCurrency, #available(iOS 15, *)
+                {
+                    let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
+                    
+                    let buttonTitle = String(format: NSLocalizedString("%@/mo", comment: ""), price)
+                    self.button.setTitle(buttonTitle, for: .normal)
+                    self.button.accessibilityLabel = String(format: NSLocalizedString("Pledge %@ a month", comment: ""), price)
+                    self.button.accessibilityValue = String(format: NSLocalizedString("%@ a month", comment: ""), price)
+                }
+                else
+                {
+                    let buttonTitle = NSLocalizedString("Pledge", comment: "")
+                    self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                    self.button.accessibilityLabel = buttonTitle
+                    self.button.accessibilityValue = buttonTitle
+                }
+            }
+            else
+            {
+                // Free app
+                
+                let buttonTitle = NSLocalizedString("Free", comment: "")
+                self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+                self.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+                self.button.accessibilityValue = buttonTitle
+            }
             
             if let versionDate = app.storeApp?.latestSupportedVersion?.date, versionDate > Date()
             {
