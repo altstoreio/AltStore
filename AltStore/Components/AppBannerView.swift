@@ -18,6 +18,14 @@ extension AppBannerView
         case app
         case source
     }
+    
+    enum AppAction
+    {
+        case install
+        case open
+        case update
+        case custom(String)
+    }
 }
 
 class AppBannerView: RSTNibView
@@ -111,7 +119,7 @@ class AppBannerView: RSTNibView
 
 extension AppBannerView
 {
-    func configure(for app: AppProtocol)
+    func configure(for app: AppProtocol, action: AppAction? = nil)
     {
         struct AppValues
         {
@@ -149,6 +157,94 @@ extension AppBannerView
         {
             self.subtitleLabel.text = NSLocalizedString("Sideloaded", comment: "")
             self.accessibilityLabel = values.name
+        }
+        
+        self.buttonLabel.isHidden = true
+        
+        let buttonAction: AppAction
+        
+        if let action
+        {
+            buttonAction = action
+        }
+        else if let storeApp = app.storeApp
+        {
+            if let installedApp = storeApp.installedApp
+            {
+                // App is installed
+                
+                if installedApp.isUpdateAvailable
+                {
+                    buttonAction = .update
+                }
+                else
+                {
+                    buttonAction = .open
+                }
+            }
+            else
+            {
+                // App is not installed
+                buttonAction = .install
+            }
+        }
+        else
+        {
+            // App is not from a source, fall back to .open
+            buttonAction = .open
+        }
+        
+        switch buttonAction
+        {
+        case .open:
+            let buttonTitle = NSLocalizedString("Open", comment: "")
+            self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+            self.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), values.name)
+            self.button.accessibilityValue = buttonTitle
+                        
+            self.button.countdownDate = nil
+            
+        case .update:
+            let buttonTitle = NSLocalizedString("Update", comment: "")
+            self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+            self.button.accessibilityLabel = String(format: NSLocalizedString("Update %@", comment: ""), values.name)
+            self.button.accessibilityValue = buttonTitle
+            
+            self.button.countdownDate = nil
+            
+        case .custom(let buttonTitle):
+            self.button.setTitle(buttonTitle, for: .normal)
+            self.button.accessibilityLabel = buttonTitle
+            self.button.accessibilityValue = buttonTitle
+            
+            self.button.countdownDate = nil
+            
+        case .install:
+            let buttonTitle = NSLocalizedString("Free", comment: "")
+            self.button.setTitle(buttonTitle.uppercased(), for: .normal)
+            self.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), app.name)
+            self.button.accessibilityValue = buttonTitle
+            
+            if let versionDate = app.storeApp?.latestSupportedVersion?.date, versionDate > Date()
+            {
+                self.button.countdownDate = versionDate
+            }
+            else
+            {
+                self.button.countdownDate = nil
+            }
+        }
+        
+        // Ensure PillButton is correct size before assigning progress.
+        self.layoutIfNeeded()
+        
+        if let progress = AppManager.shared.installationProgress(for: app), progress.fractionCompleted < 1.0
+        {
+            self.button.progress = progress
+        }
+        else
+        {
+            self.button.progress = nil
         }
     }
     
