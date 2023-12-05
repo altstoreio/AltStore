@@ -18,6 +18,7 @@
                 <outlet property="buttonLabel" destination="Yd9-jw-faD" id="o7g-Gb-CIt"/>
                 <outlet property="iconImageView" destination="avS-dx-4iy" id="TQs-Ej-gin"/>
                 <outlet property="iconImageViewHeightConstraint" destination="6lU-H8-nEw" id="PSt-Xa-lQT"/>
+                <outlet property="sourceIconImageView" destination="dku-SJ-aay" id="rA0-y1-dIb"/>
                 <outlet property="stackView" destination="d1T-UD-gWG" id="E7N-Zb-lm1"/>
                 <outlet property="subtitleLabel" destination="oN5-vu-Dnw" id="gA4-iJ-Tix"/>
                 <outlet property="titleLabel" destination="mFe-zJ-eva" id="2OH-f8-cid"/>
@@ -58,18 +59,25 @@
                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="caL-vN-Svn">
                             <rect key="frame" x="87" y="25.5" width="184" height="37.5"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
-                                    <rect key="frame" x="0.0" y="0.0" width="126" height="19.5"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
+                                    <rect key="frame" x="0.0" y="0.0" width="149" height="19.5"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="mFe-zJ-eva">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="400" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="mFe-zJ-eva">
                                             <rect key="frame" x="0.0" y="0.0" width="79" height="19.5"/>
                                             <accessibility key="accessibilityConfiguration" identifier="NameLabel"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dku-SJ-aay" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
+                                            <rect key="frame" x="85" y="1" width="17" height="17"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="dku-SJ-aay" secondAttribute="height" id="VKw-lc-8NQ"/>
+                                                <constraint firstAttribute="width" constant="17" id="hAe-gc-Ehh"/>
+                                            </constraints>
+                                        </imageView>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="qQl-Ez-zC5">
-                                            <rect key="frame" x="85" y="0.0" width="41" height="19.5"/>
+                                            <rect key="frame" x="108" y="1" width="41" height="17"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Beta Badge">
                                                 <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                                 <bool key="isElement" value="YES"/>

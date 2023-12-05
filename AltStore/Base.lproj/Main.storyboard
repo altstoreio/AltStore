@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wKh-xq-NuP">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -70,7 +72,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cMN-i4-Bxk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1730" y="-17"/>
+            <point key="canvasLocation" x="2730" y="-373"/>
         </scene>
         <!--App View Controller-->
         <scene sceneID="TgT-LO-3Er">
@@ -214,7 +216,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C9o-C3-sMK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2525.5999999999999" y="-17.541229385307346"/>
+            <point key="canvasLocation" x="2730" y="439"/>
         </scene>
         <!--App-->
         <scene sceneID="CgX-7h-sRI">
@@ -437,7 +439,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dhh-ZN-LoG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3302" y="-18"/>
+            <point key="canvasLocation" x="3506" y="437"/>
         </scene>
         <!--App Screenshots View Controller-->
         <scene sceneID="E6k-TI-c4N">
@@ -462,7 +464,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="np0-Hj-vy7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4096.8000000000002" y="-437.18140929535235"/>
+            <point key="canvasLocation" x="4302" y="20"/>
         </scene>
         <!--App Detail Collection View Controller-->
         <scene sceneID="Pcn-h5-5fk">
@@ -482,7 +484,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fxm-bB-W29" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4097" y="-19"/>
+            <point key="canvasLocation" x="4298" y="434"/>
         </scene>
         <!--Settings-->
         <scene sceneID="KlD-j0-ROn">
@@ -533,7 +535,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="e3L-BF-iXp" kind="relationship" relationship="rootViewController" id="EVp-fA-PvU"/>
+                        <segue destination="KKu-kI-2kg" kind="relationship" relationship="rootViewController" id="2Dm-Oy-wu0"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OkH-49-O0J" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -732,7 +734,56 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kiO-UO-esV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1728.8" y="716.49175412293857"/>
+            <point key="canvasLocation" x="1729" y="716"/>
+        </scene>
+        <!--Featured View Controller-->
+        <scene sceneID="1eF-L7-aZz">
+            <objects>
+                <collectionViewController storyboardIdentifier="featuredViewController" id="KKu-kI-2kg" customClass="FeaturedViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="2HL-eH-weG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PI1-YC-d4l">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Eo1-84-9m0">
+                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="4ra-vw-qNw">
+                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </collectionViewCellContentView>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="KKu-kI-2kg" id="tXR-fi-SxU"/>
+                            <outlet property="delegate" destination="KKu-kI-2kg" id="XC4-MP-Zdr"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="zft-Mo-I7C"/>
+                    <connections>
+                        <segue destination="e3L-BF-iXp" kind="show" identifier="showBrowseViewController" destinationCreationSelector="makeBrowseViewController:sender:" id="qDq-A7-sdW"/>
+                        <segue destination="177-gr-dJU" kind="show" identifier="showSourceDetails" destinationCreationSelector="makeSourceDetailViewController:sender:" id="dmC-aP-9Hg"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hwb-Di-x8C" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1729" y="-19"/>
+        </scene>
+        <!--sourceDetailViewController-->
+        <scene sceneID="nDc-kS-RDF">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Sources" referencedIdentifier="sourceDetailViewController" id="177-gr-dJU" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7hT-A6-bBi"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bhw-oh-Eeq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2730" y="-21"/>
         </scene>
         <!--App IDs-->
         <scene sceneID="kvf-US-rRe">
@@ -823,7 +874,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lvd-jC-AZO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="eS1-sQ-VUA" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3301.5999999999999" y="715.59220389805103"/>
+            <point key="canvasLocation" x="3506" y="1121"/>
         </scene>
         <!--News-->
         <scene sceneID="BV8-6J-nIv">
@@ -861,7 +912,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3LN-mt-qWn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2526" y="731"/>
+            <point key="canvasLocation" x="2730" y="1120"/>
         </scene>
         <!--Sources-->
         <scene sceneID="Vzf-tb-LIH">
@@ -884,7 +935,7 @@
         <image name="News" width="19" height="20"/>
         <image name="Settings" width="20" height="20"/>
         <namedColor name="Background">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0040000001899898052" green="0.50199997425079346" blue="0.51800000667572021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="BlurTint">
             <color red="1" green="1" blue="1" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>

@@ -41,6 +41,17 @@ public extension UserDefaults
     
     @NSManaged var skipPatreonDownloads: Bool
     
+    @nonobjc var preferredAppSorting: AppSorting {
+        get {
+            let sorting = _preferredAppSorting.flatMap { AppSorting(rawValue: $0) } ?? .default
+            return sorting
+        }
+        set {
+            _preferredAppSorting = newValue.rawValue
+        }
+    }
+    @NSManaged @objc(preferredAppSorting) private var _preferredAppSorting: String?
+    
     @nonobjc
     var activeAppsLimit: Int? {
         get {
@@ -91,6 +102,10 @@ public extension UserDefaults
         let permissionCheckingDisabled = false
         #endif
         
+        // Pre-iOS 15 doesn't support custom sorting, so default to sorting by name.
+        // Otherwise, default to `default` sorting (a.k.a. "source order").
+        let preferredAppSorting: AppSorting = if #available(iOS 15, *) { .default } else { .name }
+        
         let defaults = [
             #keyPath(UserDefaults.isBackgroundRefreshEnabled): true,
             #keyPath(UserDefaults.isLegacyDeactivationSupported): isLegacyDeactivationSupported,
@@ -100,7 +115,8 @@ public extension UserDefaults
             #keyPath(UserDefaults.ignoreActiveAppsLimit): false,
             #keyPath(UserDefaults.isCowExploitSupported): isMacDirtyCowSupported,
             #keyPath(UserDefaults.permissionCheckingDisabled): permissionCheckingDisabled,
-        ]
+            #keyPath(UserDefaults._preferredAppSorting): preferredAppSorting.rawValue,
+        ] as [String: Any]
         
         UserDefaults.standard.register(defaults: defaults)
         UserDefaults.shared.register(defaults: defaults)

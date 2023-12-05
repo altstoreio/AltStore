@@ -75,6 +75,8 @@ public class Source: NSManagedObject, Fetchable, Decodable
     
     @NSManaged public var error: NSError?
     
+    @NSManaged public var featuredSortID: String?
+    
     /* Non-Core Data Properties */
     public var userInfo: [ALTSourceUserInfoKey: String]?
     
@@ -209,6 +211,13 @@ public class Source: NSManagedObject, Fetchable, Decodable
             
             throw error
         }
+    }
+    
+    public override func awakeFromInsert()
+    {
+        super.awakeFromInsert()
+        
+        self.featuredSortID = UUID().uuidString
     }
 }
 

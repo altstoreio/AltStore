@@ -30,13 +30,6 @@ class SourcesViewController: UICollectionViewController
     
     private lazy var dataSource = self.makeDataSource()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-        return dateFormatter
-    }()
-    
     private var placeholderView: RSTPlaceholderView!
     private var placeholderViewButton: UIButton!
     private var placeholderViewCenterYConstraint: NSLayoutConstraint!
@@ -236,7 +229,7 @@ private extension SourcesViewController
             let dateText: String
             if let lastUpdatedDate = source.lastUpdatedDate
             {
-                dateText = Date().relativeDateString(since: lastUpdatedDate, dateFormatter: self.dateFormatter)
+                dateText = Date().relativeDateString(since: lastUpdatedDate, dateFormatter: Date.shortDateFormatter)
             }
             else
             {
@@ -515,7 +508,7 @@ extension SourcesViewController: NSFetchedResultsControllerDelegate
     AppManager.shared.fetchSources { result in
         do
         {
-            let (sources, context) = try result.get()
+            let (_, context) = try result.get()
             try context.save()
         }
         catch

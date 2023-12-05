@@ -234,6 +234,12 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     sortedScreenshotIDsByGlobalAppID[globallyUniqueID] = contextScreenshotIDs
                 }
                 
+                // Revert contextApp.featuredSortID to database value (if it exists).
+                if let featuredSortID = databaseObject.featuredSortID
+                {
+                    contextApp.featuredSortID = featuredSortID
+                }
+                
             case let databaseObject as Source:
                 guard let conflictedObject = conflict.conflictingObjects.first as? Source else { break }
                 
@@ -261,6 +267,12 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 if let contextSource = conflict.conflictingObjects.first as? Source
                 {
                     featuredAppIDsBySourceID[databaseObject.identifier] = contextSource.featuredApps?.map { $0.bundleIdentifier }
+                }
+                
+                // Revert conflictedObject.featuredSortID to database value (if it exists).
+                if let featuredSortID = databaseObject.featuredSortID
+                {
+                    conflictedObject.featuredSortID = featuredSortID
                 }
                 
             case let databasePledge as Pledge:
