@@ -320,6 +320,7 @@ public extension InstalledApp
     
     var isUpdateAvailable: Bool {
         guard let storeApp = self.storeApp, let latestVersion = storeApp.latestSupportedVersion else { return false }
+        guard !storeApp.isPledgeRequired || storeApp.isPledged else { return false }
         
         let isUpdateAvailable = !self.matches(latestVersion)
         return isUpdateAvailable
