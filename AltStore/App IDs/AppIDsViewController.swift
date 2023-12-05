@@ -73,9 +73,10 @@ private extension AppIDsViewController
             let tintColor = UIColor.altPrimary
             
             let cell = cell as! AppBannerCollectionViewCell
-            cell.layoutMargins.left = self.view.layoutMargins.left
-            cell.layoutMargins.right = self.view.layoutMargins.right
             cell.tintColor = tintColor
+            
+            cell.contentView.preservesSuperviewLayoutMargins = false
+            cell.contentView.layoutMargins = UIEdgeInsets(top: 0, left: self.view.layoutMargins.left, bottom: 0, right: self.view.layoutMargins.right)
                         
             cell.bannerView.iconImageView.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
@@ -110,6 +111,7 @@ private extension AppIDsViewController
             cell.bannerView.titleLabel.text = appID.name
             cell.bannerView.subtitleLabel.text = appID.bundleIdentifier
             cell.bannerView.subtitleLabel.numberOfLines = 2
+            cell.bannerView.subtitleLabel.minimumScaleFactor = 1.0 // Disable font shrinking
             
             let attributedBundleIdentifier = NSMutableAttributedString(string: appID.bundleIdentifier.lowercased(), attributes: [.accessibilitySpeechPunctuation: true])
             
@@ -178,7 +180,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
         
         // Use this view to calculate the optimal size based on the collection view's width
-        let size = headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingExpandedSize.height),
+        let size = headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingCompressedSize.height),
                                                       withHorizontalFittingPriority: .required, // Width is fixed
                                                       verticalFittingPriority: .fittingSizeLevel) // Height can be as large as needed
         return size
