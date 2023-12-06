@@ -171,7 +171,19 @@ extension AppBannerView
         {
             // Always show button label for Patreon apps.
             self.buttonLabel.isHidden = false
-            self.buttonLabel.text = storeApp.isPledged ? NSLocalizedString("Pledged", comment: "") : NSLocalizedString("Join Patreon", comment: "")
+            
+            if storeApp.isPledged
+            {
+                self.buttonLabel.text = NSLocalizedString("Pledged", comment: "")
+            }
+            else if storeApp.installedApp != nil
+            {
+                self.buttonLabel.text = NSLocalizedString("Pledge Expired", comment: "")
+            }
+            else
+            {
+                self.buttonLabel.text = NSLocalizedString("Join Patreon", comment: "")
+            }
         }
         else
         {
