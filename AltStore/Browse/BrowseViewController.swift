@@ -38,9 +38,16 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     private let prototypeCell = AppCardCollectionViewCell(frame: .zero)
     
     private var sortButton: UIBarButtonItem?
+    private var categoriesMenu: UIMenu?
+    
     private var preferredAppSorting: AppSorting = UserDefaults.shared.preferredAppSorting
     
     private var cancellables = Set<AnyCancellable>()
+    
+    private var titleStackView: UIStackView!
+    private var titleSourceIconView: AppIconImageView!
+    private var titleCategoryIconView: UIImageView!
+    private var titleLabel: UILabel!
     
     init?(source: Source?, coder: NSCoder)
     {
@@ -77,6 +84,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         self.collectionView.backgroundColor = .altBackground
         self.collectionView.alwaysBounceVertical = true
         
+        self.dataSource.searchController.delegate = self
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(StoreApp.name),
                                                                #keyPath(StoreApp.subtitle),
                                                                #keyPath(StoreApp.developerName),
@@ -100,32 +108,30 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         })
         self.collectionView.refreshControl = refreshControl
         
-        if let source = self.source
+        if self.category != nil, #available(iOS 16, *)
         {
-            let tintColor = source.effectiveTintColor ?? .altPrimary
-            self.view.tintColor = tintColor
-            
-            let appearance = NavigationBarAppearance()
-            appearance.configureWithTintColor(tintColor)
-            appearance.configureWithDefaultBackground()
-            
-            let edgeAppearance = appearance.copy()
-            edgeAppearance.configureWithTransparentBackground()
-            
-            self.navigationItem.standardAppearance = appearance
-            self.navigationItem.scrollEdgeAppearance = edgeAppearance
-        }
-        else if self.category != nil, #available(iOS 16, *)
-        {
-            let menu = UIMenu(children: [
+            let categoriesMenu = UIMenu(children: [
                 UIDeferredMenuElement.uncached { [weak self] completion in
                     let actions = self?.makeCategoryActions() ?? []
                     completion(actions)
                 }
             ])
             
-            self.navigationItem.titleMenuProvider = { _ in menu }
+            self.navigationItem.titleMenuProvider = { _ in categoriesMenu }
+            
+            self.categoriesMenu = categoriesMenu
         }
+        
+        self.titleSourceIconView = AppIconImageView(style: .circular)
+        
+        self.titleCategoryIconView = UIImageView(frame: .zero)
+        self.titleCategoryIconView.contentMode = .scaleAspectFit
+        
+        self.titleLabel = UILabel()
+        self.titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        
+        self.titleStackView = UIStackView(arrangedSubviews: [self.titleSourceIconView, self.titleCategoryIconView, self.titleLabel])
+        self.titleStackView.spacing = 4
         
         self.navigationItem.largeTitleDisplayMode = .never
         
@@ -141,6 +147,15 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         self.preparePipeline()
         
+        NSLayoutConstraint.activate([
+            // Source icon = equal width and height
+            self.titleSourceIconView.heightAnchor.constraint(equalToConstant: 26),
+            self.titleSourceIconView.widthAnchor.constraint(equalTo: self.titleSourceIconView.heightAnchor),
+            
+            // Category icon = constant height, variable widths
+            self.titleCategoryIconView.heightAnchor.constraint(equalToConstant: 26)
+        ])
+        
         self.updateDataSource()
         self.update()
     }
@@ -150,6 +165,13 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         super.viewWillAppear(animated)
         
         self.update()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) 
+    {
+        super.viewDidDisappear(animated)
+        
+        self.navigationController?.navigationBar.tintColor = nil
     }
 }
 
@@ -344,13 +366,74 @@ private extension BrowseViewController
             }
         }
         
-        if let category = self.category
+        let tintColor: UIColor
+        
+        if let source = self.source
         {
+            tintColor = source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
+            
+            self.title = source.name
+                        
+            self.titleSourceIconView.backgroundColor = tintColor
+            self.titleSourceIconView.isHidden = false
+            
+            self.titleCategoryIconView.isHidden = true
+            
+            if let iconURL = source.effectiveIconURL
+            {
+                Nuke.loadImage(with: iconURL, into: self.titleSourceIconView) { result in
+                    switch result
+                    {
+                    case .failure(let error): Logger.main.error("Failed to fetch source icon at \(iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                    case .success: self.titleSourceIconView.backgroundColor = .white
+                    }
+                }
+            }
+        }
+        else if let category = self.category
+        {
+            tintColor = category.tintColor
+            
             self.title = category.localizedName
+            
+            let image = UIImage(systemName: category.filledSymbolName)?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
+            self.titleCategoryIconView.image = image
+            self.titleCategoryIconView.isHidden = false
+            
+            self.titleSourceIconView.isHidden = true
         }
         else
         {
+            tintColor = .altPrimary
+            
             self.title = NSLocalizedString("Browse", comment: "")
+            
+            self.titleSourceIconView.isHidden = true
+            self.titleCategoryIconView.isHidden = true
+        }
+        
+        self.titleLabel.text = self.title
+        self.titleStackView.sizeToFit()
+        self.navigationItem.titleView = self.titleStackView
+        
+        self.view.tintColor = tintColor
+        
+        let appearance = NavigationBarAppearance()
+        appearance.configureWithTintColor(tintColor)
+        appearance.configureWithDefaultBackground()
+        
+        let edgeAppearance = appearance.copy()
+        edgeAppearance.configureWithTransparentBackground()
+        
+        self.navigationItem.standardAppearance = appearance
+        self.navigationItem.scrollEdgeAppearance = edgeAppearance
+        
+        // Necessary to tint UISearchController's inline bar button.
+        self.navigationController?.navigationBar.tintColor = tintColor
+        
+        if let sortButton
+        {
+            sortButton.image = sortButton.image?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
         }
     }
     
@@ -376,11 +459,17 @@ private extension BrowseViewController
                 return StoreCategory(rawValue: rawCategory) ?? .other
             }
             
-            let sortedCategories = Set(categories).sorted(by: { $0.localizedName.localizedStandardCompare($1.localizedName) == .orderedAscending })
+            var sortedCategories = Set(categories).sorted(by: { $0.localizedName.localizedStandardCompare($1.localizedName) == .orderedAscending })
+            if let otherIndex = sortedCategories.firstIndex(of: .other)
+            {
+                // Ensure "Other" is always last
+                sortedCategories.move(fromOffsets: [otherIndex], toOffset: sortedCategories.count)
+            }
             
             let actions = sortedCategories.map { category in
                 let state: UIAction.State = (category == self.category) ? .on : .off
-                return UIAction(title: category.localizedName, image: UIImage(systemName: category.symbolName), state: state) { _ in
+                let image = UIImage(systemName: category.symbolName)?.withTintColor(category.tintColor, renderingMode: .alwaysOriginal)
+                return UIAction(title: category.localizedName, image: image, state: state) { _ in
                     handler(category)
                 }
             }
@@ -579,6 +668,30 @@ extension BrowseViewController: UIViewControllerPreviewingDelegate
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
+    }
+}
+
+extension BrowseViewController: UISearchControllerDelegate
+{
+    func willPresentSearchController(_ searchController: UISearchController)
+    {
+        // Hide titleView + menu to ensure search bar is as large as possible.
+        self.navigationItem.titleView = nil
+        
+        if #available(iOS 16, *)
+        {
+            self.navigationItem.titleMenuProvider = nil
+        }
+    }
+    
+    func willDismissSearchController(_ searchController: UISearchController) 
+    {
+        self.navigationItem.titleView = self.titleStackView
+        
+        if let categoriesMenu, #available(iOS 16, *)
+        {
+            self.navigationItem.titleMenuProvider = { _ in categoriesMenu }
+        }
     }
 }
 

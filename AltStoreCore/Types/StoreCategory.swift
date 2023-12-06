@@ -57,6 +57,14 @@ public enum StoreCategory: String, CaseIterable
         }
     }
     
+    public var filledSymbolName: String {
+        switch self
+        {
+        case .utilities: return self.symbolName
+        default: return self.symbolName + ".fill"
+        }
+    }
+    
     public var tintColor: UIColor {
         switch self
         {
