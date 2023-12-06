@@ -25,10 +25,24 @@ class AppIconImageView: UIImageView
         }
     }
     
-    override func awakeFromNib()
+    init(style: Style) 
     {
-        super.awakeFromNib()
+        self.style = style
         
+        super.init(image: nil)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder) 
+    {
+        super.init(coder: coder)
+        
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.contentMode = .scaleAspectFill
         self.clipsToBounds = true
         self.backgroundColor = .white
