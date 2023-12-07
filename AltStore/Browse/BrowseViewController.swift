@@ -24,6 +24,9 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     
     private let prototypeCell = AppCardCollectionViewCell(frame: .zero)
     
+    private var sortButton: UIBarButtonItem?
+    private var preferredAppSorting: AppSorting = UserDefaults.shared.preferredAppSorting
+    
     private var cancellables = Set<AnyCancellable>()
     
     init?(source: Source?, coder: NSCoder)
@@ -93,8 +96,14 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.preferredSearchBarPlacement = .inline
         }
         
+        if #available(iOS 15, *)
+        {
+            self.prepareAppSorting()
+        }
+        
         self.preparePipeline()
         
+        self.updateDataSource()
         self.update()
     }
     
@@ -118,13 +127,9 @@ private extension BrowseViewController
             .store(in: &self.cancellables)
     }
     
-    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    func makeFetchRequest() -> NSFetchRequest<StoreApp>
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
-                                        NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: true),
-                                        NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
-                                        NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)]
         fetchRequest.returnsObjectsAsFaults = false
         
         let predicate = StoreApp.visibleAppsPredicate
@@ -138,6 +143,38 @@ private extension BrowseViewController
         {
             fetchRequest.predicate = predicate
         }
+        
+        var sortDescriptors = [NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+                               NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true),
+                               NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true)]
+        
+        switch self.preferredAppSorting
+        {
+        case .default:
+            let descriptor = NSSortDescriptor(keyPath: \StoreApp.sortIndex, ascending: self.preferredAppSorting.isAscending)
+            sortDescriptors.insert(descriptor, at: 0)
+            
+        case .name:
+            // Already sorting by name, no need to prepend additional sort descriptor.
+            break
+            
+        case .developer:
+            let descriptor = NSSortDescriptor(keyPath: \StoreApp.developerName, ascending: self.preferredAppSorting.isAscending)
+            sortDescriptors.insert(descriptor, at: 0)
+            
+        case .lastUpdated:
+            let descriptor = NSSortDescriptor(keyPath: \StoreApp.latestSupportedVersion?.date, ascending: self.preferredAppSorting.isAscending)
+            sortDescriptors.insert(descriptor, at: 0)
+        }
+        
+        fetchRequest.sortDescriptors = sortDescriptors
+        
+        return fetchRequest
+    }
+    
+    func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
+    {
+        let fetchRequest = self.makeFetchRequest()
         
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
@@ -189,6 +226,15 @@ private extension BrowseViewController
         return dataSource
     }
     
+    func updateDataSource()
+    {
+        let fetchRequest = self.makeFetchRequest()
+        
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        self.dataSource.fetchedResultsController = fetchedResultsController
+    }
+    
     func updateSources()
     {
         AppManager.shared.updateAllSources { result in
@@ -233,6 +279,52 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
+    
+    @available(iOS 15, *)
+    func prepareAppSorting()
+    {
+        if self.preferredAppSorting == .default && self.source == nil
+        {
+            // Only allow `default` sorting if source is non-nil.
+            // Otherwise, fall back to `lastUpdated` sorting.
+            self.preferredAppSorting = .lastUpdated
+            
+            // Don't update UserDefaults unless explicitly changed by user.
+            // UserDefaults.shared.preferredAppSorting = .lastUpdated
+        }
+        
+        let children = UIDeferredMenuElement.uncached { [weak self] completion in
+            guard let self else { return completion([]) }
+            
+            var sortingOptions = AppSorting.allCases
+            if self.source == nil
+            {
+                // Only allow `default` sorting when source is non-nil.
+                sortingOptions = sortingOptions.filter { $0 != .default }
+            }
+            
+            let actions = sortingOptions.map { sorting in
+                let state: UIMenuElement.State = (sorting == self.preferredAppSorting) ? .on : .off
+                let action = UIAction(title: sorting.localizedName, image: nil, state: state) { action in
+                    self.preferredAppSorting = sorting
+                    UserDefaults.shared.preferredAppSorting = sorting // Update separately to save change.
+                    
+                    self.updateDataSource()
+                }
+                
+                return action
+            }
+            
+            completion(actions)
+        }
+        
+        let sortMenu = UIMenu(title: NSLocalizedString("Sort by…", comment: ""), options: [.singleSelection], children: [children])
+        let sortIcon = UIImage(systemName: "arrow.up.arrow.down")
+        
+        let sortButton = UIBarButtonItem(title: NSLocalizedString("Sort by…", comment: ""), image: sortIcon, primaryAction: nil, menu: sortMenu)
+        self.sortButton = sortButton
+        
+        self.navigationItem.rightBarButtonItems = [sortButton, .flexibleSpace()] // flexibleSpace() required to prevent showing full search bar inline.
     }
 }
 
