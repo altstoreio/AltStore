@@ -1177,9 +1177,21 @@ private extension AppManager
             }
         }
         
-        let downloadedAppURL = context.temporaryDirectory.appendingPathComponent("Cached.app")
+        var verifyPledgeOperation: VerifyAppPledgeOperation?
+        if let storeApp = app.storeApp
+        {
+            verifyPledgeOperation = VerifyAppPledgeOperation(storeApp: storeApp, presentingViewController: context.presentingViewController)
+            verifyPledgeOperation?.resultHandler = { result in
+                switch result
+                {
+                case .failure(let error): context.error = error
+                case .success: break
+                }
+            }
+        }
         
         /* Download */
+        let downloadedAppURL = context.temporaryDirectory.appendingPathComponent("Cached.app")
         let downloadOperation = DownloadAppOperation(app: downloadingApp, destinationURL: downloadedAppURL, context: context)
         downloadOperation.resultHandler = { (result) in
             do
@@ -1193,6 +1205,11 @@ private extension AppManager
             }
         }
         progress.addChild(downloadOperation.progress, withPendingUnitCount: 25)
+        
+        if let verifyPledgeOperation
+        {
+            downloadOperation.addDependency(verifyPledgeOperation)
+        }
         
         
         /* Verify App */
@@ -1404,7 +1421,7 @@ private extension AppManager
         progress.addChild(installOperation.progress, withPendingUnitCount: 30)
         installOperation.addDependency(sendAppOperation)
         
-        var operations = [downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation]
+        var operations = [verifyPledgeOperation, downloadOperation, verifyOperation, deactivateAppsOperation, patchAppOperation, refreshAnisetteDataOperation, fetchProvisioningProfilesOperation, resignAppOperation, sendAppOperation, installOperation].compactMap { $0 }
         group.add(operations)
         
         if let storeApp = downloadingApp.storeApp, storeApp.isPledgeRequired
@@ -1997,7 +2014,7 @@ private extension AppManager
             switch operation
             {
             case _ where requiresSerialQueue: fallthrough
-            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation:
+            case is InstallAppOperation, is RefreshAppOperation, is BackupAppOperation, is VerifyAppPledgeOperation:
                 if let installAltStoreOperation = operation as? InstallAppOperation, installAltStoreOperation.context.bundleIdentifier == StoreApp.altstoreAppID
                 {
                     // Add dependencies on previous serial operations in `context` to ensure re-installing AltStore goes last.

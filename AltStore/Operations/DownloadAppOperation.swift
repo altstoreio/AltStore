@@ -217,16 +217,6 @@ private extension DownloadAppOperation
                     fileURL = sourceURL
                     self.progress.completedUnitCount += 3
                 }
-                else if let (isPledged, isPledgeRequired) = await self.context.$appVersion.perform({ $0?.app.map { ($0.isPledged, $0.isPledgeRequired) } }), isPledgeRequired && !isPledged
-                {
-                    // Not pledged, so just show Patreon page.
-                    guard let presentingViewController = self.context.presentingViewController,
-                          let patreonURL = await self.context.$appVersion.perform({ $0?.app?.source?.patreonURL })
-                    else { throw OperationError.pledgeRequired(appName: self.appName) }
-                    
-                    // Intercept downloads just in case they are in fact pledged.
-                    fileURL = try await self.downloadFromPatreon(patreonURL, presentingViewController: presentingViewController)
-                }
                 else if let host = sourceURL.host, host.lowercased().hasSuffix("patreon.com") && sourceURL.path.lowercased() == "/file"
                 {
                     // Patreon app

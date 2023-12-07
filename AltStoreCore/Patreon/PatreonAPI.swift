@@ -283,7 +283,12 @@ public extension PatreonAPI
 
 extension PatreonAPI
 {
-    private func saveAuthCookies() async
+    public var authCookies: [HTTPCookie] {
+        let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: "https://www.patreon.com")!) ?? []
+        return cookies
+    }
+    
+    public func saveAuthCookies() async
     {
         let cookieStore = await MainActor.run { WKWebsiteDataStore.default().httpCookieStore } // Must access from main actor
         
@@ -301,22 +306,15 @@ extension PatreonAPI
         
         let cookieStore = await MainActor.run { WKWebsiteDataStore.default().httpCookieStore } // Must access from main actor
                         
-        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: "https://www.patreon.com")!)
+        for cookie in self.authCookies
         {
-            for cookie in cookies
-            {
-                Logger.main.debug("Deleting Patreon cookie \(cookie.name, privacy: .public) (Expires: \(cookie.expiresDate?.description ?? "nil", privacy: .public))")
-                
-                await cookieStore.deleteCookie(cookie)
-                HTTPCookieStorage.shared.deleteCookie(cookie)
-            }
+            Logger.main.debug("Deleting Patreon cookie \(cookie.name, privacy: .public) (Expires: \(cookie.expiresDate?.description ?? "nil", privacy: .public))")
             
-            Logger.main.info("Cleared Patreon cookie cache!")
+            await cookieStore.deleteCookie(cookie)
+            HTTPCookieStorage.shared.deleteCookie(cookie)
         }
-        else
-        {
-            Logger.main.info("No Patreon cookies to clear.")
-        }
+        
+        Logger.main.info("Cleared Patreon cookie cache!")
     }
 }
 

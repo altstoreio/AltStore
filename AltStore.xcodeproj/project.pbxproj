@@ -383,6 +383,7 @@
 		D557A4812AE85BB0007D0DCF /* Pledge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4802AE85BB0007D0DCF /* Pledge.swift */; };
 		D557A4832AE85DB7007D0DCF /* PledgeReward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4822AE85DB7007D0DCF /* PledgeReward.swift */; };
 		D557A4852AE88227007D0DCF /* PledgeTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = D557A4842AE88227007D0DCF /* PledgeTier.swift */; };
+		D561AF822B21669400BF59C6 /* VerifyAppPledgeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D561AF812B21669400BF59C6 /* VerifyAppPledgeOperation.swift */; };
 		D561B2EB28EF5A4F006752E4 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; };
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D56915072AD5E91B00A2B747 /* Regex+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */; };
@@ -1009,6 +1010,7 @@
 		D557A4802AE85BB0007D0DCF /* Pledge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pledge.swift; sourceTree = "<group>"; };
 		D557A4822AE85DB7007D0DCF /* PledgeReward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PledgeReward.swift; sourceTree = "<group>"; };
 		D557A4842AE88227007D0DCF /* PledgeTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PledgeTier.swift; sourceTree = "<group>"; };
+		D561AF812B21669400BF59C6 /* VerifyAppPledgeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAppPledgeOperation.swift; sourceTree = "<group>"; };
 		D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Permissions.swift"; sourceTree = "<group>"; };
 		D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltTests+Sources.swift"; sourceTree = "<group>"; };
 		D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPermissionsViewController.swift; sourceTree = "<group>"; };
@@ -2028,6 +2030,7 @@
 				D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */,
 				D5E1E7C028077DE90016FC96 /* UpdateKnownSourcesOperation.swift */,
 				D5ACE84428E3B8450021CAB9 /* ClearAppCacheOperation.swift */,
+				D561AF812B21669400BF59C6 /* VerifyAppPledgeOperation.swift */,
 				BF7B44062725A4B8005288A4 /* Patch App */,
 			);
 			path = Operations;
@@ -3292,6 +3295,7 @@
 				BFF00D342501BDCF00746320 /* IntentHandler.swift in Sources */,
 				BFDBBD80246CB84F004ED2F3 /* RemoveAppBackupOperation.swift in Sources */,
 				BFF0B6942321CB85007A79E1 /* AuthenticationViewController.swift in Sources */,
+				D561AF822B21669400BF59C6 /* VerifyAppPledgeOperation.swift in Sources */,
 				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
