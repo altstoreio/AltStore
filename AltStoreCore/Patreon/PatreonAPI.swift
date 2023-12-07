@@ -94,9 +94,12 @@ public extension PatreonAPI
                 let configuration = WKWebViewConfiguration()
                 configuration.setURLSchemeHandler(self, forURLScheme: "altstore")
                 configuration.websiteDataStore = .default()
+                configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+                configuration.applicationNameForUserAgent = "Version/17.1.2 Mobile/15E148 Safari/604.1" // Required for "Sign-in With Google" to work in WKWebView
                 
                 let webViewController = WebViewController(url: requestURL, configuration: configuration)
                 webViewController.delegate = self
+                webViewController.webView.uiDelegate = self
                 self.webViewController = webViewController
                 
                 let callbackURL = try await withCheckedThrowingContinuation { continuation in
@@ -467,5 +470,27 @@ extension PatreonAPI: WKURLSchemeHandler
     public func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask)
     {
         Logger.main.debug("WKWebView stopped handling url scheme.")
+    }
+}
+
+extension PatreonAPI: WKUIDelegate
+{
+    public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView?
+    {
+        // Signing in with Google requires us to use separate windows/"tabs"
+        
+        Logger.main.debug("Intercepting new window request: \(navigationAction.request)")
+        
+        let webViewController = WebViewController(request: navigationAction.request, configuration: configuration)
+        webViewController.delegate = self
+        webViewController.webView.uiDelegate = self
+        self.webViewController?.navigationController?.pushViewController(webViewController, animated: true)
+        
+        return webViewController.webView
+    }
+    
+    public func webViewDidClose(_ webView: WKWebView) 
+    {
+        self.webViewController?.navigationController?.popToRootViewController(animated: true)
     }
 }
