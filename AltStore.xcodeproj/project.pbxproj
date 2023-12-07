@@ -384,6 +384,7 @@
 		D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D56915072AD5E91B00A2B747 /* Regex+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */; };
 		D56915092AD5F3E800A2B747 /* AltTests+Sources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */; };
+		D569A5042AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
@@ -1003,6 +1004,7 @@
 		D557A4842AE88227007D0DCF /* PledgeTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PledgeTier.swift; sourceTree = "<group>"; };
 		D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Permissions.swift"; sourceTree = "<group>"; };
 		D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltTests+Sources.swift"; sourceTree = "<group>"; };
+		D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPermissionsViewController.swift; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
 		D571ADCD2A02FA7400B24B63 /* SourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceError.swift; sourceTree = "<group>"; };
 		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
@@ -1848,8 +1850,9 @@
 				BFBBE2E2229320A2002097FA /* My Apps */,
 				BFDB69FB22A9A7A6007EA6D6 /* Settings */,
 				BFD2478A2284C49000981D42 /* Managing Apps */,
-				BF56D2AD23DF9E170006506D /* App IDs */,
 				BFC84A4B2421A13000853474 /* Sources */,
+				BF56D2AD23DF9E170006506D /* App IDs */,
+				D5BDD9712B1FC8FA001F84DE /* Permissions */,
 				BFC51D7922972F1F00388324 /* Server */,
 				BF0DCA642433BDE200E3A595 /* Analytics */,
 				BFF00D2E2501BD4B00746320 /* Intents */,
@@ -2260,6 +2263,14 @@
 				D59A6B7D2AA9226C00F61259 /* AppProcess.swift */,
 			);
 			path = Types;
+			sourceTree = "<group>";
+		};
+		D5BDD9712B1FC8FA001F84DE /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */,
+			);
+			path = Permissions;
 			sourceTree = "<group>";
 		};
 		D5DB145728F9DC0300A8F606 /* Errors */ = {
@@ -3282,6 +3293,7 @@
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */,
+				D569A5042AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift in Sources */,
 				BF3BEFBF2408673400DE7D55 /* FetchProvisioningProfilesOperation.swift in Sources */,
 				D5A645212AF591980047D980 /* UTType+AltStore.swift in Sources */,
 				D5F982212AB910180045751F /* AppScreenshotsViewController.swift in Sources */,
