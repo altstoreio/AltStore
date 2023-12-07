@@ -65,7 +65,15 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return _preferredStatusBarStyle
+        if #available(iOS 17, *)
+        {
+            // On iOS 17+, .default will update the status bar automatically.
+            return .default
+        }
+        else
+        {
+            return _preferredStatusBarStyle
+        }
     }
     private var _preferredStatusBarStyle: UIStatusBarStyle = .default
     
@@ -478,7 +486,10 @@ private extension HeaderContentViewController
             self._preferredStatusBarStyle = .default
         }
         
-        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+        if #unavailable(iOS 17)
+        {
+            self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+        }
     }
     
     func hideNavigationBar()
@@ -491,7 +502,10 @@ private extension HeaderContentViewController
         
         self._preferredStatusBarStyle = .lightContent
         
-        self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+        if #unavailable(iOS 17)
+        {
+            self.navigationController?.setNeedsStatusBarAppearanceUpdate()
+        }
     }
     
     func updateNavigationBarAppearance(isHidden: Bool)
