@@ -147,6 +147,7 @@ private struct ActiveAppsWidgetView: View
     }
 }
 
+@available(iOS 17, *)
 #Preview(as: .systemMedium) {
     return ActiveAppsWidget()
 } timeline: {
