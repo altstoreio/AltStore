@@ -84,6 +84,16 @@ public class NewsItem: NSManagedObject, Decodable, Fetchable
 
 public extension NewsItem
 {
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceIdentifier else { return nil }
+        
+        let globallyUniqueID = self.identifier + "|" + sourceIdentifier
+        return globallyUniqueID
+    }
+}
+
+public extension NewsItem
+{
     @nonobjc class func fetchRequest() -> NSFetchRequest<NewsItem>
     {
         return NSFetchRequest<NewsItem>(entityName: "NewsItem")

@@ -90,6 +90,16 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
         
+        // Need to add dummy constraint + layout subviews before we can remove Interface Builder's width constraint.
+        self.prototypeCell.widthAnchor.constraint(greaterThanOrEqualToConstant: 0).isActive = true
+        self.prototypeCell.layoutIfNeeded()
+        
+        let constraints = self.prototypeCell.constraintsAffectingLayout(for: .horizontal)
+        for constraint in constraints where constraint.identifier?.contains("Encapsulated-Layout-Width") == true
+        {
+            self.prototypeCell.removeConstraint(constraint)
+        }
+        
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
         
@@ -149,10 +159,12 @@ private extension NewsViewController
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
-        dataSource.cellConfigurationHandler = { (cell, newsItem, indexPath) in
+        dataSource.cellConfigurationHandler = { [weak self] (cell, newsItem, indexPath) in
+            guard let self else { return }
+            
             let cell = cell as! NewsCollectionViewCell
-            cell.layoutMargins.left = self.view.layoutMargins.left
-            cell.layoutMargins.right = self.view.layoutMargins.right
+            cell.contentView.layoutMargins.left = self.view.layoutMargins.left
+            cell.contentView.layoutMargins.right = self.view.layoutMargins.right
             
             cell.titleLabel.text = newsItem.title
             cell.captionLabel.text = newsItem.caption
@@ -454,15 +466,12 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {        
         let item = self.dataSource.item(at: indexPath)
+        let globallyUniqueID = item.globallyUniqueID ?? item.identifier
         
-        if let previousSize = self.cachedCellSizes[item.identifier]
+        if let previousSize = self.cachedCellSizes[globallyUniqueID]
         {
             return previousSize
         }
-        
-        // Take layout margins into account.
-        self.prototypeCell.layoutMargins.left = self.view.layoutMargins.left
-        self.prototypeCell.layoutMargins.right = self.view.layoutMargins.right
         
         let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
         NSLayoutConstraint.activate([widthConstraint])
@@ -471,7 +480,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
         self.dataSource.cellConfigurationHandler(self.prototypeCell, item, indexPath)
         
         let size = self.prototypeCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        self.cachedCellSizes[item.identifier] = size
+        self.cachedCellSizes[globallyUniqueID] = size
         return size
     }
     
