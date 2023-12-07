@@ -29,34 +29,21 @@ extension AppManager
     static let enableJITResultNotificationID = "altstore-enable-jit"
 }
 
-class AppManagerPublisher: ObservableObject
-{
-    @Published
-    fileprivate(set) var installationProgress = [String: Progress]()
-    
-    @Published
-    fileprivate(set) var refreshProgress = [String: Progress]()
-}
-
-class AppManager
+class AppManager: ObservableObject
 {
     static let shared = AppManager()
     
     private(set) var updatePatronsResult: Result<Void, Error>?
     
+    @Published
+    private(set) var updateSourcesResult: Result<Void, Error>? // nil == loading
+    
     private let operationQueue = OperationQueue()
     private let serialOperationQueue = OperationQueue()
     
-    private var installationProgress = [String: Progress]() {
-        didSet {
-            self.publisher.installationProgress = self.installationProgress
-        }
-    }
-    private var refreshProgress = [String: Progress]() {
-        didSet {
-            self.publisher.refreshProgress = self.refreshProgress
-        }
-    }
+    @Published private var installationProgress = [String: Progress]()
+    @Published private var refreshProgress = [String: Progress]()
+    private var cancellables: Set<AnyCancellable> = []
     
     private lazy var progressLock: UnsafeMutablePointer<os_unfair_lock> = {
         // Can't safely pass &os_unfair_lock to os_unfair_lock functions in Swift,
@@ -66,9 +53,6 @@ class AppManager
         lock.initialize(to: .init())
         return lock
     }()
-    
-    private let publisher = AppManagerPublisher()
-    private var cancellables: Set<AnyCancellable> = []
     
     private init()
     {
@@ -92,7 +76,7 @@ class AppManager
         /// Every time refreshProgress is changed, update all InstalledApps in memory
         /// so that app.isRefreshing == refreshProgress.keys.contains(app.bundleID)
         
-        self.publisher.$refreshProgress
+        self.$refreshProgress
             .receive(on: RunLoop.main)
             .map(\.keys)
             .flatMap { (bundleIDs) in
@@ -534,6 +518,68 @@ extension AppManager
         self.run([updatePatronsOperation], context: nil)
     }
     
+    func updateAllSources(completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.updateSourcesResult = nil
+        
+        self.fetchSources() { (result) in
+            do
+            {
+                do
+                {
+                    let (_, context) = try result.get()
+                    try context.save()
+                    
+                    DispatchQueue.main.async {
+                        self.updateSourcesResult = .success(())
+                        completion(.success(()))
+                    }
+                }
+                catch let error as AppManager.FetchSourcesError
+                {
+                    try error.managedObjectContext?.save()
+                    throw error
+                }
+                catch let mergeError as MergeError
+                {
+                    guard let sourceID = mergeError.sourceID else { throw mergeError }
+                    
+                    let sanitizedError = (mergeError as NSError).sanitizedForSerialization()
+                    DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+                        do
+                        {
+                            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID), in: context) else { return }
+                            
+                            source.error = sanitizedError
+                            try context.save()
+                        }
+                        catch
+                        {
+                            Logger.main.error("Failed to assign error \(sanitizedError.localizedErrorCode) to source \(sourceID, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                        }
+                    }
+                    
+                    throw mergeError
+                }
+            }
+            catch var error as NSError
+            {
+                if error.localizedTitle == nil
+                {
+                    error = error.withLocalizedTitle(NSLocalizedString("Unable to Refresh Store", comment: ""))
+                }
+                
+                DispatchQueue.main.async {
+                    self.updateSourcesResult = .failure(error)
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+}
+
+extension AppManager
+{
     @discardableResult
     func install<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
     {

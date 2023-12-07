@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import AltStoreCore
 import Roxas
@@ -23,11 +24,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     
     private let prototypeCell = AppCardCollectionViewCell(frame: .zero)
     
-    private var loadingState: LoadingState = .loading {
-        didSet {
-            self.update()
-        }
-    }
+    private var cancellables = Set<AnyCancellable>()
     
     init?(source: Source?, coder: NSCoder)
     {
@@ -50,6 +47,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         super.viewDidLoad()
         
         self.collectionView.backgroundColor = .altBackground
+        self.collectionView.alwaysBounceVertical = true
         
         #if BETA
         self.dataSource.searchController.searchableKeyPaths = [#keyPath(InstalledApp.name)]
@@ -68,6 +66,11 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
+        let refreshControl = UIRefreshControl(frame: .zero, primaryAction: UIAction { [weak self] _ in
+            self?.updateSources()
+        })
+        self.collectionView.refreshControl = refreshControl
+        
         if let source = self.source
         {
             let tintColor = source.effectiveTintColor ?? .altPrimary
@@ -84,6 +87,9 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.scrollEdgeAppearance = edgeAppearance
         }
         
+        
+        self.preparePipeline()
+        
         self.update()
     }
     
@@ -91,14 +97,22 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     {
         super.viewWillAppear(animated)
         
-        self.fetchSource()
-        
         self.update()
     }
 }
 
 private extension BrowseViewController
 {
+    func preparePipeline()
+    {
+        AppManager.shared.$updateSourcesResult
+            .receive(on: RunLoop.main) // Delay to next run loop so we receive _current_ value (not previous value).
+            .sink { [weak self] result in
+                self?.update()
+            }
+            .store(in: &self.cancellables)
+    }
+    
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
         let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
@@ -170,75 +184,27 @@ private extension BrowseViewController
         return dataSource
     }
     
-    func fetchSource()
+    func updateSources()
     {
-        self.loadingState = .loading
-        
-        AppManager.shared.fetchSources() { (result) in
-            do
+        AppManager.shared.updateAllSources { result in
+            self.collectionView.refreshControl?.endRefreshing()
+            
+            guard case .failure(let error) = result else { return }
+            
+            if self.dataSource.itemCount > 0
             {
-                do
-                {
-                    let (_, context) = try result.get()
-                    try context.save()
-                    
-                    DispatchQueue.main.async {
-                        self.loadingState = .finished(.success(()))
-                    }
-                }
-                catch let error as AppManager.FetchSourcesError
-                {
-                    try error.managedObjectContext?.save()
-                    throw error
-                }
-                catch let mergeError as MergeError
-                {
-                    guard let sourceID = mergeError.sourceID else { throw mergeError }
-                    
-                    let sanitizedError = (mergeError as NSError).sanitizedForSerialization()
-                    DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
-                        do
-                        {
-                            guard let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), sourceID), in: context) else { return }
-                            
-                            source.error = sanitizedError
-                            try context.save()
-                        }
-                        catch
-                        {
-                            print("[ALTLog] Failed to assign error \(sanitizedError.localizedErrorCode) to source \(sourceID).", error)
-                        }
-                    }
-                    
-                    throw mergeError
-                }
-            }
-            catch var error as NSError
-            {
-                if error.localizedTitle == nil
-                {
-                    error = error.withLocalizedTitle(NSLocalizedString("Unable to Refresh Store", comment: ""))
-                }
-                                
-                DispatchQueue.main.async {
-                    if self.dataSource.itemCount > 0
-                    {
-                        let toastView = ToastView(error: error)
-                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
-                        toastView.show(in: self)
-                    }
-                    
-                    self.loadingState = .finished(.failure(error))
-                }
+                let toastView = ToastView(error: error)
+                toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+                toastView.show(in: self)
             }
         }
     }
     
     func update()
     {
-        switch self.loadingState
+        switch AppManager.shared.updateSourcesResult
         {
-        case .loading:
+        case nil:
             self.placeholderView.textLabel.isHidden = true
             self.placeholderView.detailTextLabel.isHidden = false
             
@@ -246,7 +212,7 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.startAnimating()
             
-        case .finished(.failure(let error)):
+        case .failure(let error):
             self.placeholderView.textLabel.isHidden = false
             self.placeholderView.detailTextLabel.isHidden = false
             
@@ -255,8 +221,9 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
             
-        case .finished(.success):
-            self.placeholderView.textLabel.isHidden = true
+        case .success:
+            self.placeholderView.textLabel.text = NSLocalizedString("No Apps", comment: "")
+            self.placeholderView.textLabel.isHidden = false
             self.placeholderView.detailTextLabel.isHidden = true
             
             self.placeholderView.activityIndicatorView.stopAnimating()
