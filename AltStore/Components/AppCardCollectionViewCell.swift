@@ -285,7 +285,7 @@ private extension AppCardCollectionViewCell
 
 extension AppCardCollectionViewCell
 {
-    func configure(for storeApp: StoreApp)
+    func configure(for storeApp: StoreApp, showSourceIcon: Bool = true)
     {
         self.screenshots = storeApp.preferredScreenshots()
         
@@ -294,7 +294,7 @@ extension AppCardCollectionViewCell
         self.bannerView.button.isIndicatingActivity = false
         
         self.bannerView.tintColor = storeApp.tintColor
-        self.bannerView.configure(for: storeApp)
+        self.bannerView.configure(for: storeApp, showSourceIcon: showSourceIcon)
         
         self.bannerView.subtitleLabel.numberOfLines = 1
         self.bannerView.subtitleLabel.lineBreakMode = .byTruncatingTail

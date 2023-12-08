@@ -11,6 +11,8 @@ import UIKit
 import AltStoreCore
 import Roxas
 
+import Nuke
+
 extension AppBannerView
 {
     enum Style
@@ -65,6 +67,7 @@ class AppBannerView: RSTNibView
     @IBOutlet var button: PillButton!
     @IBOutlet var buttonLabel: UILabel!
     @IBOutlet var betaBadgeView: UIView!
+    @IBOutlet var sourceIconImageView: AppIconImageView!
     
     @IBOutlet var backgroundEffectView: UIVisualEffectView!
     
@@ -97,6 +100,9 @@ class AppBannerView: RSTNibView
         
         self.betaBadgeView.isHidden = true
         
+        self.sourceIconImageView.style = .circular
+        self.sourceIconImageView.isHidden = true
+        
         self.layoutMargins = self.stackView.layoutMargins
         self.insetsLayoutMarginsFromSafeArea = false
         
@@ -119,7 +125,7 @@ class AppBannerView: RSTNibView
 
 extension AppBannerView
 {
-    func configure(for app: AppProtocol, action: AppAction? = nil)
+    func configure(for app: AppProtocol, action: AppAction? = nil, showSourceIcon: Bool = true)
     {
         struct AppValues
         {
@@ -168,6 +174,37 @@ extension AppBannerView
         else
         {
             self.buttonLabel.isHidden = true
+        }
+        
+        if let source = app.storeApp?.source, showSourceIcon
+        {
+            self.sourceIconImageView.isHidden = false
+            self.sourceIconImageView.backgroundColor = source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
+            
+            if let iconURL = source.effectiveIconURL
+            {
+                if let image = ImageCache.shared[iconURL]
+                {
+                    self.sourceIconImageView.backgroundColor = .white
+                    self.sourceIconImageView.image = image.image
+                }
+                else
+                {
+                    self.sourceIconImageView.image = nil
+                    
+                    Nuke.loadImage(with: iconURL, into: self.sourceIconImageView) { result in
+                        switch result
+                        {
+                        case .failure(let error): Logger.main.error("Failed to fetch source icon from \(iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                        case .success: self.sourceIconImageView.backgroundColor = .white // In case icon has transparent background.
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            self.sourceIconImageView.isHidden = true
         }
         
         let buttonAction: AppAction

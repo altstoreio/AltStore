@@ -218,12 +218,16 @@ private extension BrowseViewController
         
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<StoreApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: context)
-        dataSource.cellConfigurationHandler = { (cell, app, indexPath) in
+        dataSource.placeholderView = self.placeholderView
+        dataSource.cellConfigurationHandler = { [weak self] (cell, app, indexPath) in
+            guard let self else { return }
+            
             let cell = cell as! AppCardCollectionViewCell
             cell.layoutMargins.left = self.view.layoutMargins.left
             cell.layoutMargins.right = self.view.layoutMargins.right
             
-            cell.configure(for: app)
+            let showSourceIcon = (self.source == nil) // Hide source icon if redundant
+            cell.configure(for: app, showSourceIcon: showSourceIcon)
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -250,18 +254,17 @@ private extension BrowseViewController
                 }
             }
         }
-        dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
+        dataSource.prefetchCompletionHandler = { [weak dataSource] (cell, image, indexPath, error) in
             let cell = cell as! AppCardCollectionViewCell
             cell.bannerView.iconImageView.isIndicatingActivity = false
             cell.bannerView.iconImageView.image = image
             
-            if let error = error
+            if let error = error, let dataSource
             {
-                print("Error loading image:", error)
+                let app = dataSource.item(at: indexPath)
+                Logger.main.debug("Failed to load app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
             }
         }
-        
-        dataSource.placeholderView = self.placeholderView
         
         return dataSource
     }
