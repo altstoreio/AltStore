@@ -342,6 +342,7 @@
 		BFF7C920257844FA00E55F36 /* ALTPluginService.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C5FCE237DF69100EDD0C6 /* ALTPluginService.m */; };
 		BFF7C9342578492100E55F36 /* ALTAnisetteData.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB49AA823834CF900D542D9 /* ALTAnisetteData.m */; };
 		D50107EC2ADF2E1A0069F2A1 /* AddSourceTextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50107EB2ADF2E1A0069F2A1 /* AddSourceTextFieldCell.swift */; };
+		D5084CCC2B1EA80100C02160 /* FeaturedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5084CCB2B1EA80100C02160 /* FeaturedComponents.swift */; };
 		D513F6162A12CE4E0061EAA1 /* SourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCD2A02FA7400B24B63 /* SourceError.swift */; };
 		D5151BD92A8FF64300C96F28 /* RefreshAllAppsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BD82A8FF64300C96F28 /* RefreshAllAppsIntent.swift */; };
 		D5151BE12A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */; };
@@ -359,6 +360,7 @@
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
 		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
+		D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */; };
 		D52C8F032AFC56F000CA0BDD /* StoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
@@ -970,6 +972,7 @@
 		BFFCFA45248835530077BFCE /* AltDaemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AltDaemon.entitlements; sourceTree = "<group>"; };
 		C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D50107EB2ADF2E1A0069F2A1 /* AddSourceTextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSourceTextFieldCell.swift; sourceTree = "<group>"; };
+		D5084CCB2B1EA80100C02160 /* FeaturedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedComponents.swift; sourceTree = "<group>"; };
 		D5151BD82A8FF64300C96F28 /* RefreshAllAppsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAllAppsIntent.swift; sourceTree = "<group>"; };
 		D5151BE02A90344300C96F28 /* RefreshAllAppsWidgetIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAllAppsWidgetIntent.swift; sourceTree = "<group>"; };
 		D5151BE52A90391900C96F28 /* View+AltWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AltWidget.swift"; sourceTree = "<group>"; };
@@ -983,6 +986,7 @@
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
 		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedViewController.swift; sourceTree = "<group>"; };
 		D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCategory.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
 		D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailCollectionViewController.swift; sourceTree = "<group>"; };
@@ -1731,6 +1735,8 @@
 		BF9ABA4322DCFF33008935CF /* Browse */ = {
 			isa = PBXGroup;
 			children = (
+				D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */,
+				D5084CCB2B1EA80100C02160 /* FeaturedComponents.swift */,
 				BF9ABA4422DCFF43008935CF /* BrowseViewController.swift */,
 				BF9ABA4822DD0742008935CF /* ScreenshotCollectionViewCell.swift */,
 			);
@@ -3247,6 +3253,7 @@
 				D5927D6629DCC89000D6898E /* UINavigationBarAppearance+TintColor.swift in Sources */,
 				BF88F97224F8727D00BB75DF /* AppManagerErrors.swift in Sources */,
 				BF6C8FAE2429597900125131 /* AppBannerCollectionViewCell.swift in Sources */,
+				D5084CCC2B1EA80100C02160 /* FeaturedComponents.swift in Sources */,
 				BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */,
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
@@ -3309,6 +3316,7 @@
 				BFBE0004250ACFFB0080826E /* ViewApp.intentdefinition in Sources */,
 				BF770E5622BC3C03002A40FE /* Server.swift in Sources */,
 				BFA8172923C56042001B5953 /* ServerConnection.swift in Sources */,
+				D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */,
 				BF56D2AF23DF9E310006506D /* AppIDsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

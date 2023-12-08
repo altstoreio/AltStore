@@ -223,7 +223,6 @@ private extension SourceDetailContentViewController
             // For some reason, setting cell.layoutMargins = .zero does not update cell.contentView.layoutMargins.
             cell.layoutMargins = .zero
             cell.contentView.layoutMargins = .zero
-            cell.contentView.backgroundColor = .altBackground
             
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.configure(for: storeApp, showSourceIcon: false)

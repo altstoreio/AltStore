@@ -33,6 +33,7 @@ class AppBannerCollectionViewCell: UICollectionViewListCell
         self.contentView.insetsLayoutMarginsFromSafeArea = false
         self.bannerView.insetsLayoutMarginsFromSafeArea = false
         
+        self.backgroundView = UIView() // Clear background
         self.selectedBackgroundView = UIView() // Disable selection highlighting.
         
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
