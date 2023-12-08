@@ -17,7 +17,14 @@ import Nuke
 class BrowseViewController: UICollectionViewController, PeekPopPreviewing
 {
     // Nil == Show apps from all sources.
-    var source: Source?
+    let source: Source?
+    
+    private(set) var category: StoreCategory? {
+        didSet {
+            self.updateDataSource()
+            self.update()
+        }
+    }
     
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
@@ -32,12 +39,24 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     init?(source: Source?, coder: NSCoder)
     {
         self.source = source
+        self.category = nil
+        
+        super.init(coder: coder)
+    }
+    
+    init?(category: StoreCategory?, coder: NSCoder)
+    {
+        self.source = nil
+        self.category = category
         
         super.init(coder: coder)
     }
     
     required init?(coder: NSCoder)
     {
+        self.source = nil
+        self.category = nil
+        
         super.init(coder: coder)
     }
     
@@ -90,6 +109,19 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
             self.navigationItem.standardAppearance = appearance
             self.navigationItem.scrollEdgeAppearance = edgeAppearance
         }
+        else if self.category != nil, #available(iOS 16, *)
+        {
+            let menu = UIMenu(children: [
+                UIDeferredMenuElement.uncached { [weak self] completion in
+                    let actions = self?.makeCategoryActions() ?? []
+                    completion(actions)
+                }
+            ])
+            
+            self.navigationItem.titleMenuProvider = { _ in menu }
+        }
+        
+        self.navigationItem.largeTitleDisplayMode = .never
         
         if #available(iOS 16, *)
         {
@@ -138,6 +170,14 @@ private extension BrowseViewController
         {
             let filterPredicate = NSPredicate(format: "%K == %@", #keyPath(StoreApp._source), source)
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, predicate])
+        }
+        else if let category = self.category
+        {
+            let categoryPredicate = switch category {
+            case .other: StoreApp.otherCategoryPredicate
+            default: NSPredicate(format: "%K == %@", #keyPath(StoreApp._category), category.rawValue)
+            }
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
         }
         else
         {
@@ -279,6 +319,57 @@ private extension BrowseViewController
             
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
+        
+        if let category = self.category
+        {
+            self.title = category.localizedName
+        }
+        else
+        {
+            self.title = NSLocalizedString("Browse", comment: "")
+        }
+    }
+    
+    func makeCategoryActions() -> [UIAction]
+    {
+        let handler = { [weak self] (category: StoreCategory) in
+            self?.category = category
+        }
+        
+        let fetchRequest = NSFetchRequest(entityName: StoreApp.entity().name!) as NSFetchRequest<NSDictionary>
+        fetchRequest.resultType = .dictionaryResultType
+        fetchRequest.returnsDistinctResults = true
+        fetchRequest.propertiesToFetch = [#keyPath(StoreApp._category)]
+        fetchRequest.predicate = StoreApp.visibleAppsPredicate
+        
+        do
+        {
+            let dictionaries = try DatabaseManager.shared.viewContext.fetch(fetchRequest)
+            
+            // Keep nil values
+            let categories = dictionaries.map { $0[#keyPath(StoreApp._category)] as? String? ?? nil }.map { rawCategory -> StoreCategory in
+                guard let rawCategory else { return .other }
+                return StoreCategory(rawValue: rawCategory) ?? .other
+            }
+            
+            let sortedCategories = Set(categories).sorted(by: { $0.localizedName.localizedStandardCompare($1.localizedName) == .orderedAscending })
+            
+            let actions = sortedCategories.map { category in
+                let state: UIAction.State = (category == self.category) ? .on : .off
+                return UIAction(title: category.localizedName, image: UIImage(systemName: category.symbolName), state: state) { _ in
+                    handler(category)
+                }
+            }
+            
+            return actions
+        }
+        catch
+        {
+            Logger.main.error("Failed to fetch categories. \(error.localizedDescription, privacy: .public)")
+            
+            return []
+        }
+    }
     
     @available(iOS 15, *)
     func prepareAppSorting()

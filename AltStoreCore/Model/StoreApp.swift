@@ -461,6 +461,13 @@ public extension StoreApp
         return predicate
     }
     
+    class var otherCategoryPredicate: NSPredicate {
+        let knownCategories = StoreCategory.allCases.lazy.filter { $0 != .other }.map { $0.rawValue }
+        
+        let predicate = NSPredicate(format: "%K == nil OR NOT (%K IN %@)", #keyPath(StoreApp._category), #keyPath(StoreApp._category), Array(knownCategories))
+        return predicate
+    }
+    
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
