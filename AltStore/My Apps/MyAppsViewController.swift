@@ -173,9 +173,9 @@ private extension MyAppsViewController
         return dataSource
     }
     
-    func makeNoUpdatesDataSource() -> RSTDynamicCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
+    func makeNoUpdatesDataSource() -> RSTDynamicCollectionViewDataSource<InstalledApp>
     {
-        let dynamicDataSource = RSTDynamicCollectionViewPrefetchingDataSource<InstalledApp, UIImage>()
+        let dynamicDataSource = RSTDynamicCollectionViewDataSource<InstalledApp>()
         dynamicDataSource.numberOfSectionsHandler = { 1 }
         dynamicDataSource.numberOfItemsHandler = { _ in self.updatesDataSource.itemCount == 0 ? 1 : 0 }
         dynamicDataSource.cellIdentifierHandler = { _ in "NoUpdatesCell" }
