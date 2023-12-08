@@ -15,6 +15,8 @@ import Nuke
 
 extension AppBannerView
 {
+    static let standardHeight = 88.0
+    
     enum Style
     {
         case app

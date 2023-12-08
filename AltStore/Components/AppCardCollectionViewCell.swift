@@ -18,6 +18,7 @@ private let minimumItemSpacing = 8.0
 class AppCardCollectionViewCell: UICollectionViewCell
 {
     let bannerView: AppBannerView
+    let captionLabel: UILabel
     
     private let screenshotsCollectionView: UICollectionView
     private let stackView: UIStackView
@@ -48,6 +49,17 @@ class AppCardCollectionViewCell: UICollectionViewCell
     override init(frame: CGRect)
     {
         self.bannerView = AppBannerView(frame: .zero)
+        self.bannerView.layoutMargins.bottom = 0
+        
+        let vibrancyEffect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .systemChromeMaterial), style: .secondaryLabel)
+        let captionVibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+        
+        self.captionLabel = UILabel(frame: .zero)
+        self.captionLabel.font = UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .footnote).bolded(), size: 0)
+        self.captionLabel.textAlignment = .center
+        self.captionLabel.numberOfLines = 2
+        self.captionLabel.minimumScaleFactor = 0.8
+        captionVibrancyView.contentView.addSubview(self.captionLabel, pinningEdgesWith: .zero)
         
         self.screenshotsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         self.screenshotsCollectionView.backgroundColor = nil
@@ -56,15 +68,15 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.screenshotsCollectionView.showsHorizontalScrollIndicator = false
         self.screenshotsCollectionView.showsVerticalScrollIndicator = false
         
-        self.stackView = UIStackView(arrangedSubviews: [self.bannerView, self.screenshotsCollectionView])
+        self.stackView = UIStackView(arrangedSubviews: [self.bannerView, captionVibrancyView, self.screenshotsCollectionView])
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
-        self.stackView.spacing = 0
+        self.stackView.spacing = 12
         self.stackView.axis = .vertical
         self.stackView.alignment = .fill
         self.stackView.distribution = .equalSpacing
         
         // Aspect ratio constraint to fit exactly 3 modern portrait iPhone screenshots side-by-side (with spacing).
-        let inset = 14.0 //TODO: Assign from bannerView's layoutMargins
+        let inset = self.bannerView.layoutMargins.left
         let multiplier = (AppScreenshot.defaultAspectRatio.width * 3) / AppScreenshot.defaultAspectRatio.height
         let spacing = (inset * 2) + (minimumItemSpacing * 2)
         self.collectionViewAspectRatioConstraint = self.screenshotsCollectionView.widthAnchor.constraint(equalTo: self.screenshotsCollectionView.heightAnchor, multiplier: multiplier, constant: spacing)
@@ -96,9 +108,9 @@ class AppCardCollectionViewCell: UICollectionViewCell
         
         self.contentView.preservesSuperviewLayoutMargins = true
         self.screenshotsCollectionView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: inset, bottom: 0, trailing: inset)
-
+        
         NSLayoutConstraint.activate([
-            self.bannerView.heightAnchor.constraint(equalToConstant: 88)
+            self.bannerView.heightAnchor.constraint(equalToConstant: AppBannerView.standardHeight - inset)
         ])
     }
     
@@ -299,6 +311,16 @@ extension AppCardCollectionViewCell
         self.bannerView.subtitleLabel.numberOfLines = 1
         self.bannerView.subtitleLabel.lineBreakMode = .byTruncatingTail
         self.bannerView.subtitleLabel.minimumScaleFactor = 0.8
-        self.bannerView.subtitleLabel.text = storeApp.subtitle ?? storeApp.developerName
+        self.bannerView.subtitleLabel.text = storeApp.developerName
+        
+        if let subtitle = storeApp.subtitle, !subtitle.isEmpty
+        {
+            self.captionLabel.text = subtitle
+            self.captionLabel.isHidden = false
+        }
+        else
+        {
+            self.captionLabel.isHidden = true
+        }
     }
 }
