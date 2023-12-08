@@ -239,6 +239,7 @@
     </entity>
     <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="developerName" attributeType="String"/>
         <attribute name="downloadURL" attributeType="URI"/>
         <attribute name="iconURL" attributeType="URI"/>

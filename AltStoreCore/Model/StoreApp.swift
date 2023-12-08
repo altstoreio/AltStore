@@ -49,6 +49,14 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var localizedDescription: String
     @NSManaged @objc(size) internal var _size: Int32
     
+    @nonobjc public var category: StoreCategory? {
+        guard let _category else { return nil }
+        
+        let category = StoreCategory(rawValue: _category)
+        return category
+    }
+    @NSManaged @objc(category) public private(set) var _category: String?
+    
     @NSManaged public private(set) var iconURL: URL
     @NSManaged public private(set) var screenshotURLs: [URL]
     
@@ -164,6 +172,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
         case isBeta = "beta"
         case versions
         case patreon
+        case category
         
         // Legacy
         case version
@@ -187,10 +196,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
             self.developerName = try container.decode(String.self, forKey: .developerName)
             self.localizedDescription = try container.decode(String.self, forKey: .localizedDescription)
+            self.iconURL = try container.decode(URL.self, forKey: .iconURL)
             
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
-            
-            self.iconURL = try container.decode(URL.self, forKey: .iconURL)
+            self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
@@ -201,7 +210,10 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                 self.tintColor = tintColor
             }
             
-            self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
+            if let rawCategory = try container.decodeIfPresent(String.self, forKey: .category)
+            {
+                self._category = rawCategory.lowercased() // Store raw (lowercased) category value.
+            }
             
             let appScreenshots: [AppScreenshot]
             
