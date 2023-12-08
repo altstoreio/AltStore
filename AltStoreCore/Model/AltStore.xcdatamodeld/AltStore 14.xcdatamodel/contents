@@ -217,6 +217,7 @@
     </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
         <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
         <attribute name="hasFeaturedApps" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="headerImageURL" optional="YES" attributeType="URI"/>
         <attribute name="iconURL" optional="YES" attributeType="URI"/>
@@ -242,6 +243,7 @@
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="developerName" attributeType="String"/>
         <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
         <attribute name="iconURL" attributeType="URI"/>
         <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isHiddenWithoutPledge" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>

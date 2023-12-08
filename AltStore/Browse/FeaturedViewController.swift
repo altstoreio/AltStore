@@ -312,7 +312,7 @@ private extension FeaturedViewController
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.sortDescriptors = [
             // Sort by Source first to group into sections.
-            NSSortDescriptor(keyPath: \StoreApp.sourceIdentifier, ascending: true),
+            NSSortDescriptor(keyPath: \StoreApp._source?.featuredSortID, ascending: true),
             
             // Show uninstalled apps first.
             // Sorting by StoreApp.installedApp crashes because InstalledApp does not respond to compare:
@@ -324,8 +324,8 @@ private extension FeaturedViewController
             // Instead, sort by StoreApp.featuringSource.identifier, which will be either nil OR source ID.
             NSSortDescriptor(keyPath: \StoreApp.featuringSource?.identifier, ascending: false),
             
-            // Sort by name.
-            NSSortDescriptor(keyPath: \StoreApp.name, ascending: true),
+            // Randomize order within sections.
+            NSSortDescriptor(keyPath: \StoreApp.featuredSortID, ascending: true),
             
             // Sanity check to ensure stable ordering
             NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)
@@ -346,14 +346,14 @@ private extension FeaturedViewController
         let primaryFetchRequest = fetchRequest.copy() as! NSFetchRequest<StoreApp>
         primaryFetchRequest.predicate = sourceHasRemainingAppsPredicate
         
-        let primaryController = NSFetchedResultsController(fetchRequest: primaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp.sourceIdentifier), cacheName: nil)
+        let primaryController = NSFetchedResultsController(fetchRequest: primaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._source.featuredSortID), cacheName: nil)
         let primaryDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: primaryController)
         primaryDataSource.liveFetchLimit = 5
         
         let secondaryFetchRequest = fetchRequest.copy() as! NSFetchRequest<StoreApp>
         secondaryFetchRequest.predicate = NSCompoundPredicate(notPredicateWithSubpredicate: sourceHasRemainingAppsPredicate)
         
-        let secondaryController = NSFetchedResultsController(fetchRequest: secondaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp.sourceIdentifier), cacheName: nil)
+        let secondaryController = NSFetchedResultsController(fetchRequest: secondaryFetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(StoreApp._source.featuredSortID), cacheName: nil)
         let secondaryDataSource = RSTFetchedResultsCollectionViewDataSource<StoreApp>(fetchedResultsController: secondaryController)
         secondaryDataSource.liveFetchLimit = 5
         
