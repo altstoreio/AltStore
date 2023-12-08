@@ -515,7 +515,7 @@ extension SourcesViewController: NSFetchedResultsControllerDelegate
     AppManager.shared.fetchSources { result in
         do
         {
-            let (sources, context) = try result.get()
+            let (_, context) = try result.get()
             try context.save()
         }
         catch
