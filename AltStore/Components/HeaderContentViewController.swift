@@ -260,6 +260,14 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         self.update()
     }
     
+    override func viewIsAppearing(_ animated: Bool) 
+    {
+        super.viewIsAppearing(animated)
+        
+        // Ensure header view has correct layout dimensions.
+        self.headerView.setNeedsLayout()
+    }
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
