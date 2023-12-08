@@ -10,7 +10,14 @@ import Foundation
 
 public extension Date
 {
-    private static let mediumDateFormatter: DateFormatter = {
+    static let shortDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }()
+    
+    static let mediumDateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
