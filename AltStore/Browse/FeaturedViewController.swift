@@ -363,6 +363,7 @@ private extension FeaturedViewController
         dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
             let cell = cell as! AppCardCollectionViewCell
             cell.configure(for: storeApp)
+            cell.prefersPagingScreenshots = false
             
             cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
             cell.bannerView.sourceIconImageView.isHidden = true
