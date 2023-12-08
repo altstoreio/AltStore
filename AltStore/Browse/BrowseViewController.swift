@@ -26,6 +26,12 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         }
     }
     
+    var searchPredicate: NSPredicate? {
+        didSet {
+            self.updateDataSource()
+        }
+    }
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
     
@@ -276,6 +282,8 @@ private extension BrowseViewController
         let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         self.dataSource.fetchedResultsController = fetchedResultsController
+        
+        self.dataSource.predicate = self.searchPredicate
     }
     
     func updateSources()
@@ -296,31 +304,44 @@ private extension BrowseViewController
     
     func update()
     {
-        switch AppManager.shared.updateSourcesResult
+        if self.searchPredicate != nil
         {
-        case nil:
-            self.placeholderView.textLabel.isHidden = true
-            self.placeholderView.detailTextLabel.isHidden = false
-            
-            self.placeholderView.detailTextLabel.text = NSLocalizedString("Loading...", comment: "")
-            
-            self.placeholderView.activityIndicatorView.startAnimating()
-            
-        case .failure(let error):
-            self.placeholderView.textLabel.isHidden = false
-            self.placeholderView.detailTextLabel.isHidden = false
-            
-            self.placeholderView.textLabel.text = NSLocalizedString("Unable to Fetch Apps", comment: "")
-            self.placeholderView.detailTextLabel.text = error.localizedDescription
-            
-            self.placeholderView.activityIndicatorView.stopAnimating()
-            
-        case .success:
             self.placeholderView.textLabel.text = NSLocalizedString("No Apps", comment: "")
             self.placeholderView.textLabel.isHidden = false
-            self.placeholderView.detailTextLabel.isHidden = true
+            
+            self.placeholderView.detailTextLabel.text = NSLocalizedString("Please make sure your spelling is correct, or try searching for another app.", comment: "")
+            self.placeholderView.detailTextLabel.isHidden = false
             
             self.placeholderView.activityIndicatorView.stopAnimating()
+        }
+        else
+        {
+            switch AppManager.shared.updateSourcesResult
+            {
+            case nil:
+                self.placeholderView.textLabel.isHidden = true
+                self.placeholderView.detailTextLabel.isHidden = false
+                
+                self.placeholderView.detailTextLabel.text = NSLocalizedString("Loading...", comment: "")
+                
+                self.placeholderView.activityIndicatorView.startAnimating()
+                
+            case .failure(let error):
+                self.placeholderView.textLabel.isHidden = false
+                self.placeholderView.detailTextLabel.isHidden = false
+                
+                self.placeholderView.textLabel.text = NSLocalizedString("Unable to Fetch Apps", comment: "")
+                self.placeholderView.detailTextLabel.text = error.localizedDescription
+                
+                self.placeholderView.activityIndicatorView.stopAnimating()
+                
+            case .success:
+                self.placeholderView.textLabel.text = NSLocalizedString("No Apps", comment: "")
+                self.placeholderView.textLabel.isHidden = false
+                self.placeholderView.detailTextLabel.isHidden = true
+                
+                self.placeholderView.activityIndicatorView.stopAnimating()
+            }
         }
         
         if let category = self.category
@@ -528,9 +549,11 @@ extension BrowseViewController: UICollectionViewDelegateFlowLayout
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let app = self.dataSource.item(at: indexPath)
-        
         let appViewController = AppViewController.makeAppViewController(app: app)
-        self.navigationController?.pushViewController(appViewController, animated: true)
+        
+        // Fall back to presentingViewController.navigationController in case we're being used for search results.
+        let navigationController = self.navigationController ?? self.presentingViewController?.navigationController
+        navigationController?.pushViewController(appViewController, animated: true)
     }
 }
 

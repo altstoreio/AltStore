@@ -62,6 +62,9 @@ class FeaturedViewController: UICollectionViewController
     private lazy var categoriesDataSource = self.makeCategoriesDataSource()
     private lazy var featuredAppsDataSource = self.makeFeaturedAppsDataSource()
     
+    private var searchController: RSTSearchController!
+    private var searchBrowseViewController: BrowseViewController!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -86,6 +89,25 @@ class FeaturedViewController: UICollectionViewController
         self.collectionView.backgroundColor = .altBackground
         self.collectionView.directionalLayoutMargins.leading = 20
         self.collectionView.directionalLayoutMargins.trailing = 20
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        self.searchBrowseViewController = storyboard.instantiateViewController(identifier: "browseViewController") { coder in
+            let browseViewController = BrowseViewController(coder: coder)
+            return browseViewController
+        }
+        
+        self.searchController = RSTSearchController(searchResultsController: self.searchBrowseViewController)
+        self.searchController.searchableKeyPaths = [#keyPath(StoreApp.name),
+                                                    #keyPath(StoreApp.developerName),
+                                                    #keyPath(StoreApp.subtitle),
+                                                    #keyPath(StoreApp.bundleIdentifier)]
+        self.searchController.searchHandler = { [weak searchBrowseViewController] (searchValue, _) in
+            searchBrowseViewController?.searchPredicate = searchValue.predicate
+            return nil
+        }
+        
+        self.navigationItem.searchController = self.searchController
+        self.navigationItem.hidesSearchBarWhenScrolling = true
         
         self.navigationItem.largeTitleDisplayMode = .always
     }
