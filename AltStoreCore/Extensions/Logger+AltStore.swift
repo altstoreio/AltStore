@@ -10,7 +10,7 @@
 
 public extension Logger
 {
-    static let altstoreSubsystem = Bundle.main.bundleIdentifier!
+    static let altstoreSubsystem = "com.rileytestut.AltStore" // Hardcoded because Bundle.main.bundleIdentifier is different for every user
     
     static let main = Logger(subsystem: altstoreSubsystem, category: "Main")
     static let sideload = Logger(subsystem: altstoreSubsystem, category: "Sideload")

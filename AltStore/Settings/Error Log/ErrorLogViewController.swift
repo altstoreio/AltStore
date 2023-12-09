@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import QuickLook
 
 import AltStoreCore
 import Roxas
@@ -35,6 +36,8 @@ class ErrorLogViewController: UITableViewController
     
     @IBOutlet private var exportLogButton: UIBarButtonItem!
     @IBOutlet private var clearLogButton: UIBarButtonItem!
+    
+    private var _exportedLogURL: URL?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -284,10 +287,10 @@ private extension ErrorLogViewController
                 
                 // All logs since the app launched.
                 let position = store.position(timeIntervalSinceLatestBoot: 0)
+                let predicate = NSPredicate(format: "subsystem == %@", Logger.altstoreSubsystem)
                 
-                let entries = try store.getEntries(at: position)
+                let entries = try store.getEntries(at: position, matching: predicate)
                     .compactMap { $0 as? OSLogEntryLog }
-                    .filter { $0.subsystem.contains(Logger.altstoreSubsystem) }
                     .map { "[\($0.date.formatted())] [\($0.category)] [\($0.level.localizedName)] \($0.composedMessage)" }
                 
                 let outputText = entries.joined(separator: "\n")
@@ -295,35 +298,17 @@ private extension ErrorLogViewController
                 let outputDirectory = FileManager.default.uniqueTemporaryURL()
                 try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
                 
-                defer {
-                    do
-                    {
-                        try FileManager.default.removeItem(at: outputDirectory)
-                    }
-                    catch
-                    {
-                        Logger.main.error("Failed to remove temporary log directory \(outputDirectory.lastPathComponent, privacy: .public). \(error.localizedDescription, privacy: .public)")
-                    }
-                }
-                
-                let outputURL = outputDirectory.appendingPathComponent("altlog.txt")
+                let outputURL = outputDirectory.appendingPathComponent("altstore.log")
                 try outputText.write(to: outputURL, atomically: true, encoding: .utf8)
                 
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                    Task<Void, Never> { @MainActor in
-                        let activityViewController = UIActivityViewController(activityItems: [outputURL], applicationActivities: nil)
-                        activityViewController.completionWithItemsHandler = { (activityType, completed, _, error) in
-                            if let error
-                            {
-                                continuation.resume(throwing: error)
-                            }
-                            else
-                            {
-                                continuation.resume()
-                            }
-                        }
-                        self.present(activityViewController, animated: true)
-                    }
+                await MainActor.run {
+                    self._exportedLogURL = outputURL
+                    
+                    let previewController = QLPreviewController()
+                    previewController.delegate = self
+                    previewController.dataSource = self
+                    previewController.view.tintColor = .altPrimary
+                    self.present(previewController, animated: true)
                 }
             }
             catch
@@ -419,5 +404,36 @@ extension ErrorLogViewController
                 cell.menuButton.showsMenuAsPrimaryAction = true
             }
         }
+    }
+}
+
+extension ErrorLogViewController: QLPreviewControllerDataSource, QLPreviewControllerDelegate
+{
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int
+    {
+        return 1
+    }
+    
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem
+    {
+        return (_exportedLogURL as? NSURL) ?? NSURL()
+    }
+    
+    func previewControllerDidDismiss(_ controller: QLPreviewController)
+    {
+        guard let exportedLogURL = _exportedLogURL else { return }
+        
+        let parentDirectory = exportedLogURL.deletingLastPathComponent()
+        
+        do
+        {
+            try FileManager.default.removeItem(at: parentDirectory)
+        }
+        catch
+        {
+            Logger.main.error("Failed to remove temporary log directory \(parentDirectory.lastPathComponent, privacy: .public). \(error.localizedDescription, privacy: .public)")
+        }
+        
+        _exportedLogURL = nil
     }
 }
