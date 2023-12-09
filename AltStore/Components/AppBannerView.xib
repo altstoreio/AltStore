@@ -59,8 +59,8 @@
                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="100" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="caL-vN-Svn">
                             <rect key="frame" x="87" y="25.5" width="184" height="37.5"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
-                                    <rect key="frame" x="0.0" y="0.0" width="149" height="19.5"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="500" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="1Es-pv-zwd">
+                                    <rect key="frame" x="0.0" y="0.0" width="147" height="19.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="400" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="App Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="mFe-zJ-eva">
                                             <rect key="frame" x="0.0" y="0.0" width="79" height="19.5"/>
@@ -70,14 +70,14 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dku-SJ-aay" customClass="AppIconImageView" customModule="AltStore" customModuleProvider="target">
-                                            <rect key="frame" x="85" y="1" width="17" height="17"/>
+                                            <rect key="frame" x="84" y="1" width="17" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="dku-SJ-aay" secondAttribute="height" id="VKw-lc-8NQ"/>
                                                 <constraint firstAttribute="width" constant="17" id="hAe-gc-Ehh"/>
                                             </constraints>
                                         </imageView>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BetaBadge" translatesAutoresizingMaskIntoConstraints="NO" id="qQl-Ez-zC5">
-                                            <rect key="frame" x="108" y="1" width="41" height="17"/>
+                                            <rect key="frame" x="106" y="1" width="41" height="17"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Beta Badge">
                                                 <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                                 <bool key="isElement" value="YES"/>
