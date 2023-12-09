@@ -111,6 +111,13 @@ class FeaturedViewController: UICollectionViewController
         
         self.navigationItem.largeTitleDisplayMode = .always
     }
+    
+    override func viewDidAppear(_ animated: Bool) 
+    {
+        super.viewDidAppear(animated)
+        
+        self.navigationController?.navigationBar.tintColor = .altPrimary
+    }
 }
 
 private extension FeaturedViewController
