@@ -463,7 +463,7 @@ private extension BrowseViewController
             
             let actions = sortedCategories.map { category in
                 let state: UIAction.State = (category == self.category) ? .on : .off
-                let image = UIImage(systemName: category.symbolName)?.withTintColor(category.tintColor, renderingMode: .alwaysOriginal)
+                let image = UIImage(systemName: category.filledSymbolName)?.withTintColor(category.tintColor, renderingMode: .alwaysOriginal)
                 return UIAction(title: category.localizedName, image: image, state: state) { _ in
                     handler(category)
                 }
