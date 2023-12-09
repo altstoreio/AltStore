@@ -26,6 +26,13 @@ class VerifyAppPledgeOperation: ResultOperation<Void>
     {
         super.main()
         
+        // _Don't_ rethrow earlier errors, or else user will only be taken to Patreon post if connected to same WiFi as AltServer.
+        // if let error = self.context.error
+        // {
+        //     self.finish(.failure(error))
+        //     return
+        // }
+        
         Task<Void, Never>.detached(priority: .medium) {
             do
             {
