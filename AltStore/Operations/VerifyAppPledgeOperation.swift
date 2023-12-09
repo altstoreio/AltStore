@@ -139,7 +139,7 @@ private extension VerifyAppPledgeOperation
     {
         guard !PatreonAPI.shared.isAuthenticated, let authCookie = PatreonAPI.shared.authCookies.first(where: { $0.name.lowercased() == "session_id" }) else { return }
         
-        Logger.main.debug("Patreon Auth cookie: \(authCookie.name)=\(authCookie.value)")
+        Logger.sideload.debug("Patreon Auth cookie: \(authCookie.name)=\(authCookie.value)")
         
         let message = NSLocalizedString("You're signed into Patreon but haven't connected your account with AltStore.\n\nPlease connect your account to download Patreon-exclusive apps.", comment: "")
         let action = await UIAlertAction(title: NSLocalizedString("Connect Patreon Account", comment: ""), style: .default)
@@ -197,7 +197,7 @@ private extension VerifyAppPledgeOperation
                 }
                 catch
                 {
-                    Logger.main.error("Failed to update Patreon account. \(error.localizedDescription, privacy: .public)")
+                    Logger.sideload.error("Failed to update Patreon account. \(error.localizedDescription, privacy: .public)")
                     continuation.resume(throwing: error)
                 }
             }
