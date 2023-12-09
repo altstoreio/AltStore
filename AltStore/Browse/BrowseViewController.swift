@@ -127,6 +127,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         
         self.titleStackView = UIStackView(arrangedSubviews: [self.titleSourceIconView, self.titleCategoryIconView, self.titleLabel])
         self.titleStackView.spacing = 4
+        self.titleStackView.translatesAutoresizingMaskIntoConstraints = false
         
         self.navigationItem.largeTitleDisplayMode = .never
         

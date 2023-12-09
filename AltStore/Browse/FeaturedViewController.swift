@@ -133,7 +133,7 @@ private extension FeaturedViewController
             
             let spacing = 10.0
             let interSectionSpacing = 30.0
-            let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(100), heightDimension: .estimated(20))
+            let titleSize = NSCollectionLayoutSize(widthDimension: .estimated(100), heightDimension: .estimated(30))
             
             switch section
             {
