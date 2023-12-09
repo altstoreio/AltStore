@@ -108,6 +108,42 @@
 		<string>RefreshAllIntent</string>
 		<string>ViewAppIntent</string>
 	</array>
+	<key>OSLogPreferences</key>
+	<dict>
+		<key>com.rileytestut.AltStore</key>
+		<dict>
+			<key>AltJIT</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+			<key>Main</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+			<key>Sideload</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -181,8 +217,8 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<string>ipa</string>
-                <key>public.mime-type</key>
-                <string>application/x-ios-app</string>
+				<key>public.mime-type</key>
+				<string>application/x-ios-app</string>
 			</dict>
 		</dict>
 	</array>
