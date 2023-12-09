@@ -6,6 +6,8 @@
 //  Copyright © 2023 Riley Testut. All rights reserved.
 //
 
+import Combine
+
 import AltStoreCore
 
 class VerifyAppPledgeOperation: ResultOperation<Void>
@@ -15,6 +17,8 @@ class VerifyAppPledgeOperation: ResultOperation<Void>
     
     private let presentingViewController: UIViewController?
     private var openPatreonPageContinuation: CheckedContinuation<Void, Never>?
+    
+    private var cancellable: AnyCancellable?
     
     init(storeApp: StoreApp, presentingViewController: UIViewController?)
     {
@@ -57,9 +61,12 @@ class VerifyAppPledgeOperation: ResultOperation<Void>
                         let patreonURL = await self.$storeApp.perform({ _ in source.patreonURL })
                     else { throw error }
                     
-                    let checkoutURL: URL
+                    let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false)
+                    let lastPathComponent = components?.path.components(separatedBy: "/").last
                     
-                    let username = patreonURL.lastPathComponent
+                    let checkoutURL: URL                    
+
+                    let username = lastPathComponent ?? patreonURL.lastPathComponent
                     if !username.isEmpty, let url = URL(string: "https://www.patreon.com/join/" + username)
                     {
                         // Prefer /join URL over campaign homepage.
@@ -221,6 +228,23 @@ private extension VerifyAppPledgeOperation
 
         let navigationController = UINavigationController(rootViewController: webViewController)
         presentingViewController.present(navigationController, animated: true)
+        
+        // Automatically dismiss if user completes checkout flow.
+        self.cancellable = webViewController.webView.publisher(for: \.url, options: [.new])
+            .compactMap { $0 }
+            .compactMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }
+            .compactMap { components in
+                let lastPathComponent = components.path.components(separatedBy: "/").last
+                return lastPathComponent?.lowercased()
+            }
+            .filter { $0 == "membership" }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] url in
+                guard let continuation = self?.openPatreonPageContinuation else { return }
+                self?.openPatreonPageContinuation = nil
+                
+                continuation.resume()
+            }
 
         await withCheckedContinuation { continuation in
             self.openPatreonPageContinuation = continuation
@@ -230,6 +254,8 @@ private extension VerifyAppPledgeOperation
         await PatreonAPI.shared.saveAuthCookies()
 
         navigationController.dismiss(animated: true)
+        
+        self.cancellable = nil
     }
 }
 
