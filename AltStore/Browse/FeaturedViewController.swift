@@ -710,7 +710,7 @@ extension FeaturedViewController
                 
                 let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
                 
-                try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+                await withThrowingTaskGroup(of: Void.self) { taskGroup in
                     for source in knownSources.0
                     {
                         guard let sourceURL = source.sourceURL else { continue }
