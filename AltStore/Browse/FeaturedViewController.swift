@@ -566,7 +566,10 @@ extension FeaturedViewController
             content.imageProperties.maximumSize = CGSize(width: 26, height: 26)
             content.imageProperties.cornerRadius = 13
             
-            headerView.titleButton.setTitle(content.text, for: .normal)
+            UIView.performWithoutAnimation {
+                headerView.titleButton.setTitle(content.text, for: .normal)
+                headerView.titleButton.layoutIfNeeded()
+            }
             
             headerView.iconButton.backgroundColor = storeApp.source?.effectiveTintColor?.adjustedForDisplay
             headerView.iconButton.setImage(nil, for: .normal)

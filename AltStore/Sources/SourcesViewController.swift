@@ -199,31 +199,33 @@ private extension SourcesViewController
             
             let numberOfApps = source.apps.filter { StoreApp.visibleAppsPredicate.evaluate(with: $0) }.count
             
-            if let error = source.error
-            {
-                let image = UIImage(systemName: "exclamationmark")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-                
-                cell.bannerView.button.setImage(image, for: .normal)
-                cell.bannerView.button.setTitle(nil, for: .normal)
-                cell.bannerView.button.tintColor = .systemYellow.withAlphaComponent(0.75)
-                
-                let action = UIAction(identifier: .showError) { _ in
-                    self.present(error)
+            UIView.performWithoutAnimation {
+                if let error = source.error
+                {
+                    let image = UIImage(systemName: "exclamationmark")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+                    
+                    cell.bannerView.button.setImage(image, for: .normal)
+                    cell.bannerView.button.setTitle(nil, for: .normal)
+                    cell.bannerView.button.tintColor = .systemYellow.withAlphaComponent(0.75)
+                    
+                    let action = UIAction(identifier: .showError) { _ in
+                        self.present(error)
+                    }
+                    cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
+                    cell.bannerView.button.removeAction(identifiedBy: .showDetails, for: .primaryActionTriggered)
                 }
-                cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
-                cell.bannerView.button.removeAction(identifiedBy: .showDetails, for: .primaryActionTriggered)
-            }
-            else
-            {
-                cell.bannerView.button.setImage(nil, for: .normal)
-                cell.bannerView.button.setTitle(numberOfApps.description, for: .normal)
-                cell.bannerView.button.tintColor = .white.withAlphaComponent(0.2)
-                
-                let action = UIAction(identifier: .showDetails) { _ in
-                    self.showSourceDetails(for: source)
+                else
+                {
+                    cell.bannerView.button.setImage(nil, for: .normal)
+                    cell.bannerView.button.setTitle(numberOfApps.description, for: .normal)
+                    cell.bannerView.button.tintColor = .white.withAlphaComponent(0.2)
+                    
+                    let action = UIAction(identifier: .showDetails) { _ in
+                        self.showSourceDetails(for: source)
+                    }
+                    cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
+                    cell.bannerView.button.removeAction(identifiedBy: .showError, for: .primaryActionTriggered)
                 }
-                cell.bannerView.button.addAction(action, for: .primaryActionTriggered)
-                cell.bannerView.button.removeAction(identifiedBy: .showError, for: .primaryActionTriggered)
             }
             
             let dateText: String
