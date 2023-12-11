@@ -189,6 +189,11 @@ private extension VerifyAppOperation
         // Filter out ignored entitlements.
         allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
         
+        if let isDebuggable = app.entitlements[.getTaskAllow] as? Bool, !isDebuggable
+        {
+            // App has `get-task-allow` entitlement but the value is false, so remove from allEntitlements.
+            allEntitlements.remove(.getTaskAllow)
+        }
         
         // Privacy
         let allPrivacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
