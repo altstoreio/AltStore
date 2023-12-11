@@ -190,15 +190,11 @@ public extension DatabaseManager
             {
                 // Randomize source order
                 let fetchRequest = Source.fetchRequest()
-                fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(Source._apps)]
-                
                 let sources = try context.fetch(fetchRequest)
+                
                 for source in sources
                 {
                     source.featuredSortID = UUID().uuidString
-                    
-                    // Randomize app order
-                    self.updateAppFeaturedSortIDs(for: source)
                 }
                 
                 try context.save()
@@ -207,43 +203,23 @@ public extension DatabaseManager
             {
                 Logger.main.error("Failed to update source order. \(error.localizedDescription, privacy: .public)")
             }
-        }
-    }
-    
-    private func updateAppFeaturedSortIDs(for source: Source)
-    {
-        let featuredAppSlots = 5
-        
-        // Filter out already installed apps.
-        var featuredApps = Set(source.effectiveFeaturedApps.filter { $0.installedApp == nil }.prefix(featuredAppSlots)) // Take just first 5 featured apps
-        var otherApps = source.apps.filter { $0.installedApp == nil && !featuredApps.contains($0) }
-        
-        let remainingSlots = featuredAppSlots - featuredApps.count
-        
-        // Fill in remaining featured app slots with random uninstalled apps.
-        for _ in 0 ..< remainingSlots
-        {
-            guard let index = otherApps.indices.randomElement() else {
-                // No remaining apps, so stop filling in slots.
-                break
-            }
             
-            let randomApp = otherApps[index]
-            
-            featuredApps.insert(randomApp)
-            otherApps.remove(at: index)
-        }
-        
-        for storeApp in source.apps
-        {
-            if featuredApps.contains(storeApp)
+            do
             {
-                storeApp.featuredSortID = UUID().uuidString
+                // Randomize app order
+                let fetchRequest = StoreApp.fetchRequest()
+                let apps = try context.fetch(fetchRequest)
+                
+                for app in apps
+                {
+                    app.featuredSortID = UUID().uuidString
+                }
+                
+                try context.save()
             }
-            else
+            catch
             {
-                // Prepend "_" to ensure it's sorted after featuredApps.
-                storeApp.featuredSortID = "_" + UUID().uuidString
+                Logger.main.error("Failed to update app order. \(error.localizedDescription, privacy: .public)")
             }
         }
     }

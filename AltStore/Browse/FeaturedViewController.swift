@@ -348,6 +348,11 @@ private extension FeaturedViewController
             // Instead, sort by StoreApp.installedApp.storeApp.source.sourceIdentifier, which will be either nil OR source ID.
             NSSortDescriptor(keyPath: \StoreApp.installedApp?.storeApp?.sourceIdentifier, ascending: true),
             
+            // Show featured apps first.
+            // Sorting by StoreApp.featuringSource crashes because Source does not respond to compare:
+            // Instead, sort by StoreApp.featuringSource.identifier, which will be either nil OR source ID.
+            NSSortDescriptor(keyPath: \StoreApp.featuringSource?.identifier, ascending: false),
+            
             // Randomize order within sections.
             NSSortDescriptor(keyPath: \StoreApp.featuredSortID, ascending: true),
             
