@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="appleID" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
@@ -154,6 +154,7 @@
         <attribute name="identifier" attributeType="String"/>
         <attribute name="isPatron" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
+        <relationship name="pledges" toMany="YES" deletionRule="Cascade" destinationEntity="Pledge" inverseName="account" inverseEntity="Pledge"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="identifier"/>
@@ -163,6 +164,40 @@
     <entity name="Patron" representedClassName="ManagedPatron" syncable="YES">
         <attribute name="identifier" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Pledge" representedClassName="Pledge" syncable="YES">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0"/>
+        <attribute name="campaignURL" attributeType="URI"/>
+        <attribute name="identifier" attributeType="String"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PatreonAccount" inverseName="pledges" inverseEntity="PatreonAccount"/>
+        <relationship name="rewards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PledgeReward" inverseName="pledge" inverseEntity="PledgeReward"/>
+        <relationship name="tiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PledgeTier" inverseName="pledge" inverseEntity="PledgeTier"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PledgeReward" representedClassName="PledgeReward" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="pledge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pledge" inverseName="rewards" inverseEntity="Pledge"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PledgeTier" representedClassName="PledgeTier" syncable="YES">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="pledge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pledge" inverseName="tiers" inverseEntity="Pledge"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="identifier"/>
@@ -182,12 +217,14 @@
     </entity>
     <entity name="Source" representedClassName="Source" syncable="YES">
         <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
         <attribute name="hasFeaturedApps" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="headerImageURL" optional="YES" attributeType="URI"/>
         <attribute name="iconURL" optional="YES" attributeType="URI"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="localizedDescription" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="patreonURL" optional="YES" attributeType="URI"/>
         <attribute name="sourceURL" attributeType="URI"/>
         <attribute name="subtitle" optional="YES" attributeType="String"/>
         <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
@@ -203,12 +240,19 @@
     </entity>
     <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
         <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="developerName" attributeType="String"/>
         <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
         <attribute name="iconURL" attributeType="URI"/>
         <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isHiddenWithoutPledge" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isPledged" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isPledgeRequired" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="localizedDescription" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="pledgeAmount" optional="YES" attributeType="Decimal"/>
+        <attribute name="pledgeCurrency" optional="YES" attributeType="String"/>
         <attribute name="screenshotURLs" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
         <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>

@@ -393,6 +393,7 @@
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
 		D5728CA72A0D79D30014E73C /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */; };
+		D5753A622B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5753A612B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel */; };
 		D577AB7B2A967DF5007FE952 /* AppsTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D577AB7A2A967DF5007FE952 /* AppsTimelineProvider.swift */; };
 		D577AB7F2A96878A007FE952 /* AppDetailWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D577AB7E2A96878A007FE952 /* AppDetailWidget.swift */; };
 		D57968CB29CB99EF00539069 /* VibrantButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57968CA29CB99EF00539069 /* VibrantButton.swift */; };
@@ -1018,6 +1019,8 @@
 		D571ADCD2A02FA7400B24B63 /* SourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceError.swift; sourceTree = "<group>"; };
 		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
 		D5728CA62A0D79D30014E73C /* OptionalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
+		D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 15.xcdatamodel"; sourceTree = "<group>"; };
+		D5753A612B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore14ToAltStore15.xcmappingmodel; sourceTree = "<group>"; };
 		D577AB7A2A967DF5007FE952 /* AppsTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsTimelineProvider.swift; sourceTree = "<group>"; };
 		D577AB7E2A96878A007FE952 /* AppDetailWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailWidget.swift; sourceTree = "<group>"; };
 		D57968CA29CB99EF00539069 /* VibrantButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrantButton.swift; sourceTree = "<group>"; };
@@ -1623,6 +1626,7 @@
 				D5927D6829DCE28700D6898E /* AltStore11ToAltStore12.xcmappingmodel */,
 				D5177B0C2A26944600270065 /* AltStore12ToAltStore13.xcmappingmodel */,
 				D5185B7F2AE1E51B00646E33 /* AltStore13ToAltStore14.xcmappingmodel */,
+				D5753A612B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel */,
 			);
 			path = "Mapping Models";
 			sourceTree = "<group>";
@@ -3137,6 +3141,7 @@
 				D5DB81642B0410BC003F5F8B /* AppSorting.swift in Sources */,
 				BF66EE962501AEBC007EE018 /* ALTPatreonBenefitID.m in Sources */,
 				BFAECC5A2501B0A400528F27 /* NetworkConnection.swift in Sources */,
+				D5753A622B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel in Sources */,
 				D5F99A1828D11DB500476A16 /* AltStore10ToAltStore11.xcmappingmodel in Sources */,
 				BF66EEE92501AED0007EE018 /* JSONDecoder+Properties.swift in Sources */,
 				D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */,
@@ -4495,6 +4500,7 @@
 		BF66EEB72501AECA007EE018 /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */,
 				D5185B7E2AE1E35200646E33 /* AltStore 14.xcdatamodel */,
 				D581822C2A218A140087965B /* AltStore 13.xcdatamodel */,
 				D5927D6729DCE1FE00D6898E /* AltStore 12.xcdatamodel */,
@@ -4510,7 +4516,7 @@
 				BF66EEBD2501AECA007EE018 /* AltStore 2.xcdatamodel */,
 				BF66EEBE2501AECA007EE018 /* AltStore 4.xcdatamodel */,
 			);
-			currentVersion = D5185B7E2AE1E35200646E33 /* AltStore 14.xcdatamodel */;
+			currentVersion = D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
