@@ -65,10 +65,3 @@ AltStore and AltServer are both fairly straightforward to compile and run if you
 
 Due to the licensing of some dependencies used by AltStore, I have no choice but to distribute AltStore under the **AGPLv3 license**. That being said, my goal for AltStore is for it to be an open source project *anyone* can use without restrictions, so I explicitly give permission for anyone to use, modify, and distribute all *my* original code for this project in any form, with or without attribution, without fear of legal consequences (dependencies remain under their original licenses, however).
 
-## Contact Me
-
-* Email: riley@altstore.io
-* Mastodon (Preferred): [@rileytestut@mastodon.social](https://mastodon.social/@rileytestut)
-* Twitter (Less active nowadays): [@rileytestut](https://twitter.com/rileytestut)
-
-Questions about AltStore in general? Make sure to read the FAQ at https://altstore.io/faq/
