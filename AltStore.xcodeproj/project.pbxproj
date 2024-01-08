@@ -442,6 +442,7 @@
 		D5CA0C4E280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */; };
 		D5CD805D29CA2C1E00E591B0 /* HeaderContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */; };
 		D5CD805F29CA755E00E591B0 /* SourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CD805E29CA755E00E591B0 /* SourceDetailViewController.swift */; };
+		D5CE309C2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5CE309B2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel */; };
 		D5CF568C2A0D8EEC006D93E2 /* VerificationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CF56812A0D83F9006D93E2 /* VerificationError.swift */; };
 		D5DAE0962804DF430034D8D4 /* UpdatePatronsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */; };
 		D5DB145A28F9DC5A00A8F606 /* ALTLocalizedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */; };
@@ -1069,6 +1070,8 @@
 		D5CA0C4D280E249E00469595 /* AltStore9ToAltStore10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore9ToAltStore10.xcmappingmodel; sourceTree = "<group>"; };
 		D5CD805C29CA2C1E00E591B0 /* HeaderContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContentViewController.swift; sourceTree = "<group>"; };
 		D5CD805E29CA755E00E591B0 /* SourceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailViewController.swift; sourceTree = "<group>"; };
+		D5CE309A2B4C93BE00DB8151 /* AltStore 16.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 16.xcdatamodel"; sourceTree = "<group>"; };
+		D5CE309B2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore15ToAltStore16.xcmappingmodel; sourceTree = "<group>"; };
 		D5CF56812A0D83F9006D93E2 /* VerificationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationError.swift; sourceTree = "<group>"; };
 		D5DAE0952804DF430034D8D4 /* UpdatePatronsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePatronsOperation.swift; sourceTree = "<group>"; };
 		D5DB145828F9DC1000A8F606 /* ALTLocalizedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTLocalizedError.swift; sourceTree = "<group>"; };
@@ -1627,6 +1630,7 @@
 				D5177B0C2A26944600270065 /* AltStore12ToAltStore13.xcmappingmodel */,
 				D5185B7F2AE1E51B00646E33 /* AltStore13ToAltStore14.xcmappingmodel */,
 				D5753A612B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel */,
+				D5CE309B2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel */,
 			);
 			path = "Mapping Models";
 			sourceTree = "<group>";
@@ -3126,6 +3130,7 @@
 				BF66EEDA2501AECA007EE018 /* RefreshAttempt.swift in Sources */,
 				BF66EEA92501AEC5007EE018 /* Tier.swift in Sources */,
 				BF66EEDB2501AECA007EE018 /* StoreApp.swift in Sources */,
+				D5CE309C2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel in Sources */,
 				BF66EEDE2501AECA007EE018 /* AppID.swift in Sources */,
 				BF66EECF2501AECA007EE018 /* AltStoreToAltStore2.xcmappingmodel in Sources */,
 				BF66EEA82501AEC5007EE018 /* Patron.swift in Sources */,
@@ -4500,6 +4505,7 @@
 		BF66EEB72501AECA007EE018 /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D5CE309A2B4C93BE00DB8151 /* AltStore 16.xcdatamodel */,
 				D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */,
 				D5185B7E2AE1E35200646E33 /* AltStore 14.xcdatamodel */,
 				D581822C2A218A140087965B /* AltStore 13.xcdatamodel */,
@@ -4516,7 +4522,7 @@
 				BF66EEBD2501AECA007EE018 /* AltStore 2.xcdatamodel */,
 				BF66EEBE2501AECA007EE018 /* AltStore 4.xcdatamodel */,
 			);
-			currentVersion = D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */;
+			currentVersion = D5CE309A2B4C93BE00DB8151 /* AltStore 16.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
