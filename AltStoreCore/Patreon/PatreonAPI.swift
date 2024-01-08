@@ -177,6 +177,28 @@ public extension PatreonAPI
                     completion(.failure(PatreonAPIError(.notAuthenticated)))
                 }
                 
+            case .failure(let error as DecodingError):
+                do
+                {
+                    let nsError = error as NSError
+                    guard let codingPath = nsError.userInfo[ALTNSCodingPathKey] as? [CodingKey] else { throw error }
+                    
+                    let rawComponents = codingPath.map { $0.intValue?.description ?? $0.stringValue }
+                    let pathDescription = rawComponents.joined(separator: " > ")
+                                        
+                    let localizedDescription = nsError.localizedDebugDescription ?? nsError.localizedDescription
+                    let debugDescription = localizedDescription + " Path: " + pathDescription
+                    
+                    var userInfo = nsError.userInfo
+                    userInfo[NSDebugDescriptionErrorKey] = debugDescription
+                    throw NSError(domain: nsError.domain, code: nsError.code, userInfo: userInfo)
+                }
+                catch let error as NSError
+                {
+                    Logger.main.error("Failed to fetch Patreon account. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
+                    completion(.failure(error))
+                }
+                
             case .failure(let error as NSError):
                 Logger.main.error("Failed to fetch Patreon account. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
                 completion(.failure(error))
