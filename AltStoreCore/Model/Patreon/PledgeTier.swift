@@ -13,7 +13,7 @@ import CoreData
 public class PledgeTier: NSManagedObject, Fetchable
 {
     /* Properties */
-    @NSManaged public private(set) var name: String
+    @NSManaged public private(set) var name: String?
     @NSManaged public private(set) var identifier: String
     
     @nonobjc public var amount: Decimal { _amount as Decimal } // In USD
@@ -31,7 +31,7 @@ public class PledgeTier: NSManagedObject, Fetchable
     {
         super.init(entity: PledgeTier.entity(), insertInto: context)
         
-        self.name = tier.name ?? ""
+        self.name = tier.name
         self.identifier = tier.identifier
         self._amount = tier.amount as NSDecimalNumber
     }
