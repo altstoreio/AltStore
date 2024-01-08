@@ -196,7 +196,7 @@
     <entity name="PledgeTier" representedClassName="PledgeTier" syncable="YES">
         <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="identifier" attributeType="String"/>
-        <attribute name="name" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="pledge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pledge" inverseName="tiers" inverseEntity="Pledge"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
