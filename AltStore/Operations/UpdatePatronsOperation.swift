@@ -89,9 +89,9 @@ class UpdatePatronsOperation: ResultOperation<Void>
                             
                             Logger.main.notice("Updated Friend Zone Patrons! Refresh ID: \(response.refreshID, privacy: .public)")
                         }
-                        catch
+                        catch let error as NSError
                         {
-                            Logger.main.error("Failed to update Friend Zone Patrons. \(error.localizedDescription, privacy: .public)")
+                            Logger.main.error("Failed to update Friend Zone Patrons. \(error.localizedDebugDescription ?? error.localizedDescription, privacy: .public)")
                             self.finish(.failure(error))
                         }
                     }
