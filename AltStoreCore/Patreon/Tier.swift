@@ -14,7 +14,7 @@ extension PatreonAPI
     
     struct TierAttributes: Decodable
     {
-        var title: String
+        var title: String?
         var amount_cents: Int32 // In USD
     }
     
@@ -28,7 +28,7 @@ extension PatreonAPI
 {
     public struct Tier: Hashable
     {
-        public var name: String
+        public var name: String?
         public var identifier: String
         public var amount: Decimal
         

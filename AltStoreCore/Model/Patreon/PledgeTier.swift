@@ -31,7 +31,7 @@ public class PledgeTier: NSManagedObject, Fetchable
     {
         super.init(entity: PledgeTier.entity(), insertInto: context)
         
-        self.name = tier.name
+        self.name = tier.name ?? ""
         self.identifier = tier.identifier
         self._amount = tier.amount as NSDecimalNumber
     }
