@@ -367,7 +367,7 @@
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
 		D533E8BE2727BBF800A9B5DD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BD2727BBF800A9B5DD /* libcurl.a */; };
-		D537C8592AA94D94009A1E08 /* altjit in Embed AltJIT */ = {isa = PBXBuildFile; fileRef = D5FB7A132AA284BE00EF863D /* altjit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		D537C8592AA94D94009A1E08 /* altjit in Embed CLI Tools */ = {isa = PBXBuildFile; fileRef = D5FB7A132AA284BE00EF863D /* altjit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D537C85B2AA9507A009A1E08 /* libcorecrypto.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D537C85A2AA95066009A1E08 /* libcorecrypto.tbd */; platformFilters = (macos, ); };
 		D5390C3C2AC3A43900D17E62 /* AddSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5390C3B2AC3A43900D17E62 /* AddSourceViewController.swift */; };
 		D53D84022A2158FC00543C3B /* Permissions.plist in Resources */ = {isa = PBXBuildFile; fileRef = D53D84012A2158FC00543C3B /* Permissions.plist */; };
@@ -429,6 +429,7 @@
 		D5A299872AAB9E4E00A3988D /* ProcessError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FB7A1B2AA284ED00EF863D /* ProcessError.swift */; };
 		D5A299882AAB9E4E00A3988D /* JITError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E32AA50EB60066CACC /* JITError.swift */; };
 		D5A299892AAB9E5900A3988D /* AppProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B7D2AA9226C00F61259 /* AppProcess.swift */; };
+		D5A450852B508A7200C9E5AA /* altsource in Embed CLI Tools */ = {isa = PBXBuildFile; fileRef = D5A450842B50886800C9E5AA /* altsource */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D5A645212AF591980047D980 /* UTType+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645202AF591980047D980 /* UTType+AltStore.swift */; };
 		D5A645232AF5B5C50047D980 /* PatreonAPI+Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */; };
 		D5A645252AF5BC7F0047D980 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A645242AF5BC7F0047D980 /* UserAccount.swift */; };
@@ -597,15 +598,16 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D537C8582AA94D60009A1E08 /* Embed AltJIT */ = {
+		D537C8582AA94D60009A1E08 /* Embed CLI Tools */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				D537C8592AA94D94009A1E08 /* altjit in Embed AltJIT */,
+				D537C8592AA94D94009A1E08 /* altjit in Embed CLI Tools */,
+				D5A450852B508A7200C9E5AA /* altsource in Embed CLI Tools */,
 			);
-			name = "Embed AltJIT";
+			name = "Embed CLI Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D561B2EC28EF5A4F006752E4 /* Embed Frameworks */ = {
@@ -1056,6 +1058,7 @@
 		D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteServiceDiscoveryTunnel.swift; sourceTree = "<group>"; };
 		D5A1D2EA2AA513410066CACC /* URL+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Tools.swift"; sourceTree = "<group>"; };
 		D5A2193329B14F94002229FC /* DeprecatedAPIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedAPIs.swift; sourceTree = "<group>"; };
+		D5A450842B50886800C9E5AA /* altsource */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = altsource; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5A645202AF591980047D980 /* UTType+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UTType+AltStore.swift"; sourceTree = "<group>"; };
 		D5A645222AF5B5C50047D980 /* PatreonAPI+Responses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PatreonAPI+Responses.swift"; sourceTree = "<group>"; };
 		D5A645242AF5BC7F0047D980 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
@@ -1697,6 +1700,7 @@
 				BF458698229872EA00BD7491 /* Info.plist */,
 				BF458699229872EA00BD7491 /* AltServer.entitlements */,
 				BF4586C22298CDB800BD7491 /* AltServer-Bridging-Header.h */,
+				D5A450842B50886800C9E5AA /* altsource */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -2438,11 +2442,12 @@
 				BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */,
 				98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */,
 				BFF7C910257844C900E55F36 /* Embed XPC Services */,
-				D537C8582AA94D60009A1E08 /* Embed AltJIT */,
+				D537C8582AA94D60009A1E08 /* Embed CLI Tools */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D5A450812B50851F00C9E5AA /* PBXTargetDependency */,
 				D537C8572AA94D4A009A1E08 /* PBXTargetDependency */,
 				BF4588452298D48B00BD7491 /* PBXTargetDependency */,
 				BFF7C90E257844C900E55F36 /* PBXTargetDependency */,
@@ -2712,6 +2717,7 @@
 			packageReferences = (
 				D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				D5FB7A2C2AA2859400EF863D /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				D5A4507F2B507FDB00C9E5AA /* XCRemoteSwiftPackageReference "AltSource" */,
 			);
 			productRefGroup = BFD2476B2284B9A500981D42 /* Products */;
 			projectDirPath = "";
@@ -3417,6 +3423,10 @@
 			isa = PBXTargetDependency;
 			target = BFD247692284B9A500981D42 /* AltStore */;
 			targetProxy = D586D39C28EF58B0000E101F /* PBXContainerItemProxy */;
+		};
+		D5A450812B50851F00C9E5AA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = D5A450802B50851F00C9E5AA /* altsource */;
 		};
 /* End PBXTargetDependency section */
 
@@ -4458,12 +4468,20 @@
 				minimumVersion = 4.1.0;
 			};
 		};
+		D5A4507F2B507FDB00C9E5AA /* XCRemoteSwiftPackageReference "AltSource" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rileytestut/AltSource.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		D5FB7A2C2AA2859400EF863D /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.2.3;
+				minimumVersion = 1.3.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -4493,6 +4511,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D58D5F2C26DFE68E00E55E38 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;
 			productName = LaunchAtLogin;
+		};
+		D5A450802B50851F00C9E5AA /* altsource */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5A4507F2B507FDB00C9E5AA /* XCRemoteSwiftPackageReference "AltSource" */;
+			productName = altsource;
 		};
 		D5FB7A2D2AA2859400EF863D /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
