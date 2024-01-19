@@ -4472,8 +4472,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/rileytestut/AltSource.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = revision;
+				revision = a098c2d5759d2fa69df7e9407ce635df6a4e8b22;
 			};
 		};
 		D5FB7A2C2AA2859400EF863D /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {

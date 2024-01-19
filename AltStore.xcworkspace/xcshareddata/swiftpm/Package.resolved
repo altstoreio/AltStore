@@ -5,8 +5,8 @@
         "package": "AltSource",
         "repositoryURL": "https://github.com/rileytestut/AltSource.git",
         "state": {
-          "branch": "main",
-          "revision": "498e9dfd34780877ccc95f05179eeade4f8cfed1",
+          "branch": null,
+          "revision": "a098c2d5759d2fa69df7e9407ce635df6a4e8b22",
           "version": null
         }
       },
@@ -14,7 +14,7 @@
         "package": "nlohmann-json",
         "repositoryURL": "https://github.com/rileytestut/json.git",
         "state": {
-          "branch": "develop",
+          "branch": null,
           "revision": "57b349f48353fc517acb553d6ea367e1da678e1c",
           "version": null
         }
