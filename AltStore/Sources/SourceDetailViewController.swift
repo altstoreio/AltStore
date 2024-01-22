@@ -219,12 +219,24 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 self.addButton.isHidden = false
                 self.navigationBarButton.isHidden = false
                 
+                if #available(iOS 16, *)
+                {
+                    // Hide REMOVE button in navigation bar.
+                    self.navigationItem.rightBarButtonItem?.isHidden = true
+                }
+                
             case false?:
                 title = NSLocalizedString("ADD", comment: "")
                 self.navigationBarButton.tintColor = self.source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
                 
                 self.addButton.isHidden = false
                 self.navigationBarButton.isHidden = false
+                
+                if #available(iOS 16, *)
+                {
+                    // Show ADD button in navigation bar.
+                    self.navigationItem.rightBarButtonItem?.isHidden = false
+                }
                 
             case nil:
                 title = ""
