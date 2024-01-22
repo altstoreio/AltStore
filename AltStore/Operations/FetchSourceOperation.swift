@@ -122,6 +122,11 @@ class FetchSourceOperation: ResultOperation<Source>
                     decoder.managedObjectContext = childContext
                     decoder.sourceURL = self.sourceURL
                     
+                    if #available(iOS 15, *)
+                    {
+                        decoder.allowsJSON5 = true
+                    }
+                    
                     let source: Source
                     
                     do
