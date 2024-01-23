@@ -84,38 +84,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     
     init?(source: Source, coder: NSCoder)
     {
-        let isolatedContext: NSManagedObjectContext
-        
-        if source.managedObjectContext == DatabaseManager.shared.viewContext
-        {
-            do
-            {
-                // Source is persisted to disk, so we can create a new view context
-                // that's pinned to current query generation to ensure information
-                // doesn't disappear out from under us if we remove (delete) the source.
-                let context = DatabaseManager.shared.persistentContainer.newViewContext(withParent: nil)
-                try context.setQueryGenerationFrom(.current)
-                isolatedContext = context
-            }
-            catch
-            {
-                print("[ATLog] Failed to set query generation for context.", error)
-                isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
-            }
-        }
-        else
-        {
-            // Source is not persisted to disk, so create child view context with source's managedObjectContext as parent.
-            // This also maintains a strong reference to source.managedObjectContext, which may be necessary.
-            isolatedContext = DatabaseManager.shared.persistentContainer.newViewContext(withParent: source.managedObjectContext)
-        }
-               
-        // Ignore changes from other contexts so we can delete source without UI automatically updating.
-        isolatedContext.automaticallyMergesChangesFromParent = false
-        
-        let source = isolatedContext.object(with: source.objectID) as! Source
         self.source = source
-        
         self.viewModel = ViewModel(source: source)
         
         super.init(coder: coder)

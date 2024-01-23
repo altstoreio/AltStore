@@ -72,6 +72,9 @@ class SourceDetailContentViewController: UICollectionViewController
         self.dataSource.proxy = self
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
+        
+        let context = self.source.managedObjectContext ?? DatabaseManager.shared.viewContext
+        NotificationCenter.default.addObserver(self, selector: #selector(SourceDetailContentViewController.didChangeApps), name: NSManagedObjectContext.didChangeObjectsNotification, object: context)
     }
     
     override func viewSafeAreaInsetsDidChange()
@@ -450,6 +453,23 @@ private extension SourceDetailContentViewController
     func open(_ installedApp: InstalledApp)
     {
         UIApplication.shared.open(installedApp.openAppURL)
+    }
+    
+    @objc func didChangeApps(_ notification: Notification)
+    {
+        // Make sure to include refreshed objects to catch all merged changes.
+        let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []
+        let refreshedObjects = notification.userInfo?[NSRefreshedObjectsKey] as? Set<NSManagedObject> ?? []
+        
+        let changedAppIndexes = updatedObjects.union(refreshedObjects).compactMap { $0 as? StoreApp }.compactMap { self.appsDataSource.items.firstIndex(of: $0) }
+        let indexPaths = changedAppIndexes.map { IndexPath(item: $0, section: Section.featuredApps.rawValue) }
+        
+        guard !indexPaths.isEmpty else { return }
+        
+        // Async so that AppManager.installationProgress(for:) is nil when we update.
+        DispatchQueue.main.async {
+            self.collectionView.reloadItems(at: indexPaths)
+        }
     }
 }
 
