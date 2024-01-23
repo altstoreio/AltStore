@@ -432,6 +432,7 @@ extension AppManager
             completionHandler(.failure(error))
             
             let group = RefreshGroup(context: context)
+            group.progress.cancel()
             return group
         }
         

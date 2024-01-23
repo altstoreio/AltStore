@@ -337,19 +337,22 @@ private extension NewsViewController
             return
         }
         
-        if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
-        {
-            AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
-        }
-        else
-        {
-            AppManager.shared.install(storeApp, presentingViewController: self, completionHandler: finish(_:))
+        Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+            {
+                AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+            }
+            else
+            {
+                await AppManager.shared.installAsync(storeApp, presentingViewController: self, completionHandler: finish(_:))
+            }
+            
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+            }
         }
         
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
-        }
-        
+        @MainActor
         func finish(_ result: Result<InstalledApp, Error>)
         {
             DispatchQueue.main.async {

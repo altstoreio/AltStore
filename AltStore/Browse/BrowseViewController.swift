@@ -555,19 +555,22 @@ private extension BrowseViewController
             return
         }
         
-        if let installedApp = app.installedApp, installedApp.isUpdateAvailable
-        {
-            AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
-        }
-        else
-        {
-            AppManager.shared.install(app, presentingViewController: self, completionHandler: finish(_:))
+        Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            if let installedApp = app.installedApp, installedApp.isUpdateAvailable
+            {
+                AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+            }
+            else
+            {
+                await AppManager.shared.installAsync(app, presentingViewController: self, completionHandler: finish(_:))
+            }
+            
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadItems(at: [indexPath])
+            }
         }
         
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadItems(at: [indexPath])
-        }
-        
+        @MainActor
         func finish(_ result: Result<InstalledApp, Error>)
         {
             DispatchQueue.main.async {

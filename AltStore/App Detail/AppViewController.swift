@@ -539,33 +539,38 @@ extension AppViewController
     {
         guard self.app.installedApp == nil else { return }
         
-        let group = AppManager.shared.install(self.app, presentingViewController: self) { (result) in
-            do
-            {
-                _ = try result.get()
-            }
-            catch OperationError.cancelled
-            {
-                // Ignore
-            }
-            catch
-            {
+        Task<Void, Never>(priority: .userInitiated) {
+            let group = await AppManager.shared.installAsync(self.app, presentingViewController: self) { (result) in
+                do
+                {
+                    _ = try result.get()
+                }
+                catch OperationError.cancelled
+                {
+                    // Ignore
+                }
+                catch
+                {
+                    DispatchQueue.main.async {
+                        let toastView = ToastView(error: error)
+                        toastView.opensErrorLog = true
+                        toastView.show(in: self)
+                    }
+                }
+                
                 DispatchQueue.main.async {
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
+                    self.bannerView.button.progress = nil
+                    self.navigationBarDownloadButton.progress = nil
+                    self.update()
                 }
             }
             
-            DispatchQueue.main.async {
-                self.bannerView.button.progress = nil
-                self.navigationBarDownloadButton.progress = nil
-                self.update()
+            if !group.progress.isCancelled
+            {
+                self.bannerView.button.progress = group.progress
+                self.navigationBarDownloadButton.progress = group.progress
             }
         }
-        
-        self.bannerView.button.progress = group.progress
-        self.navigationBarDownloadButton.progress = group.progress
     }
     
     func open(_ installedApp: InstalledApp)
