@@ -391,61 +391,50 @@ private extension SourceDetailContentViewController
             sender.isIndicatingActivity = true
             
             Task<Void, Never> {
-                await self.addSourceThenDownloadApp(storeApp)
+                await self.downloadApp(storeApp)
                 sender.isIndicatingActivity = false
             }
         }
     }
     
-    func addSourceThenDownloadApp(_ storeApp: StoreApp) async
+    @MainActor
+    func downloadApp(_ storeApp: StoreApp) async
     {
         do
         {
-            let isAdded = try await self.source.isAdded
-            if !isAdded
-            {
-                let message = String(format: NSLocalizedString("You must add this source before you can install apps from it.\n\n“%@” will begin downloading once it has been added.", comment: ""), storeApp.name)
-                try await AppManager.shared.add(self.source, message: message, presentingViewController: self)
-            }
-            
-            do
-            {
-                try await self.downloadApp(storeApp)
-            }
-            catch is CancellationError {}
-            catch
-            {
-                let toastView = ToastView(error: error)
-                toastView.opensErrorLog = true
-                toastView.show(in: self)
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+                {
+                    AppManager.shared.update(installedApp, presentingViewController: self) { result in
+                        continuation.resume(with: result.map { _ in () })
+                    }
+                    
+                    reload()
+                }
+                else
+                {
+                    Task<Void, Never> { @MainActor in
+                        await AppManager.shared.installAsync(storeApp, presentingViewController: self) { result in
+                            continuation.resume(with: result.map { _ in () })
+                        }
+                        
+                        reload()
+                    }
+                }
             }
         }
         catch is CancellationError {}
         catch
         {
-            await self.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+            let toastView = ToastView(error: error)
+            toastView.opensErrorLog = true
+            toastView.show(in: self)
         }
         
         self.collectionView.reloadSections([Section.featuredApps.rawValue])
-    }
-    
-    @MainActor
-    func downloadApp(_ storeApp: StoreApp) async throws
-    {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
-            {
-                AppManager.shared.update(installedApp, presentingViewController: self) { result in
-                    continuation.resume(with: result.map { _ in () })
-                }
-            }
-            else
-            {
-                AppManager.shared.install(storeApp, presentingViewController: self) { result in
-                    continuation.resume(with: result.map { _ in () })
-                }
-            }
-            
+        
+        func reload()
+        {
             UIView.performWithoutAnimation {
                 guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
                     self.collectionView.reloadSections([Section.featuredApps.rawValue])

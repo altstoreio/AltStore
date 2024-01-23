@@ -378,6 +378,66 @@ extension AppManager
         
         NotificationCenter.default.post(name: AppManager.didRemoveSourceNotification, object: source)
     }
+    
+    @discardableResult
+    func installAsync<T: AppProtocol>(@AsyncManaged _ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(),
+                                      completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) async -> RefreshGroup
+    {
+        @AsyncManaged var installingApp: AppProtocol = app
+        
+        do
+        {
+            // Check if we need to add source first before installing app.
+            if let source = await $app.perform({ $0.storeApp?.source }), try await !source.isAdded
+            {
+                // This app's source is not yet added, so add it first.
+                guard let presentingViewController else { throw OperationError.sourceNotAdded(source) }
+                
+                let (appName, appBundleID, sourceID) = await $app.perform { ($0.name, $0.bundleIdentifier, source.identifier) }
+                
+                do
+                {
+                    let message = String(format: NSLocalizedString("You must add this source before installing apps from it.\n\n“%@” will begin downloading once it has been added.", comment: ""), appName)
+                    try await AppManager.shared.add(source, message: message, presentingViewController: presentingViewController)
+                }
+                catch let error as CancellationError 
+                {
+                    throw error
+                }
+                catch
+                {
+                    // This should be an alert, so show directly rather than re-throwing error.
+                    await presentingViewController.presentAlert(title: NSLocalizedString("Unable to Add Source", comment: ""), message: error.localizedDescription)
+                    
+                    // Don't rethrow error
+                    // throw error
+                    
+                    throw CancellationError()
+                }
+                
+                // Fetch persisted StoreApp to use for remainder of operation.
+                installingApp = try await DatabaseManager.shared.viewContext.performAsync {
+                    let fetchRequest = StoreApp.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "%K == %@ AND %K == %@",
+                                                         #keyPath(StoreApp.bundleIdentifier), appBundleID,
+                                                         #keyPath(StoreApp.sourceIdentifier), sourceID)
+                    
+                    guard let storeApp = try DatabaseManager.shared.viewContext.fetch(fetchRequest).first else { throw OperationError.appNotFound(name: appName) }
+                    return storeApp
+                }
+            }
+        }
+        catch
+        {
+            completionHandler(.failure(error))
+            
+            let group = RefreshGroup(context: context)
+            return group
+        }
+        
+        let group = await $installingApp.perform { self.install($0, presentingViewController: presentingViewController, context: context, completionHandler: completionHandler) }
+        return group
+    }
 }
 
 extension AppManager

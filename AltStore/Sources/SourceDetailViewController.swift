@@ -80,7 +80,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
     private var addButton: VibrantButton!
     
     private var previousBounds: CGRect?
-    private var cancellable: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
     
     init?(source: Source, coder: NSCoder)
     {
@@ -307,11 +307,41 @@ private extension SourceDetailViewController
 {
     func preparePipeline()
     {
-        self.cancellable = Publishers
-            .CombineLatest(self.viewModel.$isSourceAdded, self.viewModel.$isAddingSource)
+        Publishers.CombineLatest(self.viewModel.$isSourceAdded, self.viewModel.$isAddingSource)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.update()
             }
+            .store(in: &self.cancellables)
+        
+        // Adding or removing a source while viewing source details is currently broken,
+        // so for now we just dismiss the view whenever the source is added or removed.
+        self.viewModel.$isSourceAdded
+            .compactMap { $0 }
+            .dropFirst() // Ignore first non-nil value.
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isAdded in
+                if isAdded
+                {
+                    self?.didAddSource()
+                }
+                else
+                {
+                    self?.didRemoveSource()
+                }
+            }
+            .store(in: &self.cancellables)
+    }
+    
+    func didAddSource()
+    {
+        guard let presentingViewController = self.navigationController?.presentingViewController else { return }
+        presentingViewController.dismiss(animated: true)
+    }
+    
+    func didRemoveSource()
+    {
+        self.navigationController?.popToRootViewController(animated: true)
     }
 }
