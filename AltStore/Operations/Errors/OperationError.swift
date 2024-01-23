@@ -159,7 +159,7 @@ struct OperationError: ALTLocalizedError
     var recoverySuggestion: String? {
         switch self.code
         {
-        case .serverNotFound: return NSLocalizedString("Make sure you're on the same WiFi network as a computer running AltServer, or try connecting this device to your computer via USB.", comment: "")
+        case .serverNotFound: return NSLocalizedString("Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB.", comment: "")
         case .maximumAppIDLimitReached:
             let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")
             guard let appName = self.appName, let requiredAppIDs = self.requiredAppIDs, let availableAppIDs = self.availableAppIDs, let date = self.expirationDate else { return baseMessage }
