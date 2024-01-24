@@ -58,9 +58,13 @@ class PreviewAppScreenshotsViewController: UICollectionViewController
         self.collectionView.prefetchDataSource = self.dataSource
         
         let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in
-            self?.dismiss(animated: true)
+            self?.dismissPreview()
         })
         self.navigationItem.rightBarButtonItem = doneButton
+        
+        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(PreviewAppScreenshotsViewController.dismissPreview))
+        swipeGestureRecognizer.direction = .down
+        self.view.addGestureRecognizer(swipeGestureRecognizer)
     }
     
     override func viewIsAppearing(_ animated: Bool)
@@ -160,6 +164,14 @@ private extension PreviewAppScreenshotsViewController
         }
         
         return dataSource
+    }
+}
+
+private extension PreviewAppScreenshotsViewController
+{
+    @objc func dismissPreview()
+    {
+        self.dismiss(animated: true)
     }
 }
 
