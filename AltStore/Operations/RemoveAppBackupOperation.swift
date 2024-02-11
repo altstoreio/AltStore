@@ -8,6 +8,8 @@
 
 import Foundation
 
+import AltStoreCore
+
 @objc(RemoveAppBackupOperation)
 class RemoveAppBackupOperation: ResultOperation<Void>
 {
@@ -36,6 +38,9 @@ class RemoveAppBackupOperation: ResultOperation<Void>
         }
         
         guard let installedApp = self.context.installedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
+        
+        Logger.sideload.notice("Removing backup for app \(self.context.bundleIdentifier, privacy: .public)...")
+        
         installedApp.managedObjectContext?.perform {
             guard let backupDirectoryURL = FileManager.default.backupDirectoryURL(for: installedApp) else { return self.finish(.failure(OperationError.missingAppGroup)) }
             
@@ -61,14 +66,14 @@ class RemoveAppBackupOperation: ResultOperation<Void>
                     
                     #else
                     
-                    print("Failed to remove app backup directory:", error)
+                    Logger.sideload.error("Failed to remove app backup directory \(backupDirectoryURL.lastPathComponent, privacy: .public). \(error.localizedDescription, privacy: .public)")
                     self.finish(.failure(error))
                     
                     #endif
                 }
                 catch
                 {
-                    print("Failed to remove app backup directory:", error)
+                    Logger.sideload.error("Failed to remove app backup directory \(backupDirectoryURL.lastPathComponent, privacy: .public). \(error.localizedDescription, privacy: .public)")
                     self.finish(.failure(error))
                 }
             }

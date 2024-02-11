@@ -11,11 +11,12 @@ import CoreData
 
 import AltStoreCore
 
-enum RefreshError: LocalizedError
+typealias RefreshError = RefreshErrorCode.Error
+enum RefreshErrorCode: Int, ALTErrorEnum, CaseIterable
 {
     case noInstalledApps
     
-    var errorDescription: String? {
+    var errorFailureReason: String {
         switch self
         {
         case .noInstalledApps: return NSLocalizedString("No active apps require refreshing.", comment: "")
@@ -56,6 +57,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
     private let managedObjectContext: NSManagedObjectContext
     
     var presentsFinishedNotification: Bool = true
+    var ignoresServerNotFoundError: Bool = true
     
     private let refreshIdentifier: String = UUID().uuidString
     private var runningApplications: Set<String> = []
@@ -91,7 +93,7 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
         super.main()
         
         guard !self.installedApps.isEmpty else {
-            self.finish(.failure(RefreshError.noInstalledApps))
+            self.finish(.failure(RefreshError(.noInstalledApps)))
             return
         }
         
@@ -101,18 +103,21 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
         }
         
         self.managedObjectContext.perform {
-            print("Apps to refresh:", self.installedApps.map(\.bundleIdentifier))
+            Logger.sideload.notice("Refreshing apps in background: \(self.installedApps.map(\.bundleIdentifier), privacy: .public)")
             
             self.startListeningForRunningApps()
             
-            // Wait for 3 seconds (2 now, 1 later in FindServerOperation) to:
+            // Wait for 2 seconds (1 now, 1 later in FindServerOperation) to:
             // a) give us time to discover AltServers
             // b) give other processes a chance to respond to requestAppState notification
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.managedObjectContext.perform {
                     
                     let filteredApps = self.installedApps.filter { !self.runningApplications.contains($0.bundleIdentifier) }
-                    print("Filtered Apps to Refresh:", filteredApps.map { $0.bundleIdentifier })
+                    if !self.runningApplications.isEmpty
+                    {
+                        Logger.sideload.notice("Skipping refreshing running apps: \(self.runningApplications, privacy: .public)")
+                    }
                     
                     let group = AppManager.shared.refresh(filteredApps, presentingViewController: nil)
                     group.beginInstallationHandler = { (installedApp) in
@@ -140,6 +145,8 @@ class BackgroundRefreshAppsOperation: ResultOperation<[String: Result<InstalledA
                     group.completionHandler = { (results) in
                         self.finish(.success(results))
                     }
+                    
+                    self.progress.addChild(group.progress, withPendingUnitCount: 1)
                 }
             }
         }
@@ -207,17 +214,21 @@ private extension BackgroundRefreshAppsOperation
                 content.title = NSLocalizedString("Refreshed Apps", comment: "")
                 content.body = NSLocalizedString("All apps have been refreshed.", comment: "")
             }
-            catch ConnectionError.serverNotFound
+            catch is CancellationError
             {
                 shouldPresentAlert = false
             }
-            catch RefreshError.noInstalledApps
+            catch ~OperationError.Code.serverNotFound where self.ignoresServerNotFoundError
+            {
+                shouldPresentAlert = false
+            }
+            catch ~RefreshErrorCode.noInstalledApps
             {
                 shouldPresentAlert = false
             }
             catch
             {
-                print("Failed to refresh apps in background.", error)
+                Logger.sideload.error("Failed to refresh apps in background. \(error.localizedDescription, privacy: .public)")
                 
                 content.title = NSLocalizedString("Failed to Refresh Apps", comment: "")
                 content.body = error.localizedDescription
@@ -227,7 +238,8 @@ private extension BackgroundRefreshAppsOperation
             
             if shouldPresentAlert
             {
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
+                // Using nil if delay == 0 fixes race condition where multiple notifications can appear (or none).
+                let trigger = delay == 0 ? nil : UNTimeIntervalNotificationTrigger(timeInterval: delay + 1, repeats: false)
                 
                 let request = UNNotificationRequest(identifier: self.refreshIdentifier, content: content, trigger: trigger)
                 UNUserNotificationCenter.current().add(request)
@@ -260,7 +272,7 @@ private extension BackgroundRefreshAppsOperation
             _ = RefreshAttempt(identifier: self.refreshIdentifier, result: result, context: context)
             
             do { try context.save() }
-            catch { print("Failed to save refresh attempt.", error) }
+            catch { Logger.sideload.error("Failed to save refresh attempt. \(error.localizedDescription, privacy: .public)") }
         }
     }
     

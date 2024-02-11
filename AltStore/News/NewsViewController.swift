@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 import AltStoreCore
 import Roxas
@@ -41,26 +42,39 @@ private class AppBannerFooterView: UICollectionReusableView
     }
 }
 
-class NewsViewController: UICollectionViewController
+class NewsViewController: UICollectionViewController, PeekPopPreviewing
 {
+    // Nil == Show news from all sources.
+    var source: Source?
+    
     private lazy var dataSource = self.makeDataSource()
     private lazy var placeholderView = RSTPlaceholderView(frame: .zero)
+    private var retryButton: UIButton!
     
     private var prototypeCell: NewsCollectionViewCell!
     
-    private var loadingState: LoadingState = .loading {
-        didSet {
-            self.update()
-        }
-    }
-    
     // Cache
     private var cachedCellSizes = [String: CGSize]()
+    private var cancellables = Set<AnyCancellable>()
+    
+    init?(source: Source?, coder: NSCoder)
+    {
+        self.source = source
+        
+        super.init(coder: coder)
+        
+        self.initialize()
+    }
     
     required init?(coder: NSCoder)
     {
         super.init(coder: coder)
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         NotificationCenter.default.addObserver(self, selector: #selector(NewsViewController.importApp(_:)), name: AppDelegate.importAppDeepLinkNotification, object: nil)
     }
     
@@ -68,8 +82,20 @@ class NewsViewController: UICollectionViewController
     {
         super.viewDidLoad()
         
+        self.collectionView.backgroundColor = .altBackground
+        
         self.prototypeCell = NewsCollectionViewCell.instantiate(with: NewsCollectionViewCell.nib!)
         self.prototypeCell.contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Need to add dummy constraint + layout subviews before we can remove Interface Builder's width constraint.
+        self.prototypeCell.widthAnchor.constraint(greaterThanOrEqualToConstant: 0).isActive = true
+        self.prototypeCell.layoutIfNeeded()
+        
+        let constraints = self.prototypeCell.constraintsAffectingLayout(for: .horizontal)
+        for constraint in constraints where constraint.identifier?.contains("Encapsulated-Layout-Width") == true
+        {
+            self.prototypeCell.removeConstraint(constraint)
+        }
         
         self.collectionView.dataSource = self.dataSource
         self.collectionView.prefetchDataSource = self.dataSource
@@ -77,16 +103,36 @@ class NewsViewController: UICollectionViewController
         self.collectionView.register(NewsCollectionViewCell.nib, forCellWithReuseIdentifier: RSTCellContentGenericCellIdentifier)
         self.collectionView.register(AppBannerFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AppBanner")
         
-        self.registerForPreviewing(with: self, sourceView: self.collectionView)
+        (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(NewsViewController.updateSources), for: .primaryActionTriggered)
+        self.collectionView.refreshControl = refreshControl
+        
+        self.retryButton = UIButton(type: .system)
+        self.retryButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        self.retryButton.setTitle(NSLocalizedString("Try Again", comment: ""), for: .normal)
+        self.retryButton.addTarget(self, action: #selector(NewsViewController.updateSources), for: .primaryActionTriggered)
+        self.placeholderView.stackView.addArrangedSubview(self.retryButton)
+        
+        if let source = self.source
+        {
+            let tintColor = source.effectiveTintColor ?? .altPrimary
+            self.view.tintColor = tintColor
+            
+            let appearance = NavigationBarAppearance()
+            appearance.configureWithTintColor(tintColor)
+            appearance.configureWithDefaultBackground()
+            
+            let edgeAppearance = appearance.copy()
+            edgeAppearance.configureWithTransparentBackground()
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = edgeAppearance
+        }
+        
+        self.preparePipeline()
         self.update()
-    }
-    
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        
-        self.fetchSource()
     }
     
     override func viewWillLayoutSubviews()
@@ -100,30 +146,36 @@ class NewsViewController: UICollectionViewController
             self.collectionView.contentInset.bottom = 20
         }
     }
-    
-    @IBAction private func unwindFromSourcesViewController(_ segue: UIStoryboardSegue)
-    {
-        self.fetchSource()
-    }
 }
 
 private extension NewsViewController
 {
+    func preparePipeline()
+    {
+        AppManager.shared.$updateSourcesResult
+            .receive(on: RunLoop.main) // Delay to next run loop so we receive _current_ value (not previous value).
+            .sink { result in
+                self.update()
+            }
+            .store(in: &self.cancellables)
+    }
+    
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>
     {
-        let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.date, ascending: false),
-                                        NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
-                                        NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
+        let fetchRequest = NewsItem.sortedFetchRequest(for: self.source)
+        let context = self.source?.managedObjectContext ?? DatabaseManager.shared.viewContext
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
+        // Use fetchedResultsController to split NewsItems up into sections.
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: #keyPath(NewsItem.objectID), cacheName: nil)
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<NewsItem, UIImage>(fetchedResultsController: fetchedResultsController)
         dataSource.proxy = self
-        dataSource.cellConfigurationHandler = { (cell, newsItem, indexPath) in
+        dataSource.cellConfigurationHandler = { [weak self] (cell, newsItem, indexPath) in
+            guard let self else { return }
+            
             let cell = cell as! NewsCollectionViewCell
-            cell.layoutMargins.left = self.view.layoutMargins.left
-            cell.layoutMargins.right = self.view.layoutMargins.right
+            cell.contentView.layoutMargins.left = self.view.layoutMargins.left
+            cell.contentView.layoutMargins.right = self.view.layoutMargins.right
             
             cell.titleLabel.text = newsItem.title
             cell.captionLabel.text = newsItem.caption
@@ -158,18 +210,15 @@ private extension NewsViewController
             guard let imageURL = newsItem.imageURL else { return nil }
             
             return RSTAsyncBlockOperation() { (operation) in
-                ImagePipeline.shared.loadImage(with: imageURL, progress: nil, completion: { (response, error) in
+                ImagePipeline.shared.loadImage(with: imageURL, progress: nil) { result in
                     guard !operation.isCancelled else { return operation.finish() }
                     
-                    if let image = response?.image
+                    switch result
                     {
-                        completionHandler(image, nil)
+                    case .success(let response): completionHandler(response.image, nil)
+                    case .failure(let error): completionHandler(nil, error)
                     }
-                    else
-                    {
-                        completionHandler(nil, error)
-                    }
-                })
+                }
             }
         }
         dataSource.prefetchCompletionHandler = { (cell, image, indexPath, error) in
@@ -187,70 +236,51 @@ private extension NewsViewController
         
         return dataSource
     }
-
-    func fetchSource()
+    
+    @objc func updateSources()
     {
-        self.loadingState = .loading
-        
-        AppManager.shared.fetchSources() { (result) in
-            do
+        AppManager.shared.updateAllSources() { result in
+            self.collectionView.refreshControl?.endRefreshing()
+            
+            guard case .failure(let error) = result else { return }
+            
+            if self.dataSource.itemCount > 0
             {
-                do
-                {
-                    let (_, context) = try result.get()
-                    try context.save()
-                    
-                    DispatchQueue.main.async {
-                        self.loadingState = .finished(.success(()))
-                    }
-                }
-                catch let error as AppManager.FetchSourcesError
-                {
-                    try error.managedObjectContext?.save()
-                    throw error
-                }
-            }
-            catch
-            {
-                DispatchQueue.main.async {
-                    if self.dataSource.itemCount > 0
-                    {
-                        let toastView = ToastView(error: error)
-                        toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
-                        toastView.show(in: self)
-                    }
-                    
-                    self.loadingState = .finished(.failure(error))
-                }
+                let toastView = ToastView(error: error)
+                toastView.addTarget(nil, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+                toastView.show(in: self)
             }
         }
     }
     
     func update()
     {
-        switch self.loadingState
+        switch AppManager.shared.updateSourcesResult
         {
-        case .loading:
+        case nil:
             self.placeholderView.textLabel.isHidden = true
             self.placeholderView.detailTextLabel.isHidden = false
             
             self.placeholderView.detailTextLabel.text = NSLocalizedString("Loading...", comment: "")
             
+            self.retryButton.isHidden = true
             self.placeholderView.activityIndicatorView.startAnimating()
             
-        case .finished(.failure(let error)):
+        case .failure(let error):
             self.placeholderView.textLabel.isHidden = false
             self.placeholderView.detailTextLabel.isHidden = false
             
             self.placeholderView.textLabel.text = NSLocalizedString("Unable to Fetch News", comment: "")
             self.placeholderView.detailTextLabel.text = error.localizedDescription
             
+            self.retryButton.isHidden = false
             self.placeholderView.activityIndicatorView.stopAnimating()
             
-        case .finished(.success):
+        case .success:
             self.placeholderView.textLabel.isHidden = true
             self.placeholderView.detailTextLabel.isHidden = true
             
+            self.retryButton.isHidden = true
             self.placeholderView.activityIndicatorView.stopAnimating()
         }
     }
@@ -289,7 +319,7 @@ private extension NewsViewController
         let app = self.dataSource.item(at: indexPath)
         guard let storeApp = app.storeApp else { return }
         
-        if let installedApp = app.storeApp?.installedApp
+        if let installedApp = storeApp.installedApp, !installedApp.isUpdateAvailable
         {
             self.open(installedApp)
         }
@@ -307,13 +337,31 @@ private extension NewsViewController
             return
         }
         
-        _ = AppManager.shared.install(storeApp, presentingViewController: self) { (result) in
+        Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+            {
+                AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+            }
+            else
+            {
+                await AppManager.shared.installAsync(storeApp, presentingViewController: self, completionHandler: finish(_:))
+            }
+            
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+            }
+        }
+        
+        @MainActor
+        func finish(_ result: Result<InstalledApp, Error>)
+        {
             DispatchQueue.main.async {
                 switch result
                 {
                 case .failure(OperationError.cancelled): break // Ignore
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                     
                 case .success: print("Installed app:", storeApp.bundleIdentifier)
@@ -323,10 +371,6 @@ private extension NewsViewController
                     self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
                 }
             }
-        }
-        
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
         }
     }
     
@@ -373,43 +417,16 @@ extension NewsViewController
         footerView.layoutMargins.left = self.view.layoutMargins.left
         footerView.layoutMargins.right = self.view.layoutMargins.right
         
+        footerView.bannerView.button.isIndicatingActivity = false
         footerView.bannerView.configure(for: storeApp)
         
         footerView.bannerView.tintColor = storeApp.tintColor
         footerView.bannerView.button.addTarget(self, action: #selector(NewsViewController.performAppAction(_:)), for: .primaryActionTriggered)
         footerView.tapGestureRecognizer.addTarget(self, action: #selector(NewsViewController.handleTapGesture(_:)))
         
-        footerView.bannerView.button.isIndicatingActivity = false
-        
-        if storeApp.installedApp == nil
-        {
-            let buttonTitle = NSLocalizedString("Free", comment: "")
-            footerView.bannerView.button.setTitle(buttonTitle.uppercased(), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Download %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = buttonTitle
-            
-            let progress = AppManager.shared.installationProgress(for: storeApp)
-            footerView.bannerView.button.progress = progress
-            
-            if Date() < storeApp.versionDate
-            {
-                footerView.bannerView.button.countdownDate = storeApp.versionDate
-            }
-            else
-            {
-                footerView.bannerView.button.countdownDate = nil
-            }
+        Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView) { result in
+            footerView.bannerView.iconImageView.isIndicatingActivity = false
         }
-        else
-        {
-            footerView.bannerView.button.setTitle(NSLocalizedString("OPEN", comment: ""), for: .normal)
-            footerView.bannerView.button.accessibilityLabel = String(format: NSLocalizedString("Open %@", comment: ""), storeApp.name)
-            footerView.bannerView.button.accessibilityValue = nil
-            footerView.bannerView.button.progress = nil
-            footerView.bannerView.button.countdownDate = nil
-        }
-        
-        Nuke.loadImage(with: storeApp.iconURL, into: footerView.bannerView.iconImageView)
         
         return footerView
     }
@@ -420,8 +437,9 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {        
         let item = self.dataSource.item(at: indexPath)
+        let globallyUniqueID = item.globallyUniqueID ?? item.identifier
         
-        if let previousSize = self.cachedCellSizes[item.identifier]
+        if let previousSize = self.cachedCellSizes[globallyUniqueID]
         {
             return previousSize
         }
@@ -433,7 +451,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
         self.dataSource.cellConfigurationHandler(self.prototypeCell, item, indexPath)
         
         let size = self.prototypeCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        self.cachedCellSizes[item.identifier] = size
+        self.cachedCellSizes[globallyUniqueID] = size
         return size
     }
     
@@ -466,6 +484,7 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
 
 extension NewsViewController: UIViewControllerPreviewingDelegate
 {
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
     {
         if let indexPath = self.collectionView.indexPathForItem(at: location), let cell = self.collectionView.cellForItem(at: indexPath)
@@ -512,6 +531,7 @@ extension NewsViewController: UIViewControllerPreviewingDelegate
         }
     }
     
+    @available(iOS, deprecated: 13.0)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
     {
         if let safariViewController = viewControllerToCommit as? SFSafariViewController

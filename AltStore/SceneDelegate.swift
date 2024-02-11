@@ -9,7 +9,6 @@
 import UIKit
 import AltStoreCore
 
-@available(iOS 13, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate
 {
     var window: UIWindow?
@@ -52,7 +51,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         guard UIApplication.shared.applicationState == .background else { return }
         
+        // Make sure to update AppDelegate.applicationDidEnterBackground() as well.
+        
         ServerManager.shared.stopDiscovering()
+        
+        guard let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) else { return }
+        
+        let midnightOneMonthAgo = Calendar.current.startOfDay(for: oneMonthAgo)
+        DatabaseManager.shared.purgeLoggedErrors(before: midnightOneMonthAgo) { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("[ALTLog] Failed to purge logged errors before \(midnightOneMonthAgo).", error)
+            }
+        }
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
@@ -62,7 +74,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
     }
 }
 
-@available(iOS 13.0, *)
 private extension SceneDelegate
 {
     func open(_ context: UIOpenURLContext)

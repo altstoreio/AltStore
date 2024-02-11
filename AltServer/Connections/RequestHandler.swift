@@ -143,6 +143,43 @@ struct ServerRequestHandler: RequestHandler
             }
         }
     }
+    
+    func handleEnableUnsignedCodeExecutionRequest(_ request: EnableUnsignedCodeExecutionRequest, for connection: Connection, completionHandler: @escaping (Result<EnableUnsignedCodeExecutionResponse, Error>) -> Void)
+    {
+        guard let device = ALTDeviceManager.shared.availableDevices.first(where: { $0.identifier == request.udid }) else { return completionHandler(.failure(ALTServerError(.deviceNotFound))) }
+                
+        let process: AppProcess
+        
+        if let processID = request.processID
+        {
+            process = .pid(processID)
+        }
+        else if let processName = request.processName
+        {
+            process = .name(processName)
+        }
+        else
+        {
+            return completionHandler(.failure(ALTServerError(.invalidRequest)))
+        }
+        
+        Task<Void, Never> {
+            do
+            {
+                try await JITManager.shared.enableUnsignedCodeExecution(process: process, device: device)
+                
+                print("Enabled unsigned code execution for process:", request.processID ?? request.processName ?? "nil")
+                
+                let response = EnableUnsignedCodeExecutionResponse()
+                completionHandler(.success(response))
+            }
+            catch
+            {
+                print("Failed to enable unsigned code execution for process \(request.processID?.description ?? request.processName ?? "nil"):", error)
+                completionHandler(.failure(ALTServerError(error)))
+            }
+        }
+    }
 }
 
 private extension RequestHandler

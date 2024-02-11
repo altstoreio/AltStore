@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AltSign
 
 public extension ALTServerError
 {
@@ -15,15 +16,15 @@ public extension ALTServerError
         switch error
         {
         case let error as ALTServerError: self = error
+        case let error as ALTServerConnectionError: self = ALTServerError(.connectionFailed, underlyingError: error)
+        case let error as ALTAppleAPIError where error.code == .invalidAnisetteData: self = ALTServerError(.invalidAnisetteData, underlyingError: error)
         case is DecodingError: self = ALTServerError(.invalidRequest, underlyingError: error)
         case is EncodingError: self = ALTServerError(.invalidResponse, underlyingError: error)
         case let error as NSError:
+            // Assign error as underlying error, even if there already is one,
+            // because it'll still be accessible via error.underlyingError.underlyingError.
             var userInfo = error.userInfo
-            if !userInfo.keys.contains(NSUnderlyingErrorKey)
-            {
-                // Assign underlying error (if there isn't already one).
-                userInfo[NSUnderlyingErrorKey] = error
-            }
+            userInfo[NSUnderlyingErrorKey] = error
             
             self = ALTServerError(.underlyingError, userInfo: userInfo)
         }

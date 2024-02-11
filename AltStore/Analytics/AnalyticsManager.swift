@@ -30,6 +30,7 @@ extension AnalyticsManager
         case bundleIdentifier
         case developerName
         case version
+        case buildVersion
         case size
         case tintColor
         case sourceIdentifier
@@ -65,6 +66,7 @@ extension AnalyticsManager
                     .bundleIdentifier: app.bundleIdentifier,
                     .developerName: app.storeApp?.developerName,
                     .version: app.version,
+                    .buildVersion: app.buildVersion,
                     .size: appBundleSize?.description,
                     .tintColor: app.storeApp?.tintColor?.hexString,
                     .sourceIdentifier: app.storeApp?.sourceIdentifier,
@@ -90,9 +92,9 @@ extension AnalyticsManager
 {
     func start()
     {
-        MSAppCenter.start(appCenterAppSecret, withServices:[
-            MSAnalytics.self,
-            MSCrashes.self
+        AppCenter.start(withAppSecret: appCenterAppSecret, services: [
+            Analytics.self,
+            Crashes.self
         ])
     }
     
@@ -102,6 +104,6 @@ extension AnalyticsManager
             properties[item.key.rawValue] = item.value
         }
         
-        MSAnalytics.trackEvent(event.name, withProperties: properties)
+        Analytics.trackEvent(event.name, withProperties: properties)
     }
 }

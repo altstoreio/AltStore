@@ -8,6 +8,21 @@
 
 import UIKit
 
+extension PillButton
+{
+    static let minimumSize = CGSize(width: 77, height: 31)
+    static let contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 13, bottom: 7, trailing: 13)
+}
+
+extension PillButton
+{
+    enum Style
+    {
+        case pill
+        case custom
+    }
+}
+
 class PillButton: UIButton
 {
     override var accessibilityValue: String? {
@@ -32,11 +47,8 @@ class PillButton: UIButton
     }
     
     var progressTintColor: UIColor? {
-        get {
-            return self.progressView.progressTintColor
-        }
-        set {
-            self.progressView.progressTintColor = newValue
+        didSet {
+            self.update()
         }
     }
     
@@ -49,6 +61,20 @@ class PillButton: UIButton
             {
                 self.setTitle(nil, for: .disabled)
             }
+        }
+    }
+    
+    var style: Style = .pill {
+        didSet {
+            guard self.style != oldValue else { return }
+            
+            if self.style == .custom
+            {
+                // Reset insets for custom style.
+                self.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+            }
+            
+            self.update()
         }
     }
     
@@ -70,9 +96,7 @@ class PillButton: UIButton
     }()
     
     override var intrinsicContentSize: CGSize {
-        var size = super.intrinsicContentSize
-        size.width += 26
-        size.height += 3
+        let size = self.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
         return size
     }
     
@@ -81,14 +105,32 @@ class PillButton: UIButton
         self.displayLink.remove(from: .main, forMode: RunLoop.Mode.default)
     }
     
+    override init(frame: CGRect)
+    {
+        super.init(frame: frame)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.layer.masksToBounds = true
         self.accessibilityTraits.formUnion([.updatesFrequently, .button])
         
-        self.activityIndicatorView.style = .white
+        self.activityIndicatorView.style = .medium
+        self.activityIndicatorView.color = .white
         self.activityIndicatorView.isUserInteractionEnabled = false
         
         self.progressView.progress = 0
@@ -119,6 +161,23 @@ class PillButton: UIButton
         
         self.update()
     }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize
+    {
+        var size = super.sizeThatFits(size)
+        
+        switch self.style 
+        {
+        case .pill:
+            // Enforce minimum size for pill style.
+            size.width = max(size.width, PillButton.minimumSize.width)
+            size.height = max(size.height, PillButton.minimumSize.height)
+            
+        case .custom: break
+        }
+        
+        return size
+    }
 }
 
 private extension PillButton
@@ -136,7 +195,17 @@ private extension PillButton
             self.backgroundColor = self.tintColor.withAlphaComponent(0.15)
         }
         
-        self.progressView.progressTintColor = self.tintColor
+        self.progressView.progressTintColor = self.progressTintColor ?? self.tintColor
+        
+        // Update font after init because the original titleLabel is replaced.
+        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        
+        switch self.style
+        {
+        case .custom: break // Don't update insets in case client has updated them.
+        case .pill:
+            self.contentEdgeInsets = UIEdgeInsets(top: Self.contentInsets.top, left: Self.contentInsets.leading, bottom: Self.contentInsets.bottom, right: Self.contentInsets.trailing)
+        }
     }
     
     @objc func updateCountdown()

@@ -20,6 +20,8 @@ public protocol RequestHandler
                                                  completionHandler: @escaping (Result<RemoveProvisioningProfilesResponse, Error>) -> Void)
     
     func handleRemoveAppRequest(_ request: RemoveAppRequest, for connection: Connection, completionHandler: @escaping (Result<RemoveAppResponse, Error>) -> Void)
+    
+    func handleEnableUnsignedCodeExecutionRequest(_ request: EnableUnsignedCodeExecutionRequest, for connection: Connection, completionHandler: @escaping (Result<EnableUnsignedCodeExecutionResponse, Error>) -> Void)
 }
 
 public protocol ConnectionHandler: AnyObject
@@ -39,6 +41,7 @@ public class ConnectionManager<RequestHandlerType: RequestHandler>
     public var isStarted = false
     
     private var connections = [Connection]()
+    private let connectionsLock = NSLock()
     
     public init(requestHandler: RequestHandlerType, connectionHandlers: [ConnectionHandler])
     {
@@ -86,6 +89,9 @@ private extension ConnectionManager
 {
     func prepare(_ connection: Connection)
     {
+        self.connectionsLock.lock()
+        defer { self.connectionsLock.unlock() }
+        
         guard !self.connections.contains(where: { $0 === connection }) else { return }
         self.connections.append(connection)
         
@@ -94,6 +100,9 @@ private extension ConnectionManager
     
     func disconnect(_ connection: Connection)
     {
+        self.connectionsLock.lock()
+        defer { self.connectionsLock.unlock() }
+        
         guard let index = self.connections.firstIndex(where: { $0 === connection }) else { return }
         self.connections.remove(at: index)
     }
@@ -149,6 +158,11 @@ private extension ConnectionManager
                 
             case .success(.removeApp(let request)):
                 self.requestHandler.handleRemoveAppRequest(request, for: connection) { (result) in
+                    finish(result)
+                }
+                
+            case .success(.enableUnsignedCodeExecution(let request)):
+                self.requestHandler.handleEnableUnsignedCodeExecutionRequest(request, for: connection) { (result) in
                     finish(result)
                 }
                 

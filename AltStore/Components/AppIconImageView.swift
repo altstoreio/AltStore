@@ -8,36 +8,62 @@
 
 import UIKit
 
+extension AppIconImageView
+{
+    enum Style
+    {
+        case icon
+        case circular
+    }
+}
+
 class AppIconImageView: UIImageView
 {
-    override func awakeFromNib()
+    var style: Style = .icon {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
+    
+    init(style: Style) 
     {
-        super.awakeFromNib()
+        self.style = style
         
+        super.init(image: nil)
+        
+        self.initialize()
+    }
+    
+    required init?(coder: NSCoder) 
+    {
+        super.init(coder: coder)
+        
+        self.initialize()
+    }
+    
+    private func initialize()
+    {
         self.contentMode = .scaleAspectFill
         self.clipsToBounds = true
-        
         self.backgroundColor = .white
-                
-        if #available(iOS 13, *)
-        {
-            self.layer.cornerCurve = .continuous
-        }
-        else
-        {
-            if self.layer.responds(to: Selector(("continuousCorners")))
-            {
-                self.layer.setValue(true, forKey: "continuousCorners")
-            }
-        }
+        
+        self.layer.cornerCurve = .continuous
     }
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
         
-        // Based off of 60pt icon having 12pt radius.
-        let radius = self.bounds.height / 5
-        self.layer.cornerRadius = radius
+        switch self.style
+        {
+        case .icon:
+            // Based off of 60pt icon having 12pt radius.
+            let radius = self.bounds.height / 5
+            self.layer.cornerRadius = radius
+            
+        case .circular:
+            let radius = self.bounds.height / 2
+            self.layer.cornerRadius = radius
+        }
     }
 }

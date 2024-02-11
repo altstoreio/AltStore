@@ -144,5 +144,10 @@ private extension WirelessConnectionHandler
         connection.disconnect()
         
         self.disconnectionHandler?(connection)
+        
+        if let networkConnection = connection as? NetworkConnection
+        {
+            networkConnection.nwConnection.stateUpdateHandler = nil
+        }
     }
 }

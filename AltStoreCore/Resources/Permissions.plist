@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entitlements</key>
+	<dict>
+		<key>com.apple.developer.authentication-services.autofill-credential-provider</key>
+		<dict>
+			<key>name</key>
+			<string>AutoFill Credential Provider</string>
+			<key>description</key>
+			<string>Allows app to provide user names and passwords for AutoFill.</string>
+			<key>key</key>
+			<string>com.apple.developer.authentication-services.autofill-credential-provider</string>
+			<key>symbol</key>
+			<string>wallet.pass</string>
+		</dict>
+		<key>com.apple.developer.applesignin</key>
+		<dict>
+			<key>name</key>
+			<string>Sign in with Apple</string>
+			<key>description</key>
+			<string>Allows sign in with Apple.</string>
+			<key>key</key>
+			<string>com.apple.developer.applesignin</string>
+			<key>symbol</key>
+			<string>apple.logo</string>
+		</dict>
+		<key>com.apple.developer.parent-application-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>App Clips - Parent Identifiers</string>
+			<key>description</key>
+			<string>Allows app to use App Clips.</string>
+			<key>key</key>
+			<string>com.apple.developer.parent-application-identifiers</string>
+			<key>symbol</key>
+			<string>appclip</string>
+		</dict>
+		<key>com.apple.developer.associated-appclip-app-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>App Clips - Associated Identifiers</string>
+			<key>description</key>
+			<string>Allows app to use App Clips with other apps.</string>
+			<key>key</key>
+			<string>com.apple.developer.associated-appclip-app-identifiers</string>
+			<key>symbol</key>
+			<string>appclip</string>
+		</dict>
+		<key>com.apple.developer.on-demand-install-capable</key>
+		<dict>
+			<key>name</key>
+			<string>App Clips - Install</string>
+			<key>description</key>
+			<string>App can install App Clips.</string>
+			<key>key</key>
+			<string>com.apple.developer.on-demand-install-capable</string>
+			<key>symbol</key>
+			<string>appclip</string>
+		</dict>
+		<key>com.apple.developer.carplay-audio</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Audio</string>
+			<key>description</key>
+			<string>Allows the app to provide audio content for CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-audio</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-charging</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Charging</string>
+			<key>description</key>
+			<string>Allows charging capabilities for CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-charging</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-communication</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Communication</string>
+			<key>description</key>
+			<string>Allows the app to make and receive phone calls, messages, and other communications through CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-communication</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-maps</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Maps</string>
+			<key>description</key>
+			<string>Allows use of maps and navigation services for CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-maps</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-parking</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Parking</string>
+			<key>description</key>
+			<string>Allows the app to provide parking-related services for CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-parking</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-quick-ordering</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Quick Ordering</string>
+			<key>description</key>
+			<string>Allows quick ordering capabilities for CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-quick-ordering</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.carplay-messaging</key>
+		<dict>
+			<key>name</key>
+			<string>CarPlay Messaging</string>
+			<key>description</key>
+			<string>Allows sending and receiving messages through CarPlay.</string>
+			<key>key</key>
+			<string>com.apple.developer.carplay-messaging</string>
+			<key>symbol</key>
+			<string>car</string>
+		</dict>
+		<key>com.apple.developer.contact.notes</key>
+		<dict>
+			<key>name</key>
+			<string>Contact Notes</string>
+			<key>description</key>
+			<string>Grants access to the notes in contact entries.</string>
+			<key>key</key>
+			<string>com.apple.developer.contact.notes</string>
+			<key>symbol</key>
+			<string>person.crop.circle</string>
+		</dict>
+		<key>com.apple.developer.automated-device-enrollment.add-devices</key>
+		<dict>
+			<key>name</key>
+			<string>Automated Device Enrollment</string>
+			<key>description</key>
+			<string>Grants access to add a device to Automated Device Enrollment.</string>
+			<key>key</key>
+			<string>com.apple.developer.automated-device-enrollment.add-devices</string>
+			<key>symbol</key>
+			<string>macbook.and.iphone</string>
+		</dict>
+		<key>com.apple.developer.ClassKit-environment</key>
+		<dict>
+			<key>name</key>
+			<string>ClassKit</string>
+			<key>description</key>
+			<string>Grants access to the ClassKit development or production environment for an education app that works with the Schoolwork app.</string>
+			<key>key</key>
+			<string>com.apple.developer.ClassKit-environment</string>
+			<key>symbol</key>
+			<string>books.vertical</string>
+		</dict>
+		<key>com.apple.developer.automatic-assessment-configuration</key>
+		<dict>
+			<key>name</key>
+			<string>Automatic Assessment Configuration</string>
+			<key>description</key>
+			<string>Allows app to create an assessment session.</string>
+			<key>key</key>
+			<string>com.apple.developer.automatic-assessment-configuration</string>
+			<key>symbol</key>
+			<string>books.vertical</string>
+		</dict>
+		<key>com.apple.developer.mail-client</key>
+		<dict>
+			<key>name</key>
+			<string>Mail Client</string>
+			<key>description</key>
+			<string>Allows app to act as a user&apos;s default email client.</string>
+			<key>key</key>
+			<string>com.apple.developer.mail-client</string>
+			<key>symbol</key>
+			<string>envelope</string>
+		</dict>
+		<key>com.apple.developer.exposure-notification</key>
+		<dict>
+			<key>name</key>
+			<string>Exposure Notification</string>
+			<key>description</key>
+			<string>App may use exposure notification.</string>
+			<key>key</key>
+			<string>com.apple.developer.exposure-notification</string>
+			<key>symbol</key>
+			<string>microbe.fill</string>
+		</dict>
+		<key>com.apple.developer.family-controls</key>
+		<dict>
+			<key>name</key>
+			<string>Family Controls</string>
+			<key>description</key>
+			<string>App can request or revoke authorization to provide parental controls.</string>
+			<key>key</key>
+			<string>com.apple.developer.family-controls</string>
+			<key>symbol</key>
+			<string>figure.and.child.holdinghands</string>
+		</dict>
+		<key>com.apple.developer.fileprovider.testing-mode</key>
+		<dict>
+			<key>name</key>
+			<string>Testing Mode</string>
+			<key>description</key>
+			<string>App can enter testing mode.</string>
+			<key>key</key>
+			<string>com.apple.developer.fileprovider.testing-mode</string>
+			<key>symbol</key>
+			<string>testtube.2</string>
+		</dict>
+		<key>com.apple.developer.game-center</key>
+		<dict>
+			<key>name</key>
+			<string>Game Center</string>
+			<key>description</key>
+			<string>App may see and compare achievements on a leaderboard, invite friends, and start multiplayer games.</string>
+			<key>key</key>
+			<string>com.apple.developer.game-center</string>
+			<key>symbol</key>
+			<string>gamecontroller</string>
+		</dict>
+		<key>com.apple.developer.group-session</key>
+		<dict>
+			<key>name</key>
+			<string>Group Activities</string>
+			<key>description</key>
+			<string>Allows the app to schedule and participate in group activities.</string>
+			<key>key</key>
+			<string>com.apple.developer.group-session</string>
+			<key>symbol</key>
+			<string>person.3</string>
+		</dict>
+		<key>com.apple.developer.healthkit</key>
+		<dict>
+			<key>name</key>
+			<string>Health</string>
+			<key>description</key>
+			<string>Allows the app to access your Health data.</string>
+			<key>key</key>
+			<string>com.apple.developer.healthkit</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>com.apple.developer.healthkit.access</key>
+		<dict>
+			<key>name</key>
+			<string>Sensitive Health Data</string>
+			<key>description</key>
+			<string>Allows the app to access your sensitive Health data.</string>
+			<key>key</key>
+			<string>com.apple.developer.healthkit.access</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>healthkit.background-delivery</key>
+		<dict>
+			<key>name</key>
+			<string>Health - Background Updates</string>
+			<key>description</key>
+			<string>App may receive health updates while running in the background.</string>
+			<key>key</key>
+			<string>com.apple.developer.healthkit.background-delivery</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>com.apple.developer.healthkit.recalibrate-estimates</key>
+		<dict>
+			<key>name</key>
+			<string>Health - Recalibrate</string>
+			<key>description</key>
+			<string>App may recalibrate Health data.</string>
+			<key>key</key>
+			<string>com.apple.developer.healthkit.recalibrate-estimates</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>com.apple.developer.homekit</key>
+		<dict>
+			<key>name</key>
+			<string>HomeKit</string>
+			<key>description</key>
+			<string>App may perform setup and management tasks for HomeKit accessories.</string>
+			<key>key</key>
+			<string>com.apple.developer.homekit</string>
+			<key>symbol</key>
+			<string>house</string>
+		</dict>
+		<key>com.apple.developer.homekit.matter.allow-setup-payload</key>
+		<dict>
+			<key>name</key>
+			<string>HomeKit - Matter</string>
+			<key>description</key>
+			<string>Allows app to provide the setup of a Matter device.</string>
+			<key>key</key>
+			<string>com.apple.developer.homekit.matter.allow-setup-payload</string>
+			<key>symbol</key>
+			<string>house</string>
+		</dict>
+		<key>com.apple.security.hypervisor</key>
+		<dict>
+			<key>name</key>
+			<string>Virtual Machine</string>
+			<key>description</key>
+			<string>Allows app to create and manage virtual machines.</string>
+			<key>key</key>
+			<string>com.apple.security.hypervisor</string>
+			<key>symbol</key>
+			<string>externaldrive.connected.to.line.below</string>
+		</dict>
+		<key>com.apple.vm.device-access</key>
+		<dict>
+			<key>name</key>
+			<string>Device Access</string>
+			<key>description</key>
+			<string>App can capture USB devices and uses them in the guest-operating system.</string>
+			<key>key</key>
+			<string>com.apple.vm.device-access</string>
+			<key>symbol</key>
+			<string>mediastick</string>
+		</dict>
+		<key>com.apple.vm.networking</key>
+		<dict>
+			<key>name</key>
+			<string>Virtual Networking</string>
+			<key>description</key>
+			<string>App can manage virtual network interfaces without escalating privileges to the root user.</string>
+			<key>key</key>
+			<string>com.apple.vm.networking</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.security.virtualization</key>
+		<dict>
+			<key>name</key>
+			<string>Virtualization</string>
+			<key>description</key>
+			<string>App can use the Virtualization framework.</string>
+			<key>key</key>
+			<string>com.apple.security.virtualization</string>
+			<key>symbol</key>
+			<string>server.rack</string>
+		</dict>
+		<key>com.apple.developer.icloud-container-development-container-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>iCloud Container Development Container Identifiers</string>
+			<key>description</key>
+			<string>App can use iCloud containers for testing environments.</string>
+			<key>key</key>
+			<string>com.apple.developer.icloud-container-development-container-identifiers</string>
+			<key>symbol</key>
+			<string>icloud</string>
+		</dict>
+		<key>com.apple.developer.icloud-container-environment</key>
+		<dict>
+			<key>name</key>
+			<string>iCloud Container Environment</string>
+			<key>description</key>
+			<string>App can set up iCloud testing environment.</string>
+			<key>key</key>
+			<string>com.apple.developer.icloud-container-environment</string>
+			<key>symbol</key>
+			<string>icloud</string>
+		</dict>
+		<key>com.apple.developer.icloud-container-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>iCloud Container Identifiers</string>
+			<key>description</key>
+			<string>App can set up iCloud identifiers used for testing environments.</string>
+			<key>key</key>
+			<string>com.apple.developer.icloud-container-identifiers</string>
+			<key>symbol</key>
+			<string>icloud</string>
+		</dict>
+		<key>com.apple.developer.icloud-services</key>
+		<dict>
+			<key>name</key>
+			<string>iCloud Services</string>
+			<key>description</key>
+			<string>Grants access to iCloud services.</string>
+			<key>key</key>
+			<string>com.apple.developer.icloud-services</string>
+			<key>symbol</key>
+			<string>icloud</string>
+		</dict>
+		<key>com.apple.developer.ubiquity-kvstore-identifier</key>
+		<dict>
+			<key>name</key>
+			<string>iCloud Key-Value Store</string>
+			<key>description</key>
+			<string>The container identifier to use for iCloud key-value storage.</string>
+			<key>key</key>
+			<string>com.apple.developer.ubiquity-kvstore-identifier</string>
+			<key>symbol</key>
+			<string>icloud</string>
+		</dict>
+		<key>com.apple.developer.location.push</key>
+		<dict>
+			<key>name</key>
+			<string>Location Sharing Push Notifications</string>
+			<key>description</key>
+			<string>Enables location-sharing app to query someone’s location in response to a push notification.</string>
+			<key>key</key>
+			<string>com.apple.developer.location.push</string>
+			<key>symbol</key>
+			<string>location</string>
+		</dict>
+		<key>com.apple.developer.media-device-discovery-extension</key>
+		<dict>
+			<key>name</key>
+			<string>Media Device Discovery Extension</string>
+			<key>description</key>
+			<string>App extension that adds a third-party media receiver to a system device-picker UI.</string>
+			<key>key</key>
+			<string>com.apple.developer.media-device-discovery-extension</string>
+			<key>symbol</key>
+			<string>display.2</string>
+		</dict>
+		<key>com.apple.developer.avfoundation.multitasking-camera-access</key>
+		<dict>
+			<key>name</key>
+			<string>Multitasking Camera Access</string>
+			<key>description</key>
+			<string>App may continue using the camera at the same time as another foreground app.</string>
+			<key>key</key>
+			<string>com.apple.developer.avfoundation.multitasking-camera-access</string>
+			<key>symbol</key>
+			<string>camera.on.rectangle</string>
+		</dict>
+		<key>com.apple.developer.kernel.increased-memory-limit</key>
+		<dict>
+			<key>name</key>
+			<string>Increased Memory Limit</string>
+			<key>description</key>
+			<string>Allows app to perform better with a higher memory limit on supported devices.</string>
+			<key>key</key>
+			<string>com.apple.developer.kernel.increased-memory-limit</string>
+			<key>symbol</key>
+			<string>memorychip</string>
+		</dict>
+		<key>com.apple.developer.kernel.extended-virtual-addressing</key>
+		<dict>
+			<key>name</key>
+			<string>Extended Virtual Addressing</string>
+			<key>description</key>
+			<string>App may access an extended address space.</string>
+			<key>key</key>
+			<string>com.apple.developer.kernel.extended-virtual-addressing</string>
+			<key>symbol</key>
+			<string>memorychip</string>
+		</dict>
+		<key>com.apple.developer.networking.networkextension</key>
+		<dict>
+			<key>name</key>
+			<string>Network Extensions</string>
+			<key>description</key>
+			<string>App can customize networking features.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.networkextension</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.developer.networking.vpn.api</key>
+		<dict>
+			<key>name</key>
+			<string>Personal VPN</string>
+			<key>description</key>
+			<string>App can create and control a custom system VPN configuration.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.vpn.api</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.developer.associated-domains</key>
+		<dict>
+			<key>name</key>
+			<string>Associated Domains</string>
+			<key>description</key>
+			<string>The associated domains for specific services, such as shared web credentials, universal links, and App Clips.</string>
+			<key>key</key>
+			<string>com.apple.developer.associated-domains</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.developer.networking.multicast</key>
+		<dict>
+			<key>name</key>
+			<string>Multicast</string>
+			<key>description</key>
+			<string>App can send or receive IP multicast traffic.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.multicast</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.developer.associated-domains.applinks.read-write</key>
+		<dict>
+			<key>name</key>
+			<string>Applinks</string>
+			<key>description</key>
+			<string>Grants app read/write access to Applinks.</string>
+			<key>key</key>
+			<string>com.apple.developer.associated-domains.applinks.read-write</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>com.apple.developer.networking.manage-thread-network-credentials</key>
+		<dict>
+			<key>name</key>
+			<string>ThreadNetwork</string>
+			<key>description</key>
+			<string>Grants access to the ThreadNetwork API.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.manage-thread-network-credentials</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>aps-environment</key>
+		<dict>
+			<key>name</key>
+			<string>Push Notifications</string>
+			<key>description</key>
+			<string>App can send push notifications.</string>
+			<key>key</key>
+			<string>aps-environment</string>
+			<key>symbol</key>
+			<string>app.badge</string>
+		</dict>
+		<key>com.apple.developer.usernotifications.filtering</key>
+		<dict>
+			<key>name</key>
+			<string>Notification Filtering</string>
+			<key>description</key>
+			<string>App can receive notifications without displaying them to the user.</string>
+			<key>key</key>
+			<string>com.apple.developer.usernotifications.filtering</string>
+			<key>symbol</key>
+			<string>platter.filled.top.and.arrow.up.iphone</string>
+		</dict>
+		<key>com.apple.developer.device-information.user-assigned-device-name</key>
+		<dict>
+			<key>name</key>
+			<string>Device Name</string>
+			<key>description</key>
+			<string>Grants access to the user-assigned device name instead of a generic device name.</string>
+			<key>key</key>
+			<string>com.apple.developer.device-information.user-assigned-device-name</string>
+			<key>symbol</key>
+			<string>ipad.and.iphone</string>
+		</dict>
+		<key>com.apple.developer.severe-vehicular-crash-event</key>
+		<dict>
+			<key>name</key>
+			<string>Crash Detection</string>
+			<key>description</key>
+			<string>Grants access to Crash Detection events.</string>
+			<key>key</key>
+			<string>com.apple.developer.severe-vehicular-crash-event</string>
+			<key>symbol</key>
+			<string>car.side.and.exclamationmark</string>
+		</dict>
+		<key>com.apple.security.application-groups</key>
+		<dict>
+			<key>name</key>
+			<string>App Groups</string>
+			<key>description</key>
+			<string>Allows app to share files with other apps and app extensions in same App Group.</string>
+			<key>key</key>
+			<string>com.apple.security.application-groups</string>
+			<key>symbol</key>
+			<string>rectangle.3.group</string>
+		</dict>
+		<key>keychain-access-groups</key>
+		<dict>
+			<key>name</key>
+			<string>Keychain</string>
+			<key>description</key>
+			<string>Allows app to read and write secure data to the system&apos;s keychain.</string>
+			<key>key</key>
+			<string>keychain-access-groups</string>
+			<key>symbol</key>
+			<string>key.horizontal</string>
+		</dict>
+		<key>com.apple.developer.default-data-protection</key>
+		<dict>
+			<key>name</key>
+			<string>Data Protection</string>
+			<key>description</key>
+			<string>App can set the level of data protection for sensitive user data when accessed on a device.</string>
+			<key>key</key>
+			<string>com.apple.developer.default-data-protection</string>
+			<key>symbol</key>
+			<string>lock.doc</string>
+		</dict>
+		<key>com.apple.developer.devicecheck.appattest-environment</key>
+		<dict>
+			<key>name</key>
+			<string>App Attest Environment</string>
+			<key>description</key>
+			<string>Allows app to use the App Attest service to validate itself.</string>
+			<key>key</key>
+			<string>com.apple.developer.devicecheck.appattest-environment</string>
+			<key>symbol</key>
+			<string>app.badge.checkmark</string>
+		</dict>
+		<key>com.apple.security.smartcard</key>
+		<dict>
+			<key>name</key>
+			<string>Smart Card Access</string>
+			<key>description</key>
+			<string>Grants access to smart card slots and smart cards.</string>
+			<key>key</key>
+			<string>com.apple.security.smartcard</string>
+			<key>symbol</key>
+			<string>greetingcard</string>
+		</dict>
+		<key>com.apple.developer.sensorkit.reader.allow</key>
+		<dict>
+			<key>name</key>
+			<string>Sensor Data</string>
+			<key>description</key>
+			<string>Grants access to sensor data that&apos;s required by a preapproved research study.</string>
+			<key>key</key>
+			<string>com.apple.developer.sensorkit.reader.allow</string>
+			<key>symbol</key>
+			<string>sensor</string>
+		</dict>
+		<key>com.apple.developer.siri</key>
+		<dict>
+			<key>name</key>
+			<string>Siri</string>
+			<key>description</key>
+			<string>Allows app to handle Siri requests.</string>
+			<key>key</key>
+			<string>com.apple.developer.siri</string>
+			<key>symbol</key>
+			<string>mic.circle</string>
+		</dict>
+		<key>com.apple.developer.storekit.external-link.account</key>
+		<dict>
+			<key>name</key>
+			<string>External Website Account Linking</string>
+			<key>description</key>
+			<string>App can link to an external website for account creation or management.</string>
+			<key>key</key>
+			<string>com.apple.developer.storekit.external-link.account</string>
+			<key>symbol</key>
+			<string>link.badge.plus</string>
+		</dict>
+		<key>com.apple.developer.storekit.external-purchase</key>
+		<dict>
+			<key>name</key>
+			<string>External Purchases</string>
+			<key>description</key>
+			<string>App can offer external purchases.</string>
+			<key>key</key>
+			<string>com.apple.developer.storekit.external-purchase</string>
+			<key>symbol</key>
+			<string>dollarsign.circle</string>
+		</dict>
+		<key>com.apple.developer.storekit.external-purchase-link</key>
+		<dict>
+			<key>name</key>
+			<string>External Purchase Website Link</string>
+			<key>description</key>
+			<string>App can include a link that directs users to a website to make an external purchase.</string>
+			<key>key</key>
+			<string>com.apple.developer.storekit.external-purchase-link</string>
+			<key>symbol</key>
+			<string>link.badge.plus</string>
+		</dict>
+		<key>com.apple.developer.video-subscriber-single-sign-on</key>
+		<dict>
+			<key>name</key>
+			<string>Subscriber Single Sign-On</string>
+			<key>description</key>
+			<string>Allows app to use single sign-on.</string>
+			<key>key</key>
+			<string>com.apple.developer.video-subscriber-single-sign-on</string>
+			<key>symbol</key>
+			<string>rectangle.and.pencil.and.ellipsis</string>
+		</dict>
+		<key>com.apple.smoot.subscriptionservice</key>
+		<dict>
+			<key>name</key>
+			<string>Subscriptions Verification</string>
+			<key>description</key>
+			<string>Allows app to check for TV subscriptions.</string>
+			<key>key</key>
+			<string>com.apple.smoot.subscriptionservice</string>
+			<key>symbol</key>
+			<string>person.crop.circle.badge.checkmark</string>
+		</dict>
+		<key>com.apple.developer.pass-type-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>Pass Type</string>
+			<key>description</key>
+			<string>Allows app to check for passes in Apple Wallet.</string>
+			<key>key</key>
+			<string>com.apple.developer.pass-type-identifiers</string>
+			<key>symbol</key>
+			<string>wallet.pass</string>
+		</dict>
+		<key>com.apple.developer.in-app-payments</key>
+		<dict>
+			<key>name</key>
+			<string>Apple Pay</string>
+			<key>description</key>
+			<string>Allows app to use Apple Pay.</string>
+			<key>key</key>
+			<string>com.apple.developer.in-app-payments</string>
+			<key>symbol</key>
+			<string>dollarsign.circle</string>
+		</dict>
+		<key>com.apple.developer.in-app-identity-presentment</key>
+		<dict>
+			<key>name</key>
+			<string>Apple Pay - User Verification</string>
+			<key>description</key>
+			<string>Allows app to verify user for Apple Pay.</string>
+			<key>key</key>
+			<string>com.apple.developer.in-app-identity-presentment</string>
+			<key>symbol</key>
+			<string>dollarsign.circle</string>
+		</dict>
+		<key>com.apple.developer.in-app-identity-presentment.merchant-identifiers</key>
+		<dict>
+			<key>name</key>
+			<string>Apple Pay - Merchant Verification</string>
+			<key>description</key>
+			<string>Allows app to verify merchant for Apple Pay.</string>
+			<key>key</key>
+			<string>com.apple.developer.in-app-identity-presentment.merchant-identifiers</string>
+			<key>symbol</key>
+			<string>dollarsign.circle</string>
+		</dict>
+		<key>com.apple.developer.weatherkit</key>
+		<dict>
+			<key>name</key>
+			<string>Weather Data</string>
+			<key>description</key>
+			<string>Allows app to use WeatherKit.</string>
+			<key>key</key>
+			<string>com.apple.developer.weatherkit</string>
+			<key>symbol</key>
+			<string>cloud.sun</string>
+		</dict>
+		<key>com.apple.developer.web-browser</key>
+		<dict>
+			<key>name</key>
+			<string>Default Web Browser</string>
+			<key>description</key>
+			<string>Allows app to be set as the user&apos;s default web browser.</string>
+			<key>key</key>
+			<string>com.apple.developer.web-browser</string>
+			<key>symbol</key>
+			<string>globe.europe.africa</string>
+		</dict>
+		<key>com.apple.developer.web-browser.public-key-credential</key>
+		<dict>
+			<key>name</key>
+			<string>Passkeys</string>
+			<key>description</key>
+			<string>Allows app to access passkeys.</string>
+			<key>key</key>
+			<string>com.apple.developer.web-browser.public-key-credential</string>
+			<key>symbol</key>
+			<string>key.viewfinder</string>
+		</dict>
+		<key>com.apple.developer.networking.wifi-info</key>
+		<dict>
+			<key>name</key>
+			<string>Wi-Fi Information Access</string>
+			<key>description</key>
+			<string>Allows app to access information about the connected Wi-Fi network.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.wifi-info</string>
+			<key>symbol</key>
+			<string>wifi</string>
+		</dict>
+		<key>com.apple.external-accessory.wireless-configuration</key>
+		<dict>
+			<key>name</key>
+			<string>Wireless Accessory Configuration</string>
+			<key>description</key>
+			<string>App may configure MFi Wi-Fi accessories.</string>
+			<key>key</key>
+			<string>com.apple.external-accessory.wireless-configuration</string>
+			<key>symbol</key>
+			<string>wifi</string>
+		</dict>
+		<key>com.apple.developer.networking.multipath</key>
+		<dict>
+			<key>name</key>
+			<string>Multipath Support</string>
+			<key>description</key>
+			<string>App may use Multipath protocols to seamlessly transition between Wi-Fi and cellular networks.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.multipath</string>
+			<key>symbol</key>
+			<string>antenna.radiowaves.left.and.right</string>
+		</dict>
+		<key>com.apple.developer.networking.HotspotConfiguration</key>
+		<dict>
+			<key>name</key>
+			<string>Hotspots</string>
+			<key>description</key>
+			<string>App can use the hotspot manager to configure Wi-Fi networks.</string>
+			<key>key</key>
+			<string>com.apple.developer.networking.HotspotConfiguration</string>
+			<key>symbol</key>
+			<string>personalhotspot</string>
+		</dict>
+		<key>com.apple.developer.nfc.readersession.formats</key>
+		<dict>
+			<key>name</key>
+			<string>NFC Tag Reader Session Formats</string>
+			<key>description</key>
+			<string>The Near Field Communication data formats an app can read.</string>
+			<key>key</key>
+			<string>com.apple.developer.nfc.readersession.formats</string>
+			<key>symbol</key>
+			<string>iphone.gen1.radiowaves.left.and.right.circle</string>
+		</dict>
+		<key>get-task-allow</key>
+		<dict>
+			<key>name</key>
+			<string>Debuggable</string>
+			<key>description</key>
+			<string>Allows developers to attach a debugger to this app. This permission is required for JIT to work.</string>
+			<key>key</key>
+			<string>get-task-allow</string>
+			<key>symbol</key>
+			<string>hammer</string>
+		</dict>
+		<key>inter-app-audio</key>
+		<dict>
+			<key>name</key>
+			<string>Inter-App Audio</string>
+			<key>description</key>
+			<string>Allows sharing real-time audio between apps.</string>
+			<key>key</key>
+			<string>inter-app-audio</string>
+			<key>symbol</key>
+			<string>hifispeaker.2</string>
+		</dict>
+	</dict>
+	<key>privacy</key>
+	<dict>
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Bluetooth</string>
+			<key>key</key>
+			<string>NSBluetoothAlwaysUsageDescription</string>
+			<key>symbol</key>
+			<string>antenna.radiowaves.left.and.right</string>
+		</dict>
+		<key>NSBluetoothPeripheralUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Bluetooth (Peripherals)</string>
+			<key>key</key>
+			<string>NSBluetoothPeripheralUsageDescription</string>
+			<key>symbol</key>
+			<string>antenna.radiowaves.left.and.right</string>
+		</dict>
+		<key>NSCalendarsUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Calendars</string>
+			<key>key</key>
+			<string>NSCalendarsUsageDescription</string>
+			<key>symbol</key>
+			<string>calendar</string>
+		</dict>
+		<key>NSRemindersUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Reminders</string>
+			<key>key</key>
+			<string>NSRemindersUsageDescription</string>
+			<key>symbol</key>
+			<string>note.text</string>
+		</dict>
+		<key>NSCameraUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Camera</string>
+			<key>key</key>
+			<string>NSCameraUsageDescription</string>
+			<key>symbol</key>
+			<string>camera</string>
+		</dict>
+		<key>NSMicrophoneUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Microphone</string>
+			<key>key</key>
+			<string>NSMicrophoneUsageDescription</string>
+			<key>symbol</key>
+			<string>mic</string>
+		</dict>
+		<key>NSContactsUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Contacts</string>
+			<key>key</key>
+			<string>NSContactsUsageDescription</string>
+			<key>symbol</key>
+			<string>person.crop.circle</string>
+		</dict>
+		<key>NSFaceIDUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Face ID</string>
+			<key>key</key>
+			<string>NSFaceIDUsageDescription</string>
+			<key>symbol</key>
+			<string>faceid</string>
+		</dict>
+		<key>NSGKFriendListUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Game Center Friends List</string>
+			<key>key</key>
+			<string>NSGKFriendListUsageDescription</string>
+			<key>symbol</key>
+			<string>gamecontroller</string>
+		</dict>
+		<key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Health (Clinical Records)</string>
+			<key>key</key>
+			<string>NSHealthClinicalHealthRecordsShareUsageDescription</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>NSHealthShareUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Health</string>
+			<key>key</key>
+			<string>NSHealthShareUsageDescription</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>NSHealthUpdateUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Health (Add)</string>
+			<key>key</key>
+			<string>NSHealthUpdateUsageDescription</string>
+			<key>symbol</key>
+			<string>heart.text.square</string>
+		</dict>
+		<key>NSHomeKitUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>HomeKit</string>
+			<key>key</key>
+			<string>NSHomeKitUsageDescription</string>
+			<key>symbol</key>
+			<string>homekit</string>
+		</dict>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Background)</string>
+			<key>key</key>
+			<string>NSLocationAlwaysUsageDescription</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Always)</string>
+			<key>key</key>
+			<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>NSLocationUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Location</string>
+			<key>key</key>
+			<string>NSLocationUsageDescription</string>
+			<key>symbol</key>
+			<string>location.fill</string>
+		</dict>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Location (When Using)</string>
+			<key>key</key>
+			<string>NSLocationWhenInUseUsageDescription</string>
+			<key>symbol</key>
+			<string>location</string>
+		</dict>
+		<key>NSLocationTemporaryUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Location (Temporary)</string>
+			<key>key</key>
+			<string>NSLocationTemporaryUsageDescription</string>
+			<key>symbol</key>
+			<string>location</string>
+		</dict>
+		<key>NSAppleMusicUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Apple Music</string>
+			<key>key</key>
+			<string>NSAppleMusicUsageDescription</string>
+			<key>symbol</key>
+			<string>music.note</string>
+		</dict>
+		<key>NSMotionUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Motion</string>
+			<key>key</key>
+			<string>NSMotionUsageDescription</string>
+			<key>symbol</key>
+			<string>figure.run</string>
+		</dict>
+		<key>NSFallDetectionUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Fall Detection</string>
+			<key>key</key>
+			<string>NSFallDetectionUsageDescription</string>
+			<key>symbol</key>
+			<string>figure.fall</string>
+		</dict>
+		<key>NSLocalNetworkUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Local Network</string>
+			<key>key</key>
+			<string>NSLocalNetworkUsageDescription</string>
+			<key>symbol</key>
+			<string>network</string>
+		</dict>
+		<key>NSNearbyInteractionUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Nearby Interaction</string>
+			<key>key</key>
+			<string>NSNearbyInteractionUsageDescription</string>
+			<key>symbol</key>
+			<string>dot.radiowaves.left.and.right</string>
+		</dict>
+		<key>NSNearbyInteractionAllowOnceUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Nearby Interaction (Once)</string>
+			<key>key</key>
+			<string>NSNearbyInteractionAllowOnceUsageDescription</string>
+			<key>symbol</key>
+			<string>dot.radiowaves.left.and.right</string>
+		</dict>
+		<key>NFCReaderUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>NFC</string>
+			<key>key</key>
+			<string>NSNFCReaderUsageDescription</string>
+			<key>symbol</key>
+			<string>sensor.tag.radiowaves.forward</string>
+		</dict>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Photos (Add)</string>
+			<key>key</key>
+			<string>NSPhotoLibraryAddUsageDescription</string>
+			<key>symbol</key>
+			<string>photo</string>
+		</dict>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Photos</string>
+			<key>key</key>
+			<string>NSPhotoLibraryUsageDescription</string>
+			<key>symbol</key>
+			<string>photo.stack</string>
+		</dict>
+		<key>NSUserTrackingUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>User Tracking</string>
+			<key>key</key>
+			<string>NSUserTrackingUsageDescription</string>
+			<key>symbol</key>
+			<string>location.magnifyingglass</string>
+		</dict>
+		<key>NSSensorKitUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>SensorKit</string>
+			<key>key</key>
+			<string>NSSensorKitUsageDescription</string>
+			<key>symbol</key>
+			<string>sensor</string>
+		</dict>
+		<key>NSSiriUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Siri</string>
+			<key>key</key>
+			<string>NSSiriUsageDescription</string>
+			<key>symbol</key>
+			<string>mic.circle</string>
+		</dict>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>Speech Recognition</string>
+			<key>key</key>
+			<string>NSSpeechRecognitionUsageDescription</string>
+			<key>symbol</key>
+			<string>waveform.and.mic</string>
+		</dict>
+		<key>NSIdentityUsageDescription</key>
+		<dict>
+			<key>name</key>
+			<string>ID Cards</string>
+			<key>key</key>
+			<string>NSIdentityUsageDescription</string>
+			<key>symbol</key>
+			<string>wallet.pass</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

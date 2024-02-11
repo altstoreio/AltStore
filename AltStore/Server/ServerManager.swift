@@ -80,7 +80,7 @@ extension ServerManager
             case .wired:
                 guard let incomingConnectionsSemaphore = self.incomingConnectionsSemaphore else { return finish(.failure(ALTServerError(.connectionFailed))) }
                 
-                print("Waiting for incoming connection...")
+                Logger.sideload.debug("Waiting for incoming connection...")
                 
                 let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
                                 
@@ -104,7 +104,7 @@ extension ServerManager
             case .wireless:
                 guard let service = server.service else { return finish(.failure(ALTServerError(.connectionFailed))) }
                 
-                print("Connecting to service:", service)
+                Logger.sideload.debug("Connecting to AltServer: \(service.name, privacy: .public)")
                 
                 let connection = NWConnection(to: .service(name: service.name, type: service.type, domain: service.domain, interface: nil), using: .tcp)
                 self.connectToRemoteServer(server, connection: connection, completion: finish(_:))
@@ -166,17 +166,32 @@ private extension ServerManager
     
     func connectToRemoteServer(_ server: Server, connection: NWConnection, completion: @escaping (Result<Connection, Error>) -> Void)
     {
+        let serverName: String
+        if let localizedName = server.localizedName
+        {
+            serverName = String(format: NSLocalizedString("remote AltServer %@", comment: ""), localizedName)
+        }
+        else if server.connectionType == .wired
+        {
+            serverName = NSLocalizedString("wired AltServer", comment: "")
+        }
+        else
+        {
+            serverName = NSLocalizedString("AltServer", comment: "")
+        }
+        
         connection.stateUpdateHandler = { [unowned connection] (state) in
             switch state
             {
             case .failed(let error):
-                print("Failed to connect to service \(server.service?.name ?? "").", error)
-                completion(.failure(ConnectionError.connectionFailed))
+                Logger.sideload.error("Failed to connect to \(serverName, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                completion(.failure(OperationError.connectionFailed))
                 
             case .cancelled:
                 completion(.failure(OperationError.cancelled))
                 
             case .ready:
+                Logger.sideload.notice("Connected to \(serverName, privacy: .public)!")
                 let connection = NetworkConnection(connection)
                 completion(.success(connection))
                 
@@ -192,7 +207,7 @@ private extension ServerManager
     
     func connectToLocalServer(_ server: Server, completion: @escaping (Result<Connection, Error>) -> Void)
     {
-        guard let machServiceName = server.machServiceName else { return completion(.failure(ConnectionError.connectionFailed)) }
+        guard let machServiceName = server.machServiceName else { return completion(.failure(OperationError.connectionFailed)) }
         
         let xpcConnection = NSXPCConnection.makeConnection(machServiceName: machServiceName)
         
@@ -201,10 +216,12 @@ private extension ServerManager
             switch result
             {
             case .failure(let error):
-                print("Could not connect to AltDaemon XPC service \(machServiceName).", error)
+                Logger.sideload.error("Could not connect to AltDaemon XPC service \(machServiceName, privacy: .public). \(error.localizedDescription, privacy: .public)")
                 completion(.failure(error))
                 
-            case .success: completion(.success(connection))
+            case .success: 
+                Logger.sideload.notice("Connected to AltDaemon XPC service \(machServiceName, privacy: .public)!")
+                completion(.success(connection))
             }
         }
     }
@@ -214,17 +231,17 @@ extension ServerManager: NetServiceBrowserDelegate
 {
     func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
     {
-        print("Discovering servers...")
+        Logger.main.notice("Discovering AltServers...")
     }
     
     func netServiceBrowserDidStopSearch(_ browser: NetServiceBrowser)
     {
-        print("Stopped discovering servers.")
+        Logger.main.notice("Stopped discovering AltServers.")
     }
     
     func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
     {
-        print("Failed to discovering servers.", errorDict)
+        Logger.main.error("Failed to discover AltServers. \(errorDict, privacy: .public)")
     }
     
     func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
@@ -263,12 +280,12 @@ extension ServerManager: NetServiceDelegate
     
     func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
     {
-        print("Error resolving net service \(sender).", errorDict)
+        Logger.main.error("Failed to resolve Bonjour service \(sender.name, privacy: .public). \(errorDict, privacy: .public)")
     }
     
     func netService(_ sender: NetService, didUpdateTXTRecord data: Data)
     {
         let txtDict = NetService.dictionary(fromTXTRecord: data)
-        print("Service \(sender) updated TXT Record:", txtDict)
+        Logger.main.debug("Bonjour service \(sender.name, privacy: .public) updated TXT Record: \(txtDict, privacy: .public)")
     }
 }

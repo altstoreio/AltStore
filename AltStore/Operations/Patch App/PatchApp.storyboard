@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="WBb-E1-bN8">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="dx2-fp-qDX">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WBb-E1-bN8" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="cVa-8m-fW6" customClass="NavigationBar" customModule="AltStore" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" name="SettingsBackground"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="idH-XF-rK8" kind="relationship" relationship="rootViewController" id="hSJ-tL-4nB"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="i7K-pi-SRe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="137.94642857142856"/>
+        </scene>
+        <!--Patch View Controller-->
+        <scene sceneID="gJ4-4F-79r">
+            <objects>
+                <viewController id="idH-XF-rK8" customClass="PatchViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="4bV-S5-z7S">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RHK-C5-7wu" customClass="RSTPlaceholderView">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="PjB-Dc-9n3">
+                                <rect key="frame" x="20" y="736.5" width="374" height="117.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GQF-6P-Fit">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" name="Text"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SNn-Ad-ICf" customClass="PillButton" customModule="AltStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28.5" width="374" height="51"/>
+                                        <color key="backgroundColor" name="SettingsHighlighted"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="51" id="s4X-uf-nl9"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                                        <color key="tintColor" name="SettingsHighlighted"/>
+                                        <state key="normal" title="Install Untethered Jailbreak">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="performButtonAction" destination="idH-XF-rK8" eventType="primaryActionTriggered" id="FxO-1Y-IML"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="leJ-09-giz">
+                                        <rect key="frame" x="0.0" y="87.5" width="374" height="30"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Install Without Untethering">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="installRegularJailbreak" destination="idH-XF-rK8" eventType="primaryActionTriggered" id="1XB-11-Kdn"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H6g-xA-DdL"/>
+                        <color key="backgroundColor" name="SettingsBackground"/>
+                        <constraints>
+                            <constraint firstItem="RHK-C5-7wu" firstAttribute="top" secondItem="4bV-S5-z7S" secondAttribute="top" id="CVK-6E-iA6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="PjB-Dc-9n3" secondAttribute="trailing" id="GOg-JU-LIP"/>
+                            <constraint firstItem="RHK-C5-7wu" firstAttribute="bottom" secondItem="4bV-S5-z7S" secondAttribute="bottom" id="LPh-J8-IVx"/>
+                            <constraint firstItem="PjB-Dc-9n3" firstAttribute="leading" secondItem="4bV-S5-z7S" secondAttribute="leadingMargin" id="Rlg-PC-5ZN"/>
+                            <constraint firstItem="RHK-C5-7wu" firstAttribute="trailing" secondItem="H6g-xA-DdL" secondAttribute="trailing" id="XdZ-36-6yS"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="PjB-Dc-9n3" secondAttribute="bottom" id="hTS-nX-0xv"/>
+                            <constraint firstItem="RHK-C5-7wu" firstAttribute="leading" secondItem="H6g-xA-DdL" secondAttribute="leading" id="lzV-fG-Xv6"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="0J1-80-RD8">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="vtw-PQ-Dk1">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="cancel" destination="idH-XF-rK8" id="4Wk-dv-RYG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="cancelBarButtonItem" destination="vtw-PQ-Dk1" id="8Mh-GU-KD5"/>
+                        <outlet property="cancelButton" destination="leJ-09-giz" id="BNh-I3-vXc"/>
+                        <outlet property="pillButton" destination="SNn-Ad-ICf" id="iJg-TC-p8q"/>
+                        <outlet property="placeholderView" destination="RHK-C5-7wu" id="5x0-sg-HAH"/>
+                        <outlet property="taskDescriptionLabel" destination="GQF-6P-Fit" id="C4c-xy-kvU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8ev-19-qsi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1001" y="138"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="SettingsBackground">
+            <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="SettingsHighlighted">
+            <color red="0.0080000003799796104" green="0.32199999690055847" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Text">
+            <color red="1" green="1" blue="1" alpha="0.75" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

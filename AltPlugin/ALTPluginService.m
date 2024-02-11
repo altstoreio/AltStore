@@ -21,7 +21,7 @@
 @interface AKDevice
 + (AKDevice *)currentDevice;
 - (NSString *)uniqueDeviceIdentifier;
-- (NSString *)serialNumber;
+- (nullable NSString *)serialNumber;
 - (NSString *)serverFriendlyDescription;
 @end
 
@@ -67,10 +67,8 @@
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"com.rileytestut.AltServer.FetchAnisetteData" object:nil];
 }
 
-- (void)receiveNotification:(NSNotification *)notification
+- (ALTAnisetteData *)requestAnisetteData
 {
-    NSString *requestUUID = notification.userInfo[@"requestUUID"];
-    
     NSMutableURLRequest* req = [[NSMutableURLRequest alloc] initWithURL:[[NSURL alloc] initWithString:@"https://developerservices2.apple.com/services/QH65B2/listTeams.action?clientId=XABBG36SBA"]];
     [req setHTTPMethod:@"POST"];
 
@@ -85,12 +83,20 @@
                                                                                          localUserID:headers[@"X-Apple-I-MD-LU"]
                                                                                          routingInfo:[headers[@"X-Apple-I-MD-RINFO"] longLongValue]
                                                                               deviceUniqueIdentifier:device.uniqueDeviceIdentifier
-                                                                                  deviceSerialNumber:device.serialNumber
+                                                                                  deviceSerialNumber:device.serialNumber ?: @"C02LKHBBFD57" // serialNumber can be nil, so provide valid fallback serial number.
                                                                                    deviceDescription:device.serverFriendlyDescription
                                                                                                 date:date
                                                                                               locale:[NSLocale currentLocale]
                                                                                             timeZone:[NSTimeZone localTimeZone]];
     
+    return anisetteData;
+}
+
+- (void)receiveNotification:(NSNotification *)notification
+{
+    NSString *requestUUID = notification.userInfo[@"requestUUID"];
+    
+    ALTAnisetteData *anisetteData = [self requestAnisetteData];
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:anisetteData requiringSecureCoding:YES error:nil];
     
     [[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"com.rileytestut.AltServer.AnisetteDataResponse" object:nil userInfo:@{@"requestUUID": requestUUID, @"anisetteData": data} deliverImmediately:YES];

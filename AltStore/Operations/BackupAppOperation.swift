@@ -29,6 +29,9 @@ class BackupAppOperation: ResultOperation<Void>
     private var appName: String?
     private var timeoutTimer: Timer?
     
+    private weak var applicationWillReturnObserver: NSObjectProtocol?
+    private weak var backupResponseObserver: NSObjectProtocol?
+    
     init(action: Action, context: InstallAppOperationContext)
     {
         self.action = action
@@ -55,7 +58,7 @@ class BackupAppOperation: ResultOperation<Void>
                     let appName = installedApp.name
                     self.appName = appName
                     
-                    guard let altstoreApp = InstalledApp.fetchAltStore(in: context) else { throw OperationError.appNotFound }
+                    guard let altstoreApp = InstalledApp.fetchAltStore(in: context) else { throw OperationError.appNotFound(name: appName) }
                     let altstoreOpenURL = altstoreApp.openAppURL
                     
                     var returnURLComponents = URLComponents(url: altstoreOpenURL, resolvingAgainstBaseURL: false)
@@ -84,8 +87,8 @@ class BackupAppOperation: ResultOperation<Void>
                                 // Failed too quickly for human to respond to alert, possibly still finalizing installation.
                                 // Try again in a couple seconds.
                                 
-                                print("Failed too quickly, retrying after a few seconds...")
-                                
+                                Logger.sideload.error("Failed to open app too quickly, retrying after a few seconds...")
+                                                                
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                     UIApplication.shared.open(openURL, options: [:]) { (success) in
                                         if success
@@ -153,8 +156,11 @@ private extension BackupAppOperation
 {
     func registerObservers()
     {
-        var applicationWillReturnObserver: NSObjectProtocol!
-        applicationWillReturnObserver = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [weak self] (notification) in
+        self.applicationWillReturnObserver = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [weak self] (notification) in
+            defer {
+                self?.applicationWillReturnObserver.map { NotificationCenter.default.removeObserver($0) }
+            }
+
             guard let self = self, !self.isFinished else { return }
             
             self.timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] (timer) in
@@ -166,18 +172,17 @@ private extension BackupAppOperation
                     self.finish(.failure(OperationError.timedOut))
                 }
             }
-            
-            NotificationCenter.default.removeObserver(applicationWillReturnObserver!)
         }
         
-        var backupResponseObserver: NSObjectProtocol!
-        backupResponseObserver = NotificationCenter.default.addObserver(forName: AppDelegate.appBackupDidFinish, object: nil, queue: nil) { [weak self] (notification) in
+        self.backupResponseObserver = NotificationCenter.default.addObserver(forName: AppDelegate.appBackupDidFinish, object: nil, queue: nil) { [weak self] (notification) in
+            defer {
+                self?.backupResponseObserver.map { NotificationCenter.default.removeObserver($0) }
+            }
+            
             self?.timeoutTimer?.invalidate()
             
             let result = notification.userInfo?[AppDelegate.appBackupResultKey] as? Result<Void, Error> ?? .failure(OperationError.unknownResult)
             self?.finish(result)
-            
-            NotificationCenter.default.removeObserver(backupResponseObserver!)
         }
     }
 }

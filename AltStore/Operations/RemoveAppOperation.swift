@@ -35,6 +35,8 @@ class RemoveAppOperation: ResultOperation<InstalledApp>
         guard let server = self.context.server, let installedApp = self.context.installedApp else { return self.finish(.failure(OperationError.invalidParameters)) }
         guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { return self.finish(.failure(OperationError.unknownUDID)) }
         
+        Logger.sideload.notice("Removing app \(self.context.bundleIdentifier, privacy: .public)...")
+        
         installedApp.managedObjectContext?.perform {
             let resignedBundleIdentifier = installedApp.resignedBundleIdentifier
             
@@ -43,19 +45,24 @@ class RemoveAppOperation: ResultOperation<InstalledApp>
                 {
                 case .failure(let error): self.finish(.failure(error))
                 case .success(let connection):
-                    print("Sending remove app request...")
+                    Logger.sideload.debug("Sending remove app request...")
                     
                     let request = RemoveAppRequest(udid: udid, bundleIdentifier: resignedBundleIdentifier)
                     connection.send(request) { (result) in
-                        print("Sent remove app request!")
-                        
                         switch result
                         {
-                        case .failure(let error): self.finish(.failure(error))
+                        case .failure(let error): 
+                            Logger.sideload.error("Failed to send remove app request. \(error.localizedDescription, privacy: .public)")
+                            self.finish(.failure(error))
+                            
                         case .success:
-                            print("Waiting for remove app response...")
+                            Logger.sideload.debug("Waiting for remove app response...")
                             connection.receiveResponse() { (result) in
-                                print("Receiving remove app response:", result)
+                                switch result
+                                {
+                                case .failure(let error): Logger.sideload.error("Failed to remove app. \(error.localizedDescription, privacy: .public)")
+                                case .success: Logger.sideload.info("Successfully removed app \(self.context.bundleIdentifier, privacy: .public)!")
+                                }
                                 
                                 switch result
                                 {

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Account" representedClassName="Account" syncable="YES">
+        <attribute name="appleID" attributeType="String"/>
+        <attribute name="firstName" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isActiveAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastName" attributeType="String"/>
+        <relationship name="teams" toMany="YES" deletionRule="Cascade" destinationEntity="Team" inverseName="account" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppID" representedClassName="AppID" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="expirationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="features" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="appIDs" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppPermission" representedClassName="AppPermission" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="permission" attributeType="String"/>
+        <attribute name="sourceID" attributeType="String"/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="usageDescription" attributeType="String"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="permissions" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="permission"/>
+                <constraint value="type"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppScreenshot" representedClassName="AppScreenshot" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="deviceType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="height" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <attribute name="imageURL" attributeType="URI"/>
+        <attribute name="sourceID" attributeType="String"/>
+        <attribute name="width" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="screenshots" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="imageURL"/>
+                <constraint value="deviceType"/>
+                <constraint value="appBundleID"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="AppVersion" representedClassName="AppVersion" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="buildVersion" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="localizedDescription" optional="YES" attributeType="String"/>
+        <attribute name="maxOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="minOSVersion" optional="YES" attributeType="String"/>
+        <attribute name="sha256" optional="YES" attributeType="String"/>
+        <attribute name="size" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceID" optional="YES" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="app" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="versions" inverseEntity="StoreApp"/>
+        <relationship name="latestVersionApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="latestVersion" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="appBundleID"/>
+                <constraint value="version"/>
+                <constraint value="buildVersion"/>
+                <constraint value="sourceID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="InstalledApp" representedClassName="InstalledApp" syncable="YES">
+        <attribute name="buildVersion" attributeType="String"/>
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="certificateSerialNumber" optional="YES" attributeType="String"/>
+        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hasAlternateIcon" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isRefreshing" transient="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="needsResign" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String"/>
+        <attribute name="storeBuildVersion" optional="YES" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="appExtensions" toMany="YES" deletionRule="Cascade" destinationEntity="InstalledExtension" inverseName="parentApp" inverseEntity="InstalledExtension"/>
+        <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="installedApp" inverseEntity="LoggedError"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="installedApp" inverseEntity="StoreApp"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Team" inverseName="installedApps" inverseEntity="Team"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="InstalledExtension" representedClassName="InstalledExtension" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="expirationDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="installedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="refreshedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="resignedBundleIdentifier" attributeType="String"/>
+        <attribute name="version" attributeType="String"/>
+        <relationship name="parentApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="appExtensions" inverseEntity="InstalledApp"/>
+    </entity>
+    <entity name="LoggedError" representedClassName="LoggedError" syncable="YES">
+        <attribute name="appBundleID" attributeType="String"/>
+        <attribute name="appName" attributeType="String"/>
+        <attribute name="code" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="domain" attributeType="String"/>
+        <attribute name="operation" optional="YES" attributeType="String"/>
+        <attribute name="userInfo" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="loggedErrors" inverseEntity="InstalledApp"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="loggedErrors" inverseEntity="StoreApp"/>
+    </entity>
+    <entity name="NewsItem" representedClassName="NewsItem" syncable="YES">
+        <attribute name="appID" optional="YES" attributeType="String"/>
+        <attribute name="caption" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="externalURL" optional="YES" attributeType="URI"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="isSilent" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="newsItems" inverseEntity="Source"/>
+        <relationship name="storeApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoreApp" inverseName="newsItems" inverseEntity="StoreApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+                <constraint value="sourceIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PatreonAccount" representedClassName="PatreonAccount" syncable="YES">
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isPatron" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="pledges" toMany="YES" deletionRule="Cascade" destinationEntity="Pledge" inverseName="account" inverseEntity="Pledge"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Patron" representedClassName="ManagedPatron" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Pledge" representedClassName="Pledge" syncable="YES">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0"/>
+        <attribute name="campaignURL" attributeType="URI"/>
+        <attribute name="identifier" attributeType="String"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PatreonAccount" inverseName="pledges" inverseEntity="PatreonAccount"/>
+        <relationship name="rewards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PledgeReward" inverseName="pledge" inverseEntity="PledgeReward"/>
+        <relationship name="tiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PledgeTier" inverseName="pledge" inverseEntity="PledgeTier"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PledgeReward" representedClassName="PledgeReward" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="pledge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pledge" inverseName="rewards" inverseEntity="Pledge"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PledgeTier" representedClassName="PledgeTier" syncable="YES">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="pledge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pledge" inverseName="tiers" inverseEntity="Pledge"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="RefreshAttempt" representedClassName="RefreshAttempt" syncable="YES">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="errorDescription" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isSuccess" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Source" representedClassName="Source" syncable="YES">
+        <attribute name="error" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
+        <attribute name="hasFeaturedApps" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="headerImageURL" optional="YES" attributeType="URI"/>
+        <attribute name="iconURL" optional="YES" attributeType="URI"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="localizedDescription" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="patreonURL" optional="YES" attributeType="URI"/>
+        <attribute name="sourceURL" attributeType="URI"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="websiteURL" optional="YES" attributeType="URI"/>
+        <relationship name="apps" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StoreApp" inverseName="source" inverseEntity="StoreApp"/>
+        <relationship name="featuredApps" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="StoreApp" inverseName="featuringSource" inverseEntity="StoreApp"/>
+        <relationship name="newsItems" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="NewsItem" inverseName="source" inverseEntity="NewsItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="StoreApp" representedClassName="StoreApp" syncable="YES">
+        <attribute name="bundleIdentifier" attributeType="String"/>
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="developerName" attributeType="String"/>
+        <attribute name="downloadURL" attributeType="URI"/>
+        <attribute name="featuredSortID" optional="YES" attributeType="String"/>
+        <attribute name="iconURL" attributeType="URI"/>
+        <attribute name="isBeta" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isHiddenWithoutPledge" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isPledged" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isPledgeRequired" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="localizedDescription" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="pledgeAmount" optional="YES" attributeType="Decimal"/>
+        <attribute name="pledgeCurrency" optional="YES" attributeType="String"/>
+        <attribute name="screenshotURLs" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="size" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="tintColor" optional="YES" attributeType="Transformable" valueTransformerName="ALTSecureValueTransformer"/>
+        <attribute name="version" attributeType="String"/>
+        <attribute name="versionDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="versionDescription" optional="YES" attributeType="String"/>
+        <relationship name="featuringSource" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="featuredApps" inverseEntity="Source"/>
+        <relationship name="installedApp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="storeApp" inverseEntity="InstalledApp"/>
+        <relationship name="latestVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppVersion" inverseName="latestVersionApp" inverseEntity="AppVersion"/>
+        <relationship name="loggedErrors" toMany="YES" deletionRule="Nullify" destinationEntity="LoggedError" inverseName="storeApp" inverseEntity="LoggedError"/>
+        <relationship name="newsItems" toMany="YES" deletionRule="Nullify" destinationEntity="NewsItem" inverseName="storeApp" inverseEntity="NewsItem"/>
+        <relationship name="permissions" toMany="YES" deletionRule="Cascade" destinationEntity="AppPermission" inverseName="app" inverseEntity="AppPermission"/>
+        <relationship name="screenshots" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppScreenshot" inverseName="app" inverseEntity="AppScreenshot"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Source" inverseName="apps" inverseEntity="Source"/>
+        <relationship name="versions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AppVersion" inverseName="app" inverseEntity="AppVersion"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="sourceIdentifier"/>
+                <constraint value="bundleIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Team" representedClassName="Team" syncable="YES">
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="isActiveTeam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="teams" inverseEntity="Account"/>
+        <relationship name="appIDs" toMany="YES" deletionRule="Cascade" destinationEntity="AppID" inverseName="team" inverseEntity="AppID"/>
+        <relationship name="installedApps" toMany="YES" deletionRule="Nullify" destinationEntity="InstalledApp" inverseName="team" inverseEntity="InstalledApp"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="identifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+</model>

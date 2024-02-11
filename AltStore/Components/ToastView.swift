@@ -16,9 +16,16 @@ extension TimeInterval
     static let longToastViewDuration = 8.0
 }
 
+extension ToastView
+{
+    static let openErrorLogNotification = Notification.Name("ALTOpenErrorLogNotification")
+}
+
 class ToastView: RSTToastView
 {
     var preferredDuration: TimeInterval
+    
+    var opensErrorLog: Bool = false
     
     override init(text: String, detailText detailedText: String?)
     {
@@ -43,53 +50,43 @@ class ToastView: RSTToastView
             // RSTToastView does not expose stack view containing labels,
             // so we access it indirectly as the labels' superview.
             stackView.spacing = (detailedText != nil) ? 4.0 : 0.0
+            stackView.alignment = .leading
         }
+        
+        self.addTarget(self, action: #selector(ToastView.showErrorLog), for: .touchUpInside)
     }
     
     convenience init(error: Error)
     {
         var error = error as NSError
-        var underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError
-        
-        var preferredDuration: TimeInterval?
+        var underlyingError = error.underlyingError
         
         if
             let unwrappedUnderlyingError = underlyingError,
             error.domain == AltServerErrorDomain && error.code == ALTServerError.Code.underlyingError.rawValue
         {
-            // Treat underlyingError as the primary error.
+            // Treat underlyingError as the primary error, but keep localized title + failure.
             
-            error = unwrappedUnderlyingError
+            let nsError = (error as NSError)
+            error = (unwrappedUnderlyingError as NSError)
+            
+            if let localizedTitle = nsError.localizedTitle
+            {
+                error = error.withLocalizedTitle(localizedTitle)
+            }
+            
+            if let localizedFailure = nsError.localizedFailure
+            {
+                error = error.withLocalizedFailure(localizedFailure)
+            }
+            
             underlyingError = nil
-            
-            preferredDuration = .longToastViewDuration
         }
         
-        let text: String
-        let detailText: String?
-        
-        if let failure = error.localizedFailure
-        {
-            text = failure
-            detailText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription ?? error.localizedDescription
-        }
-        else if let reason = error.localizedFailureReason
-        {
-            text = reason
-            detailText = error.localizedRecoverySuggestion ?? underlyingError?.localizedDescription
-        }
-        else
-        {
-            text = error.localizedDescription
-            detailText = underlyingError?.localizedDescription ?? error.localizedRecoverySuggestion
-        }
+        let text = error.localizedTitle ?? NSLocalizedString("Operation Failed", comment: "")
+        let detailText = error.localizedDescription
         
         self.init(text: text, detailText: detailText)
-        
-        if let preferredDuration = preferredDuration
-        {
-            self.preferredDuration = preferredDuration
-        }
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -112,6 +109,23 @@ class ToastView: RSTToastView
     
     override func show(in view: UIView, duration: TimeInterval)
     {
+        if self.opensErrorLog,
+           case let configuration = UIImage.SymbolConfiguration(font: self.textLabel.font),
+           let icon = UIImage(systemName: "chevron.right.circle", withConfiguration: configuration)
+        {
+            let tintedIcon = icon.withTintColor(.white, renderingMode: .alwaysOriginal)
+            
+            let moreIconImageView = UIImageView(image: tintedIcon)
+            moreIconImageView.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(moreIconImageView)
+            
+            NSLayoutConstraint.activate([
+                moreIconImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -self.layoutMargins.right),
+                moreIconImageView.centerYAnchor.constraint(equalTo: self.textLabel.centerYAnchor),
+                moreIconImageView.leadingAnchor.constraint(greaterThanOrEqualToSystemSpacingAfter: self.textLabel.trailingAnchor, multiplier: 1.0)
+            ])
+        }
+        
         super.show(in: view, duration: duration)
         
         let announcement = (self.textLabel.text ?? "") + ". " + (self.detailTextLabel.text ?? "")
@@ -126,5 +140,15 @@ class ToastView: RSTToastView
     override func show(in view: UIView)
     {
         self.show(in: view, duration: self.preferredDuration)
+    }
+}
+
+private extension ToastView
+{
+    @objc func showErrorLog()
+    {
+        guard self.opensErrorLog else { return }
+        
+        NotificationCenter.default.post(name: ToastView.openErrorLogNotification, object: self)
     }
 }

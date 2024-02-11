@@ -15,6 +15,10 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+import Nuke
+
+extension UIApplication: LegacyBackgroundFetching {}
+
 extension AppDelegate
 {
     static let openPatreonSettingsDeepLinkNotification = Notification.Name("com.rileytestut.AltStore.OpenPatreonSettingsDeepLinkNotification")
@@ -33,12 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    @available(iOS 14, *)
-    private lazy var intentHandler = IntentHandler()
+    private let intentHandler = IntentHandler()
+    private let viewAppIntentHandler = ViewAppIntentHandler()
     
-    @available(iOS 14, *)
-    private lazy var viewAppIntentHandler = ViewAppIntentHandler()
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
         // Register default settings before doing anything else.
@@ -58,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AnalyticsManager.shared.start()
         
         self.setTintColor()
+        self.prepareImageCache()
         
         ServerManager.shared.startDiscovering()
         
@@ -82,7 +84,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidEnterBackground(_ application: UIApplication)
     {
+        // Make sure to update SceneDelegate.sceneDidEnterBackground() as well.
+        
         ServerManager.shared.stopDiscovering()
+                
+        guard let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) else { return }
+        
+        let midnightOneMonthAgo = Calendar.current.startOfDay(for: oneMonthAgo)
+        DatabaseManager.shared.purgeLoggedErrors(before: midnightOneMonthAgo) { result in
+            switch result
+            {
+            case .success: break
+            case .failure(let error): print("[ALTLog] Failed to purge logged errors before \(midnightOneMonthAgo).", error)
+            }
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication)
@@ -100,8 +115,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any?
     {
-        guard #available(iOS 14, *) else { return nil }
-        
         switch intent
         {
         case is RefreshAllIntent: return self.intentHandler
@@ -111,7 +124,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 13, *)
 extension AppDelegate
 {
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration
@@ -134,6 +146,33 @@ private extension AppDelegate
     func setTintColor()
     {
         self.window?.tintColor = .altPrimary
+    }
+    
+    func prepareImageCache()
+    {
+        // Avoid caching responses twice.
+        DataLoader.sharedUrlCache.diskCapacity = 0
+        
+        let pipeline = ImagePipeline { configuration in
+            do
+            {
+                let dataCache = try DataCache(name: "io.altstore.Nuke")
+                dataCache.sizeLimit = 512 * 1024 * 1024 // 512MB
+                
+                configuration.dataCache = dataCache
+            }
+            catch
+            {
+                Logger.main.error("Failed to create image disk cache. Falling back to URL cache. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        
+        ImagePipeline.shared = pipeline
+        
+        if let dataCache = ImagePipeline.shared.configuration.dataCache as? DataCache, #available(iOS 15, *)
+        {
+            Logger.main.info("Current image cache size: \(dataCache.totalSize.formatted(.byteCount(style: .file)), privacy: .public)")
+        }
     }
     
     func open(_ url: URL) -> Bool
@@ -217,7 +256,7 @@ extension AppDelegate
     private func prepareForBackgroundFetch()
     {
         // "Fetch" every hour, but then refresh only those that need to be refreshed (so we don't drain the battery).
-        UIApplication.shared.setMinimumBackgroundFetchInterval(1 * 60 * 60)
+        (UIApplication.shared as LegacyBackgroundFetching).setMinimumBackgroundFetchInterval(1 * 60 * 60)
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }
@@ -331,10 +370,12 @@ private extension AppDelegate
             {
                 let (sources, context) = try result.get()
                 
-                let previousUpdatesFetchRequest = InstalledApp.updatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
+                let previousUpdatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest() as! NSFetchRequest<NSFetchRequestResult>
                 previousUpdatesFetchRequest.includesPendingChanges = false
                 previousUpdatesFetchRequest.resultType = .dictionaryResultType
-                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier)]
+                previousUpdatesFetchRequest.propertiesToFetch = [#keyPath(InstalledApp.bundleIdentifier),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion.version),
+                                                                 #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)]
                 
                 let previousNewsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
                 previousNewsItemsFetchRequest.includesPendingChanges = false
@@ -346,7 +387,7 @@ private extension AppDelegate
                 
                 try context.save()
                 
-                let updatesFetchRequest = InstalledApp.updatesFetchRequest()
+                let updatesFetchRequest = InstalledApp.supportedUpdatesFetchRequest()
                 let newsItemsFetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
                 
                 let updates = try context.fetch(updatesFetchRequest)
@@ -354,12 +395,23 @@ private extension AppDelegate
                 
                 for update in updates
                 {
-                    guard !previousUpdates.contains(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier }) else { continue }
-                    guard let storeApp = update.storeApp else { continue }
+                    guard let storeApp = update.storeApp, let latestSupportedVersion = storeApp.latestSupportedVersion, latestSupportedVersion.isSupported else { continue }
+                    
+                    if let previousUpdate = previousUpdates.first(where: { $0[#keyPath(InstalledApp.bundleIdentifier)] == update.bundleIdentifier })
+                    {
+                        // An update for this app was already available, so check whether the version or build version is different.
+                        guard let previousVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion.version)] else { continue }
+                        
+                        // previousUpdate might not contain buildVersion, but if it does then map empty string to nil to match AppVersion.
+                        let previousBuildVersion = previousUpdate[#keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion)].map { $0.isEmpty ? nil : "" }
+                        
+                        // Only show notification if previous latestSupportedVersion does not _exactly_ match current latestSupportedVersion.
+                        guard previousVersion != latestSupportedVersion.version || previousBuildVersion != latestSupportedVersion.buildVersion  else { continue }
+                    }
                     
                     let content = UNMutableNotificationContent()
                     content.title = NSLocalizedString("New Update Available", comment: "")
-                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, storeApp.version)
+                    content.body = String(format: NSLocalizedString("%@ %@ is now available for download.", comment: ""), update.name, latestSupportedVersion.localizedVersion)
                     content.sound = .default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
