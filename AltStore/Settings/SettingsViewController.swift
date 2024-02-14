@@ -636,10 +636,15 @@ extension SettingsViewController
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer: self.openTwitter(username: "rileytestut")
-            case .operations: self.openTwitter(username: "shanegillio")
+            case .developer: self.openMastodon(username: "@rileytestut@mastodon.social")
+            case .operations: self.openThreads(username: "shanegill.io")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
+            }
+            
+            if let selectedIndexPath = self.tableView.indexPathForSelectedRow
+            {
+                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
             }
             
         case .debug:
