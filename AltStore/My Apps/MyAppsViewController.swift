@@ -231,10 +231,8 @@ private extension MyAppsViewController
             
             cell.bannerView.button.isIndicatingActivity = false
             cell.bannerView.configure(for: app, action: .update)
-            
-            let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
-            cell.bannerView.subtitleLabel.text = versionDate
-            
+            cell.bannerView.subtitleLabel.text = String(format: NSLocalizedString("Version %@", comment: ""), latestSupportedVersion.localizedVersion)
+
             let appName: String
             
             if app.isBeta
@@ -246,6 +244,7 @@ private extension MyAppsViewController
                 appName = app.name
             }
             
+            let versionDate = Date().relativeDateString(since: latestSupportedVersion.date)
             cell.bannerView.accessibilityLabel = String(format: NSLocalizedString("%@ %@ update. Released on %@.", comment: ""), appName, latestSupportedVersion.localizedVersion, versionDate)
             
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.updateApp(_:)), for: .primaryActionTriggered)
@@ -1965,17 +1964,16 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             
             // Manually change cell's width to prevent conflicting with UIView-Encapsulated-Layout-Width constraints.
             self.prototypeUpdateCell.frame.size.width = collectionView.bounds.width
-                        
-            let widthConstraint = self.prototypeUpdateCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
-            NSLayoutConstraint.activate([widthConstraint])
-            defer { NSLayoutConstraint.deactivate([widthConstraint]) }
             
             self.dataSource.cellConfigurationHandler(self.prototypeUpdateCell, item, indexPath)
             
-            let size = self.prototypeUpdateCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+            let size = self.prototypeUpdateCell.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingCompressedSize.height),
+                                                                        withHorizontalFittingPriority: .required, // Width is fixed
+                                                                        verticalFittingPriority: .fittingSizeLevel) // Height can be as large as needed
+            
             self.cachedUpdateSizes[item.bundleIdentifier] = size
             return size
-
+            
         case .activeApps, .inactiveApps:
             return CGSize(width: collectionView.bounds.width, height: 88)
         }

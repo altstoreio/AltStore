@@ -26,7 +26,6 @@ extension UpdateCollectionViewCell
     }
     
     @IBOutlet var bannerView: AppBannerView!
-    @IBOutlet var versionDescriptionTitleLabel: UILabel!
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
     
     @IBOutlet private var blurView: UIVisualEffectView!
@@ -85,6 +84,17 @@ extension UpdateCollectionViewCell
             return view
         }
     }
+    
+    override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize
+    {
+        // Ensure cell is laid out so it will report correct size.
+        self.versionDescriptionTextView.setNeedsLayout()
+        self.versionDescriptionTextView.layoutIfNeeded()
+        
+        let size = super.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: horizontalFittingPriority, verticalFittingPriority: verticalFittingPriority)
+        
+        return size
+    }
 }
 
 private extension UpdateCollectionViewCell
@@ -97,7 +107,6 @@ private extension UpdateCollectionViewCell
         case .expanded: self.versionDescriptionTextView.isCollapsed = false
         }
         
-        self.versionDescriptionTitleLabel.textColor = self.originalTintColor ?? self.tintColor
         self.blurView.backgroundColor = self.originalTintColor ?? self.tintColor
         self.bannerView.button.progressTintColor = self.originalTintColor ?? self.tintColor
         

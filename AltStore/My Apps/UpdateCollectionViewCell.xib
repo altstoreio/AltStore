@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -30,44 +31,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="343" height="125"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nop-pL-Icx" customClass="AppBannerView" customModule="AltStore" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="88"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="88" id="EPP-7O-1Ad"/>
                                                     </constraints>
                                                 </view>
-                                                <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="RSR-5W-7tt" userLabel="Release Notes">
-                                                    <rect key="frame" x="0.0" y="88" width="343" height="37"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="RSR-5W-7tt" userLabel="Release Notes">
+                                                    <rect key="frame" x="0.0" y="50" width="343" height="75"/>
                                                     <subviews>
-                                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RKU-pY-wmQ">
-                                                            <rect key="frame" x="15" y="0.0" width="65" height="22"/>
-                                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="4GQ-XP-i7X">
-                                                                <rect key="frame" x="0.0" y="0.0" width="65" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="What's New" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1u-nj-qsP">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="65" height="22"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="width" constant="65" id="C7Y-nh-TKJ"/>
-                                                                        </constraints>
-                                                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                                                        <nil key="textColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
-                                                                </subviews>
-                                                                <constraints>
-                                                                    <constraint firstItem="h1u-nj-qsP" firstAttribute="leading" secondItem="4GQ-XP-i7X" secondAttribute="leading" id="3cO-Mj-Yua"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="h1u-nj-qsP" secondAttribute="trailing" id="Hek-OE-YMc"/>
-                                                                    <constraint firstAttribute="bottom" secondItem="h1u-nj-qsP" secondAttribute="bottom" id="bLg-Ut-aEb"/>
-                                                                    <constraint firstItem="h1u-nj-qsP" firstAttribute="top" secondItem="4GQ-XP-i7X" secondAttribute="top" id="beL-ob-CQ7"/>
-                                                                </constraints>
-                                                            </view>
-                                                            <vibrancyEffect style="secondaryLabel">
-                                                                <blurEffect style="systemChromeMaterial"/>
-                                                            </vibrancyEffect>
-                                                        </visualEffectView>
                                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Version Notes" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNs-2O-k3V" customClass="CollapsingTextView" customModule="AltStore" customModuleProvider="target">
-                                                            <rect key="frame" x="90" y="0.0" width="238" height="22"/>
-                                                            <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <rect key="frame" x="15" y="0.0" width="313" height="26"/>
+                                                            <color key="textColor" systemColor="secondaryLabelColor"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                         </textView>
@@ -108,14 +82,16 @@
                 <outlet property="bannerView" destination="Nop-pL-Icx" id="GiX-K1-5oz"/>
                 <outlet property="blurView" destination="1xN-9h-DFd" id="HBI-nT-xYh"/>
                 <outlet property="versionDescriptionTextView" destination="rNs-2O-k3V" id="4TC-A3-oxb"/>
-                <outlet property="versionDescriptionTitleLabel" destination="h1u-nj-qsP" id="dnz-Yv-BdY"/>
             </connections>
             <point key="canvasLocation" x="618.39999999999998" y="96.251874062968525"/>
         </collectionViewCell>
     </objects>
     <resources>
         <namedColor name="BlurTint">
-            <color red="1" green="1" blue="1" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>
