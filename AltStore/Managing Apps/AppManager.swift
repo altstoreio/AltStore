@@ -24,6 +24,7 @@ extension AppManager
     static let didUpdatePatronsNotification = Notification.Name("io.altstore.AppManager.didUpdatePatrons")
     static let didAddSourceNotification = Notification.Name("io.altstore.AppManager.didAddSource")
     static let didRemoveSourceNotification = Notification.Name("io.altstore.AppManager.didRemoveSource")
+    static let willInstallAppFromNewSourceNotification = Notification.Name("io.altstore.AppManager.willInstallAppFromNewSource")
     
     static let expirationWarningNotificationID = "altstore-expiration-warning"
     static let enableJITResultNotificationID = "altstore-enable-jit"
@@ -384,6 +385,7 @@ extension AppManager
                                       completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) async -> RefreshGroup
     {
         @AsyncManaged var installingApp: AppProtocol = app
+        var didAddSource = false
         
         do
         {
@@ -425,6 +427,8 @@ extension AppManager
                     guard let storeApp = try DatabaseManager.shared.viewContext.fetch(fetchRequest).first else { throw OperationError.appNotFound(name: appName) }
                     return storeApp
                 }
+                
+                didAddSource = true
             }
         }
         catch
@@ -437,6 +441,15 @@ extension AppManager
         }
         
         let group = await $installingApp.perform { self.install($0, presentingViewController: presentingViewController, context: context, completionHandler: completionHandler) }
+        
+        if didAddSource
+        {
+            // Post notification from main queue _after_ assigning progress for it
+            await MainActor.run { [installingApp] in
+                NotificationCenter.default.post(name: AppManager.willInstallAppFromNewSourceNotification, object: installingApp)
+            }
+        }
+        
         return group
     }
 }
