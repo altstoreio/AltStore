@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5Rz-4h-jJ8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5Rz-4h-jJ8">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -15,18 +15,90 @@
             <objects>
                 <tableViewController id="aMk-Xp-UL8" customClass="SettingsViewController" customModule="AltStore" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="static" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="MuO-1I-cKW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="1614"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="SettingsBackground"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AltStore 1.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bUR-rp-Nw2">
-                            <rect key="frame" x="0.0" y="1047.5" width="375" height="25"/>
+                        <stackView key="tableFooterView" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="15" id="48g-cT-stR">
+                            <rect key="frame" x="0.0" y="1270" width="375" height="125"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" white="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="900" text="Follow AltStore for updates" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XFa-MY-7cV">
+                                    <rect key="frame" x="84.5" y="0.0" width="206" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" white="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hru-pm-ZI3">
+                                    <rect key="frame" x="88.5" y="46" width="198" height="34.5"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B8Q-e7-beR" userLabel="Mastodon">
+                                            <rect key="frame" x="0.0" y="0.0" width="34.5" height="34.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="B8Q-e7-beR" secondAttribute="height" id="gaj-Mb-oSa"/>
+                                                <constraint firstAttribute="width" constant="34.5" id="kjw-36-Rjk"/>
+                                            </constraints>
+                                            <state key="normal" title=""/>
+                                            <buttonConfiguration key="configuration" style="plain" title="  ">
+                                                <backgroundConfiguration key="background" image="Mastodon" imageContentMode="scaleAspectFit"/>
+                                            </buttonConfiguration>
+                                            <connections>
+                                                <action selector="followAltStoreMastodon" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="nKQ-bR-E96"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AWk-yE-9LI" userLabel="Threads">
+                                            <rect key="frame" x="54.5" y="0.0" width="34.5" height="34.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="34.5" id="3o9-57-KDr"/>
+                                                <constraint firstAttribute="width" secondItem="AWk-yE-9LI" secondAttribute="height" id="QuX-po-kv7"/>
+                                            </constraints>
+                                            <state key="normal" title=""/>
+                                            <buttonConfiguration key="configuration" style="plain">
+                                                <backgroundConfiguration key="background" image="Threads" imageContentMode="scaleAspectFit"/>
+                                            </buttonConfiguration>
+                                            <connections>
+                                                <action selector="followAltStoreThreads" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="0f0-KK-7lE"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYZ-Vu-RzK" userLabel="Twitter">
+                                            <rect key="frame" x="109" y="0.0" width="34.5" height="34.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="34.5" id="LKG-L3-APj"/>
+                                                <constraint firstAttribute="width" secondItem="uYZ-Vu-RzK" secondAttribute="height" id="UyA-cy-ol3"/>
+                                            </constraints>
+                                            <state key="normal" title=""/>
+                                            <buttonConfiguration key="configuration" style="plain">
+                                                <backgroundConfiguration key="background" image="Twitter" imageContentMode="scaleAspectFit"/>
+                                            </buttonConfiguration>
+                                            <connections>
+                                                <action selector="followAltStoreTwitter" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="m1Q-xB-VTe"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oqj-4S-I9l" userLabel="GitHub">
+                                            <rect key="frame" x="163.5" y="0.0" width="34.5" height="34.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="34.5" id="BEp-uf-a6X"/>
+                                                <constraint firstAttribute="width" secondItem="oqj-4S-I9l" secondAttribute="height" id="ye3-ez-e16"/>
+                                            </constraints>
+                                            <state key="normal" title=""/>
+                                            <buttonConfiguration key="configuration" style="plain">
+                                                <backgroundConfiguration key="background" image="GitHub" imageContentMode="scaleAspectFit"/>
+                                            </buttonConfiguration>
+                                            <connections>
+                                                <action selector="followAltStoreGitHub" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="vo1-Er-hjQ"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="900" text="Version 2.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5u7-mb-jJj">
+                                    <rect key="frame" x="151.5" y="108" width="72.5" height="17"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" white="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
                         <sections>
                             <tableViewSection headerTitle="" id="flW-d4-bco">
                                 <cells>
@@ -702,6 +774,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="Ddg-UQ-KJ8"/>
+                    <size key="freeformSize" width="375" height="1614"/>
                     <connections>
                         <outlet property="accountEmailLabel" destination="0uP-Cd-tNX" id="14b-aL-yE3"/>
                         <outlet property="accountNameLabel" destination="CnN-M1-AYK" id="Ldc-Py-Bix"/>
@@ -709,7 +782,11 @@
                         <outlet property="backgroundRefreshSwitch" destination="DPu-zD-Als" id="eiG-Hv-Vko"/>
                         <outlet property="disableResponseCachingSwitch" destination="e30-w4-5fk" id="Duy-Yb-eo1"/>
                         <outlet property="enforceThreeAppLimitSwitch" destination="Oie-te-KSQ" id="jKn-t1-gyk"/>
-                        <outlet property="versionLabel" destination="bUR-rp-Nw2" id="85I-5R-hqz"/>
+                        <outlet property="githubButton" destination="oqj-4S-I9l" id="sxB-LE-gA2"/>
+                        <outlet property="mastodonButton" destination="B8Q-e7-beR" id="Kbe-Og-rsg"/>
+                        <outlet property="threadsButton" destination="AWk-yE-9LI" id="SOc-ei-4gK"/>
+                        <outlet property="twitterButton" destination="uYZ-Vu-RzK" id="anA-jh-w4z"/>
+                        <outlet property="versionLabel" destination="5u7-mb-jJj" id="zvU-TQ-lO6"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SI0-mJ-Wad" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1064,7 +1141,7 @@ Settings by i cons from the Noun Project</string>
                                             <accessibility key="accessibilityConfiguration">
                                                 <bool key="isElement" value="NO"/>
                                             </accessibility>
-                                            <state key="normal" title="Button"/>
+                                            <state key="normal" title=""/>
                                             <buttonConfiguration key="configuration" style="plain" title=" "/>
                                         </button>
                                     </subviews>
@@ -1179,8 +1256,12 @@ Settings by i cons from the Noun Project</string>
         </scene>
     </scenes>
     <resources>
+        <image name="GitHub" width="130" height="130"/>
+        <image name="Mastodon" width="130" height="130"/>
         <image name="Next" width="18" height="18"/>
         <image name="Settings" width="20" height="20"/>
+        <image name="Threads" width="130" height="130"/>
+        <image name="Twitter" width="130" height="130"/>
         <namedColor name="SettingsBackground">
             <color red="0.0039215686274509803" green="0.50196078431372548" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

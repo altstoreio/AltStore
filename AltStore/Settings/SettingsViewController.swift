@@ -74,6 +74,11 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
     @IBOutlet private var disableResponseCachingSwitch: UISwitch!
     
+    @IBOutlet private var mastodonButton: UIButton!
+    @IBOutlet private var threadsButton: UIButton!
+    @IBOutlet private var twitterButton: UIButton!
+    @IBOutlet private var githubButton: UIButton!
+    
     @IBOutlet private var versionLabel: UILabel!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -117,25 +122,41 @@ class SettingsViewController: UITableViewController
             let localizedVersion = installedApp.version
             #endif
             
-            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", localizedVersion), comment: "AltStore Version")
+            self.versionLabel.text = NSLocalizedString(String(format: "Version %@", localizedVersion), comment: "AltStore Version")
         }
         else if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         {
-            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
+            self.versionLabel.text = NSLocalizedString(String(format: "Version %@", version), comment: "AltStore Version")
         }
         else
         {
-            self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
+            self.versionLabel.text = nil
         }
         
         self.tableView.contentInset.bottom = 20
         
         self.update()
         
-        if #available(iOS 15, *), let appearance = self.tabBarController?.tabBar.standardAppearance
+        if #available(iOS 15, *)
         {
-            appearance.stackedLayoutAppearance.normal.badgeBackgroundColor = .altPrimary
-            self.navigationController?.tabBarItem.scrollEdgeAppearance = appearance
+            if let appearance = self.tabBarController?.tabBar.standardAppearance
+            {
+                appearance.stackedLayoutAppearance.normal.badgeBackgroundColor = .altPrimary
+                self.navigationController?.tabBarItem.scrollEdgeAppearance = appearance
+            }
+            
+            // We can only configure the contentMode for a button's background image from Interface Builder.
+            // This works, but it means buttons don't visually highlight because there's no foreground image.
+            // As a workaround, we manually set the foreground image + contentMode here.
+            for button in [self.mastodonButton!, self.threadsButton!, self.twitterButton!, self.githubButton!]
+            {
+                // Get the assigned image from Interface Builder.
+                let image = button.configuration?.background.image
+                
+                button.configuration = nil
+                button.setImage(image, for: .normal)
+                button.imageView?.contentMode = .scaleAspectFit
+            }
         }
     }
     
@@ -422,6 +443,51 @@ private extension SettingsViewController
                 self.present(safariViewController, animated: true, completion: nil)
             }
         }
+    }
+    
+    func openMastodon(username: String)
+    {
+        // Rely on universal links to open app.
+        
+        let components = username.split(separator: "@")
+        guard components.count == 2 else { return }
+        
+        let server = String(components[1])
+        let username = "@" + String(components[0])
+        
+        guard let serverURL = URL(string: "https://" + server) else { return }
+        
+        let mastodonURL = serverURL.appendingPathComponent(username)
+        UIApplication.shared.open(mastodonURL, options: [:])
+    }
+    
+    func openThreads(username: String)
+    {
+        // Rely on universal links to open app.
+        
+        let safariURL = URL(string: "https://www.threads.net/@" + username)!
+        UIApplication.shared.open(safariURL, options: [:])
+    }
+    
+    @IBAction func followAltStoreMastodon()
+    {
+        self.openMastodon(username: "@altstore@fosstodon.org")
+    }
+    
+    @IBAction func followAltStoreThreads()
+    {
+        self.openThreads(username: "altstoreio")
+    }
+    
+    @IBAction func followAltStoreTwitter()
+    {
+        self.openTwitter(username: "altstoreio")
+    }
+    
+    @IBAction func followAltStoreGitHub()
+    {
+        let safariURL = URL(string: "https://github.com/altstoreio")!
+        UIApplication.shared.open(safariURL, options: [:])
     }
 }
 
