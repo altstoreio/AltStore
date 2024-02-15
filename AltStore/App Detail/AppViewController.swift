@@ -42,6 +42,7 @@ class AppViewController: UIViewController
     @IBOutlet private var navigationBarAppNameLabel: UILabel!
     
     private var _shouldResetLayout = false
+    private var _viewDidAppear = false
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
     
@@ -159,6 +160,7 @@ class AppViewController: UIViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
+        self._viewDidAppear = true
         
         self._shouldResetLayout = true
         self.view.setNeedsLayout()
@@ -342,7 +344,11 @@ class AppViewController: UIViewController
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?)
     {
         super.traitCollectionDidChange(previousTraitCollection)
-        self._shouldResetLayout = true
+        
+        if self._viewDidAppear
+        {
+            self._shouldResetLayout = true
+        }
     }
     
     deinit
