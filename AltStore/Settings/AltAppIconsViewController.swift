@@ -13,6 +13,11 @@ import AltSign
 import AltStoreCore
 import Roxas
 
+extension UIApplication
+{
+    static let didChangeAppIconNotification = Notification.Name("io.altstore.AppManager.didChangeAppIcon")
+}
+
 private final class AltIcon: Decodable
 {
     var name: String
@@ -189,6 +194,10 @@ extension AltAppIconsViewController
                                                         preferredStyle: .alert)
                 alertController.addAction(.ok)
                 self.present(alertController, animated: true)
+            }
+            else
+            {
+                NotificationCenter.default.post(name: UIApplication.didChangeAppIconNotification, object: icon)
             }
             
             if let selectedIndexPath = self.collectionView.indexPathsForSelectedItems?.first
