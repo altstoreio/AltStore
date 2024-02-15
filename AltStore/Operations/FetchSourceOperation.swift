@@ -226,6 +226,12 @@ private extension FetchSourceOperation
                 // All iPad screenshots MUST have an explicit size.
                 guard screenshot.size != nil else { throw SourceError.missingScreenshotSize(for: screenshot, source: source) }
             }
+            
+            #if MARKETPLACE
+            guard app.marketplaceID != nil else { throw SourceError.marketplaceAppsRequired(source: source) }
+            #else
+            guard app.marketplaceID == nil else { throw SourceError.marketplaceAppsNotSupported(source: source) }
+            #endif
         }
         
         if let previousSourceID = self.$source.identifier

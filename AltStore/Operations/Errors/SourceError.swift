@@ -24,6 +24,9 @@ extension SourceError
         
         case missingPermissionUsageDescription
         case missingScreenshotSize
+        
+        case marketplaceAppsNotSupported = 101
+        case marketplaceAppsRequired
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
@@ -40,6 +43,14 @@ extension SourceError
     
     static func missingScreenshotSize(for screenshot: AppScreenshot, source: Source) -> SourceError {
         SourceError(code: .missingScreenshotSize, source: source, app: screenshot.app, screenshotURL: screenshot.imageURL)
+    }
+    
+    static func marketplaceAppsNotSupported(source: Source) -> SourceError {
+        return SourceError(code: .marketplaceAppsNotSupported, source: source)
+    }
+    
+    static func marketplaceAppsRequired(source: Source) -> SourceError {
+        return SourceError(code: .marketplaceAppsRequired, source: source)
     }
 }
 
@@ -128,6 +139,14 @@ struct SourceError: ALTLocalizedError
             
             let failureReason = baseMessage + ": \(screenshotURL.absoluteString)"
             return failureReason
+            
+        case .marketplaceAppsNotSupported:
+            let failureReason = String(format: NSLocalizedString("The source “%@” contains notarized apps, which are not supported by this version of AltStore.", comment: ""), self.$source.name)
+            return failureReason
+            
+        case .marketplaceAppsRequired:
+            let failureReason = String(format: NSLocalizedString("The source “%@” contains non-marketplace apps, which are not supported by this version of AltStore.", comment: ""), self.$source.name)
+            return failureReason
         }
     }
     
@@ -165,6 +184,10 @@ struct SourceError: ALTLocalizedError
         case .duplicate:
             let recoverySuggestion = NSLocalizedString("Please remove the existing source in order to add this one.", comment: "")
             return recoverySuggestion
+            
+        case .marketplaceAppsRequired:
+            let failureReason = String(format: NSLocalizedString("AltStore can only install marketplace apps that have been notarized by Apple.", comment: ""), self.$source.name)
+            return failureReason
             
         default: return nil
         }
