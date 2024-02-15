@@ -1982,8 +1982,15 @@ private extension AppManager
             
             WidgetCenter.shared.reloadAllTimelines()
             
-            do { try installedApp.managedObjectContext?.save() }
-            catch { print("Error saving installed app.", error) }
+            do 
+            {
+                try installedApp.managedObjectContext?.save()
+            }
+            catch
+            {
+                Logger.main.error("Failed to save InstalledApp to database. \(error.localizedDescription, privacy: .public)")
+                throw error
+            }
         }
         catch let nsError as NSError
         {
