@@ -110,6 +110,8 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         }
         
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.didChangeAppIcon(_:)), name: UIApplication.didChangeAppIconNotification, object: nil)
     }
     
     override func viewIsAppearing(_ animated: Bool)
@@ -1575,6 +1577,43 @@ private extension MyAppsViewController
             self.update()
             
             sender.endRefreshing()
+        }
+    }
+    
+    @objc func didChangeAppIcon(_ notification: Notification)
+    {
+        guard let altStoreApp = InstalledApp.fetchAltStore(in: DatabaseManager.shared.viewContext) else { return }
+        
+        // Remove previous icon from cache.
+        self.activeAppsDataSource.prefetchItemCache.removeObject(forKey: altStoreApp)
+        self.inactiveAppsDataSource.prefetchItemCache.removeObject(forKey: altStoreApp)
+        
+        if let indexPath = self.activeAppsDataSource.fetchedResultsController.indexPath(forObject: altStoreApp)
+        {
+            let indexPath = IndexPath(item: indexPath.item, section: Section.activeApps.rawValue)
+            
+            if #available(iOS 15, *)
+            {
+                self.collectionView.reconfigureItems(at: [indexPath])
+            }
+            else
+            {
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+        }
+        
+        if let indexPath = self.inactiveAppsDataSource.fetchedResultsController.indexPath(forObject: altStoreApp)
+        {
+            let indexPath = IndexPath(item: indexPath.item, section: Section.inactiveApps.rawValue)
+            
+            if #available(iOS 15, *)
+            {
+                self.collectionView.reconfigureItems(at: [indexPath])
+            }
+            else
+            {
+                self.collectionView.reloadItems(at: [indexPath])
+            }
         }
     }
 }
