@@ -34,6 +34,7 @@ extension StoreApp
         var tiers: Set<String>?
         var benefit: String?
         var hidden: Bool?
+        var checkoutURL: URL?
     }
 }
 
@@ -68,6 +69,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var isPledgeRequired: Bool
     @NSManaged public private(set) var isHiddenWithoutPledge: Bool
     @NSManaged public private(set) var pledgeCurrency: String?
+    @NSManaged public private(set) var checkoutURL: URL?
     
     @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
@@ -295,6 +297,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             {
                 self.isPledgeRequired = true
                 self.isHiddenWithoutPledge = patreon.hidden ?? false // Default to showing Patreon apps
+                self.checkoutURL = patreon.checkoutURL
                                 
                 if let pledge = patreon.pledge
                 {
