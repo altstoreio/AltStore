@@ -299,7 +299,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         {
             statusBarHeight = 20
         }
-        else if let statusBarManager = self.view.window?.windowScene?.statusBarManager
+        else if let statusBarManager = (self.view.window ?? self.presentedViewController?.view.window)?.windowScene?.statusBarManager
         {
             statusBarHeight = statusBarManager.statusBarFrame.height
         }
@@ -347,7 +347,18 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
             }
             
             let difference = self.scrollView.contentOffset.y - showNavigationBarThreshold
-            let range = maximumContentY - (maximumContentY - padding - headerFrame.height) - inset
+            
+            let range: Double
+            if self.presentingViewController == nil && self.parent?.presentingViewController == nil
+            {
+                // Not presented modally, so rely on safe area + navigation bar height.
+                range = (headerFrame.height + padding) - (self.navigationController?.navigationBar.bounds.height ?? self.view.safeAreaInsets.top)
+            }
+            else
+            {
+                // Presented modally, so rely on maximumContentY.
+                range = maximumContentY - (maximumContentY - padding - headerFrame.height) - inset
+            }
             
             let fractionComplete = min(difference, range) / range
             self.navigationBarAnimator?.fractionComplete = fractionComplete

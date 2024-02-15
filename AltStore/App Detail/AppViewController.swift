@@ -280,7 +280,18 @@ class AppViewController: UIViewController
             }
             
             let difference = self.scrollView.contentOffset.y - showNavigationBarThreshold
-            let range = (headerFrame.height + padding) - (self.navigationController?.navigationBar.bounds.height ?? self.view.safeAreaInsets.top)
+            
+            let range: Double
+            if self.presentingViewController == nil && self.parent?.presentingViewController == nil
+            {
+                // Not presented modally, so rely on safe area + navigation bar height.
+                range = (headerFrame.height + padding) - (self.navigationController?.navigationBar.bounds.height ?? self.view.safeAreaInsets.top)
+            }
+            else
+            {
+                // Presented modally, so rely on maximumContentY.
+                range = maximumContentY - (maximumContentY - padding - headerFrame.height) - inset
+            }
             
             let fractionComplete = min(difference, range) / range
             self.navigationBarAnimator?.fractionComplete = fractionComplete
