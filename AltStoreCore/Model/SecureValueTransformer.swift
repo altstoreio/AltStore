@@ -24,4 +24,9 @@ public final class SecureValueTransformer: NSSecureUnarchiveFromDataTransformer
         let transformer = SecureValueTransformer()
         ValueTransformer.setValueTransformer(transformer, forName: name)
     }
+    
+    public override class func allowsReverseTransformation() -> Bool 
+    {
+        return true
+    }
 }
