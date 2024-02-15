@@ -84,6 +84,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var tintColor: UIColor?
     @NSManaged public private(set) var isBeta: Bool
     
+    // Required for Marketplace apps.
+    @NSManaged public private(set) var marketplaceID: String?
+    
     @NSManaged public var isPledged: Bool
     @NSManaged public private(set) var isPledgeRequired: Bool
     @NSManaged public private(set) var isHiddenWithoutPledge: Bool
@@ -183,6 +186,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     {
         case name
         case bundleIdentifier
+        case marketplaceID
         case developerName
         case localizedDescription
         case iconURL
@@ -222,6 +226,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             self.subtitle = try container.decodeIfPresent(String.self, forKey: .subtitle)
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
+            
+            // Required for Marketplace apps, but we'll verify later.
+            self.marketplaceID = try container.decodeIfPresent(String.self, forKey: .marketplaceID)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
