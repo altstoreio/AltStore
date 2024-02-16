@@ -25,16 +25,36 @@ public extension StoreApp
     static let dolphinAppID = "me.oatmealdome.dolphinios-njb"
 }
 
-extension StoreApp
+private struct PatreonParameters: Decodable
 {
-    private struct PatreonParameters: Decodable
+    struct Pledge: Decodable
     {
-        var pledge: Decimal?
-        var currency: String?
-        var tiers: Set<String>?
-        var benefit: String?
-        var hidden: Bool?
+        var amount: Decimal
+        var isCustom: Bool
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.singleValueContainer()
+            
+            if let stringValue = try? container.decode(String.self), stringValue == "custom"
+            {
+                self.amount = 0 // Use 0 as amount internally to simplify logic.
+                self.isCustom = true
+            }
+            else
+            {
+                // Unless the value is "custom", throw error if value is not Decimal.
+                self.amount = try container.decode(Decimal.self)
+                self.isCustom = false
+            }
+        }
     }
+    
+    var pledge: Pledge?
+    var currency: String?
+    var tiers: Set<String>?
+    var benefit: String?
+    var hidden: Bool?
 }
 
 @objc(StoreApp)
@@ -68,6 +88,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var isPledgeRequired: Bool
     @NSManaged public private(set) var isHiddenWithoutPledge: Bool
     @NSManaged public private(set) var pledgeCurrency: String?
+    @NSManaged public private(set) var prefersCustomPledge: Bool
     
     @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
@@ -290,6 +311,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             
             // Must _explicitly_ set to false to ensure it updates cached database value.
             self.isPledged = false
+            self.prefersCustomPledge = false
             
             if let patreon = try container.decodeIfPresent(PatreonParameters.self, forKey: .patreon)
             {
@@ -298,8 +320,9 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
                                 
                 if let pledge = patreon.pledge
                 {
-                    self._pledgeAmount = pledge as NSDecimalNumber
+                    self._pledgeAmount = pledge.amount as NSDecimalNumber
                     self.pledgeCurrency = patreon.currency ?? "USD" // Only set pledge currency if explicitly given pledge.
+                    self.prefersCustomPledge = pledge.isCustom
                 }
                 else if patreon.pledge == nil && patreon.tiers == nil && patreon.benefit == nil
                 {

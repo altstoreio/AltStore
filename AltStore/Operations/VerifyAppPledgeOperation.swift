@@ -64,12 +64,22 @@ class VerifyAppPledgeOperation: ResultOperation<Void>
                     let components = URLComponents(url: patreonURL, resolvingAgainstBaseURL: false)
                     let lastPathComponent = components?.path.components(separatedBy: "/").last
                     
-                    let checkoutURL: URL                    
-
                     let username = lastPathComponent ?? patreonURL.lastPathComponent
-                    if !username.isEmpty, let url = URL(string: "https://www.patreon.com/join/" + username)
+                    
+                    let checkoutURL: URL
+                    if await self.$storeApp.prefersCustomPledge, let customPledgeURL = URL(string: "https://www.patreon.com/checkout/" + username + "?rid=0&custom=1")
+                    {
+                        checkoutURL = customPledgeURL
+                        
+                        let action = await UIAlertAction(title: NSLocalizedString("Continue", comment: ""), style: .default)
+                        try await presentingViewController.presentConfirmationAlert(title: NSLocalizedString("Custom Pledge", comment: ""),
+                                                                                message: NSLocalizedString("This app supports custom pledges. Pledge any amount on Patreon to receive access.", comment: ""),
+                                                                                primaryAction: action)
+                    }
+                    else if !username.isEmpty, let url = URL(string: "https://www.patreon.com/join/" + username)
                     {
                         // Prefer /join URL over campaign homepage.
+                        // URL format from https://support.patreon.com/hc/en-us/articles/360044376211-Managing-members-with-custom-pledges
                         checkoutURL = url
                     }
                     else

@@ -292,7 +292,7 @@ extension AppBannerView
                         self.button.accessibilityLabel = String(format: NSLocalizedString("Install %@", comment: ""), app.name)
                         self.button.accessibilityValue = buttonTitle
                     }
-                    else if let amount = storeApp.pledgeAmount, let currencyCode = storeApp.pledgeCurrency, #available(iOS 15, *)
+                    else if let amount = storeApp.pledgeAmount, let currencyCode = storeApp.pledgeCurrency, !storeApp.prefersCustomPledge, #available(iOS 15, *)
                     {
                         let price = amount.formatted(.currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0...2)))
                         
