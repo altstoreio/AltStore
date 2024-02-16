@@ -264,6 +264,10 @@ private extension MyAppsViewController
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
             
             cell.setNeedsLayout()
+            
+            // Below lines are necessary to avoid "more" button layout issues.
+            cell.versionDescriptionTextView.setNeedsLayout()
+            cell.layoutIfNeeded()
         }
         dataSource.prefetchHandler = { (installedApp, indexPath, completionHandler) in
             guard let iconURL = installedApp.storeApp?.iconURL else { return nil }
