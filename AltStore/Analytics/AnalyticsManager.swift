@@ -35,6 +35,9 @@ extension AnalyticsManager
         case tintColor
         case sourceIdentifier
         case sourceURL
+        case patreonURL
+        case pledgeAmount
+        case pledgeCurrency
     }
     
     enum Event
@@ -70,7 +73,10 @@ extension AnalyticsManager
                     .size: appBundleSize?.description,
                     .tintColor: app.storeApp?.tintColor?.hexString,
                     .sourceIdentifier: app.storeApp?.sourceIdentifier,
-                    .sourceURL: app.storeApp?.source?.sourceURL.absoluteString
+                    .sourceURL: app.storeApp?.source?.sourceURL.absoluteString,
+                    .patreonURL: app.storeApp?.source?.patreonURL?.absoluteString,
+                    .pledgeAmount: app.storeApp?.pledgeAmount?.description,
+                    .pledgeCurrency: app.storeApp?.pledgeCurrency
                 ]
             }
             
