@@ -136,7 +136,13 @@ class FetchSourceOperation: ResultOperation<Source>
                     catch let error as DecodingError
                     {
                         let nsError = error as NSError
-                        guard let codingPath = nsError.userInfo[ALTNSCodingPathKey] as? [CodingKey] else { throw error }
+                        guard var codingPath = nsError.userInfo[ALTNSCodingPathKey] as? [CodingKey] else { throw error }
+                        
+                        if case .keyNotFound(let key, _) = error
+                        {
+                            // Add missing key to error for better debugging.
+                            codingPath.append(key)
+                        }
                         
                         let rawComponents = codingPath.map { $0.intValue?.description ?? $0.stringValue }
                         let pathDescription = rawComponents.joined(separator: " > ")
