@@ -25,8 +25,8 @@ extension SourceError
         case missingPermissionUsageDescription
         case missingScreenshotSize
         
-        case marketplaceAppsNotSupported = 101
-        case marketplaceAppsRequired
+        case marketplaceNotSupported = 101
+        case marketplaceRequired
     }
     
     static func unsupported(_ source: Source) -> SourceError { SourceError(code: .unsupported, source: source) }
@@ -45,12 +45,12 @@ extension SourceError
         SourceError(code: .missingScreenshotSize, source: source, app: screenshot.app, screenshotURL: screenshot.imageURL)
     }
     
-    static func marketplaceAppsNotSupported(source: Source) -> SourceError {
-        return SourceError(code: .marketplaceAppsNotSupported, source: source)
+    static func marketplaceNotSupported(source: Source) -> SourceError {
+        return SourceError(code: .marketplaceNotSupported, source: source)
     }
     
-    static func marketplaceAppsRequired(source: Source) -> SourceError {
-        return SourceError(code: .marketplaceAppsRequired, source: source)
+    static func marketplaceRequired(source: Source) -> SourceError {
+        return SourceError(code: .marketplaceRequired, source: source)
     }
 }
 
@@ -140,12 +140,12 @@ struct SourceError: ALTLocalizedError
             let failureReason = baseMessage + ": \(screenshotURL.absoluteString)"
             return failureReason
             
-        case .marketplaceAppsNotSupported:
+        case .marketplaceNotSupported:
             let failureReason = String(format: NSLocalizedString("The source “%@” contains notarized apps, which are not supported by this version of AltStore.", comment: ""), self.$source.name)
             return failureReason
             
-        case .marketplaceAppsRequired:
-            let failureReason = String(format: NSLocalizedString("The source “%@” contains non-marketplace apps, which are not supported by this version of AltStore.", comment: ""), self.$source.name)
+        case .marketplaceRequired:
+            let failureReason = String(format: NSLocalizedString("One or more apps in source “%@” are missing a marketplaceID. This most likely means they are not notarized, which is not supported by this version of AltStore.", comment: ""), self.$source.name)
             return failureReason
         }
     }
@@ -185,7 +185,7 @@ struct SourceError: ALTLocalizedError
             let recoverySuggestion = NSLocalizedString("Please remove the existing source in order to add this one.", comment: "")
             return recoverySuggestion
             
-        case .marketplaceAppsRequired:
+        case .marketplaceRequired:
             let failureReason = String(format: NSLocalizedString("AltStore can only install marketplace apps that have been notarized by Apple.", comment: ""), self.$source.name)
             return failureReason
             

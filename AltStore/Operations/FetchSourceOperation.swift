@@ -228,9 +228,9 @@ private extension FetchSourceOperation
             }
             
             #if MARKETPLACE
-            guard app.marketplaceID != nil else { throw SourceError.marketplaceAppsRequired(source: source) }
+            guard app.marketplaceID != nil else { throw SourceError.marketplaceRequired(source: source) }
             #else
-            guard app.marketplaceID == nil else { throw SourceError.marketplaceAppsNotSupported(source: source) }
+            guard app.marketplaceID == nil else { throw SourceError.marketplaceNotSupported(source: source) }
             #endif
         }
         
