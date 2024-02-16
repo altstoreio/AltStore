@@ -56,7 +56,7 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         super.init(entity: entity, insertInto: context)
     }
     
-    private enum CodingKeys: String, CodingKey
+    internal enum CodingKeys: String, CodingKey
     {
         case version
         case buildVersion
