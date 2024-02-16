@@ -16,7 +16,7 @@ class LaunchViewController: RSTLaunchViewController
 {
     private var didFinishLaunching = false
     
-    private var destinationViewController: UIViewController!
+    private var destinationViewController: TabBarController!
     
     override var launchConditions: [RSTLaunchCondition] {
         let isDatabaseStarted = RSTLaunchCondition(condition: { DatabaseManager.shared.isStarted }) { (completionHandler) in
@@ -39,7 +39,7 @@ class LaunchViewController: RSTLaunchViewController
         super.viewDidLoad()
         
         // Create destinationViewController now so view controllers can register for receiving Notifications.
-        self.destinationViewController = self.storyboard!.instantiateViewController(withIdentifier: "tabBarController") as! TabBarController
+        self.destinationViewController = self.storyboard!.instantiateViewController(withIdentifier: "tabBarController") as? TabBarController
     }
 }
 
@@ -88,6 +88,10 @@ extension LaunchViewController
         AppManager.shared.updateAllSources { result in
             guard case .failure(let error) = result else { return }
             Logger.main.error("Failed to update sources on launch. \(error.localizedDescription, privacy: .public)")
+            
+            let toastView = ToastView(error: error)
+            toastView.addTarget(self.destinationViewController, action: #selector(TabBarController.presentSources), for: .touchUpInside)
+            toastView.show(in: self.destinationViewController.selectedViewController ?? self.destinationViewController)
         }
         
         self.updateKnownSources()
