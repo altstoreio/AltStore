@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>modern</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>AltStore</string>
+			<key>imageName</key>
+			<string>AppIcon</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>AltBlue</string>
+			<key>imageName</key>
+			<string>BlueIcon</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Evil AltStore</string>
+			<key>imageName</key>
+			<string>EvilIcon</string>
+		</dict>
+	</array>
+	<key>inset</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>EU - Inset</string>
+			<key>imageName</key>
+			<string>EUInsetIcon</string>
+		</dict>
+	</array>
+	<key>classic</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>Classic</string>
+			<key>imageName</key>
+			<string>ClassicIcon</string>
+		</dict>
+	</array>
+</dict>
+</plist>

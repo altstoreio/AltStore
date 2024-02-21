@@ -389,6 +389,8 @@
 		D56915072AD5E91B00A2B747 /* Regex+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */; };
 		D56915092AD5F3E800A2B747 /* AltTests+Sources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */; };
 		D569A5042AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */; };
+		D56D21402B7D9942007641C5 /* AltAppIconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56D213F2B7D9942007641C5 /* AltAppIconsViewController.swift */; };
+		D56D21422B7D9C41007641C5 /* AltIcons.plist in Resources */ = {isa = PBXBuildFile; fileRef = D56D21412B7D9C41007641C5 /* AltIcons.plist */; };
 		D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D570841A2924680D00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */; };
 		D571ADD02A02FC7200B24B63 /* ALTAppPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */; };
@@ -1016,6 +1018,8 @@
 		D56915052AD5D75B00A2B747 /* Regex+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Permissions.swift"; sourceTree = "<group>"; };
 		D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AltTests+Sources.swift"; sourceTree = "<group>"; };
 		D569A5032AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPermissionsViewController.swift; sourceTree = "<group>"; };
+		D56D213F2B7D9942007641C5 /* AltAppIconsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltAppIconsViewController.swift; sourceTree = "<group>"; };
+		D56D21412B7D9C41007641C5 /* AltIcons.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AltIcons.plist; sourceTree = "<group>"; };
 		D5708416292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Comparable.swift"; sourceTree = "<group>"; };
 		D571ADCD2A02FA7400B24B63 /* SourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceError.swift; sourceTree = "<group>"; };
 		D571ADCF2A02FC7200B24B63 /* ALTAppPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALTAppPermission.swift; sourceTree = "<group>"; };
@@ -1942,6 +1946,7 @@
 			children = (
 				BF44EEF2246B3A17002A52F2 /* AltBackup.ipa */,
 				BFD247762284B9A700981D42 /* Assets.xcassets */,
+				D56D21412B7D9C41007641C5 /* AltIcons.plist */,
 				BF770E6822BD57DD002A40FE /* Silence.m4a */,
 			);
 			path = Resources;
@@ -2005,6 +2010,7 @@
 				BFF0B68F23219C6D007A79E1 /* PatreonComponents.swift */,
 				BFF0B6912321A305007A79E1 /* AboutPatreonHeaderView.xib */,
 				BFF0B695232242D3007A79E1 /* LicensesViewController.swift */,
+				D56D213F2B7D9942007641C5 /* AltAppIconsViewController.swift */,
 				D589170128C7D93500E39C8B /* Error Log */,
 			);
 			path = Settings;
@@ -2788,6 +2794,7 @@
 				D57DF638271E32F000677701 /* PatchApp.storyboard in Resources */,
 				BFD2477A2284B9A700981D42 /* LaunchScreen.storyboard in Resources */,
 				BF44EEF3246B3A17002A52F2 /* AltBackup.ipa in Resources */,
+				D56D21422B7D9C41007641C5 /* AltIcons.plist in Resources */,
 				BF770E6922BD57DD002A40FE /* Silence.m4a in Resources */,
 				BFD247772284B9A700981D42 /* Assets.xcassets in Resources */,
 				BFF0B6922321A305007A79E1 /* AboutPatreonHeaderView.xib in Resources */,
@@ -3320,6 +3327,7 @@
 				D57DF63F271E51E400677701 /* ALTAppPatcher.m in Sources */,
 				D54058B92A1D6269008CCC58 /* AppPermissionProtocol.swift in Sources */,
 				BFB6B220231870B00022A802 /* NewsCollectionViewCell.swift in Sources */,
+				D56D21402B7D9942007641C5 /* AltAppIconsViewController.swift in Sources */,
 				BFB3645A2325985F00CD0EB1 /* FindServerOperation.swift in Sources */,
 				D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */,
 				D569A5042AF9BC5F00A4CB8B /* ReviewPermissionsViewController.swift in Sources */,
@@ -4081,6 +4089,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4115,6 +4124,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = AltStore/AltStore.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
