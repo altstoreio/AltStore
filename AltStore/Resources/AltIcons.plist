@@ -117,9 +117,9 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Prototype (Inverted)</string>
+			<string>Inverted Prototype</string>
 			<key>imageName</key>
-			<string>Prototype Inverted</string>
+			<string>Inverted Prototype</string>
 		</dict>
 	</array>
 </dict>
