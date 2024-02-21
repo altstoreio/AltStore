@@ -358,6 +358,7 @@
 		D51AD27E29356B7B00967AAA /* ALTWrappedError.h in Headers */ = {isa = PBXBuildFile; fileRef = D51AD27C29356B7B00967AAA /* ALTWrappedError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D51AD27F29356B7B00967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
 		D51AD28029356B8000967AAA /* ALTWrappedError.m in Sources */ = {isa = PBXBuildFile; fileRef = D51AD27D29356B7B00967AAA /* ALTWrappedError.m */; };
+		D51E83822B8692DF0092FC61 /* AltStore16ToAltStore17.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D51E83812B8692DF0092FC61 /* AltStore16ToAltStore17.xcmappingmodel */; };
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
 		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
@@ -990,6 +991,8 @@
 		D5189C002A01BC6800F44625 /* UserInfoValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoValue.swift; sourceTree = "<group>"; };
 		D51AD27C29356B7B00967AAA /* ALTWrappedError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALTWrappedError.h; sourceTree = "<group>"; };
 		D51AD27D29356B7B00967AAA /* ALTWrappedError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALTWrappedError.m; sourceTree = "<group>"; };
+		D51E83802B86926B0092FC61 /* AltStore 17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 17.xcdatamodel"; sourceTree = "<group>"; };
+		D51E83812B8692DF0092FC61 /* AltStore16ToAltStore17.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = AltStore16ToAltStore17.xcmappingmodel; sourceTree = "<group>"; };
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
 		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
@@ -1637,6 +1640,7 @@
 				D5185B7F2AE1E51B00646E33 /* AltStore13ToAltStore14.xcmappingmodel */,
 				D5753A612B279F1900090456 /* AltStore14ToAltStore15.xcmappingmodel */,
 				D5CE309B2B4C946300DB8151 /* AltStore15ToAltStore16.xcmappingmodel */,
+				D51E83812B8692DF0092FC61 /* AltStore16ToAltStore17.xcmappingmodel */,
 			);
 			path = "Mapping Models";
 			sourceTree = "<group>";
@@ -3123,6 +3127,7 @@
 				BF340E9A250AD39500A192CB /* ViewApp.intentdefinition in Sources */,
 				D552EB062AF453F900A3AB4D /* URL+Normalized.swift in Sources */,
 				BFAECC522501B0A400528F27 /* CodableError.swift in Sources */,
+				D51E83822B8692DF0092FC61 /* AltStore16ToAltStore17.xcmappingmodel in Sources */,
 				D5F9821D2AB900060045751F /* AppScreenshot.swift in Sources */,
 				BF66EE9E2501AEC1007EE018 /* Fetchable.swift in Sources */,
 				BF66EEDF2501AECA007EE018 /* PatreonAccount.swift in Sources */,
@@ -4519,6 +4524,7 @@
 		BF66EEB72501AECA007EE018 /* AltStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D51E83802B86926B0092FC61 /* AltStore 17.xcdatamodel */,
 				D5CE309A2B4C93BE00DB8151 /* AltStore 16.xcdatamodel */,
 				D5753A602B279D1400090456 /* AltStore 15.xcdatamodel */,
 				D5185B7E2AE1E35200646E33 /* AltStore 14.xcdatamodel */,
@@ -4536,7 +4542,7 @@
 				BF66EEBD2501AECA007EE018 /* AltStore 2.xcdatamodel */,
 				BF66EEBE2501AECA007EE018 /* AltStore 4.xcdatamodel */,
 			);
-			currentVersion = D5CE309A2B4C93BE00DB8151 /* AltStore 16.xcdatamodel */;
+			currentVersion = D51E83802B86926B0092FC61 /* AltStore 17.xcdatamodel */;
 			path = AltStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
