@@ -12,33 +12,114 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>AltBlue</string>
+			<string>Evil AltStore</string>
 			<key>imageName</key>
-			<string>BlueIcon</string>
+			<string>Evil</string>
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Evil AltStore</string>
+			<string>Sun</string>
 			<key>imageName</key>
-			<string>EvilIcon</string>
+			<string>Sun</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Ocean</string>
+			<key>imageName</key>
+			<string>Ocean</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Delta</string>
+			<key>imageName</key>
+			<string>Delta</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Clip</string>
+			<key>imageName</key>
+			<string>Clip</string>
 		</dict>
 	</array>
-	<key>inset</key>
+	<key>gradient</key>
 	<array>
 		<dict>
 			<key>name</key>
-			<string>EU - Inset</string>
+			<string>Beach</string>
 			<key>imageName</key>
-			<string>EUInsetIcon</string>
+			<string>Beach</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Cotton Candy</string>
+			<key>imageName</key>
+			<string>Cotton Candy</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sky</string>
+			<key>imageName</key>
+			<string>Sky</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sunset</string>
+			<key>imageName</key>
+			<string>Sunset</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Watermelon</string>
+			<key>imageName</key>
+			<string>Watermelon</string>
+		</dict>
+	</array>
+	<key>recessed</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>EU</string>
+			<key>imageName</key>
+			<string>EU</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Inverted</string>
+			<key>imageName</key>
+			<string>Inverted</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Lava</string>
+			<key>imageName</key>
+			<string>Lava</string>
 		</dict>
 	</array>
 	<key>classic</key>
 	<array>
 		<dict>
 			<key>name</key>
-			<string>Classic</string>
+			<string>Original</string>
 			<key>imageName</key>
-			<string>ClassicIcon</string>
+			<string>Original</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Flag</string>
+			<key>imageName</key>
+			<string>Flag</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Prototype</string>
+			<key>imageName</key>
+			<string>Prototype</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Prototype (Inverted)</string>
+			<key>imageName</key>
+			<string>Prototype Inverted</string>
 		</dict>
 	</array>
 </dict>
