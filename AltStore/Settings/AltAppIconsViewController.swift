@@ -20,6 +20,8 @@ extension UIApplication
 
 private final class AltIcon: Decodable
 {
+    static let defaultIconName: String = "AppIcon"
+    
     var name: String
     var imageName: String
     
@@ -150,6 +152,15 @@ private extension AltAppIconsViewController
             config.imageProperties.cornerRadius = imageWidth / 5.0 // Copied from AppIconImageView
             
             cell.contentConfiguration = config
+
+            if UIApplication.shared.alternateIconName == icon.imageName || (UIApplication.shared.alternateIconName == nil && icon.imageName == AltIcon.defaultIconName)
+            {
+                cell.accessories = [.checkmark(options: .init(tintColor: .white))]
+            }
+            else
+            {
+                cell.accessories = []
+            }
                       
             var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
             backgroundConfiguration.backgroundColorTransformer = UIConfigurationColorTransformer { [weak cell] c in
@@ -181,10 +192,11 @@ extension AltAppIconsViewController
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
-        
         let icon = self.dataSource.item(at: indexPath)
         guard UIApplication.shared.alternateIconName != icon.imageName else { return }
+        
+        // Deselect previous icon + select new icon
+        collectionView.reloadData()
         
         // If assigning primary icon, pass "nil" as alternate icon name.
         let imageName = (icon.imageName == "AppIcon") ? nil : icon.imageName
@@ -196,15 +208,12 @@ extension AltAppIconsViewController
                                                         preferredStyle: .alert)
                 alertController.addAction(.ok)
                 self.present(alertController, animated: true)
+                
+                collectionView.reloadData()
             }
             else
             {
                 NotificationCenter.default.post(name: UIApplication.didChangeAppIconNotification, object: icon)
-            }
-            
-            if let selectedIndexPath = self.collectionView.indexPathsForSelectedItems?.first
-            {
-                self.collectionView.deselectItem(at: selectedIndexPath, animated: true)
             }
         }
     }
