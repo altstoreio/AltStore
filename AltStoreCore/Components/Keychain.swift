@@ -100,15 +100,6 @@ public class Keychain
 // MarketplaceExtension communication
 public extension Keychain
 {
-    struct PendingAppInstall: Codable
-    {
-        public var appleItemID: AppleItemID
-        public var adpURL: URL
-        public var version: String
-        public var buildVersion: String
-        public var installVerificationToken: String
-    }
-    
     func pendingInstall(for marketplaceID: AppleItemID) throws -> PendingAppInstall?
     {
         let key = self.pendingInstallKey(forMarketplaceID: marketplaceID)
