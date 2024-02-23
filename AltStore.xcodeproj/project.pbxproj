@@ -440,6 +440,7 @@
 		D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */; };
 		D5B6F6AB2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */; };
 		D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */; };
+		D5BE12412B8941A7009C026C /* PendingAppInstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BE12402B8941A7009C026C /* PendingAppInstall.swift */; };
 		D5C0E7672AD9C75900530CA4 /* AppCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0E7662AD9C75900530CA4 /* AppCardCollectionViewCell.swift */; };
 		D5C8ACDB2A956B2B00669F92 /* Process+STPrivilegedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */; };
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
@@ -1072,6 +1073,7 @@
 		D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Previews.swift"; sourceTree = "<group>"; };
 		D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppScreenshotsViewController.swift; sourceTree = "<group>"; };
 		D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JITManager.swift; sourceTree = "<group>"; };
+		D5BE12402B8941A7009C026C /* PendingAppInstall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAppInstall.swift; sourceTree = "<group>"; };
 		D5C0E7662AD9C75900530CA4 /* AppCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCardCollectionViewCell.swift; sourceTree = "<group>"; };
 		D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Process+STPrivilegedTask.swift"; sourceTree = "<group>"; };
 		D5CA0C4A280E141900469595 /* ManagedPatron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedPatron.swift; sourceTree = "<group>"; };
@@ -1540,6 +1542,7 @@
 				D5893F812A141E4900E767CD /* KnownSource.swift */,
 				D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */,
 				D5DB81632B0410BC003F5F8B /* AppSorting.swift */,
+				D5BE12402B8941A7009C026C /* PendingAppInstall.swift */,
 				BF66EE8E2501AEBC007EE018 /* ALTAppPermissions.h */,
 				BF66EE912501AEBC007EE018 /* ALTAppPermissions.m */,
 				BF66EE922501AEBC007EE018 /* ALTPatreonBenefitID.h */,
@@ -3141,6 +3144,7 @@
 				D5708417292448DA00D42D34 /* OperatingSystemVersion+Comparable.swift in Sources */,
 				BF66EE8C2501AEB2007EE018 /* Keychain.swift in Sources */,
 				BF66EED42501AECA007EE018 /* AltStore5ToAltStore6.xcmappingmodel in Sources */,
+				D5BE12412B8941A7009C026C /* PendingAppInstall.swift in Sources */,
 				BF66EE972501AEBC007EE018 /* ALTAppPermissions.m in Sources */,
 				BFAECC552501B0A400528F27 /* Connection.swift in Sources */,
 				BF66EEDA2501AECA007EE018 /* RefreshAttempt.swift in Sources */,

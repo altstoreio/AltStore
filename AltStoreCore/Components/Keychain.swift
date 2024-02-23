@@ -11,6 +11,8 @@ import KeychainAccess
 
 import AltSign
 
+import MarketplaceKit
+
 @propertyWrapper
 public struct KeychainItem<Value>
 {
@@ -45,7 +47,12 @@ public class Keychain
 {
     public static let shared = Keychain()
     
+    #if MARKETPLACE
+    //TODO: Change to match new bundle ID
     fileprivate let keychain = KeychainAccess.Keychain(service: "com.rileytestut.AltStore").accessibility(.afterFirstUnlock).synchronizable(true)
+    #else
+    fileprivate let keychain = KeychainAccess.Keychain(service: "com.rileytestut.AltStore").accessibility(.afterFirstUnlock).synchronizable(true)
+    #endif
     
     @KeychainItem(key: "appleIDEmailAddress")
     public var appleIDEmailAddress: String?
@@ -87,5 +94,55 @@ public class Keychain
         self.appleIDPassword = nil
         self.signingCertificatePrivateKey = nil
         self.signingCertificateSerialNumber = nil
+    }
+}
+
+// MarketplaceExtension communication
+public extension Keychain
+{
+    struct PendingAppInstall: Codable
+    {
+        public var appleItemID: AppleItemID
+        public var adpURL: URL
+        public var version: String
+        public var buildVersion: String
+        public var installVerificationToken: String
+    }
+    
+    func pendingInstall(for marketplaceID: AppleItemID) throws -> PendingAppInstall?
+    {
+        let key = self.pendingInstallKey(forMarketplaceID: marketplaceID)
+        guard let data = try Keychain.shared.keychain.getData(key) else { return nil }
+        
+        let pendingInstall = try JSONDecoder().decode(PendingAppInstall.self, from: data)
+        return pendingInstall
+    }
+    
+    func setPendingInstall(for version: AppVersion, installVerificationToken: String) throws
+    {
+        guard let storeApp = version.storeApp,
+              let marketplaceID = storeApp.marketplaceID,
+              let buildVersion = version.buildVersion
+        else { throw CocoaError(CocoaError.Code.coderInvalidValue) } //TODO: Replace with final error
+        
+        let pendingInstall = PendingAppInstall(appleItemID: marketplaceID, adpURL: version.downloadURL, version: version.version, buildVersion: buildVersion, installVerificationToken: installVerificationToken)
+        
+        let data = try JSONEncoder().encode(pendingInstall)
+        let key = self.pendingInstallKey(forMarketplaceID: marketplaceID)
+        Keychain.shared.keychain[data: key] = data
+    }
+    
+    func removePendingInstall(for marketplaceID: AppleItemID) throws
+    {
+        let key = self.pendingInstallKey(forMarketplaceID: marketplaceID)
+        try Keychain.shared.keychain.remove(key)
+    }
+}
+
+private extension Keychain
+{
+    func pendingInstallKey(forMarketplaceID marketplaceID: AppleItemID) -> String
+    {
+        return "ALTPendingInstall_" + String(marketplaceID)
     }
 }
