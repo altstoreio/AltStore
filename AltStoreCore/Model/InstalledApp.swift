@@ -139,42 +139,6 @@ public extension InstalledApp
         self.expirationDate = provisioningProfile.expirationDate
     }
     
-    func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
-    {
-        if self.bundleIdentifier == StoreApp.altstoreAppID, let iconName = UIApplication.alt_shared?.alternateIconName
-        {
-            // Use alternate app icon for AltStore, if one is chosen.
-            
-            let image = UIImage(named: iconName)
-            completion(.success(image))
-            
-            return
-        }
-        
-        let hasAlternateIcon = self.hasAlternateIcon
-        let alternateIconURL = self.alternateIconURL
-        let fileURL = self.fileURL
-        
-        DispatchQueue.global().async {
-            do
-            {
-                if hasAlternateIcon,
-                   case let data = try Data(contentsOf: alternateIconURL),
-                   let icon = UIImage(data: data)
-                {
-                    return completion(.success(icon))
-                }
-                
-                let application = ALTApplication(fileURL: fileURL)
-                completion(.success(application?.icon))
-            }
-            catch
-            {
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func matches(_ appVersion: AppVersion) -> Bool
     {
         let matchesAppVersion = (self.version == appVersion.version && self.storeBuildVersion == appVersion.buildVersion)

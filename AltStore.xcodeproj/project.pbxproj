@@ -362,6 +362,7 @@
 		D52A2F972ACB40F700BDF8E3 /* Logger+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */; };
 		D52B4ABF2AF183F0005991C3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B4ABE2AF183F0005991C3 /* WebViewController.swift */; };
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
+		D52C73652B688B2200E8751C /* InstalledApp+LoadIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C73642B688B2200E8751C /* InstalledApp+LoadIcon.swift */; };
 		D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */; };
 		D52C8F032AFC56F000CA0BDD /* StoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */; };
 		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
@@ -997,6 +998,7 @@
 		D52A2F962ACB40F700BDF8E3 /* Logger+AltStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltStore.swift"; sourceTree = "<group>"; };
 		D52B4ABE2AF183F0005991C3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		D52C73642B688B2200E8751C /* InstalledApp+LoadIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InstalledApp+LoadIcon.swift"; sourceTree = "<group>"; };
 		D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedViewController.swift; sourceTree = "<group>"; };
 		D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCategory.swift; sourceTree = "<group>"; };
 		D52E988928D002D30032BE6B /* AltStore 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AltStore 11.xcdatamodel"; sourceTree = "<group>"; };
@@ -1984,6 +1986,7 @@
 				D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */,
 				D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */,
 				D5A645202AF591980047D980 /* UTType+AltStore.swift */,
+				D52C73642B688B2200E8751C /* InstalledApp+LoadIcon.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3276,6 +3279,7 @@
 				D5CF568C2A0D8EEC006D93E2 /* VerificationError.swift in Sources */,
 				D5B6F6AB2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift in Sources */,
 				BFD2476E2284B9A500981D42 /* AppDelegate.swift in Sources */,
+				D52C73652B688B2200E8751C /* InstalledApp+LoadIcon.swift in Sources */,
 				BF41B806233423AE00C593A3 /* TabBarController.swift in Sources */,
 				BFE00A202503097F00EB4D0C /* INInteraction+AltStore.swift in Sources */,
 				BFDB6A0B22AAEDB7007EA6D6 /* Operation.swift in Sources */,
