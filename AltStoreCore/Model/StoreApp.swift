@@ -85,7 +85,11 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
     @NSManaged public private(set) var isBeta: Bool
     
     // Required for Marketplace apps.
-    @NSManaged public private(set) var marketplaceID: String?
+    @nonobjc public var marketplaceID: UInt64? {
+        guard let rawValue = self._marketplaceID else { return nil }
+        return UInt64(rawValue)
+    }
+    @NSManaged @objc(marketplaceID) private var _marketplaceID: String? // Ugh, we used String in 2.0rc and now we're stuck with it.
     
     @NSManaged public var isPledged: Bool
     @NSManaged public private(set) var isPledgeRequired: Bool
@@ -228,7 +232,7 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable
             self.isBeta = try container.decodeIfPresent(Bool.self, forKey: .isBeta) ?? false
             
             // Required for Marketplace apps, but we'll verify later.
-            self.marketplaceID = try container.decodeIfPresent(String.self, forKey: .marketplaceID)
+            self._marketplaceID = try container.decodeIfPresent(String.self, forKey: .marketplaceID)
             
             if let tintColorHex = try container.decodeIfPresent(String.self, forKey: .tintColor)
             {
