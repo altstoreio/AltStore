@@ -441,7 +441,14 @@
 		D5B6F6A92AD75D01007EED5A /* ProcessInfo+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */; };
 		D5B6F6AB2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */; };
 		D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */; };
+		D5BD17D32B6474FF00BAE633 /* AltMarketplace.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BD17D22B6474FF00BAE633 /* AltMarketplace.swift */; };
+		D5BD17D72B6474FF00BAE633 /* AltMarketplace.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = D5BD17D02B6474FF00BAE633 /* AltMarketplace.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D5BE12392B89372E009C026C /* InstallAppRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BE12382B89372E009C026C /* InstallAppRequest.swift */; };
+		D5BE123D2B893ABF009C026C /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BE123C2B893ABF009C026C /* HTTPHeader.swift */; };
+		D5BE123F2B893D66009C026C /* Logger+AltMarketplace.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BE123E2B893D66009C026C /* Logger+AltMarketplace.swift */; };
 		D5BE12412B8941A7009C026C /* PendingAppInstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BE12402B8941A7009C026C /* PendingAppInstall.swift */; };
+		D5BE12442B8943E1009C026C /* AltStoreCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF66EE7E2501AE50007EE018 /* AltStoreCore.framework */; };
+		D5BE12452B8943F2009C026C /* Roxas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD247862284BB3B00981D42 /* Roxas.framework */; };
 		D5C0E7672AD9C75900530CA4 /* AppCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0E7662AD9C75900530CA4 /* AppCardCollectionViewCell.swift */; };
 		D5C8ACDB2A956B2B00669F92 /* Process+STPrivilegedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */; };
 		D5CA0C4B280E141900469595 /* ManagedPatron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5CA0C4A280E141900469595 /* ManagedPatron.swift */; };
@@ -520,6 +527,13 @@
 			remoteGlobalIDString = BFF7C903257844C900E55F36;
 			remoteInfo = AltXPC;
 		};
+		D51D57D62B896B6000D15DF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF66EE7D2501AE50007EE018;
+			remoteInfo = AltStoreCore;
+		};
 		D537C8562AA94D4A009A1E08 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFD247622284B9A500981D42 /* Project object */;
@@ -533,6 +547,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = BFD247692284B9A500981D42;
 			remoteInfo = AltStore;
+		};
+		D5BD17D52B6474FF00BAE633 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFD247622284B9A500981D42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D5BD17CF2B6474FF00BAE633;
+			remoteInfo = AltMarketplace;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -623,6 +644,17 @@
 				D561B2ED28EF5A4F006752E4 /* AltSign-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5BD17D82B6474FF00BAE633 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				D5BD17D72B6474FF00BAE633 /* AltMarketplace.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D5FB7A112AA284BE00EF863D /* CopyFiles */ = {
@@ -1075,6 +1107,12 @@
 		D5B6F6A82AD75D01007EED5A /* ProcessInfo+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+Previews.swift"; sourceTree = "<group>"; };
 		D5B6F6AA2AD76541007EED5A /* PreviewAppScreenshotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppScreenshotsViewController.swift; sourceTree = "<group>"; };
 		D5BA9E9A2A9FE1E8007C0661 /* JITManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JITManager.swift; sourceTree = "<group>"; };
+		D5BD17D02B6474FF00BAE633 /* AltMarketplace.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = AltMarketplace.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5BD17D22B6474FF00BAE633 /* AltMarketplace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltMarketplace.swift; sourceTree = "<group>"; };
+		D5BD17D42B6474FF00BAE633 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D5BE12382B89372E009C026C /* InstallAppRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppRequest.swift; sourceTree = "<group>"; };
+		D5BE123C2B893ABF009C026C /* HTTPHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeader.swift; sourceTree = "<group>"; };
+		D5BE123E2B893D66009C026C /* Logger+AltMarketplace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltMarketplace.swift"; sourceTree = "<group>"; };
 		D5BE12402B8941A7009C026C /* PendingAppInstall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAppInstall.swift; sourceTree = "<group>"; };
 		D5C0E7662AD9C75900530CA4 /* AppCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCardCollectionViewCell.swift; sourceTree = "<group>"; };
 		D5C8ACDA2A956B2B00669F92 /* Process+STPrivilegedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Process+STPrivilegedTask.swift"; sourceTree = "<group>"; };
@@ -1204,6 +1242,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				D561B2EB28EF5A4F006752E4 /* AltSign-Dynamic in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5BD17CD2B6474FF00BAE633 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5BE12452B8943F2009C026C /* Roxas.framework in Frameworks */,
+				D5BE12442B8943E1009C026C /* AltStoreCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1847,6 +1894,7 @@
 				BFF7C905257844C900E55F36 /* AltXPC */,
 				D5FB7A142AA284BE00EF863D /* AltJIT */,
 				D586D39928EF58B0000E101F /* AltTests */,
+				D5BD17D12B6474FF00BAE633 /* AltMarketplace */,
 				BFD247852284BB3300981D42 /* Frameworks */,
 				BFD2476B2284B9A500981D42 /* Products */,
 				4460E048E3AC1C9708C4FA33 /* Pods */,
@@ -1867,6 +1915,7 @@
 				BFF7C904257844C900E55F36 /* AltXPC.xpc */,
 				D586D39828EF58B0000E101F /* AltTests.xctest */,
 				D5FB7A132AA284BE00EF863D /* altjit */,
+				D5BD17D02B6474FF00BAE633 /* AltMarketplace.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2307,6 +2356,18 @@
 			path = Types;
 			sourceTree = "<group>";
 		};
+		D5BD17D12B6474FF00BAE633 /* AltMarketplace */ = {
+			isa = PBXGroup;
+			children = (
+				D5BD17D22B6474FF00BAE633 /* AltMarketplace.swift */,
+				D5BE12382B89372E009C026C /* InstallAppRequest.swift */,
+				D5BE123C2B893ABF009C026C /* HTTPHeader.swift */,
+				D5BE123E2B893D66009C026C /* Logger+AltMarketplace.swift */,
+				D5BD17D42B6474FF00BAE633 /* Info.plist */,
+			);
+			path = AltMarketplace;
+			sourceTree = "<group>";
+		};
 		D5BDD9712B1FC8FA001F84DE /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
@@ -2578,12 +2639,14 @@
 				BF088D2B2501A087008082D9 /* Embed Frameworks */,
 				744AE3B03F6BF664FC5705C5 /* [CP] Embed Pods Frameworks */,
 				BF98917B250AABF4002ACF50 /* Embed Foundation Extensions */,
+				D5BD17D82B6474FF00BAE633 /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				BF66EE842501AE50007EE018 /* PBXTargetDependency */,
 				BF989176250AABF4002ACF50 /* PBXTargetDependency */,
+				D5BD17D62B6474FF00BAE633 /* PBXTargetDependency */,
 			);
 			name = AltStore;
 			productName = AltStore;
@@ -2629,6 +2692,24 @@
 			productReference = D586D39828EF58B0000E101F /* AltTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		D5BD17CF2B6474FF00BAE633 /* AltMarketplace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D5BD17DB2B6474FF00BAE633 /* Build configuration list for PBXNativeTarget "AltMarketplace" */;
+			buildPhases = (
+				D5BD17CC2B6474FF00BAE633 /* Sources */,
+				D5BD17CD2B6474FF00BAE633 /* Frameworks */,
+				D5BD17CE2B6474FF00BAE633 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D51D57D72B896B6000D15DF7 /* PBXTargetDependency */,
+			);
+			name = AltMarketplace;
+			productName = AltMarketplace;
+			productReference = D5BD17D02B6474FF00BAE633 /* AltMarketplace.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 		D5FB7A122AA284BE00EF863D /* AltJIT */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D5FB7A172AA284BE00EF863D /* Build configuration list for PBXNativeTarget "AltJIT" */;
@@ -2657,7 +2738,7 @@
 		BFD247622284B9A500981D42 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "Riley Testut";
 				TargetAttributes = {
@@ -2714,6 +2795,9 @@
 						CreatedOnToolsVersion = 14.0.1;
 						TestTargetID = BFD247692284B9A500981D42;
 					};
+					D5BD17CF2B6474FF00BAE633 = {
+						CreatedOnToolsVersion = 15.3;
+					};
 					D5FB7A122AA284BE00EF863D = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -2747,6 +2831,7 @@
 				BFF7C903257844C900E55F36 /* AltXPC */,
 				D5FB7A122AA284BE00EF863D /* AltJIT */,
 				D586D39728EF58B0000E101F /* AltTests */,
+				D5BD17CF2B6474FF00BAE633 /* AltMarketplace */,
 			);
 		};
 /* End PBXProject section */
@@ -2829,6 +2914,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D586D39628EF58B0000E101F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5BD17CE2B6474FF00BAE633 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3381,6 +3473,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D5BD17CC2B6474FF00BAE633 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5BE123D2B893ABF009C026C /* HTTPHeader.swift in Sources */,
+				D5BE123F2B893D66009C026C /* Logger+AltMarketplace.swift in Sources */,
+				D5BE12392B89372E009C026C /* InstallAppRequest.swift in Sources */,
+				D5BD17D32B6474FF00BAE633 /* AltMarketplace.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D5FB7A0F2AA284BE00EF863D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3433,6 +3536,11 @@
 			target = BFF7C903257844C900E55F36 /* AltXPC */;
 			targetProxy = BFF7C90D257844C900E55F36 /* PBXContainerItemProxy */;
 		};
+		D51D57D72B896B6000D15DF7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF66EE7D2501AE50007EE018 /* AltStoreCore */;
+			targetProxy = D51D57D62B896B6000D15DF7 /* PBXContainerItemProxy */;
+		};
 		D537C8572AA94D4A009A1E08 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D5FB7A122AA284BE00EF863D /* AltJIT */;
@@ -3442,6 +3550,11 @@
 			isa = PBXTargetDependency;
 			target = BFD247692284B9A500981D42 /* AltStore */;
 			targetProxy = D586D39C28EF58B0000E101F /* PBXContainerItemProxy */;
+		};
+		D5BD17D62B6474FF00BAE633 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D5BD17CF2B6474FF00BAE633 /* AltMarketplace */;
+			targetProxy = D5BD17D52B6474FF00BAE633 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -4277,6 +4390,76 @@
 			};
 			name = Release;
 		};
+		D5BD17D92B6474FF00BAE633 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AltMarketplace/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AltMarketplace;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Riley Testut. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltMarketplace;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D5BD17DA2B6474FF00BAE633 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AltMarketplace/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AltMarketplace;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Riley Testut. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltStore.AltMarketplace;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		D5FB7A182AA284BE00EF863D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4461,6 +4644,15 @@
 			buildConfigurations = (
 				D586D39E28EF58B0000E101F /* Debug */,
 				D586D39F28EF58B0000E101F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D5BD17DB2B6474FF00BAE633 /* Build configuration list for PBXNativeTarget "AltMarketplace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5BD17D92B6474FF00BAE633 /* Debug */,
+				D5BD17DA2B6474FF00BAE633 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
