@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import MarketplaceKit
 
 import AltSign
 
@@ -50,6 +51,8 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var version: String
     @NSManaged public var buildVersion: String
     
+    //TODO: Make refreshedDate and expirationDate optional?
+    // TODO: Make modifiedDate?
     @NSManaged public var refreshedDate: Date
     @NSManaged public var expirationDate: Date
     @NSManaged public var installedDate: Date
@@ -105,6 +108,19 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         // than one that has a hidden assumption a second method will be called.
         self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber, storeBuildVersion: storeBuildVersion)
     }
+    
+    public init(marketplaceApp: StoreApp, context: NSManagedObjectContext)
+    {
+        super.init(entity: InstalledApp.entity(), insertInto: context)
+        
+        self.name = marketplaceApp.name
+        self.bundleIdentifier = marketplaceApp.bundleIdentifier
+        self.resignedBundleIdentifier = marketplaceApp.bundleIdentifier
+        
+        self.refreshedDate = Date()
+        self.installedDate = Date()
+        self.expirationDate = Date.distantFuture
+    }
 }
 
 public extension InstalledApp
@@ -130,6 +146,22 @@ public extension InstalledApp
         if let provisioningProfile = resignedApp.provisioningProfile
         {
             self.update(provisioningProfile: provisioningProfile)
+        }
+    }
+    
+    @available(iOS 17.4, *)
+    func update(for metadata: AppLibrary.App.Metadata, appVersion: AppVersion)
+    {
+        self.version = metadata.version
+        self.buildVersion = metadata.shortVersion
+        self.refreshedDate = Date() // Effectively becomes "modified date"
+        
+        self.storeBuildVersion = appVersion.buildVersion        
+        
+        if let storeApp = appVersion.storeApp
+        {
+            self.name = storeApp.name
+            self.storeApp = storeApp
         }
     }
     
