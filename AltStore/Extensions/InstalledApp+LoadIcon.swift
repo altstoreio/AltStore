@@ -7,6 +7,7 @@
 //
 
 import AltStoreCore
+import AltSign
 
 import Nuke
 
