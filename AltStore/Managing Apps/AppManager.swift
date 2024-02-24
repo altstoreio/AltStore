@@ -476,7 +476,7 @@ extension AppManager
         #else
         
         let group = await $storeApp.perform {
-            self.install($0, presentingViewController: presentingViewController, context: context) { _ in }
+            self.installNonMarketplaceApp($0, presentingViewController: presentingViewController, context: context) { _ in }
         }
         
         let task = Task {
@@ -512,7 +512,7 @@ extension AppManager
         #else
         
         let group = await $installedApp.perform {
-            self.update($0, to: version, presentingViewController: presentingViewController, context: context) { _ in }
+            self.updateNonMarketplaceApp($0, to: version, presentingViewController: presentingViewController, context: context) { _ in }
         }
         
         let task = Task {
@@ -762,7 +762,7 @@ extension AppManager
     }
     
     @discardableResult
-    private func update(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
+    private func updateNonMarketplaceApp(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
     {
         guard let appVersion = version ?? installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
