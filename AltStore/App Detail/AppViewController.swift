@@ -556,36 +556,35 @@ extension AppViewController
     {
         guard self.app.installedApp == nil else { return }
         
-        Task<Void, Never>(priority: .userInitiated) {
-            let group = await AppManager.shared.installAsync(self.app, presentingViewController: self) { (result) in
-                do
-                {
-                    _ = try result.get()
-                }
-                catch OperationError.cancelled
-                {
-                    // Ignore
-                }
-                catch
-                {
-                    DispatchQueue.main.async {
-                        let toastView = ToastView(error: error)
-                        toastView.opensErrorLog = true
-                        toastView.show(in: self)
-                    }
-                }
-                
+        Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            let (task, progress) = await AppManager.shared.installAsync(self.app, presentingViewController: self)
+            if !task.isCancelled
+            {
+                self.bannerView.button.progress = progress
+                self.navigationBarDownloadButton.progress = progress
+            }
+            
+            do
+            {
+                _ = try await task.value
+            }
+            catch OperationError.cancelled
+            {
+                // Ignore
+            }
+            catch
+            {
                 DispatchQueue.main.async {
-                    self.bannerView.button.progress = nil
-                    self.navigationBarDownloadButton.progress = nil
-                    self.update()
+                    let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
+                    toastView.show(in: self)
                 }
             }
             
-            if !group.progress.isCancelled
-            {
-                self.bannerView.button.progress = group.progress
-                self.navigationBarDownloadButton.progress = group.progress
+            DispatchQueue.main.async {
+                self.bannerView.button.progress = nil
+                self.navigationBarDownloadButton.progress = nil
+                self.update()
             }
         }
     }
@@ -604,23 +603,26 @@ extension AppViewController
             return
         }
         
-        AppManager.shared.update(installedApp, to: version, presentingViewController: self) { (result) in
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .success: print("Updated app from AppViewController:", installedApp.bundleIdentifier)
-                case .failure(OperationError.cancelled): break
-                case .failure(let error):
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                }
-                
-                self.update()
+        Task<Void, Never> { @MainActor in
+            let (task, _) = await AppManager.shared.updateAsync(installedApp, to: version, presentingViewController: self)
+            
+            self.update()
+            
+            do
+            {
+                _ = try await task.value
+                print("Updated app from AppViewController:", installedApp.bundleIdentifier)
             }
+            catch OperationError.cancelled {}
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
+            }
+            
+            self.update()
         }
-        
-        self.update()
     }
 }
 

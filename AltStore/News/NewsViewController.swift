@@ -338,38 +338,38 @@ private extension NewsViewController
         }
         
         Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            
+            let task: Task<AsyncManaged<InstalledApp>, Error>
             if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
             {
-                AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+                let (updateTask, _) = await AppManager.shared.updateAsync(installedApp, presentingViewController: self)
+                task = updateTask
             }
             else
             {
-                await AppManager.shared.installAsync(storeApp, presentingViewController: self, completionHandler: finish(_:))
+                let (installTask, _) = await AppManager.shared.installAsync(storeApp, presentingViewController: self)
+                task = installTask
             }
             
             UIView.performWithoutAnimation {
                 self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
             }
-        }
-        
-        @MainActor
-        func finish(_ result: Result<InstalledApp, Error>)
-        {
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(OperationError.cancelled): break // Ignore
-                case .failure(let error):
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                    
-                case .success: print("Installed app:", storeApp.bundleIdentifier)
-                }
-                
-                UIView.performWithoutAnimation {
-                    self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
-                }
+            
+            do
+            {
+                _ = try await task.value
+                print("Installed app:", storeApp.bundleIdentifier)
+            }
+            catch OperationError.cancelled {} // Ignore
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
+            }
+            
+            UIView.performWithoutAnimation {
+                self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
             }
         }
     }

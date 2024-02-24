@@ -556,44 +556,45 @@ private extension BrowseViewController
         }
         
         Task<Void, Never>(priority: .userInitiated) { @MainActor in
+            
+            let task: Task<AsyncManaged<InstalledApp>, Error>
             if let installedApp = app.installedApp, installedApp.isUpdateAvailable
             {
-                AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
+                let (updateTask, _) = await AppManager.shared.updateAsync(installedApp, presentingViewController: self)
+                task = updateTask
             }
             else
             {
-                await AppManager.shared.installAsync(app, presentingViewController: self, completionHandler: finish(_:))
+                let (installTask, _) = await AppManager.shared.installAsync(app, presentingViewController: self)
+                task = installTask
             }
             
             UIView.performWithoutAnimation {
                 self.collectionView.reloadItems(at: [indexPath])
             }
-        }
-        
-        @MainActor
-        func finish(_ result: Result<InstalledApp, Error>)
-        {
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(OperationError.cancelled): break // Ignore
-                case .failure(let error):
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                    
-                case .success: print("Installed app:", app.bundleIdentifier)
-                }
+            
+            do
+            {
+                _ = try await task.value
                 
-                UIView.performWithoutAnimation {
-                    if let indexPath = self.dataSource.fetchedResultsController.indexPath(forObject: app)
-                    {
-                        self.collectionView.reloadItems(at: [indexPath])
-                    }
-                    else
-                    {
-                        self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
-                    }
+                print("Installed app:", app.bundleIdentifier)
+            }
+            catch OperationError.cancelled {}
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
+            }
+            
+            UIView.performWithoutAnimation {
+                if let indexPath = self.dataSource.fetchedResultsController.indexPath(forObject: app)
+                {
+                    self.collectionView.reloadItems(at: [indexPath])
+                }
+                else
+                {
+                    self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
                 }
             }
         }

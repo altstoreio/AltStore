@@ -49,7 +49,7 @@ private extension RefreshAltStoreViewController
             }
                         
             // Install, _not_ refresh, to ensure we are installing with a non-revoked certificate.
-            let group = AppManager.shared.install(altStore, presentingViewController: self, context: self.context) { (result) in
+            let group = AppManager.shared.installNonMarketplaceApp(altStore, presentingViewController: self, context: self.context) { (result) in
                 switch result
                 {
                 case .success: self.completionHandler?(.success(()))

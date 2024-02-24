@@ -405,26 +405,30 @@ private extension SourceDetailContentViewController
     {
         do
         {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
-                {
-                    AppManager.shared.update(installedApp, presentingViewController: self) { result in
-                        continuation.resume(with: result.map { _ in () })
-                    }
-                    
-                    reload()
-                }
-                else
-                {
-                    Task<Void, Never> { @MainActor in
-                        await AppManager.shared.installAsync(storeApp, presentingViewController: self) { result in
-                            continuation.resume(with: result.map { _ in () })
-                        }
-                        
-                        reload()
-                    }
-                }
+            let task: Task<AsyncManaged<InstalledApp>, Error>
+            
+            if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
+            {
+                let (updateTask, _) = await AppManager.shared.updateAsync(installedApp, presentingViewController: self)
+                task = updateTask
             }
+            else
+            {
+                let (installTask, _) = await AppManager.shared.installAsync(storeApp, presentingViewController: self)
+                task = installTask
+            }
+            
+            UIView.performWithoutAnimation {
+                guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
+                    self.collectionView.reloadSections([Section.featuredApps.rawValue])
+                    return
+                }
+                
+                let indexPath = IndexPath(item: index, section: Section.featuredApps.rawValue)
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+            
+            _ = try await task.value
         }
         catch is CancellationError {}
         catch
@@ -435,19 +439,6 @@ private extension SourceDetailContentViewController
         }
         
         self.collectionView.reloadSections([Section.featuredApps.rawValue])
-        
-        func reload()
-        {
-            UIView.performWithoutAnimation {
-                guard let index = self.appsDataSource.items.firstIndex(of: storeApp) else {
-                    self.collectionView.reloadSections([Section.featuredApps.rawValue])
-                    return
-                }
-                
-                let indexPath = IndexPath(item: index, section: Section.featuredApps.rawValue)
-                self.collectionView.reloadItems(at: [indexPath])
-            }
-        }
     }
     
     func open(_ installedApp: InstalledApp)

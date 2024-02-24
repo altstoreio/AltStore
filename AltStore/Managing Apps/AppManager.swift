@@ -96,6 +96,17 @@ extension AppManager
 {
     func update()
     {
+        #if MARKETPLACE
+        
+        if #available(iOS 17.4, *)
+        {
+            Task<Void, Never>(priority: .medium) {
+                await AppMarketplace.shared.update()
+            }
+        }
+        
+        #else
+        
         DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
             #if targetEnvironment(simulator)
             // Apps aren't ever actually installed to simulator, so just do nothing rather than delete them from database.
@@ -187,6 +198,8 @@ extension AppManager
                 print("Failed to remove cached apps.", error)
             }
         }
+        
+        #endif
     }
     
     @discardableResult
@@ -381,16 +394,15 @@ extension AppManager
     }
     
     @discardableResult
-    func installAsync<T: AppProtocol>(@AsyncManaged _ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(),
-                                      completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) async -> RefreshGroup
+    func installAsync(@AsyncManaged _ app: StoreApp, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext()) async -> (Task<AsyncManaged<InstalledApp>, Error>, Progress)
     {
-        @AsyncManaged var installingApp: AppProtocol = app
+        @AsyncManaged var storeApp: StoreApp = app
         var didAddSource = false
         
         do
         {
             // Check if we need to add source first before installing app.
-            if let source = await $app.perform({ $0.storeApp?.source }), try await !source.isAdded
+            if let source = await $app.perform({ $0.source }), try await !source.isAdded
             {
                 // This app's source is not yet added, so add it first.
                 guard let presentingViewController else { throw OperationError.sourceNotAdded(source) }
@@ -418,7 +430,7 @@ extension AppManager
                 }
                 
                 // Fetch persisted StoreApp to use for remainder of operation.
-                installingApp = try await DatabaseManager.shared.viewContext.performAsync {
+                storeApp = try await DatabaseManager.shared.viewContext.performAsync {
                     let fetchRequest = StoreApp.fetchRequest()
                     fetchRequest.predicate = NSPredicate(format: "%K == %@ AND %K == %@",
                                                          #keyPath(StoreApp.bundleIdentifier), appBundleID,
@@ -433,24 +445,95 @@ extension AppManager
         }
         catch
         {
-            completionHandler(.failure(error))
+            let task = Task<AsyncManaged<InstalledApp>, Error> {
+                throw error
+            }
+            task.cancel()
             
-            let group = RefreshGroup(context: context)
-            group.progress.cancel()
-            return group
+            let progress = Progress.discreteProgress(totalUnitCount: 1)
+            progress.cancel()
+            
+            return (task, progress)
         }
         
-        let group = await $installingApp.perform { self.install($0, presentingViewController: presentingViewController, context: context, completionHandler: completionHandler) }
-        
-        if didAddSource
-        {
-            // Post notification from main queue _after_ assigning progress for it
-            await MainActor.run { [installingApp] in
-                NotificationCenter.default.post(name: AppManager.willInstallAppFromNewSourceNotification, object: installingApp)
+        defer {
+            if didAddSource
+            {
+                // Post notification from main queue _after_ assigning progress for it
+                DispatchQueue.main.async { [storeApp] in
+                    NotificationCenter.default.post(name: AppManager.willInstallAppFromNewSourceNotification, object: storeApp)
+                }
             }
         }
         
-        return group
+        #if MARKETPLACE
+        
+        guard #available(iOS 17.4, *) else { fatalError() } //TODO: Remove?
+        
+        let (task, progress) = await AppMarketplace.shared.install(storeApp, presentingViewController: presentingViewController, beginInstallationHandler: nil)
+        return (task, progress)
+        
+        #else
+        
+        let group = await $storeApp.perform {
+            self.install($0, presentingViewController: presentingViewController, context: context) { _ in }
+        }
+        
+        let task = Task {
+            try await withCheckedThrowingContinuation { continuation in
+                group.completionHandler = { results in
+                    do
+                    {
+                        guard let result = results.values.first else { throw OperationError.unknown() }
+                        continuation.resume(with: result.map { AsyncManaged(wrappedValue: $0) })
+                    }
+                    catch
+                    {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+        
+        return (task, group.progress)
+        
+        #endif
+    }
+    
+    func updateAsync(@AsyncManaged _ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext()) async -> (Task<AsyncManaged<InstalledApp>, Error>, Progress)
+    {
+        #if MARKETPLACE
+        
+        guard #available(iOS 17.4, *) else { fatalError() } //TODO: Remove
+
+        let task = await AppMarketplace.shared.update(installedApp, to: version, presentingViewController: presentingViewController, beginInstallationHandler: nil)
+        return task
+
+        #else
+        
+        let group = await $installedApp.perform {
+            self.update($0, to: version, presentingViewController: presentingViewController, context: context) { _ in }
+        }
+        
+        let task = Task {
+            try await withCheckedThrowingContinuation { continuation in
+                group.completionHandler = { results in
+                    do
+                    {
+                        guard let result = results.values.first else { throw OperationError.unknown() }
+                        continuation.resume(with: result.map { AsyncManaged(wrappedValue: $0) })
+                    }
+                    catch
+                    {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+        
+        return (task, group.progress)
+
+        #endif
     }
 }
 
@@ -654,8 +737,10 @@ extension AppManager
 
 extension AppManager
 {
+    // Should never be called anymore, but there are some use cases left for classic AltStore.
+    // So rather than making it private (like update()), we rename it to be clear it's not for marketplace apps.
     @discardableResult
-    func install<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
+    func installNonMarketplaceApp<T: AppProtocol>(_ app: T, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
     {
         let group = RefreshGroup(context: context)
         group.completionHandler = { (results) in
@@ -677,11 +762,13 @@ extension AppManager
     }
     
     @discardableResult
-    func update(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> Progress
+    private func update(_ installedApp: InstalledApp, to version: AppVersion? = nil, presentingViewController: UIViewController?, context: AuthenticatedOperationContext = AuthenticatedOperationContext(), completionHandler: @escaping (Result<InstalledApp, Error>) -> Void) -> RefreshGroup
     {
         guard let appVersion = version ?? installedApp.storeApp?.latestSupportedVersion else {
             completionHandler(.failure(OperationError.appNotFound(name: installedApp.name)))
-            return Progress.discreteProgress(totalUnitCount: 1)
+            
+            let group = RefreshGroup(context: context)
+            return group
         }
         
         let group = RefreshGroup(context: context)
@@ -702,7 +789,7 @@ extension AppManager
         
         self.perform([operation], presentingViewController: presentingViewController, group: group)
         
-        return group.progress
+        return group
     }
     
     @discardableResult
@@ -1010,7 +1097,7 @@ extension AppManager
     }
 }
 
-private extension AppManager
+internal extension AppManager
 {
     enum AppOperation
     {
@@ -1060,7 +1147,10 @@ private extension AppManager
             }
         }
     }
-    
+}
+
+private extension AppManager
+{
     @discardableResult
     private func perform(_ operations: [AppOperation], presentingViewController: UIViewController?, group: RefreshGroup) -> RefreshGroup
     {
@@ -2031,59 +2121,10 @@ private extension AppManager
             self.log(error, operation: operation.loggedErrorOperation, app: operation.app)
         }
     }
-    
-    func scheduleExpirationWarningLocalNotification(for app: InstalledApp)
-    {
-        let notificationDate = app.expirationDate.addingTimeInterval(-1 * 60 * 60 * 24) // 24 hours before expiration.
-        
-        let timeIntervalUntilNotification = notificationDate.timeIntervalSinceNow
-        guard timeIntervalUntilNotification > 0 else {
-            // Crashes if we pass negative value to UNTimeIntervalNotificationTrigger initializer.
-            return
-        }
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeIntervalUntilNotification, repeats: false)
-        
-        let content = UNMutableNotificationContent()
-        content.title = NSLocalizedString("AltStore Expiring Soon", comment: "")
-        content.body = NSLocalizedString("AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring.", comment: "")
-        content.sound = .default
-        
-        let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
-    }
-    
-    func log(_ error: Error, operation: LoggedError.Operation, app: AppProtocol)
-    {
-        switch error
-        {
-        case is CancellationError: return // Don't log CancellationErrors
-        case let nsError as NSError where nsError.domain == CancellationError()._domain: return
-        default: break
-        }
-        
-        // Sanitize NSError on same thread before performing background task.
-        let sanitizedError = (error as NSError).sanitizedForSerialization()
-        
-        DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
-            var app = app
-            if let managedApp = app as? NSManagedObject, let tempApp = context.object(with: managedApp.objectID) as? AppProtocol
-            {
-                app = tempApp
-            }
-            
-            do
-            {
-                _ = LoggedError(error: sanitizedError, app: app, operation: operation, context: context)
-                try context.save()
-            }
-            catch let saveError
-            {
-                print("[ALTLog] Failed to log error \(sanitizedError.domain) code \(sanitizedError.code) for \(app.bundleIdentifier):", saveError)
-            }
-        }
-    }
-    
+}
+
+internal extension AppManager
+{
     func run(_ operations: [Foundation.Operation], context: OperationContext?, requiresSerialQueue: Bool = false)
     {
         // Find "Install AltStore" operation if it already exists in `context`
@@ -2144,6 +2185,58 @@ private extension AppManager
         {
         case .install, .update: self.installationProgress[bundleID] = progress
         case .refresh, .activate, .deactivate, .backup, .restore: self.refreshProgress[bundleID] = progress
+        }
+    }
+    
+    func scheduleExpirationWarningLocalNotification(for app: InstalledApp)
+    {
+        let notificationDate = app.expirationDate.addingTimeInterval(-1 * 60 * 60 * 24) // 24 hours before expiration.
+        
+        let timeIntervalUntilNotification = notificationDate.timeIntervalSinceNow
+        guard timeIntervalUntilNotification > 0 else {
+            // Crashes if we pass negative value to UNTimeIntervalNotificationTrigger initializer.
+            return
+        }
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeIntervalUntilNotification, repeats: false)
+        
+        let content = UNMutableNotificationContent()
+        content.title = NSLocalizedString("AltStore Expiring Soon", comment: "")
+        content.body = NSLocalizedString("AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring.", comment: "")
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: AppManager.expirationWarningNotificationID, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    func log(_ error: Error, operation: LoggedError.Operation, app: AppProtocol)
+    {
+        switch error
+        {
+        case is CancellationError: return // Don't log CancellationErrors
+        case let nsError as NSError where nsError.domain == CancellationError()._domain: return
+        default: break
+        }
+        
+        // Sanitize NSError on same thread before performing background task.
+        let sanitizedError = (error as NSError).sanitizedForSerialization()
+        
+        DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
+            var app = app
+            if let managedApp = app as? NSManagedObject, let tempApp = context.object(with: managedApp.objectID) as? AppProtocol
+            {
+                app = tempApp
+            }
+            
+            do
+            {
+                _ = LoggedError(error: sanitizedError, app: app, operation: operation, context: context)
+                try context.save()
+            }
+            catch let saveError
+            {
+                print("[ALTLog] Failed to log error \(sanitizedError.domain) code \(sanitizedError.code) for \(app.bundleIdentifier):", saveError)
+            }
         }
     }
 }

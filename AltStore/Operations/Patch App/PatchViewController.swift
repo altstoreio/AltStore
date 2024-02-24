@@ -279,7 +279,7 @@ private extension PatchViewController
         }
         
         var unzippingError: Error?
-        let refreshGroup = AppManager.shared.install(patchApp, presentingViewController: self, context: self.context) { result in
+        let refreshGroup = AppManager.shared.installNonMarketplaceApp(patchApp, presentingViewController: self, context: self.context) { result in
             do
             {
                 _ = try result.get()

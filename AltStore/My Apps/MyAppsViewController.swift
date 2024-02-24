@@ -758,30 +758,35 @@ private extension MyAppsViewController
             return
         }
         
-        _ = AppManager.shared.update(installedApp, presentingViewController: self) { (result) in
-            DispatchQueue.main.async {
-                switch result
-                {
-                case .failure(OperationError.cancelled):
-                    self.collectionView.reloadItems(at: [indexPath])
-                    
-                case .failure(let error):
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                    
-                    self.collectionView.reloadItems(at: [indexPath])
-                    
-                case .success:
-                    print("Updated app:", installedApp.bundleIdentifier)
-                    // No need to reload, since the the update cell is gone now.
-                }
+        Task<Void, Never> { @MainActor in
+            do
+            {
+                let (task, _) = await AppManager.shared.updateAsync(installedApp, presentingViewController: self)
                 
-                self.update()
+                self.collectionView.reloadItems(at: [indexPath])
+                
+                // Wait for task to complete.
+                _ = try await task.value
+                
+                print("Updated app:", installedApp.bundleIdentifier)
+                
+                // No need to reload, since the the update cell is gone now.
+                // self.collectionView.reloadItems(at: [indexPath])
+            }
+            catch OperationError.cancelled
+            {
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
+                
+                self.collectionView.reloadItems(at: [indexPath])
             }
         }
         
-        self.collectionView.reloadItems(at: [indexPath])
     }
     
     @IBAction func sideloadApp(_ sender: UIBarButtonItem)
@@ -930,7 +935,7 @@ private extension MyAppsViewController
                 
                 guard let application = context.application else { throw OperationError.invalidParameters }
                 
-                let group = AppManager.shared.install(application, presentingViewController: self) { (result) in
+                let group = AppManager.shared.installNonMarketplaceApp(application, presentingViewController: self) { (result) in
                     switch result
                     {
                     case .success(let installedApp): context.installedApp = installedApp

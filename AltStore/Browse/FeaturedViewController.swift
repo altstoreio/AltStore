@@ -500,44 +500,46 @@ private extension FeaturedViewController
             return
         }
         
-        if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
-        {
-            AppManager.shared.update(installedApp, presentingViewController: self, completionHandler: finish(_:))
-        }
-        else
-        {
-            AppManager.shared.install(storeApp, presentingViewController: self, completionHandler: finish(_:))
-        }
-        
-        UIView.performWithoutAnimation {
-            self.collectionView.reloadItems(at: [indexPath])
-        }
-        
-        func finish(_ result: Result<InstalledApp, Error>)
-        {
-            DispatchQueue.main.async {
-                switch result
+        Task<Void, Never> { @MainActor in
+            do
+            {
+                let task: Task<AsyncManaged<InstalledApp>, Error>
+                if let installedApp = storeApp.installedApp, installedApp.isUpdateAvailable
                 {
-                case .failure(OperationError.cancelled): break // Ignore
-                case .failure(let error):
-                    let toastView = ToastView(error: error)
-                    toastView.opensErrorLog = true
-                    toastView.show(in: self)
-                    
-                case .success:
-                    Logger.main.info("Installed app \(storeApp.bundleIdentifier, privacy: .public) from FeaturedViewController.")
+                    let (updateTask, _) = await AppManager.shared.updateAsync(installedApp, presentingViewController: self)
+                    task = updateTask
+                }
+                else
+                {
+                    let (installTask, _) = await AppManager.shared.installAsync(storeApp, presentingViewController: self)
+                    task = installTask
                 }
                 
-                for indexPath in self.collectionView.indexPathsForVisibleItems
-                {
-                    // Only need to reload if it's still visible.
-                    
-                    let item = self.dataSource.item(at: indexPath)
-                    guard item == storeApp else { continue }
-                    
-                    UIView.performWithoutAnimation {
-                        self.collectionView.reloadItems(at: [indexPath])
-                    }
+                UIView.performWithoutAnimation {
+                    self.collectionView.reloadItems(at: [indexPath])
+                }
+                
+                _ = try await task.value
+                
+                Logger.main.info("Installed app \(storeApp.bundleIdentifier, privacy: .public) from FeaturedViewController.")
+            }
+            catch OperationError.cancelled {}
+            catch
+            {
+                let toastView = ToastView(error: error)
+                toastView.opensErrorLog = true
+                toastView.show(in: self)
+            }
+            
+            for indexPath in self.collectionView.indexPathsForVisibleItems
+            {
+                // Only need to reload if it's still visible.
+                
+                let item = self.dataSource.item(at: indexPath)
+                guard item == storeApp else { continue }
+                
+                UIView.performWithoutAnimation {
+                    self.collectionView.reloadItems(at: [indexPath])
                 }
             }
         }
