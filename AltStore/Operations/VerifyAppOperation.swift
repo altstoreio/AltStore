@@ -256,21 +256,18 @@ private extension VerifyAppOperation
         }
         catch let error as VerificationError where error.code == .undeclaredPermissions
         {
-            #if !BETA
-            throw error
-            #endif
-                        
             if let recommendedSources = UserDefaults.shared.recommendedSources, let (sourceID, sourceURL) = await $storeApp.perform({ $0.source.map { ($0.identifier, $0.sourceURL) } })
             {
                 let normalizedSourceURL = try? sourceURL.normalized()
                 
                 let isRecommended = recommendedSources.contains { $0.identifier == sourceID || (try? $0.sourceURL?.normalized()) == normalizedSourceURL }
                 guard !isRecommended else {
-                    // Don't enforce permission checking for Recommended Sources while 2.0 is in beta.
+                    // Don't enforce permission checking for Recommended Sources for now.
                     return localPermissions
                 }
             }
             
+            throw error
         }
         
         return localPermissions
