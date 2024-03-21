@@ -271,25 +271,6 @@ private extension VerifyAppOperation
                 }
             }
             
-            // While in beta, allow users to temporarily bypass permissions alert
-            // so source maintainers have time to update their sources.
-            guard let presentingViewController = self.context.presentingViewController else { throw error }
-            
-            let message = NSLocalizedString("While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated.", comment: "")
-            
-            let ignoreAction = await UIAlertAction(title: NSLocalizedString("Install Anyway", comment: ""), style: .destructive)
-            let viewPermissionsAction = await UIAlertAction(title: NSLocalizedString("View Permisions", comment: ""), style: .default)
-            
-            while true
-            {
-                let action = try await presentingViewController.presentConfirmationAlert(title: error.errorFailureReason,
-                                                                                         message: message,
-                                                                                         actions: [ignoreAction, viewPermissionsAction])
-                
-                guard action == viewPermissionsAction else { break } // break loop to continue with installation (unless we're viewing permissions).
-                
-                await presentingViewController.presentAlert(title: NSLocalizedString("Undeclared Permissions", comment: ""), message: error.recoverySuggestion)
-            }
         }
         
         return localPermissions
