@@ -10,9 +10,16 @@
 
 extern NSErrorDomain const AltServerErrorDomain;
 extern NSErrorDomain const AltServerInstallationErrorDomain;
+extern NSErrorDomain const AltServerConnectionErrorDomain;
 
+extern NSErrorUserInfoKey const ALTUnderlyingErrorDomainErrorKey;
 extern NSErrorUserInfoKey const ALTUnderlyingErrorCodeErrorKey;
 extern NSErrorUserInfoKey const ALTProvisioningProfileBundleIDErrorKey;
+extern NSErrorUserInfoKey const ALTDeviceNameErrorKey;
+extern NSErrorUserInfoKey const ALTOperatingSystemNameErrorKey;
+extern NSErrorUserInfoKey const ALTOperatingSystemVersionErrorKey;
+
+extern NSErrorUserInfoKey const ALTNSCodingPathKey;
 
 typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
 {
@@ -42,6 +49,20 @@ typedef NS_ERROR_ENUM(AltServerErrorDomain, ALTServerError)
     ALTServerErrorProfileNotFound = 15,
     
     ALTServerErrorAppDeletionFailed = 16,
+    
+    ALTServerErrorRequestedAppNotRunning = 100,
+    ALTServerErrorIncompatibleDeveloperDisk = 101
+};
+
+typedef NS_ERROR_ENUM(AltServerConnectionErrorDomain, ALTServerConnectionError)
+{
+    ALTServerConnectionErrorUnknown,
+    ALTServerConnectionErrorDeviceLocked,
+    ALTServerConnectionErrorInvalidRequest,
+    ALTServerConnectionErrorInvalidResponse,
+    ALTServerConnectionErrorUsbmuxd,
+    ALTServerConnectionErrorSSL,
+    ALTServerConnectionErrorTimedOut,
 };
 
 NS_ASSUME_NONNULL_BEGIN

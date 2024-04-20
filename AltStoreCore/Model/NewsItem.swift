@@ -84,8 +84,34 @@ public class NewsItem: NSManagedObject, Decodable, Fetchable
 
 public extension NewsItem
 {
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceIdentifier else { return nil }
+        
+        let globallyUniqueID = self.identifier + "|" + sourceIdentifier
+        return globallyUniqueID
+    }
+}
+
+public extension NewsItem
+{
     @nonobjc class func fetchRequest() -> NSFetchRequest<NewsItem>
     {
         return NSFetchRequest<NewsItem>(entityName: "NewsItem")
+    }
+    
+    class func sortedFetchRequest(for source: Source?) -> NSFetchRequest<NewsItem>
+    {
+        let fetchRequest = NewsItem.fetchRequest() as NSFetchRequest<NewsItem>
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NewsItem.date, ascending: false),
+                                        NSSortDescriptor(keyPath: \NewsItem.sortIndex, ascending: true),
+                                        NSSortDescriptor(keyPath: \NewsItem.sourceIdentifier, ascending: true)]
+        
+        if let source
+        {
+            fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(NewsItem.source), source)
+        }
+        
+        return fetchRequest
     }
 }

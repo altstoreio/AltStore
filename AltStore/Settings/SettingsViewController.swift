@@ -21,36 +21,40 @@ extension SettingsViewController
         case signIn
         case account
         case patreon
+        case display
         case appRefresh
         case instructions
+        case techyThings
         case credits
+        case macDirtyCow
         case debug
     }
     
     fileprivate enum AppRefreshRow: Int, CaseIterable
     {
         case backgroundRefresh
-        
-        @available(iOS 14, *)
         case addToSiri
-        
-        static var allCases: [AppRefreshRow] {
-            guard #available(iOS 14, *) else { return [.backgroundRefresh] }
-            return [.backgroundRefresh, .addToSiri]
-        }
     }
     
     fileprivate enum CreditsRow: Int, CaseIterable
     {
         case developer
+        case operations
         case designer
         case softwareLicenses
+    }
+    
+    fileprivate enum TechyThingsRow: Int, CaseIterable
+    {
+        case errorLog
+        case clearCache
     }
     
     fileprivate enum DebugRow: Int, CaseIterable
     {
         case sendFeedback
         case refreshAttempts
+        case responseCaching
     }
 }
 
@@ -68,6 +72,13 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var accountTypeLabel: UILabel!
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
+    @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
+    @IBOutlet private var disableResponseCachingSwitch: UISwitch!
+    
+    @IBOutlet private var mastodonButton: UIButton!
+    @IBOutlet private var threadsButton: UIButton!
+    @IBOutlet private var twitterButton: UIButton!
+    @IBOutlet private var githubButton: UIButton!
     
     @IBOutlet private var versionLabel: UILabel!
     
@@ -80,6 +91,7 @@ class SettingsViewController: UITableViewController
         super.init(coder: aDecoder)
         
         NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.openPatreonSettings(_:)), name: AppDelegate.openPatreonSettingsDeepLinkNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.openErrorLog(_:)), name: ToastView.openErrorLogNotification, object: nil)
     }
     
     override func viewDidLoad()
@@ -97,18 +109,56 @@ class SettingsViewController: UITableViewController
         debugModeGestureRecognizer.numberOfTouchesRequired = 3
         self.tableView.addGestureRecognizer(debugModeGestureRecognizer)
         
-        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        if let installedApp = InstalledApp.fetchAltStore(in: DatabaseManager.shared.viewContext)
         {
-            self.versionLabel.text = NSLocalizedString(String(format: "AltStore %@", version), comment: "AltStore Version")
+            #if BETA
+            // Only show build version for BETA builds.
+            let localizedVersion = if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String {
+                "\(installedApp.version) (\(bundleVersion))"
+            }
+            else {
+                installedApp.localizedVersion
+            }
+            #else
+            let localizedVersion = installedApp.version
+            #endif
+            
+            self.versionLabel.text = NSLocalizedString(String(format: "Version %@", localizedVersion), comment: "AltStore Version")
+        }
+        else if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        {
+            self.versionLabel.text = NSLocalizedString(String(format: "Version %@", version), comment: "AltStore Version")
         }
         else
         {
-            self.versionLabel.text = NSLocalizedString("AltStore", comment: "")
+            self.versionLabel.text = nil
         }
         
         self.tableView.contentInset.bottom = 20
         
         self.update()
+        
+        if #available(iOS 15, *)
+        {
+            if let appearance = self.tabBarController?.tabBar.standardAppearance
+            {
+                appearance.stackedLayoutAppearance.normal.badgeBackgroundColor = .altPrimary
+                self.navigationController?.tabBarItem.scrollEdgeAppearance = appearance
+            }
+            
+            // We can only configure the contentMode for a button's background image from Interface Builder.
+            // This works, but it means buttons don't visually highlight because there's no foreground image.
+            // As a workaround, we manually set the foreground image + contentMode here.
+            for button in [self.mastodonButton!, self.threadsButton!, self.twitterButton!, self.githubButton!]
+            {
+                // Get the assigned image from Interface Builder.
+                let image = button.configuration?.background.image
+                
+                button.configuration = nil
+                button.setImage(image, for: .normal)
+                button.imageView?.contentMode = .scaleAspectFit
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -137,6 +187,8 @@ private extension SettingsViewController
         }
         
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
+        self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
+        self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
         
         if self.isViewLoaded
         {
@@ -188,14 +240,45 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same WiFi as AltServer.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as AltServer.", comment: "")
             }
+            
+        case .display:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DISPLAY", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Personalize your AltStore experience by choosing an alternate app icon.", comment: "")
+            }
+            
             
         case .instructions:
             break
             
+        case .techyThings:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("TECHY THINGS", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Free up disk space by removing non-essential data, such as temporary files and backups for uninstalled apps.", comment: "")
+            }
+            
         case .credits:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("CREDITS", comment: "")
+            
+        case .macDirtyCow:
+            if isHeader
+            {
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("MACDIRTYCOW", comment: "")
+            }
+            else
+            {
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("If you've removed the 3-sideloaded app limit via the MacDirtyCow exploit, disable this setting to sideload more than 3 apps at a time.", comment: "")
+            }
             
         case .debug:
             settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DEBUG", comment: "")
@@ -212,6 +295,18 @@ private extension SettingsViewController
         
         let size = settingsHeaderFooterView.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         return size.height
+    }
+    
+    func isSectionHidden(_ section: Section) -> Bool
+    {
+        switch section
+        {
+        case .macDirtyCow:
+            let isHidden = !(UserDefaults.standard.isCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
+            return isHidden
+            
+        default: return false
+        }
     }
 }
 
@@ -267,7 +362,21 @@ private extension SettingsViewController
         UserDefaults.standard.isBackgroundRefreshEnabled = sender.isOn
     }
     
-    @available(iOS 14, *)
+    @IBAction func toggleEnforceThreeAppLimit(_ sender: UISwitch)
+    {
+        UserDefaults.standard.ignoreActiveAppsLimit = !sender.isOn
+        
+        if UserDefaults.standard.activeAppsLimit != nil
+        {
+            UserDefaults.standard.activeAppsLimit = InstalledApp.freeAccountActiveAppsLimit
+        }
+    }
+    
+    @IBAction func toggleDisableResponseCaching(_ sender: UISwitch)
+    {
+        UserDefaults.standard.responseCachingDisabled = sender.isOn
+    }
+    
     @IBAction func addRefreshAppsShortcut()
     {
         guard let shortcut = INShortcut(intent: INInteraction.refreshAllApps().intent) else { return }
@@ -276,6 +385,34 @@ private extension SettingsViewController
         viewController.delegate = self
         viewController.modalPresentationStyle = .formSheet
         self.present(viewController, animated: true, completion: nil)
+    }
+    
+    func clearCache()
+    {
+        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to clear AltStore's cache?", comment: ""),
+                                                message: NSLocalizedString("This will remove all temporary files as well as backups for uninstalled apps.", comment: ""),
+                                                preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { [weak self] _ in
+            self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
+        })
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Clear Cache", comment: ""), style: .destructive) { [weak self] _ in
+            AppManager.shared.clearAppCache { result in
+                DispatchQueue.main.async {
+                    self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
+                    
+                    switch result
+                    {
+                    case .success: break
+                    case .failure(let error):
+                        let alertController = UIAlertController(title: NSLocalizedString("Unable to Clear Cache", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                        alertController.addAction(.ok)
+                        self?.present(alertController, animated: true)
+                    }
+                }
+            }
+        })
+        
+        self.present(alertController, animated: true)
     }
     
     @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)
@@ -319,6 +456,51 @@ private extension SettingsViewController
             }
         }
     }
+    
+    func openMastodon(username: String)
+    {
+        // Rely on universal links to open app.
+        
+        let components = username.split(separator: "@")
+        guard components.count == 2 else { return }
+        
+        let server = String(components[1])
+        let username = "@" + String(components[0])
+        
+        guard let serverURL = URL(string: "https://" + server) else { return }
+        
+        let mastodonURL = serverURL.appendingPathComponent(username)
+        UIApplication.shared.open(mastodonURL, options: [:])
+    }
+    
+    func openThreads(username: String)
+    {
+        // Rely on universal links to open app.
+        
+        let safariURL = URL(string: "https://www.threads.net/@" + username)!
+        UIApplication.shared.open(safariURL, options: [:])
+    }
+    
+    @IBAction func followAltStoreMastodon()
+    {
+        self.openMastodon(username: "@altstore@fosstodon.org")
+    }
+    
+    @IBAction func followAltStoreThreads()
+    {
+        self.openThreads(username: "altstoreio")
+    }
+    
+    @IBAction func followAltStoreTwitter()
+    {
+        self.openTwitter(username: "altstoreio")
+    }
+    
+    @IBAction func followAltStoreGitHub()
+    {
+        let safariURL = URL(string: "https://github.com/altstoreio")!
+        UIApplication.shared.open(safariURL, options: [:])
+    }
 }
 
 private extension SettingsViewController
@@ -330,6 +512,17 @@ private extension SettingsViewController
         UIView.performWithoutAnimation {
             self.navigationController?.popViewController(animated: false)
             self.performSegue(withIdentifier: "showPatreon", sender: nil)
+        }
+    }
+    
+    @objc func openErrorLog(_ notification: Notification)
+    {
+        guard self.presentedViewController == nil else { return }
+        
+        self.navigationController?.popViewController(animated: false)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.performSegue(withIdentifier: "showErrorLog", sender: nil)
         }
     }
 }
@@ -353,6 +546,7 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 0
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 3
         case .appRefresh: return AppRefreshRow.allCases.count
@@ -360,30 +554,15 @@ extension SettingsViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        
-        if #available(iOS 14, *) {}
-        else if let cell = cell as? InsetGroupTableViewCell,
-                indexPath.section == Section.appRefresh.rawValue,
-                indexPath.row == AppRefreshRow.backgroundRefresh.rawValue
-        {
-            // Only one row is visible pre-iOS 14.
-            cell.style = .single
-        }
-        
-        return cell
-    }
-    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return nil
         case .signIn where self.activeTeam != nil: return nil
         case .account where self.activeTeam == nil: return nil
-        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
+        case .signIn, .account, .patreon, .display, .appRefresh, .techyThings, .credits, .macDirtyCow, .debug:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(headerView, for: section, isHeader: true)
             return headerView
@@ -397,8 +576,9 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return nil
         case .signIn where self.activeTeam != nil: return nil
-        case .signIn, .patreon, .appRefresh:
+        case .signIn, .patreon, .display, .appRefresh, .techyThings, .macDirtyCow:
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderFooterView") as! SettingsHeaderFooterView
             self.prepare(footerView, for: section, isHeader: false)
             return footerView
@@ -412,9 +592,10 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 1.0
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0
-        case .signIn, .account, .patreon, .appRefresh, .credits, .debug:
+        case .signIn, .account, .patreon, .display, .appRefresh, .techyThings, .credits, .macDirtyCow, .debug:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: true)
             return height
             
@@ -427,9 +608,10 @@ extension SettingsViewController
         let section = Section.allCases[section]
         switch section
         {
+        case _ where isSectionHidden(section): return 1.0
         case .signIn where self.activeTeam != nil: return 1.0
         case .account where self.activeTeam == nil: return 1.0            
-        case .signIn, .patreon, .appRefresh:
+        case .signIn, .patreon, .display, .appRefresh, .techyThings, .macDirtyCow:
             let height = self.preferredHeight(for: self.prototypeHeaderFooterView, in: section, isHeader: false)
             return height
             
@@ -446,24 +628,35 @@ extension SettingsViewController
         switch section
         {
         case .signIn: self.signIn()
-        case .instructions: break
         case .appRefresh:
             let row = AppRefreshRow.allCases[indexPath.row]
             switch row
             {
             case .backgroundRefresh: break
-            case .addToSiri:
-                guard #available(iOS 14, *) else { return }
-                self.addRefreshAppsShortcut()
+            case .addToSiri: self.addRefreshAppsShortcut()
+            }
+            
+        case .techyThings:
+            let row = TechyThingsRow.allCases[indexPath.row]
+            switch row
+            {
+            case .errorLog: break
+            case .clearCache: self.clearCache()
             }
             
         case .credits:
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer: self.openTwitter(username: "rileytestut")
+            case .developer: self.openMastodon(username: "@rileytestut@mastodon.social")
+            case .operations: self.openThreads(username: "shanegill.io")
             case .designer: self.openTwitter(username: "1carolinemoore")
             case .softwareLicenses: break
+            }
+            
+            if let selectedIndexPath = self.tableView.indexPathForSelectedRow
+            {
+                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
             }
             
         case .debug:
@@ -494,10 +687,10 @@ extension SettingsViewController
                     toastView.show(in: self)
                 }
                 
-            case .refreshAttempts: break
+            case .refreshAttempts, .responseCaching: break
             }
             
-        default: break
+        case .account, .patreon, .display, .instructions, .macDirtyCow: break
         }
     }
 }

@@ -8,8 +8,6 @@
 
 import Intents
 
-// Requires iOS 14 in-app intent handling.
-@available(iOS 14, *)
 extension INInteraction
 {
     static func refreshAllApps() -> INInteraction

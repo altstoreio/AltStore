@@ -10,41 +10,43 @@ import Foundation
 
 extension PatreonAPI
 {
-    struct TierResponse: Decodable
+    typealias TierResponse = DataResponse<TierAttributes, TierRelationships>
+    
+    struct TierAttributes: Decodable
     {
-        struct Attributes: Decodable
-        {
-            var title: String
-        }
-        
-        struct Relationships: Decodable
-        {
-            struct Benefits: Decodable
-            {
-                var data: [BenefitResponse]
-            }
-            
-            var benefits: Benefits
-        }
-        
-        var id: String
-        var attributes: Attributes
-        
-        var relationships: Relationships
+        var title: String?
+        var amount_cents: Int32 // In USD
+    }
+    
+    struct TierRelationships: Decodable
+    {
+        var benefits: Response<[AnyItemResponse]>?
     }
 }
 
-public struct Tier
+extension PatreonAPI
 {
-    public var name: String
-    public var identifier: String
-    
-    public var benefits: [Benefit] = []
-    
-    init(response: PatreonAPI.TierResponse)
+    public struct Tier: Hashable
     {
-        self.name = response.attributes.title
-        self.identifier = response.id
-        self.benefits = response.relationships.benefits.data.map(Benefit.init(response:))
+        public var name: String?
+        public var identifier: String
+        public var amount: Decimal
+        
+        // Relationships
+        public var benefits: [Benefit] = []
+        
+        internal init(response: TierResponse, including included: IncludedResponses?)
+        {
+            self.name = response.attributes.title
+            self.identifier = response.id
+            
+            let amount = Decimal(response.attributes.amount_cents) / 100
+            self.amount = amount
+            
+            guard let included, let benefitIDs = response.relationships?.benefits?.data.map(\.id) else { return }
+            
+            let benefits = benefitIDs.compactMap { included.benefits[$0] }.map(Benefit.init(response:))
+            self.benefits = benefits
+        }
     }
 }

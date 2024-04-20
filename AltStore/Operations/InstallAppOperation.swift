@@ -45,6 +45,11 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             let connection = self.context.installationConnection
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Installing resigned app \(resignedApp.bundleIdentifier, privacy: .public)...")
+        
+        @Managed var appVersion = self.context.appVersion
+        let storeBuildVersion = $appVersion.buildVersion
+        
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         backgroundContext.perform {
             
@@ -58,10 +63,14 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: resignedApp, originalBundleIdentifier: self.context.bundleIdentifier, certificateSerialNumber: certificate.serialNumber, context: backgroundContext)
+                installedApp = InstalledApp(resignedApp: resignedApp,
+                                            originalBundleIdentifier: self.context.bundleIdentifier,
+                                            certificateSerialNumber: certificate.serialNumber,
+                                            storeBuildVersion: storeBuildVersion,
+                                            context: backgroundContext)
             }
             
-            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber)
+            installedApp.update(resignedApp: resignedApp, certificateSerialNumber: certificate.serialNumber, storeBuildVersion: storeBuildVersion)
             installedApp.needsResign = false
             
             if let team = DatabaseManager.shared.activeTeam(in: backgroundContext)
@@ -107,10 +116,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             
             installedApp.appExtensions = installedExtensions
             
+            self.context.beginInstallationHandler?(installedApp)
+            
             // Temporary directory and resigned .ipa no longer needed, so delete them now to ensure AltStore doesn't quit before we get the chance to.
             self.cleanUp()
-            
-            self.context.beginInstallationHandler?(installedApp)
             
             var activeProfiles: Set<String>?
             if let sideloadedAppsLimit = UserDefaults.standard.activeAppsLimit
@@ -145,23 +154,32 @@ class InstallAppOperation: ResultOperation<InstalledApp>
                 })
             }
             
-            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: installedApp.resignedBundleIdentifier)
+            let resignedBundleID = installedApp.resignedBundleIdentifier
+            
+            let request = BeginInstallationRequest(activeProfiles: activeProfiles, bundleIdentifier: resignedBundleID)
             connection.send(request) { (result) in
                 switch result
                 {
-                case .failure(let error): self.finish(.failure(error))
+                case .failure(let error): 
+                    Logger.sideload.notice("Failed to send begin installation request for resigned app \(resignedBundleID, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                    self.finish(.failure(error))
+                    
                 case .success:
+                    Logger.sideload.notice("Sent begin installation request for resigned app \(resignedBundleID, privacy: .public).")
                     
                     self.receive(from: connection) { (result) in
                         switch result
                         {
                         case .success:
                             backgroundContext.perform {
+                                Logger.sideload.notice("Successfully installed resigned app \(resignedBundleID, privacy: .public)!")
+                                
                                 installedApp.refreshedDate = Date()
                                 self.finish(.success(installedApp))
                             }
                             
                         case .failure(let error):
+                            Logger.sideload.notice("Failed to install resigned app \(resignedBundleID, privacy: .public). \(error.localizedDescription, privacy: .public)")
                             self.finish(.failure(error))
                         }
                     }
@@ -185,7 +203,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>
             }
             catch
             {
-                print("Failed to remove refreshed .ipa:", error)
+                Logger.sideload.error("Failed to remove refreshed .ipa: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -201,11 +219,12 @@ private extension InstallAppOperation
             do
             {
                 let response = try result.get()
-                print(response)
-                
+                                
                 switch response
                 {
                 case .installationProgress(let response):
+                    Logger.sideload.debug("Installing \(self.context.resignedApp?.bundleIdentifier ?? self.context.bundleIdentifier, privacy: .public)... \((response.progress * 100).rounded())%")
+                    
                     if response.progress == 1.0
                     {
                         self.progress.completedUnitCount = self.progress.totalUnitCount
@@ -242,7 +261,7 @@ private extension InstallAppOperation
         }
         catch
         {
-            print("Failed to remove temporary directory.", error)
+            Logger.sideload.error("Failed to remove temporary directory: \(error.localizedDescription, privacy: .public)")
         }
     }
 }

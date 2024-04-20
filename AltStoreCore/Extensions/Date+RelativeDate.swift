@@ -10,6 +10,20 @@ import Foundation
 
 public extension Date
 {
+    static let shortDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }()
+    
+    static let mediumDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }()
+    
     func numberOfCalendarDays(since date: Date) -> Int
     {
         let today = Calendar.current.startOfDay(for: self)
@@ -19,15 +33,15 @@ public extension Date
         return components.day!
     }
     
-    func relativeDateString(since date: Date, dateFormatter: DateFormatter) -> String
+    func relativeDateString(since date: Date, dateFormatter: DateFormatter? = nil) -> String
     {
+        let dateFormatter = dateFormatter ?? Date.mediumDateFormatter
         let numberOfDays = self.numberOfCalendarDays(since: date)
         
         switch numberOfDays
         {
         case 0: return NSLocalizedString("Today", comment: "")
         case 1: return NSLocalizedString("Yesterday", comment: "")
-        case 2...7: return String(format: NSLocalizedString("%@ days ago", comment: ""), NSNumber(value: numberOfDays))
         default: return dateFormatter.string(from: date)
         }
     }

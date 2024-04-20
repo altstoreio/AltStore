@@ -43,14 +43,14 @@ class ResignAppOperation: ResultOperation<ALTApplication>
             let certificate = self.context.certificate
         else { return self.finish(.failure(OperationError.invalidParameters)) }
         
+        Logger.sideload.notice("Resigning app \(self.context.bundleIdentifier, privacy: .public)...")
+        
         // Prepare app bundle
         let prepareAppProgress = Progress.discreteProgress(totalUnitCount: 2)
         self.progress.addChild(prepareAppProgress, withPendingUnitCount: 3)
         
         let prepareAppBundleProgress = self.prepareAppBundle(for: app, profiles: profiles) { (result) in
             guard let appBundleURL = self.process(result) else { return }
-            
-            print("Resigning App:", self.context.bundleIdentifier)
             
             // Resign app bundle
             let resignProgress = self.resignAppBundle(at: appBundleURL, team: team, certificate: certificate, profiles: Array(profiles.values)) { (result) in
@@ -64,6 +64,9 @@ class ResignAppOperation: ResultOperation<ALTApplication>
                     
                     // Use appBundleURL since we need an app bundle, not .ipa.
                     guard let resignedApplication = ALTApplication(fileURL: appBundleURL) else { throw OperationError.invalidApp }
+                    
+                    Logger.sideload.notice("Resigned app \(self.context.bundleIdentifier, privacy: .public) to \(resignedApplication.bundleIdentifier, privacy: .public).")
+                    
                     self.finish(.success(resignedApplication))
                 }
                 catch
@@ -169,7 +172,7 @@ private extension ResignAppOperation
                 
                 var additionalValues: [String: Any] = [Bundle.Info.urlTypes: allURLSchemes]
 
-                if self.context.bundleIdentifier == StoreApp.altstoreAppID || StoreApp.alternativeAltStoreAppIDs.contains(self.context.bundleIdentifier)
+                if app.isAltStoreApp
                 {
                     guard let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String else { throw OperationError.unknownUDID }
                     additionalValues[Bundle.Info.deviceID] = udid
@@ -190,6 +193,12 @@ private extension ResignAppOperation
                         // The embedded certificate + certificate identifier are already in app bundle, no need to update them.
                     }
                 }
+                else if infoDictionary.keys.contains(Bundle.Info.deviceID), let udid = Bundle.main.object(forInfoDictionaryKey: Bundle.Info.deviceID) as? String
+                {
+                    // There is an ALTDeviceID entry, so assume the app is using AltKit and replace it with the device's UDID.
+                    additionalValues[Bundle.Info.deviceID] = udid
+                    additionalValues[Bundle.Info.serverID] = UserDefaults.standard.preferredServerID
+                }
                 
                 let iconScale = Int(UIScreen.main.scale)
                 
@@ -209,11 +218,20 @@ private extension ResignAppOperation
                 
                 // Prepare app
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
+                try self.removeMissingAppExtensionReferences(from: appBundle)
                 
                 if let directory = appBundle.builtInPlugInsURL, let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
                 {
                     for case let fileURL as URL in enumerator
                     {
+                        #if DEBUG
+                        guard !fileURL.lastPathComponent.lowercased().contains(".xctest") else {
+                            // Remove embedded XCTest (+ dSYM) bundle from copied app bundle.
+                            try FileManager.default.removeItem(at: fileURL)
+                            continue
+                        }
+                        #endif
+                        
                         guard let appExtension = Bundle(url: fileURL) else { throw ALTError(.missingAppBundle) }
                         try prepare(appExtension)
                     }
@@ -248,5 +266,29 @@ private extension ResignAppOperation
         }
         
         return progress
+    }
+    
+    func removeMissingAppExtensionReferences(from bundle: Bundle) throws
+    {
+        // If app extensions have been removed from an app (either by AltStore or the developer),
+        // we must remove all references to them from SC_Info/Manifest.plist (if it exists).
+        
+        let scInfoURL = bundle.bundleURL.appendingPathComponent("SC_Info")
+        let manifestPlistURL = scInfoURL.appendingPathComponent("Manifest.plist")
+        
+        guard let manifestPlist = NSMutableDictionary(contentsOf: manifestPlistURL), let sinfReplicationPaths = manifestPlist["SinfReplicationPaths"] as? [String] else { return }
+        
+        // Remove references to missing files.
+        let filteredReplicationPaths = sinfReplicationPaths.filter { path in
+            guard let fileURL = URL(string: path, relativeTo: bundle.bundleURL) else { return false }
+            
+            let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
+            return fileExists
+        }
+        
+        manifestPlist["SinfReplicationPaths"] = filteredReplicationPaths
+        
+        // Save updated Manifest.plist to disk.
+        try manifestPlist.write(to: manifestPlistURL)
     }
 }

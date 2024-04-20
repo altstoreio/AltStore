@@ -9,7 +9,6 @@
 import Intents
 import AltStoreCore
 
-@available(iOS 14, *)
 public class ViewAppIntentHandler: NSObject, ViewAppIntentHandling
 {
     public func provideAppOptionsCollection(for intent: ViewAppIntent, with completion: @escaping (INObjectCollection<App>?, Error?) -> Void)

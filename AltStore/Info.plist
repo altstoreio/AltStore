@@ -7,9 +7,9 @@
 		<string>group.com.rileytestut.AltStore</string>
 	</array>
 	<key>ALTDeviceID</key>
-	<string>00008030-001948590202802E</string>
+	<string>00008120-001270DA119B401E</string>
 	<key>ALTServerID</key>
-	<string>1AAAB6FD-E8CE-4B70-8F26-4073215C03B0</string>
+	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
@@ -31,6 +31,17 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>NSAppIconComplementingColorNames</key>
+			<array>
+				<string>GradientTop</string>
+				<string>GradientBottom</string>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -65,7 +76,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>RefreshAllIntent</string>
@@ -84,6 +95,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_altserver._tcp</string>
@@ -95,6 +108,42 @@
 		<string>RefreshAllIntent</string>
 		<string>ViewAppIntent</string>
 	</array>
+	<key>OSLogPreferences</key>
+	<dict>
+		<key>com.rileytestut.AltStore</key>
+		<dict>
+			<key>AltJIT</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+			<key>Main</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+			<key>Sideload</key>
+			<dict>
+				<key>Level</key>
+				<dict>
+					<key>Enable</key>
+					<string>Info</string>
+					<key>Persist</key>
+					<string>Info</string>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -168,6 +217,8 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<string>ipa</string>
+				<key>public.mime-type</key>
+				<string>application/x-ios-app</string>
 			</dict>
 		</dict>
 	</array>

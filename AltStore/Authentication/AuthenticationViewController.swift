@@ -31,7 +31,8 @@ class AuthenticationViewController: UIViewController
     {
         super.viewDidLoad()
         
-        self.signInButton.activityIndicatorView.style = .white
+        self.signInButton.activityIndicatorView.style = .medium
+        self.signInButton.activityIndicatorView.color = .white
         
         for view in [self.appleIDBackgroundView!, self.passwordBackgroundView!, self.signInButton!]
         {
@@ -108,11 +109,9 @@ private extension AuthenticationViewController
                 
             case .failure(let error as NSError):
                 DispatchQueue.main.async {
-                    let error = error.withLocalizedFailure(NSLocalizedString("Failed to Log In", comment: ""))
+                    let error = error.withLocalizedTitle(NSLocalizedString("Failed to Log In", comment: ""))
                     
                     let toastView = ToastView(error: error)
-                    toastView.textLabel.textColor = .altPink
-                    toastView.detailTextLabel.textColor = .altPink
                     toastView.show(in: self)
                     self.toastView = toastView
                     

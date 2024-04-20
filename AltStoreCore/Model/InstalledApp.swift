@@ -11,8 +11,22 @@ import CoreData
 
 import AltSign
 
-// Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
-public let ALTActiveAppsLimit = 3
+extension InstalledApp
+{
+    public static var freeAccountActiveAppsLimit: Int {
+        if UserDefaults.standard.ignoreActiveAppsLimit
+        {
+            // MacDirtyCow exploit allows users to remove 3-app limit, so return 10 to match App ID limit per-week.
+            // Don't return nil because that implies there is no limit, which isn't quite true due to App ID limit.
+            return 10
+        }
+        else
+        {
+            // Free developer accounts are limited to only 3 active sideloaded apps at a time as of iOS 13.3.1.
+            return 3
+        }
+    }
+}
 
 public protocol InstalledAppProtocol: Fetchable
 {
@@ -34,6 +48,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var bundleIdentifier: String
     @NSManaged public var resignedBundleIdentifier: String
     @NSManaged public var version: String
+    @NSManaged public var buildVersion: String
     
     @NSManaged public var refreshedDate: Date
     @NSManaged public var expirationDate: Date
@@ -44,6 +59,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var hasAlternateIcon: Bool
     
     @NSManaged public var certificateSerialNumber: String?
+    @NSManaged public var storeBuildVersion: String?
     
     /* Transient */
     @NSManaged public var isRefreshing: Bool
@@ -52,6 +68,8 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
     @NSManaged public var storeApp: StoreApp?
     @NSManaged public var team: Team?
     @NSManaged public var appExtensions: Set<InstalledExtension>
+    
+    @NSManaged public private(set) var loggedErrors: NSSet /* Set<LoggedError> */ // Use NSSet to avoid eagerly fetching values.
     
     public var isSideloaded: Bool {
         return self.storeApp == nil
@@ -71,7 +89,7 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         super.init(entity: entity, insertInto: context)
     }
     
-    public init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, context: NSManagedObjectContext)
+    public init(resignedApp: ALTApplication, originalBundleIdentifier: String, certificateSerialNumber: String?, storeBuildVersion: String?, context: NSManagedObjectContext)
     {
         super.init(entity: InstalledApp.entity(), insertInto: context)
         
@@ -82,32 +100,57 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
         
         self.expirationDate = self.refreshedDate.addingTimeInterval(60 * 60 * 24 * 7) // Rough estimate until we get real values from provisioning profile.
         
-        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber)
+        // In practice this update() is redundant because we always call update() again after init from callers,
+        // but better to have an init that is guaranteed to successfully initialize an object
+        // than one that has a hidden assumption a second method will be called.
+        self.update(resignedApp: resignedApp, certificateSerialNumber: certificateSerialNumber, storeBuildVersion: storeBuildVersion)
+    }
+}
+
+public extension InstalledApp
+{
+    var localizedVersion: String {
+        guard let storeBuildVersion else { return self.version }
+        
+        let localizedVersion = "\(self.version) (\(storeBuildVersion))"
+        return localizedVersion
     }
     
-    public func update(resignedApp: ALTApplication, certificateSerialNumber: String?)
+    func update(resignedApp: ALTApplication, certificateSerialNumber: String?, storeBuildVersion: String?)
     {
         self.name = resignedApp.name
         
         self.resignedBundleIdentifier = resignedApp.bundleIdentifier
         self.version = resignedApp.version
+        self.buildVersion = resignedApp.buildVersion
+        self.storeBuildVersion = storeBuildVersion
         
         self.certificateSerialNumber = certificateSerialNumber
-
+        
         if let provisioningProfile = resignedApp.provisioningProfile
         {
             self.update(provisioningProfile: provisioningProfile)
         }
     }
     
-    public func update(provisioningProfile: ALTProvisioningProfile)
+    func update(provisioningProfile: ALTProvisioningProfile)
     {
         self.refreshedDate = provisioningProfile.creationDate
         self.expirationDate = provisioningProfile.expirationDate
     }
     
-    public func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
+    func loadIcon(completion: @escaping (Result<UIImage?, Error>) -> Void)
     {
+        if self.bundleIdentifier == StoreApp.altstoreAppID, let iconName = UIApplication.alt_shared?.alternateIconName
+        {
+            // Use alternate app icon for AltStore, if one is chosen.
+            
+            let image = UIImage(named: iconName)
+            completion(.success(image))
+            
+            return
+        }
+        
         let hasAlternateIcon = self.hasAlternateIcon
         let alternateIconURL = self.alternateIconURL
         let fileURL = self.fileURL
@@ -131,6 +174,12 @@ public class InstalledApp: NSManagedObject, InstalledAppProtocol
             }
         }
     }
+    
+    func matches(_ appVersion: AppVersion) -> Bool
+    {
+        let matchesAppVersion = (self.version == appVersion.version && self.storeBuildVersion == appVersion.buildVersion)
+        return matchesAppVersion
+    }
 }
 
 public extension InstalledApp
@@ -140,11 +189,34 @@ public extension InstalledApp
         return NSFetchRequest<InstalledApp>(entityName: "InstalledApp")
     }
     
-    class func updatesFetchRequest() -> NSFetchRequest<InstalledApp>
+    class func supportedUpdatesFetchRequest() -> NSFetchRequest<InstalledApp>
     {
         let fetchRequest = InstalledApp.fetchRequest() as NSFetchRequest<InstalledApp>
-        fetchRequest.predicate = NSPredicate(format: "%K == YES AND %K != nil AND %K != %K",
-                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.version), #keyPath(InstalledApp.storeApp.version))
+        
+        let predicateFormat = [
+            // isActive && storeApp != nil && latestSupportedVersion != nil
+            "%K == YES AND %K != nil AND %K != nil",
+            
+            "AND",
+            
+            // latestSupportedVersion.version != installedApp.version || latestSupportedVersion.buildVersion != installedApp.storeBuildVersion
+            //
+            // We have to also check !(latestSupportedVersion.buildVersion == '' && installedApp.storeBuildVersion == nil)
+            // because latestSupportedVersion.buildVersion stores an empty string for nil, while installedApp.storeBuildVersion uses NULL.
+            "(%K != %K OR (%K != %K AND NOT (%K == '' AND %K == nil)))",
+            
+            "AND",
+            
+            // !isPledgeRequired || isPledged
+            "(%K == NO OR %K == YES)"
+        ].joined(separator: " ")
+        
+        fetchRequest.predicate = NSPredicate(format: predicateFormat,
+                                             #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.latestSupportedVersion),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion.version), #keyPath(InstalledApp.version),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion),
+                                             #keyPath(InstalledApp.storeApp.latestSupportedVersion._buildVersion), #keyPath(InstalledApp.storeBuildVersion),
+                                             #keyPath(InstalledApp.storeApp.isPledgeRequired), #keyPath(InstalledApp.storeApp.isPledged))
         return fetchRequest
     }
     
@@ -171,17 +243,12 @@ public extension InstalledApp
     
     class func fetchAppsForRefreshingAll(in context: NSManagedObjectContext) -> [InstalledApp]
     {
-        var predicate = NSPredicate(format: "%K == YES AND %K != %@", #keyPath(InstalledApp.isActive), #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            // No additional predicate
-        }
-        else
-        {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
-                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
-        }
+        let predicate = NSPredicate(format: "(%K == YES AND %K != %@) AND (%K == nil OR %K == NO OR %K == YES)",
+                                    #keyPath(InstalledApp.isActive),
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                    #keyPath(InstalledApp.storeApp),
+                                    #keyPath(InstalledApp.storeApp.isPledgeRequired),
+                                    #keyPath(InstalledApp.storeApp.isPledged))
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -190,7 +257,20 @@ public extension InstalledApp
         if let altStoreApp = InstalledApp.fetchAltStore(in: context)
         {
             // Refresh AltStore last since it causes app to quit.
-            installedApps.append(altStoreApp)
+            
+            if let storeApp = altStoreApp.storeApp
+            {
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
+            }
+            else
+            {
+                // No associated storeApp, so add it just to be safe.
+                installedApps.append(altStoreApp)
+            }
         }
         
         return installedApps
@@ -201,20 +281,14 @@ public extension InstalledApp
         // Date 6 hours before now.
         let date = Date().addingTimeInterval(-1 * 6 * 60 * 60)
         
-        var predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@)",
+        let predicate = NSPredicate(format: "(%K == YES) AND (%K < %@) AND (%K != %@) AND (%K == nil OR %K == NO OR %K == YES)",
                                     #keyPath(InstalledApp.isActive),
                                     #keyPath(InstalledApp.refreshedDate), date as NSDate,
-                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID)
-        
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(in: context), patreonAccount.isPatron, PatreonAPI.shared.isAuthenticated
-        {
-            // No additional predicate
-        }
-        else
-        {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,
-                                                                            NSPredicate(format: "%K == nil OR %K == NO", #keyPath(InstalledApp.storeApp), #keyPath(InstalledApp.storeApp.isBeta))])
-        }
+                                    #keyPath(InstalledApp.bundleIdentifier), StoreApp.altstoreAppID,
+                                    #keyPath(InstalledApp.storeApp),
+                                    #keyPath(InstalledApp.storeApp.isPledgeRequired),
+                                    #keyPath(InstalledApp.storeApp.isPledged)
+        )
         
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
@@ -222,8 +296,19 @@ public extension InstalledApp
         
         if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
         {
-            // Refresh AltStore last since it may cause app to quit.
-            installedApps.append(altStoreApp)
+            if let storeApp = altStoreApp.storeApp
+            {
+                if !storeApp.isPledgeRequired || storeApp.isPledged
+                {
+                    // Only add AltStore if it's the public version OR if it's the beta and we're pledged to it.
+                    installedApps.append(altStoreApp)
+                }
+            }
+            else
+            {
+                // No associated storeApp, so add it just to be safe.
+                installedApps.append(altStoreApp)
+            }
         }
         
         return installedApps
@@ -241,6 +326,14 @@ public extension InstalledApp
     {
         let openAppURL = URL(string: "altstore-" + app.bundleIdentifier + "://")!
         return openAppURL
+    }
+    
+    var isUpdateAvailable: Bool {
+        guard let storeApp = self.storeApp, let latestVersion = storeApp.latestSupportedVersion else { return false }
+        guard !storeApp.isPledgeRequired || storeApp.isPledged else { return false }
+        
+        let isUpdateAvailable = !self.matches(latestVersion)
+        return isUpdateAvailable
     }
 }
 

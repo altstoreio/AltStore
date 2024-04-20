@@ -11,6 +11,15 @@ import CoreData
 import AltSign
 import Roxas
 
+extension CFNotificationName
+{
+    fileprivate static let willMigrateDatabase = CFNotificationName("com.rileytestut.AltStore.WillMigrateDatabase" as CFString)
+}
+
+private let ReceivedWillMigrateDatabaseNotification: @convention(c) (CFNotificationCenter?, UnsafeMutableRawPointer?, CFNotificationName?, UnsafeRawPointer?, CFDictionary?) -> Void = { (center, observer, name, object, userInfo) in
+    DatabaseManager.shared.receivedWillMigrateDatabaseNotification()
+}
+
 fileprivate class PersistentContainer: RSTPersistentContainer
 {
     override class func defaultDirectoryURL() -> URL
@@ -43,10 +52,15 @@ public class DatabaseManager
     private let coordinator = NSFileCoordinator()
     private let coordinatorQueue = OperationQueue()
     
+    private var ignoreWillMigrateDatabaseNotification = false
+    
     private init()
     {
         self.persistentContainer = PersistentContainer(name: "AltStore", bundle: Bundle(for: DatabaseManager.self))
         self.persistentContainer.preferredMergePolicy = MergePolicy()
+        
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), observer, ReceivedWillMigrateDatabaseNotification, CFNotificationName.willMigrateDatabase.rawValue, nil, .deliverImmediately)
     }
 }
 
@@ -72,6 +86,29 @@ public extension DatabaseManager
             guard self.startCompletionHandlers.count == 1 else { return }
             
             guard !self.isStarted else { return finish(nil) }
+            
+            #if DEBUG
+            // Wrap in #if DEBUG to *ensure* we never accidentally delete production databases.
+            if ProcessInfo.processInfo.isPreview
+            {
+                do
+                {
+                    print("!!! Purging database for preview...")
+                    try FileManager.default.removeItem(at: PersistentContainer.defaultDirectoryURL())
+                }
+                catch
+                {
+                    print("Failed to remove database directory for preview.", error)
+                }
+            }
+            #endif
+            
+            if self.persistentContainer.isMigrationRequired
+            {
+                // Quit any other running AltStore processes to prevent concurrent database access during and after migration.
+                self.ignoreWillMigrateDatabaseNotification = true
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), .willMigrateDatabase, nil, nil, true)
+            }
             
             self.migrateDatabaseToAppGroupIfNeeded { (result) in
                 switch result
@@ -122,6 +159,86 @@ public extension DatabaseManager
             }
         }
     }
+    
+    func purgeLoggedErrors(before date: Date? = nil, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        self.persistentContainer.performBackgroundTask { context in
+            do
+            {
+                let predicate = date.map { NSPredicate(format: "%K <= %@", #keyPath(LoggedError.date), $0 as NSDate) }
+                
+                let loggedErrors = LoggedError.all(satisfying: predicate, in: context, requestProperties: [\.returnsObjectsAsFaults: true])
+                loggedErrors.forEach { context.delete($0) }
+                
+                try context.save()
+                
+                completion(.success(()))
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func updateFeaturedSortIDs() async
+    {
+        let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // DON'T use our custom merge policy, because that one ignores changes to featuredSortID.
+        await context.performAsync {
+            do
+            {
+                // Randomize source order
+                let fetchRequest = Source.fetchRequest()
+                let sources = try context.fetch(fetchRequest)
+                
+                for source in sources
+                {
+                    source.featuredSortID = UUID().uuidString
+                }
+                
+                try context.save()
+            }
+            catch
+            {
+                Logger.main.error("Failed to update source order. \(error.localizedDescription, privacy: .public)")
+            }
+            
+            do
+            {
+                // Randomize app order
+                let fetchRequest = StoreApp.fetchRequest()
+                let apps = try context.fetch(fetchRequest)
+                
+                for app in apps
+                {
+                    app.featuredSortID = UUID().uuidString
+                }
+                
+                try context.save()
+            }
+            catch
+            {
+                Logger.main.error("Failed to update app order. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+    }
+}
+
+public extension DatabaseManager
+{
+    func startForPreview()
+    {
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        self.dispatchQueue.async {
+            self.startCompletionHandlers.append { error in
+                semaphore.signal()
+            }
+        }
+        
+        _ = semaphore.wait(timeout: .now() + 2.0)
+    }
 }
 
 public extension DatabaseManager
@@ -129,10 +246,7 @@ public extension DatabaseManager
     var viewContext: NSManagedObjectContext {
         return self.persistentContainer.viewContext
     }
-}
-
-public extension DatabaseManager
-{
+    
     func activeAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> Account?
     {
         let predicate = NSPredicate(format: "%K == YES", #keyPath(Account.isActiveAccount))
@@ -151,8 +265,12 @@ public extension DatabaseManager
     
     func patreonAccount(in context: NSManagedObjectContext = DatabaseManager.shared.viewContext) -> PatreonAccount?
     {
-        let patronAccount = PatreonAccount.first(in: context)
-        return patronAccount
+        guard let patreonAccountID = Keychain.shared.patreonAccountID else { return nil }
+            
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(PatreonAccount.identifier), patreonAccountID)
+        
+        let patreonAccount = PatreonAccount.first(satisfying: predicate, in: context, requestProperties: [\.relationshipKeyPathsForPrefetching: [#keyPath(PatreonAccount._pledges)]])
+        return patreonAccount
     }
 }
 
@@ -178,7 +296,7 @@ private extension DatabaseManager
             }
             
             // Make sure to always update source URL to be current.
-            altStoreSource.sourceURL = Source.altStoreSourceURL
+            try! altStoreSource.setSourceURL(Source.altStoreSourceURL)
             
             let storeApp: StoreApp
             
@@ -188,8 +306,7 @@ private extension DatabaseManager
             }
             else
             {
-                storeApp = StoreApp.makeAltStoreApp(in: context)
-                storeApp.version = localApp.version
+                storeApp = StoreApp.makeAltStoreApp(version: localApp.version, buildVersion: nil, in: context)
                 storeApp.source = altStoreSource
             }
                         
@@ -202,7 +319,10 @@ private extension DatabaseManager
             }
             else
             {
-                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, context: context)
+                //TODO: Support build versions.
+                // For backwards compatibility reasons, we cannot use localApp's buildVersion as storeBuildVersion,
+                // or else the latest update will _always_ be considered new because we don't use buildVersions in our source (yet).
+                installedApp = InstalledApp(resignedApp: localApp, originalBundleIdentifier: StoreApp.altstoreAppID, certificateSerialNumber: serialNumber, storeBuildVersion: nil, context: context)
                 installedApp.storeApp = storeApp
             }
             
@@ -237,7 +357,7 @@ private extension DatabaseManager
             #if DEBUG
             let replaceCachedApp = true
             #else
-            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version
+            let replaceCachedApp = !FileManager.default.fileExists(atPath: fileURL.path) || installedApp.version != localApp.version || installedApp.buildVersion != localApp.buildVersion
             #endif
             
             if replaceCachedApp
@@ -282,7 +402,7 @@ private extension DatabaseManager
             let cachedExpirationDate = installedApp.expirationDate
                         
             // Must go after comparing versions to see if we need to update our cached AltStore app bundle.
-            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber)
+            installedApp.update(resignedApp: localApp, certificateSerialNumber: serialNumber, storeBuildVersion: nil)
             
             if installedApp.refreshedDate < cachedRefreshedDate
             {
@@ -297,7 +417,11 @@ private extension DatabaseManager
             do
             {
                 try context.save()
-                completionHandler(.success(()))
+                
+                Task(priority: .high) {
+                    await self.updateFeaturedSortIDs()
+                    completionHandler(.success(()))
+                }
             }
             catch
             {
@@ -308,7 +432,8 @@ private extension DatabaseManager
     
     func migrateDatabaseToAppGroupIfNeeded(completion: @escaping (Result<Void, Error>) -> Void)
     {
-        guard UserDefaults.shared.requiresAppGroupMigration else { return completion(.success(())) }
+        // Only migrate if we haven't migrated yet and there's a valid AltStore app group.
+        guard UserDefaults.shared.requiresAppGroupMigration && Bundle.main.altstoreAppGroup != nil else { return completion(.success(())) }
 
         func finish(_ result: Result<Void, Error>)
         {
@@ -375,5 +500,15 @@ private extension DatabaseManager
                 finish(.failure(error))
             }
         }
+    }
+    
+    func receivedWillMigrateDatabaseNotification()
+    {
+        defer { self.ignoreWillMigrateDatabaseNotification = false }
+        
+        // Ignore notifications sent by the current process.
+        guard !self.ignoreWillMigrateDatabaseNotification else { return }
+        
+        exit(104)
     }
 }

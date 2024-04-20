@@ -77,6 +77,13 @@ class AppOperationContext
         }
         set {
             _error = newValue
+            
+            if self.authenticatedContext.error == nil
+            {
+                // Assign newValue to authenticatedContext.error if the latter is nil.
+                // This fixes some operations continuing even after an error has occured.
+                self.authenticatedContext.error = newValue
+            }
         }
     }
     private var _error: Error?
@@ -104,7 +111,9 @@ class InstallAppOperationContext: AppOperationContext
         return temporaryDirectory
     }()
     
+    var ipaURL: URL?
     var resignedApp: ALTApplication?
+    
     var installationConnection: ServerConnection?
     var installedApp: InstalledApp? {
         didSet {
@@ -116,4 +125,8 @@ class InstallAppOperationContext: AppOperationContext
     var beginInstallationHandler: ((InstalledApp) -> Void)?
     
     var alternateIconURL: URL?
+    
+    // Non-nil when installing from a source.
+    @AsyncManaged
+    var appVersion: AppVersion?
 }

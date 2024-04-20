@@ -72,10 +72,11 @@ private extension AppIDsViewController
         dataSource.cellConfigurationHandler = { (cell, appID, indexPath) in
             let tintColor = UIColor.altPrimary
             
-            let cell = cell as! BannerCollectionViewCell
-            cell.layoutMargins.left = self.view.layoutMargins.left
-            cell.layoutMargins.right = self.view.layoutMargins.right
+            let cell = cell as! AppBannerCollectionViewCell
             cell.tintColor = tintColor
+            
+            cell.contentView.preservesSuperviewLayoutMargins = false
+            cell.contentView.layoutMargins = UIEdgeInsets(top: 0, left: self.view.layoutMargins.left, bottom: 0, right: self.view.layoutMargins.right)
                         
             cell.bannerView.iconImageView.isHidden = true
             cell.bannerView.button.isIndicatingActivity = false
@@ -110,10 +111,11 @@ private extension AppIDsViewController
             cell.bannerView.titleLabel.text = appID.name
             cell.bannerView.subtitleLabel.text = appID.bundleIdentifier
             cell.bannerView.subtitleLabel.numberOfLines = 2
+            cell.bannerView.subtitleLabel.minimumScaleFactor = 1.0 // Disable font shrinking
             
             let attributedBundleIdentifier = NSMutableAttributedString(string: appID.bundleIdentifier.lowercased(), attributes: [.accessibilitySpeechPunctuation: true])
             
-            if let team = appID.team, let range = attributedBundleIdentifier.string.range(of: team.identifier.lowercased()), #available(iOS 13, *)
+            if let team = appID.team, let range = attributedBundleIdentifier.string.range(of: team.identifier.lowercased())
             {
                 // Prefer to speak the team ID one character at a time.
                 let nsRange = NSRange(range, in: attributedBundleIdentifier.string)
@@ -178,7 +180,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
         
         // Use this view to calculate the optimal size based on the collection view's width
-        let size = headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingExpandedSize.height),
+        let size = headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingCompressedSize.height),
                                                       withHorizontalFittingPriority: .required, // Width is fixed
                                                       verticalFittingPriority: .fittingSizeLevel) // Height can be as large as needed
         return size
@@ -201,7 +203,7 @@ extension AppIDsViewController: UICollectionViewDelegateFlowLayout
             if let activeTeam = DatabaseManager.shared.activeTeam(), activeTeam.type == .free
             {
                 let text = NSLocalizedString("""
-                Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits free developer accounts to 10 App IDs at a time.
+                Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits non-developer Apple IDs to 10 App IDs at a time.
 
                 **App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired.
                 """, comment: "")

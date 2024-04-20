@@ -11,18 +11,16 @@ AltStore is an iOS application that allows you to sideload other apps (.ipa file
 For the initial release, I focused on building a solid foundation for distributing my own apps — primarily Delta, [my all-in-one emulator for iOS](https://github.com/rileytestut/Delta). Now that Delta has been released, however, I'm beginning work on adding support for *anyone* to list and distribute their apps through AltStore (contributions welcome! 🙂).
 
 ## Features
-- Resigns and installs any app with your Apple ID
 - Installs apps over WiFi using AltServer
+- Resigns and installs any app with your Apple ID
 - Refreshes apps periodically in the background to prevent them from expiring (when on same WiFi as AltServer)
 - Handles app updates directly through AltStore 
 
-## Requirements
-- Xcode 11
-- iOS 12.2+ (AltStore)
-- macOS 10.14.4+ (AltServer)
-- Swift 5+
-
-Why iOS 12.2+ and macOS 10.14.4+? Doing so allows me to distribute all AltStore apps without embedding Swift libraries inside them. This helps me afford bandwidth costs by reducing download sizes by roughly 30%, but also noticeably improves how long it takes to install/refresh apps with AltStore. If you're compiling AltStore and/or AltServer yourself, however, you should be able to lower their deployment targets to iOS 12.0 and macOS 10.14.0, respectively, without any issues.
+## Minimum Project Requirements
+- Xcode 15
+- Swift 5.9
+- iOS 14.0 (AltStore)
+- macOS 11.0 (AltServer)
 
 ## Project Overview
 
@@ -69,7 +67,8 @@ Due to the licensing of some dependencies used by AltStore, I have no choice but
 
 ## Contact Me
 
-* Email: riley@rileytestut.com
-* Twitter: [@rileytestut](https://twitter.com/rileytestut)
+* Email: riley@altstore.io
+* Mastodon (Preferred): [@rileytestut@mastodon.social](https://mastodon.social/@rileytestut)
+* Twitter (Less active nowadays): [@rileytestut](https://twitter.com/rileytestut)
 
 Questions about AltStore in general? Make sure to read the FAQ at https://altstore.io/faq/
