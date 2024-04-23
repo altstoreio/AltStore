@@ -336,7 +336,8 @@ private extension MyAppsViewController
             
             let currentDate = Date()
             
-            let numberOfDays = installedApp.expirationDate.numberOfCalendarDays(since: currentDate)
+            // calculate number of days left relative to current date with negative values ignored
+            let numberOfDays = max(installedApp.expirationDate.numberOfCalendarDays(since: currentDate), 0)
             let numberOfDaysText: String
             
             if numberOfDays == 1
