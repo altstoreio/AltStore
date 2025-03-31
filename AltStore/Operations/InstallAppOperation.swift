@@ -225,6 +225,7 @@ final class InstallAppOperation: ResultOperation<InstalledApp>
             }
             
             do {
+                UIApplication.shared.open("shortcuts://run-shortcut?name=TurnOffData", completionHandler: nil)
                 try install_ipa(installedApp.bundleIdentifier)
                 installing = false
                 installedApp.refreshedDate = Date()
