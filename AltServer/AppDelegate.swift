@@ -374,13 +374,7 @@ extension AppDelegate: NSMenuDelegate
         
         // Clear any cached _jitAppListMenuControllers.
         self._jitAppListMenuControllers.removeAll()
-
-        self.connectedDevices = ALTDeviceManager.shared.availableDevices
-        
-        self.connectedDevicesMenuController.items = self.connectedDevices
-        self.sideloadIPAConnectedDevicesMenuController.items = self.connectedDevices
-        self.enableJITMenuController.items = self.connectedDevices
-
+        self.updateDevicesMenu()
         self.launchAtLoginMenuItem.target = self
         self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
@@ -472,6 +466,49 @@ extension AppDelegate: NSMenuDelegate
         let submenu = previousItem.submenu
         previousItem.submenu = nil
         previousItem.submenu = submenu
+    }
+
+    @objc private func updateDevicesMenu() {
+        Task {
+            await updateDevicesMenuAsync()
+        }
+    }
+
+    private func updateDevicesMenuAsync() async {
+        let loadingPlaceholder = NSLocalizedString("Loading...", comment: "")
+        let emptyConnectedDevicesPlaceholder = NSLocalizedString("No Connected Devices", comment: "")
+        /// prepare for loading devices
+        await MainActor.run {
+            [
+                self.connectedDevicesMenuController,
+                self.sideloadIPAConnectedDevicesMenuController,
+                self.enableJITMenuController
+            ].forEach {
+                $0?.placeholder = loadingPlaceholder
+            }
+        }
+
+        /// loading devices in main thread could cause temporary freeze
+        let devices = await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                continuation.resume(returning: ALTDeviceManager.shared.availableDevices)
+            }
+        }
+        await MainActor.run {
+            self.connectedDevices = devices
+            self.connectedDevicesMenuController.items = self.connectedDevices
+            self.sideloadIPAConnectedDevicesMenuController.items = self.connectedDevices
+            self.enableJITMenuController.items = self.connectedDevices
+
+            /// reset placeholders
+            [
+                self.connectedDevicesMenuController,
+                self.sideloadIPAConnectedDevicesMenuController,
+                self.enableJITMenuController
+            ].forEach {
+                $0?.placeholder = emptyConnectedDevicesPlaceholder
+            }
+        }
     }
 }
 
