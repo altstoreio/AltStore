@@ -112,6 +112,7 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         (self as PeekPopPreviewing).registerForPreviewing(with: self, sourceView: self.collectionView)
         
         NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.didChangeAppIcon(_:)), name: UIApplication.didChangeAppIconNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MyAppsViewController.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         #if MARKETPLACE
         
@@ -1535,6 +1536,13 @@ private extension MyAppsViewController
 
 private extension MyAppsViewController
 {
+    @objc func willEnterForeground(_ notification: Notification)
+    {
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    
     @objc func didFetchSource(_ notification: Notification)
     {
         DispatchQueue.main.async {
