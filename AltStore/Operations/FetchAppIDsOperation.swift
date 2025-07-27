@@ -13,7 +13,7 @@ import AltSign
 import Roxas
 
 @objc(FetchAppIDsOperation)
-class FetchAppIDsOperation: ResultOperation<([AppID], NSManagedObjectContext)>
+class FetchAppIDsOperation: ResultOperation<([AppID], NSManagedObjectContext)>, @unchecked Sendable
 {
     let context: AuthenticatedOperationContext
     let managedObjectContext: NSManagedObjectContext

@@ -20,7 +20,7 @@ private let ReceivedWillMigrateDatabaseNotification: @convention(c) (CFNotificat
     DatabaseManager.shared.receivedWillMigrateDatabaseNotification()
 }
 
-fileprivate class PersistentContainer: RSTPersistentContainer
+fileprivate class PersistentContainer: RSTPersistentContainer, @unchecked Sendable
 {
     override class func defaultDirectoryURL() -> URL
     {

@@ -42,7 +42,7 @@ public protocol InstalledAppProtocol: Fetchable
 }
 
 @objc(InstalledApp)
-public class InstalledApp: NSManagedObject, InstalledAppProtocol
+public class InstalledApp: NSManagedObject, InstalledAppProtocol, @unchecked Sendable
 {
     /* Properties */
     @NSManaged public var name: String

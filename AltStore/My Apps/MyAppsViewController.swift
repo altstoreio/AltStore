@@ -533,15 +533,21 @@ private extension MyAppsViewController
     {
         self.updateUnsupportedUpdates()
         
+        let badgeCount: Int
         if self.updatesDataSource.itemCount > 0
         {
+            badgeCount = Int(self.updatesDataSource.itemCount)
             self.navigationController?.tabBarItem.badgeValue = String(describing: self.updatesDataSource.itemCount)
-            UIApplication.shared.applicationIconBadgeNumber = Int(self.updatesDataSource.itemCount)
         }
         else
         {
+            badgeCount = 0
             self.navigationController?.tabBarItem.badgeValue = nil
-            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+        
+        UNUserNotificationCenter.current().setBadgeCount(badgeCount) { error in
+            guard let error else { return }
+            Logger.main.error("Failed to update app icon badge count. \(error.localizedDescription, privacy: .public)")
         }
         
         // Reloading collection view when not visible can mess with cell margins.

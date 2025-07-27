@@ -14,7 +14,7 @@ import AltSign
 import Roxas
 
 @objc(InstallAppOperation)
-class InstallAppOperation: ResultOperation<InstalledApp>
+class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
     let context: InstallAppOperationContext
     

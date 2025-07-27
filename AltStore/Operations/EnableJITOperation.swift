@@ -19,7 +19,7 @@ protocol EnableJITContext
     var error: Error? { get }
 }
 
-class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>
+class EnableJITOperation<Context: EnableJITContext>: ResultOperation<Void>, @unchecked Sendable
 {
     let context: Context
     

@@ -21,16 +21,6 @@ target 'AltServer' do
 
 end
 
-target 'AltStoreCore' do
-  platform :ios, '14.0'
-
-  use_frameworks!
-
-  # Pods for AltServer
-  pod 'KeychainAccess', '~> 4.2.0'
-
-end
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|

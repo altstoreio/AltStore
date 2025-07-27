@@ -78,7 +78,7 @@ private struct PatreonParameters: Decodable
 }
 
 @objc(StoreApp)
-public class StoreApp: NSManagedObject, Decodable, Fetchable
+public class StoreApp: NSManagedObject, Decodable, Fetchable, @unchecked Sendable
 {
     /* Properties */
     @NSManaged public private(set) var name: String

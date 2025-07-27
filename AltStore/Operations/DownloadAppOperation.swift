@@ -15,7 +15,7 @@ import AltSign
 import Roxas
 
 @objc(DownloadAppOperation)
-class DownloadAppOperation: ResultOperation<ALTApplication>
+class DownloadAppOperation: ResultOperation<ALTApplication>, @unchecked Sendable
 {
     @Managed
     private(set) var app: AppProtocol

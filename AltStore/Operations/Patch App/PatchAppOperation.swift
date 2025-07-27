@@ -70,7 +70,7 @@ private struct OTAUpdate
     var archivePath: String
 }
 
-class PatchAppOperation: ResultOperation<Void>
+class PatchAppOperation: ResultOperation<Void>, @unchecked Sendable
 {
     let context: PatchAppContext
     

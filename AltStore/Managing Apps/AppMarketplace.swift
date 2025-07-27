@@ -192,8 +192,8 @@ extension AppMarketplace
                 // Add missing installed apps (e.g. ones that finished installing after AltStore quit).
                 for (marketplaceApp, installedMetadata) in installedMarketplaceAppsAndMetadata where marketplaceApp.id != StoreApp.altstoreMarketplaceID
                 {
-                    // Ignore any marketplaceIDs that match an installed app.
-                    guard !installedAppsByMarketplaceID.keys.contains(marketplaceApp.id) else { continue }
+                    // Check all installed marketplace apps to make sure they are the correct version, not just "new" apps.
+                    // guard !installedAppsByMarketplaceID.keys.contains(marketplaceApp.id) else { continue }
                     
                     // Ignore any marketplaceIDs that don't map to a StoreApp.
                     //TODO: Should we make these placeholders?
@@ -217,8 +217,15 @@ extension AppMarketplace
                     
                     if let appVersion
                     {
-                        let installedApp = self.makeInstalledApp(for: storeApp, appVersion: appVersion, in: context)
-                        Logger.main.info("Adding installed app \(installedApp.bundleIdentifier)")
+                        if let installedApp = installedAppsByMarketplaceID[marketplaceApp.id], installedApp.matches(appVersion)
+                        {
+                            // App already exists with this version, so ignore.
+                        }
+                        else
+                        {
+                            let installedApp = self.makeInstalledApp(for: storeApp, appVersion: appVersion, in: context)
+                            Logger.main.info("Adding/updating installed app \(installedApp.bundleIdentifier) version \(appVersion.localizedVersion)")
+                        }
                     }
                 }
 
@@ -700,9 +707,8 @@ private extension AppMarketplace
                 if UserDefaults.shared.shouldManageInstalledApps
                 {
                     let didInstallSuccessfully = try await self.isAppVersionInstalled(appVersion, for: storeApp)
-                    if !didInstallSuccessfully
-                    {
-                        // App version does not match the version we attempted to install, so assume error occured.
+                    guard didInstallSuccessfully || installation.progress.fractionCompleted >= 1 else {
+                        // Install progress is less than 100%, _and_ app version does not match the version we attempted to install, so assume error occured.
                         throw CancellationError()
                     }
                 }

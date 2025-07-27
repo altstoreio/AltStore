@@ -20,7 +20,7 @@ private let ReceivedServerConnectionResponse: @convention(c) (CFNotificationCent
 }
 
 @objc(FindServerOperation)
-class FindServerOperation: ResultOperation<Server>
+class FindServerOperation: ResultOperation<Server>, @unchecked Sendable
 {
     let context: OperationContext
     

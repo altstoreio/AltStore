@@ -17,9 +17,15 @@ class AddSourceTextFieldCell: UICollectionViewCell
     
     override init(frame: CGRect)
     {
+        #if MARKETPLACE
+        let placeholder = "marketplace.altstore.io"
+        #else
+        let placeholder = "apps.altstore.io"
+        #endif
+        
         self.textField = UITextField(frame: frame)
         self.textField.translatesAutoresizingMaskIntoConstraints = false
-        self.textField.placeholder = "apps.altstore.io"
+        self.textField.placeholder = placeholder
         self.textField.textContentType = .URL
         self.textField.keyboardType = .URL
         self.textField.returnKeyType = .done

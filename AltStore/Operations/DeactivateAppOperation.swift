@@ -13,7 +13,7 @@ import AltSign
 import Roxas
 
 @objc(DeactivateAppOperation)
-class DeactivateAppOperation: ResultOperation<InstalledApp>
+class DeactivateAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
     let app: InstalledApp
     let context: OperationContext

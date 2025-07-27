@@ -250,11 +250,7 @@ private extension InstallMarketplaceAppViewController
     @objc
     func cancel()
     {
-        #if DEBUG
-        self.completionHandler?(.success(())) // Always continue when debugging, never cancel.
-        #else
         self.completionHandler?(.failure(CancellationError()))
-        #endif
         
         self.dismiss(animated: true)
     }

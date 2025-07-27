@@ -12,7 +12,7 @@ import Network
 import AltStoreCore
 
 @objc(SendAppOperation)
-class SendAppOperation: ResultOperation<ServerConnection>
+class SendAppOperation: ResultOperation<ServerConnection>, @unchecked Sendable
 {
     let context: InstallAppOperationContext
     

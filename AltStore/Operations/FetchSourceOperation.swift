@@ -13,7 +13,7 @@ import AltStoreCore
 import Roxas
 
 @objc(FetchSourceOperation)
-class FetchSourceOperation: ResultOperation<Source>
+class FetchSourceOperation: ResultOperation<Source>, @unchecked Sendable
 {
     let sourceURL: URL
     let managedObjectContext: NSManagedObjectContext

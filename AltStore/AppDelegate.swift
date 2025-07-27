@@ -452,7 +452,10 @@ private extension AppDelegate
                 }
 
                 DispatchQueue.main.async {
-                    UIApplication.shared.applicationIconBadgeNumber = updates.count
+                    UNUserNotificationCenter.current().setBadgeCount(updates.count) { error in
+                        guard let error else { return }
+                        Logger.main.error("Failed to update app icon badge count. \(error.localizedDescription, privacy: .public)")
+                    }
                 }
                 
                 completionHandler(.success(sources))

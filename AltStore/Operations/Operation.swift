@@ -9,7 +9,7 @@
 import Foundation
 import Roxas
 
-class ResultOperation<ResultType>: Operation
+class ResultOperation<ResultType>: Operation, @unchecked Sendable
 {
     var resultHandler: ((Result<ResultType, Error>) -> Void)?
     
@@ -45,7 +45,7 @@ class ResultOperation<ResultType>: Operation
     }
 }
 
-class Operation: RSTOperation, ProgressReporting
+class Operation: RSTOperation, ProgressReporting, @unchecked Sendable
 {
     let progress = Progress.discreteProgress(totalUnitCount: 1)
     

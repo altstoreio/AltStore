@@ -15,7 +15,7 @@ public extension CodingUserInfoKey
     static let sourceURL = CodingUserInfoKey(rawValue: "sourceURL")!
 }
 
-public final class JSONDecoder: Foundation.JSONDecoder
+public final class JSONDecoder: Foundation.JSONDecoder, @unchecked Sendable
 {
     @DecoderItem(key: .managedObjectContext)
     public var managedObjectContext: NSManagedObjectContext?

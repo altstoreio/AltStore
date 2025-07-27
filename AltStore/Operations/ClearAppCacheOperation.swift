@@ -42,7 +42,7 @@ struct BatchError: ALTLocalizedError
 }
 
 @objc(ClearAppCacheOperation)
-class ClearAppCacheOperation: ResultOperation<Void>
+class ClearAppCacheOperation: ResultOperation<Void>, @unchecked Sendable
 {
     private let coordinator = NSFileCoordinator()
     private let coordinatorQueue = OperationQueue()

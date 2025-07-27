@@ -34,7 +34,7 @@ extension VerifyAppOperation
 }
 
 @objc(VerifyAppOperation)
-class VerifyAppOperation: ResultOperation<Void>
+class VerifyAppOperation: ResultOperation<Void>, @unchecked Sendable
 {
     let permissionsMode: PermissionReviewMode
     let context: InstallAppOperationContext

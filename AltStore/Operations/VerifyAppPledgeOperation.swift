@@ -10,7 +10,7 @@ import Combine
 
 import AltStoreCore
 
-class VerifyAppPledgeOperation: ResultOperation<Void>
+class VerifyAppPledgeOperation: ResultOperation<Void>, @unchecked Sendable
 {
     @AsyncManaged
     private(set) var storeApp: StoreApp

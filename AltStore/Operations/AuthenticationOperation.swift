@@ -38,7 +38,7 @@ enum AuthenticationErrorCode: Int, ALTErrorEnum, CaseIterable
 }
 
 @objc(AuthenticationOperation)
-class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppleAPISession)>
+class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppleAPISession)>, @unchecked Sendable
 {
     let context: AuthenticatedOperationContext
     

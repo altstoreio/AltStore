@@ -11,7 +11,7 @@ import Foundation
 import AltStoreCore
 
 @objc(RemoveAppOperation)
-class RemoveAppOperation: ResultOperation<InstalledApp>
+class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
     let context: InstallAppOperationContext
     

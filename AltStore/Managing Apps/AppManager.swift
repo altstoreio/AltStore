@@ -13,6 +13,7 @@ import MobileCoreServices
 import Intents
 import Combine
 import WidgetKit
+import UniformTypeIdentifiers
 
 import AltStoreCore
 import AltSign
@@ -1215,7 +1216,7 @@ private extension AppManager
                 case .activate(let app) where UserDefaults.standard.isLegacyDeactivationSupported: fallthrough
                 case .refresh(let app):
                     // Check if backup app is installed in place of real app.
-                    let uti = UTTypeCopyDeclaration(app.installedBackupAppUTI as CFString)?.takeRetainedValue() as NSDictionary?
+                    let uti = UTType(app.installedBackupAppUTI)
 
                     if app.certificateSerialNumber != group.context.certificate?.serialNumber ||
                         uti != nil ||

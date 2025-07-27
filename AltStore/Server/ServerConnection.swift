@@ -37,7 +37,7 @@ class ServerConnection
                 data = try JSONEncoder().encode(payload)
             }
             
-            func process<T>(_ result: Result<T, ALTServerError>) -> Bool
+            func process<Value>(_ result: Result<Value, ALTServerError>) -> Bool
             {
                 switch result
                 {

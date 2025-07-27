@@ -13,7 +13,7 @@ import AltSign
 import Roxas
 
 @objc(FetchProvisioningProfilesOperation)
-class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioningProfile]>
+class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioningProfile]>, @unchecked Sendable
 {
     let context: AppOperationContext
     

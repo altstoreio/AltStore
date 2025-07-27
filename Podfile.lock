@@ -1,18 +1,15 @@
 PODS:
-  - KeychainAccess (4.2.2)
   - Nuke (10.7.1)
   - Sparkle (2.3.2)
   - STPrivilegedTask (1.0.8)
 
 DEPENDENCIES:
-  - KeychainAccess (~> 4.2.0)
   - Nuke (~> 10.0)
   - Sparkle (~> 2.3)
   - STPrivilegedTask (from `https://github.com/rileytestut/STPrivilegedTask.git`)
 
 SPEC REPOS:
   trunk:
-    - KeychainAccess
     - Nuke
     - Sparkle
 
@@ -26,11 +23,10 @@ CHECKOUT OPTIONS:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
 SPEC CHECKSUMS:
-  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Nuke: 279f17a599fd1c83cf51de5e0e1f2db143a287b0
   Sparkle: b36a51855e81585a1c38e32e53101d36c00f4304
   STPrivilegedTask: 3a3f6add7c567b1be8c326328eb3dd6dc5daed91
 
-PODFILE CHECKSUM: 7acfbe89e376a71b9abf1258bece31024e83a355
+PODFILE CHECKSUM: c3f735f2bd43afbd34fff2b719ee9ce81912dd50
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

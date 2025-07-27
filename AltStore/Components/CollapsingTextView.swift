@@ -172,9 +172,10 @@ private extension CollapsingTextView
             let style = NSMutableParagraphStyle()
             style.lineSpacing = self.lineSpacing
             
-            var attributedText = try AttributedString(self.attributedText, including: \.uiKit)
-            attributedText[AttributeScopes.UIKitAttributes.ParagraphStyleAttribute.self] = style
+            let container = AttributeContainer([.paragraphStyle: style])
             
+            var attributedText = try AttributedString(self.attributedText, including: \.uiKit)
+            attributedText.mergeAttributes(container, mergePolicy: .keepNew)
             self.attributedText = NSAttributedString(attributedText)
         }
         catch
