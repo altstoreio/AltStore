@@ -516,6 +516,8 @@
 
 "TECHY THINGS" = "TECHY THINGS";
 
+"Tap a permission to learn more." = "Tap a permission to learn more.";
+
 "Tap to view progress." = "Tap to view progress.";
 
 "Tap to view source errors." = "Tap to view source errors.";
@@ -607,6 +609,8 @@
 "This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " = "This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ";
 
 "This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " = "This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ";
+
+"This version of “%arg” requires additional permissions." = "This version of “%arg” requires additional permissions.";
 
 "This will also erase all backup data for this app." = "This will also erase all backup data for this app.";
 
@@ -732,6 +736,8 @@
 
 "Your pledge is no longer active. Please renew it to continue using %@ normally." = "Your pledge is no longer active. Please renew it to continue using %@ normally.";
 
+"^[%arg app](inflect: true)" = "^[%arg app](inflect: true)";
+
 "all apps downloaded from it." = "all apps downloaded from it.";
 
 "an app in source “%@”" = "an app in source “%@”";
@@ -783,4 +789,6 @@
 "“%@” Blocked" = "“%@” Blocked";
 
 "“%@” could not be added to AltStore." = "“%@” could not be added to AltStore.";
+
+"“%arg” will be automatically given these permissions once installed." = "“%arg” will be automatically given these permissions once installed.";
 
