@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-public extension Connection
+public extension Connection where Self: Sendable
 {
     func send(_ data: Data, completionHandler: @escaping (Result<Void, ALTServerError>) -> Void)
     {

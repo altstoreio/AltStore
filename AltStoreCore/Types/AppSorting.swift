@@ -18,10 +18,10 @@ public enum AppSorting: String, CaseIterable
     public var localizedName: String {
         switch self
         {
-        case .default: return NSLocalizedString("Default", comment: "")
-        case .name: return NSLocalizedString("Name", comment: "")
-        case .developer: return NSLocalizedString("Developer", comment: "")
-        case .lastUpdated: return NSLocalizedString("Last Updated", comment: "")
+        case .default: return NSLocalizedString("Default", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .name: return NSLocalizedString("Name", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .developer: return NSLocalizedString("Developer", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .lastUpdated: return NSLocalizedString("Last Updated", bundle: Bundle(for: PatreonAPI.self), comment: "")
         }
     }
     

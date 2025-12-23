@@ -9,7 +9,7 @@
 import CoreData
 
 @objc(AppVersion)
-public class AppVersion: NSManagedObject, Decodable, Fetchable
+public class AppVersion: NSManagedObject, Decodable, Fetchable, Federatable
 {
     /* Properties */
     @NSManaged public var version: String
@@ -47,6 +47,13 @@ public class AppVersion: NSManagedObject, Decodable, Fetchable
         return osVersion
     }
     @NSManaged @objc(maxOSVersion) private var _maxOSVersion: String?
+    
+    // Federation
+    @NSManaged public var statusID: String?
+    @NSManaged public var federatedURL: URL?
+    @NSManaged public var likesCount: Int32
+    @NSManaged public var boostsCount: Int32
+    @NSManaged public var commentsCount: Int32
     
     @NSManaged public var appBundleID: String
     @NSManaged public var sourceID: String?
@@ -169,6 +176,13 @@ public extension AppVersion
         
         let versionID = "\(self.version)|\(buildVersion)"
         return versionID
+    }
+    
+    var globallyUniqueID: String? {
+        guard let sourceIdentifier = self.sourceID else { return nil }
+        
+        let globallyUniqueID = self.versionID + "|" + self.bundleIdentifier + "|" + sourceIdentifier
+        return globallyUniqueID
     }
 }
 

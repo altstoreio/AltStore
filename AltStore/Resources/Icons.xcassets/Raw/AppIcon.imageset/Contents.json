@@ -1,8 +1,9 @@
 {
   "images" : [
     {
-      "filename" : "AltStore-2.0.png",
-      "idiom" : "universal"
+      "filename" : "GlassIcon.png",
+      "idiom" : "universal",
+      "scale" : "1x"
     },
     {
       "appearances" : [
@@ -11,8 +12,37 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AppIconDark.png",
-      "idiom" : "universal"
+      "filename" : "GlassIconDark.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

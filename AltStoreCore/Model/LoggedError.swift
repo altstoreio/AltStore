@@ -126,14 +126,14 @@ public extension LoggedError
         guard let operation = self.operation else { return nil }
         switch operation
         {
-        case .install: return String(format: NSLocalizedString("Install %@ Failed", comment: ""), self.appName)
-        case .update: return String(format: NSLocalizedString("Update %@ Failed", comment: ""), self.appName)
-        case .refresh: return String(format: NSLocalizedString("Refresh %@ Failed", comment: ""), self.appName)
-        case .activate: return String(format: NSLocalizedString("Activate %@ Failed", comment: ""), self.appName)
-        case .deactivate: return String(format: NSLocalizedString("Deactivate %@ Failed", comment: ""), self.appName)
-        case .backup: return String(format: NSLocalizedString("Backup %@ Failed", comment: ""), self.appName)
-        case .restore: return String(format: NSLocalizedString("Restore %@ Failed", comment: ""), self.appName)
-        case .enableJIT: return String(format: NSLocalizedString("Enable JIT for %@ Failed", comment: ""), self.appName)
+        case .install: return String(format: NSLocalizedString("Install %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .update: return String(format: NSLocalizedString("Update %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .refresh: return String(format: NSLocalizedString("Refresh %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .activate: return String(format: NSLocalizedString("Activate %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .deactivate: return String(format: NSLocalizedString("Deactivate %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .backup: return String(format: NSLocalizedString("Backup %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .restore: return String(format: NSLocalizedString("Restore %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
+        case .enableJIT: return String(format: NSLocalizedString("Enable JIT for %@ Failed", bundle: Bundle(for: PatreonAPI.self), comment: ""), self.appName)
         }
     }
 }

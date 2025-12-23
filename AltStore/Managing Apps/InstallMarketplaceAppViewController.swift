@@ -153,8 +153,18 @@ private extension InstallMarketplaceAppViewController
             //TODO: How do we handle fallback of downloading older iOS version if we have to pick the not-latest version? Does provided URL not matter?
             // JK, it'll only ever fall back to latestSupportedVersion, so just supply that
             guard let marketplaceID = storeApp.marketplaceID, let adpURL = storeApp.latestSupportedVersion?.downloadURL else { break }
-                     
-            let bundleID = storeApp.bundleIdentifier
+            
+            let bundleID: String
+            if marketplaceID == StoreApp.altstoreMarketplaceID
+            {
+                // Both AltStore and AltStore Beta have same bundle ID, despite being listed with different ones in source.
+                bundleID = StoreApp.publicAltStoreAppID
+            }
+            else
+            {
+                bundleID = storeApp.bundleIdentifier
+            }
+            
             tintColor = storeApp.tintColor
             appName = storeApp.name
             
@@ -186,7 +196,17 @@ private extension InstallMarketplaceAppViewController
         case .update(let installedApp):
             guard let storeApp = installedApp.storeApp, let marketplaceID = storeApp.marketplaceID, let adpURL = storeApp.latestSupportedVersion?.downloadURL else { break }
             
-            let bundleID = storeApp.bundleIdentifier
+            let bundleID: String
+            if marketplaceID == StoreApp.altstoreMarketplaceID
+            {
+                // Both AltStore and AltStore Beta have same bundle ID, despite being listed with different ones in source.
+                bundleID = StoreApp.publicAltStoreAppID
+            }
+            else
+            {
+                bundleID = storeApp.bundleIdentifier
+            }
+            
             tintColor = storeApp.tintColor
             appName = storeApp.name
             

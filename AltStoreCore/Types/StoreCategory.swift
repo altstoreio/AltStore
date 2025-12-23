@@ -23,14 +23,14 @@ public enum StoreCategory: String, CaseIterable
     public var localizedName: String {
         switch self
         {
-        case .developer: NSLocalizedString("Developer", comment: "")
-        case .entertainment: NSLocalizedString("Entertainment", comment: "")
-        case .games: NSLocalizedString("Games", comment: "")
-        case .lifestyle: NSLocalizedString("Lifestyle", comment: "")
-        case .photoAndVideo: NSLocalizedString("Photo & Video", comment: "")
-        case .social: NSLocalizedString("Social", comment: "")
-        case .utilities: NSLocalizedString("Utilities", comment: "")
-        case .other: NSLocalizedString("Other", comment: "")
+        case .developer: NSLocalizedString("Developer", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .entertainment: NSLocalizedString("Entertainment", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .games: NSLocalizedString("Games", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .lifestyle: NSLocalizedString("Lifestyle", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .photoAndVideo: NSLocalizedString("Photo & Video", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .social: NSLocalizedString("Social", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .utilities: NSLocalizedString("Utilities", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .other: NSLocalizedString("Other", bundle: Bundle(for: PatreonAPI.self), comment: "")
         }
     }
     

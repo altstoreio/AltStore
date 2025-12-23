@@ -15,6 +15,8 @@ class NewsCollectionViewCell: UICollectionViewCell
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var contentBackgroundView: UIView!
     
+    @IBOutlet var fediverseInteractionsView: FediverseInteractionsView!
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
@@ -29,5 +31,7 @@ class NewsCollectionViewCell: UICollectionViewCell
         
         self.imageView.layer.cornerRadius = 30
         self.imageView.clipsToBounds = true
+        
+        self.fediverseInteractionsView.layoutMargins = .zero
     }
 }

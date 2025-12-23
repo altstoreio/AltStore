@@ -177,6 +177,24 @@ class SettingsViewController: UITableViewController
                 button.imageView?.contentMode = .scaleAspectFit
             }
         }
+        
+        if #available(iOS 26, *)
+        {
+            // Removes styling created by NavigationBar
+            self.navigationController?.navigationBar.scrollEdgeAppearance = UINavigationBarAppearance()
+            self.navigationController?.navigationBar.standardAppearance = UINavigationBarAppearance()
+            
+            let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithDefaultBackground()
+            appearance.shadowColor = nil
+            appearance.titleTextAttributes = textAttributes
+            appearance.largeTitleTextAttributes = textAttributes
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = appearance
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)

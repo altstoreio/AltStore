@@ -1,0 +1,492 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "0LW-eE-qHa.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"2\"; ObjectID = \"0LW-eE-qHa\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "2"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2"
+          }
+        }
+      }
+    },
+    "2N5-zd-fUj.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Sign in\"; ObjectID = \"2N5-zd-fUj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sign in"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインイン"
+          }
+        }
+      }
+    },
+    "4rk-ge-FSj.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Enable iTunes Wi-Fi Sync and connect to the same Wi-Fi as AltServer.\"; ObjectID = \"4rk-ge-FSj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable iTunes Wi-Fi Sync and connect to the same Wi-Fi as AltServer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTunes Wi-Fi同期を有効にし、AltServerと同じWi-Fiに接続してください。"
+          }
+        }
+      }
+    },
+    "5nk-NR-jtV.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"Refresh AltStore\"; ObjectID = \"5nk-NR-jtV\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Refresh AltStore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreを更新"
+          }
+        }
+      }
+    },
+    "6HP-Xh-sAH.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Leave AltServer running in the background on your computer.\"; ObjectID = \"6HP-Xh-sAH\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Leave AltServer running in the background on your computer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerをコンピュータのバックグラウンドで実行したままにしてください。"
+          }
+        }
+      }
+    },
+    "59N-O1-6bM.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"APPLE ID\"; ObjectID = \"59N-O1-6bM\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "APPLE ID"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ID"
+          }
+        }
+      }
+    },
+    "Ava-XY-7vs.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"PASSWORD\"; ObjectID = \"Ava-XY-7vs\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "PASSWORD"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワード"
+          }
+        }
+      }
+    },
+    "bCq-Jq-gf1.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"How it works\"; ObjectID = \"bCq-Jq-gf1\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "How it works"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仕組み"
+          }
+        }
+      }
+    },
+    "DBu-vt-hlo.placeholder" : {
+      "comment" : "Class = \"UITextField\"; placeholder = \"name@email.com\"; ObjectID = \"DBu-vt-hlo\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "name@email.com"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "name@email.com"
+          }
+        }
+      }
+    },
+    "EI2-V3-zQZ.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Welcome to AltStore.\"; ObjectID = \"EI2-V3-zQZ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Welcome to AltStore."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreへようこそ。"
+          }
+        }
+      }
+    },
+    "esj-pD-D4A.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Connect to Wi-Fi\"; ObjectID = \"esj-pD-D4A\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connect to Wi-Fi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fiに接続"
+          }
+        }
+      }
+    },
+    "HU5-Hv-E3d.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Apps are refreshed in the background when on same Wi-Fi as AltServer.\"; ObjectID = \"HU5-Hv-E3d\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Apps are refreshed in the background when on same Wi-Fi as AltServer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerと同じWi-Fiに接続している場合、アプリはバックグラウンドで更新されます。"
+          }
+        }
+      }
+    },
+    "i2U-NL-plG.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"4\"; ObjectID = \"i2U-NL-plG\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "4"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        }
+      }
+    },
+    "i9V-3h-B8f.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"1\"; ObjectID = \"i9V-3h-B8f\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "1"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        }
+      }
+    },
+    "JeJ-bk-UCA.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Download Apps\"; ObjectID = \"JeJ-bk-UCA\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Download Apps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリをダウンロード"
+          }
+        }
+      }
+    },
+    "M7T-9j-uyt.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Browse and download apps directly from AltStore.\"; ObjectID = \"M7T-9j-uyt\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Browse and download apps directly from AltStore."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreから直接アプリを閲覧、ダウンロードできます。"
+          }
+        }
+      }
+    },
+    "nDc-Zs-wnK.title" : {
+      "comment" : "Class = \"UIBarButtonItem\"; title = \"Close\"; ObjectID = \"nDc-Zs-wnK\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
+          }
+        }
+      }
+    },
+    "nvb-Aq-sYa.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Apps Refresh Automatically\"; ObjectID = \"nvb-Aq-sYa\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Apps Refresh Automatically"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリは自動的に更新されます"
+          }
+        }
+      }
+    },
+    "nVr-El-Csi.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"3\"; ObjectID = \"nVr-El-Csi\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "3"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3"
+          }
+        }
+      }
+    },
+    "on2-62-waY.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Your Apple ID is used to configure apps so they can be installed on this device. Your credentials will be stored securely in this device's Keychain and sent only to Apple for authentication.\"; ObjectID = \"on2-62-waY\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your Apple ID is used to configure apps so they can be installed on this device. Your credentials will be stored securely in this device's Keychain and sent only to Apple for authentication."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple IDは、アプリをこのデバイスにインストールできるように設定するために使用されます。認証情報は、このデバイスのキーチェーンに安全に保存され、認証のためにのみAppleに送信されます。"
+          }
+        }
+      }
+    },
+    "p9U-0q-Kn8.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Why do we need this?\"; ObjectID = \"p9U-0q-Kn8\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Why do we need this?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なぜこれが必要ですか？"
+          }
+        }
+      }
+    },
+    "qua-VA-asJ.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Refresh Later\"; ObjectID = \"qua-VA-asJ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Refresh Later"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後で更新"
+          }
+        }
+      }
+    },
+    "qZ9-AR-2zK.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Got it\"; ObjectID = \"qZ9-AR-2zK\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Got it"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "わかりました"
+          }
+        }
+      }
+    },
+    "R77-TQ-lVT.placeholder" : {
+      "comment" : "Class = \"UITextField\"; placeholder = \"••••••••\"; ObjectID = \"R77-TQ-lVT\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "••••••••"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "••••••••"
+          }
+        }
+      }
+    },
+    "SNU-tv-8Au.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Sign in with your Apple ID to get started.\"; ObjectID = \"SNU-tv-8Au\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sign in with your Apple ID to get started."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple IDでサインインして始めましょう。"
+          }
+        }
+      }
+    },
+    "xcg-hT-tDe.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Refresh Now\"; ObjectID = \"xcg-hT-tDe\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Refresh Now"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今すぐ更新"
+          }
+        }
+      }
+    },
+    "XKD-XH-eB0.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Launch AltServer\"; ObjectID = \"XKD-XH-eB0\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Launch AltServer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerを起動"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

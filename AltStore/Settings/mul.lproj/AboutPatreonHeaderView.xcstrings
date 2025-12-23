@@ -1,0 +1,127 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "DTd-Yu-HXr.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Riley Testut\"; ObjectID = \"DTd-Yu-HXr\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Riley Testut"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライリー・テストゥ"
+          }
+        }
+      }
+    },
+    "FeG-e5-LJl.text" : {
+      "comment" : "Class = \"UITextView\"; text = \"Hey y'all!\\n\\nIf you'd like to support my work, you can donate here. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.\\n\\nThanks for all your support 💜\\nRiley\"; ObjectID = \"FeG-e5-LJl\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Hey y'all!\n\nIf you'd like to support my work, you can donate here. In return, you'll gain access to beta versions of all of my apps and be among the first to try the latest features.\n\nThanks for all your support 💜\nRiley"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "g2O-Ve-hrS.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Link Patreon account\"; ObjectID = \"g2O-Ve-hrS\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Link Patreon account"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントをリンク"
+          }
+        }
+      }
+    },
+    "nPA-DN-RTG.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Developer\"; ObjectID = \"nPA-DN-RTG\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Developer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発者"
+          }
+        }
+      }
+    },
+    "VOu-b8-uEL.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Operations\"; ObjectID = \"VOu-b8-uEL\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Operations"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オペレーション"
+          }
+        }
+      }
+    },
+    "yEi-L6-kQ8.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Become a patron\"; ObjectID = \"yEi-L6-kQ8\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Become a patron"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パトロンになる"
+          }
+        }
+      }
+    },
+    "Zpb-k3-y7l.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"Shane Gill\"; ObjectID = \"Zpb-k3-y7l\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Shane Gill"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シェーン・ギル"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

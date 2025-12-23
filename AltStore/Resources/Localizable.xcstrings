@@ -1,0 +1,4186 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "“%@” Blocked" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」をブロックしました"
+          }
+        }
+      }
+    },
+    "“%@” could not be added to AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」をAltStoreに追加できませんでした。"
+          }
+        }
+      }
+    },
+    "“%@” will be automatically given these permissions once installed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」はインストール後に、これらの権限が自動的に付与されます。"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ %@ is now available for download." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ is now available for download."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@%2$@がダウンロード可能になりました。"
+          }
+        }
+      }
+    },
+    "%@ %@ update. Released on %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ update. Released on %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@%2$@のアップデート。%3$@にリリース。"
+          }
+        }
+      }
+    },
+    "%@ a month" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎月%@"
+          }
+        }
+      }
+    },
+    "%@ App IDs" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@個のアプリID"
+          }
+        }
+      }
+    },
+    "%@ App IDs Remaining" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残り%@個のアプリID"
+          }
+        }
+      }
+    },
+    "%@ beta" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ベータ版"
+          }
+        }
+      }
+    },
+    "%@ by %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ by %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@による%1$@"
+          }
+        }
+      }
+    },
+    "%@ can not jailbreak this device unless you untether it first. Are you sure you want to install without untethering?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まずアンテザードしない限り、%@はこのデバイスを脱獄することができません。アンテザードなしでインストールしてもよろしいですか？"
+          }
+        }
+      }
+    },
+    "%@ can only be downloaded from its original source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は元のソースからのみダウンロードできます"
+          }
+        }
+      }
+    },
+    "%@ could not be downloaded." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をダウンロードできませんでした。"
+          }
+        }
+      }
+    },
+    "%@ could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "%@ could not be installed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストールできませんでした。"
+          }
+        }
+      }
+    },
+    "%@ days" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@日"
+          }
+        }
+      }
+    },
+    "%@ DAYS" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@日"
+          }
+        }
+      }
+    },
+    "%@ does not support iOS %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ does not support iOS %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@はiOS %2$@をサポートしていません。"
+          }
+        }
+      }
+    },
+    "%@ is not added to AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@はAltstoreに追加されていません。"
+          }
+        }
+      }
+    },
+    "%@ may request access to the following:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は以下へのアクセスを要求する場合があります："
+          }
+        }
+      }
+    },
+    "%@ News" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ニュース"
+          }
+        }
+      }
+    },
+    "%@ requires %@ App IDs, but %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ requires %2$@ App IDs, but %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@には%2$@アプリIDが必要ですが、%3$@。"
+          }
+        }
+      }
+    },
+    "%@ requires additional permissions not specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@にはソースで指定されていない追加の権限が必要です。"
+          }
+        }
+      }
+    },
+    "%@ requires an active pledge in order to be installed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストールするには、アクティブな支援が必要です。"
+          }
+        }
+      }
+    },
+    "%@ requires iOS %@ or earlier." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ requires iOS %2$@ or earlier."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@にはiOS %2$@以前が必要です。"
+          }
+        }
+      }
+    },
+    "%@ requires iOS %@ or later." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ requires iOS %2$@ or later."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@にはiOS %2$@以降が必要です。"
+          }
+        }
+      }
+    },
+    "%@ requires more permissions than the version that is already installed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@には、既にインストールされているバージョンよりも多くの権限が必要です"
+          }
+        }
+      }
+    },
+    "%@ Unsupported Updates Available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないアップデート%@件が利用可能です"
+          }
+        }
+      }
+    },
+    "%@/mo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@/月"
+          }
+        }
+      }
+    },
+    "^[%lld app](inflect: true)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld アプリ](inflect: true)"
+          }
+        }
+      }
+    },
+    "1 App ID" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つのアプリID"
+          }
+        }
+      }
+    },
+    "1 App ID Remaining" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残り1個のアプリID"
+          }
+        }
+      }
+    },
+    "1 day" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1日"
+          }
+        }
+      }
+    },
+    "A connection to AltServer could not be established." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerへの接続が確立できませんでした。"
+          }
+        }
+      }
+    },
+    "A permission for %@ is missing a usage description." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の権限に使用説明が不足しています。"
+          }
+        }
+      }
+    },
+    "A placeholder app needs to be installed in order to prepare your device for untethering.\n\nThis may take a few moments." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンテザードの準備のため、プレースホルダーアプリをインストールする必要があります。\n\nこれには数分かかる場合があります。"
+          }
+        }
+      }
+    },
+    "A source cannot change its identifier once added. This source can no longer be updated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースは一度追加されると識別子を変更できません。このソースは今後アップデートできなくなります。"
+          }
+        }
+      }
+    },
+    "A source with the identifier '%@' already exists" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "識別子「%@」のソースはすでに存在します"
+          }
+        }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "概要"
+          }
+        }
+      }
+    },
+    "ACCOUNT" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウント"
+          }
+        }
+      }
+    },
+    "Activate" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクティベート"
+          }
+        }
+      }
+    },
+    "ACTIVATE" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクティベート"
+          }
+        }
+      }
+    },
+    "Activate %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をアクティベート"
+          }
+        }
+      }
+    },
+    "Active" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクティブ"
+          }
+        }
+      }
+    },
+    "ADD" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加"
+          }
+        }
+      }
+    },
+    "Add More Sources" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらにソースを追加"
+          }
+        }
+      }
+    },
+    "Add Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースを追加"
+          }
+        }
+      }
+    },
+    "Additional Permissions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加の権限"
+          }
+        }
+      }
+    },
+    "all apps downloaded from it." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そこからダウンロードされたすべてのアプリ。"
+          }
+        }
+      }
+    },
+    "All apps have been refreshed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリが更新されました。"
+          }
+        }
+      }
+    },
+    "AltServer" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer"
+          }
+        }
+      }
+    },
+    "AltServer could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerが見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "AltStore can only install marketplace apps that have been notarized by Apple." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreはAppleによって公証済みのマーケットプレイスアプリのみをインストールできます。"
+          }
+        }
+      }
+    },
+    "AltStore could not determine this device's UDID." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreはこのデバイスのUDIDを特定できませんでした。"
+          }
+        }
+      }
+    },
+    "AltStore does not have detailed information for these entitlements." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreにはこれらのエンタイトルメントに関する詳細情報がありません。"
+          }
+        }
+      }
+    },
+    "AltStore Expiring Soon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreの期限がまもなく切れます"
+          }
+        }
+      }
+    },
+    "AltStore News" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreニュース"
+          }
+        }
+      }
+    },
+    "AltStore was denied permission to launch %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreは%@を起動する権限を拒否されました。"
+          }
+        }
+      }
+    },
+    "AltStore was unable to use an existing signing certificate, so it had to create a new one. This will cause any apps installed with an existing certificate to expire — including AltStore.\n\nTo prevent AltStore from expiring early, please refresh the app now. AltStore will quit once refreshing is complete." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreは既存の署名証明書を使用できなかったため、新しい証明書を作成する必要がありました。これにより、既存の証明書でインストールされたアプリ（AltStoreを含む）はすべて期限切れとなります。\n\nAltStoreの早期期限切れを防ぐため、今すぐアプリを更新してください。更新が完了するとAltStoreは終了します。"
+          }
+        }
+      }
+    },
+    "AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreは24時間後に期限切れになります。期限切れを防ぐにはアプリを開き、更新してください。"
+          }
+        }
+      }
+    },
+    "AltStore's shared app group could not be accessed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreの共有アプリグループにアクセスできませんでした。"
+          }
+        }
+      }
+    },
+    "an app in source “%@”" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」内のアプリ"
+          }
+        }
+      }
+    },
+    "An iPad screenshot for %@ does not specify its size" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のiPadスクリーンショットはサイズが指定されていません"
+          }
+        }
+      }
+    },
+    "An unknown error occured." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "Any apps you've installed from this source will remain, but they'll no longer receive any app updates." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このソースからインストールしたアプリは残りますが、アプリのアップデートは今後受け取れなくなります。"
+          }
+        }
+      }
+    },
+    "App" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ"
+          }
+        }
+      }
+    },
+    "App Contains Extensions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリには拡張機能が含まれています"
+          }
+        }
+      }
+    },
+    "app extension" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ拡張"
+          }
+        }
+      }
+    },
+    "app extensions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ拡張"
+          }
+        }
+      }
+    },
+    "App ID:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリID："
+          }
+        }
+      }
+    },
+    "App Refresh Tip" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ更新のヒント"
+          }
+        }
+      }
+    },
+    "Approve" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "承認"
+          }
+        }
+      }
+    },
+    "Are you sure you want to clear AltStore's cache?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreのキャッシュをクリアしてもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you want to clear the error log?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーログをクリアしてもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you want to remove the source “%@”?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」を削除してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you want to restore this backup?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このバックアップを復元してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you want to sign out?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインアウトしてもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you want to unlink your Patreon account?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントの連携を解除してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Are you sure you'd like to %@ %@?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you'd like to %1$@ %2$@?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@を%1$@してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "Back Up" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックアップ"
+          }
+        }
+      }
+    },
+    "Back Up %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をバックアップ"
+          }
+        }
+      }
+    },
+    "Become a patron" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パトロンになる"
+          }
+        }
+      }
+    },
+    "BILLING" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請求"
+          }
+        }
+      }
+    },
+    "Browse" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索"
+          }
+        }
+      }
+    },
+    "Cannot Activate More than 3 Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3つ以上のアプリを有効化することはできません"
+          }
+        }
+      }
+    },
+    "Cannot Activate More than 3 Apps and App Extensions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3つ以上のアプリとアプリ拡張機能を有効化することはできません"
+          }
+        }
+      }
+    },
+    "Cannot Send Mail" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メールを送信できません"
+          }
+        }
+      }
+    },
+    "Categories" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カテゴリー"
+          }
+        }
+      }
+    },
+    "Change App Icon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリアイコンを変更"
+          }
+        }
+      }
+    },
+    "Change Icon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイコンを変更"
+          }
+        }
+      }
+    },
+    "Classic" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラシック"
+          }
+        }
+      }
+    },
+    "Clear Cache" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュをクリア"
+          }
+        }
+      }
+    },
+    "Clear Error Log" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーログをクリア"
+          }
+        }
+      }
+    },
+    "Coming Soon!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近日公開！"
+          }
+        }
+      }
+    },
+    "Confirm Action" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクションを確定"
+          }
+        }
+      }
+    },
+    "Confirm Installation" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストールを確定"
+          }
+        }
+      }
+    },
+    "Connect Patreon Account" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントを接続"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "続行"
+          }
+        }
+      }
+    },
+    "Continue in App" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリで続行"
+          }
+        }
+      }
+    },
+    "Copy Error Code" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーコードをコピー"
+          }
+        }
+      }
+    },
+    "Copy Error Message" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーメッセージをコピー"
+          }
+        }
+      }
+    },
+    "Could not back up “%@”." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」をバックアップできませんでした。"
+          }
+        }
+      }
+    },
+    "Could not back up jailbreak app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脱獄アプリをバックアップできませんでした。"
+          }
+        }
+      }
+    },
+    "Could not determine presenting context." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示コンテキストを特定できませんでした。"
+          }
+        }
+      }
+    },
+    "Could not download OTA archive." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OTAアーカイブをダウンロードできませんでした。"
+          }
+        }
+      }
+    },
+    "Could not enable JIT for %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のJITを有効化できませんでした"
+          }
+        }
+      }
+    },
+    "Could not extract Spotlight from OTA archive." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OTAアーカイブからSpotlightを抽出できませんでした。"
+          }
+        }
+      }
+    },
+    "Could not install %@ placeholder." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プレースホルダーをインストールできませんでした。"
+          }
+        }
+      }
+    },
+    "Could not install %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストールできませんでした。"
+          }
+        }
+      }
+    },
+    "Could not open %@ placeholder." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プレースホルダーを開けませんでした。"
+          }
+        }
+      }
+    },
+    "Could not open %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を開けませんでした。"
+          }
+        }
+      }
+    },
+    "Could not patch %@ placeholder." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プレースホルダーにパッチを適用できませんでした。"
+          }
+        }
+      }
+    },
+    "Could not restore “%@”." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」を復元できませんでした。"
+          }
+        }
+      }
+    },
+    "CREDITS" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クレジット"
+          }
+        }
+      }
+    },
+    "Custom Pledge" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム支援"
+          }
+        }
+      }
+    },
+    "Deactivate" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非アクティブ化"
+          }
+        }
+      }
+    },
+    "DEBUG" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグ"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        }
+      }
+    },
+    "Delete sideloaded apps to free up App ID slots." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドロードしたアプリを削除して、アプリIDスロットを解放してください。"
+          }
+        }
+      }
+    },
+    "DISPLAY" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ディスプレイ"
+          }
+        }
+      }
+    },
+    "Don’t know where to start? Try adding one of our Recommended Sources!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "何から始めればよいかわかりませんか？推奨ソースの1つを追加してみてください！"
+          }
+        }
+      }
+    },
+    "Download %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をダウンロード"
+          }
+        }
+      }
+    },
+    "Download %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Download %1$@ %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@の%2$@をダウンロード"
+          }
+        }
+      }
+    },
+    "Downloading %@…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をダウンロード中..."
+          }
+        }
+      }
+    },
+    "Downloading iOS firmware..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSファームウェアをダウンロード中..."
+          }
+        }
+      }
+    },
+    "duplicate versions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重複バージョン"
+          }
+        }
+      }
+    },
+    "Each app and app extension installed with AltStore must register an App ID with Apple.\n\nApp IDs for paid developer accounts never expire, and there is no limit to how many you can create." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreでインストールされた各アプリおよびアプリ拡張機能は、AppleにアプリIDを登録する必要があります。\n\n有料の開発者用アカウントのアプリIDには期限がなく、作成数に制限はありません。"
+          }
+        }
+      }
+    },
+    "Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits non-developer Apple IDs to 10 App IDs at a time.\n\n**App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreでインストールされた各アプリおよびアプリ拡張機能は、AppleにアプリIDを登録する必要があります。非開発者用の Apple ID では、同時に作成できるApp IDは最大10件までです。\n\n\n**アプリIDは削除できません**が、1週間後に期限切れとなります。AltStoreは、期限が切れたすべてのアクティブなアプリのアプリIDを自動的に更新します。"
+          }
+        }
+      }
+    },
+    "Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as AltServer." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerと同じWi-Fiに接続しているときに、バックグラウンドでアプリを自動的に更新するには、バックグラウンド更新を有効にしてください。"
+          }
+        }
+      }
+    },
+    "Enable JIT" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JITを有効化"
+          }
+        }
+      }
+    },
+    "Enabled JIT for %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のJITを有効化しました"
+          }
+        }
+      }
+    },
+    "Enter a source's URL below, or add one of the recommended sources." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下にソースのURLを入力するか、推奨されるソースのいずれかを追加してください。"
+          }
+        }
+      }
+    },
+    "Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンタイトルメントは、潜在的に機密性の高い情報を含む特定のシステムサービスへのアクセスを許可する追加の権限です。"
+          }
+        }
+      }
+    },
+    "Error Details" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー詳細"
+          }
+        }
+      }
+    },
+    "Error Loading Patrons" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パトロンの読み込みエラー"
+          }
+        }
+      }
+    },
+    "Error:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー："
+          }
+        }
+      }
+    },
+    "Errors that occur when sideloading or refreshing apps will appear here." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのサイドローディングまたは更新中に発生したエラーはここに表示されます。"
+          }
+        }
+      }
+    },
+    "Errors that occur while installing apps will appear here." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのインストール中に発生したエラーはここに表示されます。"
+          }
+        }
+      }
+    },
+    "Expires in" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期限切れまで残り："
+          }
+        }
+      }
+    },
+    "Expires in %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@後に期限が切れます"
+          }
+        }
+      }
+    },
+    "Expires in %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@後に期限が切れます。"
+          }
+        }
+      }
+    },
+    "Export Backup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックアップのエクスポート"
+          }
+        }
+      }
+    },
+    "Failed to Activate %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のアクティベートに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Back Up %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のバックアップに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Clear Error Log" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーログのクリアに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Deactivate %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の無効化に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Enable JIT for %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に対するJITの有効化に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Install %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のインストールに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Log In" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログインに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Refresh %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の更新に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to refresh %@ apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@個のアプリの更新に失敗しました。"
+          }
+        }
+      }
+    },
+    "Failed to refresh 1 app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つのアプリの更新に失敗しました。"
+          }
+        }
+      }
+    },
+    "Failed to Refresh AltStore" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreの更新に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Refresh Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの更新に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Restore %@ Backup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のバックアップの復元に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to retrieve manifest.json URL from Patreon post." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonの投稿からmanifest.jsonURLの取得に失敗しました。"
+          }
+        }
+      }
+    },
+    "Failed to Update %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のアップデートに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to Verify %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の検証に失敗しました"
+          }
+        }
+      }
+    },
+    "Failure" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗"
+          }
+        }
+      }
+    },
+    "Featured" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注目"
+          }
+        }
+      }
+    },
+    "Featured Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注目のアプリ"
+          }
+        }
+      }
+    },
+    "Finish in %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で終了"
+          }
+        }
+      }
+    },
+    "Finish installing %@?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のインストールを終了しますか？"
+          }
+        }
+      }
+    },
+    "Follow the instructions in %@ to finish jailbreaking this device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の手順に従って、このデバイスの脱獄を完了してください。"
+          }
+        }
+      }
+    },
+    "For your protection, please remove the source and uninstall" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ご自身の保護のため、ソースを削除しアンインストールしてください"
+          }
+        }
+      }
+    },
+    "Free" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料"
+          }
+        }
+      }
+    },
+    "Free up disk space by removing non-essential data, such as temporary files and backups for uninstalled apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時ファイルやアンインストール済みアプリ用のバックアップなど、不要なデータを削除してディスク容量を解放してください。"
+          }
+        }
+      }
+    },
+    "Gradient" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グラデーション"
+          }
+        }
+      }
+    },
+    "Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to our Patreon-exclusive apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "こんにちは、\n\nありがとうございます。アカウントの連携が成功したので、すべてのPatreon限定アプリにアクセスできるようになりました。アプリは「ブラウズタブ」ですべてご確認いただけます。\n\nいつも応援ありがとうございます。どうぞお楽しみください！\nライリー＆シェーン"
+          }
+        }
+      }
+    },
+    "Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "こんにちは。\n\nありがとうございます。アカウントの連携が成功したので、すべてのアプリのベータ版にアクセスできるようになりました。アプリは「ブラウズタブ」ですべてご確認いただけます。\n\nいつも応援ありがとうございます。どうぞお楽しみください！\nライリー＆シェーン"
+          }
+        }
+      }
+    },
+    "Hey y'all,\n\nYou can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.\n\nThanks for all your support 💜\nRiley & Shane" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "こんにちは。\n\nPatreonで私たちに寄付していただくと、今後のアプリ開発をご支援いただけます。そのお礼として、アプリのベータ版へのアクセス権が得られ、最新機能をいち早くお試しいただけます。\n\nいつも応援ありがとうございます 💜\nライリー＆シェーン"
+          }
+        }
+      }
+    },
+    "If you're using the MacDirtyCow exploit to remove the 3-app limit, you can install up to 10 apps and app extensions instead." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacDirtyCowエクスプロイトを使用して3つのアプリ制限を解除している場合、代わりに最大10個のアプリとアプリ拡張機能をインストールできます。"
+          }
+        }
+      }
+    },
+    "If you've removed the 3-sideloaded app limit via the MacDirtyCow exploit, disable this setting to sideload more than 3 apps at a time." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacDirtyCowエクスプロイトで3つのサイドロードアプリ制限を解除した場合、この設定を無効にすると、一度に3つ以上のアプリをサイドロードできます。"
+          }
+        }
+      }
+    },
+    "In order to finish jailbreaking this device, you need to install %@ then follow the instructions in the app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスの脱獄を完了するには、%@をインストールし、アプリ内の指示に従ってください。"
+          }
+        }
+      }
+    },
+    "Inactive" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非アクティブ"
+          }
+        }
+      }
+    },
+    "install" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール"
+          }
+        }
+      }
+    },
+    "Install" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール"
+          }
+        }
+      }
+    },
+    "Install %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストール"
+          }
+        }
+      }
+    },
+    "Install Anyway" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "とにかくインストール"
+          }
+        }
+      }
+    },
+    "Install Untethered Jailbreak" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンテザード脱獄をインストール"
+          }
+        }
+      }
+    },
+    "Install Without Untethering" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンテザードせずにインストール"
+          }
+        }
+      }
+    },
+    "Installed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール済み"
+          }
+        }
+      }
+    },
+    "Installing %@ placeholder…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プレースホルダーをインストール中..."
+          }
+        }
+      }
+    },
+    "Installing %@..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストール中..."
+          }
+        }
+      }
+    },
+    "Installing…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール中..."
+          }
+        }
+      }
+    },
+    "Invalid ADP install URL." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なADPインストールURLです。"
+          }
+        }
+      }
+    },
+    "Invalid ADP update URL." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なADPアップデートURLです。"
+          }
+        }
+      }
+    },
+    "Invalid parameters." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なパラメータです。"
+          }
+        }
+      }
+    },
+    "iOS" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        }
+      }
+    },
+    "iOS %@ or earlier" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS %@以前"
+          }
+        }
+      }
+    },
+    "iOS %@ or later" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS %@以降"
+          }
+        }
+      }
+    },
+    "Jailbreak Requires Untethering" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脱獄はアンテザードする必要があります"
+          }
+        }
+      }
+    },
+    "Jailbreak Supports Untethering" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脱獄はアンテザードに対応しています"
+          }
+        }
+      }
+    },
+    "JIT will remain enabled until you quit the app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JITはアプリを終了するまで有効のままです。"
+          }
+        }
+      }
+    },
+    "Join Patreon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonに参加"
+          }
+        }
+      }
+    },
+    "Keep App Extensions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ拡張機能を保持"
+          }
+        }
+      }
+    },
+    "Last Updated: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終アップデート日：%@"
+          }
+        }
+      }
+    },
+    "Link Patreon account" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントを連携"
+          }
+        }
+      }
+    },
+    "Loading..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込み中..."
+          }
+        }
+      }
+    },
+    "MACDIRTYCOW" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MACDIRTYCOW"
+          }
+        }
+      }
+    },
+    "Make sure to only add sources that you trust." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信用できるソースのみを追加するようにしてください。"
+          }
+        }
+      }
+    },
+    "Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerを実行しているコンピュータと同じWi-Fiネットワークに接続していることを確認するか、このデバイスをUSB経由でコンピュータに接続してみてください。"
+          }
+        }
+      }
+    },
+    "Manage your AltStore PAL annual subscription." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStore PALの年間サブスクリプションを管理しましょう。"
+          }
+        }
+      }
+    },
+    "Modern" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モダン"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を表示"
+          }
+        }
+      }
+    },
+    "Never" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なし"
+          }
+        }
+      }
+    },
+    "New & Updated" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新着とアップデート"
+          }
+        }
+      }
+    },
+    "New Update Available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいアップデートが利用可能です"
+          }
+        }
+      }
+    },
+    "No active apps require refreshing." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクティブなアプリで更新が必要なものはありません。"
+          }
+        }
+      }
+    },
+    "No Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリなし"
+          }
+        }
+      }
+    },
+    "No Errors" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーなし"
+          }
+        }
+      }
+    },
+    "No Refresh Attempts" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新試行なし"
+          }
+        }
+      }
+    },
+    "No Updates Available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用可能なアップデートはありません"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 active apps and app extensions, and “%@” contains %@ %@. Please choose an app to deactivate." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Non-developer Apple IDs are limited to 3 active apps and app extensions, and “%1$@” contains %2$@ %3$@. Please choose an app to deactivate."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アクティブなアプリとアプリ拡張機能は3つまでに制限され、「%1$@」は%2$@個の%3$@を含んでいます。無効にするアプリを1つ選んでください。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 active apps and app extensions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アクティブなアプリとアプリ拡張機能は3つまでに制限されます。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 active apps and app extensions. Please choose an app to deactivate." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アクティブなアプリとアプリ拡張機能は3つまでに制限されます。無効にするアプリを1つ選んでください。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 active apps. Please choose an app to deactivate." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アクティブなアプリは3つまでに制限されます。無効にするアプリを1つ選んでください。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アプリとアプリ拡張機能は3つまでに制限されます。非アクティブなアプリは合計数にはカウントされませんが、アクティブ化されるまで開くことはできません。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、アプリは3つまでに制限されます。非アクティブなアプリはバックアップされアンインストールされるため、合計数にはカウントされませんが、再度アクティブ化すると、すべてのデータと共に再インストールされます。"
+          }
+        }
+      }
+    },
+    "Non-developer Apple IDs are limited to creating 10 App IDs per week." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、1週間に作成できるアプリIDは10個までです。"
+          }
+        }
+      }
+    },
+    "none are available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用可能なものはありません"
+          }
+        }
+      }
+    },
+    "one or more apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つ以上のアプリ"
+          }
+        }
+      }
+    },
+    "One or more apps in source “%@” are missing a marketplaceID. This most likely means they are not notarized, which is not supported by this version of AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」内の1つ以上のアプリにマーケットプレイスIDが欠落しています。これはおそらく、アプリが公証されていないことを意味しており、このバージョンのAltStoreではサポートされていません。"
+          }
+        }
+      }
+    },
+    "only %@ are available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@個だけ利用可能です"
+          }
+        }
+      }
+    },
+    "only 1 is available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1個だけ利用可能です"
+          }
+        }
+      }
+    },
+    "open" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開く"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開く"
+          }
+        }
+      }
+    },
+    "Open %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を開く"
+          }
+        }
+      }
+    },
+    "Open Placeholder" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレースホルダーを開く"
+          }
+        }
+      }
+    },
+    "Operation Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作に失敗しました"
+          }
+        }
+      }
+    },
+    "Other Entitlements" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のエンタイトルメント"
+          }
+        }
+      }
+    },
+    "Patch Placeholder" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレースホルダーのパッチを適用"
+          }
+        }
+      }
+    },
+    "Patching %@ placeholder…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プレースホルダーのパッチ適用中..."
+          }
+        }
+      }
+    },
+    "Patching placeholder app..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレースホルダーアプリのパッチ適用中..."
+          }
+        }
+      }
+    },
+    "PATREON" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PATREON"
+          }
+        }
+      }
+    },
+    "Patreon Account Detected" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントが検知されました"
+          }
+        }
+      }
+    },
+    "Permission" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限"
+          }
+        }
+      }
+    },
+    "Personalize your AltStore experience by choosing an alternate app icon." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代替のアプリアイコンを選択して、AltStoreの体験をカスタマイズしましょう。"
+          }
+        }
+      }
+    },
+    "Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真"
+          }
+        }
+      }
+    },
+    "Please enter the 6-digit verification code that was sent to your Apple devices." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleデバイスに送信された6桁の確認コードを入力してください。"
+          }
+        }
+      }
+    },
+    "Please make sure your spelling is correct, or try searching for another app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スペルに間違いがないか確認してください。または別のアプリを検索してみてください。"
+          }
+        }
+      }
+    },
+    "Please open the placeholder app and follow the instructions to continue jailbreaking your device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレースホルダーアプリを開き、指示に従ってデバイスの脱獄を続行してください。"
+          }
+        }
+      }
+    },
+    "Please remove the existing source in order to add this one." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このソースを追加するには、既存のソースを削除してください。"
+          }
+        }
+      }
+    },
+    "Pledge" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援"
+          }
+        }
+      }
+    },
+    "Pledge %@ a month" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎月%@を支援"
+          }
+        }
+      }
+    },
+    "Pledge Expired" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援期限切れ"
+          }
+        }
+      }
+    },
+    "Pledged" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援済み"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシー"
+          }
+        }
+      }
+    },
+    "Promo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロモ"
+          }
+        }
+      }
+    },
+    "Receive access to beta versions of AltStore, Delta, and more by becoming a patron." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パトロンになることで、AltStoreやDeltaなどのベータ版へのアクセス権を得られます。"
+          }
+        }
+      }
+    },
+    "Recessed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "埋め込み型"
+          }
+        }
+      }
+    },
+    "Recommended Sources" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨ソース"
+          }
+        }
+      }
+    },
+    "Redeemed PAL Promo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "交換済PALプロモ"
+          }
+        }
+      }
+    },
+    "Refresh" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        }
+      }
+    },
+    "Refresh %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を更新"
+          }
+        }
+      }
+    },
+    "Refresh All" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて更新"
+          }
+        }
+      }
+    },
+    "Refresh Later" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後で更新"
+          }
+        }
+      }
+    },
+    "Refreshed Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新済みアプリ"
+          }
+        }
+      }
+    },
+    "Refreshing" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新中です"
+          }
+        }
+      }
+    },
+    "REFRESHING APPS" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの更新"
+          }
+        }
+      }
+    },
+    "remote AltServer %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートAltServer%@"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        }
+      }
+    },
+    "REMOVE" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        }
+      }
+    },
+    "Remove “%@” from AltStore?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreから「%@」を削除しますか？"
+          }
+        }
+      }
+    },
+    "Remove App Extensions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ拡張機能を削除"
+          }
+        }
+      }
+    },
+    "Remove Custom Icon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムアイコンを削除"
+          }
+        }
+      }
+    },
+    "Remove Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースを削除"
+          }
+        }
+      }
+    },
+    "Restore Backup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックアップの復元"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        }
+      }
+    },
+    "Review Permissions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限の確認"
+          }
+        }
+      }
+    },
+    "Search FAQ" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FAQを検索"
+          }
+        }
+      }
+    },
+    "See All" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて見る"
+          }
+        }
+      }
+    },
+    "Sideloaded" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドロード済み"
+          }
+        }
+      }
+    },
+    "Sign in with your Apple ID to download apps from AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreからアプリをダウンロードするには、Apple IDでサインインしてください。"
+          }
+        }
+      }
+    },
+    "Sign Out" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインアウト"
+          }
+        }
+      }
+    },
+    "SIGN OUT" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインアウト"
+          }
+        }
+      }
+    },
+    "Sort by…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並べ替え："
+          }
+        }
+      }
+    },
+    "Sources determine what apps are available in AltStore. The more sources you add, the better your AltStore experience will be." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースによってAltStoreで利用可能なアプリが決まります。ソースを追加すればするほど、AltStoreの体験が向上します。"
+          }
+        }
+      }
+    },
+    "Special thanks to..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下の皆さまに深く感謝申し上げます。"
+          }
+        }
+      }
+    },
+    "Start Backup?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックアップを開始しますか？"
+          }
+        }
+      }
+    },
+    "Success" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功"
+          }
+        }
+      }
+    },
+    "SUPPORT" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポート"
+          }
+        }
+      }
+    },
+    "Switch to beta version of AltStore PAL?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStore PALのベータ版に切り替えますか？"
+          }
+        }
+      }
+    },
+    "Tap a permission to learn more." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を確認するには権限をタップしてください。"
+          }
+        }
+      }
+    },
+    "Tap to view progress." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進行状況を表示するにはタップしてください。"
+          }
+        }
+      }
+    },
+    "Tap to view source errors." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースエラーを表示するにはタップしてください。"
+          }
+        }
+      }
+    },
+    "TECHY THINGS" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テクノロジー関連"
+          }
+        }
+      }
+    },
+    "The %@ '%@' for %@ is missing a usage description." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The %1$@ '%2$@' for %3$@ is missing a usage description."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%3$@の%1$@「%2$@」には使用説明が不足しています。"
+          }
+        }
+      }
+    },
+    "the app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ"
+          }
+        }
+      }
+    },
+    "The app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ"
+          }
+        }
+      }
+    },
+    "The app is in an invalid format." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの形式が無効です。"
+          }
+        }
+      }
+    },
+    "The app listing could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのリストが見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "The build version of %@ does not match the build version specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のビルドバージョンが、ソースによって指定されたビルドバージョンと一致しません。"
+          }
+        }
+      }
+    },
+    "The bundle ID for %@ does not match the one specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のバンドルIDがソースで指定されたものと一致しません。"
+          }
+        }
+      }
+    },
+    "the bundle identifier %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バンドル識別子%@"
+          }
+        }
+      }
+    },
+    "The certificate could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "証明書が見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "The certificate's private key could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "証明書の秘密鍵が見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "The connection failed because a connection cannot be made to the host." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホストへの接続が確立できないため、接続に失敗しました。"
+          }
+        }
+      }
+    },
+    "The connection failed because the network connection was lost." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネットワーク接続が失われたため、接続に失敗しました。"
+          }
+        }
+      }
+    },
+    "The connection to AltServer was dropped." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerへの接続が切断されました。"
+          }
+        }
+      }
+    },
+    "The default AltStore source cannot be removed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトの依存関係は削除できません。"
+          }
+        }
+      }
+    },
+    "The dependencies for %@ could not be determined." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の依存関係が特定できませんでした。"
+          }
+        }
+      }
+    },
+    "The dependency “%@” could not be downloaded." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依存関係「%@」をダウンロードできませんでした。"
+          }
+        }
+      }
+    },
+    "The developer certificate could not be found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発者証明書が見つかりませんでした。"
+          }
+        }
+      }
+    },
+    "the downloaded app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードしたアプリ"
+          }
+        }
+      }
+    },
+    "The following apps have been flagged:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下のアプリにフラグがつけられています："
+          }
+        }
+      }
+    },
+    "the following apps:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下のアプリ："
+          }
+        }
+      }
+    },
+    "The identifier of the source “%@” has changed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」の識別子が変更されました。"
+          }
+        }
+      }
+    },
+    "The latest version of %@ could not be determined." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の最新バージョンを特定できませんでした。"
+          }
+        }
+      }
+    },
+    "The marketplace ID for %@ could not be determined." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のマーケットプレイス IDを特定できませんでした。"
+          }
+        }
+      }
+    },
+    "The marketplace ID for %@ does not match the one specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のマーケットプレイスIDが、ソースで指定されたものと一致しません。"
+          }
+        }
+      }
+    },
+    "The more you open AltStore, the more chances it's given to refresh apps in the background." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreを起動すればするほど、バックグラウンドでアプリを更新する機会が増えます。"
+          }
+        }
+      }
+    },
+    "The more you use AltStore, the more often iOS will allow it to refresh apps in the background." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreを使用すればするほど、iOSはバックグラウンドでのアプリ更新をより頻繁に許可するようになります。"
+          }
+        }
+      }
+    },
+    "The operation is forbidden." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作は禁止されています。"
+          }
+        }
+      }
+    },
+    "The operation returned an unknown result." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作は不明な結果を返しました。"
+          }
+        }
+      }
+    },
+    "The operation timed out." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作がタイムアウトしました。"
+          }
+        }
+      }
+    },
+    "The OTA download URL for %@ could not be determined." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のOTAダウンロードURLを特定できませんでした。"
+          }
+        }
+      }
+    },
+    "the same bundle identifier" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同一のバンドル識別子"
+          }
+        }
+      }
+    },
+    "The SHA-256 hash of %@ does not match the hash specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のSHA-256ハッシュが、ソースが指定したハッシュと一致しません。"
+          }
+        }
+      }
+    },
+    "The source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース"
+          }
+        }
+      }
+    },
+    "The source “%@”" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」"
+          }
+        }
+      }
+    },
+    "The source “%@” contains %@ for %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The source “%1$@” contains %2$@ for %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%1$@」には%3$@の%2$@が含まれます。"
+          }
+        }
+      }
+    },
+    "The source “%@” contains multiple apps with %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The source “%1$@” contains multiple apps with %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%1$@」には%2$@を含む複数のアプリが含まれています。"
+          }
+        }
+      }
+    },
+    "The source “%@” contains notarized apps, which are not supported by this version of AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」には、このバージョンのAltStoreではサポートされていない、公証済みアプリが含まれています。"
+          }
+        }
+      }
+    },
+    "The source “%@” has been blocked by AltStore for security reasons." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セキュリティ上の理由により、ソース「%@」はAltStoreによってブロックされました。"
+          }
+        }
+      }
+    },
+    "The source “%@” is not supported by this version of AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」は、このバージョンのAltStoreではサポートされていません。"
+          }
+        }
+      }
+    },
+    "The task timed out after %@ seconds." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスクは%@秒後にタイムアウトしました。"
+          }
+        }
+      }
+    },
+    "The version of %@ does not match the version specified by the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のバージョンはソースで指定されたバージョンと一致しません。"
+          }
+        }
+      }
+    },
+    "There are no AltStore sources." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreソースがありません。"
+          }
+        }
+      }
+    },
+    "These are permissions required by “%@” that AltStore does not recognize. Make sure you understand them before continuing." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらは「%@」に必要な権限ですが、AltStoreでは認識されていません。続行する前に、必ずこれらの権限について理解してください。"
+          }
+        }
+      }
+    },
+    "These permissions must be declared by the source in order for AltStore to install this app:" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreがこのアプリをインストールするには、ソース側で以下の権限を宣言する必要があります："
+          }
+        }
+      }
+    },
+    "These updates don't support iOS %@. Please update your device to the latest iOS version to install them." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのアップデートはiOS %@に対応していません。インストールするには、お使いのデバイスを最新のiOSバージョンに更新してください。"
+          }
+        }
+      }
+    },
+    "this app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリ"
+          }
+        }
+      }
+    },
+    "This app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリ"
+          }
+        }
+      }
+    },
+    "This app supports custom pledges. Pledge any amount on Patreon to receive access." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリはカスタム支援に対応しています。Patreonで任意の金額を支援するとアクセス権が得られます。"
+          }
+        }
+      }
+    },
+    "This device is running iOS %@, but %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This device is running iOS %1$@, but %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスはiOS%1$@を実行していますが、%2$@です。"
+          }
+        }
+      }
+    },
+    "This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この脱獄にはアンテザードバージョンがあります。つまり%@は、7日経過後やデバイスの再起動後でも有効期限が切れることはありません。\n\nアンテザード脱獄のインストールには追加手順が必要ですが、AltStoreがプロセスをご案内します。\n\n続行してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この脱獄はアンテザードです。つまり%@は、7日経過後やデバイスの再起動後も期限切れになることはありません。\n\nアンテザード脱獄のインストールには追加手順が必要ですが、AltStoreがプロセスをご案内します。\n\n続行してもよろしいですか？"
+          }
+        }
+      }
+    },
+    "This version of “%@” requires additional permissions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このバージョンの「%@」には追加の権限が必要です。"
+          }
+        }
+      }
+    },
+    "This will also erase all backup data for this app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、このアプリのすべてのバックアップデータが消去されます。"
+          }
+        }
+      }
+    },
+    "This will remove all temporary files as well as backups for uninstalled apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、すべての一時ファイルとアンインストール済みアプリ用のバックアップが削除されます。"
+          }
+        }
+      }
+    },
+    "This will replace all data you currently have in %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、現在%@にあるデータがすべて置き換えられます。"
+          }
+        }
+      }
+    },
+    "This will replace any previous backups. Please leave AltStore open until the backup is complete." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、以前のバックアップがすべて置き換えられます。バックアップが完了するまで、AltStoreを開いたままにしておいてください。"
+          }
+        }
+      }
+    },
+    "This will take a few moments. Please do not turn off the screen or leave the app until patching is complete." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これには少し時間がかかります。パッチが完了するまで、画面をオフにしたり、アプリを離れたりしないでください。"
+          }
+        }
+      }
+    },
+    "This will update AltStore PAL to the latest beta version." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、AltStore PALが最新のベータ版にアップデートされます。"
+          }
+        }
+      }
+    },
+    "To download %@, join this creator's Patreon by pressing “Join for free” on the next screen." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をダウンロードするには、次の画面で「無料で参加」を押してこのクリエイターのPatreonに参加してください。"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日"
+          }
+        }
+      }
+    },
+    "Try Again" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        }
+      }
+    },
+    "Unable to Add Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースを追加できません"
+          }
+        }
+      }
+    },
+    "Unable to Change App Icon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのアイコンを変更できません"
+          }
+        }
+      }
+    },
+    "Unable to Check for Updates" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートの確認ができません"
+          }
+        }
+      }
+    },
+    "Unable to Clear Cache" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュをクリアできません"
+          }
+        }
+      }
+    },
+    "Unable to Export Detailed Log" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細ログをエクスポートできません"
+          }
+        }
+      }
+    },
+    "Unable to Fetch Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを取得できません"
+          }
+        }
+      }
+    },
+    "Unable to Fetch News" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ニュースを取得できません"
+          }
+        }
+      }
+    },
+    "Unable to install %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をインストールできません。"
+          }
+        }
+      }
+    },
+    "Unable to Launch AltStore" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreを起動できません"
+          }
+        }
+      }
+    },
+    "Unable to Load Recommended Sources" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨ソースが読み込めません"
+          }
+        }
+      }
+    },
+    "Unable to parse Patreon post URL." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonの投稿URLを解析できません。"
+          }
+        }
+      }
+    },
+    "Unable to Prepare App" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを準備できません"
+          }
+        }
+      }
+    },
+    "Unable to Redeem PAL Promo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PALプロモの引き換えができません"
+          }
+        }
+      }
+    },
+    "Unable to Refresh “%@” Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」ソースの更新ができません"
+          }
+        }
+      }
+    },
+    "Unable to Refresh %@ Sources" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ソースの更新ができません"
+          }
+        }
+      }
+    },
+    "Unable to Refresh Store" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ストアの更新ができません"
+          }
+        }
+      }
+    },
+    "Unable to Remove Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースの削除ができません"
+          }
+        }
+      }
+    },
+    "Unable to update %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をアップデートできません。"
+          }
+        }
+      }
+    },
+    "Undeclared Permissions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未宣言の権限"
+          }
+        }
+      }
+    },
+    "Unknown Source" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なソース"
+          }
+        }
+      }
+    },
+    "Unlink %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のリンクを解除"
+          }
+        }
+      }
+    },
+    "Unlink Patreon Account" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonアカウントのリンクを解除"
+          }
+        }
+      }
+    },
+    "Unsupported iOS Version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないiOSバージョン"
+          }
+        }
+      }
+    },
+    "Unsupported Update Available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないアップデートが利用可能です"
+          }
+        }
+      }
+    },
+    "Unsupported Updates Available" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないアップデートが利用可能です"
+          }
+        }
+      }
+    },
+    "Untethering Recommended" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンテザード推奨"
+          }
+        }
+      }
+    },
+    "Untethering Required" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンテザード必須"
+          }
+        }
+      }
+    },
+    "Untethering this jailbreak will prevent %@ from expiring, even after 7 days or rebooting the device. Are you sure you want to install without untethering?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この脱獄をアンテザードすると、7日経過後やデバイスの再起動後も%@は有効のままです。アンテザードせずにインストールしますか？"
+          }
+        }
+      }
+    },
+    "update" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデート"
+          }
+        }
+      }
+    },
+    "Update" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデート"
+          }
+        }
+      }
+    },
+    "Update %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をアッデート"
+          }
+        }
+      }
+    },
+    "Version %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン%@"
+          }
+        }
+      }
+    },
+    "View All" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて表示"
+          }
+        }
+      }
+    },
+    "View All Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリを表示"
+          }
+        }
+      }
+    },
+    "View Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーを表示"
+          }
+        }
+      }
+    },
+    "View More Details" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに詳細を表示"
+          }
+        }
+      }
+    },
+    "View Patreon" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonを表示"
+          }
+        }
+      }
+    },
+    "View Permisions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限を表示"
+          }
+        }
+      }
+    },
+    "View Recommended Sources" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨ソースを表示"
+          }
+        }
+      }
+    },
+    "What are inactive apps?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非アクティブなアプリとは何ですか？"
+          }
+        }
+      }
+    },
+    "What are sources?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースとは何ですか？"
+          }
+        }
+      }
+    },
+    "While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStore 2.0はベータ版ですが、ソースがアップデートされるまでは自己責任でこの警告を無視することもできます。"
+          }
+        }
+      }
+    },
+    "wired AltServer" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有線AltServer"
+          }
+        }
+      }
+    },
+    "Would you like to add the source “%@”?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース「%@」を追加しますか？"
+          }
+        }
+      }
+    },
+    "Would you like to download the last version compatible with this device instead?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代わりに、このデバイスと互換性のある最新バージョンをダウンロードしますか？"
+          }
+        }
+      }
+    },
+    "Would you like to remove this app's extensions so they don't count towards your limit?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリの拡張機能を削除して、制限にカウントされないようにしますか？"
+          }
+        }
+      }
+    },
+    "You are not signed in." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインしていません。"
+          }
+        }
+      }
+    },
+    "You can register another App ID in %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@後に別のアプリIDを登録できます。"
+          }
+        }
+      }
+    },
+    "You cannot register more than 10 App IDs within a 7 day period." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7日間で登録できるアプリIDは10件までです。"
+          }
+        }
+      }
+    },
+    "You must add this source before installing apps from it.\n\n“%@” will begin downloading once it has been added." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このソースからアプリをインストールする前に、このソースを追加する必要があります。\n\n「%@」は追加されるとすぐにダウンロードを開始します。"
+          }
+        }
+      }
+    },
+    "You must also delete it from the home screen to fully uninstall the app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを完全にアンインストールするには、ホーム画面からも削除する必要があります。"
+          }
+        }
+      }
+    },
+    "You will no longer be able to install or refresh any apps that require pledges." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援を必要とするアプリのインストールや更新ができなくなります。"
+          }
+        }
+      }
+    },
+    "You will no longer be able to install or refresh apps once you sign out." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインアウトすると、アプリのインストールや更新ができなくなります。"
+          }
+        }
+      }
+    },
+    "You will no longer be able to install or update any apps that require pledges." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援を必要とするアプリのインストールやアップデートができなくなります。"
+          }
+        }
+      }
+    },
+    "You're signed into Patreon but haven't connected your account with AltStore.\n\nPlease connect your account to download Patreon-exclusive apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreonにはサインインしていますが、アカウントがAltStoreと連携されていません。\n\nPatreon限定アプリをダウンロードするには、アカウントを連携してください。"
+          }
+        }
+      }
+    },
+    "You've received 1 month of free access to our “Early Adopter” Patreon tier!\n\nMake sure you have joined our Patreon campaign as a free member and connected your Patreon account in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「アーリーアダプター」Patreonティアの1か月間無料アクセス権を獲得しました！\n\n無料メンバーとしてPatreonキャンペーンに参加し、「設定」でPatreonアカウントを連携していることをご確認ください。"
+          }
+        }
+      }
+    },
+    "Your Apple ID has no developer teams." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのApple IDには開発者チームがありません。"
+          }
+        }
+      }
+    },
+    "your device's iOS version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お使いのデバイスのiOSバージョン"
+          }
+        }
+      }
+    },
+    "Your pledge is no longer active. Please renew it to continue using %@ normally." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援は現在無効になっています。%@を通常どおり利用するには、更新してください。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

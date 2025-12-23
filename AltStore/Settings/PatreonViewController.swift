@@ -48,6 +48,20 @@ class PatreonViewController: UICollectionViewController
         
         NotificationCenter.default.addObserver(self, selector: #selector(PatreonViewController.didUpdatePatrons(_:)), name: AppManager.didUpdatePatronsNotification, object: nil)
         
+        if #available(iOS 26, *)
+        {
+            let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithDefaultBackground()
+            appearance.shadowColor = nil
+            appearance.titleTextAttributes = textAttributes
+            appearance.largeTitleTextAttributes = textAttributes
+            
+            self.navigationItem.standardAppearance = appearance
+            self.navigationItem.scrollEdgeAppearance = appearance
+        }
+        
         self.update()
     }
     

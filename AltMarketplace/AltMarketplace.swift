@@ -57,7 +57,8 @@ final class AltMarketplace: MarketplaceExtension
                 let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
                 let values = context.performAndWait { () -> AppVersionValues? in
                     //TODO: Somehow determine which source to use if there are multiple.
-                    let predicate = NSPredicate(format: "%K == %@", #keyPath(AltStoreCore.AppVersion.normalizedDownloadURL), normalizedDownloadURL)
+                    typealias AppVersion = AltStoreCore.AppVersion // Workaround for Xcode 26 bug "key path cannot refer to noncopyable type module<AltStoreCore>"
+                    let predicate = NSPredicate(format: "%K == %@", #keyPath(AppVersion.normalizedDownloadURL), normalizedDownloadURL)
                     guard let appVersion = AltStoreCore.AppVersion.first(satisfying: predicate, in: context) else { return nil }
                     return AppVersionValues(appVersion)
                 }

@@ -65,6 +65,8 @@ class FeaturedViewController: UICollectionViewController
     internal private(set) var searchController: RSTSearchController!
     private var searchBrowseViewController: BrowseViewController!
     
+    private var updateFediverseInteractionsResult: Result<Void, Error>?
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -110,6 +112,13 @@ class FeaturedViewController: UICollectionViewController
         self.navigationItem.hidesSearchBarWhenScrolling = true
         
         self.navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    override func viewIsAppearing(_ animated: Bool)
+    {
+        super.viewIsAppearing(animated)
+        
+        self.updateFediverseInteractionsIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) 
@@ -284,7 +293,11 @@ private extension FeaturedViewController
             if let error, let dataSource
             {
                 let app = dataSource.item(at: indexPath)
-                Logger.main.debug("Failed to app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                Logger.main.debug("Failed to load app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
             }
         }
         
@@ -337,28 +350,7 @@ private extension FeaturedViewController
     
     func makeFeaturedAppsDataSource() -> RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>
     {
-        let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
-        fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.sortDescriptors = [
-            // Sort by Source first to group into sections.
-            NSSortDescriptor(keyPath: \StoreApp._source?.featuredSortID, ascending: true),
-            
-            // Show uninstalled apps first.
-            // Sorting by StoreApp.installedApp crashes because InstalledApp does not respond to compare:
-            // Instead, sort by StoreApp.installedApp.storeApp.source.sourceIdentifier, which will be either nil OR source ID.
-            NSSortDescriptor(keyPath: \StoreApp.installedApp?.storeApp?.sourceIdentifier, ascending: true),
-            
-            // Show featured apps first.
-            // Sorting by StoreApp.featuringSource crashes because Source does not respond to compare:
-            // Instead, sort by StoreApp.featuringSource.identifier, which will be either nil OR source ID.
-            NSSortDescriptor(keyPath: \StoreApp.featuringSource?.identifier, ascending: false),
-            
-            // Randomize order within sections.
-            NSSortDescriptor(keyPath: \StoreApp.featuredSortID, ascending: true),
-            
-            // Sanity check to ensure stable ordering
-            NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)
-        ]
+        let fetchRequest = StoreApp.browseTabFeaturedAppsFetchRequest()
         
         let sourceHasRemainingAppsPredicate = NSPredicate(format:
             """
@@ -389,9 +381,11 @@ private extension FeaturedViewController
         // Ensure sources with no remaining apps always come last.
         let dataSource = RSTCompositeCollectionViewPrefetchingDataSource<StoreApp, UIImage>(dataSources: [primaryDataSource, secondaryDataSource])
         dataSource.cellIdentifierHandler = { _ in ReuseID.featuredApp.rawValue }
-        dataSource.cellConfigurationHandler = { cell, storeApp, indexPath in
+        dataSource.cellConfigurationHandler = { [weak self] cell, storeApp, indexPath in
+            guard let self else { return }
+            
             let cell = cell as! AppCardCollectionViewCell
-            cell.configure(for: storeApp)
+            cell.configure(for: storeApp, sharingViewController: self)
             cell.prefersPagingScreenshots = false
             
             cell.bannerView.button.addTarget(self, action: #selector(FeaturedViewController.performAppAction), for: .primaryActionTriggered)
@@ -423,7 +417,11 @@ private extension FeaturedViewController
             if let error = error, let dataSource
             {
                 let app = dataSource.item(at: indexPath)
-                Logger.main.debug("Failed to app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                Logger.main.debug("Failed to load app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
             }
         }
         
@@ -541,6 +539,52 @@ private extension FeaturedViewController
                 UIView.performWithoutAnimation {
                     self.collectionView.reloadItems(at: [indexPath])
                 }
+            }
+        }
+    }
+    
+    func updateFediverseInteractionsIfNeeded()
+    {
+        guard self.updateFediverseInteractionsResult == nil else { return }
+        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        Task<Void, Never>(priority: .utility) { @MainActor in
+            do
+            {
+                let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                let (storeApps, statusIDs) = try await context.perform {
+                    let fetchRequest = StoreApp.browseTabFeaturedAppsFetchRequest()
+                    
+                    let storeApps = try context.fetch(fetchRequest)
+                    let statusIDs = Set(storeApps.compactMap { $0.statusID })
+                    return (storeApps, statusIDs)
+                }
+                                
+                let toots = try await MastodonAPI.shared.fetchToots(ids: statusIDs)
+                let tootsByID = toots.reduce(into: [:]) { $0[$1.id] = $1 }
+                
+                try await context.perform {
+                    for storeApp in storeApps
+                    {
+                        guard let statusID = storeApp.statusID, let toot = tootsByID[statusID] else { continue }
+                        storeApp.federatedURL = toot.url
+                        storeApp.likesCount = Int32(toot.favourites_count)
+                        storeApp.boostsCount = Int32(toot.reblogs_count)
+                        storeApp.commentsCount = Int32(toot.replies_count)
+                    }
+                    
+                    try context.save()
+                }
+                
+                Logger.main.info("Fetched \(toots.count) Featured app statuses in \(CFAbsoluteTimeGetCurrent() - startTime) seconds")
+                
+                self.updateFediverseInteractionsResult = .success(())
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch Fediverse interactions for Browse tab. \(error.localizedDescription, privacy: .public)")
+                self.updateFediverseInteractionsResult = .failure(error)
             }
         }
     }

@@ -18,10 +18,10 @@ import Roxas
 
 import Nuke
 
-private let maximumCollapsedUpdatesCount = 2
-
 extension MyAppsViewController
 {
+    static let maximumCollapsedUpdatesCount = 2
+    
     private enum Section: Int, CaseIterable
     {
         case noUpdates
@@ -61,6 +61,7 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
     
     // Cache
     private var cachedUpdateSizes = [String: CGSize]()
+    private var updateFediverseInteractionsResult: Result<Void, Error>?
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -130,7 +131,11 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         
         self.update()
         
+        #if !MARKETPLACE
         self.fetchAppIDs()
+        #endif
+        
+        self.updateFediverseInteractionsIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -222,7 +227,7 @@ private extension MyAppsViewController
         fetchRequest.returnsObjectsAsFaults = false
         
         let dataSource = RSTFetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(fetchRequest: fetchRequest, managedObjectContext: DatabaseManager.shared.viewContext)
-        dataSource.liveFetchLimit = maximumCollapsedUpdatesCount
+        dataSource.liveFetchLimit = Self.maximumCollapsedUpdatesCount
         dataSource.cellIdentifierHandler = { _ in "UpdateCell" }
         dataSource.cellConfigurationHandler = { [weak self] (cell, installedApp, indexPath) in
             guard let self = self else { return }
@@ -234,6 +239,16 @@ private extension MyAppsViewController
             
             cell.tintColor = app.tintColor ?? .altPrimary
             cell.versionDescriptionTextView.text = latestSupportedVersion.localizedDescription
+            
+            if let description = latestSupportedVersion.localizedDescription?.trimmingCharacters(in: .whitespacesAndNewlines),
+                !description.isEmpty
+            {
+                cell.versionDescriptionTextView.superview?.isHidden = false
+            }
+            else
+            {
+                cell.versionDescriptionTextView.superview?.isHidden = true
+            }
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -270,6 +285,18 @@ private extension MyAppsViewController
             
             cell.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(MyAppsViewController.toggleUpdateCellMode(_:)), for: .primaryActionTriggered)
             
+            if latestSupportedVersion.federatedURL != nil
+            {
+                cell.fediverseInteractionsView.isHidden = false
+                cell.fediverseInteractionsView.tintColor = app.tintColor ?? .altPrimary
+                cell.fediverseInteractionsView.shareHandler = { [weak self] _ in self }
+                cell.fediverseInteractionsView.configure(with: latestSupportedVersion)
+            }
+            else
+            {
+                cell.fediverseInteractionsView.isHidden = true
+            }
+            
             cell.setNeedsLayout()
             
             // Below lines are necessary to avoid "more" button layout issues.
@@ -296,9 +323,13 @@ private extension MyAppsViewController
             cell.bannerView.iconImageView.isIndicatingActivity = false
             cell.bannerView.iconImageView.image = image
             
-            if let error = error
+            if let error
             {
-                print("Error loading image:", error)
+                Logger.main.error("Failed to load update app icon: \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
             }
         }
         
@@ -353,9 +384,21 @@ private extension MyAppsViewController
             cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.openApp(_:)), for: .primaryActionTriggered)
             
-            // Hide Open button for AltStore.
-            cell.bannerView.button.isHidden = (installedApp.bundleIdentifier == StoreApp.altstoreAppID)
-            
+            if installedApp.bundleIdentifier == StoreApp.altstoreAppID
+            {
+                // Hide Open button + label for AltStore.
+                cell.bannerView.button.isHidden = true
+                cell.bannerView.buttonLabel.isHidden = true
+            }
+            else
+            {
+                // Always show Open button for other apps.
+                cell.bannerView.button.isHidden = false
+                
+                // Use existing hidden state from configure().
+                // cell.bannerView.buttonLabel.isHidden = false
+            }
+                        
             #else
             
             let currentDate = Date()
@@ -436,6 +479,15 @@ private extension MyAppsViewController
             let cell = cell as! InstalledAppCollectionViewCell
             cell.bannerView.iconImageView.image = image
             cell.bannerView.iconImageView.isIndicatingActivity = false
+            
+            if let error
+            {
+                Logger.main.error("Failed to load active app icon: \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
+            }
         }
         
         return dataSource
@@ -520,6 +572,15 @@ private extension MyAppsViewController
             let cell = cell as! InstalledAppCollectionViewCell
             cell.bannerView.iconImageView.image = image
             cell.bannerView.iconImageView.isIndicatingActivity = false
+            
+            if let error
+            {
+                Logger.main.error("Failed to load inactive app icon: \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
+            }
         }
         
         return dataSource
@@ -531,23 +592,7 @@ private extension MyAppsViewController
     func update()
     {
         self.updateUnsupportedUpdates()
-        
-        let badgeCount: Int
-        if self.updatesDataSource.itemCount > 0
-        {
-            badgeCount = Int(self.updatesDataSource.itemCount)
-            self.navigationController?.tabBarItem.badgeValue = String(describing: self.updatesDataSource.itemCount)
-        }
-        else
-        {
-            badgeCount = 0
-            self.navigationController?.tabBarItem.badgeValue = nil
-        }
-        
-        UNUserNotificationCenter.current().setBadgeCount(badgeCount) { error in
-            guard let error else { return }
-            Logger.main.error("Failed to update app icon badge count. \(error.localizedDescription, privacy: .public)")
-        }
+        self.updateBadgeCount()
         
         // Reloading collection view when not visible can mess with cell margins.
         guard self.isViewLoaded && self.view.window != nil else { return }
@@ -567,6 +612,34 @@ private extension MyAppsViewController
             // Might not work if already reloading collection view,
             // but hopefully iOS 14 users won't notice...
             self.collectionView.reloadSections(IndexSet([Section.noUpdates.rawValue]))
+        }
+    }
+    
+    func updateBadgeCount()
+    {
+        let fetchRequest: NSFetchRequest<InstalledApp> = InstalledApp.supportedUpdatesFetchRequest()
+        
+        do
+        {
+            let badgeCount = try DatabaseManager.shared.viewContext.count(for: fetchRequest)
+            
+            if badgeCount > 0
+            {
+                self.navigationController?.tabBarItem.badgeValue = String(describing: badgeCount)
+            }
+            else
+            {
+                self.navigationController?.tabBarItem.badgeValue = nil
+            }
+            
+            UNUserNotificationCenter.current().setBadgeCount(badgeCount) { error in
+                guard let error else { return }
+                Logger.main.error("Failed to update app icon badge count. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        catch
+        {
+            Logger.main.error("Failed to update app icon badge count. \(error.localizedDescription, privacy: .public)")
         }
     }
     
@@ -660,6 +733,51 @@ private extension MyAppsViewController
             self.collectionView.reloadSections([Section.activeApps.rawValue, Section.inactiveApps.rawValue])
         }
     }
+    
+    func updateFediverseInteractionsIfNeeded()
+    {
+        guard self.updateFediverseInteractionsResult == nil else { return }
+        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        Task<Void, Never>(priority: .utility) { @MainActor in
+            do
+            {
+                let storeApps = (self.updatesDataSource.fetchedResultsController.fetchedObjects ?? []).compactMap { $0.storeApp }
+                
+                let objectIDs = Set(storeApps.map(\.objectID))
+                let statusIDs = Set(storeApps.compactMap { $0.statusID })
+                
+                let toots = try await MastodonAPI.shared.fetchToots(ids: statusIDs)
+                let tootsByID = toots.reduce(into: [:]) { $0[$1.id] = $1 }
+                
+                let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                try await context.perform {
+                    
+                    let storeApps = objectIDs.compactMap { context.object(with: $0) as? StoreApp }
+                    for storeApp in storeApps
+                    {
+                        guard let statusID = storeApp.statusID, let toot = tootsByID[statusID] else { continue }
+                        storeApp.federatedURL = toot.url
+                        storeApp.likesCount = Int32(toot.favourites_count)
+                        storeApp.boostsCount = Int32(toot.reblogs_count)
+                        storeApp.commentsCount = Int32(toot.replies_count)
+                    }
+                    
+                    try context.save()
+                }
+                
+                Logger.main.info("Fetched \(toots.count) app update statuses in \(CFAbsoluteTimeGetCurrent() - startTime) seconds")
+                
+                self.updateFediverseInteractionsResult = .success(())
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch Fediverse interactions for app updates. \(error.localizedDescription, privacy: .public)")
+                self.updateFediverseInteractionsResult = .failure(error)
+            }
+        }
+    }
 }
 
 private extension MyAppsViewController
@@ -675,7 +793,7 @@ private extension MyAppsViewController
             UIView.animate(withDuration: 0.3, animations: {
                 if self.isUpdateSectionCollapsed
                 {
-                    self.updatesDataSource.liveFetchLimit = maximumCollapsedUpdatesCount
+                    self.updatesDataSource.liveFetchLimit = Self.maximumCollapsedUpdatesCount
                     self.expandedAppUpdates.removeAll()
                     
                     for case let cell as UpdateCollectionViewCell in visibleCells
@@ -1636,6 +1754,9 @@ private extension MyAppsViewController
                 toastView.show(in: self)
             }
             
+            self.updateFediverseInteractionsResult = nil
+            self.updateFediverseInteractionsIfNeeded()
+            
             self.isCheckingForUpdates = false
             
             // Call update() _after_ setting isCheckingForUpdates to false so it will actually update collection view,
@@ -1712,7 +1833,7 @@ extension MyAppsViewController
                     headerView.button.titleLabel?.transform = CGAffineTransform.identity.rotated(by: .pi)
                 }
                 
-                headerView.isHidden = (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0 <= maximumCollapsedUpdatesCount)
+                headerView.isHidden = (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0 <= Self.maximumCollapsedUpdatesCount)
                 
                 headerView.button.layoutIfNeeded()
             }
@@ -2115,7 +2236,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         {
         case .noUpdates: return .zero
         case .updates:
-            let height: CGFloat = (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0 > maximumCollapsedUpdatesCount) ? 26 : 0
+            let height: CGFloat = (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0 > Self.maximumCollapsedUpdatesCount) ? 26 : 0
             return CGSize(width: collectionView.bounds.width, height: height)
             
         case .activeApps: return CGSize(width: collectionView.bounds.width, height: 29)

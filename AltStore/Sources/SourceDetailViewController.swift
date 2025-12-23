@@ -170,6 +170,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
             // Users can't remove default AltStore source, so hide buttons.
             self.addButton.isHidden = true
             self.navigationBarButton.isHidden = true
+            self.navigationBarButtonItem.isHidden = true
         }
         else
         {
@@ -185,26 +186,74 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 title = NSLocalizedString("REMOVE", comment: "")
                 self.navigationBarButton.tintColor = .refreshRed
                 
-                self.addButton.isHidden = false
-                self.navigationBarButton.isHidden = false
+                if #available(iOS 26, *)
+                {
+                    self.addButton.isHidden = true
+                    self.navigationBarButton.isHidden = true
+                    self.navigationBarButtonItem.isHidden = false
+                }
+                else
+                {
+                    self.addButton.isHidden = false
+                    self.navigationBarButton.isHidden = false
+                    self.navigationBarButtonItem.isHidden = true
+                }
                 
                 if #available(iOS 16, *)
                 {
-                    // Hide REMOVE button in navigation bar.
-                    self.navigationItem.rightBarButtonItem?.isHidden = true
+                    if #available(iOS 26, *)
+                    {
+                        self.navigationBarButtonItem.image = UIImage(systemName: "trash")
+                        self.navigationBarButtonItem.tintColor = .refreshRed
+                        
+                        let removeAction = UIAction(title: NSLocalizedString("Remove Source", comment: ""), image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
+                            self?.addSource()
+                        })
+                        self.navigationBarButtonItem.menu = UIMenu(children: [removeAction])
+                    }
+                    else
+                    {
+                        // Hide REMOVE button in navigation bar.
+                        self.navigationItem.rightBarButtonItem?.isHidden = true
+                    }
                 }
                 
             case false?:
                 title = NSLocalizedString("ADD", comment: "")
-                self.navigationBarButton.tintColor = self.source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
                 
-                self.addButton.isHidden = false
-                self.navigationBarButton.isHidden = false
+                let tintColor = self.source.effectiveTintColor?.adjustedForDisplay ?? .altPrimary
+                self.navigationBarButton.tintColor = tintColor
+                
+                if #available(iOS 26, *)
+                {
+                    self.addButton.isHidden = true
+                    self.navigationBarButton.isHidden = true
+                    self.navigationBarButtonItem.isHidden = false
+                }
+                else
+                {
+                    self.addButton.isHidden = false
+                    self.navigationBarButton.isHidden = false
+                    self.navigationBarButtonItem.isHidden = true
+                }
                 
                 if #available(iOS 16, *)
                 {
-                    // Show ADD button in navigation bar.
-                    self.navigationItem.rightBarButtonItem?.isHidden = false
+                    if #available(iOS 26, *)
+                    {
+                        self.navigationBarButtonItem.image = UIImage(systemName: "plus")
+                        self.navigationBarButtonItem.tintColor = tintColor
+                        self.navigationBarButtonItem.style = .prominent
+                        
+                        self.navigationBarButton.menu = nil
+                        self.navigationBarButtonItem.target = self
+                        self.navigationBarButtonItem.action = #selector(SourceDetailViewController.addSource)
+                    }
+                    else
+                    {
+                        // Show ADD button in navigation bar.
+                        self.navigationItem.rightBarButtonItem?.isHidden = false
+                    }
                 }
                 
             case nil:
@@ -212,6 +261,7 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 
                 self.addButton.isHidden = true
                 self.navigationBarButton.isHidden = true
+                self.navigationBarButtonItem.isHidden = true
             }
             
             if title != self.addButton.title
@@ -219,9 +269,12 @@ class SourceDetailViewController: HeaderContentViewController<SourceHeaderView, 
                 self.addButton.title = title
             }
             
-            if title != self.navigationBarButton.title(for: .normal) && !self.navigationBarButton.isIndicatingActivity
+            if #unavailable(iOS 26)
             {
-                self.navigationBarButton.setTitle(title, for: .normal)
+                if title != self.navigationBarButton.title(for: .normal) && !self.navigationBarButton.isIndicatingActivity
+                {
+                    self.navigationBarButton.setTitle(title, for: .normal)
+                }
             }
             
             self.view.setNeedsLayout()

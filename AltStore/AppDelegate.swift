@@ -83,6 +83,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.isDebugModeEnabled = true
         #endif
         
+        let iOS26_1 = OperatingSystemVersion(majorVersion: 26, minorVersion: 1, patchVersion: 0)
+        let iOS26_2 = OperatingSystemVersion(majorVersion: 26, minorVersion: 2, patchVersion: 0)
+        if ProcessInfo.processInfo.isOperatingSystemAtLeast(iOS26_1) && !ProcessInfo.processInfo.isOperatingSystemAtLeast(iOS26_2)
+        {
+            UserDefaults.standard.isDebugModeEnabled = true
+        }
+                
         self.prepareForBackgroundFetch()
         
         return true

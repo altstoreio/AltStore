@@ -41,6 +41,7 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
     private var preferredAppSorting: AppSorting = UserDefaults.shared.preferredAppSorting
     
     private var cancellables = Set<AnyCancellable>()
+    private var updateFediverseInteractionsResult: Result<Void, Error>?
     
     private var titleStackView: UIStackView!
     private var titleSourceIconView: AppIconImageView!
@@ -163,6 +164,13 @@ class BrowseViewController: UICollectionViewController, PeekPopPreviewing
         self.update()
     }
     
+    override func viewIsAppearing(_ animated: Bool)
+    {
+        super.viewIsAppearing(animated)
+        
+        self.updateFediverseInteractionsIfNeeded()
+    }
+    
     override func viewDidDisappear(_ animated: Bool) 
     {
         super.viewDidDisappear(animated)
@@ -251,7 +259,7 @@ private extension BrowseViewController
             cell.layoutMargins.right = self.view.layoutMargins.right
             
             let showSourceIcon = (self.source == nil) // Hide source icon if redundant
-            cell.configure(for: app, showSourceIcon: showSourceIcon)
+            cell.configure(for: app, sharingViewController: self, showSourceIcon: showSourceIcon)
             
             cell.bannerView.iconImageView.image = nil
             cell.bannerView.iconImageView.isIndicatingActivity = true
@@ -287,6 +295,10 @@ private extension BrowseViewController
             {
                 let app = dataSource.item(at: indexPath)
                 Logger.main.debug("Failed to load app icon from \(app.iconURL, privacy: .public). \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
             }
         }
         
@@ -525,6 +537,51 @@ private extension BrowseViewController
         self.sortButton = sortButton
         
         self.navigationItem.rightBarButtonItems = [sortButton]
+    }
+    
+    func updateFediverseInteractionsIfNeeded()
+    {
+        guard self.updateFediverseInteractionsResult == nil else { return }
+        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        Task<Void, Never>(priority: .utility) { @MainActor in
+            do
+            {
+                let storeApps = self.dataSource.fetchedResultsController.fetchedObjects ?? []
+                
+                let objectIDs = Set(storeApps.map(\.objectID))
+                let statusIDs = Set(storeApps.compactMap { $0.statusID })
+                
+                let toots = try await MastodonAPI.shared.fetchToots(ids: statusIDs)
+                let tootsByID = toots.reduce(into: [:]) { $0[$1.id] = $1 }
+                
+                let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+                try await context.perform {
+                    
+                    let storeApps = objectIDs.compactMap { context.object(with: $0) as? StoreApp }
+                    for storeApp in storeApps
+                    {
+                        guard let statusID = storeApp.statusID, let toot = tootsByID[statusID] else { continue }
+                        storeApp.federatedURL = toot.url
+                        storeApp.likesCount = Int32(toot.favourites_count)
+                        storeApp.boostsCount = Int32(toot.reblogs_count)
+                        storeApp.commentsCount = Int32(toot.replies_count)
+                    }
+                    
+                    try context.save()
+                }
+                
+                Logger.main.info("Fetched \(toots.count) app statuses in \(CFAbsoluteTimeGetCurrent() - startTime) seconds")
+                
+                self.updateFediverseInteractionsResult = .success(())
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch Fediverse interactions for BrowseViewController. \(error.localizedDescription, privacy: .public)")
+                self.updateFediverseInteractionsResult = .failure(error)
+            }
+        }
     }
 }
 

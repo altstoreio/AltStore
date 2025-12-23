@@ -27,6 +27,7 @@ extension UpdateCollectionViewCell
     
     @IBOutlet var bannerView: AppBannerView!
     @IBOutlet var versionDescriptionTextView: CollapsingTextView!
+    @IBOutlet var fediverseInteractionsView: FediverseInteractionsView!
     
     @IBOutlet private var blurView: UIVisualEffectView!
     
@@ -41,6 +42,9 @@ extension UpdateCollectionViewCell
         self.contentView.preservesSuperviewLayoutMargins = true
         
         self.bannerView.backgroundEffectView.isHidden = true
+        
+        self.fediverseInteractionsView.layoutMargins.left = self.bannerView.layoutMargins.left
+        self.fediverseInteractionsView.layoutMargins.right = self.bannerView.layoutMargins.right
         
         self.blurView.layer.cornerRadius = 20
         self.blurView.layer.masksToBounds = true
@@ -109,6 +113,8 @@ private extension UpdateCollectionViewCell
         
         self.blurView.backgroundColor = self.originalTintColor ?? self.tintColor
         self.bannerView.button.progressTintColor = self.originalTintColor ?? self.tintColor
+        
+        self.bannerView.layoutMargins.bottom = 0
         
         self.setNeedsLayout()
         self.layoutIfNeeded()

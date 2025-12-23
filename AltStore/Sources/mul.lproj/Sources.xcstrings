@@ -1,0 +1,150 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "9aU-eh-iwq.configuration.title" : {
+      "comment" : "Class = \"UIButton\"; configuration.title = \"Discover more apps on altstore.io\"; ObjectID = \"9aU-eh-iwq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Discover more apps on altstore.io"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "altstore.ioでさらに多くのアプリを見つけましょう"
+          }
+        }
+      }
+    },
+    "9aU-eh-iwq.normalTitle" : {
+      "comment" : "Class = \"UIButton\"; normalTitle = \"Button\"; ObjectID = \"9aU-eh-iwq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Button"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ボタン"
+          }
+        }
+      }
+    },
+    "FGB-cd-Vkd.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"All News\"; ObjectID = \"FGB-cd-Vkd\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All News"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのニュース"
+          }
+        }
+      }
+    },
+    "Noh-fc-wch.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"Sources\"; ObjectID = \"Noh-fc-wch\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sources"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース"
+          }
+        }
+      }
+    },
+    "rUb-ON-AON.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"All Apps\"; ObjectID = \"rUb-ON-AON\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All Apps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリ"
+          }
+        }
+      }
+    },
+    "v46-dC-g7e.title" : {
+      "comment" : "Class = \"UINavigationItem\"; title = \"Add Source\"; ObjectID = \"v46-dC-g7e\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Add Source"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースを追加"
+          }
+        }
+      }
+    },
+    "Wm7-1O-FkD.title" : {
+      "comment" : "Class = \"UICollectionViewController\"; title = \"Sources\"; ObjectID = \"Wm7-1O-FkD\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sources"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース"
+          }
+        }
+      }
+    },
+    "xPv-dc-X4v.title" : {
+      "comment" : "Class = \"UITabBarItem\"; title = \"Sources\"; ObjectID = \"xPv-dc-X4v\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sources"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

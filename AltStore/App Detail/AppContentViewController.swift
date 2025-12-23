@@ -83,6 +83,12 @@ class AppContentViewController: UITableViewController
         
         self.versionDescriptionTextView.maximumNumberOfLines = 3
         self.versionDescriptionTextView.moreButton.addTarget(self, action: #selector(AppContentViewController.toggleCollapsingSection(_:)), for: .primaryActionTriggered)
+        
+        if #available(iOS 26, *)
+        {
+            // Fixes visual bug (hard scroll edge) on iOS 26
+            self.tableView.topEdgeEffect.isHidden = true
+        }
     }
     
     override func viewDidLayoutSubviews()

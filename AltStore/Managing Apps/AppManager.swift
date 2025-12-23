@@ -676,6 +676,27 @@ extension AppManager
         self.run([updatePatronsOperation], context: nil)
     }
     
+    func updateFediverseInteractionsIfNeeded()
+    {
+        guard self.operationQueue.operations.allSatisfy({ !($0 is UpdateFediverseInteractionsOperation) }) else {
+            // There's already an UpdateFediverseInteractionsOperation running.
+            return
+        }
+        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        let operation = UpdateFediverseInteractionsOperation()
+        operation.resultHandler = { (result) in
+            switch result
+            {
+            case .success: Logger.main.info("Updated initial Fediverse interactions in \(CFAbsoluteTimeGetCurrent() - startTime) seconds")
+            case .failure(let error): Logger.main.error("Failed to update initial Fediverse interactions. \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        
+        self.run([operation], context: nil)
+    }
+    
     func updateAllSources(completion: @escaping (Result<Void, Error>) -> Void)
     {
         self.updateSourcesResult = nil

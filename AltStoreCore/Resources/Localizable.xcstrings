@@ -1,0 +1,1016 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ does not have any app versions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@にはアプリバージョンがありません。"
+          }
+        }
+      }
+    },
+    "%@ error %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ error %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@エラー%2$@。"
+          }
+        }
+      }
+    },
+    "%@ is currently locked." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は現在ロックされています。"
+          }
+        }
+      }
+    },
+    "%@ is not currently running on %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is not currently running on %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@は現在%2$@で実行されていません。"
+          }
+        }
+      }
+    },
+    "%@ received an invalid request from AltServer." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@はAltServerから無効なリクエストを受け取りました。"
+          }
+        }
+      }
+    },
+    "%@ requires %@ or later." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ requires %2$@ or later."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@は%2$@以降を必要とします。"
+          }
+        }
+      }
+    },
+    "Activate %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のアクティベートに失敗しました"
+          }
+        }
+      }
+    },
+    "AltServer could not connect to Mail plug-in." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerはメールアプリのプラグインに接続できませんでした。"
+          }
+        }
+      }
+    },
+    "AltServer could not establish a connection to AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerはAltStoreへの接続を確立できませんでした。"
+          }
+        }
+      }
+    },
+    "AltServer could not establish a secure connection to %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerは%@への安全な接続を確立できませんでした。"
+          }
+        }
+      }
+    },
+    "AltServer could not find this device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerはこのデバイスを見つけられませんでした。"
+          }
+        }
+      }
+    },
+    "AltServer could not write data to this device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerはこのデバイスにデータを書き込めませんでした。"
+          }
+        }
+      }
+    },
+    "AltServer does not support this request." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerはこのリクエストをサポートしていません"
+          }
+        }
+      }
+    },
+    "AltServer received an invalid request." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerは無効なリクエストを受け取りました。"
+          }
+        }
+      }
+    },
+    "AltServer received an invalid response from %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerは%@から無効な応答を受け取りました。"
+          }
+        }
+      }
+    },
+    "AltServer sent an invalid response." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerが無効な応答を送信しました。"
+          }
+        }
+      }
+    },
+    "AltServer's connection to %@ timed out." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerの%@への接続がタイムアウトしました。"
+          }
+        }
+      }
+    },
+    "AltStore received an unknown response from AltServer." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreはAltServerから不明な応答を受け取りました。"
+          }
+        }
+      }
+    },
+    "AltStore's database could not be saved." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreのデータベースを保存できませんでした。"
+          }
+        }
+      }
+    },
+    "An error occured while removing the app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの削除中にエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "An error occurred while installing the app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのインストール中にエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "An unknown error occured." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "An unknown error occurred." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "At least one app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "少なくとも1つのアプリ"
+          }
+        }
+      }
+    },
+    "Backup %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のバックアップに失敗しました"
+          }
+        }
+      }
+    },
+    "CarPlay" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        }
+      }
+    },
+    "Connection error code: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続エラーコード：%@"
+          }
+        }
+      }
+    },
+    "Could not find profile" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロファイルが見つかりませんでした"
+          }
+        }
+      }
+    },
+    "Deactivate %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の無効化に失敗しました"
+          }
+        }
+      }
+    },
+    "Debug" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグ"
+          }
+        }
+      }
+    },
+    "Debug Description" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグの詳細"
+          }
+        }
+      }
+    },
+    "Default" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト"
+          }
+        }
+      }
+    },
+    "Developer" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発者"
+          }
+        }
+      }
+    },
+    "Enable JIT for %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に対するJITの有効化に失敗しました"
+          }
+        }
+      }
+    },
+    "Entertainment" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンターテインメント"
+          }
+        }
+      }
+    },
+    "Entitlement" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンタイトルメント"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー"
+          }
+        }
+      }
+    },
+    "Error code: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーコード：%@"
+          }
+        }
+      }
+    },
+    "Error Description" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーの詳細"
+          }
+        }
+      }
+    },
+    "Failure" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗"
+          }
+        }
+      }
+    },
+    "Failure Reason" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗の原因"
+          }
+        }
+      }
+    },
+    "Fault" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "障害"
+          }
+        }
+      }
+    },
+    "Free Developer Account" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料開発者アカウント"
+          }
+        }
+      }
+    },
+    "Games" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゲーム"
+          }
+        }
+      }
+    },
+    "Info" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "情報"
+          }
+        }
+      }
+    },
+    "Install %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のインストールに失敗しました"
+          }
+        }
+      }
+    },
+    "Invalid access token." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なアクセストークンです。"
+          }
+        }
+      }
+    },
+    "Last Updated" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終更新日"
+          }
+        }
+      }
+    },
+    "Lifestyle" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライフスタイル"
+          }
+        }
+      }
+    },
+    "Make sure Mail is running and the plug-in is enabled in Mail's preferences." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メールアプリが実行されていること、およびメールアプリの環境設定でプラグインが有効になっていることを確認してください。"
+          }
+        }
+      }
+    },
+    "Make sure the app is running in the foreground on %@ then try again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@上でアプリがフォアグラウンドで実行されていることを確認してから、もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Make sure you have trusted this device with your computer and Wi-Fi sync is enabled." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスがコンピュータで信頼済みであることを確認し、Wi-Fi同期が有効になっていることを確認してください。"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        }
+      }
+    },
+    "No connected Patreon account." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続されているPatreonアカウントはありません。"
+          }
+        }
+      }
+    },
+    "Notice" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知"
+          }
+        }
+      }
+    },
+    "one or more apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つ以上のアプリ"
+          }
+        }
+      }
+    },
+    "Organization" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "組織"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他"
+          }
+        }
+      }
+    },
+    "Permission" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限"
+          }
+        }
+      }
+    },
+    "Photo & Video" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真とビデオ"
+          }
+        }
+      }
+    },
+    "Please deactivate a sideloaded app in order to install another one.\n\nIf you're running iOS 13.5 or later, make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のアプリをインストールするには、サイドロードしたアプリを無効化してください。\n\niOS 13.5以降をご利用の場合は、設定 > iTunes & App Storeで「使用していないアプリをオフロード」が無効になっていることを確認し、オフロードされたアプリをすべてインストールまたは削除してください。"
+          }
+        }
+      }
+    },
+    "Please deactivate a sideloaded app with AltStore in order to install another app.\n\nIf you're running iOS 13.5 or later, make sure 'Offload Unused Apps' is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps to prevent them from erroneously counting towards this limit." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のアプリをインストールするには、AltStoreでサイドロードしたアプリを無効化してください。\n\niOS 13.5以降をご利用の場合、設定 > iTunes & App Storeで「使用していないアプリをオフロード」が無効になっていることを確認し、オフロードされたアプリをすべてインストールまたは削除して、この制限に誤ってカウントされないようにしてください。"
+          }
+        }
+      }
+    },
+    "Please try again later." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後ほどもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Please unlock the device with your passcode and try again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスコードでデバイスのロックを解除し、もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Privacy Permission" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシー権限"
+          }
+        }
+      }
+    },
+    "Recovery Suggestion" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リカバリの提案"
+          }
+        }
+      }
+    },
+    "Refresh %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の更新に失敗しました"
+          }
+        }
+      }
+    },
+    "Restore %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の復元に失敗しました"
+          }
+        }
+      }
+    },
+    "Social" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソーシャル"
+          }
+        }
+      }
+    },
+    "Source File" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースファイル"
+          }
+        }
+      }
+    },
+    "Source Line" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソースライン"
+          }
+        }
+      }
+    },
+    "The app is in an invalid format." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの形式が無効です。"
+          }
+        }
+      }
+    },
+    "The cached permissions for %@ do not match the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のキャッシュされた権限はソースと一致しません。"
+          }
+        }
+      }
+    },
+    "The cached versions for %@ do not match the source." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のキャッシュされたバージョンはソースと一致しません。"
+          }
+        }
+      }
+    },
+    "The connection to AltServer was lost." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServerとの接続が失われました。"
+          }
+        }
+      }
+    },
+    "The Developer disk located at %@ is incompatible with %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The Developer disk located at %1$@ is incompatible with %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@にある開発者ディスクは%2$@と互換性がありません。"
+          }
+        }
+      }
+    },
+    "the device" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバイス"
+          }
+        }
+      }
+    },
+    "The device" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバイス"
+          }
+        }
+      }
+    },
+    "The disk is incompatible with %@." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ディスクは%@と互換性がありません。"
+          }
+        }
+      }
+    },
+    "The Patreon API rate limit has been exceeded." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patreon APIのレート制限を超過しました。"
+          }
+        }
+      }
+    },
+    "The provided anisette data is invalid." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提供されたAnisetteデータは無効です。"
+          }
+        }
+      }
+    },
+    "The requested app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストされたアプリ"
+          }
+        }
+      }
+    },
+    "There was an error connecting to the device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバイスへの接続中にエラーが発生しました。"
+          }
+        }
+      }
+    },
+    "There was an issue communicating with the usbmuxd daemon." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "usbmuxdデーモンとの通信中に問題が発生しました。"
+          }
+        }
+      }
+    },
+    "this device's OS version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスのOSバージョン"
+          }
+        }
+      }
+    },
+    "Title" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイトル"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日"
+          }
+        }
+      }
+    },
+    "Undefined" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未定義"
+          }
+        }
+      }
+    },
+    "Underlying Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下位エラー"
+          }
+        }
+      }
+    },
+    "Underlying Errors" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下位エラー"
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明"
+          }
+        }
+      }
+    },
+    "Update %@ Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のアップデートに失敗しました"
+          }
+        }
+      }
+    },
+    "Utilities" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーティリティ"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨日"
+          }
+        }
+      }
+    },
+    "You cannot activate more than 3 apps with a non-developer Apple ID." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非開発者用Apple IDでは、3つ以上のアプリをアクティベートできません。"
+          }
+        }
+      }
+    },
+    "your device" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのデバイス"
+          }
+        }
+      }
+    },
+    "Your device must be running iOS 12.2 or later to install AltStore." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStoreをインストールするには、お使いのデバイスがiOS 12.2以降を実行している必要があります。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

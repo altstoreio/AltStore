@@ -23,6 +23,7 @@ class AppCardCollectionViewCell: UICollectionViewCell
     var prefersPagingScreenshots = true
     
     private let screenshotsCollectionView: UICollectionView
+    private let fediverseInteractionsView: FediverseInteractionsView
     private let stackView: UIStackView
     
     private let topAreaPanGestureRecognizer: UIPanGestureRecognizer
@@ -72,7 +73,13 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.screenshotsCollectionView.showsHorizontalScrollIndicator = false
         self.screenshotsCollectionView.showsVerticalScrollIndicator = false
         
-        self.stackView = UIStackView(arrangedSubviews: [self.bannerView, captionVibrancyView, self.screenshotsCollectionView])
+        let inset = self.bannerView.layoutMargins.left
+        self.fediverseInteractionsView = FediverseInteractionsView(frame: .zero)
+        self.fediverseInteractionsView.layoutMargins.left = inset
+        self.fediverseInteractionsView.layoutMargins.right = inset
+        self.fediverseInteractionsView.isHidden = true
+        
+        self.stackView = UIStackView(arrangedSubviews: [self.bannerView, captionVibrancyView, self.screenshotsCollectionView, self.fediverseInteractionsView])
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
         self.stackView.spacing = 12
         self.stackView.axis = .vertical
@@ -80,7 +87,6 @@ class AppCardCollectionViewCell: UICollectionViewCell
         self.stackView.distribution = .equalSpacing
         
         // Aspect ratio constraint to fit exactly 3 modern portrait iPhone screenshots side-by-side (with spacing).
-        let inset = self.bannerView.layoutMargins.left
         let multiplier = (AppScreenshot.defaultAspectRatio.width * 3) / AppScreenshot.defaultAspectRatio.height
         let spacing = (inset * 2) + (minimumItemSpacing * 2)
         self.collectionViewAspectRatioConstraint = self.screenshotsCollectionView.widthAnchor.constraint(equalTo: self.screenshotsCollectionView.heightAnchor, multiplier: multiplier, constant: spacing)
@@ -311,7 +317,7 @@ private extension AppCardCollectionViewCell
 
 extension AppCardCollectionViewCell
 {
-    func configure(for storeApp: StoreApp, showSourceIcon: Bool = true)
+    func configure(for storeApp: StoreApp, sharingViewController: UIViewController, showSourceIcon: Bool = true)
     {
         self.screenshots = storeApp.preferredScreenshots()
         
@@ -335,6 +341,18 @@ extension AppCardCollectionViewCell
         else
         {
             self.captionLabel.isHidden = true
+        }
+        
+        if storeApp.federatedURL != nil
+        {
+            self.fediverseInteractionsView.isHidden = false
+            self.fediverseInteractionsView.tintColor = storeApp.tintColor
+            self.fediverseInteractionsView.shareHandler = { [weak sharingViewController] _ in sharingViewController }
+            self.fediverseInteractionsView.configure(with: storeApp)
+        }
+        else
+        {
+            self.fediverseInteractionsView.isHidden = true
         }
     }
 }

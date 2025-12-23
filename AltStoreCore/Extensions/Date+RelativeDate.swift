@@ -40,8 +40,8 @@ public extension Date
         
         switch numberOfDays
         {
-        case 0: return NSLocalizedString("Today", comment: "")
-        case 1: return NSLocalizedString("Yesterday", comment: "")
+        case 0: return NSLocalizedString("Today", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case 1: return NSLocalizedString("Yesterday", bundle: Bundle(for: PatreonAPI.self), comment: "")
         default: return dateFormatter.string(from: date)
         }
     }

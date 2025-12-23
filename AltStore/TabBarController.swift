@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SwiftUI
+
 import AltStoreCore
 
 extension TabBarController
@@ -52,6 +54,17 @@ class TabBarController: UITabBarController
         
         let sourcesNavigationController = self.viewControllers![Tab.sources.rawValue] as! UINavigationController
         self.sourcesViewController = sourcesNavigationController.viewControllers.first as? SourcesViewController
+        
+        if #available(iOS 18, *)
+        {
+            let hostingController = UIHostingController(rootView: AppTrackerView(tracker: AppMarketplace.shared.tracker))
+            hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            hostingController.view.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+            hostingController.view.alpha = 0.0
+            self.addChild(hostingController)
+            self.view.insertSubview(hostingController.view, at: 0)
+            hostingController.didMove(toParent: self)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool)

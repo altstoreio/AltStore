@@ -71,6 +71,9 @@ class NavigationBar: UINavigationBar
         
         self.scrollEdgeAppearance = edgeAppearance
         self.standardAppearance = standardAppearance
+        
+        // Fixes title margins pre-iOS 26
+        self.preservesSuperviewLayoutMargins = true
     }
     
     override func layoutSubviews()

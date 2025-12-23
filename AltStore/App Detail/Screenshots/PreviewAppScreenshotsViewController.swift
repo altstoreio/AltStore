@@ -76,6 +76,13 @@ class PreviewAppScreenshotsViewController: UICollectionViewController
             let indexPath = IndexPath(item: index, section: 0)
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+        
+        // Doesn't inherit navigation tint color on iOS 26
+        if #available(iOS 26, *)
+        {
+            let tintColor = self.app.tintColor ?? .altPrimary
+            self.navigationItem.rightBarButtonItem?.tintColor = tintColor
+        }
     }
 }
 

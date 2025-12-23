@@ -16,11 +16,11 @@ public extension ALTTeamType
     var localizedDescription: String {
         switch self
         {
-        case .free: return NSLocalizedString("Free Developer Account", comment: "")
-        case .individual: return NSLocalizedString("Developer", comment: "")
-        case .organization: return NSLocalizedString("Organization", comment: "")
+        case .free: return NSLocalizedString("Free Developer Account", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .individual: return NSLocalizedString("Developer", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .organization: return NSLocalizedString("Organization", bundle: Bundle(for: PatreonAPI.self), comment: "")
         case .unknown: fallthrough
-        @unknown default: return NSLocalizedString("Unknown", comment: "")
+        @unknown default: return NSLocalizedString("Unknown", bundle: Bundle(for: PatreonAPI.self), comment: "")
         }
     }
 }

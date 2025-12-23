@@ -42,6 +42,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
     private(set) var navigationBarIconView: UIImageView!
     private(set) var navigationBarTitleView: UIStackView!
     private(set) var navigationBarButton: PillButton!
+    private(set) var navigationBarButtonItem: UIBarButtonItem!
     
     private var scrollView: UIScrollView!
     private var headerScrollView: UIScrollView!
@@ -204,10 +205,19 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         self.navigationBarButton = PillButton(type: .system)
         self.navigationBarButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 9000), for: .horizontal) // Prioritize over title length.
         
-        // Embed navigationBarButton in container view with Auto Layout to ensure it can automatically update its size.
-        let buttonContainerView = UIView()
-        buttonContainerView.addSubview(self.navigationBarButton, pinningEdgesWith: .zero)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: buttonContainerView)
+        self.navigationBarButtonItem = UIBarButtonItem()
+        
+        if #available(iOS 26, *)
+        {
+            self.navigationItem.rightBarButtonItem = self.navigationBarButtonItem
+        }
+        else
+        {
+            // Embed navigationBarButton in container view with Auto Layout to ensure it can automatically update its size.
+            let buttonContainerView = UIView()
+            buttonContainerView.addSubview(self.navigationBarButton, pinningEdgesWith: .zero)
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: buttonContainerView)
+        }
         
         NSLayoutConstraint.activate([
             self.navigationBarIconView.widthAnchor.constraint(equalToConstant: 35),
@@ -243,6 +253,23 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         self.hideNavigationBar()
         
         self.view.tintColor = self.tintColor?.adjustedForDisplay
+        
+        if #available(iOS 26, *)
+        {
+            self.navigationBarButton.isHidden = true
+            self.backButton.isHidden = true
+            self.navigationBarButtonItem.isHidden = false
+            
+            // Fixes visual bug (hard scroll edge) on iOS 26
+            self.headerScrollView.topEdgeEffect.isHidden = true
+            self.contentViewController.scrollView.topEdgeEffect.isHidden = true
+        }
+        else
+        {
+            self.navigationBarButton.isHidden = false
+            self.backButton.isHidden = false
+            self.navigationBarButtonItem.isHidden = true
+        }
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -322,7 +349,17 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         var backgroundIconFrame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.width)
         
         let backButtonPadding = 8.0
-        let minimumHeaderY = backButtonFrame.maxY + backButtonPadding
+        let minimumHeaderY: Double
+        
+        if #available(iOS 26, *)
+        {
+            // Ensuring content is below default nav bar buttons on iOS 26
+            minimumHeaderY = self.view.safeAreaInsets.top + backButtonPadding
+        }
+        else
+        {
+            minimumHeaderY = backButtonFrame.maxY + backButtonPadding
+        }
         
         let minimumContentHeight = minimumHeaderY + headerFrame.height + padding // Minimum height for header + back button + spacing.
         let maximumContentY = max(self.view.bounds.width * 0.667, minimumContentHeight) // Initial Y-value of content view.
@@ -494,7 +531,10 @@ private extension HeaderContentViewController
         self.navigationBarNameLabel.alpha = 1.0
         self.navigationBarButton.alpha = 1.0
         
-        self.updateNavigationBarAppearance(isHidden: false)
+        if #unavailable(iOS 26)
+        {
+            self.updateNavigationBarAppearance(isHidden: false)
+        }
         
         if self.traitCollection.userInterfaceStyle == .dark
         {
@@ -517,7 +557,10 @@ private extension HeaderContentViewController
         self.navigationBarNameLabel.alpha = 0.0
         self.navigationBarButton.alpha = 0.0
         
-        self.updateNavigationBarAppearance(isHidden: true)
+        if #unavailable(iOS 26)
+        {
+            self.updateNavigationBarAppearance(isHidden: true)
+        }
         
         self._preferredStatusBarStyle = .lightContent
         

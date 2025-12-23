@@ -43,22 +43,22 @@ public struct MergeError: ALTLocalizedError
         switch self.code
         {
         case .noVersions:
-            var appName = NSLocalizedString("At least one app", comment: "")
+            var appName = NSLocalizedString("At least one app", bundle: Bundle(for: PatreonAPI.self), comment: "")
             if let name = self.appName, let bundleID = self.appBundleID
             {
                 appName = name + " (\(bundleID))"
             }
             
-            return String(format: NSLocalizedString("%@ does not have any app versions.", comment: ""), appName)
+            return String(format: NSLocalizedString("%@ does not have any app versions.", bundle: Bundle(for: PatreonAPI.self), comment: ""), appName)
             
         case .incorrectVersionOrder:
-            var appName = NSLocalizedString("one or more apps", comment: "")
+            var appName = NSLocalizedString("one or more apps", bundle: Bundle(for: PatreonAPI.self), comment: "")
             if let name = self.appName, let bundleID = self.appBundleID
             {
                 appName = name + " (\(bundleID))"
             }
             
-            return String(format: NSLocalizedString("The cached versions for %@ do not match the source.", comment: ""), appName)
+            return String(format: NSLocalizedString("The cached versions for %@ do not match the source.", bundle: Bundle(for: PatreonAPI.self), comment: ""), appName)
             
         case .incorrectPermissions:
             var appName = NSLocalizedString("one or more apps", comment: "")
@@ -67,14 +67,14 @@ public struct MergeError: ALTLocalizedError
                 appName = name + " (\(bundleID))"
             }
             
-            return String(format: NSLocalizedString("The cached permissions for %@ do not match the source.", comment: ""), appName)
+            return String(format: NSLocalizedString("The cached permissions for %@ do not match the source.", bundle: Bundle(for: PatreonAPI.self), comment: ""), appName)
         }
     }
     
     public var recoverySuggestion: String? {
         switch self.code
         {
-        case .incorrectVersionOrder: return NSLocalizedString("Please try again later.", comment: "")
+        case .incorrectVersionOrder: return NSLocalizedString("Please try again later.", bundle: Bundle(for: PatreonAPI.self), comment: "")
         default: return nil
         }
     }
@@ -240,6 +240,14 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                     contextApp.featuredSortID = featuredSortID
                 }
                 
+                // Revert null Fediverse interactions to database values.
+                if contextApp.value(forKey: #keyPath(StoreApp.likesCount)) == nil || contextApp.value(forKey: #keyPath(StoreApp.boostsCount)) == nil || contextApp.value(forKey: #keyPath(StoreApp.commentsCount)) == nil
+                {
+                    contextApp.likesCount = databaseObject.likesCount
+                    contextApp.boostsCount = databaseObject.boostsCount
+                    contextApp.commentsCount = databaseObject.commentsCount
+                }
+                
             case let databaseObject as Source:
                 guard let conflictedObject = conflict.conflictingObjects.first as? Source else { break }
                 
@@ -302,6 +310,28 @@ open class MergePolicy: RSTRelationshipPreservingMergePolicy
                 {
                     // Pledge ID does NOT exist in context, so delete existing databasePledge.
                     databasePledge.managedObjectContext?.delete(databasePledge)
+                }
+                
+            case let databaseObject as NewsItem:
+                guard let contextObject = conflict.conflictingObjects.first as? NewsItem else { break }
+                
+                // Revert null Fediverse interactions to database values.
+                if contextObject.value(forKey: #keyPath(NewsItem.likesCount)) == nil || contextObject.value(forKey: #keyPath(NewsItem.boostsCount)) == nil || contextObject.value(forKey: #keyPath(NewsItem.commentsCount)) == nil
+                {
+                    contextObject.likesCount = databaseObject.likesCount
+                    contextObject.boostsCount = databaseObject.boostsCount
+                    contextObject.commentsCount = databaseObject.commentsCount
+                }
+                
+            case let databaseObject as AppVersion:
+                guard let contextObject = conflict.conflictingObjects.first as? AppVersion else { break }
+                
+                // Revert null Fediverse interactions to database values.
+                if contextObject.value(forKey: #keyPath(AppVersion.likesCount)) == nil || contextObject.value(forKey: #keyPath(AppVersion.boostsCount)) == nil || contextObject.value(forKey: #keyPath(AppVersion.commentsCount)) == nil
+                {
+                    contextObject.likesCount = databaseObject.likesCount
+                    contextObject.boostsCount = databaseObject.boostsCount
+                    contextObject.commentsCount = databaseObject.commentsCount
                 }
                 
             default: break

@@ -15,9 +15,9 @@ extension ALTAppPermissionType
     public var localizedName: String? {
         switch self
         {
-        case .unknown: return NSLocalizedString("Permission", comment: "")
-        case .entitlement: return NSLocalizedString("Entitlement", comment: "")
-        case .privacy: return NSLocalizedString("Privacy Permission", comment: "")
+        case .unknown: return NSLocalizedString("Permission", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .entitlement: return NSLocalizedString("Entitlement", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .privacy: return NSLocalizedString("Privacy Permission", bundle: Bundle(for: PatreonAPI.self), comment: "")
         default: return nil
         }
     }

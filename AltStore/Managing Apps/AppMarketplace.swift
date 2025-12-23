@@ -104,6 +104,8 @@ actor AppMarketplace: NSObject
 {
     static let shared = AppMarketplace()
     
+    nonisolated let tracker = AppTracker()
+    
     private let session = URLSession(configuration: .sharedCookies)
     private let pinnedCertificates: [SecCertificate]
     
@@ -173,6 +175,7 @@ extension AppMarketplace
                     }
                 
                 // Remove uninstalled apps
+                // Conveniently, this also removes the "other" version of AltStore if both beta and public version are installed.
                 for installedApp in installedApps where installedApp.bundleIdentifier != StoreApp.altstoreAppID
                 {
                     // Ignore any installed apps without valid marketplace StoreApp.
@@ -245,7 +248,7 @@ extension AppMarketplace
         let operation = AppManager.AppOperation.install(storeApp)
         AppManager.shared.set(progress, for: operation)
         
-        let bundleID = await $storeApp.bundleIdentifier
+        let (appName, bundleID) = await $storeApp.perform { ($0.name, $0.bundleIdentifier) }
         
         let task = Task<AsyncManaged<InstalledApp>, Error>(priority: .userInitiated) {
             try await InstallTaskContext.withValues(bundleID: bundleID, progress: progress, presentingViewController: presentingViewController, beginInstallationHandler: beginInstallationHandler) {
@@ -258,11 +261,12 @@ extension AppMarketplace
                     
                     return installedApp
                 }
-                catch
+                catch let error
                 {
-                    self.finish(operation, result: .failure(error), progress: progress)
+                    let nsError = (error as NSError).withLocalizedTitle(String(localized: "Unable to install \(appName)."))
+                    self.finish(operation, result: .failure(nsError), progress: progress)
                     
-                    throw error
+                    throw nsError
                 }
             }
         }
@@ -310,11 +314,12 @@ extension AppMarketplace
                     
                     return installedApp
                 }
-                catch
+                catch let error
                 {
-                    self.finish(operation, result: .failure(error), progress: progress)
+                    let nsError = (error as NSError).withLocalizedTitle(String(localized: "Unable to update \(appName)."))
+                    self.finish(operation, result: .failure(nsError), progress: progress)
                     
-                    throw error
+                    throw nsError
                 }
             }
         }
@@ -465,7 +470,17 @@ private extension AppMarketplace
 
             do
             {
-                guard bundleID == adp.bundleId else { throw VerificationError.mismatchedBundleID(bundleID, expectedBundleID: adp.bundleId, app: appVersion) }
+                if marketplaceID == String(StoreApp.altstoreMarketplaceID)
+                {
+                    // Allow AltStore to have mismatched bundle ID to support "updating" to beta version.
+                    // guard bundleID == adp.bundleId else { throw VerificationError.mismatchedBundleID(bundleID, expectedBundleID: adp.bundleId, app: appVersion) }
+                }
+                else
+                {
+                    // Make sure bundle ID matches for all apps (excluding AltStore + AltStore beta).
+                    guard bundleID == adp.bundleId else { throw VerificationError.mismatchedBundleID(bundleID, expectedBundleID: adp.bundleId, app: appVersion) }
+                }
+                
                 guard marketplaceID == adp.appleItemId else { throw VerificationError.mismatchedMarketplaceID(marketplaceID, expectedMarketplaceID: adp.appleItemId, app: appVersion) }
                 
                 guard version == adp.shortVersionString else { throw VerificationError.mismatchedVersion(version, expectedVersion: adp.shortVersionString, app: appVersion) }
@@ -552,18 +567,52 @@ private extension AppMarketplace
         let bundleID = await $storeApp.bundleIdentifier
         InstallTaskContext.beginInstallationHandler?(bundleID) // TODO: Is this called too early?
         
-        guard bundleID != StoreApp.altstoreAppID else {
-            // MarketplaceKit doesn't support updating marketplaces themselves (🙄)
+        if case .update = operation, #unavailable(iOS 18)
+        {
+            // MarketplaceKit doesn't support updating marketplaces themselves pre-iOS 18 (🙄)
             // so we have to ask user to manually update AltStore via Safari.
-            // TODO: Figure out how to handle beta AltStore
+            guard bundleID != StoreApp.altstoreAppID else {
+                await MainActor.run {
+                    let openURL = URL(string: "https://altstore.io/update-pal")!
+                    UIApplication.shared.open(openURL)
+                }
+                
+                // Cancel installation and let user manually update.
+                throw CancellationError()
+            }
+        }
+                
+        if bundleID != StoreApp.altstoreAppID && marketplaceID == StoreApp.altstoreMarketplaceID
+        {
+            // Bundle ID doesn't match AltStore but marketplaceID does, which means we're installing the "other" AltStore.
+            
+            guard let presentingViewController = await InstallTaskContext.presentingViewController else {
+                throw OperationError.unknown(failureReason: String(localized: "Could not determine presenting context."))
+            }
+            
+            #if BETA
+            
+            // Installing regular AltStore from beta, which requires uninstalling + reinstalling :(
+            
+            let action = await UIAlertAction(title: String(localized: "View Instructions"), style: .default)
+            try await presentingViewController.presentConfirmationAlert(title: String(localized: "Switch to public version of AltStore PAL?"), message: String(localized: "You must delete AltStore PAL then reinstall it to switch back to the public version.\n\nYour apps will remain installed."), primaryAction: action)
             
             await MainActor.run {
-                let openURL = URL(string: "https://altstore.io/update-pal")!
+                let openURL = URL(string: "https://altstore.io/uninstall-pal-beta")!
                 UIApplication.shared.open(openURL)
             }
             
-            // Cancel installation and let user manually update.
+            // Cancel installation and let user manually switch back to public version.
             throw CancellationError()
+            
+            #else
+            
+            // Installing AltStore beta from regular AltStore, which is equivalent to updating to specific beta versions of PAL.
+            
+            let action = await UIAlertAction(title: String(localized: "Update"), style: .default)
+            try await presentingViewController.presentConfirmationAlert(title: String(localized: "Switch to beta version of AltStore PAL?"), message: String(localized: "This will update AltStore PAL to the latest beta version."), primaryAction: action)
+            
+            #endif
         }
                 
         let installMarketplaceAppViewController = await MainActor.run { [operation] () -> InstallMarketplaceAppViewController? in
@@ -592,26 +641,40 @@ private extension AppMarketplace
             return installMarketplaceAppViewController
         }
         
-        if let installMarketplaceAppViewController
+        let localApp = await AppLibrary.current.app(forAppleItemID: marketplaceID)
+        
+        defer {
+            // Always reset error for app when this function exits.
+            // This ensures the next installation attempt doesn't have cached error.
+            self.tracker.setError(nil, for: localApp)
+        }
+        
+        do
         {
-            // Retrieve InstallTaskContext.presentingViewController now because it will be nil in the DispatchQueue.main.async call.
-            guard let presentingViewController = await InstallTaskContext.presentingViewController else {
-                throw OperationError.unknown(failureReason: NSLocalizedString("Could not determine presenting context.", comment: ""))
-            }
-            
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
-                DispatchQueue.main.async {
-                    installMarketplaceAppViewController.completionHandler = { result in
-                        continuation.resume(with: result)
+            if let installMarketplaceAppViewController
+            {
+                // Retrieve InstallTaskContext.presentingViewController now because it will be nil in the DispatchQueue.main.async call.
+                guard let presentingViewController = await InstallTaskContext.presentingViewController else {
+                    throw OperationError.unknown(failureReason: NSLocalizedString("Could not determine presenting context.", comment: ""))
+                }
+                            
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
+                    DispatchQueue.main.async {
+                        installMarketplaceAppViewController.completionHandler = { result in
+                            continuation.resume(with: result)
+                        }
+                        
+                        let navigationController = UINavigationController(rootViewController: installMarketplaceAppViewController)
+                        presentingViewController.present(navigationController, animated: true)
                     }
-                    
-                    let navigationController = UINavigationController(rootViewController: installMarketplaceAppViewController)
-                    presentingViewController.present(navigationController, animated: true)
                 }
             }
         }
-        
-        #if !DEBUG
+        catch let error as CancellationError
+        {
+            try self.tracker.verify(localApp)
+            throw error
+        }
         
         var didAddChildProgress = false
         
@@ -625,6 +688,8 @@ private extension AppMarketplace
                 // isInstalled is not reliable, but we use it for logging purposes.
                 (localApp.isInstalled, localApp.installation, localApp.installedMetadata)
             }
+            
+            try self.tracker.verify(localApp)
                         
             Logger.sideload.info("Installing app \(bundleID, privacy: .public)... Installed: \(isInstalled). Metadata: \(String(describing: installedMetadata), privacy: .public). Installation: \(String(describing: installation), privacy: .public)")
                                     
@@ -659,6 +724,8 @@ private extension AppMarketplace
                     
                     while true
                     {
+                        try self.tracker.verify(localApp)
+                        
                         if installation.progress.isCancelled
                         {
                             // Installation was cancelled, so assume error occured.
@@ -764,8 +831,8 @@ private extension AppMarketplace
             }
         }
         
-        #endif
-        
+        try self.tracker.verify(localApp)
+                
         let backgroundContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         
         let installedApp = await backgroundContext.performAsync {

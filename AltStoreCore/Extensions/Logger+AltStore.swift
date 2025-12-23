@@ -25,13 +25,13 @@ public extension OSLogEntryLog.Level
     var localizedName: String {
         switch self
         {
-        case .undefined: return NSLocalizedString("Undefined", comment: "")
-        case .debug: return NSLocalizedString("Debug", comment: "")
-        case .info: return NSLocalizedString("Info", comment: "")
-        case .notice: return NSLocalizedString("Notice", comment: "")
-        case .error: return NSLocalizedString("Error", comment: "")
-        case .fault: return NSLocalizedString("Fault", comment: "")
-        @unknown default: return NSLocalizedString("Unknown", comment: "")
+        case .undefined: return NSLocalizedString("Undefined", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .debug: return NSLocalizedString("Debug", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .info: return NSLocalizedString("Info", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .notice: return NSLocalizedString("Notice", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .error: return NSLocalizedString("Error", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .fault: return NSLocalizedString("Fault", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        @unknown default: return NSLocalizedString("Unknown", bundle: Bundle(for: PatreonAPI.self), comment: "")
         }
     }
 }

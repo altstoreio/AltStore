@@ -26,6 +26,8 @@ public extension StoreApp
     static let altstoreAppID = "io.altstore.AltStore"
     #endif
     
+    static let publicAltStoreAppID = "io.altstore.AltStore"
+    
     #else
     
     #if ALPHA
@@ -78,7 +80,7 @@ private struct PatreonParameters: Decodable
 }
 
 @objc(StoreApp)
-public class StoreApp: NSManagedObject, Decodable, Fetchable, @unchecked Sendable
+public class StoreApp: NSManagedObject, Decodable, Fetchable, Federatable, @unchecked Sendable
 {
     /* Properties */
     @NSManaged public private(set) var name: String
@@ -119,6 +121,13 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable, @unchecked Sendabl
     
     @nonobjc public var pledgeAmount: Decimal? { _pledgeAmount as? Decimal }
     @NSManaged @objc(pledgeAmount) private var _pledgeAmount: NSDecimalNumber?
+    
+    // Federation
+    @NSManaged public var statusID: String?
+    @NSManaged public var federatedURL: URL?
+    @NSManaged public var likesCount: Int32
+    @NSManaged public var boostsCount: Int32
+    @NSManaged public var commentsCount: Int32
     
     @NSManaged public var sortIndex: Int32
     @NSManaged public var featuredSortID: String?
@@ -636,6 +645,34 @@ public extension StoreApp
     @nonobjc class func fetchRequest() -> NSFetchRequest<StoreApp>
     {
         return NSFetchRequest<StoreApp>(entityName: "StoreApp")
+    }
+    
+    class func browseTabFeaturedAppsFetchRequest() -> NSFetchRequest<StoreApp>
+    {
+        let fetchRequest = StoreApp.fetchRequest() as NSFetchRequest<StoreApp>
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.sortDescriptors = [
+            // Sort by Source first to group into sections.
+            NSSortDescriptor(keyPath: \StoreApp._source?.featuredSortID, ascending: true),
+            
+            // Show uninstalled apps first.
+            // Sorting by StoreApp.installedApp crashes because InstalledApp does not respond to compare:
+            // Instead, sort by StoreApp.installedApp.storeApp.source.sourceIdentifier, which will be either nil OR source ID.
+            NSSortDescriptor(keyPath: \StoreApp.installedApp?.storeApp?.sourceIdentifier, ascending: true),
+            
+            // Show featured apps first.
+            // Sorting by StoreApp.featuringSource crashes because Source does not respond to compare:
+            // Instead, sort by StoreApp.featuringSource.identifier, which will be either nil OR source ID.
+            NSSortDescriptor(keyPath: \StoreApp.featuringSource?.identifier, ascending: false),
+            
+            // Randomize order within sections.
+            NSSortDescriptor(keyPath: \StoreApp.featuredSortID, ascending: true),
+            
+            // Sanity check to ensure stable ordering
+            NSSortDescriptor(keyPath: \StoreApp.bundleIdentifier, ascending: true)
+        ]
+        
+        return fetchRequest
     }
     
     class func makeAltStoreApp(version: String, buildVersion: String?, in context: NSManagedObjectContext) -> StoreApp

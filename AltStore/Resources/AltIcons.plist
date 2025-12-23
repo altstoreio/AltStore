@@ -2,13 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>modern</key>
+	<key>glass</key>
 	<array>
 		<dict>
 			<key>name</key>
 			<string>AltStore</string>
 			<key>imageName</key>
 			<string>AppIcon</string>
+		</dict>
+	</array>
+	<key>modern</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>Turquoise</string>
+			<key>imageName</key>
+			<string>Turquoise</string>
 		</dict>
 		<dict>
 			<key>name</key>

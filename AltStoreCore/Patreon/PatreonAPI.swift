@@ -23,10 +23,10 @@ enum PatreonAPIErrorCode: Int, ALTErrorEnum, CaseIterable
     var errorFailureReason: String {
         switch self
         {
-        case .unknown: return NSLocalizedString("An unknown error occurred.", comment: "")
-        case .notAuthenticated: return NSLocalizedString("No connected Patreon account.", comment: "")
-        case .invalidAccessToken: return NSLocalizedString("Invalid access token.", comment: "")
-        case .rateLimitExceeded: return NSLocalizedString("The Patreon API rate limit has been exceeded.", comment: "")
+        case .unknown: return NSLocalizedString("An unknown error occurred.", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .notAuthenticated: return NSLocalizedString("No connected Patreon account.", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .invalidAccessToken: return NSLocalizedString("Invalid access token.", bundle: Bundle(for: PatreonAPI.self), comment: "")
+        case .rateLimitExceeded: return NSLocalizedString("The Patreon API rate limit has been exceeded.", bundle: Bundle(for: PatreonAPI.self), comment: "")
         }
     }
 }

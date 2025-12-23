@@ -314,9 +314,13 @@ private extension SourcesViewController
             cell.bannerView.iconImageView.isIndicatingActivity = false
             cell.bannerView.iconImageView.image = image
             
-            if let error = error
+            if let error
             {
-                print("Error loading image:", error)
+                Logger.main.error("Failed to load app icon: \(error.localizedDescription, privacy: .public)")
+            }
+            else
+            {
+                cell.bannerView.iconImageView.backgroundColor = .clear
             }
         }
         

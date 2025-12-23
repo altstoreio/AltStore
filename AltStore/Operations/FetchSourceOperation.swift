@@ -172,16 +172,32 @@ class FetchSourceOperation: ResultOperation<Source>, @unchecked Sendable
                     try self.verify(source, response: response)
                     try self.verifyPledges(for: source, in: childContext)
                     
-                    try childContext.save()
-                    
-                    self.managedObjectContext.perform {
-                        if let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), identifier), in: self.managedObjectContext)
-                        {
-                            self.finish(.success(source))
-                        }
-                        else
-                        {
-                            self.finish(.failure(OperationError.noSources))
+                    self.updateFediverseMetadata(for: source) { result in
+                        do { try result.get() }
+                        catch { Logger.main.error("Failed to update Fediverse metadata for source \(identifier, privacy: .public). \(error.localizedDescription, privacy: .public)") }
+                        
+                        childContext.perform {
+                            do
+                            {
+                                try childContext.save()
+                                
+                                self.managedObjectContext.perform {
+                                    if let source = Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), identifier), in: self.managedObjectContext)
+                                    {
+                                        self.finish(.success(source))
+                                    }
+                                    else
+                                    {
+                                        self.finish(.failure(OperationError.noSources))
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                self.managedObjectContext.perform {
+                                    self.finish(.failure(error))
+                                }
+                            }
                         }
                     }
                 }
@@ -332,6 +348,76 @@ private extension FetchSourceOperation
                 guard responseURL.absoluteString.lowercased() != blockedSource.sourceURL?.absoluteString.lowercased() else {
                     throw SourceError.blocked(source, bundleIDs: blockedSource.bundleIDs, existingSource: self.source)
                 }
+            }
+        }
+    }
+}
+
+private extension FetchSourceOperation
+{
+    func updateFediverseMetadata(@AsyncManaged for source: Source, completion: @escaping (Result<Void, Error>) -> Void)
+    {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        Task<Void, Never> {
+            // TODO: Ignore sources that are not federated.
+            let sourceID = await $source.identifier
+            
+            do
+            {
+                async let sourceRecord = iCloudAPI.shared.fetchSource(id: sourceID)
+                async let newsItemRecords = iCloudAPI.shared.fetchNewsItems(for: source)
+                async let appRecords = iCloudAPI.shared.fetchApps(for: source)
+                async let appVersionRecords = iCloudAPI.shared.fetchAppVersions(for: source)
+                
+                let newsItemRecordsByID: [String: iCloudAPI.NewsItemRecord] = try await newsItemRecords.reduce(into: [:]) { $0[$1.identifier] = $1 }
+                let appRecordsByID: [String: iCloudAPI.AppRecord] = try await appRecords.reduce(into: [:]) { $0[$1.bundleID] = $1 }
+                let appVersionRecordsByID: [String: iCloudAPI.AppVersionRecord] = try await appVersionRecords.reduce(into: [:]) { $0[$1.globallyUniqueID] = $1 }
+                
+                let recordsCount = try await newsItemRecords.count + appRecords.count + appVersionRecords.count
+                guard let username = try await sourceRecord?.username else { throw OperationError.unknown(failureReason: NSLocalizedString("Invalid fediverse username.", comment: "")) }
+                                
+                await $source.perform { source in
+                    for newsItem in source.newsItems
+                    {
+                        guard
+                            let record = newsItemRecordsByID[newsItem.identifier], let statusID = record.statusID
+                        else { continue }
+                        
+                        newsItem.statusID = statusID
+                        newsItem.federatedURL = URL(string: "\(MastodonAPI.instanceURL)/@\(username)/\(statusID)")
+                    }
+                    
+                    for app in source.apps
+                    {
+                        guard
+                            let record = appRecordsByID[app.bundleIdentifier], let statusID = record.statusID
+                        else { continue }
+                        
+                        app.statusID = statusID
+                        app.federatedURL = URL(string: "\(MastodonAPI.instanceURL)/@\(username)/\(statusID)")
+                        
+                        for appVersion in app.versions
+                        {
+                            guard
+                                let globallyUniqueID = appVersion.globallyUniqueID, let record = appVersionRecordsByID[globallyUniqueID],
+                                let statusID = record.statusID
+                            else { continue }
+                            
+                            appVersion.statusID = statusID
+                            appVersion.federatedURL = URL(string: "\(MastodonAPI.instanceURL)/@\(username)/\(statusID)")
+                        }
+                    }
+                    
+                    Logger.main.info("Updated Fediverse metadata for \(recordsCount) records in source \(sourceID, privacy: .public) in \(CFAbsoluteTimeGetCurrent() - startTime) seconds.")
+                }
+                
+                completion(.success(()))
+            }
+            catch
+            {
+                Logger.main.info("Failed to update Fediverse metadata for source \(sourceID, privacy: .public) in \(CFAbsoluteTimeGetCurrent() - startTime) seconds. \(error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
             }
         }
     }

@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 @objc(NewsItem)
-public class NewsItem: NSManagedObject, Decodable, Fetchable
+public class NewsItem: NSManagedObject, Decodable, Fetchable, Federatable
 {
     /* Properties */
     @NSManaged public var identifier: String
@@ -24,6 +24,13 @@ public class NewsItem: NSManagedObject, Decodable, Fetchable
     
     @NSManaged public var imageURL: URL?
     @NSManaged public var externalURL: URL?
+    
+    // Federation
+    @NSManaged public var statusID: String?
+    @NSManaged public var federatedURL: URL?
+    @NSManaged public var likesCount: Int32
+    @NSManaged public var boostsCount: Int32
+    @NSManaged public var commentsCount: Int32
     
     @NSManaged public var appID: String?
     @NSManaged public var sourceIdentifier: String?
