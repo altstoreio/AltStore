@@ -1,0 +1,794 @@
+"%@ %@" = "%1$@ %2$@";
+
+"%@ %@ is now available for download." = "%1$@ %2$@ is now available for download.";
+
+"%@ %@ update. Released on %@." = "%1$@ %2$@ update. Released on %3$@.";
+
+"%@ App IDs" = "%@ App IDs";
+
+"%@ App IDs Remaining" = "%@ App IDs Remaining";
+
+"%@ DAYS" = "%@ DAYS";
+
+"%@ News" = "%@ News";
+
+"%@ Unsupported Updates Available" = "%@ Unsupported Updates Available";
+
+"%@ a month" = "%@ a month";
+
+"%@ beta" = "%@ beta";
+
+"%@ by %@" = "%1$@ by %2$@";
+
+"%@ can not jailbreak this device unless you untether it first. Are you sure you want to install without untethering?" = "%@ can not jailbreak this device unless you untether it first. Are you sure you want to install without untethering?";
+
+"%@ can only be downloaded from its original source" = "%@ can only be downloaded from its original source";
+
+"%@ could not be downloaded." = "%@ could not be downloaded.";
+
+"%@ could not be found." = "%@ could not be found.";
+
+"%@ could not be installed." = "%@ could not be installed.";
+
+"%@ days" = "%@ days";
+
+"%@ does not support iOS %@." = "%1$@ does not support iOS %2$@.";
+
+"%@ is not added to AltStore." = "%@ is not added to AltStore.";
+
+"%@ requires %@ App IDs, but %@." = "%1$@ requires %2$@ App IDs, but %3$@.";
+
+"%@ requires additional permissions not specified by the source." = "%@ requires additional permissions not specified by the source.";
+
+"%@ requires an active pledge in order to be installed." = "%@ requires an active pledge in order to be installed.";
+
+"%@ requires iOS %@ or earlier." = "%1$@ requires iOS %2$@ or earlier.";
+
+"%@ requires iOS %@ or later." = "%1$@ requires iOS %2$@ or later.";
+
+"%@ requires more permissions than the version that is already installed" = "%@ requires more permissions than the version that is already installed";
+
+"%@/mo" = "%@/mo";
+
+"1 App ID" = "1 App ID";
+
+"1 App ID Remaining" = "1 App ID Remaining";
+
+"1 day" = "1 day";
+
+"A connection to AltServer could not be established." = "A connection to AltServer could not be established.";
+
+"A permission for %@ is missing a usage description." = "A permission for %@ is missing a usage description.";
+
+"A placeholder app needs to be installed in order to prepare your device for untethering.\n\nThis may take a few moments." = "A placeholder app needs to be installed in order to prepare your device for untethering.\n\nThis may take a few moments.";
+
+"A source cannot change its identifier once added. This source can no longer be updated." = "A source cannot change its identifier once added. This source can no longer be updated.";
+
+"A source with the identifier '%@' already exists" = "A source with the identifier '%@' already exists";
+
+"ACCOUNT" = "ACCOUNT";
+
+"ACTIVATE" = "ACTIVATE";
+
+"ADD" = "ADD";
+
+"About" = "About";
+
+"Activate" = "Activate";
+
+"Activate %@" = "Activate %@";
+
+"Active" = "Active";
+
+"Add More Sources" = "Add More Sources";
+
+"Add Source" = "Add Source";
+
+"Additional Permissions" = "Additional Permissions";
+
+"All apps have been refreshed." = "All apps have been refreshed.";
+
+"AltServer" = "AltServer";
+
+"AltServer could not be found." = "AltServer could not be found.";
+
+"AltStore Expiring Soon" = "AltStore Expiring Soon";
+
+"AltStore News" = "AltStore News";
+
+"AltStore can only install marketplace apps that have been notarized by Apple." = "AltStore can only install marketplace apps that have been notarized by Apple.";
+
+"AltStore could not determine this device's UDID." = "AltStore could not determine this device's UDID.";
+
+"AltStore does not have detailed information for these entitlements." = "AltStore does not have detailed information for these entitlements.";
+
+"AltStore was denied permission to launch %@." = "AltStore was denied permission to launch %@.";
+
+"AltStore was unable to use an existing signing certificate, so it had to create a new one. This will cause any apps installed with an existing certificate to expire — including AltStore.\n\nTo prevent AltStore from expiring early, please refresh the app now. AltStore will quit once refreshing is complete." = "AltStore was unable to use an existing signing certificate, so it had to create a new one. This will cause any apps installed with an existing certificate to expire — including AltStore.\n\nTo prevent AltStore from expiring early, please refresh the app now. AltStore will quit once refreshing is complete.";
+
+"AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring." = "AltStore will expire in 24 hours. Open the app and refresh it to prevent it from expiring.";
+
+"AltStore's shared app group could not be accessed." = "AltStore's shared app group could not be accessed.";
+
+"An iPad screenshot for %@ does not specify its size" = "An iPad screenshot for %@ does not specify its size";
+
+"An unknown error occured." = "An unknown error occured.";
+
+"Any apps you've installed from this source will remain, but they'll no longer receive any app updates." = "Any apps you've installed from this source will remain, but they'll no longer receive any app updates.";
+
+"App" = "App";
+
+"App Contains Extensions" = "App Contains Extensions";
+
+"App Refresh Tip" = "App Refresh Tip";
+
+"Approve" = "Approve";
+
+"Are you sure you want to clear AltStore's cache?" = "Are you sure you want to clear AltStore's cache?";
+
+"Are you sure you want to clear the error log?" = "Are you sure you want to clear the error log?";
+
+"Are you sure you want to remove the source “%@”?" = "Are you sure you want to remove the source “%@”?";
+
+"Are you sure you want to restore this backup?" = "Are you sure you want to restore this backup?";
+
+"Are you sure you want to sign out?" = "Are you sure you want to sign out?";
+
+"Are you sure you want to unlink your Patreon account?" = "Are you sure you want to unlink your Patreon account?";
+
+"Are you sure you'd like to %@ %@?" = "Are you sure you'd like to %1$@ %2$@?";
+
+"BILLING" = "BILLING";
+
+"Back Up" = "Back Up";
+
+"Back Up %@" = "Back Up %@";
+
+"Become a patron" = "Become a patron";
+
+"Browse" = "Browse";
+
+"CREDITS" = "CREDITS";
+
+"Cannot Activate More than 3 Apps" = "Cannot Activate More than 3 Apps";
+
+"Cannot Activate More than 3 Apps and App Extensions" = "Cannot Activate More than 3 Apps and App Extensions";
+
+"Cannot Send Mail" = "Cannot Send Mail";
+
+"Categories" = "Categories";
+
+"Change App Icon" = "Change App Icon";
+
+"Change Icon" = "Change Icon";
+
+"Classic" = "Classic";
+
+"Clear Cache" = "Clear Cache";
+
+"Clear Error Log" = "Clear Error Log";
+
+"Coming Soon!" = "Coming Soon!";
+
+"Confirm Action" = "Confirm Action";
+
+"Confirm Installation" = "Confirm Installation";
+
+"Connect Patreon Account" = "Connect Patreon Account";
+
+"Continue" = "Continue";
+
+"Continue in App" = "Continue in App";
+
+"Copy Error Code" = "Copy Error Code";
+
+"Copy Error Message" = "Copy Error Message";
+
+"Could not back up jailbreak app." = "Could not back up jailbreak app.";
+
+"Could not back up “%@”." = "Could not back up “%@”.";
+
+"Could not determine presenting context." = "Could not determine presenting context.";
+
+"Could not download OTA archive." = "Could not download OTA archive.";
+
+"Could not enable JIT for %@" = "Could not enable JIT for %@";
+
+"Could not extract Spotlight from OTA archive." = "Could not extract Spotlight from OTA archive.";
+
+"Could not install %@ placeholder." = "Could not install %@ placeholder.";
+
+"Could not install %@." = "Could not install %@.";
+
+"Could not open %@ placeholder." = "Could not open %@ placeholder.";
+
+"Could not open %@." = "Could not open %@.";
+
+"Could not patch %@ placeholder." = "Could not patch %@ placeholder.";
+
+"Could not restore “%@”." = "Could not restore “%@”.";
+
+"Custom Pledge" = "Custom Pledge";
+
+"DEBUG" = "DEBUG";
+
+"DISPLAY" = "DISPLAY";
+
+"Deactivate" = "Deactivate";
+
+"Delete" = "Delete";
+
+"Delete sideloaded apps to free up App ID slots." = "Delete sideloaded apps to free up App ID slots.";
+
+"Don’t know where to start? Try adding one of our Recommended Sources!" = "Don’t know where to start? Try adding one of our Recommended Sources!";
+
+"Download %@" = "Download %@";
+
+"Download %@ %@" = "Download %1$@ %2$@";
+
+"Downloading %@…" = "Downloading %@…";
+
+"Downloading iOS firmware..." = "Downloading iOS firmware...";
+
+"Each app and app extension installed with AltStore must register an App ID with Apple.\n\nApp IDs for paid developer accounts never expire, and there is no limit to how many you can create." = "Each app and app extension installed with AltStore must register an App ID with Apple.\n\nApp IDs for paid developer accounts never expire, and there is no limit to how many you can create.";
+
+"Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits non-developer Apple IDs to 10 App IDs at a time.\n\n**App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired." = "Each app and app extension installed with AltStore must register an App ID with Apple. Apple limits non-developer Apple IDs to 10 App IDs at a time.\n\n**App IDs can't be deleted**, but they do expire after one week. AltStore will automatically renew App IDs for all active apps once they've expired.";
+
+"Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as AltServer." = "Enable Background Refresh to automatically refresh apps in the background when connected to the same Wi-Fi as AltServer.";
+
+"Enable JIT" = "Enable JIT";
+
+"Enabled JIT for %@" = "Enabled JIT for %@";
+
+"Enter a source's URL below, or add one of the recommended sources." = "Enter a source's URL below, or add one of the recommended sources.";
+
+"Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information." = "Entitlements are additional permissions that grant access to certain system services, including potentially sensitive information.";
+
+"Error Details" = "Error Details";
+
+"Error Loading Patrons" = "Error Loading Patrons";
+
+"Errors that occur when sideloading or refreshing apps will appear here." = "Errors that occur when sideloading or refreshing apps will appear here.";
+
+"Expires in" = "Expires in";
+
+"Expires in %@" = "Expires in %@";
+
+"Expires in %@." = "Expires in %@.";
+
+"Export Backup" = "Export Backup";
+
+"Failed to Activate %@" = "Failed to Activate %@";
+
+"Failed to Back Up %@" = "Failed to Back Up %@";
+
+"Failed to Clear Error Log" = "Failed to Clear Error Log";
+
+"Failed to Deactivate %@" = "Failed to Deactivate %@";
+
+"Failed to Enable JIT for %@" = "Failed to Enable JIT for %@";
+
+"Failed to Install %@" = "Failed to Install %@";
+
+"Failed to Log In" = "Failed to Log In";
+
+"Failed to Refresh %@" = "Failed to Refresh %@";
+
+"Failed to Refresh AltStore" = "Failed to Refresh AltStore";
+
+"Failed to Refresh Apps" = "Failed to Refresh Apps";
+
+"Failed to Restore %@ Backup" = "Failed to Restore %@ Backup";
+
+"Failed to Update %@" = "Failed to Update %@";
+
+"Failed to Verify %@" = "Failed to Verify %@";
+
+"Failed to refresh %@ apps." = "Failed to refresh %@ apps.";
+
+"Failed to refresh 1 app." = "Failed to refresh 1 app.";
+
+"Failed to retrieve manifest.json URL from Patreon post." = "Failed to retrieve manifest.json URL from Patreon post.";
+
+"Failure" = "Failure";
+
+"Featured" = "Featured";
+
+"Featured Apps" = "Featured Apps";
+
+"Finish in %@" = "Finish in %@";
+
+"Finish installing %@?" = "Finish installing %@?";
+
+"Follow the instructions in %@ to finish jailbreaking this device." = "Follow the instructions in %@ to finish jailbreaking this device.";
+
+"For your protection, please remove the source and uninstall" = "For your protection, please remove the source and uninstall";
+
+"Free" = "Free";
+
+"Free up disk space by removing non-essential data, such as temporary files and backups for uninstalled apps." = "Free up disk space by removing non-essential data, such as temporary files and backups for uninstalled apps.";
+
+"Gradient" = "Gradient";
+
+"Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to our Patreon-exclusive apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane" = "Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to our Patreon-exclusive apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane";
+
+"Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane" = "Hey ,\n\nYou’re the best. Your account was linked successfully, so you now have access to the beta versions of all of our apps. You can find them all in the Browse tab.\n\nThanks for all of your support. Enjoy!\nRiley & Shane";
+
+"Hey y'all,\n\nYou can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.\n\nThanks for all your support 💜\nRiley & Shane" = "Hey y'all,\n\nYou can support future development of our apps by donating to us on Patreon. In return, you'll receive access to the beta versions of our apps and be among the first to try the latest features.\n\nThanks for all your support 💜\nRiley & Shane";
+
+"If you're using the MacDirtyCow exploit to remove the 3-app limit, you can install up to 10 apps and app extensions instead." = "If you're using the MacDirtyCow exploit to remove the 3-app limit, you can install up to 10 apps and app extensions instead.";
+
+"If you've removed the 3-sideloaded app limit via the MacDirtyCow exploit, disable this setting to sideload more than 3 apps at a time." = "If you've removed the 3-sideloaded app limit via the MacDirtyCow exploit, disable this setting to sideload more than 3 apps at a time.";
+
+"In order to finish jailbreaking this device, you need to install %@ then follow the instructions in the app." = "In order to finish jailbreaking this device, you need to install %@ then follow the instructions in the app.";
+
+"Inactive" = "Inactive";
+
+"Install" = "Install";
+
+"Install %@" = "Install %@";
+
+"Install Anyway" = "Install Anyway";
+
+"Install Untethered Jailbreak" = "Install Untethered Jailbreak";
+
+"Install Without Untethering" = "Install Without Untethering";
+
+"Installed" = "Installed";
+
+"Installing %@ placeholder…" = "Installing %@ placeholder…";
+
+"Installing %@..." = "Installing %@...";
+
+"Invalid ADP install URL." = "Invalid ADP install URL.";
+
+"Invalid ADP update URL." = "Invalid ADP update URL.";
+
+"Invalid parameters." = "Invalid parameters.";
+
+"JIT will remain enabled until you quit the app." = "JIT will remain enabled until you quit the app.";
+
+"Jailbreak Requires Untethering" = "Jailbreak Requires Untethering";
+
+"Jailbreak Supports Untethering" = "Jailbreak Supports Untethering";
+
+"Join Patreon" = "Join Patreon";
+
+"Keep App Extensions" = "Keep App Extensions";
+
+"Last Updated: %@" = "Last Updated: %@";
+
+"Link Patreon account" = "Link Patreon account";
+
+"Loading..." = "Loading...";
+
+"MACDIRTYCOW" = "MACDIRTYCOW";
+
+"Make sure to only add sources that you trust." = "Make sure to only add sources that you trust.";
+
+"Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB." = "Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB.";
+
+"Manage your AltStore PAL annual subscription." = "Manage your AltStore PAL annual subscription.";
+
+"Modern" = "Modern";
+
+"More" = "More";
+
+"Never" = "Never";
+
+"New & Updated" = "New & Updated";
+
+"New Update Available" = "New Update Available";
+
+"No Apps" = "No Apps";
+
+"No Errors" = "No Errors";
+
+"No Refresh Attempts" = "No Refresh Attempts";
+
+"No Updates Available" = "No Updates Available";
+
+"No active apps require refreshing." = "No active apps require refreshing.";
+
+"Non-developer Apple IDs are limited to 3 active apps and app extensions, and “%@” contains %@ %@. Please choose an app to deactivate." = "Non-developer Apple IDs are limited to 3 active apps and app extensions, and “%1$@” contains %2$@ %3$@. Please choose an app to deactivate.";
+
+"Non-developer Apple IDs are limited to 3 active apps and app extensions." = "Non-developer Apple IDs are limited to 3 active apps and app extensions.";
+
+"Non-developer Apple IDs are limited to 3 active apps and app extensions. Please choose an app to deactivate." = "Non-developer Apple IDs are limited to 3 active apps and app extensions. Please choose an app to deactivate.";
+
+"Non-developer Apple IDs are limited to 3 active apps. Please choose an app to deactivate." = "Non-developer Apple IDs are limited to 3 active apps. Please choose an app to deactivate.";
+
+"Non-developer Apple IDs are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated." = "Non-developer Apple IDs are limited to 3 apps and app extensions. Inactive apps don't count towards your total, but cannot be opened until activated.";
+
+"Non-developer Apple IDs are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again." = "Non-developer Apple IDs are limited to 3 apps. Inactive apps are backed up and uninstalled so they don't count towards your total, but will be reinstalled with all their data when activated again.";
+
+"Non-developer Apple IDs are limited to creating 10 App IDs per week." = "Non-developer Apple IDs are limited to creating 10 App IDs per week.";
+
+"One or more apps in source “%@” are missing a marketplaceID. This most likely means they are not notarized, which is not supported by this version of AltStore." = "One or more apps in source “%@” are missing a marketplaceID. This most likely means they are not notarized, which is not supported by this version of AltStore.";
+
+"Open" = "Open";
+
+"Open %@" = "Open %@";
+
+"Open Placeholder" = "Open Placeholder";
+
+"Operation Failed" = "Operation Failed";
+
+"Other Entitlements" = "Other Entitlements";
+
+"PATREON" = "PATREON";
+
+"Patch Placeholder" = "Patch Placeholder";
+
+"Patching %@ placeholder…" = "Patching %@ placeholder…";
+
+"Patching placeholder app..." = "Patching placeholder app...";
+
+"Patreon Account Detected" = "Patreon Account Detected";
+
+"Permission" = "Permission";
+
+"Personalize your AltStore experience by choosing an alternate app icon." = "Personalize your AltStore experience by choosing an alternate app icon.";
+
+"Photos" = "Photos";
+
+"Please enter the 6-digit verification code that was sent to your Apple devices." = "Please enter the 6-digit verification code that was sent to your Apple devices.";
+
+"Please make sure your spelling is correct, or try searching for another app." = "Please make sure your spelling is correct, or try searching for another app.";
+
+"Please open the placeholder app and follow the instructions to continue jailbreaking your device." = "Please open the placeholder app and follow the instructions to continue jailbreaking your device.";
+
+"Please remove the existing source in order to add this one." = "Please remove the existing source in order to add this one.";
+
+"Pledge" = "Pledge";
+
+"Pledge %@ a month" = "Pledge %@ a month";
+
+"Pledge Expired" = "Pledge Expired";
+
+"Pledged" = "Pledged";
+
+"Promo" = "Promo";
+
+"REFRESHING APPS" = "REFRESHING APPS";
+
+"REMOVE" = "REMOVE";
+
+"Receive access to beta versions of AltStore, Delta, and more by becoming a patron." = "Receive access to beta versions of AltStore, Delta, and more by becoming a patron.";
+
+"Recessed" = "Recessed";
+
+"Recommended Sources" = "Recommended Sources";
+
+"Redeemed PAL Promo" = "Redeemed PAL Promo";
+
+"Refresh" = "Refresh";
+
+"Refresh %@" = "Refresh %@";
+
+"Refresh All" = "Refresh All";
+
+"Refresh Later" = "Refresh Later";
+
+"Refreshed Apps" = "Refreshed Apps";
+
+"Refreshing" = "Refreshing";
+
+"Remove" = "Remove";
+
+"Remove App Extensions" = "Remove App Extensions";
+
+"Remove Custom Icon" = "Remove Custom Icon";
+
+"Remove Source" = "Remove Source";
+
+"Remove “%@” from AltStore?" = "Remove “%@” from AltStore?";
+
+"Restore Backup" = "Restore Backup";
+
+"Retry" = "Retry";
+
+"Review Permissions" = "Review Permissions";
+
+"SIGN OUT" = "SIGN OUT";
+
+"SUPPORT" = "SUPPORT";
+
+"Search FAQ" = "Search FAQ";
+
+"See All" = "See All";
+
+"Sideloaded" = "Sideloaded";
+
+"Sign Out" = "Sign Out";
+
+"Sign in with your Apple ID to download apps from AltStore." = "Sign in with your Apple ID to download apps from AltStore.";
+
+"Sort by…" = "Sort by…";
+
+"Sources determine what apps are available in AltStore. The more sources you add, the better your AltStore experience will be." = "Sources determine what apps are available in AltStore. The more sources you add, the better your AltStore experience will be.";
+
+"Special thanks to..." = "Special thanks to...";
+
+"Start Backup?" = "Start Backup?";
+
+"Success" = "Success";
+
+"TECHY THINGS" = "TECHY THINGS";
+
+"Tap a permission to learn more." = "Tap a permission to learn more.";
+
+"Tap to view progress." = "Tap to view progress.";
+
+"Tap to view source errors." = "Tap to view source errors.";
+
+"The %@ '%@' for %@ is missing a usage description." = "The %1$@ '%2$@' for %3$@ is missing a usage description.";
+
+"The OTA download URL for %@ could not be determined." = "The OTA download URL for %@ could not be determined.";
+
+"The SHA-256 hash of %@ does not match the hash specified by the source." = "The SHA-256 hash of %@ does not match the hash specified by the source.";
+
+"The app" = "The app";
+
+"The app is in an invalid format." = "The app is in an invalid format.";
+
+"The app listing could not be found." = "The app listing could not be found.";
+
+"The build version of %@ does not match the build version specified by the source." = "The build version of %@ does not match the build version specified by the source.";
+
+"The bundle ID for %@ does not match the one specified by the source." = "The bundle ID for %@ does not match the one specified by the source.";
+
+"The certificate could not be found." = "The certificate could not be found.";
+
+"The certificate's private key could not be found." = "The certificate's private key could not be found.";
+
+"The connection failed because a connection cannot be made to the host." = "The connection failed because a connection cannot be made to the host.";
+
+"The connection failed because the network connection was lost." = "The connection failed because the network connection was lost.";
+
+"The connection to AltServer was dropped." = "The connection to AltServer was dropped.";
+
+"The default AltStore source cannot be removed." = "The default AltStore source cannot be removed.";
+
+"The dependencies for %@ could not be determined." = "The dependencies for %@ could not be determined.";
+
+"The dependency “%@” could not be downloaded." = "The dependency “%@” could not be downloaded.";
+
+"The developer certificate could not be found." = "The developer certificate could not be found.";
+
+"The following apps have been flagged:" = "The following apps have been flagged:";
+
+"The identifier of the source “%@” has changed." = "The identifier of the source “%@” has changed.";
+
+"The latest version of %@ could not be determined." = "The latest version of %@ could not be determined.";
+
+"The marketplace ID for %@ could not be determined." = "The marketplace ID for %@ could not be determined.";
+
+"The marketplace ID for %@ does not match the one specified by the source." = "The marketplace ID for %@ does not match the one specified by the source.";
+
+"The more you open AltStore, the more chances it's given to refresh apps in the background." = "The more you open AltStore, the more chances it's given to refresh apps in the background.";
+
+"The more you use AltStore, the more often iOS will allow it to refresh apps in the background." = "The more you use AltStore, the more often iOS will allow it to refresh apps in the background.";
+
+"The operation is forbidden." = "The operation is forbidden.";
+
+"The operation returned an unknown result." = "The operation returned an unknown result.";
+
+"The operation timed out." = "The operation timed out.";
+
+"The source" = "The source";
+
+"The source “%@”" = "The source “%@”";
+
+"The source “%@” contains %@ for %@." = "The source “%1$@” contains %2$@ for %3$@.";
+
+"The source “%@” contains multiple apps with %@." = "The source “%1$@” contains multiple apps with %2$@.";
+
+"The source “%@” contains notarized apps, which are not supported by this version of AltStore." = "The source “%@” contains notarized apps, which are not supported by this version of AltStore.";
+
+"The source “%@” has been blocked by AltStore for security reasons." = "The source “%@” has been blocked by AltStore for security reasons.";
+
+"The source “%@” is not supported by this version of AltStore." = "The source “%@” is not supported by this version of AltStore.";
+
+"The version of %@ does not match the version specified by the source." = "The version of %@ does not match the version specified by the source.";
+
+"There are no AltStore sources." = "There are no AltStore sources.";
+
+"These are permissions required by “%@” that AltStore does not recognize. Make sure you understand them before continuing." = "These are permissions required by “%@” that AltStore does not recognize. Make sure you understand them before continuing.";
+
+"These permissions must be declared by the source in order for AltStore to install this app:" = "These permissions must be declared by the source in order for AltStore to install this app:";
+
+"These updates don't support iOS %@. Please update your device to the latest iOS version to install them." = "These updates don't support iOS %@. Please update your device to the latest iOS version to install them.";
+
+"This app" = "This app";
+
+"This app supports custom pledges. Pledge any amount on Patreon to receive access." = "This app supports custom pledges. Pledge any amount on Patreon to receive access.";
+
+"This device is running iOS %@, but %@" = "This device is running iOS %1$@, but %2$@";
+
+"This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " = "This jailbreak has an untethered version, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ";
+
+"This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? " = "This jailbreak is untethered, which means %@ will never expire — even after 7 days or rebooting the device.\n\nInstalling an untethered jailbreak requires a few extra steps, but AltStore will walk you through the process.\n\nWould you like to continue? ";
+
+"This version of “%arg” requires additional permissions." = "This version of “%arg” requires additional permissions.";
+
+"This will also erase all backup data for this app." = "This will also erase all backup data for this app.";
+
+"This will remove all temporary files as well as backups for uninstalled apps." = "This will remove all temporary files as well as backups for uninstalled apps.";
+
+"This will replace all data you currently have in %@." = "This will replace all data you currently have in %@.";
+
+"This will replace any previous backups. Please leave AltStore open until the backup is complete." = "This will replace any previous backups. Please leave AltStore open until the backup is complete.";
+
+"This will take a few moments. Please do not turn off the screen or leave the app until patching is complete." = "This will take a few moments. Please do not turn off the screen or leave the app until patching is complete.";
+
+"To download %@, join this creator's Patreon by pressing “Join for free” on the next screen." = "To download %@, join this creator's Patreon by pressing “Join for free” on the next screen.";
+
+"Today" = "Today";
+
+"Try Again" = "Try Again";
+
+"Unable to Add Source" = "Unable to Add Source";
+
+"Unable to Change App Icon" = "Unable to Change App Icon";
+
+"Unable to Check for Updates" = "Unable to Check for Updates";
+
+"Unable to Clear Cache" = "Unable to Clear Cache";
+
+"Unable to Export Detailed Log" = "Unable to Export Detailed Log";
+
+"Unable to Fetch Apps" = "Unable to Fetch Apps";
+
+"Unable to Fetch News" = "Unable to Fetch News";
+
+"Unable to Launch AltStore" = "Unable to Launch AltStore";
+
+"Unable to Load Recommended Sources" = "Unable to Load Recommended Sources";
+
+"Unable to Prepare App" = "Unable to Prepare App";
+
+"Unable to Redeem PAL Promo" = "Unable to Redeem PAL Promo";
+
+"Unable to Refresh %@ Sources" = "Unable to Refresh %@ Sources";
+
+"Unable to Refresh Store" = "Unable to Refresh Store";
+
+"Unable to Refresh “%@” Source" = "Unable to Refresh “%@” Source";
+
+"Unable to Remove Source" = "Unable to Remove Source";
+
+"Unable to parse Patreon post URL." = "Unable to parse Patreon post URL.";
+
+"Undeclared Permissions" = "Undeclared Permissions";
+
+"Unknown Source" = "Unknown Source";
+
+"Unlink %@" = "Unlink %@";
+
+"Unlink Patreon Account" = "Unlink Patreon Account";
+
+"Unsupported Update Available" = "Unsupported Update Available";
+
+"Unsupported Updates Available" = "Unsupported Updates Available";
+
+"Unsupported iOS Version" = "Unsupported iOS Version";
+
+"Untethering Recommended" = "Untethering Recommended";
+
+"Untethering Required" = "Untethering Required";
+
+"Untethering this jailbreak will prevent %@ from expiring, even after 7 days or rebooting the device. Are you sure you want to install without untethering?" = "Untethering this jailbreak will prevent %@ from expiring, even after 7 days or rebooting the device. Are you sure you want to install without untethering?";
+
+"Update" = "Update";
+
+"Update %@" = "Update %@";
+
+"Version %@" = "Version %@";
+
+"View All" = "View All";
+
+"View All Apps" = "View All Apps";
+
+"View Error" = "View Error";
+
+"View More Details" = "View More Details";
+
+"View Patreon" = "View Patreon";
+
+"View Permisions" = "View Permisions";
+
+"View Recommended Sources" = "View Recommended Sources";
+
+"What are inactive apps?" = "What are inactive apps?";
+
+"What are sources?" = "What are sources?";
+
+"While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated." = "While AltStore 2.0 is in beta, you may choose to ignore this warning at your own risk until the source is updated.";
+
+"Would you like to add the source “%@”?" = "Would you like to add the source “%@”?";
+
+"Would you like to download the last version compatible with this device instead?" = "Would you like to download the last version compatible with this device instead?";
+
+"Would you like to remove this app's extensions so they don't count towards your limit?" = "Would you like to remove this app's extensions so they don't count towards your limit?";
+
+"You are not signed in." = "You are not signed in.";
+
+"You can register another App ID in %@." = "You can register another App ID in %@.";
+
+"You cannot register more than 10 App IDs within a 7 day period." = "You cannot register more than 10 App IDs within a 7 day period.";
+
+"You must add this source before installing apps from it.\n\n“%@” will begin downloading once it has been added." = "You must add this source before installing apps from it.\n\n“%@” will begin downloading once it has been added.";
+
+"You must also delete it from the home screen to fully uninstall the app." = "You must also delete it from the home screen to fully uninstall the app.";
+
+"You will no longer be able to install or refresh any apps that require pledges." = "You will no longer be able to install or refresh any apps that require pledges.";
+
+"You will no longer be able to install or refresh apps once you sign out." = "You will no longer be able to install or refresh apps once you sign out.";
+
+"You will no longer be able to install or update any apps that require pledges." = "You will no longer be able to install or update any apps that require pledges.";
+
+"You're signed into Patreon but haven't connected your account with AltStore.\n\nPlease connect your account to download Patreon-exclusive apps." = "You're signed into Patreon but haven't connected your account with AltStore.\n\nPlease connect your account to download Patreon-exclusive apps.";
+
+"You've received 1 month of free access to our “Early Adopter” Patreon tier!\n\nMake sure you have joined our Patreon campaign as a free member and connected your Patreon account in Settings." = "You've received 1 month of free access to our “Early Adopter” Patreon tier!\n\nMake sure you have joined our Patreon campaign as a free member and connected your Patreon account in Settings.";
+
+"Your Apple ID has no developer teams." = "Your Apple ID has no developer teams.";
+
+"Your pledge is no longer active. Please renew it to continue using %@ normally." = "Your pledge is no longer active. Please renew it to continue using %@ normally.";
+
+"^[%arg app](inflect: true)" = "^[%arg app](inflect: true)";
+
+"all apps downloaded from it." = "all apps downloaded from it.";
+
+"an app in source “%@”" = "an app in source “%@”";
+
+"app extension" = "app extension";
+
+"app extensions" = "app extensions";
+
+"duplicate versions" = "duplicate versions";
+
+"iOS" = "iOS";
+
+"iOS %@ or earlier" = "iOS %@ or earlier";
+
+"iOS %@ or later" = "iOS %@ or later";
+
+"install" = "install";
+
+"none are available" = "none are available";
+
+"one or more apps" = "one or more apps";
+
+"only %@ are available" = "only %@ are available";
+
+"only 1 is available" = "only 1 is available";
+
+"open" = "open";
+
+"remote AltServer %@" = "remote AltServer %@";
+
+"the app" = "the app";
+
+"the bundle identifier %@" = "the bundle identifier %@";
+
+"the downloaded app" = "the downloaded app";
+
+"the following apps:" = "the following apps:";
+
+"the same bundle identifier" = "the same bundle identifier";
+
+"this app" = "this app";
+
+"update" = "update";
+
+"wired AltServer" = "wired AltServer";
+
+"your device's iOS version" = "your device's iOS version";
+
+"“%@” Blocked" = "“%@” Blocked";
+
+"“%@” could not be added to AltStore." = "“%@” could not be added to AltStore.";
+
+"“%arg” will be automatically given these permissions once installed." = "“%arg” will be automatically given these permissions once installed.";
+
