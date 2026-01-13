@@ -55,6 +55,7 @@ AltStore and AltServer are both fairly straightforward to compile and run if you
 	```
 	cd AltStore 
 	git submodule update --init --recursive
+	pod install
 	```
 3. Open `AltStore.xcworkspace` and select the AltStore project in the project navigator. On the `Signing & Capabilities` tab, change the team from `Yvette Testut` to your own account.
 4. **(AltStore only)** Change the value for `ALTDeviceID` in the Info.plist to your device's UDID. Normally, AltServer embeds the device's UDID in AltStore's Info.plist during installation. When running through Xcode you'll need to set the value yourself or else AltStore won't resign (or even install) apps for the proper device.
