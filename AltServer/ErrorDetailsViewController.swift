@@ -24,6 +24,7 @@ class ErrorDetailsViewController: NSViewController
         super.viewDidLoad()
         
         self.detailedDescriptionLabel.preferredMaxLayoutWidth = 800
+        self.detailedDescriptionLabel.allowsEditingTextAttributes = true
     }
 }
 
