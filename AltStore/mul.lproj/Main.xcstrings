@@ -11,6 +11,12 @@
             "value" : "App IDs"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App ID"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27,6 +33,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "My Apps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Mie App"
           }
         },
         "ja" : {
@@ -47,6 +59,12 @@
             "value" : "Version 4.4.2"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.4.2"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63,6 +81,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "App IDs Description"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrizione App ID"
           }
         },
         "ja" : {
@@ -83,6 +107,12 @@
             "value" : "Classic games in your pocket"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giochi classici nella tua tasca"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -98,6 +128,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "50.4 MB"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "50.4 MB"
           }
         },
@@ -119,6 +155,12 @@
             "value" : "Permissions"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permessi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -134,6 +176,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Delta"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Delta"
           }
         },
@@ -155,6 +203,12 @@
             "value" : "News"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizie"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -171,6 +225,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "FREE"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GRATIS"
           }
         },
         "ja" : {
@@ -191,6 +251,12 @@
             "value" : "5/10 App IDs"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5/10 App ID"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -207,6 +273,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "View App IDs"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi App ID"
           }
         },
         "ja" : {
@@ -227,6 +299,12 @@
             "value" : "What's New"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novità"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -243,6 +321,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Settings"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
           }
         },
         "ja" : {
@@ -263,6 +347,12 @@
             "value" : "Browse"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esplora"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -279,6 +369,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Hello Me"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salutami"
           }
         },
         "ja" : {
@@ -299,6 +395,12 @@
             "value" : "Item"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggetto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -314,6 +416,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "App"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "App"
           }
         },
@@ -335,6 +443,12 @@
             "value" : "Browse"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esplora"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -353,6 +467,12 @@
             "value" : "2w ago"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 settimane fa"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -368,6 +488,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "..."
           }
         },
@@ -389,6 +515,12 @@
             "value" : "Button"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulsante"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -405,6 +537,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "App IDs"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App ID"
           }
         },
         "ja" : {
@@ -425,6 +563,12 @@
             "value" : "No Updates Available"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ci sono aggiornamenti"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -441,6 +585,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "My Apps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Mie App"
           }
         },
         "ja" : {
@@ -461,6 +611,12 @@
             "value" : "10 App IDs"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 App ID"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +633,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "News"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizie"
           }
         },
         "ja" : {

@@ -11,6 +11,12 @@
             "value" : "Riley Testut"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riley Testut"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42,6 +48,12 @@
             "value" : "Link Patreon account"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collega Account Patreon"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58,6 +70,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Developer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sviluppatore"
           }
         },
         "ja" : {
@@ -78,6 +96,12 @@
             "value" : "Operations"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -96,6 +120,12 @@
             "value" : "Become a patron"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diventa un patron"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -111,6 +141,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Shane Gill"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Shane Gill"
           }
         },

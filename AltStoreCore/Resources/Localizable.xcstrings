@@ -9,6 +9,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19,6 +25,12 @@
     },
     "%@ does not have any app versions." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ non ha alcuna versione dell'app."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35,6 +47,12 @@
             "value" : "%1$@ error %2$@."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ errore %2$@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45,6 +63,12 @@
     },
     "%@ is currently locked." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ è bloccato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61,6 +85,12 @@
             "value" : "%1$@ is not currently running on %2$@."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ non sta eseguendo su %2$@."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -71,6 +101,12 @@
     },
     "%@ received an invalid request from AltServer." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ha ricevuto una richiesta invalida da AltServer"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -87,6 +123,12 @@
             "value" : "%1$@ requires %2$@ or later."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ richiede  %2$@ o successivo."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -97,6 +139,12 @@
     },
     "Activate %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attivazione %@ Fallita"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -107,6 +155,12 @@
     },
     "AltServer could not connect to Mail plug-in." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non può connettersi al Mail plug-in."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -117,6 +171,12 @@
     },
     "AltServer could not establish a connection to AltStore." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non stabilire una connessione con AltStore."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -127,6 +187,12 @@
     },
     "AltServer could not establish a secure connection to %@." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non può stabilire una connessione sicura a %@."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -137,6 +203,12 @@
     },
     "AltServer could not find this device." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non può trovare questo dispositivo."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +219,12 @@
     },
     "AltServer could not write data to this device." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non può scrivere i dati su questo dispositivo,"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -157,6 +235,12 @@
     },
     "AltServer does not support this request." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer non supporta questa richiesta."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -167,6 +251,12 @@
     },
     "AltServer received an invalid request." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer ha ricevuto una richiesta invalida."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -177,6 +267,12 @@
     },
     "AltServer received an invalid response from %@." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer ha ricevuto una risposta invalida da %@."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -187,6 +283,12 @@
     },
     "AltServer sent an invalid response." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltServer ha mandato una risposta invalida."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -197,6 +299,12 @@
     },
     "AltServer's connection to %@ timed out." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connessione di AltServer a %@ è scaduta."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -207,6 +315,12 @@
     },
     "AltStore received an unknown response from AltServer." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AltStore ha ricevuto una risposta non valida da AltServer."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -217,6 +331,12 @@
     },
     "AltStore's database could not be saved." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il database di AltStore non può essere salvato."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -227,6 +347,12 @@
     },
     "An error occured while removing the app." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nel rimuovere l'app."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -237,6 +363,12 @@
     },
     "An error occurred while installing the app." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nell’installare l'app."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -247,6 +379,12 @@
     },
     "An unknown error occured." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore sconosciuto."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -257,6 +395,12 @@
     },
     "An unknown error occurred." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore sconosciuto."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -267,6 +411,12 @@
     },
     "At least one app" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almeno un’app."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -277,6 +427,12 @@
     },
     "Backup %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup %@ fallito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -287,6 +443,12 @@
     },
     "CarPlay" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CarPlay"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -297,6 +459,12 @@
     },
     "Connection error code: %@" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice di errore: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -307,6 +475,12 @@
     },
     "Could not find profile" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile trovare il profilo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -317,6 +491,12 @@
     },
     "Deactivate %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattivazione %@ fallita"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -327,6 +507,12 @@
     },
     "Debug" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -337,6 +523,12 @@
     },
     "Debug Description" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrizione Debug"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -347,6 +539,12 @@
     },
     "Default" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predefindito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -357,6 +555,12 @@
     },
     "Developer" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sviluppatore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -367,6 +571,12 @@
     },
     "Enable JIT for %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abilita JIT per %@ fallita"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +587,12 @@
     },
     "Entertainment" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intrattenimento"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -387,6 +603,12 @@
     },
     "Entitlement" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diritto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -397,6 +619,12 @@
     },
     "Error" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -407,6 +635,12 @@
     },
     "Error code: %@" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice di errore: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -417,6 +651,12 @@
     },
     "Error Description" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrizione Errore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -427,6 +667,12 @@
     },
     "Failure" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fallimento"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -437,6 +683,12 @@
     },
     "Failure Reason" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ragione Fallimento"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -447,6 +699,12 @@
     },
     "Fault" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colpa"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -457,6 +715,12 @@
     },
     "Free Developer Account" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account Sviluppatore Gratis"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -467,6 +731,12 @@
     },
     "Games" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giochi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +747,12 @@
     },
     "Info" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -487,6 +763,12 @@
     },
     "Install %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installazione %@ fallita"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -497,6 +779,12 @@
     },
     "Invalid access token." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token di accesso invalido."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -507,6 +795,12 @@
     },
     "Last Updated" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo Aggiornato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -517,6 +811,12 @@
     },
     "Lifestyle" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifestyle"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -527,6 +827,12 @@
     },
     "Make sure Mail is running and the plug-in is enabled in Mail's preferences." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assicurati che Mail sia in esecuzione e che il plug-in è abilitato nelle impostazioni di Mail."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -537,6 +843,12 @@
     },
     "Make sure the app is running in the foreground on %@ then try again." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assicurati che l’app sia in esecuzione in foreground su %@ e riprova."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -547,6 +859,12 @@
     },
     "Make sure you have trusted this device with your computer and Wi-Fi sync is enabled." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assicurati si aver autorizzato questo dispositivo col tuo computer e che il Wi-Fi sync sia attivo."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -557,6 +875,12 @@
     },
     "Name" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -567,6 +891,12 @@
     },
     "No connected Patreon account." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun account Patreon collegato."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -577,6 +907,12 @@
     },
     "Notice" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizia"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -587,6 +923,12 @@
     },
     "one or more apps" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "una o più app"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -597,6 +939,12 @@
     },
     "Organization" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizzazione"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -607,6 +955,12 @@
     },
     "Other" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -617,6 +971,12 @@
     },
     "Permission" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permesso"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -627,6 +987,12 @@
     },
     "Photo & Video" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto e Video"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -637,6 +1003,12 @@
     },
     "Please deactivate a sideloaded app in order to install another one.\n\nIf you're running iOS 13.5 or later, make sure “Offload Unused Apps” is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattiva un’app installata per poterne installare un’altra.\n\nSe sei su iOS 13.5 o successivo, assicurati che “Rimuovi le app che non usi” sia disattivato in Impostazioni > iTunes e App Store, poi installa o elimina tutte le app che non usi."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -647,6 +1019,12 @@
     },
     "Please deactivate a sideloaded app with AltStore in order to install another app.\n\nIf you're running iOS 13.5 or later, make sure 'Offload Unused Apps' is disabled in Settings > iTunes & App Stores, then install or delete all offloaded apps to prevent them from erroneously counting towards this limit." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattiva un’app installata per poterne installare un’altra.\n\nSe sei su iOS 13.5 o successivo, assicurati che “Rimuovi le app che non usi” sia disattivato in Impostazioni > iTunes e App Store, poi installa o elimina tutte le app che non usi."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -657,6 +1035,12 @@
     },
     "Please try again later." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova più tardi."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -667,6 +1051,12 @@
     },
     "Please unlock the device with your passcode and try again." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sblocca il dispositivo col tuo codice e riprova."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -677,6 +1067,12 @@
     },
     "Privacy Permission" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permessi di Privacy"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -687,6 +1083,12 @@
     },
     "Recovery Suggestion" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggestione di Recupero"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -697,6 +1099,12 @@
     },
     "Refresh %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh %@ fallito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -707,6 +1115,12 @@
     },
     "Restore %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restauro %@ fallito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -717,6 +1131,12 @@
     },
     "Social" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Social"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -727,6 +1147,12 @@
     },
     "Source File" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Sorgente"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -737,6 +1163,12 @@
     },
     "Source Line" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linea Sorgente"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -747,6 +1179,12 @@
     },
     "The app is in an invalid format." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’app è in un formato invalido"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -757,6 +1195,12 @@
     },
     "The cached permissions for %@ do not match the source." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I permessi per %@ non corrispondono a quelli della sorgente."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -767,6 +1211,12 @@
     },
     "The cached versions for %@ do not match the source." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le versioni per %@ non corrispondono a quelle dalla sorgente."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -777,6 +1227,12 @@
     },
     "The connection to AltServer was lost." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connessione ad AltServer è stata persa."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -793,6 +1249,12 @@
             "value" : "The Developer disk located at %1$@ is incompatible with %2$@."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il Developer disk su %1$@ è incompatibile con %2$@."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -803,6 +1265,12 @@
     },
     "the device" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "il dispositivo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -813,6 +1281,12 @@
     },
     "The device" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il dispositivo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -823,6 +1297,12 @@
     },
     "The disk is incompatible with %@." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il disco è incompatibile con %@."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -833,6 +1313,12 @@
     },
     "The Patreon API rate limit has been exceeded." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il limite di Patreon API è stato raggiunto."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -843,6 +1329,12 @@
     },
     "The provided anisette data is invalid." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La anisette data è invalida."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -853,6 +1345,12 @@
     },
     "The requested app" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’app richiesta"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -863,6 +1361,12 @@
     },
     "There was an error connecting to the device." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nel connettersi al dispositivo."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -873,6 +1377,12 @@
     },
     "There was an issue communicating with the usbmuxd daemon." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’è stato un problema nel comunicare con il usbmuxd daemon."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -883,6 +1393,12 @@
     },
     "this device's OS version" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "questa versione dell’OS di questo dispositivo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -893,6 +1409,12 @@
     },
     "Title" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titolo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -903,6 +1425,12 @@
     },
     "Today" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,6 +1441,12 @@
     },
     "Undefined" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indefinito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -923,6 +1457,12 @@
     },
     "Underlying Error" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di fondo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -933,6 +1473,12 @@
     },
     "Underlying Errors" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errori di fondo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -943,6 +1489,12 @@
     },
     "Unknown" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sconosciuto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -953,6 +1505,12 @@
     },
     "Update %@ Failed" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiornamento %@ fallito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -963,6 +1521,12 @@
     },
     "Utilities" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strumenti"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -973,6 +1537,12 @@
     },
     "Yesterday" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ieri"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -983,6 +1553,12 @@
     },
     "You cannot activate more than 3 apps with a non-developer Apple ID." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non puoi attivare più di 3 app con un account non sviluppatore."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -993,6 +1569,12 @@
     },
     "your device" : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "il tuo dispositivo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1003,6 +1585,12 @@
     },
     "Your device must be running iOS 12.2 or later to install AltStore." : {
       "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo dispositivo deve avere iOS 12.2 o successivo per installare AltStore."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
