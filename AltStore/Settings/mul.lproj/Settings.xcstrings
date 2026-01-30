@@ -11,6 +11,12 @@
             "value" : "riley@altstore.io"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "riley@altstore.io"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27,6 +33,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Error Description"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrizione Errore"
           }
         },
         "ja" : {
@@ -47,6 +59,12 @@
             "value" : "How it works"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come Funziona"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63,6 +81,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Disable Response Caching"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabilita la memorizzazione nella cache delle risposte"
           }
         },
         "ja" : {
@@ -83,6 +107,12 @@
             "value" : "Connect Account"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connetti Account"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -99,6 +129,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Date"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
           }
         },
         "ja" : {
@@ -119,6 +155,12 @@
             "value" : "Version 2.0"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 2.0"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -135,6 +177,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Could not connect to AltServer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile connettersi ad AltServer."
           }
         },
         "ja" : {
@@ -155,6 +203,12 @@
             "value" : "Sign in with Apple ID"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firma col tuo Apple ID"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -173,6 +227,12 @@
             "value" : "Developer"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sviluppatore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -189,6 +249,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Error Log"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log Errori"
           }
         },
         "ja" : {
@@ -228,7 +294,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "ba2-EY-tf5.configuration.title" : {
       "comment" : "Class = \"UIButton\"; configuration.title = \" \"; ObjectID = \"ba2-EY-tf5\";",
@@ -246,7 +313,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "c6K-fI-CVr.text" : {
       "comment" : "Class = \"UILabel\"; text = \"Add to Siri…\"; ObjectID = \"c6K-fI-CVr\";",
@@ -256,6 +324,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Add to Siri…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi a Siri…"
           }
         },
         "ja" : {
@@ -289,6 +363,12 @@
             "value" : "Licenses"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenze"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -305,6 +385,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Settings"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
           }
         },
         "ja" : {
@@ -325,6 +411,12 @@
             "value" : "Background Refresh"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiornamento in Background"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -340,6 +432,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Designer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Designer"
           }
         },
@@ -374,6 +472,12 @@
             "value" : "Developer"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sviluppatore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -392,6 +496,12 @@
             "value" : "Enforce 3-App Limit"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forza Limite 3 App"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -408,6 +518,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Clear Cache…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancella Cache…"
           }
         },
         "ja" : {
@@ -441,6 +557,12 @@
             "value" : "Software Licenses"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenze Software"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -457,6 +579,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Manage Subscription"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci Abbonamento"
           }
         },
         "ja" : {
@@ -477,6 +605,12 @@
             "value" : "Settings"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -495,6 +629,12 @@
             "value" : "Success"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Successo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -511,6 +651,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Contact Us"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contattaci"
           }
         },
         "ja" : {
@@ -544,6 +690,12 @@
             "value" : "Operations"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -560,6 +712,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Send Feedback"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manda Feedback"
           }
         },
         "ja" : {
@@ -580,6 +738,12 @@
             "value" : "Error Code"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice Errore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -595,6 +759,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Email"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Email"
           }
         },
@@ -616,6 +786,12 @@
             "value" : "Privacy Policy"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Politica sulla Privacy"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -632,6 +808,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Type"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         },
         "ja" : {
@@ -652,6 +834,12 @@
             "value" : "Date"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -668,6 +856,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Auto Manage Installed Apps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci in Automatico le App Installate"
           }
         },
         "ja" : {
@@ -688,6 +882,12 @@
             "value" : "View Refresh Attempts"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi Tentavi di Refresh delle App"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -706,6 +906,12 @@
             "value" : "Success"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Successo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -721,6 +927,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Patreon"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Patreon"
           }
         },
@@ -742,6 +954,12 @@
             "value" : "Refresh Attempts"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentavi di Refresh delle App"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -758,6 +976,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "View Error Log"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi Log Errore"
           }
         },
         "ja" : {
@@ -778,6 +1002,12 @@
             "value" : "Follow AltStore for updates"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segui AltStore per aggiornamenti"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -796,6 +1026,12 @@
             "value" : "Name"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -812,6 +1048,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Change App Icon"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia Icona"
           }
         },
         "ja" : {

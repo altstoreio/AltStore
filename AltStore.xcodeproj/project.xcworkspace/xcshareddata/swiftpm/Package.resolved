@@ -1,0 +1,42 @@
+{
+  "originHash" : "82ea5ae000fdbf59d1f0f4c60fad07d6b6ac64b09c181a8db8ca54e91d5681f7",
+  "pins" : [
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess.git",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "launchatlogin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/LaunchAtLogin.git",
+      "state" : {
+        "revision" : "e8171b3e38a2816f579f58f3dac1522aa39efe41",
+        "version" : "4.2.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "8f4d2753f0e4778c76d5f05ad16c74f707390531",
+        "version" : "1.2.3"
+      }
+    },
+    {
+      "identity" : "swiftclient",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TelemetryDeck/SwiftClient",
+      "state" : {
+        "revision" : "8f332c1c256ba26cc46f74c9e5af94f7b1c37a9c",
+        "version" : "2.11.0"
+      }
+    }
+  ],
+  "version" : 3
+}

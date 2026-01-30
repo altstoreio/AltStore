@@ -11,6 +11,12 @@
             "value" : "2"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27,6 +33,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign in"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accedi"
           }
         },
         "ja" : {
@@ -47,6 +59,12 @@
             "value" : "Enable iTunes Wi-Fi Sync and connect to the same Wi-Fi as AltServer."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abilita iTunes Wi-Fi Sync e connettiti alla stessa rete Wi-Fi di AltServer."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62,6 +80,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Refresh AltStore"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Refresh AltStore"
           }
         },
@@ -83,6 +107,12 @@
             "value" : "Leave AltServer running in the background on your computer."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lascia AltServer in esecuzione in background nel tuo computer."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -98,6 +128,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "APPLE ID"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "APPLE ID"
           }
         },
@@ -119,6 +155,12 @@
             "value" : "PASSWORD"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PASSWORD"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -135,6 +177,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "How it works"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come Funziona"
           }
         },
         "ja" : {
@@ -155,6 +203,12 @@
             "value" : "name@email.com"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nome@email.com"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -171,6 +225,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Welcome to AltStore."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benvenuto in AltStore."
           }
         },
         "ja" : {
@@ -191,6 +251,12 @@
             "value" : "Connect to Wi-Fi"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connetti al Wi-Fi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -209,6 +275,12 @@
             "value" : "Apps are refreshed in the background when on same Wi-Fi as AltServer."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le app sono aggiornate in background quando sei sulla stessa rete Wi-Fi di AltServer"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -224,6 +296,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "4"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "4"
           }
         },
@@ -245,6 +323,12 @@
             "value" : "1"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -261,6 +345,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Download Apps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scarica App"
           }
         },
         "ja" : {
@@ -281,6 +371,12 @@
             "value" : "Browse and download apps directly from AltStore."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esplora e scarica app direttamente da AltStore."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -297,6 +393,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Close"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         },
         "ja" : {
@@ -317,6 +419,12 @@
             "value" : "Apps Refresh Automatically"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna App Automaticamente"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -332,6 +440,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "3"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "3"
           }
         },
@@ -353,6 +467,12 @@
             "value" : "Your Apple ID is used to configure apps so they can be installed on this device. Your credentials will be stored securely in this device's Keychain and sent only to Apple for authentication."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo Apple ID è usato per configurare le app così che poi possono essere installate sul tuo dispositivo. Le tue credenziali saranno conservate in sicurezza nel Portachiavi del tuo dispositivo e saranno mandati solo ad Apple per autenticazione."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -369,6 +489,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Why do we need this?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perché ci serve questo?"
           }
         },
         "ja" : {
@@ -389,6 +515,12 @@
             "value" : "Refresh Later"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna Dopo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -407,6 +539,12 @@
             "value" : "Got it"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -422,6 +560,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "••••••••"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "••••••••"
           }
         },
@@ -443,6 +587,12 @@
             "value" : "Sign in with your Apple ID to get started."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accedi col tuo Apple ID per iniziare."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +611,12 @@
             "value" : "Refresh Now"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna Ora"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +633,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Launch AltServer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esegui AltServer"
           }
         },
         "ja" : {

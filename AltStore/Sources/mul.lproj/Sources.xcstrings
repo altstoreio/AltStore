@@ -11,6 +11,12 @@
             "value" : "Discover more apps on altstore.io"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri più app su altstore.io"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27,6 +33,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Button"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulsante"
           }
         },
         "ja" : {
@@ -47,6 +59,12 @@
             "value" : "All News"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le Notizie"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63,6 +81,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Sources"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgenti"
           }
         },
         "ja" : {
@@ -83,6 +107,12 @@
             "value" : "All Apps"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le App"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -99,6 +129,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Add Source"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi Sorgente"
           }
         },
         "ja" : {
@@ -119,6 +155,12 @@
             "value" : "Sources"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgenti"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -135,6 +177,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Sources"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgenti"
           }
         },
         "ja" : {
