@@ -4,20 +4,27 @@ PODS:
   - STPrivilegedTask (1.0.8)
 
 DEPENDENCIES:
-  - Nuke (~> 10.0)
-  - Sparkle (~> 2.3)
+  - Nuke (from `https://github.com/kean/Nuke.git`, tag `10.7.1`)
+  - Sparkle (from `https://github.com/sparkle-project/Sparkle.git`, tag `2.3.2`)
   - STPrivilegedTask (from `https://github.com/rileytestut/STPrivilegedTask.git`)
 
-SPEC REPOS:
-  trunk:
-    - Nuke
-    - Sparkle
-
 EXTERNAL SOURCES:
+  Nuke:
+    :git: https://github.com/kean/Nuke.git
+    :tag: 10.7.1
+  Sparkle:
+    :git: https://github.com/sparkle-project/Sparkle.git
+    :tag: 2.3.2
   STPrivilegedTask:
     :git: https://github.com/rileytestut/STPrivilegedTask.git
 
 CHECKOUT OPTIONS:
+  Nuke:
+    :git: https://github.com/kean/Nuke.git
+    :tag: 10.7.1
+  Sparkle:
+    :git: https://github.com/sparkle-project/Sparkle.git
+    :tag: 2.3.2
   STPrivilegedTask:
     :commit: 02ab5081c4f1d7f6a70f5413c88d32dbbea66f4c
     :git: https://github.com/rileytestut/STPrivilegedTask.git
@@ -27,6 +34,6 @@ SPEC CHECKSUMS:
   Sparkle: b36a51855e81585a1c38e32e53101d36c00f4304
   STPrivilegedTask: 3a3f6add7c567b1be8c326328eb3dd6dc5daed91
 
-PODFILE CHECKSUM: c3f735f2bd43afbd34fff2b719ee9ce81912dd50
+PODFILE CHECKSUM: 04ae6c5118bfed43931b1f561066b4cee8167ecf
 
 COCOAPODS: 1.16.2

@@ -6,7 +6,7 @@ target 'AltStore' do
   use_frameworks!
 
   # Pods for AltStore
-  pod 'Nuke', '~> 10.0'
+  pod 'Nuke', :git => 'https://github.com/kean/Nuke.git', :tag => '10.7.1'
 
 end
 
@@ -17,7 +17,7 @@ target 'AltServer' do
 
   # Pods for AltServer
   pod 'STPrivilegedTask', :git => 'https://github.com/rileytestut/STPrivilegedTask.git'
-  pod 'Sparkle', '~> 2.3'
+  pod 'Sparkle', :git => 'https://github.com/sparkle-project/Sparkle.git', :tag => '2.3.2'
 
 end
 
