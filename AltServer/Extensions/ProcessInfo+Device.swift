@@ -12,7 +12,7 @@ import RegexBuilder
 extension ProcessInfo
 {
     var deviceModel: String? {
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
         defer {
             IOObjectRelease(service)
         }

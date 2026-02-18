@@ -1,0 +1,29 @@
+{
+  "name": "Nuke",
+  "version": "10.7.1",
+  "summary": "A powerful image loading and caching system",
+  "description": "A powerful image loading and caching system which makes simple tasks like loading images into views extremely simple, while also supporting more advanced features for more demanding apps.",
+  "homepage": "https://github.com/kean/Nuke",
+  "license": "MIT",
+  "authors": "Alexander Grebenyuk",
+  "social_media_url": "https://twitter.com/a_grebenyuk",
+  "source": {
+    "git": "https://github.com/kean/Nuke.git",
+    "tag": "10.7.1"
+  },
+  "swift_versions": [
+    "5.1",
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5"
+  ],
+  "platforms": {
+    "ios": "11.0",
+    "watchos": "4.0",
+    "osx": "10.13",
+    "tvos": "11.0"
+  },
+  "source_files": "Sources/**/*",
+  "swift_version": "5.5"
+}
