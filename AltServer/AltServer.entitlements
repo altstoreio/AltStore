@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<!-- Required for communicating with Apple Devices / iTunes via AppleEvents -->
+	<!-- Without this, TCC blocks AltServer under hardened runtime on macOS 13+ -->
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
+	<!-- Required for AltServer's TCP listener (WiFi sync / AltStore connections) -->
+	<key>com.apple.security.network.server</key>
+	<true/>
+	<!-- Required for outbound network connections (app signing, anisette, updates) -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+</dict>
 </plist>
