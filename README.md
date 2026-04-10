@@ -1,4 +1,4 @@
-# AltStore
+z# AltStore
 
 > AltStore is an alternative app store for non-jailbroken iOS devices. 
 
