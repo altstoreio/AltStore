@@ -14,7 +14,7 @@ import AppIntents
 public struct ShortcutsProvider: AppShortcutsProvider
 {
     public static var appShortcuts: [AppShortcut] {
-        AppShortcut(intent: RefreshAllAppsIntent(), 
+        AppShortcut(intent: RefreshAllAppsIntent(),
                     phrases: [
                         "Refresh \(.applicationName)",
                         "Refresh \(.applicationName) apps",
@@ -23,6 +23,14 @@ public struct ShortcutsProvider: AppShortcutsProvider
                     ],
                     shortTitle: "Refresh All Apps",
                     systemImageName: "arrow.triangle.2.circlepath")
+
+        AppShortcut(intent: InstallIPAIntent(),
+                    phrases: [
+                        "Install IPA with \(.applicationName)",
+                        "Install an IPA with \(.applicationName)",
+                    ],
+                    shortTitle: "Install IPA",
+                    systemImageName: "square.and.arrow.down")
     }
     
     public static var shortcutTileColor: ShortcutTileColor {

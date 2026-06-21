@@ -38,6 +38,78 @@ class IntentError: NSError, CustomLocalizedStringResourceConvertible
 }
 
 @available(iOS 17.0, *)
+struct InstallIPAIntent: AppIntent, ProgressReportingIntent
+{
+    static var title: LocalizedStringResource = "Install IPA"
+    static var description = IntentDescription("Installs an IPA file with AltStore.")
+    static var openAppWhenRun = false
+
+    @Parameter(title: "IPA File")
+    var ipaFile: IntentFile
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Install \(\.$ipaFile)")
+    }
+
+    init()
+    {
+        self.progress.completedUnitCount = 0
+        self.progress.totalUnitCount = 1
+    }
+
+    func perform() async throws -> some IntentResult
+    {
+        do
+        {
+            try await Self.startDatabaseIfNeeded()
+
+            let temporaryDirectory = FileManager.default.uniqueTemporaryURL()
+            defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+            try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true)
+
+            let ipaURL = temporaryDirectory.appendingPathComponent("App.ipa")
+            try self.ipaFile.data.write(to: ipaURL)
+
+            let intentProgress = self.progress
+            _ = try await AppManager.shared.installNonMarketplaceIPA(at: ipaURL) { progress in
+                intentProgress.addChild(progress, withPendingUnitCount: 1)
+            }
+
+            return .result()
+        }
+        catch
+        {
+            let intentError = IntentError(error)
+            throw intentError
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+fileprivate extension InstallIPAIntent
+{
+    static func startDatabaseIfNeeded() async throws
+    {
+        if !DatabaseManager.shared.isStarted
+        {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                DatabaseManager.shared.start { error in
+                    if let error
+                    {
+                        continuation.resume(throwing: error)
+                    }
+                    else
+                    {
+                        continuation.resume()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@available(iOS 17.0, *)
 extension RefreshAllAppsIntent
 {
     private actor OperationActor
@@ -141,21 +213,7 @@ private extension RefreshAllAppsIntent
 {
     func refreshAllApps() async throws
     {
-        if !DatabaseManager.shared.isStarted
-        {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                DatabaseManager.shared.start { error in
-                    if let error
-                    {
-                        continuation.resume(throwing: error)
-                    }
-                    else
-                    {
-                        continuation.resume()
-                    }
-                }
-            }
-        }
+        try await InstallIPAIntent.startDatabaseIfNeeded()
         
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         let installedApps = await context.perform { InstalledApp.fetchAppsForRefreshingAll(in: context) }
