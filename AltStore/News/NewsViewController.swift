@@ -28,12 +28,21 @@ private class AppBannerFooterView: UICollectionReusableView
         
         self.bannerView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.bannerView)
-        
+
+        // The footer spans the full width (flow-layout footers ignore the section's
+        // centering insets), so cap + center the banner to match the news cards.
+        // 680 = the news card's content width (720) minus the card's ~20pt layout
+        // margins on each side, so the banner lines up with the card's visible width.
+        let preferredWidthConstraint = self.bannerView.widthAnchor.constraint(equalToConstant: 680)
+        preferredWidthConstraint.priority = .defaultHigh
+
         NSLayoutConstraint.activate([
             self.bannerView.topAnchor.constraint(equalTo: self.topAnchor),
             self.bannerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            self.bannerView.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor),
-            self.bannerView.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
+            self.bannerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            self.bannerView.leadingAnchor.constraint(greaterThanOrEqualTo: self.layoutMarginsGuide.leadingAnchor),
+            self.bannerView.trailingAnchor.constraint(lessThanOrEqualTo: self.layoutMarginsGuide.trailingAnchor),
+            preferredWidthConstraint,
         ])
     }
     
@@ -52,7 +61,14 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     private var retryButton: UIButton!
     
     private var prototypeCell: NewsCollectionViewCell!
-    
+
+    /// On wide (iPad) layouts, constrain news cards to a readable column rather
+    /// than stretching them across the whole screen. iPhone widths are below this,
+    /// so the layout there is unchanged.
+    private let maximumContentWidth: CGFloat = 720
+
+    private var lastLayoutWidth: CGFloat = 0
+
     // Cache
     private var cachedCellSizes = [String: CGSize]()
     private var cancellables = Set<AnyCancellable>()
@@ -139,12 +155,20 @@ class NewsViewController: UICollectionViewController, PeekPopPreviewing
     override func viewWillLayoutSubviews()
     {
         super.viewWillLayoutSubviews()
-        
+
         if self.collectionView.contentInset.bottom != 20
         {
             // Triggers collection view update in iOS 13, which crashes if we do it in viewDidLoad()
             // since the database might not be loaded yet.
             self.collectionView.contentInset.bottom = 20
+        }
+
+        // Recompute the centered column when the available width changes (rotation,
+        // sidebar collapse/expand) so it doesn't keep the previous orientation's inset.
+        if self.collectionView.bounds.width != self.lastLayoutWidth
+        {
+            self.lastLayoutWidth = self.collectionView.bounds.width
+            self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }
     
@@ -505,20 +529,26 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
     {        
         let item = self.dataSource.item(at: indexPath)
         let globallyUniqueID = item.globallyUniqueID ?? item.identifier
-        
-        if let previousSize = self.cachedCellSizes[globallyUniqueID]
+        let width = self.contentWidth(in: collectionView)
+
+        // Key the cache by width as well as item: the available width now changes
+        // on iPad (rotation, sidebar collapse/expand), and a size cached at one
+        // width must not be reused at another or the cell gets squeezed.
+        let cacheKey = "\(globallyUniqueID)|\(Int(width))"
+
+        if let previousSize = self.cachedCellSizes[cacheKey]
         {
             return previousSize
         }
-        
-        let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: collectionView.bounds.width)
+
+        let widthConstraint = self.prototypeCell.contentView.widthAnchor.constraint(equalToConstant: width)
         NSLayoutConstraint.activate([widthConstraint])
         defer { NSLayoutConstraint.deactivate([widthConstraint]) }
-        
+
         self.dataSource.cellConfigurationHandler(self.prototypeCell, item, indexPath)
-        
+
         let size = self.prototypeCell.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        self.cachedCellSizes[globallyUniqueID] = size
+        self.cachedCellSizes[cacheKey] = size
         return size
     }
     
@@ -538,14 +568,23 @@ extension NewsViewController: UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
-        var insets = UIEdgeInsets(top: 30, left: 0, bottom: 13, right: 0)
-        
+        // Center the constrained column when the collection view is wider than it.
+        let horizontalInset = max(0, (collectionView.bounds.width - self.contentWidth(in: collectionView)) / 2)
+        var insets = UIEdgeInsets(top: 30, left: horizontalInset, bottom: 13, right: horizontalInset)
+
         if section == 0
         {
             insets.top = 10
         }
-        
+
         return insets
+    }
+
+    /// The width news cards are laid out at: the full width on iPhone, but capped
+    /// and centered on wider (iPad) layouts so cards don't stretch edge-to-edge.
+    private func contentWidth(in collectionView: UICollectionView) -> CGFloat
+    {
+        return min(collectionView.bounds.width, self.maximumContentWidth)
     }
 }
 

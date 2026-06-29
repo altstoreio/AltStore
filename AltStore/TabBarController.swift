@@ -20,6 +20,48 @@ extension TabBarController
         case browse
         case myApps
         case settings
+
+        /// Stable identifier used to look up the matching `UITab` when the
+        /// iPad sidebar is active (the legacy `selectedIndex` no longer maps
+        /// 1:1 to the tabs once they're grouped into sections).
+        var identifier: String
+        {
+            switch self
+            {
+            case .news: return "news"
+            case .sources: return "sources"
+            case .browse: return "browse"
+            case .myApps: return "myApps"
+            case .settings: return "settings"
+            }
+        }
+
+        /// Localized title shown in the iPad sidebar.
+        var sidebarTitle: String
+        {
+            switch self
+            {
+            case .news: return NSLocalizedString("News", comment: "")
+            case .sources: return NSLocalizedString("Sources", comment: "")
+            case .browse: return NSLocalizedString("Browse", comment: "")
+            case .myApps: return NSLocalizedString("My Apps", comment: "")
+            case .settings: return NSLocalizedString("Settings", comment: "")
+            }
+        }
+
+        /// SF Symbol used for the sidebar/tab. Kept separate from the iPhone
+        /// tab bar artwork so the phone UI stays exactly as it is today.
+        var sidebarSymbolName: String
+        {
+            switch self
+            {
+            case .news: return "newspaper"
+            case .sources: return "books.vertical"
+            case .browse: return "bag"
+            case .myApps: return "square.stack.3d.up"
+            case .settings: return "gearshape"
+            }
+        }
     }
 }
 
@@ -28,9 +70,13 @@ class TabBarController: UITabBarController
     private var initialSegue: (identifier: String, sender: Any?)?
     
     private var _viewDidAppear = false
-    
+
     private var sourcesViewController: SourcesViewController!
     private var featuredViewController: FeaturedViewController!
+
+    /// `true` once the iPad sidebar (iOS 18 `.tabSidebar`) has been configured,
+    /// at which point navigation goes through `selectedTab` instead of `selectedIndex`.
+    private var didConfigureSidebar = false
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -65,12 +111,18 @@ class TabBarController: UITabBarController
             self.view.insertSubview(hostingController.view, at: 0)
             hostingController.didMove(toParent: self)
         }
+
+        // On iPad, present the tabs as a sidebar (iOS 18+). iPhone keeps the tab bar.
+        if #available(iOS 18, *)
+        {
+            self.configureSidebar()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        
+
         _viewDidAppear = true
         
         if let (identifier, sender) = self.initialSegue
@@ -138,8 +190,8 @@ extension TabBarController
             self.loadViewIfNeeded() // Initialize sourcesViewController
             self.sourcesViewController?.deepLinkSourceURL = sourceURL
         }
-        
-        self.selectedIndex = Tab.sources.rawValue
+
+        self.select(.sources)
     }
 }
 
@@ -147,22 +199,22 @@ private extension TabBarController
 {
     @objc func openPatreonSettings(_ notification: Notification)
     {
-        self.selectedIndex = Tab.settings.rawValue
+        self.select(.settings)
     }
-    
+
     @objc func importApp(_ notification: Notification)
     {
-        self.selectedIndex = Tab.myApps.rawValue
+        self.select(.myApps)
     }
-    
+
     @objc func openErrorLog(_ notification: Notification)
     {
-        self.selectedIndex = Tab.settings.rawValue
+        self.select(.settings)
     }
-    
+
     @objc func openBrowseTab(_ notification: Notification)
     {
-        self.selectedIndex = Tab.browse.rawValue
+        self.select(.browse)
         
         if let query = notification.userInfo?[AppDelegate.searchDeepLinkQueryKey] as? String
         {
@@ -181,8 +233,8 @@ private extension TabBarController
     
     @objc func viewApp(_ notification: Notification)
     {
-        self.selectedIndex = Tab.browse.rawValue
-        
+        self.select(.browse)
+
         if let presentedViewController = self.presentedViewController
         {
             presentedViewController.dismiss(animated: true) {
@@ -193,8 +245,80 @@ private extension TabBarController
         }
         
         guard let storeApp = notification.userInfo?[AppDelegate.viewAppDeepLinkStoreAppKey] as? StoreApp else { return }
-        
+
         let appViewController = AppViewController.makeAppViewController(app: storeApp)
         self.featuredViewController.navigationController?.pushViewController(appViewController, animated: true)
+    }
+}
+
+private extension TabBarController
+{
+    /// Selects a tab whether we're showing the iPhone tab bar (index-based) or the
+    /// iPad sidebar (identity-based via `UITab`, which is robust to any future
+    /// reordering or grouping of the sidebar tabs).
+    private func select(_ tab: Tab)
+    {
+        if #available(iOS 18, *), self.didConfigureSidebar, let sidebarTab = self.sidebarTab(for: tab)
+        {
+            self.selectedTab = sidebarTab
+        }
+        else
+        {
+            self.selectedIndex = tab.rawValue
+        }
+    }
+}
+
+@available(iOS 18, *)
+private extension TabBarController
+{
+    /// Presents the tabs as an iPad sidebar (App Store / Music style) while keeping
+    /// the bottom tab bar in compact widths. iPhone never reaches here.
+    func configureSidebar()
+    {
+        // Use the device idiom rather than `traitCollection`: in `viewDidLoad` the
+        // view isn't in the window yet, so its trait collection can still report an
+        // `.unspecified` idiom.
+        guard UIDevice.current.userInterfaceIdiom == .pad else { return }
+
+        // Capture the storyboard-instantiated navigation controllers *before* we
+        // replace `viewControllers` via `tabs`, so each `UITab` reuses the exact
+        // same instance. This preserves every deep link and the CoreData fetched
+        // results controllers already wired up inside them. We filter to navigation
+        // controllers because `viewControllers` may also contain the invisible
+        // `AppTrackerView` hosting controller added for marketplace install tracking.
+        let navigationControllers = (self.viewControllers ?? []).compactMap { $0 as? UINavigationController }
+        guard navigationControllers.count == Tab.allCases.count else { return }
+
+        func makeTab(_ tab: Tab) -> UITab
+        {
+            let viewController = navigationControllers[tab.rawValue]
+            return UITab(title: tab.sidebarTitle, image: UIImage(systemName: tab.sidebarSymbolName), identifier: tab.identifier) { _ in
+                viewController
+            }
+        }
+
+        // Keep the same order + initial selection as the iPhone tab bar so launch
+        // behavior is identical (the first tab is shown while sources refresh).
+        let newsTab = makeTab(.news)
+        self.tabs = [newsTab, makeTab(.sources), makeTab(.browse), makeTab(.myApps), makeTab(.settings)]
+        self.mode = .tabSidebar
+        self.selectedTab = newsTab
+
+        // Show the sidebar and tile it beside the content (rather than overlapping
+        // it), so the detail column reports its own visible width. With overlap the
+        // content spans the full window *under* the sidebar, which pushes a grid's
+        // first column behind it. In portrait iOS collapses the tiled sidebar to a
+        // top strip (tap the toggle to reveal it); in landscape it stays alongside.
+        self.sidebar.isHidden = false
+        self.sidebar.preferredLayout = .tile
+
+        self.didConfigureSidebar = true
+    }
+
+    /// Finds the sidebar `UITab` that backs a given `Tab`.
+    private func sidebarTab(for tab: Tab) -> UITab?
+    {
+        return self.tabs.first { $0.identifier == tab.identifier }
     }
 }
