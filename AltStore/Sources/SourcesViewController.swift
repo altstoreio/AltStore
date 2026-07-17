@@ -35,6 +35,7 @@ class SourcesViewController: UICollectionViewController
     private var placeholderViewCenterYConstraint: NSLayoutConstraint!
 
     private var _viewDidAppear = false
+    private var lastLayoutWidth: CGFloat = 0
     private weak var _installingApp: StoreApp?
     
     override func viewDidLoad()
@@ -63,13 +64,13 @@ class SourcesViewController: UICollectionViewController
         #else
         self.placeholderView.textLabel.text = NSLocalizedString("Add More Sources", comment: "")
         #endif
-        self.placeholderView.detailTextLabel.textAlignment = .natural
+        self.placeholderView.detailTextLabel.textAlignment = .center
         backgroundView.addSubview(self.placeholderView)
         
         let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).bolded()
         self.placeholderView.textLabel.font = UIFont(descriptor: fontDescriptor, size: 0.0)
         self.placeholderView.detailTextLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        self.placeholderView.detailTextLabel.textAlignment = .natural
+        self.placeholderView.detailTextLabel.textAlignment = .center
         
         self.placeholderViewButton = UIButton(type: .system, primaryAction: UIAction(title: NSLocalizedString("View Recommended Sources", comment: "")) { [weak self] _ in
             self?.performSegue(withIdentifier: "addSource", sender: nil)
@@ -123,10 +124,19 @@ class SourcesViewController: UICollectionViewController
         self.handleAddSourceDeepLink()
     }
     
-    override func viewDidLayoutSubviews() 
+    override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        
+
+        // Recompute the adaptive grid when the available width changes (rotation,
+        // sidebar collapse/expand). Without this the layout keeps the previous
+        // orientation's column widths until you switch tabs.
+        if self.collectionView.bounds.width != self.lastLayoutWidth
+        {
+            self.lastLayoutWidth = self.collectionView.bounds.width
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+
         // Vertically center placeholder view in gap below first item.
         
         let indexPath = IndexPath(item: 0, section: 0)
@@ -146,50 +156,62 @@ private extension SourcesViewController
 {
     func makeLayout() -> UICollectionViewCompositionalLayout
     {
-        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-        configuration.showsSeparators = false
-        configuration.backgroundColor = .clear
-        
-        configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
-            guard let self else { return UISwipeActionsConfiguration(actions: []) }
-            
-            let source = self.dataSource.item(at: indexPath)
-            var actions: [UIContextualAction] = []
-            
-            if source.identifier != Source.altStoreIdentifier
-            {
-                // Prevent users from removing AltStore source.
-                
-                let removeAction = UIContextualAction(style: .destructive,
-                                                      title: NSLocalizedString("Remove", comment: "")) { _, _, completion in
-                    self.remove(source, completionHandler: completion)
-                }
-                removeAction.image = UIImage(systemName: "trash.fill")
-                
-                actions.append(removeAction)
-            }
-            
-            if let error = source.error
-            {
-                let viewErrorAction = UIContextualAction(style: .normal,
-                                                         title: NSLocalizedString("View Error", comment: "")) { _, _, completion in
-                    self.present(error)
-                    completion(true)
-                }
-                viewErrorAction.backgroundColor = .systemYellow
-                viewErrorAction.image = UIImage(systemName: "exclamationmark.circle.fill")
-                
-                actions.append(viewErrorAction)
-            }
-            
-            let config = UISwipeActionsConfiguration(actions: actions)
-            config.performsFirstActionWithFullSwipe = false
-            
-            return config
-        }
-        
-        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        // Lay sources out as an adaptive grid of banners (1 column on iPhone, more
+        // on iPad by width) instead of full-width list rows. Remove / View Error —
+        // previously swipe actions, which a grid doesn't support — move to the
+        // context menu in `contextMenuConfigurationForItemAt`.
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.contentInsetsReference = .safeArea
+
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { _, layoutEnvironment in
+            let spacing = 10.0
+            let width = layoutEnvironment.container.effectiveContentSize.width
+            // Width-based responsive columns (~350pt each): iPhone → 1, iPad portrait
+            // → 2, iPad landscape → 3. Pure width avoids the size-class trap where a
+            // tiled detail under ~768pt reports compact and collapses to 1 column.
+            let columns = max(1, Int(width / 350))
+            // Absolute per-column width so `columns` items actually share a row.
+            // (A `fractionalWidth(1.0)` item is 100% of the group, i.e. one column.)
+            let itemWidth = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
+
+            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .absolute(AppBannerView.standardHeight))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(AppBannerView.standardHeight))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: Array(repeating: item, count: columns))
+            group.interItemSpacing = .fixed(spacing)
+
+            let layoutSection = NSCollectionLayoutSection(group: group)
+            layoutSection.interGroupSpacing = spacing
+            // Edge-to-edge within the safe area (matching the My Apps grid); the
+            // `.safeArea` reference keeps the cards aligned with the title.
+            layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 0, bottom: 16, trailing: 0)
+            return layoutSection
+        }, configuration: configuration)
+
         return layout
+    }
+
+    func contextMenuActions(for source: Source) -> [UIAction]
+    {
+        var actions: [UIAction] = []
+
+        if let error = source.error
+        {
+            actions.append(UIAction(title: NSLocalizedString("View Error", comment: ""), image: UIImage(systemName: "exclamationmark.circle")) { [weak self] _ in
+                self?.present(error)
+            })
+        }
+
+        if source.identifier != Source.altStoreIdentifier
+        {
+            // Prevent users from removing AltStore source.
+            actions.append(UIAction(title: NSLocalizedString("Remove", comment: ""), image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+                self?.remove(source)
+            })
+        }
+
+        return actions
     }
     
     func makeDataSource() -> RSTFetchedResultsCollectionViewPrefetchingDataSource<Source, UIImage>
@@ -501,9 +523,20 @@ extension SourcesViewController
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         self.collectionView.deselectItem(at: indexPath, animated: true)
-        
+
         let source = self.dataSource.item(at: indexPath)
         self.showSourceDetails(for: source)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let source = self.dataSource.item(at: indexPath)
+        let actions = self.contextMenuActions(for: source)
+        guard !actions.isEmpty else { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            UIMenu(children: actions)
+        }
     }
 }
 

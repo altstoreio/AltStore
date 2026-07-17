@@ -92,7 +92,13 @@ class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
         self.collectionView.register(UpdatesCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ActiveAppsHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InactiveAppsHeader")
-        
+
+        // Use a compositional layout so the installed-apps grid has exact, even gaps and
+        // adapts its column count to the available width (1 column on iPhone, more on
+        // iPad). The storyboard's flow layout justified each row, which made the column
+        // gap wider than the row gap and stretched cells full-width on iPad.
+        self.collectionView.setCollectionViewLayout(self.makeLayout(), animated: false)
+
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(MyAppsViewController.checkForUpdates(_:)), for: .primaryActionTriggered)
         self.collectionView.refreshControl = refreshControl
@@ -2267,6 +2273,96 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         case .noUpdates where self.updatesDataSource.itemCount != 0: return .zero
         case .updates where self.updatesDataSource.itemCount == 0: return .zero
         default: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
+        }
+    }
+}
+
+private extension MyAppsViewController
+{
+    static let gridSpacing: CGFloat = 10
+
+    /// Compositional layout backing the installed-apps grid. Each row is divided into
+    /// N equal columns (N ≈ width / 350) with a fixed inter-item spacing that matches
+    /// the inter-group spacing, so the column and row gaps are always identical. The
+    /// updates section keeps its self-sizing cards, and the section headers/footers are
+    /// reproduced as boundary supplementary items (same reuse identifiers as before).
+    func makeLayout() -> UICollectionViewLayout
+    {
+        let spacing = MyAppsViewController.gridSpacing
+        let sectionInsets = NSDirectionalEdgeInsets(top: 12, leading: 0, bottom: 20, trailing: 0)
+
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
+            guard let self else { return nil }
+
+            let section = Section.allCases[sectionIndex]
+            let width = layoutEnvironment.container.effectiveContentSize.width
+
+            switch section
+            {
+            case .noUpdates:
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+                let item = NSCollectionLayoutItem(layoutSize: size)
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitems: [item])
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.contentInsetsReference = .safeArea
+                return layoutSection
+
+            case .updates:
+                // Update cards self-size via Auto Layout, so use an estimated height.
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(156))
+                let item = NSCollectionLayoutItem(layoutSize: size)
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitems: [item])
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.interGroupSpacing = spacing
+                layoutSection.contentInsets = sectionInsets
+                layoutSection.contentInsetsReference = .safeArea
+                if (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0) > Self.maximumCollapsedUpdatesCount
+                {
+                    layoutSection.boundarySupplementaryItems = [
+                        NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(26)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+                    ]
+                }
+                return layoutSection
+
+            case .activeApps, .inactiveApps:
+                let columns = max(1, Int(width / 350))
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(88)))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(88)), subitem: item, count: columns)
+                group.interItemSpacing = .fixed(spacing)
+
+                let layoutSection = NSCollectionLayoutSection(group: group)
+                layoutSection.interGroupSpacing = spacing
+                layoutSection.contentInsets = sectionInsets
+                layoutSection.contentInsetsReference = .safeArea
+
+                var supplementaries: [NSCollectionLayoutBoundarySupplementaryItem] = []
+
+                // Header: active apps always show one; inactive apps only when populated
+                // (matches the old `referenceSizeForHeaderInSection`).
+                let showsHeader = (section == .activeApps) || self.inactiveAppsDataSource.itemCount > 0
+                if showsHeader
+                {
+                    supplementaries.append(NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(29)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top))
+                }
+
+                // The App IDs footer sits under whichever section is last (active when
+                // there are no inactive apps, otherwise inactive) and only with a team.
+                let hasTeam = DatabaseManager.shared.activeTeam() != nil
+                let showsFooter: Bool
+                switch section
+                {
+                case .activeApps: showsFooter = hasTeam && self.inactiveAppsDataSource.itemCount == 0
+                case .inactiveApps: showsFooter = hasTeam && self.inactiveAppsDataSource.itemCount > 0
+                default: showsFooter = false
+                }
+                if showsFooter
+                {
+                    supplementaries.append(NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(80)), elementKind: UICollectionView.elementKindSectionFooter, alignment: .bottom))
+                }
+
+                layoutSection.boundarySupplementaryItems = supplementaries
+                return layoutSection
+            }
         }
     }
 }

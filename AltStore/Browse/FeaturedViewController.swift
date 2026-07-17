@@ -64,6 +64,7 @@ class FeaturedViewController: UICollectionViewController
     
     internal private(set) var searchController: RSTSearchController!
     private var searchBrowseViewController: BrowseViewController!
+    private var lastLayoutWidth: CGFloat = 0
     
     private var updateFediverseInteractionsResult: Result<Void, Error>?
     
@@ -121,11 +122,25 @@ class FeaturedViewController: UICollectionViewController
         self.updateFediverseInteractionsIfNeeded()
     }
     
-    override func viewDidAppear(_ animated: Bool) 
+    override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        
+
         self.navigationController?.navigationBar.tintColor = .altPrimary
+    }
+
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+
+        // Recompute the width-adaptive sections when the available width changes
+        // (rotation, sidebar collapse/expand) so columns don't stay stale until a
+        // tab switch.
+        if self.collectionView.bounds.width != self.lastLayoutWidth
+        {
+            self.lastLayoutWidth = self.collectionView.bounds.width
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
     }
 }
 
@@ -149,14 +164,17 @@ private extension FeaturedViewController
             case .recentlyUpdated:
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(AppBannerView.standardHeight))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(AppBannerView.standardHeight * 2 + spacing))
+
+                // Cap the carousel column width so banners don't stretch edge-to-edge
+                // on iPad; multiple columns then peek in from the sides.
+                let columnWidth = min(layoutEnvironment.container.effectiveContentSize.width, 440)
+                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(columnWidth), heightDimension: .absolute(AppBannerView.standardHeight * 2 + spacing))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item, item]) // 2 items per group
                 group.interItemSpacing = .fixed(spacing)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = spacing
-                layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+                layoutSection.orthogonalScrollingBehavior = .continuous
                 layoutSection.contentInsets.bottom = interSectionSpacing
                 layoutSection.boundarySupplementaryItems = [
                     NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleSize, elementKind: ElementKind.sectionHeader.rawValue, alignment: .topLeading)
@@ -164,13 +182,16 @@ private extension FeaturedViewController
                 return layoutSection
                 
             case .categories:
-                let itemWidth = (layoutEnvironment.container.effectiveContentSize.width - spacing) / 2
+                // Adaptive number of columns by width (2 on iPhone / narrow, more on iPad).
+                let width = layoutEnvironment.container.effectiveContentSize.width
+                let columns = max(2, Int(width / 320))
+                let itemWidth = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
                 let itemHeight = 90.0
                 let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .absolute(itemHeight))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                
+
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(itemHeight))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item, item]) // 2 items per group
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: Array(repeating: item, count: columns))
                 group.interItemSpacing = .fixed(spacing)
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
@@ -201,8 +222,11 @@ private extension FeaturedViewController
                 let itemHeight: NSCollectionLayoutDimension = if #available(iOS 17, *) { .uniformAcrossSiblings(estimate: 350) } else { .estimated(350) }
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: itemHeight)
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: itemHeight)
+
+                // Cap the featured card width so it doesn't stretch across an iPad;
+                // the paging carousel then shows the next card peeking in.
+                let cardWidth = min(layoutEnvironment.container.effectiveContentSize.width, 560)
+                let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(cardWidth), heightDimension: itemHeight)
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
                 group.interItemSpacing = .fixed(spacing)
                 
@@ -213,7 +237,7 @@ private extension FeaturedViewController
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = spacing
-                layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+                layoutSection.orthogonalScrollingBehavior = .continuous
                 layoutSection.contentInsets.top = 8
                 layoutSection.contentInsets.bottom = interSectionSpacing
                 layoutSection.boundarySupplementaryItems = [titleHeader, buttonHeader]

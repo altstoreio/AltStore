@@ -362,7 +362,12 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         }
         
         let minimumContentHeight = minimumHeaderY + headerFrame.height + padding // Minimum height for header + back button + spacing.
-        let maximumContentY = max(self.view.bounds.width * 0.667, minimumContentHeight) // Initial Y-value of content view.
+
+        // The hero scales with width, which makes it enormous on a wide iPad. Halve
+        // the multiplier in regular widths (the `max(...)` below still guarantees room
+        // for the header + back button).
+        let heroHeightMultiplier = (self.traitCollection.horizontalSizeClass == .regular) ? 0.333 : 0.667
+        let maximumContentY = max(self.view.bounds.width * heroHeightMultiplier, minimumContentHeight) // Initial Y-value of content view.
         
         contentFrame.origin.y = maximumContentY - self.scrollView.contentOffset.y
         headerFrame.origin.y = contentFrame.origin.y - padding - headerFrame.height
