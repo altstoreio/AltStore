@@ -29,13 +29,20 @@ private extension ALTAnisetteData
         
         self.deviceDescription = String(adjustedDescription)
     }
-    
+}
+
+extension ALTAnisetteData
+{
     /// Anisette servers respond with the request headers Apple expects, so map them to their ALTAnisetteData counterparts.
     convenience init(anisetteServerResponse json: [String: Any]) throws
     {
         func value(forHeader header: String) throws -> String
         {
-            switch json[header]
+            // Implementations disagree on capitalization (X-MMe- vs X-Mme-), and HTTP headers
+            // are case-insensitive anyway, so match them that way.
+            let match = json.first { $0.key.caseInsensitiveCompare(header) == .orderedSame }
+            
+            switch match?.value
             {
             case let string as String: return string
             case let number as NSNumber: return number.stringValue // Not all servers encode routing info as a string.
@@ -124,39 +131,63 @@ class AnisetteDataManager: NSObject
             }
             catch let aosKitError
             {
-                // Fall back to XPC in case SIP is disabled.
-                self.requestAnisetteDataFromXPCService { (result) in
+                // As of macOS 26, adid won't generate one-time passwords for unentitled apps, so
+                // run Apple's own ADI libraries in a Linux guest where they still work.
+                guard #available(macOS 13.0, *) else {
+                    return self.requestAnisetteDataFromLegacyServices(reportedError: aosKitError, completion: completion)
+                }
+                
+                AnisetteVirtualMachine.shared.requestAnisetteData { (result) in
+                    switch result
+                    {
+                    case .success(let anisetteData): completion(.success(anisetteData))
+                    case .failure(let error):
+                        Logger.main.error("Failed to fetch anisette data from virtual machine. \(error.localizedDescription, privacy: .public)")
+                        
+                        // The virtual machine is the supported path now, so its failure is what's worth reporting.
+                        self.requestAnisetteDataFromLegacyServices(reportedError: error, completion: completion)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private extension AnisetteDataManager
+{
+    /// Both of these require SIP and/or AMFI to be disabled, and neither survives macOS 26.
+    func requestAnisetteDataFromLegacyServices(reportedError: Error, completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        self.requestAnisetteDataFromXPCService { (result) in
+            do
+            {
+                let anisetteData = try result.get()
+                completion(.success(anisetteData))
+            }
+            catch CocoaError.xpcConnectionInterrupted
+            {
+                // SIP and/or AMFI are not disabled, so fall back to Mail plug-in as last resort.
+                self.requestAnisetteDataFromPlugin { (result) in
                     do
                     {
                         let anisetteData = try result.get()
                         completion(.success(anisetteData))
                     }
-                    catch CocoaError.xpcConnectionInterrupted
-                    {
-                        // SIP and/or AMFI are not disabled, so fall back to Mail plug-in as last resort.
-                        self.requestAnisetteDataFromPlugin { (result) in
-                            do
-                            {
-                                let anisetteData = try result.get()
-                                completion(.success(anisetteData))
-                            }
-                            catch
-                            {
-                                Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
-                                
-                                // Return original error.
-                                completion(.failure(aosKitError))
-                            }
-                        }
-                    }
                     catch
                     {
-                        Logger.main.error("Failed to fetch anisette data via XPC service. \(error.localizedDescription, privacy: .public)")
+                        Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
                         
                         // Return original error.
-                        completion(.failure(aosKitError))
+                        completion(.failure(reportedError))
                     }
                 }
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch anisette data via XPC service. \(error.localizedDescription, privacy: .public)")
+                
+                // Return original error.
+                completion(.failure(reportedError))
             }
         }
     }
