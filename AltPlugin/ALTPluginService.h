@@ -16,7 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (class, nonatomic, readonly) ALTPluginService *sharedService;
 
-- (ALTAnisetteData *)requestAnisetteData;
+/// Returns nil if AuthKit did not provide anisette data to this process.
+- (nullable ALTAnisetteData *)requestAnisetteData;
 
 @end
 

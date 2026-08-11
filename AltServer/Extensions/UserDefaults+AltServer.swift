@@ -41,11 +41,18 @@ extension UserDefaults
 extension UserDefaults
 {
     private static let altJITTimeoutKey = "JITTimeout"
+    private static let anisetteServerURLKey = "AnisetteServerURL"
     
     var altJITTimeout: TimeInterval? {
         let timeout = self.double(forKey: UserDefaults.altJITTimeoutKey) // Coerces strings into doubles.
         guard timeout != 0 else { return nil }
         
         return timeout
+    }
+    
+    var anisetteServerURL: URL? {
+        // ALTSERVER_ANISETTE_SERVER matches AltServer-Linux, and wins over the preference when launched from a shell.
+        guard let urlString = ProcessInfo.processInfo.environment["ALTSERVER_ANISETTE_SERVER"] ?? self.string(forKey: UserDefaults.anisetteServerURLKey), !urlString.isEmpty else { return nil }
+        return URL(string: urlString)
     }
 }

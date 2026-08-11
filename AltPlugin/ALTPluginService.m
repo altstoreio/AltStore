@@ -67,20 +67,30 @@
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"com.rileytestut.AltServer.FetchAnisetteData" object:nil];
 }
 
-- (ALTAnisetteData *)requestAnisetteData
+- (nullable ALTAnisetteData *)requestAnisetteData
 {
     NSMutableURLRequest* req = [[NSMutableURLRequest alloc] initWithURL:[[NSURL alloc] initWithString:@"https://developerservices2.apple.com/services/QH65B2/listTeams.action?clientId=XABBG36SBA"]];
     [req setHTTPMethod:@"POST"];
 
     AKAppleIDSession *session = [[NSClassFromString(@"AKAppleIDSession") alloc] initWithIdentifier:@"com.apple.gs.xcode.auth"];
     NSDictionary *headers = [session appleIDHeadersForRequest:req];
+    
+    NSString *machineID = headers[@"X-Apple-I-MD-M"];
+    NSString *oneTimePassword = headers[@"X-Apple-I-MD"];
+    NSString *localUserID = headers[@"X-Apple-I-MD-LU"];
+    
+    // AuthKit omits these unless the process is entitled to generate them, and ALTAnisetteData's values are all nonnull.
+    if (machineID == nil || oneTimePassword == nil || localUserID == nil)
+    {
+        return nil;
+    }
 
     AKDevice *device = [NSClassFromString(@"AKDevice") currentDevice];
-    NSDate *date = [self.dateFormatter dateFromString:headers[@"X-Apple-I-Client-Time"]];
+    NSDate *date = [self.dateFormatter dateFromString:headers[@"X-Apple-I-Client-Time"] ?: @""] ?: [NSDate date];
     
-    ALTAnisetteData *anisetteData = [[NSClassFromString(@"ALTAnisetteData") alloc] initWithMachineID:headers[@"X-Apple-I-MD-M"]
-                                                                                     oneTimePassword:headers[@"X-Apple-I-MD"]
-                                                                                         localUserID:headers[@"X-Apple-I-MD-LU"]
+    ALTAnisetteData *anisetteData = [[NSClassFromString(@"ALTAnisetteData") alloc] initWithMachineID:machineID
+                                                                                     oneTimePassword:oneTimePassword
+                                                                                         localUserID:localUserID
                                                                                          routingInfo:[headers[@"X-Apple-I-MD-RINFO"] longLongValue]
                                                                               deviceUniqueIdentifier:device.uniqueDeviceIdentifier
                                                                                   deviceSerialNumber:device.serialNumber ?: @"C02LKHBBFD57" // serialNumber can be nil, so provide valid fallback serial number.
@@ -97,6 +107,13 @@
     NSString *requestUUID = notification.userInfo[@"requestUUID"];
     
     ALTAnisetteData *anisetteData = [self requestAnisetteData];
+    if (anisetteData == nil)
+    {
+        // AltServer treats a response without anisette data as a failed request.
+        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"com.rileytestut.AltServer.AnisetteDataResponse" object:nil userInfo:@{@"requestUUID": requestUUID} deliverImmediately:YES];
+        return;
+    }
+    
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:anisetteData requiringSecureCoding:YES error:nil];
     
     [[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"com.rileytestut.AltServer.AnisetteDataResponse" object:nil userInfo:@{@"requestUUID": requestUUID, @"anisetteData": data} deliverImmediately:YES];

@@ -298,6 +298,9 @@
 		BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE338E722F10E56002E24B9 /* LaunchViewController.swift */; };
 		BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE48974238007CE003239E0 /* AnisetteDataManager.swift */; };
 		BFE4FFB6251BF7BA0018CF9B /* AltPlugin.zip in Resources */ = {isa = PBXBuildFile; fileRef = BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */; };
+		D5A11E0200000000000000A2 /* AnisetteVirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A11E0100000000000000A1 /* AnisetteVirtualMachine.swift */; };
+		D5A11E0400000000000000A4 /* vmlinuz-virt in Resources */ = {isa = PBXBuildFile; fileRef = D5A11E0300000000000000A3 /* vmlinuz-virt */; };
+		D5A11E0600000000000000A6 /* initramfs.cpio in Resources */ = {isa = PBXBuildFile; fileRef = D5A11E0500000000000000A5 /* initramfs.cpio */; };
 		BFE6073A231ADF82002B0E8E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE60739231ADF82002B0E8E /* SettingsViewController.swift */; };
 		BFE6073C231AE1E7002B0E8E /* SettingsHeaderFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */; };
 		BFE60740231AFD2A002B0E8E /* InsetGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */; };
@@ -1029,6 +1032,9 @@
 		BFE338E722F10E56002E24B9 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BFE48974238007CE003239E0 /* AnisetteDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteDataManager.swift; sourceTree = "<group>"; };
 		BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = AltPlugin.zip; sourceTree = "<group>"; };
+		D5A11E0100000000000000A1 /* AnisetteVirtualMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteVirtualMachine.swift; sourceTree = "<group>"; };
+		D5A11E0300000000000000A3 /* vmlinuz-virt */ = {isa = PBXFileReference; lastKnownFileType = file; path = "vmlinuz-virt"; sourceTree = "<group>"; };
+		D5A11E0500000000000000A5 /* initramfs.cpio */ = {isa = PBXFileReference; lastKnownFileType = file; path = initramfs.cpio; sourceTree = "<group>"; };
 		BFE60739231ADF82002B0E8E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BFE6073B231AE1E7002B0E8E /* SettingsHeaderFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeaderFooterView.xib; sourceTree = "<group>"; };
 		BFE6073F231AFD2A002B0E8E /* InsetGroupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetGroupTableViewCell.swift; sourceTree = "<group>"; };
@@ -1840,6 +1846,8 @@
 			isa = PBXGroup;
 			children = (
 				BFE4FFB5251BF7BA0018CF9B /* AltPlugin.zip */,
+				D5A11E0300000000000000A3 /* vmlinuz-virt */,
+				D5A11E0500000000000000A5 /* initramfs.cpio */,
 				BF458693229872EA00BD7491 /* Assets.xcassets */,
 			);
 			name = Resources;
@@ -2455,6 +2463,7 @@
 			children = (
 				D58032ED2AB241D100878F5E /* AnisetteError.swift */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
+				D5A11E0100000000000000A1 /* AnisetteVirtualMachine.swift */,
 			);
 			path = "Anisette Data";
 			sourceTree = "<group>";
@@ -3002,6 +3011,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFE4FFB6251BF7BA0018CF9B /* AltPlugin.zip in Resources */,
+				D5A11E0400000000000000A4 /* vmlinuz-virt in Resources */,
+				D5A11E0600000000000000A6 /* initramfs.cpio in Resources */,
 				BF458694229872EA00BD7491 /* Assets.xcassets in Resources */,
 				BF458697229872EA00BD7491 /* Main.storyboard in Resources */,
 			);
@@ -3232,6 +3243,7 @@
 				D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
+				D5A11E0200000000000000A2 /* AnisetteVirtualMachine.swift in Sources */,
 				D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */,
 				D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */,
 				BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */,
