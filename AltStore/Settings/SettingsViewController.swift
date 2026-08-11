@@ -72,17 +72,13 @@ extension SettingsViewController
     {
         case exportCertificate
     }
-    
-    fileprivate enum RemoteAltServerRow: Int, CaseIterable
-    {
-        case serverURL
-        case pairingFile
-    }
 }
 
 class SettingsViewController: UITableViewController
 {
     private var activeTeam: Team?
+    
+    private var isRemoteAltServerConfigured = false
     
     private var prototypeHeaderFooterView: SettingsHeaderFooterView!
     
@@ -93,8 +89,8 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var accountEmailLabel: UILabel!
     @IBOutlet private var accountTypeLabel: UILabel!
     @IBOutlet private var udidLabel: UILabel!
-    @IBOutlet private var pairingFileLabel: UILabel!
     @IBOutlet private var serverURLLabel: UILabel!
+    @IBOutlet private var remoteAltServerLabel: UILabel!
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
@@ -253,17 +249,22 @@ private extension SettingsViewController
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
         
-        if AppManager.shared.devicePairingFile == nil
+        self.isRemoteAltServerConfigured = (AppManager.shared.devicePairingFile != nil)
+        
+        if self.isRemoteAltServerConfigured
         {
-            self.pairingFileLabel.text = String(localized: "Configure Remote AltServer…")
+            let preferredURL = UserDefaults.shared.preferredAnisetteServerURL
+            let serverName = UserDefaults.standard.anisetteServers?.first { $0.url == preferredURL }?.name
+            
+            self.remoteAltServerLabel.text = String(localized: "Server")
+            self.serverURLLabel.text = serverName ?? preferredURL?.host ?? String(localized: "None")
         }
         else
         {
-            self.pairingFileLabel.text = String(localized: "Reset Remote AltServer…")
+            self.remoteAltServerLabel.text = String(localized: "Set up Remote AltServer…")
+            self.serverURLLabel.text = nil
         }
         
-        self.serverURLLabel.text = UserDefaults.shared.preferredAnisetteServerURL?.host ?? String(localized: "None")
-
         if self.isViewLoaded
         {
             self.tableView.reloadData()
@@ -353,7 +354,9 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Provide a remote server URL and device pairing file to sideload apps without AltServer.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = self.isRemoteAltServerConfigured
+                    ? NSLocalizedString("Sideload apps without a computer using Remote AltServer.", comment: "")
+                    : NSLocalizedString("Set up Remote AltServer to sideload apps without a computer.", comment: "")
             }
             
         case .techyThings:
@@ -588,7 +591,7 @@ private extension SettingsViewController
         return (encryptedData, password)
     }
     
-    func chooseAnisetteServer()
+    func showRemoteAltServer()
     {
         let hostingController = RemoteAltServerView.makeViewController()
         self.navigationController?.pushViewController(hostingController, animated: true)
@@ -847,7 +850,6 @@ extension SettingsViewController
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 4
         case .appRefresh: return AppRefreshRow.allCases.count
-        case .remoteAltServer: return RemoteAltServerRow.allCases.count
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
     }
@@ -964,13 +966,12 @@ extension SettingsViewController
             }
         
         case .remoteAltServer:
-            let row = RemoteAltServerRow.allCases[indexPath.row]
-            switch row
+            if self.isRemoteAltServerConfigured
             {
-            case .serverURL:
-                self.chooseAnisetteServer()
-
-            case .pairingFile:
+                self.showRemoteAltServer()
+            }
+            else
+            {
                 self.configureRemoteAltServer()
             }
             
