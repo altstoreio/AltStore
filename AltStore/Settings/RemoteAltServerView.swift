@@ -31,7 +31,7 @@ struct RemoteAltServerView: View
     private var errorMessage = ""
     
     @State
-    private var isVPNConnected = false
+    private var isConnected = false
 
     @State
     private var isShowingClearConfirmation = false
@@ -44,30 +44,19 @@ struct RemoteAltServerView: View
     var body: some View {
         List {
             Section {
-                LabeledContent("AltServer") {
+                LabeledContent("Status") {
                     HStack {
-                        Text("Paired")
+                        Text(isConnected ? "Connected" : "Not Connected")
                         Image(systemName: "circle.fill")
                             .font(.caption)
-                            .foregroundStyle(.green)
+                            .foregroundStyle(isConnected ? Color.green : Color.red)
                             .accessibilityHidden(true)
                     }
                 }
-
-                LabeledContent("VPN") {
-                    HStack {
-                        Text(isVPNConnected ? "Connected" : "Not Connected")
-                        Image(systemName: "circle.fill")
-                            .font(.caption)
-                            .foregroundStyle(isVPNConnected ? Color.green : Color.secondary)
-                            .accessibilityHidden(true)
-                    }
-                }
-            } header: {
-                Text("Status")
             } footer: {
-                Text("This is a placeholder that should communicate Remote AltServer needs a Wi-Fi connection in addition to VPN.")
+                Text(isConnected ? "Remote AltServer is ready to sideload apps." : "Turn on Wi-Fi and your VPN to connect.")
             }
+            .listSectionSpacing(10) // Visually differentiates sections of different types.
             
             if let availableServers
             {
@@ -147,7 +136,7 @@ struct RemoteAltServerView: View
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadServers() }
         .refreshable { await loadServers() }
-        .task { await monitorVPNStatus() }
+        .task { await monitorConnection() }
         .alert("Couldn't select server", isPresented: $isShowingError) {
             SwiftUI.Button("OK", role: .cancel) { }
         } message: { Text(errorMessage) }
@@ -230,11 +219,11 @@ private extension RemoteAltServerView
         await selectServer(url: url)
     }
     
-    func monitorVPNStatus() async
+    func monitorConnection() async
     {
         while true
         {
-            isVPNConnected = await AppManager.shared.isReachableOnDevice()
+            isConnected = await AppManager.shared.isReachableOnDevice()
             
             do
             {
