@@ -29,6 +29,47 @@ private extension ALTAnisetteData
         
         self.deviceDescription = String(adjustedDescription)
     }
+    
+    /// Anisette servers respond with the request headers Apple expects, so map them to their ALTAnisetteData counterparts.
+    convenience init(anisetteServerResponse json: [String: Any]) throws
+    {
+        func value(forHeader header: String) throws -> String
+        {
+            switch json[header]
+            {
+            case let string as String: return string
+            case let number as NSNumber: return number.stringValue // Not all servers encode routing info as a string.
+            default: throw AnisetteError.invalidServerResponse(header)
+            }
+        }
+        
+        let machineID = try value(forHeader: "X-Apple-I-MD-M")
+        let oneTimePassword = try value(forHeader: "X-Apple-I-MD")
+        let localUserID = try value(forHeader: "X-Apple-I-MD-LU")
+        let deviceUniqueIdentifier = try value(forHeader: "X-Mme-Device-Id")
+        let deviceDescription = try value(forHeader: "X-MMe-Client-Info")
+        
+        let rawRoutingInfo = try value(forHeader: "X-Apple-I-MD-RINFO")
+        guard let routingInfo = UInt64(rawRoutingInfo) else { throw AnisetteError.invalidServerResponse("X-Apple-I-MD-RINFO") }
+        
+        // Unlike the values above, these don't have to match the ones used to generate the one-time password,
+        // so fall back to defaults for servers that don't return them.
+        let serialNumber = (try? value(forHeader: "X-Apple-I-SRL-NO")) ?? "0"
+        let date = (try? value(forHeader: "X-Apple-I-Client-Time")).flatMap { ISO8601DateFormatter().date(from: $0) } ?? Date()
+        let locale = (try? value(forHeader: "X-Apple-Locale")).map { Locale(identifier: $0) } ?? .current
+        let timeZone = (try? value(forHeader: "X-Apple-I-TimeZone")).flatMap { TimeZone(abbreviation: $0) ?? TimeZone(identifier: $0) } ?? .current
+        
+        self.init(machineID: machineID,
+                  oneTimePassword: oneTimePassword,
+                  localUserID: localUserID,
+                  routingInfo: routingInfo,
+                  deviceUniqueIdentifier: deviceUniqueIdentifier,
+                  deviceSerialNumber: serialNumber,
+                  deviceDescription: deviceDescription,
+                  date: date,
+                  locale: locale,
+                  timeZone: timeZone)
+    }
 }
 
 @objc private protocol AOSUtilitiesProtocol
@@ -67,6 +108,14 @@ class AnisetteDataManager: NSObject
     
     func requestAnisetteData(_ completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
+        if let serverURL = UserDefaults.standard.anisetteServerURL
+        {
+            // An anisette server was explicitly configured, so treat it as the source of truth
+            // instead of silently falling back to (potentially different) local anisette data.
+            self.requestAnisetteData(from: serverURL, completion: completion)
+            return
+        }
+        
         self.requestAnisetteDataFromAOSKit { (result) in
             do
             {
@@ -135,6 +184,10 @@ private extension AnisetteDataManager
             // -2 = Production environment (via https://github.com/ionescu007/Blackwood-4NT)
             guard let requestHeaders = AOSUtilities.retrieveOTPHeadersForDSID("-2") else { throw AnisetteError.missingValue("oneTimePassword") }
             
+            // As of macOS 27, adid refuses to generate one-time passwords for apps without private entitlements,
+            // and AOSKit reports the failure by returning an empty dictionary rather than nil.
+            guard !requestHeaders.isEmpty else { throw AnisetteError.unsupportedOperatingSystem() }
+            
             guard let machineID = requestHeaders["X-Apple-MD-M"] as? String else { throw AnisetteError.missingValue("machineID") }
             guard let oneTimePassword = requestHeaders["X-Apple-MD"] as? String else { throw AnisetteError.missingValue("oneTimePassword") }
             
@@ -182,6 +235,32 @@ private extension AnisetteDataManager
         }
     }
     
+    func requestAnisetteData(from serverURL: URL, completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        // One-time passwords expire, so never serve them from a cache.
+        var request = URLRequest(url: serverURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+            do
+            {
+                let data = try Result<Data, Error>(data, error).get()
+                
+                guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw AnisetteError.invalidServerResponse() }
+                
+                let anisetteData = try ALTAnisetteData(anisetteServerResponse: json)
+                completion(.success(anisetteData))
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch anisette data from server \(serverURL.absoluteString, privacy: .public). \(error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     func requestAnisetteDataFromXPCService(completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
         guard let proxy = self.xpcConnection.remoteObjectProxyWithErrorHandler({ (error) in
@@ -190,8 +269,14 @@ private extension AnisetteDataManager
         }) as? AltXPCProtocol else { return }
         
         proxy.requestAnisetteData { (anisetteData, error) in
-            anisetteData?.sanitize(byReplacingBundleID: Bundle.ID.altXPC)
-            completion(Result(anisetteData, error))
+            guard let anisetteData else {
+                // AltXPC returns nil anisette data when AuthKit won't provide it, which isn't necessarily accompanied by an error.
+                completion(.failure(error ?? ALTServerError(.invalidAnisetteData)))
+                return
+            }
+            
+            anisetteData.sanitize(byReplacingBundleID: Bundle.ID.altXPC)
+            completion(.success(anisetteData))
         }
     }
     
