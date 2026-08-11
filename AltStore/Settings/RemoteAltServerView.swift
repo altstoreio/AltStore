@@ -29,11 +29,46 @@ struct RemoteAltServerView: View
     
     @State
     private var errorMessage = ""
+    
+    @State
+    private var isVPNConnected = false
+
+    @State
+    private var isShowingClearConfirmation = false
+    
+    @Environment(\.dismiss)
+    private var dismiss
 
     private var localizedTitle: String { String(localized: "Remote AltServer") }
 
     var body: some View {
         List {
+            Section {
+                LabeledContent("AltServer") {
+                    HStack {
+                        Text("Paired")
+                        Image(systemName: "circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                            .accessibilityHidden(true)
+                    }
+                }
+
+                LabeledContent("VPN") {
+                    HStack {
+                        Text(isVPNConnected ? "Connected" : "Not Connected")
+                        Image(systemName: "circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(isVPNConnected ? Color.green : Color.secondary)
+                            .accessibilityHidden(true)
+                    }
+                }
+            } header: {
+                Text("Status")
+            } footer: {
+                Text("This is a placeholder that should communicate Remote AltServer needs a Wi-Fi connection in addition to VPN.")
+            }
+            
             if let availableServers
             {
                 Section("Popular") {
@@ -91,11 +126,28 @@ struct RemoteAltServerView: View
                     }
                 }
             }
+            
+            Section {
+                SwiftUI.Button(role: .destructive) {
+                    isShowingClearConfirmation = true
+                } label: {
+                    Text("Clear Remote AltServer")
+                        .frame(maxWidth: .infinity)
+                }
+                .confirmationDialog("Are you sure you want to clear Remote AltServer?", isPresented: $isShowingClearConfirmation, titleVisibility: .visible) {
+                    SwiftUI.Button("Clear", role: .destructive) {
+                        clearRemoteAltServer()
+                    }
+                } message: {
+                    Text("You'll need to pair with your computer again to set it back up.")
+                }
+            }
         }
         .navigationTitle(localizedTitle)
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadServers() }
         .refreshable { await loadServers() }
+        .task { await monitorVPNStatus() }
         .alert("Couldn't select server", isPresented: $isShowingError) {
             SwiftUI.Button("OK", role: .cancel) { }
         } message: { Text(errorMessage) }
@@ -176,6 +228,31 @@ private extension RemoteAltServerView
         }
 
         await selectServer(url: url)
+    }
+    
+    func monitorVPNStatus() async
+    {
+        while true
+        {
+            isVPNConnected = await AppManager.shared.isReachableOnDevice()
+            
+            do
+            {
+                try await Task.sleep(for: .seconds(2)) // Often enough to feel live without spamming the check.
+            }
+            catch
+            {
+                break // View disappeared, so we can stop monitoring.
+            }
+        }
+    }
+    
+    func clearRemoteAltServer()
+    {
+        UserDefaults.standard.prefersRemoteAltServer = false
+        Keychain.shared.devicePairingFile = nil
+        
+        dismiss() // Return to Settings
     }
 }
 
