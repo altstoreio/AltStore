@@ -15,6 +15,7 @@ import Combine
 import CryptoKit
 import WidgetKit
 import UniformTypeIdentifiers
+import Network
 
 import AltStoreCore
 import AltSign
@@ -155,7 +156,41 @@ extension AppManager
     // Can block while waiting for a response, so it's async to keep callers off the main thread.
     func isReachableOnDevice() async -> Bool
     {
-        guard Minimuxer.testDeviceConnection(ifaddr: "10.7.0.1") else
+        let isReachable = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let connection = NWConnection(host: "10.7.0.1", port: 49152, using: .tcp)
+            let queue = DispatchQueue(label: "io.altstore.reachability-probe")
+            
+            // We can only resume the continuation once, but finish() can get called multiple times since the timeout always fires.
+            var didResume = false
+            func finish(_ result: Bool)
+            {
+                guard !didResume else { return }
+                didResume = true
+                
+                connection.cancel()
+                continuation.resume(returning: result)
+            }
+            
+            connection.stateUpdateHandler = { (state) in
+                switch state
+                {
+                case .ready: finish(true)
+                case .waiting: finish(false) // No route means the VPN is down, so give up right away.
+                case .failed(let error):
+                    Logger.sideload.error("Reachability probe failed. \(error.localizedDescription, privacy: .public)")
+                    finish(false)
+                    
+                default: break // Still connecting (.setup/.preparing), or the .cancelled we trigger in finish().
+                }
+            }
+            
+            connection.start(queue: queue)
+            
+            // Wait for either a state change or timeout. Normally connects in a few ms.
+            queue.asyncAfter(deadline: .now() + 1.0) { finish(false) }
+        }
+        
+        guard isReachable else
         {
             Logger.sideload.error("Device not reachable at 10.7.0.1 — VPN tunnel likely down.")
             return false
