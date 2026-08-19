@@ -444,6 +444,7 @@
 		D59A6B822AA92D1C00F61259 /* Process+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B802AA92D1C00F61259 /* Process+Conveniences.swift */; };
 		D59A6B842AA932F700F61259 /* Logger+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59A6B832AA932F700F61259 /* Logger+AltServer.swift */; };
 		D59AE9F12D9F3B2D0064E176 /* libcorecrypto_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D59AE9F02D9F3B2D0064E176 /* libcorecrypto_static.a */; };
+		D59B3EAC30364D1F000140EE /* BGTaskScheduler+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59B3EAB30364D1F000140EE /* BGTaskScheduler+Async.swift */; };
 		D5A0537329B91DB400997551 /* SourceDetailContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */; };
 		D5A1D2E42AA50EB60066CACC /* JITError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E32AA50EB60066CACC /* JITError.swift */; };
 		D5A1D2E92AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */; };
@@ -1286,6 +1287,7 @@
 		D59A6B832AA932F700F61259 /* Logger+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+AltServer.swift"; sourceTree = "<group>"; };
 		D59AE9912D9F3AFD0064E176 /* corecrypto.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = corecrypto.xcodeproj; path = Dependencies/AltSign/Dependencies/corecrypto/corecrypto.xcodeproj; sourceTree = SOURCE_ROOT; };
 		D59AE9F02D9F3B2D0064E176 /* libcorecrypto_static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libcorecrypto_static.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D59B3EAB30364D1F000140EE /* BGTaskScheduler+Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BGTaskScheduler+Async.swift"; sourceTree = "<group>"; };
 		D5A0537229B91DB400997551 /* SourceDetailContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceDetailContentViewController.swift; sourceTree = "<group>"; };
 		D5A1D2E32AA50EB60066CACC /* JITError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JITError.swift; sourceTree = "<group>"; };
 		D5A1D2E82AA512940066CACC /* RemoteServiceDiscoveryTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteServiceDiscoveryTunnel.swift; sourceTree = "<group>"; };
@@ -2230,6 +2232,7 @@
 				D5FB28EB2ADDF68D00A1C337 /* UIFontDescriptor+Bold.swift */,
 				D5A645202AF591980047D980 /* UTType+AltStore.swift */,
 				82D6ED892EEA137A009DC668 /* TaskGroup+Collated.swift */,
+				D59B3EAB30364D1F000140EE /* BGTaskScheduler+Async.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3771,6 +3774,7 @@
 				D561AF822B21669400BF59C6 /* VerifyAppPledgeOperation.swift in Sources */,
 				BF3432FB246B894F0052F4A1 /* BackupAppOperation.swift in Sources */,
 				BF9ABA4922DD0742008935CF /* ScreenshotCollectionViewCell.swift in Sources */,
+				D59B3EAC30364D1F000140EE /* BGTaskScheduler+Async.swift in Sources */,
 				BF9ABA4D22DD16DE008935CF /* PillButton.swift in Sources */,
 				D5C0E7672AD9C75900530CA4 /* AppCardCollectionViewCell.swift in Sources */,
 				D5DAE0962804DF430034D8D4 /* UpdatePatronsOperation.swift in Sources */,
