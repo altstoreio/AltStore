@@ -130,6 +130,25 @@ extension AppManager
         guard let pairingFile = self.devicePairingFile else { throw OperationError.missingPairingFile() }
         return try OnDeviceClient(pairingFile: pairingFile)
     }
+    
+    @available(iOS 27, *)
+    func pairDevice(context: OperationContext = OperationContext()) async throws
+    {
+        return try await withCheckedThrowingContinuation { continuation in
+            let pairDeviceOperation = PairDeviceOperation(context: context)
+            pairDeviceOperation.resultHandler = { (result) in
+                switch result
+                {
+                case .failure(let error): context.error = error
+                case .success: break
+                }
+                
+                continuation.resume(with: result)
+            }
+            
+            self.run([pairDeviceOperation], context: context)
+        }
+    }
 }
 
 extension AppManager
