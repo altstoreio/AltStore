@@ -21,8 +21,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 extension AppManager
 {
     static let didFetchSourceNotification = Notification.Name("io.altstore.AppManager.didFetchSource")
@@ -128,20 +126,20 @@ extension AppManager
         }
     }
 
-    // Starts on-device connection via minimuxer (idempotent).
+    // Creates a fresh client for the on-device services from the current pairing file.
+    // Throws if the pairing file is missing, unreadable, or a classic (pre-iOS 17) record.
+    func onDeviceClient() throws -> OnDeviceClient
+    {
+        guard let pairingFile = self.devicePairingFile else { throw OperationError.missingPairingFile() }
+        return try OnDeviceClient(pairingFile: pairingFile)
+    }
+    
+    // Gates each on-device flow: validates the pairing file and confirms the device is reachable.
     func startOnDeviceConnection() async throws
     {
-        guard
-            let pairingData = self.devicePairingFile,
-            let pairingFile = String(data: pairingData, encoding: .utf8)
-        else { throw OperationError.missingPairingFile() }
-
-        let logPath = URL.documentsDirectory.appending(path: "minimuxer.txt").path
-
         do
         {
-            Minimuxer.retargetUsbmuxdAddr()
-            try Minimuxer.start(pairingFile: pairingFile, logPath: logPath)
+            _ = try self.onDeviceClient()
         }
         catch
         {
@@ -323,7 +321,7 @@ extension AppManager
             return self.findServer(context: context) { _ in }
         }
 
-        // Starts minimuxer on-device to enable sideloading via the pairing file.
+        // Validates the pairing file and VPN reachability before any on-device sideloading.
         let startDeviceSessionOperation = RSTAsyncBlockOperation { (operation) in
             Task<Void, Never> {
                 do { try await AppManager.shared.startOnDeviceConnection() }

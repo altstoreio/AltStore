@@ -12,8 +12,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 @objc(RefreshAppOperation)
 class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -49,7 +47,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
         {
             do
             {
-                // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
+                // Prefer on-device when a pairing file is available; fall back to AltServer otherwise.
                 if AppManager.shared.devicePairingFile != nil
                 {
                     try await self.refreshOnDevice(profiles: Set(profiles.values))
@@ -82,11 +80,13 @@ private extension RefreshAppOperation
     {
         guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
 
+        let client = try AppManager.shared.onDeviceClient()
+        
         for profile in profiles
         {
             do
             {
-                try Minimuxer.installProvisioningProfile(profile: profile.data)
+                try await client.installProvisioningProfile(profile.data)
             }
             catch
             {

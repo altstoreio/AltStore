@@ -15,8 +15,6 @@ import IntentsUI
 import AltStoreCore
 import AltSign
 
-import Minimuxer
-
 extension SettingsViewController
 {
     fileprivate enum Section: Int, CaseIterable
@@ -633,17 +631,7 @@ private extension SettingsViewController
 
                 self.update()
 
-                let needsRelaunch = Muxer.started
-
-                if needsRelaunch
-                {
-                    // If Minimuxer has been started with a previous pairing file, we're unable to stop it without the user quitting the app
-                    await self.presentAlert(title: NSLocalizedString("Relaunch Required", comment: ""), message: NSLocalizedString("Quit AltStore and reopen it for your new pairing file to take effect.", comment: ""))
-                }
-                else
-                {
-                    await self.presentAlert(title: NSLocalizedString("Remote AltServer Configured", comment: ""), message: NSLocalizedString("AltStore can now sideload apps on this device without a computer.", comment: ""))
-                }
+                await self.presentAlert(title: NSLocalizedString("Remote AltServer Configured", comment: ""), message: NSLocalizedString("AltStore can now sideload apps on this device without a computer.", comment: ""))
             }
             catch is CancellationError
             {

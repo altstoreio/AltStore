@@ -20,15 +20,6 @@
         }
       },
       {
-        "package": "Minimuxer",
-        "repositoryURL": "https://github.com/SideStore/minimuxer",
-        "state": {
-          "branch": "develop",
-          "revision": "e3614068c77fb09945eff363fbc3f9e8abf4c834",
-          "version": null
-        }
-      },
-      {
         "package": "swift-argument-parser",
         "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
         "state": {
@@ -44,15 +35,6 @@
           "branch": null,
           "revision": "501270cd33082c3fa430b724e849855482ed051c",
           "version": "2.9.3"
-        }
-      },
-      {
-        "package": "ZIPFoundation",
-        "repositoryURL": "https://github.com/weichsel/ZIPFoundation.git",
-        "state": {
-          "branch": null,
-          "revision": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
-          "version": "0.9.20"
         }
       }
     ]

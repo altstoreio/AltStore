@@ -12,8 +12,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 @objc(DeactivateAppOperation)
 class DeactivateAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -48,7 +46,7 @@ class DeactivateAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
+                    // Prefer on-device when a pairing file is available; fall back to AltServer otherwise.
                     if AppManager.shared.devicePairingFile != nil
                     {
                         try await self.deactivateOnDevice(bundleIdentifiers: bundleIdentifiers)
@@ -97,43 +95,27 @@ private extension DeactivateAppOperation
     func deactivateOnDevice(bundleIdentifiers: Set<String>) async throws
     {
         guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
-        // misagent doesn't expose a remove-by-bundle-ID primitive, so drop installed
-        // profiles into a temp directory and filter to the ones we want to remove.
-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: directory) }
-
-        let profilesPath: String
+        
+        // misagent doesn't expose a remove-by-bundle-ID primitive, so list the installed
+        // profiles and filter to the ones we want to remove.
+        let client = try AppManager.shared.onDeviceClient()
+        
+        let profiles: [ALTProvisioningProfile]
         do
         {
-            profilesPath = try Minimuxer.dumpProfiles(docsPath: directory.path)
+            profiles = try await client.installedProvisioningProfiles()
         }
         catch
         {
-            Logger.sideload.error("Failed to list provisioning profiles via minimuxer: \(error.localizedDescription, privacy: .public)")
+            Logger.sideload.error("Failed to list provisioning profiles: \(error.localizedDescription, privacy: .public)")
             throw (error as NSError).withLocalizedFailure(String(localized: "Failed to deactivate app."))
         }
-
-        let profilesDirectory = URL(fileURLWithPath: profilesPath)
-        let profileURLs: [URL]
-        do
-        {
-            profileURLs = try FileManager.default.contentsOfDirectory(at: profilesDirectory, includingPropertiesForKeys: nil)
-                .filter { $0.pathExtension.lowercased() == "mobileprovision" }
-        }
-        catch
-        {
-            Logger.sideload.error("Failed to read provisioning profiles directory at \(profilesDirectory.path, privacy: .public): \(error.localizedDescription, privacy: .public)")
-            throw (error as NSError).withLocalizedFailure(String(localized: "Failed to deactivate app."))
-        }
-        let profiles = profileURLs.compactMap { ALTProvisioningProfile(url: $0) }
 
         for profile in profiles where bundleIdentifiers.contains(profile.bundleIdentifier)
         {
             do
             {
-                try Minimuxer.removeProvisioningProfile(id: profile.uuid.uuidString.lowercased())
+                try await client.removeProvisioningProfile(profile)
                 Logger.sideload.notice("Removed provisioning profile for \(profile.bundleIdentifier, privacy: .public)")
             }
             catch

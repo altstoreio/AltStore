@@ -10,8 +10,6 @@ import Foundation
 
 import AltStoreCore
 
-import Minimuxer
-
 @objc(RemoveAppOperation)
 class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -45,7 +43,7 @@ class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
+                    // Prefer on-device when a pairing file is available; fall back to AltServer otherwise.
                     if AppManager.shared.devicePairingFile != nil
                     {
                         try await self.removeOnDevice(bundleIdentifier: bundleIdentifier)
@@ -95,7 +93,8 @@ private extension RemoveAppOperation
 
         do
         {
-            try Minimuxer.removeApp(bundleId: bundleIdentifier)
+            let client = try AppManager.shared.onDeviceClient()
+            try await client.removeApp(bundleID: bundleIdentifier)
             Logger.sideload.notice("Removed app \(bundleIdentifier, privacy: .public) from device")
         }
         catch
