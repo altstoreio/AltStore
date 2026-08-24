@@ -128,7 +128,7 @@ extension AppManager
     }
 
     // Starts on-device connection via minimuxer (idempotent).
-    func startOnDeviceConnection() throws
+    func startOnDeviceConnection() async throws
     {
         guard
             let pairingData = self.devicePairingFile,
@@ -148,11 +148,12 @@ extension AppManager
             throw (error as NSError).withLocalizedFailure(String(localized: "AltStore couldn’t start the device client."))
         }
 
-        guard self.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard await self.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
     }
 
     // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
-    func isReachableOnDevice() -> Bool
+    // Can block while waiting for a response, so it's async to keep callers off the main thread.
+    func isReachableOnDevice() async -> Bool
     {
         guard Minimuxer.testDeviceConnection(ifaddr: "10.7.0.1") else
         {
@@ -289,9 +290,11 @@ extension AppManager
 
         // Starts minimuxer on-device to enable sideloading via the pairing file.
         let startDeviceSessionOperation = RSTAsyncBlockOperation { (operation) in
-            do { try AppManager.shared.startOnDeviceConnection() }
-            catch { context.error = error }
-            operation.finish()
+            Task<Void, Never> {
+                do { try await AppManager.shared.startOnDeviceConnection() }
+                catch { context.error = error }
+                operation.finish()
+            }
         }
         self.run([startDeviceSessionOperation], context: context)
 

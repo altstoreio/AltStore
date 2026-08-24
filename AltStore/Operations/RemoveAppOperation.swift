@@ -48,7 +48,7 @@ class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
                     // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
                     if AppManager.shared.devicePairingFile != nil
                     {
-                        try self.removeOnDevice(bundleIdentifier: bundleIdentifier)
+                        try await self.removeOnDevice(bundleIdentifier: bundleIdentifier)
                     }
                     else if let server = self.context.server
                     {
@@ -89,9 +89,9 @@ class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension RemoveAppOperation
 {
-    func removeOnDevice(bundleIdentifier: String) throws
+    func removeOnDevice(bundleIdentifier: String) async throws
     {
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
 
         do
         {

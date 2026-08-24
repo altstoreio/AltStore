@@ -51,7 +51,7 @@ class DeactivateAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
                     // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
                     if AppManager.shared.devicePairingFile != nil
                     {
-                        try self.deactivateOnDevice(bundleIdentifiers: bundleIdentifiers)
+                        try await self.deactivateOnDevice(bundleIdentifiers: bundleIdentifiers)
                     }
                     else if let server = self.context.server
                     {
@@ -94,9 +94,9 @@ private extension DeactivateAppOperation
 {
     // Mirrors AltServer's `removeProvisioningProfilesForBundleIdentifiers:`: list profiles
     // installed on the device, filter by bundle identifier, remove each by UUID.
-    func deactivateOnDevice(bundleIdentifiers: Set<String>) throws
+    func deactivateOnDevice(bundleIdentifiers: Set<String>) async throws
     {
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
 
         // misagent doesn't expose a remove-by-bundle-ID primitive, so drop installed
         // profiles into a temp directory and filter to the ones we want to remove.

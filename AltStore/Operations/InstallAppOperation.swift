@@ -168,7 +168,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
                     // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
                     if AppManager.shared.devicePairingFile != nil
                     {
-                        try self.installOnDevice(resignedApp: resignedApp)
+                        try await self.installOnDevice(resignedApp: resignedApp)
                     }
                     else if let connection = self.context.installationConnection
                     {
@@ -220,7 +220,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension InstallAppOperation
 {
-    func installOnDevice(resignedApp: ALTApplication) throws
+    func installOnDevice(resignedApp: ALTApplication) async throws
     {
         let bundleIdentifier = self.context.bundleIdentifier
 
@@ -232,7 +232,7 @@ private extension InstallAppOperation
 
         Logger.sideload.notice("Transferring \(bundleIdentifier, privacy: .public) to device...")
 
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
 
         do
         {

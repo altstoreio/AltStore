@@ -52,7 +52,7 @@ class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
                 // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
                 if AppManager.shared.devicePairingFile != nil
                 {
-                    try self.refreshOnDevice(profiles: Set(profiles.values))
+                    try await self.refreshOnDevice(profiles: Set(profiles.values))
                 }
                 else if let server = self.context.server
                 {
@@ -78,9 +78,9 @@ class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension RefreshAppOperation
 {
-    func refreshOnDevice(profiles: Set<ALTProvisioningProfile>) throws
+    func refreshOnDevice(profiles: Set<ALTProvisioningProfile>) async throws
     {
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
 
         for profile in profiles
         {
