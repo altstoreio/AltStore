@@ -94,7 +94,7 @@ private extension RemoveAppOperation
         do
         {
             let client = try AppManager.shared.onDeviceClient()
-            try await client.removeApp(bundleID: bundleIdentifier)
+            try await client.removeApp(bundleIdentifier: bundleIdentifier)
             Logger.sideload.notice("Removed app \(bundleIdentifier, privacy: .public) from device")
         }
         catch

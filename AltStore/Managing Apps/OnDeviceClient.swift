@@ -11,82 +11,98 @@ import IDevice
 import AltStoreCore
 import AltSign
 
-/// A client for the on-device RSD services, created from a pairing file.
-/// Holds no live connection: every operation builds a fresh tunnel, does its work, and frees every handle before returning.
-final class OnDeviceClient
+/// Installs apps and manages provisioning profiles on this device itself, over the loopback VPN. Each operation opens and closes its own tunnel.
+final class OnDeviceClient: Sendable
 {
     private static let tunnelHost = "10.7.0.1"
     private static let tunnelPort: UInt16 = 49152
     
+    private static let tunnelAddress: sockaddr_in = {
+        var address = sockaddr_in()
+        address.sin_family = sa_family_t(AF_INET)
+        address.sin_port = tunnelPort.bigEndian
+        inet_pton(AF_INET, tunnelHost, &address.sin_addr)
+        return address
+    }()
+    
     private let pairingFileData: Data
     
-    // idevice calls block until they finish, so they all run on this background queue
-    // one at a time (across every client), so there are never two tunnels open at once.
+    // idevice calls block their thread, so they all run on this shared background queue one at a time.
     private static let queue = DispatchQueue(label: "io.altstore.on-device-client", qos: .userInitiated)
     
     init(pairingFile: Data) throws
     {
-        guard let record = try? PropertyListSerialization.propertyList(from: pairingFile, options: [], format: nil) as? [String: Any]
+        // RP-pairing records (iOS 17+) contain `private_key` (and older lockdown records aren't supported yet).
+        guard let record = try? PropertyListSerialization.propertyList(from: pairingFile, options: [], format: nil) as? [String: Any],
+              record["private_key"] != nil
         else { throw OnDeviceError.invalidPairingFile() }
-        
-        // Same discriminator minimuxer used: `private_key` = RP record (RSD, iOS 17+),
-        // `UDID` = classic lockdown record — supported starting in Phase 4.
-        guard record["private_key"] != nil else
-        {
-            if record["UDID"] != nil { throw OnDeviceError.unsupportedPairingFile() }
-            throw OnDeviceError.invalidPairingFile()
-        }
         
         self.pairingFileData = pairingFile
     }
     
-    func installApp(ipaURL: URL, bundleID: String, progress: Progress) async throws
+    func installApp(ipaURL: URL, bundleIdentifier: String, progress: Progress) async throws
     {
-        try await self.perform {
-            // 1. Stage the .ipa on the device via AFC.
-            let ipaData = try Data(contentsOf: ipaURL)
-            let stagingPath = "/PublicStaging/\(bundleID).ipa"
+        let stagingPath = "/PublicStaging/\(bundleIdentifier).ipa"
+        
+        Logger.sideload.notice("Transferring \(bundleIdentifier, privacy: .public) to device...")
+        
+        // First, copy the .ipa into the device's staging folder.
+        try await self.perform(withService: .afc) { afc in
+            let ipaData = try Data(contentsOf: ipaURL, options: .mappedIfSafe)
             
-            Logger.sideload.notice("Transferring \(bundleID, privacy: .public) to device...")
+            var file: OpaquePointer?
+            if let openError = afc_file_open(afc, stagingPath, AfcWrOnly, &file) // Open the file.
+            {
+                throw OnDeviceError.serviceFailed(ffiError: openError)
+            }
+            defer
+            {
+                // Close the file, and since we can't throw, just free the error if there is one.
+                if let error = afc_file_close(file) { idevice_error_free(error) }
+            }
             
-            try self.withService(.afc) { afc in
-                var file: OpaquePointer?
-                try self.check(afc_file_open(afc, stagingPath, AfcWrOnly, &file))
-                defer { if let error = afc_file_close(file) { idevice_error_free(error) } }
-                
-                try ipaData.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
-                    try self.check(afc_file_write(file, buffer.bindMemory(to: UInt8.self).baseAddress, buffer.count))
+            try ipaData.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
+                let bytes = buffer.bindMemory(to: UInt8.self)
+                if let writeError = afc_file_write(file, bytes.baseAddress, bytes.count) // Write to the file.
+                {
+                    throw OnDeviceError.serviceFailed(ffiError: writeError)
                 }
             }
-            
-            progress.completedUnitCount += 50
-            
-            // 2. Install from the staged path.
-            Logger.sideload.notice("Installing \(bundleID, privacy: .public)...")
-            
-            try self.withService(.installationProxy) { proxy in
-                try self.check(installation_proxy_install(proxy, stagingPath, nil))
-            }
-            
-            progress.completedUnitCount += 50
         }
+        
+        progress.completedUnitCount += 50
+        
+        Logger.sideload.notice("Installing \(bundleIdentifier, privacy: .public)...")
+        
+        // Then, ask the device to install the app from that staged file.
+        try await self.perform(withService: .installationProxy) { proxy in
+            if let installError = installation_proxy_install(proxy, stagingPath, nil)
+            {
+                throw OnDeviceError.serviceFailed(ffiError: installError)
+            }
+        }
+        
+        progress.completedUnitCount += 50
     }
     
-    func removeApp(bundleID: String) async throws
+    func removeApp(bundleIdentifier: String) async throws
     {
-        try await self.perform {
-            try self.withService(.installationProxy) { proxy in
-                try self.check(installation_proxy_uninstall(proxy, bundleID, nil))
+        try await self.perform(withService: .installationProxy) { proxy in
+            if let uninstallError = installation_proxy_uninstall(proxy, bundleIdentifier, nil) // Uninstall the app.
+            {
+                throw OnDeviceError.serviceFailed(ffiError: uninstallError)
             }
         }
     }
     
     func installProvisioningProfile(_ data: Data) async throws
     {
-        try await self.perform {
-            try self.withService(.misagent) { misagent in
-                try data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
-                    try self.check(misagent_install(misagent, buffer.bindMemory(to: UInt8.self).baseAddress, buffer.count))
+        try await self.perform(withService: .misagent) { misagent in
+            try data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
+                let bytes = buffer.bindMemory(to: UInt8.self)
+                if let installError = misagent_install(misagent, bytes.baseAddress, bytes.count) // Install the profile (used to refresh an app).
+                {
+                    throw OnDeviceError.serviceFailed(ffiError: installError)
                 }
             }
         }
@@ -94,38 +110,42 @@ final class OnDeviceClient
     
     func installedProvisioningProfiles() async throws -> [ALTProvisioningProfile]
     {
-        try await self.perform {
-            try self.withService(.misagent) { misagent in
-                // Parallel arrays: profiles[i] is lengths[i] bytes of raw PKCS#7 profile data.
-                var profiles: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>?
-                var lengths: UnsafeMutablePointer<Int>?
-                var count: UInt = 0
-                
-                try self.check(misagent_copy_all(misagent, &profiles, &lengths, &count))
-                defer { misagent_free_profiles(profiles, lengths, Int(count)) }
-                
-                var result: [ALTProvisioningProfile] = []
-                
-                for i in 0 ..< Int(count)
-                {
-                    guard let bytes = profiles?[i], let length = lengths?[i] else { continue }
-                    
-                    let data = Data(bytes: bytes, count: Int(length)) // Copies, so `result` outlives the free above.
-                    if let profile = ALTProvisioningProfile(data: data) { result.append(profile) }
-                }
-                
-                return result
+        try await self.perform(withService: .misagent) { misagent in
+            // misagent hands back two arrays: the raw bytes of each installed profile, and the length of each one.
+            var rawProfiles: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>?
+            var lengths: UnsafeMutablePointer<Int>?
+            var count = 0
+            
+            if let copyError = misagent_copy_all(misagent, &rawProfiles, &lengths, &count) // Get all installed profiles.
+            {
+                throw OnDeviceError.serviceFailed(ffiError: copyError)
             }
+            defer { misagent_free_profiles(rawProfiles, lengths, count) }
+            
+            var profiles: [ALTProvisioningProfile] = []
+            
+            for i in 0 ..< count
+            {
+                guard let bytes = rawProfiles?[i], let length = lengths?[i] else { continue }
+                
+                // Copy profiles into Data so the bytes stay valid after they're freed in the defer above.
+                let data = Data(bytes: bytes, count: length)
+                if let profile = ALTProvisioningProfile(data: data)
+                {
+                    profiles.append(profile)
+                }
+            }
+            
+            return profiles
         }
     }
     
     func removeProvisioningProfile(_ profile: ALTProvisioningProfile) async throws
     {
-        try await self.perform {
-            try self.withService(.misagent) { misagent in
-                // Lowercased to match minimuxer's behavior — until an uppercase
-                // ProfileID is confirmed working on-device (design doc risk #2).
-                try self.check(misagent_remove(misagent, profile.uuid.uuidString.lowercased()))
+        try await self.perform(withService: .misagent) { misagent in
+            if let removeError = misagent_remove(misagent, profile.uuid.uuidString.lowercased()) // Remove the profile. (Lowercase required, confirmed on device.)
+            {
+                throw OnDeviceError.serviceFailed(ffiError: removeError)
             }
         }
     }
@@ -135,57 +155,58 @@ private extension OnDeviceClient
 {
     enum Service
     {
-        case afc
-        case installationProxy
-        case misagent
+        case afc                // moves files
+        case installationProxy  // installs/removes apps
+        case misagent           // manages provisioning profiles
     }
     
-    // Work runs to completion once queued — cancellation isn't observed (same as Minimuxer).
-    func perform<T>(_ work: @escaping () throws -> T) async throws -> T
+    // Runs a device session on the shared background queue, suspending until it finishes (and ignoring cancellation - same as minimuxer).
+    func perform<T>(withService service: Service, _ body: @escaping (OpaquePointer) throws -> T) async throws -> T
     {
         try await withCheckedThrowingContinuation { continuation in
             Self.queue.async {
-                continuation.resume(with: Result { try work() })
+                let result = Result { try self._perform(withService: service, body) }
+                continuation.resume(with: result)
             }
         }
     }
     
-    func check(_ error: UnsafeMutablePointer<IdeviceFfiError>?) throws
+    // One complete conversation with the device: opens a new tunnel, connects the requested service, runs the work, and closes everything before returning.
+    func _perform<T>(withService service: Service, _ body: (OpaquePointer) throws -> T) throws -> T
     {
-        guard let error else { return }
-        throw OnDeviceError.serviceFailed(ffiError: error) // Factory extracts code/message + frees.
-    }
-    
-    // One fresh tunnel + service client per call (Phase 0b: create ≈100ms — noise per op).
-    func withService<T>(_ service: Service, _ body: (OpaquePointer) throws -> T) throws -> T
-    {
-        // 1. Parse the pairing file. tunnel_create_rppairing only borrows it, so we free it ourselves.
-        var pairingFile: OpaquePointer? // Use OpaquePointer because we can't import expected type 'RpPairingFileHandle'
+        // 1. Convert our pairing file data to the form idevice needs.
+        var pairingFile: OpaquePointer?
+        
         let parseError = self.pairingFileData.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
-            rp_pairing_file_from_bytes(buffer.bindMemory(to: UInt8.self).baseAddress, UInt(buffer.count), &pairingFile)
+            let bytes = buffer.bindMemory(to: UInt8.self)
+            return rp_pairing_file_from_bytes(bytes.baseAddress, UInt(bytes.count), &pairingFile) // Parse the pairing file.
         }
         if let parseError
         {
             throw OnDeviceError.invalidPairingFile(ffiError: parseError)
         }
-        defer { rp_pairing_file_free(pairingFile) }
+        defer { rp_pairing_file_free(pairingFile) } // tunnel_create_rppairing only borrows the file, so we have to free it ourselves.
         
-        // 2. Open the encrypted tunnel + RSD handshake through the loopback VPN.
-        var address = sockaddr_in()
-        address.sin_family = sa_family_t(AF_INET)
-        address.sin_port = Self.tunnelPort.bigEndian
-        inet_pton(AF_INET, Self.tunnelHost, &address.sin_addr)
+        // 2. Open the encrypted tunnel to the device through the VPN and perform the RSD handshake.
+        var address = Self.tunnelAddress
+        let addressSize = idevice_socklen_t(MemoryLayout<sockaddr_in>.size)
         
         var adapter: OpaquePointer?
         var handshake: OpaquePointer?
+        
         let connectError = withUnsafePointer(to: &address) { pointer in
-            pointer.withMemoryRebound(to: idevice_sockaddr.self, capacity: 1) { addressPointer in
-                tunnel_create_rppairing(addressPointer, idevice_socklen_t(MemoryLayout<sockaddr_in>.size),
-                                        Self.tunnelHost, pairingFile, nil, nil, &adapter, &handshake)
+            pointer.withMemoryRebound(to: idevice_sockaddr.self, capacity: 1) { address in
+                tunnel_create_rppairing(address, addressSize, Self.tunnelHost, pairingFile, nil, nil, &adapter, &handshake) // The two nils signal idevice to use its default PIN (000000).
             }
         }
         if let connectError
         {
+            // We know the VPN is reachable, so a socket error here almost definitely means the device revoked its pairing trust.
+            let socketErrorCode: Int32 = 1
+            if connectError.pointee.code == socketErrorCode
+            {
+                throw OnDeviceError.pairingNotTrusted(ffiError: connectError)
+            }
             throw OnDeviceError.connectionFailed(ffiError: connectError)
         }
         defer
@@ -194,13 +215,19 @@ private extension OnDeviceClient
             adapter_free(adapter)
         }
         
-        // 3. Connect the requested service, run the work, then free everything in reverse order.
+        // 3. Connect the requested service, run the work, then free everything.
         var client: OpaquePointer?
+        
+        let serviceError: UnsafeMutablePointer<IdeviceFfiError>?
         switch service
         {
-        case .afc: try self.check(afc_client_connect_rsd(adapter, handshake, &client))
-        case .installationProxy: try self.check(installation_proxy_connect_rsd(adapter, handshake, &client))
-        case .misagent: try self.check(misagent_connect_rsd(adapter, handshake, &client))
+        case .afc: serviceError = afc_client_connect_rsd(adapter, handshake, &client)
+        case .installationProxy: serviceError = installation_proxy_connect_rsd(adapter, handshake, &client)
+        case .misagent: serviceError = misagent_connect_rsd(adapter, handshake, &client)
+        }
+        if let serviceError
+        {
+            throw OnDeviceError.serviceFailed(ffiError: serviceError)
         }
         defer
         {
@@ -216,24 +243,26 @@ private extension OnDeviceClient
     }
 }
 
+// MARK: - Errors
+
 extension OnDeviceError
 {
     enum Code: Int, ALTErrorCode
     {
         typealias Error = OnDeviceError
         
-        case invalidPairingFile
-        case unsupportedPairingFile
-        case connectionFailed
-        case serviceFailed
+        case invalidPairingFile = 0
+        case pairingNotTrusted = 1
+        case connectionFailed = 2
+        case serviceFailed = 3
     }
     
     static func invalidPairingFile(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
         OnDeviceError(code: .invalidPairingFile, ffiError: ffiError, sourceFile: file, sourceLine: line)
     }
     
-    static func unsupportedPairingFile(file: String = #fileID, line: UInt = #line) -> OnDeviceError {
-        OnDeviceError(code: .unsupportedPairingFile, sourceFile: file, sourceLine: line)
+    static func pairingNotTrusted(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
+        OnDeviceError(code: .pairingNotTrusted, ffiError: ffiError, sourceFile: file, sourceLine: line)
     }
     
     static func connectionFailed(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
@@ -245,19 +274,15 @@ extension OnDeviceError
     }
 }
 
-// MARK: Errors
-
 struct OnDeviceError: ALTLocalizedError
 {
     var code: Code
     var errorTitle: String?
     var errorFailure: String?
     
-    @UserInfoValue
-    var ffiCode: Int?
-    
-    @UserInfoValue
-    var ffiReason: String?
+    // The original idevice error, stored under Apple's standard key so the Error Log shows it.
+    @UserInfoValue(key: NSUnderlyingErrorKey)
+    var underlyingError: NSError? = nil
     
     var sourceFile: String?
     var sourceLine: UInt?
@@ -270,36 +295,36 @@ struct OnDeviceError: ALTLocalizedError
         
         if let ffiError
         {
-            self.ffiCode = Int(ffiError.pointee.code)
+            // Bundle everything idevice told us into one underlying error.
+            var userInfo: [String: Any] = ["subCode": Int(ffiError.pointee.sub_code)]
             
             if let message = ffiError.pointee.message
             {
-                self.ffiReason = String(cString: message)
+                userInfo[NSLocalizedDescriptionKey] = String(cString: message)
             }
             
-            idevice_error_free(ffiError)
+            self.underlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
+            
+            idevice_error_free(ffiError) // Free the C error.
         }
     }
     
     var errorFailureReason: String {
         switch self.code
         {
-        case .invalidPairingFile: return NSLocalizedString("AltStore couldn’t read the device pairing file.", comment: "")
-        case .unsupportedPairingFile: return NSLocalizedString("This pairing file isn’t supported by this version of AltStore.", comment: "")
-        case .connectionFailed: return NSLocalizedString("AltStore couldn’t connect to this device.", comment: "")
-        case .serviceFailed: return NSLocalizedString("AltStore couldn’t communicate with this device.", comment: "")
+        case .invalidPairingFile: return String(localized: "AltStore couldn’t read this device’s pairing.")
+        case .pairingNotTrusted: return String(localized: "This device is no longer paired with AltStore.")
+        case .connectionFailed: return String(localized: "AltStore couldn’t connect to this device.")
+        case .serviceFailed: return String(localized: "AltStore couldn’t communicate with this device.")
         }
     }
     
     var recoverySuggestion: String? {
         switch self.code
         {
-        case .invalidPairingFile, .unsupportedPairingFile:
-            return NSLocalizedString("Pair your device with AltServer again to generate a new pairing file.", comment: "")
-        case .connectionFailed:
-            return NSLocalizedString("Make sure the VPN is connected, then try again.", comment: "")
-        case .serviceFailed:
-            return nil
+        case .invalidPairingFile, .pairingNotTrusted: return String(localized: "Pair this device again from Remote AltServer in AltStore’s Settings.")
+        case .connectionFailed: return String(localized: "Make sure the VPN is connected, then try again.")
+        case .serviceFailed: return nil
         }
     }
 }

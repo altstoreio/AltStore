@@ -231,7 +231,7 @@ private extension InstallAppOperation
         do
         {
             let client = try AppManager.shared.onDeviceClient()
-            try await client.installApp(ipaURL: fileURL, bundleID: bundleIdentifier, progress: self.progress)
+            try await client.installApp(ipaURL: fileURL, bundleIdentifier: bundleIdentifier, progress: self.progress)
         }
         catch
         {
