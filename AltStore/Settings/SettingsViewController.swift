@@ -590,7 +590,7 @@ private extension SettingsViewController
     
     func chooseAnisetteServer()
     {
-        let hostingController = ChooseAnisetteServerView.makeViewController()
+        let hostingController = RemoteAltServerView.makeViewController()
         self.navigationController?.pushViewController(hostingController, animated: true)
 
         if let selectedIndexPath = self.tableView.indexPathForSelectedRow

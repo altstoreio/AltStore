@@ -1,5 +1,5 @@
 //
-//  ChooseAnisetteServerView.swift
+//  RemoteAltServerView.swift
 //  AltStore
 //
 //  Created by Caroline Moore on 5/26/26.
@@ -10,7 +10,7 @@ import SwiftUI
 
 import AltStoreCore
 
-struct ChooseAnisetteServerView: View
+struct RemoteAltServerView: View
 {
     @State
     private var availableServers: [AnisetteServer]? = UserDefaults.standard.anisetteServers
@@ -30,7 +30,7 @@ struct ChooseAnisetteServerView: View
     @State
     private var errorMessage = ""
 
-    private var localizedTitle: String { String(localized: "Choose Remote Server") }
+    private var localizedTitle: String { String(localized: "Remote AltServer") }
 
     var body: some View {
         List {
@@ -108,7 +108,7 @@ struct ChooseAnisetteServerView: View
     }
 }
 
-private extension ChooseAnisetteServerView
+private extension RemoteAltServerView
 {
     func loadServers() async
     {
@@ -179,11 +179,11 @@ private extension ChooseAnisetteServerView
     }
 }
 
-extension ChooseAnisetteServerView
+extension RemoteAltServerView
 {
     static func makeViewController() -> UIHostingController<some View>
     {
-        let view = ChooseAnisetteServerView()
+        let view = RemoteAltServerView()
 
         let hostingController = UIHostingController(rootView: view)
         hostingController.navigationItem.largeTitleDisplayMode = .never
@@ -194,6 +194,6 @@ extension ChooseAnisetteServerView
 
 #Preview {
     NavigationStack {
-        ChooseAnisetteServerView()
+        RemoteAltServerView()
     }
 }
