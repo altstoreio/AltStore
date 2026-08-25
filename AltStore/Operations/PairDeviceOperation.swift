@@ -13,6 +13,8 @@ import AltStoreCore
 import AltSign
 import Roxas
 
+import IDevice
+
 @available(iOS 27, *)
 private struct PairingReadyMessage: NotificationCenter.AsyncMessage
 {
@@ -105,8 +107,6 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
                 }
                 
                 Logger.sideload.notice("Successfully paired device with AltStore!")
-                
-                UserDefaults.standard.prefersRemoteAltServer = true // Once paired, default to using remote AltServer.
                 
                 self.finish(.success(()))
             }
