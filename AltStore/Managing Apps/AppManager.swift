@@ -154,17 +154,18 @@ extension AppManager
     // Can block while waiting for a response, so it's async to keep callers off the main thread.
     func isReachableOnDevice() async -> Bool
     {
+        // Give up if the device hasn't responses in a second. Normally connects in a few ms.
+        let tcpOptions = NWProtocolTCP.Options()
+        tcpOptions.connectionTimeout = 1
+        
         let isReachable = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            let connection = NWConnection(host: "10.7.0.1", port: 49152, using: .tcp)
+            let connection = NWConnection(host: "10.7.0.1", port: 49152, using: NWParameters(tls: nil, tcp: tcpOptions))
             let queue = DispatchQueue(label: "io.altstore.reachability-probe")
             
-            // We can only resume the continuation once, but finish() can get called multiple times since the timeout always fires.
-            var didResume = false
-            func finish(_ result: Bool)
+            // We can only resume the continuation once, so stop listening for state changes before we do.
+            @Sendable func finish(_ result: Bool)
             {
-                guard !didResume else { return }
-                didResume = true
-                
+                connection.stateUpdateHandler = nil
                 connection.cancel()
                 continuation.resume(returning: result)
             }
@@ -173,7 +174,12 @@ extension AppManager
                 switch state
                 {
                 case .ready: finish(true)
-                case .waiting: finish(false) // No route means the VPN is down, so give up right away.
+                case .waiting(let error):
+                    // https://developer.apple.com/documentation/network/nwconnection/state-swift.enum/waiting(_:)
+                    // Waiting means "no route to the device right now." Signals VPN is off.
+                    Logger.sideload.error("Couldn't reach the device. \(error.localizedDescription, privacy: .public)")
+                    finish(false)
+                    
                 case .failed(let error):
                     Logger.sideload.error("Reachability probe failed. \(error.localizedDescription, privacy: .public)")
                     finish(false)
@@ -183,9 +189,6 @@ extension AppManager
             }
             
             connection.start(queue: queue)
-            
-            // Wait for either a state change or timeout. Normally connects in a few ms.
-            queue.asyncAfter(deadline: .now() + 1.0) { finish(false) }
         }
         
         guard isReachable else
