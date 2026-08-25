@@ -323,27 +323,41 @@ extension AppManager
         
         return authenticationOperation
     }
-
-    @discardableResult
-    func fetchPairingFile(context: OperationContext = OperationContext(), completionHandler: @escaping (Result<Void, Error>) -> Void) -> FetchPairingFileOperation
+    
+    func fetchPairingFile() async throws
     {
+        let context = OperationContext()
         let findServerOperation = self.findServer(context: context) { _ in }
-
-        let fetchPairingFileOperation = FetchPairingFileOperation(context: context)
-        fetchPairingFileOperation.resultHandler = { (result) in
-            switch result
-            {
-            case .failure(let error): context.error = error
-            case .success: break
+        
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let fetchPairingFileOperation = FetchPairingFileOperation(context: context)
+            fetchPairingFileOperation.resultHandler = { result in
+                continuation.resume(with: result)
             }
-
-            completionHandler(result)
+            fetchPairingFileOperation.addDependency(findServerOperation)
+            
+            self.run([fetchPairingFileOperation], context: context)
         }
-        fetchPairingFileOperation.addDependency(findServerOperation)
-
-        self.run([fetchPairingFileOperation], context: context)
-
-        return fetchPairingFileOperation
+    }
+    
+    // Fetches a pairing file from AltServer, retrying until this device is plugged into a computer.
+    func waitForPairingFile(retryInterval: Duration = .seconds(2)) async throws
+    {
+        while true
+        {
+            try Task.checkCancellation()
+            
+            do
+            {
+                try await self.fetchPairingFile()
+                return
+            }
+            catch ~OperationError.Code.serverNotFound, ~OperationError.Code.wiredConnectionRequired
+            {
+                // No wired AltServer connection yet, so keep waiting.
+                try await Task.sleep(for: retryInterval)
+            }
+        }
     }
     
     func deactivateApps(for app: ALTApplication, presentingViewController: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)

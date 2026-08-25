@@ -249,7 +249,7 @@ private extension SettingsViewController
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
         
-        self.isRemoteAltServerConfigured = (AppManager.shared.devicePairingFile != nil)
+        self.isRemoteAltServerConfigured = (Keychain.shared.devicePairingFile != nil)
         
         if self.isRemoteAltServerConfigured
         {
@@ -602,52 +602,35 @@ private extension SettingsViewController
         }
     }
 
-    func configureRemoteAltServer()
+    func setUpRemoteAltServer()
     {
+        // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
+        guard self.activeTeam != nil else { return self.signIn() }
+        
+        if let selectedIndexPath = self.tableView.indexPathForSelectedRow
+        {
+            self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+        
         Task<Void, Never> {
-            do
-            {
-                if AppManager.shared.devicePairingFile == nil
-                {
-                    let continueAction = UIAlertAction(title: NSLocalizedString("Continue", comment: ""), style: .default)
-                    try await self.presentConfirmationAlert(
-                        title: NSLocalizedString("Configure Remote AltServer", comment: ""),
-                        message: NSLocalizedString("Connect this device to a computer running AltServer, then tap Trust on this device when prompted.", comment: ""),
-                        primaryAction: continueAction
-                    )
-                }
-                else
-                {
-                    let resetAction = UIAlertAction(title: NSLocalizedString("Reset", comment: ""), style: .default)
-                    try await self.presentConfirmationAlert(
-                        title: NSLocalizedString("Reset Remote AltServer", comment: ""),
-                        message: NSLocalizedString("To reset, connect this device to a computer running AltServer, then tap Trust when prompted.", comment: ""),
-                        primaryAction: resetAction
-                    )
-                }
-
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                    AppManager.shared.fetchPairingFile { result in
-                        continuation.resume(with: result)
+            if #available(iOS 26, *) {
+                let hostingController = await RemoteAltServerSetupView.makeViewController {
+                    // Completing setup is the opt-in. Promote the bundled pairing file into
+                    // the keychain if needed, then default to preferring the on-device route.
+                    if Keychain.shared.devicePairingFile == nil
+                    {
+                        Keychain.shared.devicePairingFile = AppManager.shared.devicePairingFile
                     }
+                    
+                    UserDefaults.standard.prefersRemoteAltServer = true
+                    
+                    self.update()
+                    self.dismiss(animated: true)
                 }
-
-                self.update()
-
-                await self.presentAlert(title: NSLocalizedString("Remote AltServer Configured", comment: ""), message: NSLocalizedString("AltStore can now sideload apps on this device without a computer.", comment: ""))
-            }
-            catch is CancellationError
-            {
-                // Ignore
-            }
-            catch
-            {
-                await self.presentAlert(title: NSLocalizedString("Unable to Configure Remote AltServer", comment: ""), message: error.localizedDescription)
-            }
-
-            if let selectedIndexPath = self.tableView.indexPathForSelectedRow
-            {
-                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                
+                self.present(hostingController, animated: true)
+            } else {
+                // TODO: clean this up later
             }
         }
     }
@@ -972,7 +955,7 @@ extension SettingsViewController
             }
             else
             {
-                self.configureRemoteAltServer()
+                self.setUpRemoteAltServer()
             }
             
         case .techyThings:
