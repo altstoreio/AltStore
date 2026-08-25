@@ -271,11 +271,11 @@ extension AppManager
     }
     
     // Establishes how we'll reach the device for the current mode: starts the device session
-    // when a pairing file is configured (Remote AltServer), otherwise discovers an AltServer.
+    // when Remote AltServer is set up and preferred, otherwise discovers a local AltServer.
     @discardableResult
     func prepareServer(context: OperationContext = OperationContext()) -> Foundation.Operation
     {
-        guard AppManager.shared.devicePairingFile != nil else
+        guard UserDefaults.standard.prefersRemoteAltServer else
         {
             return self.findServer(context: context) { _ in }
         }
@@ -1116,7 +1116,7 @@ extension AppManager
             }
         }
 
-        if AppManager.shared.devicePairingFile == nil
+        if !UserDefaults.standard.prefersRemoteAltServer
         {
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
@@ -1658,7 +1658,7 @@ private extension AppManager
 
         var sendAppOperation: SendAppOperation?
 
-        if AppManager.shared.devicePairingFile == nil
+        if !UserDefaults.standard.prefersRemoteAltServer
         {
             /* Send */
             let operation = SendAppOperation(context: context)

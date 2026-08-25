@@ -82,6 +82,9 @@ public extension UserDefaults
 
     @NSManaged var preferredAnisetteServerURL: URL?
     
+    // Only true when a pairing file is configured, so this alone decides the sideloading route.
+    @NSManaged var prefersRemoteAltServer: Bool
+    
     class func registerDefaults()
     {
         let ios13_5 = OperatingSystemVersion(majorVersion: 13, minorVersion: 5, patchVersion: 0)
@@ -120,6 +123,7 @@ public extension UserDefaults
             #keyPath(UserDefaults.isCowExploitSupported): isMacDirtyCowSupported,
             #keyPath(UserDefaults.permissionCheckingDisabled): permissionCheckingDisabled,
             #keyPath(UserDefaults._preferredAppSorting): preferredAppSorting.rawValue,
+            #keyPath(UserDefaults.prefersRemoteAltServer): false,
         ] as [String: Any]
         
         UserDefaults.standard.register(defaults: defaults)

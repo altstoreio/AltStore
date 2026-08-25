@@ -41,6 +41,7 @@ class FetchPairingFileOperation: ResultOperation<Void>, @unchecked Sendable
                 let pairingFile = try await self.fetchPairingFile()
 
                 Keychain.shared.devicePairingFile = pairingFile.data
+                UserDefaults.standard.prefersRemoteAltServer = true // Once pairing file is set, default to on-device path.
 
                 Logger.sideload.notice("Configured pairing file from AltServer (\(pairingFile.data.count) bytes).")
 

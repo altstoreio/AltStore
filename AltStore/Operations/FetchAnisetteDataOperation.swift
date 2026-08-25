@@ -82,7 +82,8 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
 
                 let anisetteData: ALTAnisetteData
 
-                if AppManager.shared.devicePairingFile != nil
+                // Use Remote AltServer when set up and preferred.
+                if UserDefaults.standard.prefersRemoteAltServer
                 {
                     // AltServerless route
                     anisetteData = try await self.fetchAnisetteDataFromAvailableServer()

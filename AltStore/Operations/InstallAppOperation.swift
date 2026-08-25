@@ -163,8 +163,8 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Prefer on-device when a pairing file is available; fall back to AltServer otherwise.
-                    if AppManager.shared.devicePairingFile != nil
+                    // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
+                    if UserDefaults.standard.prefersRemoteAltServer
                     {
                         try await self.installOnDevice(resignedApp: resignedApp)
                     }
