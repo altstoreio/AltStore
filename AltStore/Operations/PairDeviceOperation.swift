@@ -38,10 +38,15 @@ extension PairError
         typealias Error = PairError
         
         case unknown
+        case timedOut
     }
     
     static func unknown(failureReason: String = String(localized: "An unknown error occurred."), file: String = #fileID, line: UInt = #line) -> PairError {
         PairError(code: .unknown, errorFailureReason: failureReason, sourceFile: file, sourceLine: line)
+    }
+    
+    static func timedOut(file: String = #fileID, line: UInt = #line) -> PairError {
+        PairError(code: .timedOut, errorFailureReason: String(localized: "iOS ended the pairing session before pairing completed."), sourceFile: file, sourceLine: line)
     }
 }
 
@@ -64,6 +69,10 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
     
     private var task: Task<Void, Never>?
     private var service: NetService?
+    
+    override var isExtendedBackgroundTask: Bool {
+        return true
+    }
 
     init(context: OperationContext)
     {
@@ -103,6 +112,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
                         throw error
                     }
                 } expiration: {
+                    self.finish(.failure(PairError.timedOut()))
                     self.cancel()
                 }
                 
