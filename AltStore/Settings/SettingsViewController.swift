@@ -72,6 +72,12 @@ extension SettingsViewController
     {
         case exportCertificate
     }
+    
+    fileprivate enum RemoteAltServerRow: Int, CaseIterable
+    {
+        case server
+        case preferRemote
+    }
 }
 
 class SettingsViewController: UITableViewController
@@ -95,6 +101,7 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
     @IBOutlet private var disableResponseCachingSwitch: UISwitch!
+    @IBOutlet private var prefersRemoteAltServerSwitch: UISwitch!
     
     @IBOutlet private var mastodonButton: UIButton!
     @IBOutlet private var threadsButton: UIButton!
@@ -103,6 +110,8 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var githubButton: UIButton!
     
     @IBOutlet private var versionLabel: UILabel!
+    
+    @IBOutlet private var remoteAltServerCell: InsetGroupTableViewCell!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -248,6 +257,7 @@ private extension SettingsViewController
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
+        self.prefersRemoteAltServerSwitch.isOn = UserDefaults.standard.prefersRemoteAltServer
         
         self.isRemoteAltServerConfigured = (Keychain.shared.devicePairingFile != nil)
         
@@ -258,11 +268,13 @@ private extension SettingsViewController
             
             self.remoteAltServerLabel.text = String(localized: "Server")
             self.serverURLLabel.text = serverName ?? preferredURL?.host ?? String(localized: "None")
+            self.remoteAltServerCell.style = .top
         }
         else
         {
             self.remoteAltServerLabel.text = String(localized: "Set up Remote AltServer…")
             self.serverURLLabel.text = nil
+            self.remoteAltServerCell.style = .single
         }
         
         if self.isViewLoaded
@@ -355,7 +367,7 @@ private extension SettingsViewController
             else
             {
                 settingsHeaderFooterView.secondaryLabel.text = self.isRemoteAltServerConfigured
-                    ? NSLocalizedString("Sideload apps without a computer using Remote AltServer.", comment: "")
+                    ? NSLocalizedString("When enabled, AltStore will sideload apps using Remote AltServer instead of a computer.", comment: "")
                     : NSLocalizedString("Set up Remote AltServer to sideload apps without a computer.", comment: "")
             }
             
@@ -489,6 +501,11 @@ private extension SettingsViewController
     @IBAction func toggleDisableResponseCaching(_ sender: UISwitch)
     {
         UserDefaults.standard.responseCachingDisabled = sender.isOn
+    }
+    
+    @IBAction func togglePrefersRemoteAltServer(_ sender: UISwitch)
+    {
+        UserDefaults.standard.prefersRemoteAltServer = sender.isOn
     }
     
     @IBAction func addRefreshAppsShortcut()
@@ -833,6 +850,7 @@ extension SettingsViewController
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 4
         case .appRefresh: return AppRefreshRow.allCases.count
+        case .remoteAltServer: return self.isRemoteAltServerConfigured ? RemoteAltServerRow.allCases.count : 1
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
     }
@@ -949,13 +967,20 @@ extension SettingsViewController
             }
         
         case .remoteAltServer:
-            if self.isRemoteAltServerConfigured
+            let row = RemoteAltServerRow.allCases[indexPath.row]
+            switch row
             {
-                self.showRemoteAltServer()
-            }
-            else
-            {
-                self.setUpRemoteAltServer()
+            case .server:
+                if self.isRemoteAltServerConfigured
+                {
+                    self.showRemoteAltServer()
+                }
+                else
+                {
+                    self.setUpRemoteAltServer()
+                }
+                
+            case .preferRemote: break
             }
             
         case .techyThings:
