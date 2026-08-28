@@ -629,25 +629,21 @@ private extension SettingsViewController
             self.tableView.deselectRow(at: selectedIndexPath, animated: true)
         }
         
-        if #available(iOS 26, *) {
-            let hostingController = RemoteAltServerSetupView.makeViewController {
-                // Completing setup is the opt-in. Promote the bundled pairing file into
-                // the keychain if needed, then default to preferring the on-device route.
-                if Keychain.shared.devicePairingFile == nil
-                {
-                    Keychain.shared.devicePairingFile = AppManager.shared.devicePairingFile
-                }
-                
-                UserDefaults.standard.prefersRemoteAltServer = true
-                
-                self.update()
-                self.dismiss(animated: true)
+        let hostingController = RemoteAltServerSetupView.makeViewController {
+            // Completing setup is the opt-in. Promote the bundled pairing file into
+            // the keychain if needed, then default to preferring the on-device route.
+            if Keychain.shared.devicePairingFile == nil
+            {
+                Keychain.shared.devicePairingFile = AppManager.shared.devicePairingFile
             }
             
-            self.present(hostingController, animated: true)
-        } else {
-            // TODO: clean this up later
+            UserDefaults.standard.prefersRemoteAltServer = true
+            
+            self.update()
+            self.dismiss(animated: true)
         }
+        
+        self.present(hostingController, animated: true)
     }
 
     @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)

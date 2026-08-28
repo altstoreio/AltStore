@@ -10,7 +10,6 @@ import SwiftUI
 
 import AltStoreCore
 
-@available(iOS 26, *)
 extension RemoteAltServerSetupView
 {
     enum Step
@@ -33,8 +32,8 @@ extension RemoteAltServerSetupView
     {
         var plan: [Step] = [.welcome]
         
-        // Relies on the fact that sign-in is required before this view is shown,
-        // so nil definitely means "no pairing file" — not "bundled file we can't decrypt yet".
+        // Relies on the fact that sign-in is required before this view is shown, so nil
+        // definitely means "no pairing file" — not "bundled file we can't decrypt yet".
         if AppManager.shared.devicePairingFile == nil
         {
             if #available(iOS 27, *)
@@ -54,7 +53,6 @@ extension RemoteAltServerSetupView
     }
 }
 
-@available(iOS 26, *)
 struct RemoteAltServerSetupView: View
 {
     let plan: [Step]
@@ -68,7 +66,7 @@ struct RemoteAltServerSetupView: View
     private var pairingState: PairingState = .idle
     
     @State
-    private var pairingAttempt: Int?
+    private var pairingAttempt: Int = 0
 
     @State
     private var isShowingError = false
@@ -78,12 +76,6 @@ struct RemoteAltServerSetupView: View
     
     @Environment(\.dismiss)
     private var dismiss
-    
-    init(plan: [Step], completionHandler: @escaping () -> Void)
-    {
-        self.plan = plan
-        self.completionHandler = completionHandler
-    }
     
     var body: some View {
         NavigationStack {
@@ -98,12 +90,22 @@ struct RemoteAltServerSetupView: View
                 }
             }
             .toolbar {
-                SwiftUI.Button(role: .close) {
-                    dismiss()
+                if #available(iOS 26, *)
+                {
+                    SwiftUI.Button(role: .close) {
+                        dismiss()
+                    }
+                }
+                else
+                {
+                    SwiftUI.Button("Cancel") {
+                        dismiss()
+                    }
+                    .tint(Color(.altPrimary))
                 }
             }
             .task(id: pairingAttempt) {
-                guard pairingAttempt != nil else { return } // Only pair after a tap.
+                guard pairingAttempt > 0 else { return } // Only pair after a tap.
                 
                 do
                 {
@@ -118,32 +120,27 @@ struct RemoteAltServerSetupView: View
                         try await AppManager.shared.waitForPairingFile()
                     }
                     
-                    // Pairing can finish while the user is in the Settings app, so wait for them to come back before showing the result.
+                    // Pairing can finish while the user is in the Settings app or behind a system prompt, so wait until they can see the result.
                     if UIApplication.shared.applicationState != .active
                     {
-                        for await _ in NotificationCenter.default.notifications(named: UIApplication.willEnterForegroundNotification)
+                        for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
                         {
-                            try await Task.sleep(for: .seconds(0.5))
-                            break // We're in the foreground, so continue
+                            try await Task.sleep(for: .seconds(0.2))
+                            break
                         }
                     }
                     
                     pairingState = .paired
                     
-                    // Brief pause so the user registers 'Paired' before moving on.
-                    try await Task.sleep(for: .seconds(1))
+                    try await Task.sleep(for: .seconds(1)) // Brief pause so the user registers 'Paired' before moving on.
                     advance()
                 }
                 catch is CancellationError { }
                 catch ~PairError.Code.timedOut
                 {
-                    // If pairing timed out but we weren't cancelled, let the user retry.
-                    if !Task.isCancelled
-                    {
-                        pairingState = .idle
-                        errorMessage = String(localized: "Pairing was interrupted. Please try again.")
-                        isShowingError = true
-                    }
+                    pairingState = .idle
+                    errorMessage = String(localized: "Pairing was interrupted. Please try again.")
+                    isShowingError = true
                 }
                 catch
                 {
@@ -172,10 +169,9 @@ struct RemoteAltServerSetupView: View
     }
 }
 
-@available(iOS 26, *)
 private extension RemoteAltServerSetupView
 {
-// MARK: - Welcome [Step]
+// MARK: - Welcome
     
     var welcomeStep: some View {
         HeroPage(title: "Remote AltServer",
@@ -189,7 +185,7 @@ private extension RemoteAltServerSetupView
                     ZStack {
                         ForEach(1..<4) { ring in
                             Circle()
-                                .stroke(Color.altSecondary.opacity(0.5 / Double(ring)), lineWidth: 1.5)
+                                .stroke(Color(.altSecondary).opacity(0.5 / Double(ring)), lineWidth: 1.5)
                                 .scaleEffect(1 + Double(ring) * 0.4)
                         }
                     }
@@ -199,13 +195,13 @@ private extension RemoteAltServerSetupView
                     }
                 }
         } content: {
-            Badge(content: Text("Takes about 2 minutes."), color: .altSecondary)
+            GlassBadge(content: Text("Takes about 2 minutes."), color: Color(.altSecondary))
         } buttons: {
             SwiftUI.Button("Begin Setup") { advance() }
         }
     }
     
-// MARK: - Pair With Computer [Step]
+// MARK: - Pair With Computer
     
     var pairWithComputerStep: some View {
         StepPage(title: "Connect to Computer", subtitle: "Plug this device into your computer with a cable, then open AltServer.") {
@@ -214,15 +210,15 @@ private extension RemoteAltServerSetupView
                 .scaledToFit()
                 .frame(maxHeight: 500)
         } accessory: {
-            Badge(content: Text("Tap 'Trust' when prompted."), color: .altSecondary)
+            GlassBadge(content: Text("Tap 'Trust' when prompted."), color: Color(.altSecondary))
         } buttons: {
             PairingButton(state: pairingState, idleTitle: "Pair with AltServer", waitingTitle: "Connecting to AltServer…") {
-                pairingAttempt = (pairingAttempt ?? 0) + 1
+                pairingAttempt += 1
             }
         }
     }
     
-// MARK: - Pair On Device [Step]
+// MARK: - Pair On Device
     
     var pairOnDeviceStep: some View {
         StepPage(title: "Pair in Settings", subtitle: "Go to Privacy & Security > Developer Mode, then tap 'Pair with AltStore'.") {
@@ -231,15 +227,15 @@ private extension RemoteAltServerSetupView
                 .scaledToFit()
                 .frame(maxHeight: 580)
         } accessory: {
-            Badge(content: Text("Enter passcode when prompted."), color: .altSecondary)
+            GlassBadge(content: Text("Enter passcode when prompted."), color: Color(.altSecondary))
         } buttons: {
             PairingButton(state: pairingState, idleTitle: "Open Settings", waitingTitle: "Waiting to Pair…") {
-                pairingAttempt = (pairingAttempt ?? 0) + 1
+                pairingAttempt += 1
             }
         }
     }
     
-// MARK: - Install VPN [Step]
+// MARK: - Install VPN
     
     var installVPNStep: some View {
         InstallVPNStep(advance: advance)
@@ -270,7 +266,7 @@ private extension RemoteAltServerSetupView
             } accessory: {
                 if isVPNConnected
                 {
-                    Badge(content: Text("\(Image(systemName: "circle.fill")) Connected"), color: .green)
+                    GlassBadge(content: Text("\(Image(systemName: "circle.fill")) Connected"), color: .green)
                 }
             } buttons: {
                 if isVPNConnected
@@ -281,12 +277,19 @@ private extension RemoteAltServerSetupView
                 {
                     SwiftUI.Button("Get LocalDevVPN") { openURL(URL(string: "https://apps.apple.com/app/id6755608044")!) }
                     
-                    SwiftUI.Button("Not Now") { advance() }
-                        .buttonStyle(.glass)
+                    if #available(iOS 26, *)
+                    {
+                        SwiftUI.Button("Not Now") { advance() }
+                            .buttonStyle(.glass)
+                    }
+                    else
+                    {
+                        SwiftUI.Button("Not Now") { advance() }
+                            .buttonStyle(.bordered)
+                    }
                 }
             }
             .animation(.default, value: isVPNConnected)
-            .sensoryFeedback(.success, trigger: isVPNConnected) { _, newValue in newValue }
             .task {
                 // Don't overwrite the seeded value from a preview.
                 guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" else { return }
@@ -294,7 +297,7 @@ private extension RemoteAltServerSetupView
                 isVPNConnected = await AppManager.shared.isReachableOnDevice()
                 
                 // Check VPN status whenever the user comes back to the app.
-                // Using didBecomeActive over willEnterForeground because it also fires when Control Center is dismissed.
+                // didBecomeActive rather than willEnterForeground because it also fires when Control Center is dismissed.
                 for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
                 {
                     isVPNConnected = await AppManager.shared.isReachableOnDevice()
@@ -303,7 +306,7 @@ private extension RemoteAltServerSetupView
         }
     }
     
-// MARK: - Finish [Step]
+// MARK: - Setup Complete
     
     var finishStep: some View {
         HeroPage(title: "Setup Complete", subtitle: "Remote AltServer needs two things whenever you sideload:") {
@@ -316,7 +319,7 @@ private extension RemoteAltServerSetupView
                 HStack(alignment: .top, spacing: 15) {
                     Image(systemName: "wifi")
                         .font(.title2.bold())
-                        .foregroundStyle(Color.altSecondary)
+                        .foregroundStyle(Color(.altSecondary))
                         .frame(width: 36)
                     
                     VStack(alignment: .leading, spacing: 2) {
@@ -333,7 +336,7 @@ private extension RemoteAltServerSetupView
                 HStack(alignment: .top, spacing: 15) {
                     Image(systemName: "powerplug.fill")
                         .font(.title2.bold())
-                        .foregroundStyle(Color.altSecondary)
+                        .foregroundStyle(Color(.altSecondary))
                         .frame(width: 36)
                     
                     VStack(alignment: .leading, spacing: 2) {
@@ -357,37 +360,32 @@ private extension RemoteAltServerSetupView
 
 // MARK: - Page Layouts
 
-@available(iOS 26, *)
 private struct HeroPage<Graphic: View, Content: View, Buttons: View>: View
 {
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
     
-    private let graphic: Graphic
-    private let content: Content
-    private let buttons: Buttons
+    @ViewBuilder
+    let graphic: () -> Graphic
     
-    init(title: LocalizedStringKey, subtitle: LocalizedStringKey, @ViewBuilder graphic: () -> Graphic, @ViewBuilder content: () -> Content, @ViewBuilder buttons: () -> Buttons)
-    {
-        self.title = title
-        self.subtitle = subtitle
-        self.graphic = graphic()
-        self.content = content()
-        self.buttons = buttons()
-    }
+    @ViewBuilder
+    let content: () -> Content
+    
+    @ViewBuilder
+    let buttons: () -> Buttons
     
     var body: some View {
         VStack(spacing: 30) {
-            graphic
+            graphic()
                 .background {
                     ZStack {
                         Circle()
-                            .fill(Color.altLight.opacity(0.8))
+                            .fill(Color(.altLight).opacity(0.6))
                             .frame(width: 300, height: 300)
                             .blur(radius: 100)
                         
                         Circle()
-                            .fill(Color.altSecondary.opacity(0.3))
+                            .fill(Color(.altSecondary).opacity(0.2))
                             .frame(width: 250, height: 250)
                             .blur(radius: 100)
                     }
@@ -406,48 +404,35 @@ private struct HeroPage<Graphic: View, Content: View, Buttons: View>: View
             .multilineTextAlignment(.center)
             .layoutPriority(1)
             
-            content
+            content()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .safeAreaBar(edge: .bottom, spacing: 30) {
-            VStack(spacing: 10) {
-                buttons
-            }
-            .bold()
-            .tint(.altPrimary)
-            .buttonStyle(.glassProminent)
-            .controlSize(.large)
-            .buttonSizing(.flexible)
-            .padding(.horizontal, 34)
-        }
+        .bottomButtonBar(buttons: {
+            buttons()
+        })
         .transition(.push(from: .trailing))
     }
 }
 
-@available(iOS 26, *)
 private struct StepPage<Graphic: View, Accessory: View, Buttons: View>: View
 {
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
     
-    private let graphic: Graphic
-    private let accessory: Accessory
-    private let buttons: Buttons
+    @ViewBuilder
+    let graphic: () -> Graphic
     
-    init(title: LocalizedStringKey, subtitle: LocalizedStringKey, @ViewBuilder graphic: () -> Graphic, @ViewBuilder accessory: () -> Accessory, @ViewBuilder buttons: () -> Buttons)
-    {
-        self.title = title
-        self.subtitle = subtitle
-        self.graphic = graphic()
-        self.accessory = accessory()
-        self.buttons = buttons()
-    }
+    @ViewBuilder
+    let accessory: () -> Accessory
+    
+    @ViewBuilder
+    let buttons: () -> Buttons
     
     var body: some View {
         ViewThatFits(in: .vertical) {
             // Everything fits: content takes priority and graphic fills remaining space.
             VStack(spacing: 30) {
-                graphic
+                graphic()
                     .frame(idealHeight: 0, maxHeight: .infinity, alignment: .center)
                     .accessibilityHidden(true)
                 
@@ -460,17 +445,9 @@ private struct StepPage<Graphic: View, Accessory: View, Buttons: View>: View
             }
             .scrollBounceBehavior(.basedOnSize)
         }
-        .safeAreaBar(edge: .bottom, spacing: 40) {
-            VStack(spacing: 10) {
-                buttons
-            }
-            .bold()
-            .tint(.altPrimary)
-            .buttonStyle(.glassProminent)
-            .controlSize(.large)
-            .buttonSizing(.flexible)
-            .padding(.horizontal, 34)
-        }
+        .bottomButtonBar(buttons: {
+            buttons()
+        })
         .transition(.push(from: .trailing))
     }
     
@@ -486,14 +463,13 @@ private struct StepPage<Graphic: View, Accessory: View, Buttons: View>: View
             .padding(.horizontal, 50)
             .multilineTextAlignment(.center)
 
-            accessory
+            accessory()
         }
     }
 }
 
 // MARK: - Components
 
-@available(iOS 26, *)
 private struct PairingButton: View
 {
     let state: RemoteAltServerSetupView.PairingState
@@ -529,38 +505,84 @@ private struct PairingButton: View
             }
             .bold()
         }
-        .tint(state == .paired ? .green : .altPrimary)
+        .tint(state == .paired ? .green : Color(.altPrimary))
         .disabled(state == .waiting)
         .allowsHitTesting(state != .paired) // Prevents interaction during confirmation state
         .animation(.default, value: state)
     }
 }
 
-@available(iOS 26, *)
-private struct Badge: View
+private struct GlassBadge: View
 {
     let content: Text
     let color: Color
     
     var body: some View {
-        content
-            .font(.footnote.bold())
-            .foregroundStyle(color)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .glassEffect(.regular.tint(color.opacity(0.1)), in: .capsule)
+        if #available(iOS 26, *)
+        {
+            content
+                .font(.footnote.bold())
+                .foregroundStyle(color)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .glassEffect(.regular.tint(color.opacity(0.1)), in: .capsule)
+        }
+        else
+        {
+            content
+                .font(.footnote.bold())
+                .foregroundStyle(color)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(color.opacity(0.1), in: .capsule)
+        }
     }
 }
 
-extension Color
+private struct BottomButtonBar<Buttons: View>: ViewModifier
 {
-    static let altPrimary = Color(uiColor: .altPrimary)
-    static let altSecondary = Color(red: 64/255, green: 165/255, blue: 155/255)
-    static let altLight = Color(red: 129/255, green: 210/255, blue: 185/255)
-    static let altDark = Color(red: 5/255, green: 60/255, blue: 60/255)
+    let buttons: Buttons
+    
+    func body(content: Content) -> some View
+    {
+        if #available(iOS 26, *)
+        {
+            content.safeAreaBar(edge: .bottom, spacing: 40) {
+                VStack(spacing: 10) {
+                    buttons
+                }
+                .bold()
+                .tint(Color(.altPrimary))
+                .controlSize(.large)
+                .padding(.horizontal, 34)
+                .buttonStyle(.glassProminent)
+                .buttonSizing(.flexible)
+            }
+        }
+        else
+        {
+            content.safeAreaInset(edge: .bottom, spacing: 40) {
+                VStack(spacing: 10) {
+                    buttons
+                }
+                .bold()
+                .tint(Color(.altPrimary))
+                .controlSize(.large)
+                .padding(.horizontal, 34)
+                .buttonStyle(.borderedProminent)
+            }
+        }
+    }
 }
 
-@available(iOS 26, *)
+private extension View
+{
+    func bottomButtonBar<Buttons: View>(@ViewBuilder buttons: () -> Buttons) -> some View
+    {
+        modifier(BottomButtonBar(buttons: buttons()))
+    }
+}
+
 extension RemoteAltServerSetupView
 {
     @MainActor
@@ -576,7 +598,6 @@ extension RemoteAltServerSetupView
 
 // MARK: - Previews
 
-@available(iOS 26, *)
 private struct SetupPreview: View
 {
     let plan: [RemoteAltServerSetupView.Step]
@@ -592,31 +613,21 @@ private struct SetupPreview: View
 }
 
 #Preview("Computer Pairing") {
-    if #available(iOS 26, *) {
-        SetupPreview(plan: [.welcome, .pairWithComputer, .installVPN, .finish])
-    }
+    SetupPreview(plan: [.welcome, .pairWithComputer, .installVPN, .finish])
 }
 
 #Preview("On-Device Pairing") {
-    if #available(iOS 26, *) {
-        SetupPreview(plan: [.welcome, .pairOnDevice, .installVPN, .finish])
-    }
+    SetupPreview(plan: [.welcome, .pairOnDevice, .installVPN, .finish])
 }
 
 #Preview("Bundled File") {
-    if #available(iOS 26, *) {
-        SetupPreview(plan: [.welcome, .installVPN, .finish])
-    }
+    SetupPreview(plan: [.welcome, .installVPN, .finish])
 }
 
 #Preview("Bookends") {
-    if #available(iOS 26, *) {
-        SetupPreview(plan: [.welcome, .finish])
-    }
+    SetupPreview(plan: [.welcome, .finish])
 }
 
 #Preview("VPN Connected") {
-    if #available(iOS 26, *) {
-        RemoteAltServerSetupView.InstallVPNStep(isVPNConnected: true) { }
-    }
+    RemoteAltServerSetupView.InstallVPNStep(isVPNConnected: true) { }
 }
