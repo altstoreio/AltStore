@@ -8,6 +8,7 @@
 
 import Foundation
 import BackgroundTasks
+import Network
 
 import AltStoreCore
 import AltSign
@@ -69,6 +70,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
     
     private var task: Task<Void, Never>?
     private var service: NetService?
+    private var port: Int?
     
     override var isExtendedBackgroundTask: Bool {
         return true
@@ -132,7 +134,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
         super.cancel()
         
         self.task?.cancel()
-        self.service?.stop() // Explicitly stop because finish may not be called (e.g. when setup sheet is dismissed).
+        self.stopPairingListener()
     }
     
     override func finish(_ result: Result<Void, any Error>)
@@ -155,6 +157,8 @@ private extension PairDeviceOperation
         
         // Publish Bonjour service once we receive pairing callback with required info
         let observer = NotificationCenter.default.addObserver(of: self, for: .pairingReady) { message in
+            self.port = message.port
+            
             let txtRecordData = NetService.data(fromTXTRecord: message.txtRecord)
             
             let service = NetService(domain: "", type: "_remotepairing-pairable-host._tcp.", name: message.serviceID, port: Int32(message.port))
@@ -201,6 +205,23 @@ private extension PairDeviceOperation
         _ = try FetchPairingFileOperation.PairingFile(data: data)
         
         return data
+    }
+    
+    // rp_pairing_host_run waits for a device to connect and can't be stopped directly,
+    // so briefly connect to it ourselves to make it return and clean up after itself.
+    func stopPairingListener()
+    {
+        guard let port = self.port, let nwPort = NWEndpoint.Port(rawValue: UInt16(port)) else { return }
+        
+        let connection = NWConnection(host: "127.0.0.1", port: nwPort, using: .tcp)
+        connection.stateUpdateHandler = { state in
+            switch state
+            {
+            case .ready, .waiting, .failed: connection.cancel()
+            default: break
+            }
+        }
+        connection.start(queue: .global())
     }
 }
 
