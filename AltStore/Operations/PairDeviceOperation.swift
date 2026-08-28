@@ -132,6 +132,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
         super.cancel()
         
         self.task?.cancel()
+        self.service?.stop() // Explicitly stop because finish may not be called (e.g. when setup sheet is dismissed).
     }
     
     override func finish(_ result: Result<Void, any Error>)
