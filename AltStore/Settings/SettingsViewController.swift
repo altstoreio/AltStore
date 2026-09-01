@@ -640,6 +640,11 @@ private extension SettingsViewController
         let hostingController = RemoteAltServerSetupView.makeViewController {
             UserDefaults.shared.prefersRemoteAltServer = true
             
+            // Selects a default server and provisions adi.pb against it
+            AppManager.shared.fetchAnisetteData { _ in
+                DispatchQueue.main.async { self.update() }
+            }
+            
             self.update()
             self.dismiss(animated: true)
         }

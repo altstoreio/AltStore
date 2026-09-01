@@ -148,6 +148,13 @@ extension AppManager
             pairDeviceOperation.cancel()
         }
     }
+    
+    func fetchAnisetteData(completionHandler: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: OperationContext())
+        fetchAnisetteDataOperation.resultHandler = completionHandler
+        self.run([fetchAnisetteDataOperation], context: nil)
+    }
 }
 
 extension AppManager
