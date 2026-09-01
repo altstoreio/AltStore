@@ -128,7 +128,7 @@ struct RemoteAltServerView: View
                         clearRemoteAltServer()
                     }
                 } message: {
-                    Text("You'll need to pair this device again to set it back up.")
+                    Text("You'll need to go through setup again to use it.")
                 }
             }
         }
@@ -241,6 +241,9 @@ private extension RemoteAltServerView
         UserDefaults.shared.prefersRemoteAltServer = false
         UserDefaults.shared.ignoresBundledPairingFile = true
         Keychain.shared.devicePairingFile = nil
+        
+        UserDefaults.shared.preferredAnisetteServerURL = nil
+        Keychain.shared.anisetteADIPB = nil
         
         dismiss() // Return to Settings
     }
