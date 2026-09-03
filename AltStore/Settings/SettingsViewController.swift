@@ -438,6 +438,7 @@ private extension SettingsViewController
                     
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                     
                 case .success: break

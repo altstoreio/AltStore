@@ -207,7 +207,7 @@ struct OperationError: ALTLocalizedError
             return String(format: NSLocalizedString("Your pledge is no longer active. Please renew it to continue using %@ normally.", comment: ""), appName)
 
         case .vpnNotConnected:
-            return NSLocalizedString("AltStore couldn’t reach Remote AltServer.", comment: "")
+            return NSLocalizedString("AltStore couldn’t reach the remote AltServer.", comment: "")
 
         case .missingPairingFile:
             if #available(iOS 27, *)
@@ -226,7 +226,7 @@ struct OperationError: ALTLocalizedError
             return NSLocalizedString("The URL doesn’t point to a valid remote server.", comment: "")
 
         case .invalidPairingFile:
-            return NSLocalizedString("Pairing didn't complete correctly.", comment: "")
+            return NSLocalizedString("Pairing didn’t complete correctly.", comment: "")
 
         case .wiredConnectionRequired:
             return NSLocalizedString("This device isn’t connected to AltServer via USB.", comment: "")
@@ -239,9 +239,9 @@ struct OperationError: ALTLocalizedError
         {
         case .serverNotFound: return NSLocalizedString("Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB.", comment: "")
         case .vpnNotConnected: return NSLocalizedString("Make sure Wi-Fi and LocalDevVPN are both connected, then try again.", comment: "")
-        case .missingPairingFile: return NSLocalizedString("Set up Remote AltServer in AltStore’s Settings, then try again.", comment: "")
         case .invalidAnisetteResponse: return NSLocalizedString("Try again, or choose a different Remote AltServer in AltStore’s Settings.", comment: "")
         case .invalidAnisetteServer: return NSLocalizedString("Make sure the URL points to a valid remote server and try again.", comment: "")
+        case .missingPairingFile: return NSLocalizedString("Set up a remote AltServer in AltStore’s settings, then try again.", comment: "")
         case .invalidPairingFile: return NSLocalizedString("Try pairing this device again.", comment: "")
         case .wiredConnectionRequired: return NSLocalizedString("Connect your device to a computer running AltServer via USB, then try again.", comment: "")
         case .maximumAppIDLimitReached:

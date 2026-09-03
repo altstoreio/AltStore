@@ -73,7 +73,7 @@ final class OnDeviceClient: Sendable
                 if let closeError = afc_file_close(file)
                 {
                     let error = OnDeviceError.serviceFailed(ffiError: closeError)
-                    Logger.sideload.error("Failed to close staged .ipa on device: \(error.underlyingError?.localizedDescription ?? "unknown error", privacy: .public)")
+                    Logger.sideload.error("Failed to close staged .ipa on device: \(error.ffiUnderlyingError?.localizedDescription ?? "unknown error", privacy: .public)")
                 }
             }
             
@@ -354,7 +354,7 @@ struct OnDeviceError: ALTLocalizedError
     
     // The original idevice error, stored under Apple's standard key so the Error Log shows it.
     @UserInfoValue(key: NSUnderlyingErrorKey)
-    var underlyingError: NSError? = nil
+    var ffiUnderlyingError: NSError? = nil
     
     var sourceFile: String?
     var sourceLine: UInt?
@@ -375,7 +375,7 @@ struct OnDeviceError: ALTLocalizedError
                 userInfo[NSLocalizedDescriptionKey] = String(cString: message)
             }
             
-            self.underlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
+            self.ffiUnderlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
             
             idevice_error_free(ffiError) // Free the C error.
         }
@@ -384,19 +384,19 @@ struct OnDeviceError: ALTLocalizedError
     var errorFailureReason: String {
         switch self.code
         {
-        case .invalidPairingFile: return String(localized: "AltStore couldn’t read this device’s pairing.")
+        case .invalidPairingFile: return String(localized: "AltStore couldn’t read this device’s pairing info.")
         case .pairingNotTrusted: return String(localized: "This device is no longer paired with AltStore.")
-        case .connectionFailed: return String(localized: "AltStore couldn’t connect to this device.")
-        case .serviceFailed: return String(localized: "AltStore couldn’t communicate with this device.")
+        case .connectionFailed: return String(localized: "AltStore couldn’t connect to the remote AltServer.")
+        case .serviceFailed: return String(localized: "The remote AltServer couldn’t complete this operation.")
         }
     }
     
     var recoverySuggestion: String? {
         switch self.code
         {
-        case .invalidPairingFile, .pairingNotTrusted: return String(localized: "Pair this device again from Remote AltServer in AltStore’s Settings.")
-        case .connectionFailed: return String(localized: "Make sure the VPN is connected, then try again.")
-        case .serviceFailed: return nil
+        case .invalidPairingFile, .pairingNotTrusted: return String(localized: "Reset remote AltServer in AltStore’s settings, then set it up again.")
+        case .connectionFailed: return String(localized: "Make sure Wi-Fi and LocalDevVPN are both connected, then try again.")
+        case .serviceFailed: return String(localized: "Try again.")
         }
     }
 }
