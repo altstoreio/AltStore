@@ -15,7 +15,6 @@ import Combine
 import CryptoKit
 import WidgetKit
 import UniformTypeIdentifiers
-import Network
 
 import AltStoreCore
 import AltSign
@@ -126,77 +125,10 @@ extension AppManager
         }
     }
 
-    // Creates a fresh client for the on-device services from the current pairing file.
-    // Throws if the pairing file is missing, unreadable, or a classic (pre-iOS 17) record.
-    func onDeviceClient() throws -> OnDeviceClient
+    func makeOnDeviceClient() throws -> OnDeviceClient
     {
         guard let pairingFile = self.devicePairingFile else { throw OperationError.missingPairingFile() }
         return try OnDeviceClient(pairingFile: pairingFile)
-    }
-    
-    // Gates each on-device flow: validates the pairing file and confirms the device is reachable.
-    func startOnDeviceConnection() async throws
-    {
-        do
-        {
-            _ = try self.onDeviceClient()
-        }
-        catch
-        {
-            Logger.sideload.error("Failed to start device client: \(error.localizedDescription, privacy: .public)")
-            throw (error as NSError).withLocalizedFailure(String(localized: "AltStore couldn’t start the device client."))
-        }
-
-        guard await self.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-    }
-
-    // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
-    // Can block while waiting for a response, so it's async to keep callers off the main thread.
-    func isReachableOnDevice() async -> Bool
-    {
-        // Give up if the device hasn't responses in a second. Normally connects in a few ms.
-        let tcpOptions = NWProtocolTCP.Options()
-        tcpOptions.connectionTimeout = 1
-        
-        let isReachable = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            let connection = NWConnection(host: "10.7.0.1", port: 49152, using: NWParameters(tls: nil, tcp: tcpOptions))
-            let queue = DispatchQueue(label: "io.altstore.reachability-probe")
-            
-            // We can only resume the continuation once, so stop listening for state changes before we do.
-            @Sendable func finish(_ result: Bool)
-            {
-                connection.stateUpdateHandler = nil
-                connection.cancel()
-                continuation.resume(returning: result)
-            }
-            
-            connection.stateUpdateHandler = { (state) in
-                switch state
-                {
-                case .ready: finish(true)
-                case .waiting(let error):
-                    // https://developer.apple.com/documentation/network/nwconnection/state-swift.enum/waiting(_:)
-                    // Waiting means "no route to the device right now." Signals VPN is off.
-                    Logger.sideload.error("Couldn't reach the device. \(error.localizedDescription, privacy: .public)")
-                    finish(false)
-                    
-                case .failed(let error):
-                    Logger.sideload.error("Reachability probe failed. \(error.localizedDescription, privacy: .public)")
-                    finish(false)
-                    
-                default: break // Still connecting (.setup/.preparing), or the .cancelled we trigger in finish().
-                }
-            }
-            
-            connection.start(queue: queue)
-        }
-        
-        guard isReachable else
-        {
-            Logger.sideload.error("Device not reachable at 10.7.0.1 — VPN tunnel likely down.")
-            return false
-        }
-        return true
     }
 }
 
@@ -324,17 +256,21 @@ extension AppManager
             return self.findServer(context: context) { _ in }
         }
 
-        // Validates the pairing file and VPN reachability before any on-device sideloading.
-        let startDeviceSessionOperation = RSTAsyncBlockOperation { (operation) in
+        // Confirms the pairing file is usable and the device is reachable before any on-device sideloading.
+        let testConnectionOperation = RSTAsyncBlockOperation { (operation) in
             Task<Void, Never> {
-                do { try await AppManager.shared.startOnDeviceConnection() }
+                do
+                {
+                    let client = try AppManager.shared.makeOnDeviceClient()
+                    try await client.testConnection()
+                }
                 catch { context.error = error }
                 operation.finish()
             }
         }
-        self.run([startDeviceSessionOperation], context: context)
-
-        return startDeviceSessionOperation
+        self.run([testConnectionOperation], context: context)
+        
+        return testConnectionOperation
     }
 
     @discardableResult

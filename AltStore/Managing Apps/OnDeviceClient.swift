@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Network
 import IDevice
 import AltStoreCore
 import AltSign
@@ -14,8 +15,8 @@ import AltSign
 /// Installs apps and manages provisioning profiles on this device itself, over the loopback VPN. Each operation opens and closes its own tunnel.
 final class OnDeviceClient: Sendable
 {
-    private static let tunnelHost = "10.7.0.1"
-    private static let tunnelPort: UInt16 = 49152
+    private static let tunnelHost = "10.7.0.1" // The address LocalDevVPN assigns to this device (must match the VPN's configured address).
+    private static let tunnelPort: UInt16 = 49152 // The fixed port iOS's pairing service listens on.
     
     private static let tunnelAddress: sockaddr_in = {
         var address = sockaddr_in()
@@ -32,16 +33,27 @@ final class OnDeviceClient: Sendable
     
     init(pairingFile: Data) throws
     {
+        let record: [String: Any]?
+        do
+        {
+            record = try PropertyListSerialization.propertyList(from: pairingFile, options: [], format: nil) as? [String: Any]
+        }
+        catch
+        {
+            Logger.sideload.error("Failed to parse pairing file: \(error.localizedDescription, privacy: .public)")
+            throw OnDeviceError.invalidPairingFile()
+        }
+        
         // RP-pairing records (iOS 17+) contain `private_key` (and older lockdown records aren't supported yet).
-        guard let record = try? PropertyListSerialization.propertyList(from: pairingFile, options: [], format: nil) as? [String: Any],
-              record["private_key"] != nil
-        else { throw OnDeviceError.invalidPairingFile() }
+        guard let record, record["private_key"] != nil else { throw OnDeviceError.invalidPairingFile() }
         
         self.pairingFileData = pairingFile
     }
     
     func installApp(ipaURL: URL, bundleIdentifier: String, progress: Progress) async throws
     {
+        progress.totalUnitCount = 100
+        
         let stagingPath = "/PublicStaging/\(bundleIdentifier).ipa"
         
         Logger.sideload.notice("Transferring \(bundleIdentifier, privacy: .public) to device...")
@@ -51,19 +63,23 @@ final class OnDeviceClient: Sendable
             let ipaData = try Data(contentsOf: ipaURL, options: .mappedIfSafe)
             
             var file: OpaquePointer?
-            if let openError = afc_file_open(afc, stagingPath, AfcWrOnly, &file) // Open the file.
+            if let openError = afc_file_open(afc, stagingPath, AfcWrOnly, &file)
             {
                 throw OnDeviceError.serviceFailed(ffiError: openError)
             }
             defer
             {
-                // Close the file, and since we can't throw, just free the error if there is one.
-                if let error = afc_file_close(file) { idevice_error_free(error) }
+                // Close the file, and since we can't throw, just log any error and free it.
+                if let closeError = afc_file_close(file)
+                {
+                    let error = OnDeviceError.serviceFailed(ffiError: closeError)
+                    Logger.sideload.error("Failed to close staged .ipa on device: \(error.underlyingError?.localizedDescription ?? "unknown error", privacy: .public)")
+                }
             }
             
             try ipaData.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
                 let bytes = buffer.bindMemory(to: UInt8.self)
-                if let writeError = afc_file_write(file, bytes.baseAddress, bytes.count) // Write to the file.
+                if let writeError = afc_file_write(file, bytes.baseAddress, bytes.count)
                 {
                     throw OnDeviceError.serviceFailed(ffiError: writeError)
                 }
@@ -88,19 +104,19 @@ final class OnDeviceClient: Sendable
     func removeApp(bundleIdentifier: String) async throws
     {
         try await self.perform(withService: .installationProxy) { proxy in
-            if let uninstallError = installation_proxy_uninstall(proxy, bundleIdentifier, nil) // Uninstall the app.
+            if let uninstallError = installation_proxy_uninstall(proxy, bundleIdentifier, nil)
             {
                 throw OnDeviceError.serviceFailed(ffiError: uninstallError)
             }
         }
     }
     
-    func installProvisioningProfile(_ data: Data) async throws
+    func installProvisioningProfile(_ profile: ALTProvisioningProfile) async throws
     {
         try await self.perform(withService: .misagent) { misagent in
-            try data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
+            try profile.data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
                 let bytes = buffer.bindMemory(to: UInt8.self)
-                if let installError = misagent_install(misagent, bytes.baseAddress, bytes.count) // Install the profile (used to refresh an app).
+                if let installError = misagent_install(misagent, bytes.baseAddress, bytes.count)
                 {
                     throw OnDeviceError.serviceFailed(ffiError: installError)
                 }
@@ -116,7 +132,7 @@ final class OnDeviceClient: Sendable
             var lengths: UnsafeMutablePointer<Int>?
             var count = 0
             
-            if let copyError = misagent_copy_all(misagent, &rawProfiles, &lengths, &count) // Get all installed profiles.
+            if let copyError = misagent_copy_all(misagent, &rawProfiles, &lengths, &count)
             {
                 throw OnDeviceError.serviceFailed(ffiError: copyError)
             }
@@ -143,11 +159,17 @@ final class OnDeviceClient: Sendable
     func removeProvisioningProfile(_ profile: ALTProvisioningProfile) async throws
     {
         try await self.perform(withService: .misagent) { misagent in
-            if let removeError = misagent_remove(misagent, profile.uuid.uuidString.lowercased()) // Remove the profile. (Lowercase required, confirmed on device.)
+            if let removeError = misagent_remove(misagent, profile.uuid.uuidString.lowercased()) // Lowercase required, confirmed on device.
             {
                 throw OnDeviceError.serviceFailed(ffiError: removeError)
             }
         }
+    }
+
+    // Confirms the device is reachable over the VPN without opening a tunnel.
+    func testConnection() async throws
+    {
+        guard await Self.isReachable() else { throw OperationError.vpnNotConnected() }
     }
 }
 
@@ -160,10 +182,62 @@ private extension OnDeviceClient
         case misagent           // manages provisioning profiles
     }
     
-    // Runs a device session on the shared background queue, suspending until it finishes (and ignoring cancellation - same as minimuxer).
+    // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
+    // Can block while waiting for a response, so it's async to keep callers off the main thread.
+    static func isReachable() async -> Bool
+    {
+        // Give up if the device hasn't responded in a second. Normally connects in a few ms.
+        let tcpOptions = NWProtocolTCP.Options()
+        tcpOptions.connectionTimeout = 1
+        
+        let isReachable = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let connection = NWConnection(host: NWEndpoint.Host(tunnelHost), port: NWEndpoint.Port(integerLiteral: tunnelPort), using: NWParameters(tls: nil, tcp: tcpOptions))
+            let queue = DispatchQueue(label: "io.altstore.reachability-probe")
+            
+            // We can only resume the continuation once, so stop listening for state changes before we do.
+            @Sendable func finish(_ result: Bool)
+            {
+                connection.stateUpdateHandler = nil
+                connection.cancel()
+                continuation.resume(returning: result)
+            }
+            
+            connection.stateUpdateHandler = { (state) in
+                switch state
+                {
+                case .ready: finish(true)
+                case .waiting(let error):
+                    // https://developer.apple.com/documentation/network/nwconnection/state-swift.enum/waiting(_:)
+                    // Waiting means "no route to the device right now." Signals VPN is off.
+                    Logger.sideload.error("Couldn't reach the device. \(error.localizedDescription, privacy: .public)")
+                    finish(false)
+                    
+                case .failed(let error):
+                    Logger.sideload.error("Reachability probe failed. \(error.localizedDescription, privacy: .public)")
+                    finish(false)
+                    
+                default: break // Still connecting (.setup/.preparing), or the .cancelled we trigger in finish().
+                }
+            }
+            
+            connection.start(queue: queue)
+        }
+        
+        guard isReachable else
+        {
+            Logger.sideload.error("Device not reachable at \(tunnelHost, privacy: .public) — VPN tunnel likely down.")
+            return false
+        }
+        return true
+    }
+    
+    // Runs a device session on the shared background queue, suspending until it finishes. Sessions always run to completion.
     func perform<T>(withService service: Service, _ body: @escaping (OpaquePointer) throws -> T) async throws -> T
     {
-        try await withCheckedThrowingContinuation { continuation in
+        // Make sure the device is reachable (Wi-Fi + VPN on) before we touch the tunnel. (This also means a socket error later can't be blamed on the VPN.)
+        guard await Self.isReachable() else { throw OperationError.vpnNotConnected() }
+
+        return try await withCheckedThrowingContinuation { continuation in
             Self.queue.async {
                 let result = Result { try self._perform(withService: service, body) }
                 continuation.resume(with: result)
@@ -179,7 +253,7 @@ private extension OnDeviceClient
         
         let parseError = self.pairingFileData.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
             let bytes = buffer.bindMemory(to: UInt8.self)
-            return rp_pairing_file_from_bytes(bytes.baseAddress, UInt(bytes.count), &pairingFile) // Parse the pairing file.
+            return rp_pairing_file_from_bytes(bytes.baseAddress, UInt(bytes.count), &pairingFile)
         }
         if let parseError
         {
@@ -201,9 +275,10 @@ private extension OnDeviceClient
         }
         if let connectError
         {
-            // We know the VPN is reachable, so a socket error here almost definitely means the device revoked its pairing trust.
+            // The device dropping our connection like this means it revoked its pairing trust (confirmed on device).
             let socketErrorCode: Int32 = 1
-            if connectError.pointee.code == socketErrorCode
+            let connectionResetSubCode: Int32 = 54
+            if connectError.pointee.code == socketErrorCode, connectError.pointee.sub_code == connectionResetSubCode
             {
                 throw OnDeviceError.pairingNotTrusted(ffiError: connectError)
             }
@@ -229,6 +304,9 @@ private extension OnDeviceClient
         {
             throw OnDeviceError.serviceFailed(ffiError: serviceError)
         }
+        
+        guard let client else { throw OperationError.unknown() }
+        
         defer
         {
             switch service
@@ -239,7 +317,7 @@ private extension OnDeviceClient
             }
         }
         
-        return try body(client!)
+        return try body(client)
     }
 }
 

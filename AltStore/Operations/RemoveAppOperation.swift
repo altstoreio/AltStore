@@ -89,11 +89,9 @@ private extension RemoveAppOperation
 {
     func removeOnDevice(bundleIdentifier: String) async throws
     {
-        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
         do
         {
-            let client = try AppManager.shared.onDeviceClient()
+            let client = try AppManager.shared.makeOnDeviceClient()
             try await client.removeApp(bundleIdentifier: bundleIdentifier)
             Logger.sideload.notice("Removed app \(bundleIdentifier, privacy: .public) from device")
         }

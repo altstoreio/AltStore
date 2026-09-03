@@ -226,11 +226,9 @@ private extension InstallAppOperation
         let app = AnyApp(name: resignedApp.name, bundleIdentifier: bundleIdentifier, url: resignedApp.fileURL, storeApp: nil)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
 
-        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
         do
         {
-            let client = try AppManager.shared.onDeviceClient()
+            let client = try AppManager.shared.makeOnDeviceClient()
             try await client.installApp(ipaURL: fileURL, bundleIdentifier: bundleIdentifier, progress: self.progress)
         }
         catch

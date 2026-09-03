@@ -94,11 +94,9 @@ private extension DeactivateAppOperation
     // installed on the device, filter by bundle identifier, remove each by UUID.
     func deactivateOnDevice(bundleIdentifiers: Set<String>) async throws
     {
-        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-        
         // misagent doesn't expose a remove-by-bundle-ID primitive, so list the installed
         // profiles and filter to the ones we want to remove.
-        let client = try AppManager.shared.onDeviceClient()
+        let client = try AppManager.shared.makeOnDeviceClient()
         
         let profiles: [ALTProvisioningProfile]
         do

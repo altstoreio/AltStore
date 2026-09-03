@@ -78,15 +78,13 @@ private extension RefreshAppOperation
 {
     func refreshOnDevice(profiles: Set<ALTProvisioningProfile>) async throws
     {
-        guard await AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
-        let client = try AppManager.shared.onDeviceClient()
+        let client = try AppManager.shared.makeOnDeviceClient()
         
         for profile in profiles
         {
             do
             {
-                try await client.installProvisioningProfile(profile.data)
+                try await client.installProvisioningProfile(profile)
             }
             catch
             {
