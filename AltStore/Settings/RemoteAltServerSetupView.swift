@@ -294,13 +294,13 @@ private extension RemoteAltServerSetupView
                 // Don't overwrite the seeded value from a preview.
                 guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" else { return }
                 
-                isVPNConnected = await AppManager.shared.isReachableOnDevice()
+                isVPNConnected = await OnDeviceClient.isReachable()
                 
                 // Check VPN status whenever the user comes back to the app.
                 // didBecomeActive rather than willEnterForeground because it also fires when Control Center is dismissed.
                 for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
                 {
-                    isVPNConnected = await AppManager.shared.isReachableOnDevice()
+                    isVPNConnected = await OnDeviceClient.isReachable()
                 }
             }
         }

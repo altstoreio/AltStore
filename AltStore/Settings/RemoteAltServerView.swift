@@ -223,7 +223,7 @@ private extension RemoteAltServerView
     {
         while true
         {
-            isConnected = await AppManager.shared.isReachableOnDevice()
+            isConnected = await OnDeviceClient.isReachable()
             
             do
             {

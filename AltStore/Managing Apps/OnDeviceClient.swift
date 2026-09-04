@@ -165,22 +165,6 @@ final class OnDeviceClient: Sendable
             }
         }
     }
-
-    // Confirms the device is reachable over the VPN without opening a tunnel.
-    func testConnection() async throws
-    {
-        guard await Self.isReachable() else { throw OperationError.vpnNotConnected() }
-    }
-}
-
-private extension OnDeviceClient
-{
-    enum Service
-    {
-        case afc                // moves files
-        case installationProxy  // installs/removes apps
-        case misagent           // manages provisioning profiles
-    }
     
     // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
     // Can block while waiting for a response, so it's async to keep callers off the main thread.
@@ -229,6 +213,16 @@ private extension OnDeviceClient
             return false
         }
         return true
+    }
+}
+
+private extension OnDeviceClient
+{
+    enum Service
+    {
+        case afc                // moves files
+        case installationProxy  // installs/removes apps
+        case misagent           // manages provisioning profiles
     }
     
     // Runs a device session on the shared background queue, suspending until it finishes. Sessions always run to completion.

@@ -285,8 +285,8 @@ extension AppManager
             Task<Void, Never> {
                 do
                 {
-                    let client = try AppManager.shared.makeOnDeviceClient()
-                    try await client.testConnection()
+                    let _ = try AppManager.shared.makeOnDeviceClient()
+                    guard await OnDeviceClient.isReachable() else { throw OperationError.vpnNotConnected() }
                 }
                 catch { context.error = error }
                 operation.finish()
