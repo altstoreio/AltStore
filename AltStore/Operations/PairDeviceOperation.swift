@@ -8,29 +8,10 @@
 
 import Foundation
 import BackgroundTasks
-import Network
 
 import AltStoreCore
-import AltSign
-import Roxas
 
 import IDevice
-
-@available(iOS 27, *)
-private struct PairingReadyMessage: NotificationCenter.AsyncMessage
-{
-    typealias Subject = PairDeviceOperation
-    
-    let serviceID: String
-    let port: Int
-    let txtRecord: [String: Data]
-}
-
-@available(iOS 27, *)
-private extension NotificationCenter.MessageIdentifier where Self == NotificationCenter.BaseMessageIdentifier<PairingReadyMessage>
-{
-    static var pairingReady: Self { .init() }
-}
 
 extension PairError
 {
@@ -42,12 +23,12 @@ extension PairError
         case timedOut
     }
     
-    static func unknown(failureReason: String = String(localized: "An unknown error occurred."), file: String = #fileID, line: UInt = #line) -> PairError {
-        PairError(code: .unknown, errorFailureReason: failureReason, sourceFile: file, sourceLine: line)
+    static func unknown(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, file: String = #fileID, line: UInt = #line) -> PairError {
+        PairError(code: .unknown, ffiError: ffiError, sourceFile: file, sourceLine: line)
     }
     
     static func timedOut(file: String = #fileID, line: UInt = #line) -> PairError {
-        PairError(code: .timedOut, errorFailureReason: String(localized: "iOS ended the pairing session before pairing completed."), sourceFile: file, sourceLine: line)
+        PairError(code: .timedOut, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -55,12 +36,45 @@ struct PairError: ALTLocalizedError
 {
     let code: Code
     
-    var errorFailureReason: String
-    
     var errorTitle: String?
     var errorFailure: String?
+    
+    // The original idevice error, stored under Apple's standard key so the Error Log shows it.
+    @UserInfoValue(key: NSUnderlyingErrorKey)
+    var ffiUnderlyingError: NSError? = nil
+    
     var sourceFile: String?
     var sourceLine: UInt?
+    
+    fileprivate init(code: Code, ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, sourceFile: String? = nil, sourceLine: UInt? = nil)
+    {
+        self.code = code
+        self.sourceFile = sourceFile
+        self.sourceLine = sourceLine
+        
+        if let ffiError
+        {
+            // Bundle everything idevice told us into one underlying error.
+            var userInfo: [String: Any] = ["subCode": Int(ffiError.pointee.sub_code)]
+            
+            if let message = ffiError.pointee.message
+            {
+                userInfo[NSLocalizedDescriptionKey] = String(cString: message)
+            }
+            
+            self.ffiUnderlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
+            
+            idevice_error_free(ffiError) // Free the C error.
+        }
+    }
+    
+    var errorFailureReason: String {
+        switch self.code
+        {
+        case .unknown: return String(localized: "An unknown error occurred.")
+        case .timedOut: return String(localized: "iOS ended pairing before it finished.")
+        }
+    }
 }
 
 @objc(PairDeviceOperation) @available(iOS 27, *)
@@ -68,9 +82,12 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
 {
     let context: OperationContext
     
+    // idevice's handshake blocks its thread, so it runs on this background queue.
+    private let pairingQueue = DispatchQueue(label: "io.altstore.PairDeviceOperation", qos: .userInitiated)
+    
     private var task: Task<Void, Never>?
     private var service: NetService?
-    private var port: Int?
+    private var listener: PairingListener?
     
     override var isExtendedBackgroundTask: Bool {
         return true
@@ -134,7 +151,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
         super.cancel()
         
         self.task?.cancel()
-        self.stopPairingListener()
+        self.listener?.invalidate()
     }
     
     override func finish(_ result: Result<Void, any Error>)
@@ -142,6 +159,7 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
         super.finish(result)
         
         self.service?.stop()
+        self.listener?.invalidate()
     }
 }
 
@@ -150,107 +168,171 @@ private extension PairDeviceOperation
 {
     func pairDevice() async throws -> Data
     {
-        let outputURL = FileManager.default.uniqueTemporaryURL().appendingPathExtension("plist")
-        let context = Unmanaged.passUnretained(self).toOpaque()
+        // Create the identity we'll pair as, plus the Bonjour details Settings uses to find it.
+        var handle: OpaquePointer?
+        var serviceID: UnsafeMutablePointer<CChar>?
+        var txtData: UnsafeMutablePointer<UInt8>?
+        var txtLength: UInt = 0
         
-        var output = RpPairingHostResult()
-        
-        // Publish Bonjour service once we receive pairing callback with required info
-        let observer = NotificationCenter.default.addObserver(of: self, for: .pairingReady) { message in
-            self.port = message.port
-            
-            let txtRecordData = NetService.data(fromTXTRecord: message.txtRecord)
-            
-            let service = NetService(domain: "", type: "_remotepairing-pairable-host._tcp.", name: message.serviceID, port: Int32(message.port))
-            service.setTXTRecord(txtRecordData)
-            service.publish()
-            self.service = service
+        if let error = pairable_host_new("AltStore", "Mac16,11", &handle, &serviceID, &txtData, &txtLength) // Model is a 2025 Mac mini.
+        {
+            throw PairError.unknown(ffiError: error)
         }
-        
         defer {
-            NotificationCenter.default.removeObserver(observer)
-            rp_pairing_host_result_free(&output)
-            
-            do { try FileManager.default.removeItem(at: outputURL) }
-            catch { Logger.main.error("Failed to remove cached Pairing File. \(error.localizedDescription, privacy: .public)") }
+            pairable_host_free(handle)
+            idevice_string_free(serviceID)
+            idevice_data_free(txtData, txtLength)
         }
+        
+        guard let serviceID, let txtData else { throw PairError.unknown() }
+        
+        let serviceIdentifier = String(cString: serviceID)
+        let txtRecord = try Self.txtRecord(fromPlist: Data(bytes: txtData, count: Int(txtLength)))
+        
+        // Open the listening socket, then publish it over Bonjour so the device can find us.
+        let listener = try PairingListener()
+        self.listener = listener
+        
+        let service = NetService(domain: "", type: "_remotepairing-pairable-host._tcp.", name: serviceIdentifier, port: Int32(listener.port))
+        service.setTXTRecord(NetService.data(fromTXTRecord: txtRecord))
+        service.publish()
+        self.service = service
         
         // Open Settings app for user's convenience.
         let settingsRootDeepLink = URL(string: "App-Prefs:")!
         await MainActor.run { UIApplication.shared.open(settingsRootDeepLink, options: [:]) }
         
-        // Start pairing process (must be started after we are listening for .pairingReady message)
-        let result = outputURL.withUnsafeFileSystemRepresentation { outputPath in
-            rp_pairing_host_run("0.0.0.0", // Address
-                                0, // Port
-                                "AltStore", // Name
-                                "Mac16,11", // Model (2025 Mac mini)
-                                outputPath,
-                                ALTPairingReadyCallback,
-                                ALTPairingPinCallback, // Doesn't do anything
-                                context,
-                                &output)
-        }
-        
-        guard result == 0 else {
-            guard let cErrorMessage = output.error else { throw PairError.unknown() }
-            
-            let errorMessage = String(cString: cErrorMessage)
-            throw PairError.unknown(failureReason: errorMessage)
-        }
-        
-        let data = try Data(contentsOf: outputURL)
+        // Wait for the device to connect, then run the pairing handshake over that connection.
+        let connectionFD = try await self.onPairingQueue { try listener.waitForConnection() }
+        let data = try await self.performHandshake(handle: handle, connectionFD: connectionFD)
         
         // Validate data is in correct format.
         _ = try FetchPairingFileOperation.PairingFile(data: data)
         
         return data
     }
-    
-    // rp_pairing_host_run waits for a device to connect and can't be stopped directly,
-    // so briefly connect to it ourselves to make it return and clean up after itself.
-    func stopPairingListener()
+
+    func performHandshake(handle: OpaquePointer?, connectionFD: Int32) async throws -> Data
     {
-        guard let port = self.port, let nwPort = NWEndpoint.Port(rawValue: UInt16(port)) else { return }
-        
-        let connection = NWConnection(host: "127.0.0.1", port: nwPort, using: .tcp)
-        connection.stateUpdateHandler = { state in
-            switch state
+        try await self.onPairingQueue {
+            defer { close(connectionFD) } // idevice duplicates the socket, so we still own this one.
+            
+            var pairingFile: OpaquePointer?
+            if let error = pairable_host_handshake(handle, connectionFD, ALTPairingPinCallback, nil, &pairingFile)
             {
-            case .ready, .waiting, .failed: connection.cancel()
-            default: break
+                throw PairError.unknown(ffiError: error)
+            }
+            defer { rp_pairing_file_free(pairingFile) }
+            
+            var bytes: UnsafeMutablePointer<UInt8>?
+            var length: UInt = 0
+            if let error = rp_pairing_file_to_bytes(pairingFile, &bytes, &length)
+            {
+                throw PairError.unknown(ffiError: error)
+            }
+            defer { idevice_data_free(bytes, length) }
+            
+            guard let bytes else { throw PairError.unknown() }
+            return Data(bytes: bytes, count: Int(length))
+        }
+    }
+    
+    // Runs blocking work on the pairing queue, suspending until it finishes.
+    func onPairingQueue<T>(_ work: @escaping () throws -> T) async throws -> T
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            self.pairingQueue.async {
+                continuation.resume(with: Result { try work() })
             }
         }
-        connection.start(queue: .global())
     }
-}
-
-@available(iOS 27, *)
-private let ALTPairingReadyCallback: RpPairingHostReadyCb = { (context, cServiceID, port, keys, values, count) in
-    guard let context, let cServiceID else { return }
     
-    let serviceID = String(cString: cServiceID)
-    let operation = Unmanaged<PairDeviceOperation>.fromOpaque(context).takeUnretainedValue()
-    
-    var txtRecord: [String: Data] = [:]
-    if let keys, let values
+    static func txtRecord(fromPlist data: Data) throws -> [String: Data]
     {
-        for i in 0 ..< Int(count)
-        {
-            guard let cKey = keys[i], let cValue = values[i] else { continue }
-            
-            let key = String(cString: cKey)
-            let value = String(cString: cValue)
-            txtRecord[key] = Data(value.utf8)
+        guard let plist = try PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] else {
+            throw PairError.unknown()
         }
+        
+        return plist.mapValues { Data($0.utf8) } // NetService wants the TXT values as Data.
+    }
+}
+
+// A TCP listener that hands back the file descriptor of the connection it accepts.
+// idevice's handshake needs one, and Apple's networking APIs never expose it.
+@available(iOS 27, *)
+private final class PairingListener: @unchecked Sendable
+{
+    let port: UInt16
+    
+    private let fileDescriptor: Int32
+    
+    private var isInvalidated = false
+    private let lock = NSLock()
+    
+    init() throws
+    {
+        let listenerFD = socket(AF_INET, SOCK_STREAM, 0)
+        guard listenerFD >= 0 else { throw PairError.unknown() }
+        
+        var address = sockaddr_in()
+        address.sin_family = sa_family_t(AF_INET)
+        address.sin_addr.s_addr = in_addr_t(0) // Any local address. Settings doesn't connect over localhost even though it's the same device (confirmed on device).
+        address.sin_port = 0 // Let the OS choose a free port.
+        
+        let addressSize = socklen_t(MemoryLayout<sockaddr_in>.size)
+        let didBind = withUnsafePointer(to: &address) { pointer in
+            pointer.withMemoryRebound(to: sockaddr.self, capacity: 1) { bind(listenerFD, $0, addressSize) }
+        }
+        
+        guard didBind == 0, listen(listenerFD, 1) == 0 else {
+            close(listenerFD)
+            throw PairError.unknown()
+        }
+        
+        // Read back the port the OS assigned.
+        var boundAddress = sockaddr_in()
+        var boundSize = socklen_t(MemoryLayout<sockaddr_in>.size)
+        let didReadPort = withUnsafeMutablePointer(to: &boundAddress) { pointer in
+            pointer.withMemoryRebound(to: sockaddr.self, capacity: 1) { getsockname(listenerFD, $0, &boundSize) }
+        }
+        
+        guard didReadPort == 0 else {
+            close(listenerFD)
+            throw PairError.unknown()
+        }
+        
+        self.fileDescriptor = listenerFD
+        self.port = UInt16(bigEndian: boundAddress.sin_port)
     }
     
-    let message = PairingReadyMessage(serviceID: serviceID, port: Int(port), txtRecord: txtRecord)
-    NotificationCenter.default.post(message, subject: operation)
+    // Blocks until a device connects, or throws once the listener is invalidated.
+    func waitForConnection() throws -> Int32
+    {
+        let connectionFD = accept(self.fileDescriptor, nil, nil)
+        guard connectionFD >= 0 else { throw PairError.unknown() }
+        
+        // If this connection dies, a write to it would kill the entire app, so make any writes fail with a normal error instead.
+        var noSigPipe: Int32 = 1
+        setsockopt(connectionFD, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipe, socklen_t(MemoryLayout<Int32>.size))
+        
+        return connectionFD
+    }
+    
+    func invalidate()
+    {
+        // cancel() and finish() can both call from different threads, so make sure we only clean up once.
+        self.lock.lock()
+        defer { self.lock.unlock() }
+        
+        guard !self.isInvalidated else { return }
+        self.isInvalidated = true
+        
+        close(self.fileDescriptor)
+    }
 }
 
 @available(iOS 27, *)
-private let ALTPairingPinCallback: RpPairingHostPinCb = { cPin, ctx in
+private let ALTPairingPinCallback: PairableHostPinCb = { cPin, ctx in
     guard let cPin else { return }
     
     let pin = String(cString: cPin)
