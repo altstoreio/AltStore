@@ -83,7 +83,7 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
                 let anisetteData: ALTAnisetteData
 
                 // Use Remote AltServer when set up and preferred.
-                if UserDefaults.standard.prefersRemoteAltServer
+                if UserDefaults.shared.prefersRemoteAltServer
                 {
                     // AltServerless route
                     anisetteData = try await self.fetchAnisetteDataFromAvailableServer()

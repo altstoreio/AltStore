@@ -128,7 +128,7 @@ struct RemoteAltServerView: View
                         clearRemoteAltServer()
                     }
                 } message: {
-                    Text("You'll need to pair with your computer again to set it back up.")
+                    Text("You'll need to pair this device again to set it back up.")
                 }
             }
         }
@@ -238,7 +238,7 @@ private extension RemoteAltServerView
     
     func clearRemoteAltServer()
     {
-        UserDefaults.standard.prefersRemoteAltServer = false
+        UserDefaults.shared.prefersRemoteAltServer = false
         Keychain.shared.devicePairingFile = nil
         
         dismiss() // Return to Settings

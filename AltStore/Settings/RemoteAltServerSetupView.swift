@@ -32,9 +32,7 @@ extension RemoteAltServerSetupView
     {
         var plan: [Step] = [.welcome]
         
-        // Relies on the fact that sign-in is required before this view is shown, so nil
-        // definitely means "no pairing file" — not "bundled file we can't decrypt yet".
-        if AppManager.shared.devicePairingFile == nil
+        if Keychain.shared.devicePairingFile == nil && AppManager.shared.bundledPairingFile() == nil
         {
             if #available(iOS 27, *)
             {
@@ -104,50 +102,10 @@ struct RemoteAltServerSetupView: View
                     .tint(Color(.altPrimary))
                 }
             }
+            // Incrementing pairingAttempt restarts this task, cancelling any active pairing attempt before starting a new one.
             .task(id: pairingAttempt) {
                 guard pairingAttempt > 0 else { return } // Only pair after a tap.
-                
-                do
-                {
-                    pairingState = .waiting
-                    
-                    if #available(iOS 27, *), plan.contains(.pairOnDevice)
-                    {
-                        try await AppManager.shared.pairDevice()
-                    }
-                    else
-                    {
-                        try await AppManager.shared.waitForPairingFile()
-                    }
-                    
-                    // Pairing can finish while the user is in the Settings app or behind a system prompt, so wait until they can see the result.
-                    if UIApplication.shared.applicationState != .active
-                    {
-                        for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
-                        {
-                            try await Task.sleep(for: .seconds(0.2))
-                            break
-                        }
-                    }
-                    
-                    pairingState = .paired
-                    
-                    try await Task.sleep(for: .seconds(1)) // Brief pause so the user registers 'Paired' before moving on.
-                    advance()
-                }
-                catch is CancellationError { }
-                catch ~PairError.Code.timedOut
-                {
-                    pairingState = .idle
-                    errorMessage = String(localized: "Pairing was interrupted. Please try again.")
-                    isShowingError = true
-                }
-                catch
-                {
-                    pairingState = .idle
-                    errorMessage = error.localizedDescription
-                    isShowingError = true
-                }
+                await pair()
             }
             .alert("Unable to Pair", isPresented: $isShowingError) {
                 SwiftUI.Button("OK", role: .cancel) { }
@@ -160,11 +118,81 @@ struct RemoteAltServerSetupView: View
     
     func advance()
     {
-        // If we're on the last step, return complete.
-        guard let index = plan.firstIndex(of: currentStep), index + 1 < plan.count else { return completionHandler() }
+        guard currentStep != plan.last else { return completionHandler() }
         
         withAnimation {
-            currentStep = plan[index + 1]
+            if let index = plan.firstIndex(of: currentStep)
+            {
+                currentStep = plan[index + 1]
+            }
+            else
+            {
+                // The current step should always be in the plan, but default to 'Finish' in case of an issue.
+                currentStep = .finish
+            }
+        }
+    }
+    
+    func pair() async
+    {
+        do
+        {
+            pairingState = .waiting
+            
+            if #available(iOS 27, *), plan.contains(.pairOnDevice)
+            {
+                try await AppManager.shared.pairDevice()
+            }
+            else
+            {
+                try await self.waitForPairingFile()
+            }
+            
+            // Pairing can finish while the user is in the Settings app or behind a system prompt, so wait until they can see the result.
+            if UIApplication.shared.applicationState != .active
+            {
+                for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
+                {
+                    try await Task.sleep(for: .seconds(0.2))
+                    break
+                }
+            }
+            
+            pairingState = .paired
+            
+            try await Task.sleep(for: .seconds(1)) // Brief pause so the user registers 'Paired' before moving on.
+            advance()
+        }
+        catch is CancellationError { }
+        catch
+        {
+            pairingState = .idle
+            errorMessage = error.localizedDescription
+            isShowingError = true
+        }
+    }
+    
+    // Fetches a pairing file from AltServer, retrying until this device is plugged into a computer.
+    func waitForPairingFile(retryInterval: Duration = .seconds(2)) async throws
+    {
+        while true
+        {
+            try Task.checkCancellation()
+            
+            do
+            {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    AppManager.shared.fetchPairingFile { result in
+                        continuation.resume(with: result)
+                    }
+                }
+                return
+            }
+            catch ~OperationError.Code.serverNotFound, ~OperationError.Code.wiredConnectionRequired
+            {
+                // No wired AltServer connection yet, so keep waiting.
+                try await Task.sleep(for: retryInterval)
+            }
         }
     }
 }
@@ -291,9 +319,6 @@ private extension RemoteAltServerSetupView
             }
             .animation(.default, value: isVPNConnected)
             .task {
-                // Don't overwrite the seeded value from a preview.
-                guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" else { return }
-                
                 isVPNConnected = await OnDeviceClient.isReachable()
                 
                 // Check VPN status whenever the user comes back to the app.
@@ -355,231 +380,6 @@ private extension RemoteAltServerSetupView
         } buttons: {
             SwiftUI.Button("Finish") { advance() }
         }
-    }
-}
-
-// MARK: - Page Layouts
-
-private struct HeroPage<Graphic: View, Content: View, Buttons: View>: View
-{
-    let title: LocalizedStringKey
-    let subtitle: LocalizedStringKey
-    
-    @ViewBuilder
-    let graphic: () -> Graphic
-    
-    @ViewBuilder
-    let content: () -> Content
-    
-    @ViewBuilder
-    let buttons: () -> Buttons
-    
-    var body: some View {
-        VStack(spacing: 30) {
-            graphic()
-                .background {
-                    ZStack {
-                        Circle()
-                            .fill(Color(.altLight).opacity(0.6))
-                            .frame(width: 300, height: 300)
-                            .blur(radius: 100)
-                        
-                        Circle()
-                            .fill(Color(.altSecondary).opacity(0.2))
-                            .frame(width: 250, height: 250)
-                            .blur(radius: 100)
-                    }
-                }
-                .accessibilityHidden(true)
-            
-            VStack(alignment: .center, spacing: 6) {
-                Text(title)
-                    .font(.title.bold())
-                
-                Text(subtitle)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 40)
-            .multilineTextAlignment(.center)
-            .layoutPriority(1)
-            
-            content()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .bottomButtonBar(buttons: {
-            buttons()
-        })
-        .transition(.push(from: .trailing))
-    }
-}
-
-private struct StepPage<Graphic: View, Accessory: View, Buttons: View>: View
-{
-    let title: LocalizedStringKey
-    let subtitle: LocalizedStringKey
-    
-    @ViewBuilder
-    let graphic: () -> Graphic
-    
-    @ViewBuilder
-    let accessory: () -> Accessory
-    
-    @ViewBuilder
-    let buttons: () -> Buttons
-    
-    var body: some View {
-        ViewThatFits(in: .vertical) {
-            // Everything fits: content takes priority and graphic fills remaining space.
-            VStack(spacing: 30) {
-                graphic()
-                    .frame(idealHeight: 0, maxHeight: .infinity, alignment: .center)
-                    .accessibilityHidden(true)
-                
-                content
-            }
-            
-            // Text alone overflows: content scrolls, graphic is hidden.
-            ScrollView {
-                content
-            }
-            .scrollBounceBehavior(.basedOnSize)
-        }
-        .bottomButtonBar(buttons: {
-            buttons()
-        })
-        .transition(.push(from: .trailing))
-    }
-    
-    private var content: some View {
-        VStack(spacing: 15) {
-            VStack(alignment: .center, spacing: 4) {
-                Text(title)
-                    .font(.title.bold())
-
-                Text(subtitle)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 50)
-            .multilineTextAlignment(.center)
-
-            accessory()
-        }
-    }
-}
-
-// MARK: - Components
-
-private struct PairingButton: View
-{
-    let state: RemoteAltServerSetupView.PairingState
-    let idleTitle: LocalizedStringKey
-    let waitingTitle: LocalizedStringKey
-    let action: () -> Void
-    
-    private var title: LocalizedStringKey {
-        switch state
-        {
-        case .idle: idleTitle
-        case .waiting: waitingTitle
-        case .paired: "Paired"
-        }
-    }
-    
-    var body: some View {
-        SwiftUI.Button(action: action) {
-            HStack(spacing: 8) {
-                if state == .waiting
-                {
-                    ProgressView()
-                        .tint(.white)
-                        .controlSize(.regular)
-                }
-                if state == .paired
-                {
-                    Image(systemName: "checkmark")
-                }
-                
-                Text(title)
-                    .contentTransition(.opacity)
-            }
-            .bold()
-        }
-        .tint(state == .paired ? .green : Color(.altPrimary))
-        .disabled(state == .waiting)
-        .allowsHitTesting(state != .paired) // Prevents interaction during confirmation state
-        .animation(.default, value: state)
-    }
-}
-
-private struct GlassBadge: View
-{
-    let content: Text
-    let color: Color
-    
-    var body: some View {
-        if #available(iOS 26, *)
-        {
-            content
-                .font(.footnote.bold())
-                .foregroundStyle(color)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .glassEffect(.regular.tint(color.opacity(0.1)), in: .capsule)
-        }
-        else
-        {
-            content
-                .font(.footnote.bold())
-                .foregroundStyle(color)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(color.opacity(0.1), in: .capsule)
-        }
-    }
-}
-
-private struct BottomButtonBar<Buttons: View>: ViewModifier
-{
-    let buttons: Buttons
-    
-    func body(content: Content) -> some View
-    {
-        if #available(iOS 26, *)
-        {
-            content.safeAreaBar(edge: .bottom, spacing: 40) {
-                VStack(spacing: 10) {
-                    buttons
-                }
-                .bold()
-                .tint(Color(.altPrimary))
-                .controlSize(.large)
-                .padding(.horizontal, 34)
-                .buttonStyle(.glassProminent)
-                .buttonSizing(.flexible)
-            }
-        }
-        else
-        {
-            content.safeAreaInset(edge: .bottom, spacing: 40) {
-                VStack(spacing: 10) {
-                    buttons
-                }
-                .bold()
-                .tint(Color(.altPrimary))
-                .controlSize(.large)
-                .padding(.horizontal, 34)
-                .buttonStyle(.borderedProminent)
-            }
-        }
-    }
-}
-
-private extension View
-{
-    func bottomButtonBar<Buttons: View>(@ViewBuilder buttons: () -> Buttons) -> some View
-    {
-        modifier(BottomButtonBar(buttons: buttons()))
     }
 }
 

@@ -164,7 +164,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
                 do
                 {
                     // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
-                    if UserDefaults.standard.prefersRemoteAltServer
+                    if UserDefaults.shared.prefersRemoteAltServer
                     {
                         try await self.installOnDevice(resignedApp: resignedApp)
                     }

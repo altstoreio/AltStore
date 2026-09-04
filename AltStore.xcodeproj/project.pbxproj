@@ -14,6 +14,7 @@
 		825E55C6302D5A2700392655 /* IDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 825E55C5302D5A2700392655 /* IDevice */; };
 		825E55C8302D621900392655 /* OnDeviceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E55C7302D621900392655 /* OnDeviceClient.swift */; };
 		825E55CC302E69CE00392655 /* RemoteAltServerSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E55CB302E69CE00392655 /* RemoteAltServerSetupView.swift */; };
+		826DFD67304B80080046A042 /* RemoteAltServerSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */; };
 		82AB00042FC0345000567241 /* RemoteAltServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AB00032FC0345000567241 /* RemoteAltServerView.swift */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
@@ -855,6 +856,7 @@
 		821769AA2FE99E2400980080 /* AnisetteServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServerManager.swift; sourceTree = "<group>"; };
 		825E55C7302D621900392655 /* OnDeviceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceClient.swift; sourceTree = "<group>"; };
 		825E55CB302E69CE00392655 /* RemoteAltServerSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerSetupView.swift; sourceTree = "<group>"; };
+		826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerSetupComponents.swift; sourceTree = "<group>"; };
 		82AB00032FC0345000567241 /* RemoteAltServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerView.swift; sourceTree = "<group>"; };
 		82D6ED892EEA137A009DC668 /* TaskGroup+Collated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskGroup+Collated.swift"; sourceTree = "<group>"; };
 		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
@@ -2277,6 +2279,7 @@
 				D56D213F2B7D9942007641C5 /* AltAppIconsViewController.swift */,
 				D589170128C7D93500E39C8B /* Error Log */,
 				825E55CB302E69CE00392655 /* RemoteAltServerSetupView.swift */,
+				826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3740,6 +3743,7 @@
 				BF6C8FAE2429597900125131 /* AppBannerCollectionViewCell.swift in Sources */,
 				D5084CCC2B1EA80100C02160 /* FeaturedComponents.swift in Sources */,
 				BF6F439223644C6E00A0B879 /* RefreshAltStoreViewController.swift in Sources */,
+				826DFD67304B80080046A042 /* RemoteAltServerSetupComponents.swift in Sources */,
 				BFE60742231B07E6002B0E8E /* SettingsHeaderFooterView.swift in Sources */,
 				BFE338E822F10E56002E24B9 /* LaunchViewController.swift in Sources */,
 				BFA8172B23C5633D001B5953 /* FetchAnisetteDataOperation.swift in Sources */,

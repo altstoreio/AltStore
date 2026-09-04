@@ -111,8 +111,6 @@ class SettingsViewController: UITableViewController
     
     @IBOutlet private var versionLabel: UILabel!
     
-    @IBOutlet private var remoteAltServerCell: InsetGroupTableViewCell!
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -257,7 +255,7 @@ private extension SettingsViewController
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
-        self.prefersRemoteAltServerSwitch.isOn = UserDefaults.standard.prefersRemoteAltServer
+        self.prefersRemoteAltServerSwitch.isOn = UserDefaults.shared.prefersRemoteAltServer
         
         self.isRemoteAltServerConfigured = (Keychain.shared.devicePairingFile != nil)
         
@@ -268,13 +266,11 @@ private extension SettingsViewController
             
             self.remoteAltServerLabel.text = String(localized: "Server")
             self.serverURLLabel.text = serverName ?? preferredURL?.host ?? String(localized: "None")
-            self.remoteAltServerCell.style = .top
         }
         else
         {
             self.remoteAltServerLabel.text = String(localized: "Set up Remote AltServer…")
             self.serverURLLabel.text = nil
-            self.remoteAltServerCell.style = .single
         }
         
         if self.isViewLoaded
@@ -430,7 +426,7 @@ private extension SettingsViewController
 
 private extension SettingsViewController
 {
-    func signIn()
+    func signIn(completion: (() -> Void)? = nil)
     {
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
@@ -448,6 +444,11 @@ private extension SettingsViewController
                 }
                 
                 self.update()
+                
+                if case .success = result
+                {
+                    completion?()
+                }
             }
         }
     }
@@ -505,7 +506,7 @@ private extension SettingsViewController
     
     @IBAction func togglePrefersRemoteAltServer(_ sender: UISwitch)
     {
-        UserDefaults.standard.prefersRemoteAltServer = sender.isOn
+        UserDefaults.shared.prefersRemoteAltServer = sender.isOn
     }
     
     @IBAction func addRefreshAppsShortcut()
@@ -622,7 +623,7 @@ private extension SettingsViewController
     func setUpRemoteAltServer()
     {
         // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
-        guard self.activeTeam != nil else { return self.signIn() }
+        guard self.activeTeam != nil else { return self.signIn { self.setUpRemoteAltServer() } }
         
         if let selectedIndexPath = self.tableView.indexPathForSelectedRow
         {
@@ -630,14 +631,12 @@ private extension SettingsViewController
         }
         
         let hostingController = RemoteAltServerSetupView.makeViewController {
-            // Completing setup is the opt-in. Promote the bundled pairing file into
-            // the keychain if needed, then default to preferring the on-device route.
             if Keychain.shared.devicePairingFile == nil
             {
-                Keychain.shared.devicePairingFile = AppManager.shared.devicePairingFile
+                Keychain.shared.devicePairingFile = AppManager.shared.bundledPairingFile()
             }
             
-            UserDefaults.standard.prefersRemoteAltServer = true
+            UserDefaults.shared.prefersRemoteAltServer = true
             
             self.update()
             self.dismiss(animated: true)
@@ -846,6 +845,28 @@ extension SettingsViewController
         case .appRefresh: return AppRefreshRow.allCases.count
         case .remoteAltServer: return self.isRemoteAltServerConfigured ? RemoteAltServerRow.allCases.count : 1
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        let section = Section.allCases[indexPath.section]
+        switch section
+        {
+        case .remoteAltServer:
+            let row = RemoteAltServerRow.allCases[indexPath.row]
+            switch row
+            {
+            case .server:
+                guard let cell = cell as? InsetGroupTableViewCell else { break }
+                
+                // The server row is the only row in the section until Remote AltServer is configured.
+                cell.style = self.isRemoteAltServerConfigured ? .top : .single
+                
+            case .preferRemote: break
+            }
+            
+        default: break
         }
     }
     

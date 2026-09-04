@@ -46,8 +46,8 @@ class DeactivateAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
-                    if UserDefaults.standard.prefersRemoteAltServer
+                    // Deactivate on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
+                    if UserDefaults.shared.prefersRemoteAltServer
                     {
                         try await self.deactivateOnDevice(bundleIdentifiers: bundleIdentifiers)
                     }

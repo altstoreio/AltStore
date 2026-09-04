@@ -98,20 +98,15 @@ class AppManager: ObservableObject
 
 extension AppManager
 {
-    // Keychain-first (via Settings, most up-to-date if it exists), bundle as fallback.
-    var devicePairingFile: Data? {
-        if let keychainData = Keychain.shared.devicePairingFile
-        {
-            return keychainData
-        }
-
-        // Bundle fallback requires machineIdentifier for decryption.
+    // Returns the pairing file that AltServer bundled into the app. Nil before sign-in because decryption requires the signing certificate.
+    func bundledPairingFile() -> Data?
+    {
         guard let encryptedData = try? Data(contentsOf: Bundle.main.pairingFileURL),
               let machineIdentifier = Keychain.shared.signingCertificatePassword
         else { return nil }
-
-        let key = SymmetricKey(data: SHA256.hash(data: machineIdentifier.data(using: .utf8)!)) // Swift string, always valid UTF-8
-
+        
+        let key = SymmetricKey(data: SHA256.hash(data: machineIdentifier.data(using: .utf8)!)) // Swift strings are always valid UTF-8.
+        
         do
         {
             let sealedBox = try AES.GCM.SealedBox(combined: encryptedData)
@@ -119,15 +114,14 @@ extension AppManager
         }
         catch
         {
-            // Bundle present + key present but decrypt failed
-            Logger.sideload.error("Bundled pairing file decrypt failed: \(error.localizedDescription, privacy: .public)")
+            Logger.sideload.error("Failed to decrypt bundled pairing file. \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
 
     func makeOnDeviceClient() throws -> OnDeviceClient
     {
-        guard let pairingFile = self.devicePairingFile else { throw OperationError.missingPairingFile() }
+        guard let pairingFile = Keychain.shared.devicePairingFile else { throw OperationError.missingPairingFile() }
         return try OnDeviceClient(pairingFile: pairingFile)
     }
     
@@ -275,7 +269,7 @@ extension AppManager
     @discardableResult
     func prepareServer(context: OperationContext = OperationContext()) -> Foundation.Operation
     {
-        guard UserDefaults.standard.prefersRemoteAltServer else
+        guard UserDefaults.shared.prefersRemoteAltServer else
         {
             return self.findServer(context: context) { _ in }
         }
@@ -324,40 +318,26 @@ extension AppManager
         return authenticationOperation
     }
     
-    func fetchPairingFile() async throws
+    @discardableResult
+    func fetchPairingFile(context: OperationContext = OperationContext(), completionHandler: @escaping (Result<Void, Error>) -> Void) -> FetchPairingFileOperation
     {
-        let context = OperationContext()
         let findServerOperation = self.findServer(context: context) { _ in }
         
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            let fetchPairingFileOperation = FetchPairingFileOperation(context: context)
-            fetchPairingFileOperation.resultHandler = { result in
-                continuation.resume(with: result)
-            }
-            fetchPairingFileOperation.addDependency(findServerOperation)
-            
-            self.run([fetchPairingFileOperation], context: context)
-        }
-    }
-    
-    // Fetches a pairing file from AltServer, retrying until this device is plugged into a computer.
-    func waitForPairingFile(retryInterval: Duration = .seconds(2)) async throws
-    {
-        while true
-        {
-            try Task.checkCancellation()
-            
-            do
+        let fetchPairingFileOperation = FetchPairingFileOperation(context: context)
+        fetchPairingFileOperation.resultHandler = { (result) in
+            switch result
             {
-                try await self.fetchPairingFile()
-                return
+            case .failure(let error): context.error = error
+            case .success: break
             }
-            catch ~OperationError.Code.serverNotFound, ~OperationError.Code.wiredConnectionRequired
-            {
-                // No wired AltServer connection yet, so keep waiting.
-                try await Task.sleep(for: retryInterval)
-            }
+            
+            completionHandler(result)
         }
+        fetchPairingFileOperation.addDependency(findServerOperation)
+        
+        self.run([fetchPairingFileOperation], context: context)
+        
+        return fetchPairingFileOperation
     }
     
     func deactivateApps(for app: ALTApplication, presentingViewController: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
@@ -1130,7 +1110,7 @@ extension AppManager
             }
         }
 
-        if !UserDefaults.standard.prefersRemoteAltServer
+        if !UserDefaults.shared.prefersRemoteAltServer
         {
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
@@ -1672,7 +1652,7 @@ private extension AppManager
 
         var sendAppOperation: SendAppOperation?
 
-        if !UserDefaults.standard.prefersRemoteAltServer
+        if !UserDefaults.shared.prefersRemoteAltServer
         {
             /* Send */
             let operation = SendAppOperation(context: context)

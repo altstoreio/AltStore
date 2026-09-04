@@ -987,7 +987,6 @@
                         <outlet property="githubButton" destination="oqj-4S-I9l" id="sxB-LE-gA2"/>
                         <outlet property="mastodonButton" destination="B8Q-e7-beR" id="Kbe-Og-rsg"/>
                         <outlet property="prefersRemoteAltServerSwitch" destination="RYK-fp-zet" id="Drr-ru-nLG"/>
-                        <outlet property="remoteAltServerCell" destination="ANS-CL-001" id="r2A-KS-u29"/>
                         <outlet property="remoteAltServerLabel" destination="ANS-L1-001" id="lcf-r2-4Ed"/>
                         <outlet property="serverURLLabel" destination="ANS-L2-001" id="Caro-SrL-001"/>
                         <outlet property="threadsButton" destination="AWk-yE-9LI" id="SOc-ei-4gK"/>

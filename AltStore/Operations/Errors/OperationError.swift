@@ -210,7 +210,14 @@ struct OperationError: ALTLocalizedError
             return NSLocalizedString("AltStore couldn’t reach Remote AltServer.", comment: "")
 
         case .missingPairingFile:
-            return NSLocalizedString("This device hasn't been paired with AltStore.", comment: "")
+            if #available(iOS 27, *)
+            {
+                return NSLocalizedString("This device hasn't been paired with AltStore.", comment: "")
+            }
+            else
+            {
+                return NSLocalizedString("This device hasn't been paired with AltServer.", comment: "")
+            }
 
         case .invalidAnisetteResponse:
             return NSLocalizedString("Remote AltServer isn’t responding correctly and may be temporarily down. Try again, or choose a different server in Settings.", comment: "")

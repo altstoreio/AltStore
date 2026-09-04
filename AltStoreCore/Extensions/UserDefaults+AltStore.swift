@@ -82,7 +82,7 @@ public extension UserDefaults
 
     @NSManaged var preferredAnisetteServerURL: URL?
     
-    // Only true when a pairing file is configured, so this alone decides the sideloading route.
+    // Only true when a pairing file is configured, so this alone decides if we should use local vs. remote AltServer.
     @NSManaged var prefersRemoteAltServer: Bool
     
     class func registerDefaults()

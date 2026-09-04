@@ -72,7 +72,7 @@ struct PairError: ALTLocalizedError
         switch self.code
         {
         case .unknown: return String(localized: "An unknown error occurred.")
-        case .timedOut: return String(localized: "iOS ended pairing before it finished.")
+        case .timedOut: return String(localized: "Pairing was interrupted. Please try again.")
         }
     }
 }
