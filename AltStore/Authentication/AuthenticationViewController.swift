@@ -8,6 +8,7 @@
 
 import UIKit
 
+import AltStoreCore
 import AltSign
 
 class AuthenticationViewController: UIViewController
@@ -108,6 +109,15 @@ private extension AuthenticationViewController
                 }
                 
             case .failure(let error as NSError):
+                // This error is only ever shown in a toast, so log it here or it's lost entirely:
+                // it never reaches AuthenticationOperation.finish and never becomes a LoggedError.
+                Logger.sideload.error("Failed to sign in with Apple ID. \(error.domain, privacy: .public) \(error.code, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                
+                if let debugDescription = error.localizedDebugDescription
+                {
+                    Logger.sideload.error("Sign in failure details. \(debugDescription, privacy: .public)")
+                }
+                
                 DispatchQueue.main.async {
                     let error = error.withLocalizedTitle(NSLocalizedString("Failed to Log In", comment: ""))
                     
