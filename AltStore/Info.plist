@@ -11,7 +11,7 @@
 	<key>ALTServerID</key>
 	<string>1F7D5B55-79CE-4546-A029-D4DDC4AF3B6D</string>
 	<key>ALTVersion</key>
-	<string>2.3b2</string>
+	<string>2.3b3</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
