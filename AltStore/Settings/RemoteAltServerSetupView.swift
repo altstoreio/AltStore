@@ -91,13 +91,13 @@ struct RemoteAltServerSetupView: View
                 if #available(iOS 26, *)
                 {
                     SwiftUI.Button(role: .close) {
-                        dismiss()
+                        if currentStep == plan.last { completionHandler() } else { dismiss() }
                     }
                 }
                 else
                 {
                     SwiftUI.Button("Cancel") {
-                        dismiss()
+                        if currentStep == plan.last { completionHandler() } else { dismiss() }
                     }
                     .tint(Color(.altPrimary))
                 }
@@ -257,7 +257,7 @@ private extension RemoteAltServerSetupView
         } accessory: {
             GlassBadge(content: Text("Enter passcode when prompted."), color: Color(.altSecondary))
         } buttons: {
-            PairingButton(state: pairingState, idleTitle: "Open Settings", waitingTitle: "Waiting to Pair…") {
+            PairingButton(state: pairingState, idleTitle: "Start Pairing", waitingTitle: "Waiting to Pair…") {
                 pairingAttempt += 1
             }
         }

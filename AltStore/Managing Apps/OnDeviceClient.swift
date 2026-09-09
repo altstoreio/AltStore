@@ -168,6 +168,7 @@ final class OnDeviceClient: Sendable
     
     // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
     // Can block while waiting for a response, so it's async to keep callers off the main thread.
+    @concurrent
     static func isReachable() async -> Bool
     {
         // Give up if the device hasn't responded in a second. Normally connects in a few ms.
@@ -329,20 +330,20 @@ extension OnDeviceError
         case serviceFailed = 3
     }
     
-    static func invalidPairingFile(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
-        OnDeviceError(code: .invalidPairingFile, ffiError: ffiError, sourceFile: file, sourceLine: line)
+    static func invalidPairingFile(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, freeError: Bool = true, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
+        OnDeviceError(code: .invalidPairingFile, ffiError: ffiError, freeError: freeError, sourceFile: file, sourceLine: line)
     }
     
-    static func pairingNotTrusted(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
-        OnDeviceError(code: .pairingNotTrusted, ffiError: ffiError, sourceFile: file, sourceLine: line)
+    static func pairingNotTrusted(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, freeError: Bool = true, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
+        OnDeviceError(code: .pairingNotTrusted, ffiError: ffiError, freeError: freeError, sourceFile: file, sourceLine: line)
     }
     
-    static func connectionFailed(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
-        OnDeviceError(code: .connectionFailed, ffiError: ffiError, sourceFile: file, sourceLine: line)
+    static func connectionFailed(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, freeError: Bool = true, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
+        OnDeviceError(code: .connectionFailed, ffiError: ffiError, freeError: freeError, sourceFile: file, sourceLine: line)
     }
     
-    static func serviceFailed(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
-        OnDeviceError(code: .serviceFailed, ffiError: ffiError, sourceFile: file, sourceLine: line)
+    static func serviceFailed(ffiError: UnsafeMutablePointer<IdeviceFfiError>?, freeError: Bool = true, file: String = #fileID, line: UInt = #line) -> OnDeviceError {
+        OnDeviceError(code: .serviceFailed, ffiError: ffiError, freeError: freeError, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -359,7 +360,7 @@ struct OnDeviceError: ALTLocalizedError
     var sourceFile: String?
     var sourceLine: UInt?
     
-    fileprivate init(code: Code, ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, sourceFile: String? = nil, sourceLine: UInt? = nil)
+    fileprivate init(code: Code, ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, freeError: Bool = true, sourceFile: String? = nil, sourceLine: UInt? = nil)
     {
         self.code = code
         self.sourceFile = sourceFile
@@ -377,7 +378,10 @@ struct OnDeviceError: ALTLocalizedError
             
             self.ffiUnderlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
             
-            idevice_error_free(ffiError) // Free the C error.
+            if freeError
+            {
+                idevice_error_free(ffiError) // Free the C error.
+            }
         }
     }
     
@@ -396,7 +400,7 @@ struct OnDeviceError: ALTLocalizedError
         {
         case .invalidPairingFile, .pairingNotTrusted: return String(localized: "Reset remote AltServer in AltStore’s settings, then set it up again.")
         case .connectionFailed: return String(localized: "Make sure Wi-Fi and LocalDevVPN are both connected, then try again.")
-        case .serviceFailed: return String(localized: "Try again.")
+        case .serviceFailed: return String(localized: "Please try again.")
         }
     }
 }

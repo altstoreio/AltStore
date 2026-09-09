@@ -13,7 +13,7 @@ import AltStoreCore
 struct RemoteAltServerView: View
 {
     @State
-    private var availableServers: [AnisetteServer]? = UserDefaults.standard.anisetteServers
+    private var availableServers: [AnisetteServer]? = UserDefaults.shared.anisetteServers
     
     @State
     private var isLoading = true
@@ -54,7 +54,7 @@ struct RemoteAltServerView: View
                     }
                 }
             } footer: {
-                Text(isConnected ? "Remote AltServer is ready to sideload apps." : "Turn on Wi-Fi and your VPN to connect.")
+                Text(isConnected ? "The remote AltServer is ready to sideload apps." : "Turn on Wi-Fi and LocalDevVPN to connect.")
             }
             .listSectionSpacing(10) // Visually differentiates sections of different types.
             
@@ -67,9 +67,9 @@ struct RemoteAltServerView: View
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(server.url.host ?? "")
-                                    
                                     Text(server.name)
+                                    
+                                    Text(server.url.host ?? "")
                                         .font(.footnote)
                                         .foregroundStyle(.secondary)
                                 }

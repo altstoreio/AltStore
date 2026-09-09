@@ -262,7 +262,7 @@ private extension SettingsViewController
         if self.isRemoteAltServerConfigured
         {
             let preferredURL = UserDefaults.shared.preferredAnisetteServerURL
-            let serverName = UserDefaults.standard.anisetteServers?.first { $0.url == preferredURL }?.name
+            let serverName = UserDefaults.shared.anisetteServers?.first { $0.url == preferredURL }?.name
             
             self.remoteAltServerLabel.text = String(localized: "Server")
             self.serverURLLabel.text = serverName ?? preferredURL?.host ?? String(localized: "None")
@@ -363,7 +363,7 @@ private extension SettingsViewController
             else
             {
                 settingsHeaderFooterView.secondaryLabel.text = self.isRemoteAltServerConfigured
-                    ? NSLocalizedString("When enabled, AltStore will sideload apps using Remote AltServer instead of a computer.", comment: "")
+                    ? NSLocalizedString("When enabled, AltStore will sideload apps using a remote AltServer instead of a computer.", comment: "")
                     : NSLocalizedString("Set up Remote AltServer to sideload apps without a computer.", comment: "")
             }
             
@@ -642,7 +642,12 @@ private extension SettingsViewController
             UserDefaults.shared.prefersRemoteAltServer = true
             
             // Selects a default server and provisions adi.pb against it
-            AppManager.shared.fetchAnisetteData { _ in
+            AppManager.shared.fetchAnisetteData { result in
+                if case .failure(let error) = result
+                {
+                    Logger.sideload.error("Failed to fetch anisette data when selecting a default server. \(error.localizedDescription, privacy: .public)")
+                }
+                
                 DispatchQueue.main.async { self.update() }
             }
             

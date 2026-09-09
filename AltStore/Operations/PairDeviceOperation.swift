@@ -23,8 +23,8 @@ extension PairError
         case timedOut
     }
     
-    static func unknown(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, file: String = #fileID, line: UInt = #line) -> PairError {
-        PairError(code: .unknown, ffiError: ffiError, sourceFile: file, sourceLine: line)
+    static func unknown(ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, freeError: Bool = true, file: String = #fileID, line: UInt = #line) -> PairError {
+        PairError(code: .unknown, ffiError: ffiError, freeError: freeError, sourceFile: file, sourceLine: line)
     }
     
     static func timedOut(file: String = #fileID, line: UInt = #line) -> PairError {
@@ -46,7 +46,7 @@ struct PairError: ALTLocalizedError
     var sourceFile: String?
     var sourceLine: UInt?
     
-    fileprivate init(code: Code, ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, sourceFile: String? = nil, sourceLine: UInt? = nil)
+    fileprivate init(code: Code, ffiError: UnsafeMutablePointer<IdeviceFfiError>? = nil, freeError: Bool = true, sourceFile: String? = nil, sourceLine: UInt? = nil)
     {
         self.code = code
         self.sourceFile = sourceFile
@@ -64,7 +64,10 @@ struct PairError: ALTLocalizedError
             
             self.ffiUnderlyingError = NSError(domain: "IdeviceError", code: Int(ffiError.pointee.code), userInfo: userInfo)
             
-            idevice_error_free(ffiError) // Free the C error.
+            if freeError
+            {
+                idevice_error_free(ffiError) // Free the C error.
+            }
         }
     }
     

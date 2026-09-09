@@ -522,7 +522,7 @@ private extension FetchAnisetteDataOperation
             
             if anisetteServerURL != nil
             {
-                throw AnisetteServerError.unavailable(serverURL: anisetteServerURL, debugDescription: "The server returned HTTP error code \(urlResponse.statusCode).")
+                throw AnisetteServerError.unavailable(serverURL: anisetteServerURL, debugDescription: String(localized: "The server returned HTTP error code \(urlResponse.statusCode)."))
             }
             
             throw OperationError.unknown(failureReason: String(localized: "The server returned HTTP error code \(urlResponse.statusCode).", comment: nil))

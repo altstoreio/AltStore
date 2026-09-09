@@ -66,7 +66,7 @@ struct AnisetteServerError: ALTLocalizedError
     
     private var serverName: String? {
         guard let serverURL else { return nil }
-        return UserDefaults.standard.anisetteServers?.first { $0.url == serverURL }?.name ?? serverURL.host
+        return UserDefaults.shared.anisetteServers?.first { $0.url == serverURL }?.name ?? serverURL.host
     }
     
     var errorFailureReason: String {

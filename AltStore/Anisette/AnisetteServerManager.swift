@@ -44,7 +44,7 @@ class AnisetteServerManager
         let (data, _) = try await self.session.data(from: .anisetteServers)
         let response = try Foundation.JSONDecoder().decode(Response.self, from: data)
 
-        UserDefaults.standard.anisetteServers = response.servers
+        UserDefaults.shared.anisetteServers = response.servers
 
         return response.servers
     }
@@ -71,7 +71,7 @@ class AnisetteServerManager
             guard urlResponse.statusCode == 200 else
             {
                 Logger.sideload.error("Anisette server \(clientInfoURL, privacy: .public) returned status \(urlResponse.statusCode).")
-                throw AnisetteServerError.unavailable(serverURL: url, debugDescription: "The server returned HTTP error code \(urlResponse.statusCode).")
+                throw AnisetteServerError.unavailable(serverURL: url, debugDescription: String(localized: "The server returned HTTP error code \(urlResponse.statusCode)."))
             }
         }
 
