@@ -426,7 +426,7 @@ private extension SettingsViewController
 
 private extension SettingsViewController
 {
-    func signIn(completion: (() -> Void)? = nil)
+    func signIn(completion: ((Result<Void, Error>) -> Void)? = nil)
     {
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
@@ -445,10 +445,8 @@ private extension SettingsViewController
                 
                 self.update()
                 
-                if case .success = result
-                {
-                    completion?()
-                }
+                let result = result.map { _ in () } // Map to Result<Void, Error>
+                completion?(result)
             }
         }
     }
@@ -623,7 +621,16 @@ private extension SettingsViewController
     func setUpRemoteAltServer()
     {
         // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
-        guard self.activeTeam != nil else { return self.signIn { self.setUpRemoteAltServer() } }
+        guard self.activeTeam != nil else { return self.signIn { result in
+            if case .success = result { self.setUpRemoteAltServer() }
+        } }
+        
+        if Keychain.shared.devicePairingFile == nil,
+           !UserDefaults.shared.ignoresBundledPairingFile,
+           let pairingFile = AppManager.shared.bundledPairingFile()
+        {
+            Keychain.shared.devicePairingFile = pairingFile // Promote bundled pairing file on first setup only.
+        }
         
         if let selectedIndexPath = self.tableView.indexPathForSelectedRow
         {
@@ -631,11 +638,6 @@ private extension SettingsViewController
         }
         
         let hostingController = RemoteAltServerSetupView.makeViewController {
-            if Keychain.shared.devicePairingFile == nil
-            {
-                Keychain.shared.devicePairingFile = AppManager.shared.bundledPairingFile()
-            }
-            
             UserDefaults.shared.prefersRemoteAltServer = true
             
             self.update()
@@ -848,8 +850,10 @@ extension SettingsViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
         let section = Section.allCases[indexPath.section]
         switch section
         {
@@ -868,6 +872,8 @@ extension SettingsViewController
             
         default: break
         }
+        
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat

@@ -120,11 +120,11 @@ struct RemoteAltServerView: View
                 SwiftUI.Button(role: .destructive) {
                     isShowingClearConfirmation = true
                 } label: {
-                    Text("Clear Remote AltServer")
+                    Text("Reset Remote AltServer")
                         .frame(maxWidth: .infinity)
                 }
-                .confirmationDialog("Are you sure you want to clear Remote AltServer?", isPresented: $isShowingClearConfirmation, titleVisibility: .visible) {
-                    SwiftUI.Button("Clear", role: .destructive) {
+                .confirmationDialog("Are you sure you want to reset Remote AltServer?", isPresented: $isShowingClearConfirmation, titleVisibility: .visible) {
+                    SwiftUI.Button("Reset", role: .destructive) {
                         clearRemoteAltServer()
                     }
                 } message: {
@@ -239,6 +239,7 @@ private extension RemoteAltServerView
     func clearRemoteAltServer()
     {
         UserDefaults.shared.prefersRemoteAltServer = false
+        UserDefaults.shared.ignoresBundledPairingFile = true
         Keychain.shared.devicePairingFile = nil
         
         dismiss() // Return to Settings
