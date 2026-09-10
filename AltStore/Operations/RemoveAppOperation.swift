@@ -105,10 +105,17 @@ private extension RemoveAppOperation
     func removeViaServer(bundleIdentifier: String, server: Server, udid: String) async throws
     {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            
+            func finish(_ result: Result<Void, Error>)
+            {
+                guard !self.isFinished else { return }
+                continuation.resume(with: result)
+            }
+            
             ServerManager.shared.connect(to: server) { (result) in
                 switch result
                 {
-                case .failure(let error): continuation.resume(throwing: error)
+                case .failure(let error): finish(.failure(error))
                 case .success(let connection):
                     Logger.sideload.debug("Sending remove app request...")
 
@@ -118,7 +125,7 @@ private extension RemoveAppOperation
                         {
                         case .failure(let error):
                             Logger.sideload.error("Failed to send remove app request. \(error.localizedDescription, privacy: .public)")
-                            continuation.resume(throwing: error)
+                            finish(.failure(error))
 
                         case .success:
                             Logger.sideload.debug("Waiting for remove app response...")
@@ -127,15 +134,15 @@ private extension RemoveAppOperation
                                 {
                                 case .failure(let error):
                                     Logger.sideload.error("Failed to receive remove app response. \(error.localizedDescription, privacy: .public)")
-                                    continuation.resume(throwing: error)
+                                    finish(.failure(error))
 
                                 case .success(.error(let response)):
                                     Logger.sideload.error("Failed to remove app. \(response.error.localizedDescription, privacy: .public)")
-                                    continuation.resume(throwing: response.error)
+                                    finish(.failure(response.error))
 
-                                case .success(.removeApp): continuation.resume()
+                                case .success(.removeApp): finish(.success(()))
 
-                                case .success: continuation.resume(throwing: ALTServerError(.unknownResponse))
+                                case .success: finish(.failure(ALTServerError(.unknownResponse)))
                                 }
                             }
                         }

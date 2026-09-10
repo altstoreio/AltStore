@@ -127,10 +127,17 @@ private extension DeactivateAppOperation
     func deactivateViaServer(bundleIdentifiers: Set<String>, server: Server, udid: String) async throws
     {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            
+            func finish(_ result: Result<Void, Error>)
+            {
+                guard !self.isFinished else { return }
+                continuation.resume(with: result)
+            }
+            
             ServerManager.shared.connect(to: server) { (result) in
                 switch result
                 {
-                case .failure(let error): continuation.resume(throwing: error)
+                case .failure(let error): finish(.failure(error))
                 case .success(let connection):
                     Logger.sideload.notice("Sending deactivate app request...")
 
@@ -140,7 +147,7 @@ private extension DeactivateAppOperation
                         {
                         case .failure(let error):
                             Logger.sideload.error("Failed to send deactivate app request. \(error.localizedDescription, privacy: .public)")
-                            continuation.resume(throwing: error)
+                            finish(.failure(error))
 
                         case .success:
                             Logger.sideload.debug("Waiting for deactivate app response...")
@@ -149,15 +156,15 @@ private extension DeactivateAppOperation
                                 {
                                 case .failure(let error):
                                     Logger.sideload.error("Failed to receive deactivate app response. \(error.localizedDescription, privacy: .public)")
-                                    continuation.resume(throwing: error)
+                                    finish(.failure(error))
 
                                 case .success(.error(let response)):
                                     Logger.sideload.error("Failed to deactivate app. \(response.error.localizedDescription, privacy: .public)")
-                                    continuation.resume(throwing: response.error)
+                                    finish(.failure(response.error))
 
-                                case .success(.removeProvisioningProfiles): continuation.resume()
+                                case .success(.removeProvisioningProfiles): finish(.success(()))
 
-                                case .success: continuation.resume(throwing: ALTServerError(.unknownResponse))
+                                case .success: finish(.failure(ALTServerError(.unknownResponse)))
                                 }
                             }
                         }

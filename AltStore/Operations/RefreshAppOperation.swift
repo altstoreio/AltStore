@@ -97,10 +97,17 @@ private extension RefreshAppOperation
     func refreshViaServer(profiles: [String: ALTProvisioningProfile], app: ALTApplication, server: Server, udid: String) async throws
     {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            
+            func finish(_ result: Result<Void, Error>)
+            {
+                guard !self.isFinished else { return }
+                continuation.resume(with: result)
+            }
+            
             ServerManager.shared.connect(to: server) { (result) in
                 switch result
                 {
-                case .failure(let error): continuation.resume(throwing: error)
+                case .failure(let error): finish(.failure(error))
                 case .success(let connection):
                     DatabaseManager.shared.persistentContainer.performBackgroundTask { (context) in
                         Logger.sideload.debug("Sending refresh app request...")
@@ -122,7 +129,7 @@ private extension RefreshAppOperation
 
                             switch result
                             {
-                            case .failure(let error): continuation.resume(throwing: error)
+                            case .failure(let error): finish(.failure(error))
                             case .success:
                                 Logger.sideload.debug("Waiting for refresh app response...")
 
@@ -131,17 +138,17 @@ private extension RefreshAppOperation
                                     {
                                     case .failure(let error):
                                         Logger.sideload.error("Failed to receive refresh app response. \(error.localizedDescription, privacy: .public)")
-                                        continuation.resume(throwing: error)
+                                        finish(.failure(error))
 
                                     case .success(.error(let response)):
                                         Logger.sideload.error("Failed to refresh app \(self.context.bundleIdentifier, privacy: .public). \(response.error.localizedDescription, privacy: .public)")
-                                        continuation.resume(throwing: response.error)
+                                        finish(.failure(response.error))
 
-                                    case .success(.installProvisioningProfiles): continuation.resume()
+                                    case .success(.installProvisioningProfiles): finish(.success(()))
 
                                     case .success:
                                         Logger.sideload.notice("Received unknown refresh app response for app \(self.context.bundleIdentifier, privacy: .public)")
-                                        continuation.resume(throwing: ALTServerError(.unknownResponse))
+                                        finish(.failure(ALTServerError(.unknownResponse)))
                                     }
                                 }
                             }
