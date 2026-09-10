@@ -25,8 +25,6 @@
 		BF088D0F25019ABA008082D9 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D0E25019ABA008082D9 /* AltSign-Static */; };
 		BF088D332501A4FF008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
 		BF088D342501A4FF008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; };
-		BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BF088D352501A821008082D9 /* AltSign-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; };
 		BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF088D322501A4FF008082D9 /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF0C4EBD22A1BD8B009A2DD7 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C4EBC22A1BD8B009A2DD7 /* AppManager.swift */; };
@@ -380,7 +378,6 @@
 		D52C08EE28AEC37A006C4AE5 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C08ED28AEC37A006C4AE5 /* AppVersion.swift */; };
 		D52C8F012AFC144C00CA0BDD /* FeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F002AFC144C00CA0BDD /* FeaturedViewController.swift */; };
 		D52C8F032AFC56F000CA0BDD /* StoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52C8F022AFC56F000CA0BDD /* StoreCategory.swift */; };
-		D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */; };
 		D52EF2BE2A0594550096C377 /* AppDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52EF2BD2A0594550096C377 /* AppDetailCollectionViewController.swift */; };
 		D533E8B72727841800A9B5DD /* libAppleArchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8B62727841800A9B5DD /* libAppleArchive.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D533E8BC2727BBEE00A9B5DD /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D533E8BB2727BBEE00A9B5DD /* libfragmentzip.a */; };
@@ -392,6 +389,10 @@
 		D5399FAE2BE56B030038DDEF /* JoinPatreonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5399FAD2BE56B030038DDEF /* JoinPatreonViewController.swift */; };
 		D5399FB02BE56B120038DDEF /* JoinPatreonViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5399FAF2BE56B120038DDEF /* JoinPatreonViewController.xib */; };
 		D53D84022A2158FC00543C3B /* Permissions.plist in Resources */ = {isa = PBXBuildFile; fileRef = D53D84012A2158FC00543C3B /* Permissions.plist */; };
+		D53FB4C1305372F6000546E8 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = D53FB4C0305372F6000546E8 /* AltSign-Static */; };
+		D53FB4C2305372FB000546E8 /* libcorecrypto_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D59AEAD92D9F58A20064E176 /* libcorecrypto_static.a */; };
+		D53FB4C430537302000546E8 /* AltSign-Static in Frameworks */ = {isa = PBXBuildFile; productRef = D53FB4C330537302000546E8 /* AltSign-Static */; };
+		D53FB4C530537307000546E8 /* libcorecrypto_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D59AEAD92D9F58A20064E176 /* libcorecrypto_static.a */; };
 		D54058B92A1D6269008CCC58 /* AppPermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058B82A1D6269008CCC58 /* AppPermissionProtocol.swift */; };
 		D54058BB2A1D8FE3008CCC58 /* UIColor+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54058BA2A1D8FE3008CCC58 /* UIColor+AltStore.swift */; };
 		D540E93828EE1BDE000F1B0F /* ErrorDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D540E93728EE1BDE000F1B0F /* ErrorDetailsViewController.swift */; };
@@ -758,7 +759,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BF088D392501A833008082D9 /* OpenSSL.xcframework in Embed Frameworks */,
-				BF088D372501A821008082D9 /* AltSign-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -852,7 +852,6 @@
 /* Begin PBXFileReference section */
 		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
-		A08F67C18350C7990753F03F /* Pods_AltStoreCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AltStoreCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		821769A92FE99E2400980080 /* AnisetteServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServer.swift; sourceTree = "<group>"; };
 		821769AA2FE99E2400980080 /* AnisetteServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServerManager.swift; sourceTree = "<group>"; };
 		825E55C7302D621900392655 /* OnDeviceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceClient.swift; sourceTree = "<group>"; };
@@ -1369,13 +1368,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D53FB4C2305372FB000546E8 /* libcorecrypto_static.a in Frameworks */,
 				D58D5F2E26DFE68E00E55E38 /* LaunchAtLogin in Frameworks */,
 				BF088D382501A833008082D9 /* OpenSSL.xcframework in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
-				BF088D362501A821008082D9 /* AltSign-Dynamic in Frameworks */,
 				CA1DE71000000000000005A2 /* IDevice in Frameworks */,
 				A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */,
+				D53FB4C1305372F6000546E8 /* AltSign-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1443,7 +1443,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D52DD35E2AAA89A600A7F2B6 /* AltSign-Dynamic in Frameworks */,
+				D53FB4C530537307000546E8 /* libcorecrypto_static.a in Frameworks */,
+				D53FB4C430537302000546E8 /* AltSign-Static in Frameworks */,
 				D537C85B2AA9507A009A1E08 /* libcorecrypto.tbd in Frameworks */,
 				D5FB7A2E2AA2859400EF863D /* ArgumentParser in Frameworks */,
 			);
@@ -2747,6 +2748,7 @@
 				BF088D352501A821008082D9 /* AltSign-Dynamic */,
 				D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */,
 				CA1DE71000000000000005A1 /* IDevice */,
+				D53FB4C0305372F6000546E8 /* AltSign-Static */,
 			);
 			productName = AltServer;
 			productReference = BF45868D229872EA00BD7491 /* AltServer.app */;
@@ -2911,6 +2913,7 @@
 			packageProductDependencies = (
 				D5FB7A2D2AA2859400EF863D /* ArgumentParser */,
 				D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */,
+				D53FB4C330537302000546E8 /* AltSign-Static */,
 			);
 			productName = AltJIT;
 			productReference = D5FB7A132AA284BE00EF863D /* altjit */;
@@ -4939,6 +4942,14 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D535CEE62BE95D4C00F96119 /* XCRemoteSwiftPackageReference "SwiftClient" */;
 			productName = TelemetryClient;
+		};
+		D53FB4C0305372F6000546E8 /* AltSign-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "AltSign-Static";
+		};
+		D53FB4C330537302000546E8 /* AltSign-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "AltSign-Static";
 		};
 		D561B2EA28EF5A4F006752E4 /* AltSign-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
