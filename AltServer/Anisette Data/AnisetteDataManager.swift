@@ -24,7 +24,7 @@ private extension ALTAnisetteData
         guard let range = self.deviceDescription.lowercased().range(of: "(" + bundleID.lowercased()) else { return }
         
         var adjustedDescription = self.deviceDescription[..<range.lowerBound]
-        adjustedDescription += "(com.apple.dt.Xcode/3594.4.19)>"
+        adjustedDescription += "(com.apple.akd/1.0)>"
         
         self.deviceDescription = String(adjustedDescription)
     }
@@ -136,7 +136,7 @@ private extension AnisetteDataManager
             let deviceModel = ProcessInfo.processInfo.deviceModel ?? "iMac21,1"
             let osName = (osVersion.majorVersion < 11) ? "Mac OS X" : "macOS"
             
-            let serverFriendlyDescription = "<\(deviceModel)> <\(osName);\(osVersion.stringValue);\(buildVersion)> <com.apple.AuthKit/1 (com.apple.dt.Xcode/3594.4.19)>"
+            let serverFriendlyDescription = "<\(deviceModel)> <\(osName);\(osVersion.stringValue);\(buildVersion)> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
             
             let anisetteData = ALTAnisetteData(machineID: machineID,
                                                oneTimePassword: oneTimePassword,
