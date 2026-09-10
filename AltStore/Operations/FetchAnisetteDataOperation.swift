@@ -9,6 +9,7 @@
 import Foundation
 import CryptoKit
 import Combine
+import RegexBuilder
 
 import AltStoreCore
 import AltSign
@@ -95,6 +96,24 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
                 else
                 {
                     throw OperationError.serverNotFound
+                }
+                
+                let regex = Regex {
+                    "com.apple.dt.Xcode/"
+                    OneOrMore {
+                        ChoiceOf {
+                            .digit
+                            "."
+                        }
+                    }
+                }
+                .ignoresCase()
+                
+                if anisetteData.deviceDescription.contains(regex)
+                {
+                    // Replace legacy Xcode identifier (which Apple's servers now reject) with akd's.
+                    let sanitizedDescription = anisetteData.deviceDescription.replacing(regex, with: "com.apple.akd/1.0")
+                    anisetteData.deviceDescription = sanitizedDescription
                 }
 
                 self.finish(.success(anisetteData))
