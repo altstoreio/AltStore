@@ -182,7 +182,7 @@ private extension RefreshAllAppsIntent
                 }
             }
             
-            operation.ignoresServerNotFoundError = false
+            operation.ignoresServerUnavailableErrors = false
             
             self.progress.addChild(operation.progress, withPendingUnitCount: 1)
             

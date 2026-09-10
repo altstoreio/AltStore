@@ -15,8 +15,6 @@ import IntentsUI
 import AltStoreCore
 import AltSign
 
-import Minimuxer
-
 extension SettingsViewController
 {
     fileprivate enum Section: Int, CaseIterable
@@ -77,14 +75,16 @@ extension SettingsViewController
     
     fileprivate enum RemoteAltServerRow: Int, CaseIterable
     {
-        case serverURL
-        case pairingFile
+        case server
+        case preferRemote
     }
 }
 
 class SettingsViewController: UITableViewController
 {
     private var activeTeam: Team?
+    
+    private var isRemoteAltServerConfigured = false
     
     private var prototypeHeaderFooterView: SettingsHeaderFooterView!
     
@@ -95,12 +95,13 @@ class SettingsViewController: UITableViewController
     @IBOutlet private var accountEmailLabel: UILabel!
     @IBOutlet private var accountTypeLabel: UILabel!
     @IBOutlet private var udidLabel: UILabel!
-    @IBOutlet private var pairingFileLabel: UILabel!
     @IBOutlet private var serverURLLabel: UILabel!
+    @IBOutlet private var remoteAltServerLabel: UILabel!
     
     @IBOutlet private var backgroundRefreshSwitch: UISwitch!
     @IBOutlet private var enforceThreeAppLimitSwitch: UISwitch!
     @IBOutlet private var disableResponseCachingSwitch: UISwitch!
+    @IBOutlet private var prefersRemoteAltServerSwitch: UISwitch!
     
     @IBOutlet private var mastodonButton: UIButton!
     @IBOutlet private var threadsButton: UIButton!
@@ -254,18 +255,24 @@ private extension SettingsViewController
         self.backgroundRefreshSwitch.isOn = UserDefaults.standard.isBackgroundRefreshEnabled
         self.enforceThreeAppLimitSwitch.isOn = !UserDefaults.standard.ignoreActiveAppsLimit
         self.disableResponseCachingSwitch.isOn = UserDefaults.standard.responseCachingDisabled
+        self.prefersRemoteAltServerSwitch.isOn = UserDefaults.shared.prefersRemoteAltServer
         
-        if AppManager.shared.devicePairingFile == nil
+        self.isRemoteAltServerConfigured = (Keychain.shared.devicePairingFile != nil)
+        
+        if self.isRemoteAltServerConfigured
         {
-            self.pairingFileLabel.text = String(localized: "Configure Remote AltServer…")
+            let preferredURL = UserDefaults.shared.preferredAnisetteServerURL
+            let serverName = UserDefaults.shared.anisetteServers?.first { $0.url == preferredURL }?.name
+            
+            self.remoteAltServerLabel.text = String(localized: "Server")
+            self.serverURLLabel.text = serverName ?? preferredURL?.host ?? String(localized: "None")
         }
         else
         {
-            self.pairingFileLabel.text = String(localized: "Reset Remote AltServer…")
+            self.remoteAltServerLabel.text = String(localized: "Set up Remote AltServer…")
+            self.serverURLLabel.text = nil
         }
         
-        self.serverURLLabel.text = UserDefaults.shared.preferredAnisetteServerURL?.host ?? String(localized: "None")
-
         if self.isViewLoaded
         {
             self.tableView.reloadData()
@@ -355,7 +362,9 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Provide a remote server URL and device pairing file to sideload apps without AltServer.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = self.isRemoteAltServerConfigured
+                    ? NSLocalizedString("When enabled, AltStore will sideload apps using a remote AltServer instead of a computer.", comment: "")
+                    : NSLocalizedString("Set up Remote AltServer to sideload apps without a computer.", comment: "")
             }
             
         case .techyThings:
@@ -417,7 +426,7 @@ private extension SettingsViewController
 
 private extension SettingsViewController
 {
-    func signIn()
+    func signIn(completion: ((Result<Void, Error>) -> Void)? = nil)
     {
         AppManager.shared.authenticate(presentingViewController: self) { (result) in
             DispatchQueue.main.async {
@@ -429,12 +438,16 @@ private extension SettingsViewController
                     
                 case .failure(let error):
                     let toastView = ToastView(error: error)
+                    toastView.opensErrorLog = true
                     toastView.show(in: self)
                     
                 case .success: break
                 }
                 
                 self.update()
+                
+                let result = result.map { _ in () } // Map to Result<Void, Error>
+                completion?(result)
             }
         }
     }
@@ -488,6 +501,11 @@ private extension SettingsViewController
     @IBAction func toggleDisableResponseCaching(_ sender: UISwitch)
     {
         UserDefaults.standard.responseCachingDisabled = sender.isOn
+    }
+    
+    @IBAction func togglePrefersRemoteAltServer(_ sender: UISwitch)
+    {
+        UserDefaults.shared.prefersRemoteAltServer = sender.isOn
     }
     
     @IBAction func addRefreshAppsShortcut()
@@ -590,9 +608,9 @@ private extension SettingsViewController
         return (encryptedData, password)
     }
     
-    func chooseAnisetteServer()
+    func showRemoteAltServer()
     {
-        let hostingController = ChooseAnisetteServerView.makeViewController()
+        let hostingController = RemoteAltServerView.makeViewController()
         self.navigationController?.pushViewController(hostingController, animated: true)
 
         if let selectedIndexPath = self.tableView.indexPathForSelectedRow
@@ -601,64 +619,43 @@ private extension SettingsViewController
         }
     }
 
-    func configureRemoteAltServer()
+    func setUpRemoteAltServer()
     {
-        Task<Void, Never> {
-            do
-            {
-                if AppManager.shared.devicePairingFile == nil
-                {
-                    let continueAction = UIAlertAction(title: NSLocalizedString("Continue", comment: ""), style: .default)
-                    try await self.presentConfirmationAlert(
-                        title: NSLocalizedString("Configure Remote AltServer", comment: ""),
-                        message: NSLocalizedString("Connect this device to a computer running AltServer, then tap Trust on this device when prompted.", comment: ""),
-                        primaryAction: continueAction
-                    )
-                }
-                else
-                {
-                    let resetAction = UIAlertAction(title: NSLocalizedString("Reset", comment: ""), style: .default)
-                    try await self.presentConfirmationAlert(
-                        title: NSLocalizedString("Reset Remote AltServer", comment: ""),
-                        message: NSLocalizedString("To reset, connect this device to a computer running AltServer, then tap Trust when prompted.", comment: ""),
-                        primaryAction: resetAction
-                    )
-                }
-
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                    AppManager.shared.fetchPairingFile { result in
-                        continuation.resume(with: result)
-                    }
-                }
-
-                self.update()
-
-                let needsRelaunch = Muxer.started
-
-                if needsRelaunch
-                {
-                    // If Minimuxer has been started with a previous pairing file, we're unable to stop it without the user quitting the app
-                    await self.presentAlert(title: NSLocalizedString("Relaunch Required", comment: ""), message: NSLocalizedString("Quit AltStore and reopen it for your new pairing file to take effect.", comment: ""))
-                }
-                else
-                {
-                    await self.presentAlert(title: NSLocalizedString("Remote AltServer Configured", comment: ""), message: NSLocalizedString("AltStore can now sideload apps on this device without a computer.", comment: ""))
-                }
-            }
-            catch is CancellationError
-            {
-                // Ignore
-            }
-            catch
-            {
-                await self.presentAlert(title: NSLocalizedString("Unable to Configure Remote AltServer", comment: ""), message: error.localizedDescription)
-            }
-
-            if let selectedIndexPath = self.tableView.indexPathForSelectedRow
-            {
-                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
-            }
+        // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
+        guard self.activeTeam != nil else { return self.signIn { result in
+            if case .success = result { self.setUpRemoteAltServer() }
+        } }
+        
+        if Keychain.shared.devicePairingFile == nil,
+           !UserDefaults.shared.ignoresBundledPairingFile,
+           let pairingFile = AppManager.shared.bundledPairingFile()
+        {
+            Keychain.shared.devicePairingFile = pairingFile // Promote bundled pairing file on first setup only.
         }
+        
+        if let selectedIndexPath = self.tableView.indexPathForSelectedRow
+        {
+            self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+        
+        let hostingController = RemoteAltServerSetupView.makeViewController {
+            UserDefaults.shared.prefersRemoteAltServer = true
+            
+            // Selects a default server and provisions adi.pb against it
+            AppManager.shared.fetchAnisetteData { result in
+                if case .failure(let error) = result
+                {
+                    Logger.sideload.error("Failed to fetch anisette data when selecting a default server. \(error.localizedDescription, privacy: .public)")
+                }
+                
+                DispatchQueue.main.async { self.update() }
+            }
+            
+            self.update()
+            self.dismiss(animated: true)
+        }
+        
+        self.present(hostingController, animated: true)
     }
 
     @IBAction func handleDebugModeGesture(_ gestureRecognizer: UISwipeGestureRecognizer)
@@ -859,9 +856,35 @@ extension SettingsViewController
         case .signIn: return (self.activeTeam == nil) ? 1 : 0
         case .account: return (self.activeTeam == nil) ? 0 : 4
         case .appRefresh: return AppRefreshRow.allCases.count
-        case .remoteAltServer: return RemoteAltServerRow.allCases.count
+        case .remoteAltServer: return self.isRemoteAltServerConfigured ? RemoteAltServerRow.allCases.count : 1
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        let section = Section.allCases[indexPath.section]
+        switch section
+        {
+        case .remoteAltServer:
+            let row = RemoteAltServerRow.allCases[indexPath.row]
+            switch row
+            {
+            case .server:
+                guard let cell = cell as? InsetGroupTableViewCell else { break }
+                
+                // The server row is the only row in the section until Remote AltServer is configured.
+                cell.style = self.isRemoteAltServerConfigured ? .top : .single
+                
+            case .preferRemote: break
+            }
+            
+        default: break
+        }
+        
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
@@ -979,11 +1002,17 @@ extension SettingsViewController
             let row = RemoteAltServerRow.allCases[indexPath.row]
             switch row
             {
-            case .serverURL:
-                self.chooseAnisetteServer()
-
-            case .pairingFile:
-                self.configureRemoteAltServer()
+            case .server:
+                if self.isRemoteAltServerConfigured
+                {
+                    self.showRemoteAltServer()
+                }
+                else
+                {
+                    self.setUpRemoteAltServer()
+                }
+                
+            case .preferRemote: break
             }
             
         case .techyThings:

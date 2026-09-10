@@ -13,8 +13,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 @objc(InstallAppOperation)
 class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -165,10 +163,10 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
-                    if AppManager.shared.devicePairingFile != nil
+                    // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
+                    if UserDefaults.shared.prefersRemoteAltServer
                     {
-                        try self.installOnDevice(resignedApp: resignedApp)
+                        try await self.installOnDevice(resignedApp: resignedApp)
                     }
                     else if let connection = self.context.installationConnection
                     {
@@ -220,7 +218,7 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension InstallAppOperation
 {
-    func installOnDevice(resignedApp: ALTApplication) throws
+    func installOnDevice(resignedApp: ALTApplication) async throws
     {
         let bundleIdentifier = self.context.bundleIdentifier
 
@@ -228,35 +226,16 @@ private extension InstallAppOperation
         let app = AnyApp(name: resignedApp.name, bundleIdentifier: bundleIdentifier, url: resignedApp.fileURL, storeApp: nil)
         let fileURL = InstalledApp.refreshedIPAURL(for: app)
 
-        let ipaData = try Data(contentsOf: fileURL)
-
-        Logger.sideload.notice("Transferring \(bundleIdentifier, privacy: .public) to device...")
-
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
         do
         {
-            try Minimuxer.yeetAppAfc(bundleId: bundleIdentifier, ipaBytes: ipaData)
-        }
-        catch
-        {
-            Logger.sideload.error("AFC transfer failed: \(error.localizedDescription, privacy: .public)")
-            throw (error as NSError).withLocalizedFailure(String(localized: "Failed to transfer app to device."))
-        }
-        self.progress.completedUnitCount += 50
-
-        Logger.sideload.notice("Triggering install for \(bundleIdentifier, privacy: .public)...")
-
-        do
-        {
-            try Minimuxer.installIpa(bundleId: bundleIdentifier)
+            let client = try AppManager.shared.makeOnDeviceClient()
+            try await client.installApp(ipaURL: fileURL, bundleIdentifier: bundleIdentifier, progress: self.progress)
         }
         catch
         {
             Logger.sideload.error("Install failed: \(error.localizedDescription, privacy: .public)")
             throw (error as NSError).withLocalizedFailure(String(localized: "Failed to install app."))
         }
-        self.progress.completedUnitCount += 50
     }
 
     func receive(from connection: ServerConnection, completionHandler: @escaping (Result<Void, Error>) -> Void)

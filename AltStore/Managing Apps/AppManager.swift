@@ -20,8 +20,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 extension AppManager
 {
     static let didFetchSourceNotification = Notification.Name("io.altstore.AppManager.didFetchSource")
@@ -100,20 +98,15 @@ class AppManager: ObservableObject
 
 extension AppManager
 {
-    // Keychain-first (via Settings, most up-to-date if it exists), bundle as fallback.
-    var devicePairingFile: Data? {
-        if let keychainData = Keychain.shared.devicePairingFile
-        {
-            return keychainData
-        }
-
-        // Bundle fallback requires machineIdentifier for decryption.
+    // Returns the pairing file that AltServer bundled into the app. Nil before sign-in because decryption requires the signing certificate.
+    func bundledPairingFile() -> Data?
+    {
         guard let encryptedData = try? Data(contentsOf: Bundle.main.pairingFileURL),
               let machineIdentifier = Keychain.shared.signingCertificatePassword
         else { return nil }
-
-        let key = SymmetricKey(data: SHA256.hash(data: machineIdentifier.data(using: .utf8)!)) // Swift string, always valid UTF-8
-
+        
+        let key = SymmetricKey(data: SHA256.hash(data: machineIdentifier.data(using: .utf8)!)) // Swift strings are always valid UTF-8.
+        
         do
         {
             let sealedBox = try AES.GCM.SealedBox(combined: encryptedData)
@@ -121,45 +114,46 @@ extension AppManager
         }
         catch
         {
-            // Bundle present + key present but decrypt failed
-            Logger.sideload.error("Bundled pairing file decrypt failed: \(error.localizedDescription, privacy: .public)")
+            Logger.sideload.error("Failed to decrypt bundled pairing file. \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
 
-    // Starts on-device connection via minimuxer (idempotent).
-    func startOnDeviceConnection() throws
+    func makeOnDeviceClient() throws -> OnDeviceClient
     {
-        guard
-            let pairingData = self.devicePairingFile,
-            let pairingFile = String(data: pairingData, encoding: .utf8)
-        else { throw OperationError.missingPairingFile() }
-
-        let logPath = URL.documentsDirectory.appending(path: "minimuxer.txt").path
-
-        do
-        {
-            Minimuxer.retargetUsbmuxdAddr()
-            try Minimuxer.start(pairingFile: pairingFile, logPath: logPath)
-        }
-        catch
-        {
-            Logger.sideload.error("Failed to start device client: \(error.localizedDescription, privacy: .public)")
-            throw (error as NSError).withLocalizedFailure(String(localized: "AltStore couldn’t start the device client."))
-        }
-
-        guard self.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
+        guard let pairingFile = Keychain.shared.devicePairingFile else { throw OperationError.missingPairingFile() }
+        return try OnDeviceClient(pairingFile: pairingFile)
     }
-
-    // Returns false when the VPN tunnel is down, the network is unavailable, or the device isn't responding.
-    func isReachableOnDevice() -> Bool
+    
+    @available(iOS 27, *)
+    func pairDevice(context: OperationContext = OperationContext()) async throws
     {
-        guard Minimuxer.testDeviceConnection(ifaddr: "10.7.0.1") else
-        {
-            Logger.sideload.error("Device not reachable at 10.7.0.1 — VPN tunnel likely down.")
-            return false
+        let pairDeviceOperation = PairDeviceOperation(context: context)
+        
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                pairDeviceOperation.resultHandler = { (result) in
+                    switch result
+                    {
+                    case .failure(let error): context.error = error
+                    case .success: break
+                    }
+                    
+                    continuation.resume(with: result)
+                }
+                
+                self.run([pairDeviceOperation], context: context)
+            }
+        } onCancel: {
+            pairDeviceOperation.cancel()
         }
-        return true
+    }
+    
+    func fetchAnisetteData(completionHandler: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: OperationContext())
+        fetchAnisetteDataOperation.resultHandler = completionHandler
+        self.run([fetchAnisetteDataOperation], context: nil)
     }
 }
 
@@ -278,24 +272,30 @@ extension AppManager
     }
     
     // Establishes how we'll reach the device for the current mode: starts the device session
-    // when a pairing file is configured (Remote AltServer), otherwise discovers an AltServer.
+    // when Remote AltServer is set up and preferred, otherwise discovers a local AltServer.
     @discardableResult
     func prepareServer(context: OperationContext = OperationContext()) -> Foundation.Operation
     {
-        guard AppManager.shared.devicePairingFile != nil else
+        guard UserDefaults.shared.prefersRemoteAltServer else
         {
             return self.findServer(context: context) { _ in }
         }
 
-        // Starts minimuxer on-device to enable sideloading via the pairing file.
-        let startDeviceSessionOperation = RSTAsyncBlockOperation { (operation) in
-            do { try AppManager.shared.startOnDeviceConnection() }
-            catch { context.error = error }
-            operation.finish()
+        // Confirms the pairing file is usable and the device is reachable before any on-device sideloading.
+        let testConnectionOperation = RSTAsyncBlockOperation { (operation) in
+            Task<Void, Never> {
+                do
+                {
+                    let _ = try AppManager.shared.makeOnDeviceClient()
+                    guard await OnDeviceClient.isReachable() else { throw OperationError.vpnNotConnected() }
+                }
+                catch { context.error = error }
+                operation.finish()
+            }
         }
-        self.run([startDeviceSessionOperation], context: context)
-
-        return startDeviceSessionOperation
+        self.run([testConnectionOperation], context: context)
+        
+        return testConnectionOperation
     }
 
     @discardableResult
@@ -324,12 +324,12 @@ extension AppManager
         
         return authenticationOperation
     }
-
+    
     @discardableResult
     func fetchPairingFile(context: OperationContext = OperationContext(), completionHandler: @escaping (Result<Void, Error>) -> Void) -> FetchPairingFileOperation
     {
         let findServerOperation = self.findServer(context: context) { _ in }
-
+        
         let fetchPairingFileOperation = FetchPairingFileOperation(context: context)
         fetchPairingFileOperation.resultHandler = { (result) in
             switch result
@@ -337,13 +337,13 @@ extension AppManager
             case .failure(let error): context.error = error
             case .success: break
             }
-
+            
             completionHandler(result)
         }
         fetchPairingFileOperation.addDependency(findServerOperation)
-
+        
         self.run([fetchPairingFileOperation], context: context)
-
+        
         return fetchPairingFileOperation
     }
     
@@ -1117,7 +1117,7 @@ extension AppManager
             }
         }
 
-        if AppManager.shared.devicePairingFile == nil
+        if !UserDefaults.shared.prefersRemoteAltServer
         {
             /* Send */
             let sendAppOperation = SendAppOperation(context: context)
@@ -1659,7 +1659,7 @@ private extension AppManager
 
         var sendAppOperation: SendAppOperation?
 
-        if AppManager.shared.devicePairingFile == nil
+        if !UserDefaults.shared.prefersRemoteAltServer
         {
             /* Send */
             let operation = SendAppOperation(context: context)

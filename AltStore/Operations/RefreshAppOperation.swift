@@ -12,8 +12,6 @@ import AltStoreCore
 import AltSign
 import Roxas
 
-import Minimuxer
-
 @objc(RefreshAppOperation)
 class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -49,10 +47,10 @@ class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
         {
             do
             {
-                // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
-                if AppManager.shared.devicePairingFile != nil
+                // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
+                if UserDefaults.shared.prefersRemoteAltServer
                 {
-                    try self.refreshOnDevice(profiles: Set(profiles.values))
+                    try await self.refreshOnDevice(profiles: Set(profiles.values))
                 }
                 else if let server = self.context.server
                 {
@@ -78,15 +76,15 @@ class RefreshAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension RefreshAppOperation
 {
-    func refreshOnDevice(profiles: Set<ALTProvisioningProfile>) throws
+    func refreshOnDevice(profiles: Set<ALTProvisioningProfile>) async throws
     {
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
+        let client = try AppManager.shared.makeOnDeviceClient()
+        
         for profile in profiles
         {
             do
             {
-                try Minimuxer.installProvisioningProfile(profile: profile.data)
+                try await client.installProvisioningProfile(profile)
             }
             catch
             {

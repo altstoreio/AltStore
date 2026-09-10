@@ -46,8 +46,6 @@ extension OperationError
         case vpnNotConnected = 1500 // Local VPN is not currently running.
         case missingPairingFile = 1501 // Pairing file does not exist at expected location.
         case invalidPairingFile = 1502 // Pairing file failed to decode or is missing required value (UDID / private_key).
-        case invalidAnisetteResponse = 1503 // Anisette server returned invalid response.
-        case invalidAnisetteServer = 1504 // Provided URL isn't a valid anisette server.
         case wiredConnectionRequired = 1505 // Operation requires a wired AltServer connection.
     }
 
@@ -105,14 +103,6 @@ extension OperationError
 
     static func missingPairingFile(file: String = #fileID, line: UInt = #line) -> OperationError {
         OperationError(code: .missingPairingFile, sourceFile: file, sourceLine: line)
-    }
-
-    static func invalidAnisetteResponse(file: String = #fileID, line: UInt = #line) -> OperationError {
-        OperationError(code: .invalidAnisetteResponse, sourceFile: file, sourceLine: line)
-    }
-
-    static func invalidAnisetteServer(file: String = #fileID, line: UInt = #line) -> OperationError {
-        OperationError(code: .invalidAnisetteServer, sourceFile: file, sourceLine: line)
     }
 
     static func invalidPairingFile(file: String = #fileID, line: UInt = #line) -> OperationError {
@@ -207,19 +197,20 @@ struct OperationError: ALTLocalizedError
             return String(format: NSLocalizedString("Your pledge is no longer active. Please renew it to continue using %@ normally.", comment: ""), appName)
 
         case .vpnNotConnected:
-            return NSLocalizedString("AltStore couldn’t connect to local VPN.", comment: "")
+            return NSLocalizedString("AltStore couldn’t reach the remote AltServer.", comment: "")
 
         case .missingPairingFile:
-            return NSLocalizedString("AltStore couldn’t find your device pairing file.", comment: "")
-
-        case .invalidAnisetteResponse:
-            return NSLocalizedString("The remote server isn’t responding correctly and may be temporarily down. Try again, or choose a different server in Settings.", comment: "")
-
-        case .invalidAnisetteServer:
-            return NSLocalizedString("The URL doesn’t point to a valid remote server.", comment: "")
+            if #available(iOS 27, *)
+            {
+                return NSLocalizedString("This device hasn’t been paired with AltStore.", comment: "")
+            }
+            else
+            {
+                return NSLocalizedString("This device hasn’t been paired with AltServer.", comment: "")
+            }
 
         case .invalidPairingFile:
-            return NSLocalizedString("The selected file isn’t a valid pairing file.", comment: "")
+            return NSLocalizedString("Pairing didn’t complete correctly.", comment: "")
 
         case .wiredConnectionRequired:
             return NSLocalizedString("This device isn’t connected to AltServer via USB.", comment: "")
@@ -231,11 +222,9 @@ struct OperationError: ALTLocalizedError
         switch self.code
         {
         case .serverNotFound: return NSLocalizedString("Make sure you're on the same Wi-Fi network as a computer running AltServer, or try connecting this device to your computer via USB.", comment: "")
-        case .vpnNotConnected: return NSLocalizedString("Make sure you’re connected to Wi-Fi and a local VPN, then try again.", comment: "")
-        case .missingPairingFile: return NSLocalizedString("Re-import your pairing file in Settings → Remote Server.", comment: "")
-        case .invalidAnisetteResponse: return NSLocalizedString("Try again, or select a different server in Settings → Choose Server.", comment: "")
-        case .invalidAnisetteServer: return NSLocalizedString("Make sure the URL points to a valid remote server and try again.", comment: "")
-        case .invalidPairingFile: return NSLocalizedString("Make sure the file’s contents are a complete, valid pairing file for this device.", comment: "")
+        case .vpnNotConnected: return NSLocalizedString("Make sure Wi-Fi and LocalDevVPN are both connected, then try again.", comment: "")
+        case .missingPairingFile: return NSLocalizedString("Set up a remote AltServer in AltStore’s settings, then try again.", comment: "")
+        case .invalidPairingFile: return NSLocalizedString("Try pairing this device again.", comment: "")
         case .wiredConnectionRequired: return NSLocalizedString("Connect your device to a computer running AltServer via USB, then try again.", comment: "")
         case .maximumAppIDLimitReached:
             let baseMessage = NSLocalizedString("Delete sideloaded apps to free up App ID slots.", comment: "")

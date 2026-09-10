@@ -10,8 +10,6 @@ import Foundation
 
 import AltStoreCore
 
-import Minimuxer
-
 @objc(RemoveAppOperation)
 class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 {
@@ -45,10 +43,10 @@ class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             {
                 do
                 {
-                    // Prefer minimuxer when a pairing file is available; fall back to AltServer otherwise.
-                    if AppManager.shared.devicePairingFile != nil
+                    // Sideload on-device when Remote AltServer is set up and preferred; fall back to AltServer otherwise.
+                    if UserDefaults.shared.prefersRemoteAltServer
                     {
-                        try self.removeOnDevice(bundleIdentifier: bundleIdentifier)
+                        try await self.removeOnDevice(bundleIdentifier: bundleIdentifier)
                     }
                     else if let server = self.context.server
                     {
@@ -89,13 +87,12 @@ class RemoveAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
 
 private extension RemoveAppOperation
 {
-    func removeOnDevice(bundleIdentifier: String) throws
+    func removeOnDevice(bundleIdentifier: String) async throws
     {
-        guard AppManager.shared.isReachableOnDevice() else { throw OperationError.vpnNotConnected() }
-
         do
         {
-            try Minimuxer.removeApp(bundleId: bundleIdentifier)
+            let client = try AppManager.shared.makeOnDeviceClient()
+            try await client.removeApp(bundleIdentifier: bundleIdentifier)
             Logger.sideload.notice("Removed app \(bundleIdentifier, privacy: .public) from device")
         }
         catch

@@ -55,6 +55,10 @@ class Operation: RSTOperation, ProgressReporting, @unchecked Sendable
         return true
     }
     
+    var isExtendedBackgroundTask: Bool {
+        return false
+    }
+    
     override init()
     {
         super.init()
@@ -76,15 +80,18 @@ class Operation: RSTOperation, ProgressReporting, @unchecked Sendable
     {
         super.main()
         
-        let name = "com.altstore." + NSStringFromClass(type(of: self))
-        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
-            guard let backgroundTask = self?.backgroundTaskID else { return }
-            
-            self?.cancel()
-            
-            UIApplication.shared.endBackgroundTask(backgroundTask)
-            self?.backgroundTaskID = .invalid
-        }        
+        if !self.isExtendedBackgroundTask
+        {
+            let name = "com.altstore." + NSStringFromClass(type(of: self))
+            self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+                guard let backgroundTask = self?.backgroundTaskID else { return }
+                
+                self?.cancel()
+                
+                UIApplication.shared.endBackgroundTask(backgroundTask)
+                self?.backgroundTaskID = .invalid
+            }
+        }
     }
     
     override func finish()

@@ -44,7 +44,7 @@ class AnisetteServerManager
         let (data, _) = try await self.session.data(from: .anisetteServers)
         let response = try Foundation.JSONDecoder().decode(Response.self, from: data)
 
-        UserDefaults.standard.anisetteServers = response.servers
+        UserDefaults.shared.anisetteServers = response.servers
 
         return response.servers
     }
@@ -64,14 +64,14 @@ class AnisetteServerManager
             // URL points at something that isn't an anisette server.
             if urlResponse.statusCode == 404
             {
-                throw OperationError.invalidAnisetteServer()
+                throw AnisetteServerError.invalidServer()
             }
 
             // Server is reachable but erroring (e.g. 502/522 when its backend is down).
             guard urlResponse.statusCode == 200 else
             {
                 Logger.sideload.error("Anisette server \(clientInfoURL, privacy: .public) returned status \(urlResponse.statusCode).")
-                throw OperationError.invalidAnisetteResponse()
+                throw AnisetteServerError.unavailable(serverURL: url, debugDescription: String(localized: "The server returned HTTP error code \(urlResponse.statusCode)."))
             }
         }
 
@@ -91,7 +91,7 @@ class AnisetteServerManager
         catch
         {
             // Responded with 200, but the body isn't valid anisette client_info.
-            throw OperationError.invalidAnisetteResponse()
+            throw AnisetteServerError.invalidServer()
         }
     }
 }

@@ -82,7 +82,8 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
 
                 let anisetteData: ALTAnisetteData
 
-                if AppManager.shared.devicePairingFile != nil
+                // Use Remote AltServer when set up and preferred.
+                if UserDefaults.shared.prefersRemoteAltServer
                 {
                     // AltServerless route
                     anisetteData = try await self.fetchAnisetteDataFromAvailableServer()
@@ -178,7 +179,7 @@ private extension FetchAnisetteDataOperation
         catch
         {
             Logger.sideload.error("Failed to fetch remote anisette server list: \(error.localizedDescription, privacy: .public)")
-            throw OperationError.invalidAnisetteResponse()
+            throw AnisetteServerError.unavailable()
         }
 
         // Shuffle and try each server. If successful, set preferred URL.
@@ -197,7 +198,7 @@ private extension FetchAnisetteDataOperation
         }
 
         Logger.sideload.error("All remote anisette servers failed.")
-        throw OperationError.invalidAnisetteResponse()
+        throw AnisetteServerError.unavailable()
     }
     
     // Based on SideStore's FetchAnisetteDataOperation: https://github.com/SideStore/SideStore/blob/develop/AltStore/Operations/FetchAnisetteDataOperation.swift
@@ -215,7 +216,7 @@ private extension FetchAnisetteDataOperation
         let decoder = Foundation.JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
-        let response: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder)
+        let response: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
 
         // 2. Load or generate the persisted device identity (16 random bytes -> derives identifier, localUserID, deviceID)
         let identity: AnisetteIdentity
@@ -295,12 +296,12 @@ private extension FetchAnisetteDataOperation
             }
         }
 
-        let response: Response = try await self.send(request, decoder: Foundation.JSONDecoder())
+        let response: Response = try await self.send(request, decoder: Foundation.JSONDecoder(), anisetteServerURL: serverURL)
 
         guard response.result != "GetHeadersError" else
         {
             Logger.sideload.error("Anisette headers request returned error: \(response.message ?? "(no message)", privacy: .public)")
-            throw OperationError.invalidAnisetteResponse()
+            throw AnisetteServerError.invalidResponse(serverURL: serverURL, debugDescription: response.message)
         }
 
         guard let machineID = response.machineID,
@@ -310,7 +311,7 @@ private extension FetchAnisetteDataOperation
         else
         {
             Logger.sideload.error("Anisette headers response was missing required fields.")
-            throw OperationError.invalidAnisetteResponse()
+            throw AnisetteServerError.invalidResponse(serverURL: serverURL)
         }
 
         return (machineID, oneTimePassword, routingInfo)
@@ -338,7 +339,7 @@ private extension FetchAnisetteDataOperation
             }
         }
 
-        let lookupResponse: Response = try await self.send(lookupRequest, decoder: PropertyListDecoder())
+        let lookupResponse: Response = try await self.send(lookupRequest, decoder: PropertyListDecoder(), anisetteServerURL: nil)
         
         guard let startProvisioningURL = URL(string: lookupResponse.urls.midStartProvisioning),
               let endProvisioningURL = URL(string: lookupResponse.urls.midFinishProvisioning)
@@ -365,7 +366,7 @@ private extension FetchAnisetteDataOperation
             
             guard case .string(let text) = message, let data = text.data(using: .utf8) else {
                 Logger.sideload.error("Received unexpected non-string message from anisette server.")
-                throw OperationError.invalidAnisetteResponse()
+                throw AnisetteServerError.invalidResponse(serverURL: serverURL)
             }
 
             struct Message: Decodable
@@ -417,7 +418,7 @@ private extension FetchAnisetteDataOperation
                     var Response: StartMessage
                 }
 
-                let startResponse: Response = try await self.send(startRequest, decoder: PropertyListDecoder())
+                let startResponse: Response = try await self.send(startRequest, decoder: PropertyListDecoder(), anisetteServerURL: nil)
 
                 let message = StartMessage(spim: startResponse.Response.spim)
                 let data = try jsonEncoder.encode(message)
@@ -428,7 +429,7 @@ private extension FetchAnisetteDataOperation
             case "GiveEndProvisioningData":
                 guard let cpim = response.cpim else {
                     Logger.sideload.error("GiveEndProvisioningData message didn't include cpim.")
-                    throw OperationError.invalidAnisetteResponse()
+                    throw AnisetteServerError.invalidResponse(serverURL: serverURL)
                 }
                 
                 var endRequest = self.makeAnisetteRequest(for: endProvisioningURL, clientInfo: clientInfo, userAgent: userAgent, identity: identity)
@@ -459,7 +460,7 @@ private extension FetchAnisetteDataOperation
                     var Response: EndMessage
                 }
 
-                let endResponse: Response = try await self.send(endRequest, decoder: PropertyListDecoder())
+                let endResponse: Response = try await self.send(endRequest, decoder: PropertyListDecoder(), anisetteServerURL: nil)
 
                 let message = EndMessage(ptm: endResponse.Response.ptm, tk: endResponse.Response.tk)
                 let data = try jsonEncoder.encode(message)
@@ -470,7 +471,7 @@ private extension FetchAnisetteDataOperation
             case "ProvisioningSuccess":
                 guard let adiPB = response.adi_pb, let adiPBData = adiPB.data(using: .utf8) else {
                     Logger.sideload.error("ProvisioningSuccess message didn't include adi_pb.")
-                    throw OperationError.invalidAnisetteResponse()
+                    throw AnisetteServerError.invalidResponse(serverURL: serverURL)
                 }
                                 
                 Logger.sideload.notice("Provisioning succeeded.")
@@ -480,7 +481,7 @@ private extension FetchAnisetteDataOperation
             default:
                 // Any unrecognized result is treated as fatal — we don't know what it means, so don't assume it's safe to ignore.
                 Logger.sideload.error("Anisette server returned unrecognized result: \(response.result, privacy: .public) — \(response.message ?? "", privacy: .public)")
-                throw OperationError.invalidAnisetteResponse()
+                throw AnisetteServerError.invalidResponse(serverURL: serverURL, debugDescription: response.message)
             }
         }
     }
@@ -488,26 +489,58 @@ private extension FetchAnisetteDataOperation
 
 private extension FetchAnisetteDataOperation
 {
-    func send<T: Decodable, Decoder: TopLevelDecoder>(_ request: URLRequest, decoder: Decoder) async throws -> T where Decoder.Input == Data
+    func send<T: Decodable, Decoder: TopLevelDecoder>(_ request: URLRequest, decoder: Decoder, anisetteServerURL: URL?) async throws -> T where Decoder.Input == Data
     {
-        let (data, urlResponse) = try await self.session.data(for: request)
-
-        if let urlResponse = urlResponse as? HTTPURLResponse
+        let data: Data
+        let urlResponse: URLResponse
+        do
         {
-            guard urlResponse.statusCode == 200 else
-            {
-                Logger.sideload.error("Request to \(request.url?.absoluteString ?? "?", privacy: .public) failed with status \(urlResponse.statusCode).")
-                
-                if urlResponse.statusCode == 429 // TODO: create specific operation error case
-                {
-                    throw OperationError.unknown(failureReason: String(localized: "Too many requests. Please wait a moment and try again.", comment: nil))
-                }
-                
-                throw OperationError.unknown(failureReason: String(localized: "The server returned HTTP error code \(urlResponse.statusCode).", comment: nil))
-            }
+            (data, urlResponse) = try await self.session.data(for: request)
         }
+        catch
+        {
+            // We want to catch specific errors that indicate an issue with the anisette server, so
+            // we can prompt users to try again or select a new server. All other errors fall through.
+            let serverUnavailableErrorCodes: [URLError.Code] = [.cannotConnectToHost, .cannotFindHost, .timedOut, .badServerResponse]
+            
+            if anisetteServerURL != nil, let urlError = error as? URLError, serverUnavailableErrorCodes.contains(urlError.code)
+            {
+                throw AnisetteServerError.unavailable(serverURL: anisetteServerURL, underlyingError: urlError)
+            }
+            
+            throw error
+        }
+        
+        if let urlResponse = urlResponse as? HTTPURLResponse, urlResponse.statusCode != 200
+        {
+            Logger.sideload.error("Request to \(request.url?.absoluteString ?? "?", privacy: .public) failed with status \(urlResponse.statusCode).")
+            
+            if urlResponse.statusCode == 429 // TODO: create specific operation error case
+            {
+                throw OperationError.unknown(failureReason: String(localized: "Too many requests. Please wait a moment and try again.", comment: nil))
+            }
+            
+            if anisetteServerURL != nil
+            {
+                throw AnisetteServerError.unavailable(serverURL: anisetteServerURL, debugDescription: String(localized: "The server returned HTTP error code \(urlResponse.statusCode)."))
+            }
+            
+            throw OperationError.unknown(failureReason: String(localized: "The server returned HTTP error code \(urlResponse.statusCode).", comment: nil))
+        }
+        
+        do
+        {
+            return try decoder.decode(T.self, from: data)
+        }
+        catch
+        {
+            if anisetteServerURL != nil
+            {
+                throw AnisetteServerError.invalidResponse(serverURL: anisetteServerURL, underlyingError: error)
+            }
 
-        return try decoder.decode(T.self, from: data)
+            throw error
+        }
     }
     
     func makeAnisetteRequest(for url: URL, clientInfo: String, userAgent: String, identity: AnisetteIdentity) -> URLRequest
