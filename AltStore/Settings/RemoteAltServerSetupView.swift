@@ -309,11 +309,13 @@ private extension RemoteAltServerSetupView
                     {
                         SwiftUI.Button("Not Now") { advance() }
                             .buttonStyle(.glass)
+                            .foregroundStyle(Color(uiColor: .label))
                     }
                     else
                     {
                         SwiftUI.Button("Not Now") { advance() }
                             .buttonStyle(.bordered)
+                            .foregroundStyle(Color(uiColor: .label))
                     }
                 }
             }

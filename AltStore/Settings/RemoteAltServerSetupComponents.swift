@@ -203,6 +203,7 @@ private struct BottomButtonBar<Buttons: View>: ViewModifier
                 }
                 .bold()
                 .tint(Color(.altPrimary))
+                .foregroundStyle(Color(uiColor: .systemBackground))
                 .controlSize(.large)
                 .padding(.horizontal, 34)
                 .buttonStyle(.glassProminent)
@@ -217,6 +218,7 @@ private struct BottomButtonBar<Buttons: View>: ViewModifier
                 }
                 .bold()
                 .tint(Color(.altPrimary))
+                .foregroundStyle(Color(uiColor: .systemBackground))
                 .controlSize(.large)
                 .padding(.horizontal, 34)
                 .buttonStyle(.borderedProminent)
