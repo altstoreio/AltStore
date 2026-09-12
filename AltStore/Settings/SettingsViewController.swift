@@ -621,10 +621,13 @@ private extension SettingsViewController
 
     func setUpRemoteAltServer()
     {
-        // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
-        guard self.activeTeam != nil else { return self.signIn { result in
-            if case .success = result { self.setUpRemoteAltServer() }
-        } }
+        if #unavailable(iOS 27)
+        {
+            // The setup requires sign-in: pairing needs an account, and the bundled pairing file can't be decrypted without one.
+            guard self.activeTeam != nil else { return self.signIn { result in
+                if case .success = result { self.setUpRemoteAltServer() }
+            } }
+        }
         
         if Keychain.shared.devicePairingFile == nil,
            !UserDefaults.shared.ignoresBundledPairingFile,
