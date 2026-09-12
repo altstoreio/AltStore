@@ -216,7 +216,15 @@ private extension FetchAnisetteDataOperation
         let decoder = Foundation.JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
-        let response: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
+        let serverResponse: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
+
+        // Present our own client identity rather than the server's, keeping the OS and client
+        // consistent so Apple grants two-factor trust.
+        let response = Response(clientInfo: AnisetteServer.clientInfo, userAgent: AnisetteServer.userAgent)
+        if serverResponse.clientInfo != response.clientInfo
+        {
+            Logger.sideload.notice("Replacing anisette client identity \(serverResponse.clientInfo, privacy: .public) with \(response.clientInfo, privacy: .public)")
+        }
 
         // 2. Load or generate the persisted device identity (16 random bytes -> derives identifier, localUserID, deviceID)
         let identity: AnisetteIdentity

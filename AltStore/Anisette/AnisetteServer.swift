@@ -53,3 +53,12 @@ extension UserDefaults
     }
     @NSManaged @objc(anisetteServers) private var _anisetteServers: [[String: Any]]?
 }
+
+extension AnisetteServer
+{
+    /// The client identity AltStore presents to Apple in place of the one an anisette server
+    /// reports, so sign-in does not depend on the identity each server chooses.
+    static let clientInfo = "<Mac15,7> <macOS;27.0;26A5378j> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+
+    static let userAgent = "akd/1.0 CFNetwork/808.1.4"
+}
