@@ -119,8 +119,25 @@ extension AppManager
         }
     }
 
+    /// Takes the pairing file AltServer bundled into this build the first time it is seen. AltServer
+    /// pairs afresh each time it installs AltStore, and the device only trusts its newest record.
+    func adoptBundledPairingFileIfNeeded()
+    {
+        guard let encryptedData = try? Data(contentsOf: Bundle.main.pairingFileURL) else { return }
+
+        let hash = SHA256.hash(data: encryptedData).map { String(format: "%02x", $0) }.joined()
+        guard hash != UserDefaults.shared.adoptedBundledPairingFileHash, let pairingFile = self.bundledPairingFile() else { return }
+
+        Keychain.shared.devicePairingFile = pairingFile
+        UserDefaults.shared.adoptedBundledPairingFileHash = hash
+
+        Logger.sideload.notice("Adopted the pairing file bundled by AltServer.")
+    }
+
     func makeOnDeviceClient() throws -> OnDeviceClient
     {
+        self.adoptBundledPairingFileIfNeeded()
+
         guard let pairingFile = Keychain.shared.devicePairingFile else { throw OperationError.missingPairingFile() }
         return try OnDeviceClient(pairingFile: pairingFile)
     }

@@ -81,8 +81,10 @@ public extension UserDefaults
     @NSManaged var responseCachingDisabled: Bool
 
     @NSManaged var preferredAnisetteServerURL: URL?
-    @NSManaged var ignoresBundledPairingFile: Bool
-    
+
+    // Hash of the pairing file bundled by AltServer that this install last adopted.
+    @NSManaged var adoptedBundledPairingFileHash: String?
+
     // Only true when a pairing file is configured, so this alone decides if we should use local vs. remote AltServer.
     @NSManaged var prefersRemoteAltServer: Bool
     
@@ -125,7 +127,6 @@ public extension UserDefaults
             #keyPath(UserDefaults.permissionCheckingDisabled): permissionCheckingDisabled,
             #keyPath(UserDefaults._preferredAppSorting): preferredAppSorting.rawValue,
             #keyPath(UserDefaults.prefersRemoteAltServer): false,
-            #keyPath(UserDefaults.ignoresBundledPairingFile): false,
         ] as [String: Any]
         
         UserDefaults.standard.register(defaults: defaults)
