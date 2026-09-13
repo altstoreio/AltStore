@@ -155,7 +155,7 @@ struct PairingButton: View
             }
             .bold()
         }
-        .tint(state == .paired ? .green : Color(.altPrimary))
+        .tint(state == .paired ? .green : Color(uiColor: .altPrimary))
         .disabled(state == .waiting)
         .allowsHitTesting(state != .paired) // Prevents interaction during confirmation state
         .animation(.default, value: state)
@@ -202,7 +202,7 @@ private struct BottomButtonBar<Buttons: View>: ViewModifier
                     buttons
                 }
                 .bold()
-                .tint(Color(.altPrimary))
+                .tint(Color(uiColor: .altPrimary))
                 .controlSize(.large)
                 .padding(.horizontal, 34)
                 .buttonStyle(.glassProminent)
@@ -216,7 +216,7 @@ private struct BottomButtonBar<Buttons: View>: ViewModifier
                     buttons
                 }
                 .bold()
-                .tint(Color(.altPrimary))
+                .tint(Color(uiColor: .altPrimary))
                 .controlSize(.large)
                 .padding(.horizontal, 34)
                 .buttonStyle(.borderedProminent)

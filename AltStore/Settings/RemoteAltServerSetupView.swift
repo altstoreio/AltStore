@@ -99,7 +99,7 @@ struct RemoteAltServerSetupView: View
                     SwiftUI.Button("Cancel") {
                         if currentStep == plan.last { completionHandler() } else { dismiss() }
                     }
-                    .tint(Color(.altPrimary))
+                    .tint(Color(uiColor: .altPrimary))
                 }
             }
             // Incrementing pairingAttempt restarts this task, cancelling any active pairing attempt before starting a new one.
