@@ -35,9 +35,9 @@ class AppIDsViewController: UICollectionViewController
         super.viewDidLoad()
         
         self.collectionView.dataSource = self.dataSource
-        
+
         self.activityIndicatorBarButtonItem.isIndicatingActivity = true
-        
+
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(AppIDsViewController.fetchAppIDs), for: .primaryActionTriggered)
         self.collectionView.refreshControl = refreshControl
@@ -197,6 +197,7 @@ private extension AppIDsViewController
         {
             self.collectionView.refreshControl?.endRefreshing()
             self.activityIndicatorBarButtonItem.isIndicatingActivity = false
+            self.activityIndicatorBarButtonItem.isHidden = true // Otherwise iOS 26 draws an empty glass capsule around the idle item.
         }
     }
 }
