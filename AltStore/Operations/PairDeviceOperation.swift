@@ -116,7 +116,9 @@ class PairDeviceOperation: ResultOperation<Void>, @unchecked Sendable
             {
                 Logger.sideload.notice("Pairing device with AltStore...")
                 
-                let taskID = "com.rileytestut.AltStore.PairDevice" + "." + UUID().uuidString // Unique Task ID per pairing attempt (to avoid crash when registering duplicate task ID)
+                let bundleID = Bundle.main.bundleIdentifier! // Bundle ID is changed when installed via AltServer
+                let taskID = [bundleID, "PairDevice", UUID().uuidString].joined(separator: ".") // Unique Task ID per pairing attempt (to avoid crash when registering duplicate task ID)
+                
                 let title = String(localized: "Pairing AltStore…")
                 let subtitle = String(localized: "Privacy & Security → Developer Mode")
                 
