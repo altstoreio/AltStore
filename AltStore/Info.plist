@@ -14,6 +14,7 @@
 	<string>2.3</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
+		<string>com.rileytestut.AltStore.Refresh</string>
 		<string>com.rileytestut.AltStore.*</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

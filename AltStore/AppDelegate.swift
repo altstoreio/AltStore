@@ -10,6 +10,7 @@ import UIKit
 import UserNotifications
 import AVFoundation
 import Intents
+import BackgroundTasks
 
 import AltStoreCore
 import AltSign
@@ -276,15 +277,35 @@ extension AppDelegate
 {
     private func prepareForBackgroundFetch()
     {
-        // "Fetch" every hour, but then refresh only those that need to be refreshed (so we don't drain the battery).
-        (UIApplication.shared as LegacyBackgroundFetching).setMinimumBackgroundFetchInterval(1 * 60 * 60)
-        
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (success, error) in
         }
         
         #if DEBUG
         UIApplication.shared.registerForRemoteNotifications()
         #endif
+        
+        // iOS used to hang occasionally when submitting background tasks,
+        // so run on global dispatch queue just to be safe.
+        DispatchQueue.global(qos: .utility).async {
+            let taskID = Bundle.main.bundleIdentifier! + "." + "Refresh"
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: taskID, using: DispatchQueue.main) { task in
+                self.application(UIApplication.shared, performFetchWithCompletionHandler: { (result: UIBackgroundFetchResult) -> Void in
+                    Logger.main.info("Finishing background refreshing with result: \(result.rawValue)")
+                })
+            }
+            
+            let request = BGAppRefreshTaskRequest(identifier: taskID)
+            request.earliestBeginDate = Date(timeIntervalSinceNow: 1 * 60 * 60) // Fetch no earlier than 1 hour from now.
+            
+            do
+            {
+                try BGTaskScheduler.shared.submit(request)
+            }
+            catch
+            {
+                Logger.main.error("Failed to schedule background refresh task: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)
