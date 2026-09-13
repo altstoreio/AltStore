@@ -986,6 +986,15 @@ private extension ALTDeviceManager
                 infoDictionary[Bundle.Info.appGroups] = appGroups
             }
             
+            if let backgroundTaskIDs = infoDictionary[Bundle.Info.backgroundTaskIDs] as? [String]
+            {
+                // Background task IDs must be prefixed with the app's bundle ID, so we
+                // replace all occurances of original bundle ID with resigned bundle ID.
+                
+                let updatedBackgroundTaskIDs = backgroundTaskIDs.map { $0.replacingOccurrences(of: identifier, with: profile.bundleIdentifier) }
+                infoDictionary[Bundle.Info.backgroundTaskIDs] = updatedBackgroundTaskIDs
+            }
+            
             try (infoDictionary as NSDictionary).write(to: bundle.infoPlistURL)
         }
         

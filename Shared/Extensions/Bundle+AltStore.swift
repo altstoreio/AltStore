@@ -21,6 +21,7 @@ public extension Bundle
         public static let urlTypes = "CFBundleURLTypes"
         public static let exportedUTIs = "UTExportedTypeDeclarations"
         public static let backgroundModes = "UIBackgroundModes"
+        public static let backgroundTaskIDs = "BGTaskSchedulerPermittedIdentifiers"
         
         public static let untetherURL = "ALTFugu14UntetherURL"
         public static let untetherRequired = "ALTFugu14UntetherRequired"

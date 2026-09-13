@@ -137,6 +137,15 @@ private extension ResignAppOperation
                 }
             }
             
+            if let backgroundTaskIDs = infoDictionary[Bundle.Info.backgroundTaskIDs] as? [String]
+            {
+                // Background task IDs must be prefixed with the app's bundle ID, so we
+                // replace all occurances of original bundle ID with resigned bundle ID.
+                
+                let updatedBackgroundTaskIDs = backgroundTaskIDs.map { $0.replacingOccurrences(of: identifier, with: profile.bundleIdentifier) }
+                infoDictionary[Bundle.Info.backgroundTaskIDs] = updatedBackgroundTaskIDs
+            }
+            
             // Add app-specific exported UTI so we can check later if this app (extension) is installed or not.
             let installedAppUTI = ["UTTypeConformsTo": [],
                                    "UTTypeDescription": "AltStore Installed App",
