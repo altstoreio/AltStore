@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var connectedDevices = [ALTDevice]()
     
     private weak var authenticationAlert: NSAlert?
+    private var isInstallingApplication = false
     
     @IBOutlet private var appMenu: NSMenu!
     @IBOutlet private var connectedDevicesMenu: NSMenu!
@@ -194,6 +195,15 @@ private extension AppDelegate
     
     func installApplication(at fileURL: URL?, to device: ALTDevice)
     {
+        guard !self.isInstallingApplication else
+        {
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("An installation is already in progress.", comment: "")
+            alert.informativeText = NSLocalizedString("Please wait for it to finish. Apple authentication may pause while the service is busy.", comment: "")
+            alert.runModal()
+            return
+        }
+        self.isInstallingApplication = true
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Please enter your Apple ID and password.", comment: "")
         alert.informativeText = NSLocalizedString("Your Apple ID and password are not saved and are only sent to Apple for authentication.", comment: "")
@@ -232,12 +242,17 @@ private extension AppDelegate
         NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
                 
         let response = alert.runModal()
-        guard response == .alertFirstButtonReturn else { return }
+        guard response == .alertFirstButtonReturn else
+        {
+            self.isInstallingApplication = false
+            return
+        }
         
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
         
         ALTDeviceManager.shared.installApplication(at: fileURL, to: device, appleID: username, password: password) { (result) in
+            self.isInstallingApplication = false
             switch result
             {
             case .success(let application):
