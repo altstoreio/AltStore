@@ -2745,7 +2745,6 @@
 			);
 			name = AltServer;
 			packageProductDependencies = (
-				BF088D352501A821008082D9 /* AltSign-Dynamic */,
 				D58D5F2D26DFE68E00E55E38 /* LaunchAtLogin */,
 				CA1DE71000000000000005A1 /* IDevice */,
 				D53FB4C0305372F6000546E8 /* AltSign-Static */,
@@ -2912,7 +2911,6 @@
 			name = AltJIT;
 			packageProductDependencies = (
 				D5FB7A2D2AA2859400EF863D /* ArgumentParser */,
-				D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */,
 				D53FB4C330537302000546E8 /* AltSign-Static */,
 			);
 			productName = AltJIT;
@@ -4921,10 +4919,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Static";
 		};
-		BF088D352501A821008082D9 /* AltSign-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "AltSign-Dynamic";
-		};
 		BF42345B251024B0006D1EB2 /* AltSign-Static */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AltSign-Static";
@@ -4933,10 +4927,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CA1DE71000000000000005A0 /* XCLocalSwiftPackageReference "Dependencies/idevice/swift" */;
 			productName = IDevice;
-		};
-		D52DD35D2AAA89A600A7F2B6 /* AltSign-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "AltSign-Dynamic";
 		};
 		D535CEE72BE95D4C00F96119 /* TelemetryClient */ = {
 			isa = XCSwiftPackageProductDependency;
