@@ -67,6 +67,8 @@ class AnisetteDataManager: NSObject
             }
             catch let aosKitError
             {
+                Logger.main.error("Failed to fetch anisette data via AOSKit. \(aosKitError.localizedDescription, privacy: .public)")
+
                 // Fall back to Mail plug-in.
                 self.requestAnisetteDataFromPlugin { (result) in
                     do
@@ -77,11 +79,40 @@ class AnisetteDataManager: NSObject
                     catch
                     {
                         Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
-                        
-                        // Return original error.
-                        completion(.failure(aosKitError))
+
+                        // Fall back to remote anisette server (macOS 26+ no longer lets AOSKit generate anisette data).
+                        self.requestAnisetteDataFromRemoteServer(originalError: aosKitError, completion: completion)
                     }
                 }
+            }
+        }
+    }
+}
+
+private extension AnisetteDataManager
+{
+    func requestAnisetteDataFromRemoteServer(originalError: Error, completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        guard #available(macOS 13, *), !UserDefaults.standard.disablesRemoteAnisette else {
+            // Return original error.
+            completion(.failure(originalError))
+            return
+        }
+
+        Logger.main.notice("Falling back to remote anisette server.")
+
+        Task {
+            do
+            {
+                let remoteAnisetteData = try await RemoteAnisetteDataFetcher.shared.fetchAnisetteData()
+                Logger.main.notice("Successfully fetched anisette data from remote anisette server.")
+
+                completion(.success(remoteAnisetteData.makeAnisetteData()))
+            }
+            catch
+            {
+                Logger.main.error("Failed to fetch anisette data from remote anisette server. \(error.localizedDescription, privacy: .public)")
+                completion(.failure(error))
             }
         }
     }

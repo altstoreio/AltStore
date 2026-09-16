@@ -17,6 +17,7 @@
 		826DFD67304B80080046A042 /* RemoteAltServerSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */; };
 		827C54343049D2F800770FD3 /* AnisetteServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827C54333049D2F800770FD3 /* AnisetteServerError.swift */; };
 		82AB00042FC0345000567241 /* RemoteAltServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AB00032FC0345000567241 /* RemoteAltServerView.swift */; };
+		A17E5E7D2E9A0001004E1C01 /* RemoteAnisetteDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17E5E7C2E9A0001004E1C01 /* RemoteAnisetteDataFetcher.swift */; };
 		A8BCEBEAC0620CF80A2FD26D /* Pods_AltServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3822AB1C4CF1D4CDF7445D /* Pods_AltServer.framework */; };
 		BF02419622F2199300129732 /* RefreshAttemptsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */; };
 		BF0241AA22F29CCD00129732 /* UserDefaults+AltServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */; };
@@ -861,6 +862,7 @@
 		82AB00032FC0345000567241 /* RemoteAltServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerView.swift; sourceTree = "<group>"; };
 		82D6ED892EEA137A009DC668 /* TaskGroup+Collated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskGroup+Collated.swift"; sourceTree = "<group>"; };
 		A136EE677716B80768E9F0A2 /* Pods-AltStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltStore.release.xcconfig"; path = "Target Support Files/Pods-AltStore/Pods-AltStore.release.xcconfig"; sourceTree = "<group>"; };
+		A17E5E7C2E9A0001004E1C01 /* RemoteAnisetteDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAnisetteDataFetcher.swift; sourceTree = "<group>"; };
 		BF02419522F2199300129732 /* RefreshAttemptsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshAttemptsViewController.swift; sourceTree = "<group>"; };
 		BF0241A922F29CCD00129732 /* UserDefaults+AltServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AltServer.swift"; sourceTree = "<group>"; };
 		BF08858222DE795100DE9F1E /* MyAppsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppsViewController.swift; sourceTree = "<group>"; };
@@ -2509,6 +2511,7 @@
 			children = (
 				D58032ED2AB241D100878F5E /* AnisetteError.swift */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
+				A17E5E7C2E9A0001004E1C01 /* RemoteAnisetteDataFetcher.swift */,
 			);
 			path = "Anisette Data";
 			sourceTree = "<group>";
@@ -3474,6 +3477,7 @@
 				D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
+				A17E5E7D2E9A0001004E1C01 /* RemoteAnisetteDataFetcher.swift in Sources */,
 				D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */,
 				D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */,
 				BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */,
