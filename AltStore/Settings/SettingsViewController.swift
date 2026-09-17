@@ -629,13 +629,8 @@ private extension SettingsViewController
             } }
         }
         
-        if Keychain.shared.devicePairingFile == nil,
-           !UserDefaults.shared.ignoresBundledPairingFile,
-           let pairingFile = AppManager.shared.bundledPairingFile()
-        {
-            Keychain.shared.devicePairingFile = pairingFile // Promote bundled pairing file on first setup only.
-        }
-        
+        AppManager.shared.adoptBundledPairingFileIfNeeded()
+
         if let selectedIndexPath = self.tableView.indexPathForSelectedRow
         {
             self.tableView.deselectRow(at: selectedIndexPath, animated: true)
