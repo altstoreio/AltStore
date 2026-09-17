@@ -432,14 +432,15 @@ internal extension StoreApp
         
         self._versions = NSOrderedSet(array: versions)
         
-        #if MARKETPLACE
+        #if !NOTARIZED
         
         let latestSupportedVersion: AppVersion?
         if self.bundleIdentifier == StoreApp.altstoreAppID, let currentVersion = self.installedApp?.version
         {
-            // AltStore PAL can only update to "newer" versions (i.e. no downgrades),
+            // AltStore can only update itself to "newer" versions (i.e. no downgrades),
             // so find first supported version that also has "higher" version number.
-            // This allows us to silently release updates in the background without updating source too.
+            // This allows releasing updates without updating the source, and stops a build
+            // newer than the source's latest entry from being offered that entry as an update.
             let version = versions.first { version in
                 guard version.isSupported else { return false }
                 
@@ -454,7 +455,7 @@ internal extension StoreApp
             latestSupportedVersion = versions.first(where: { $0.isSupported })
         }
         
-        #elseif NOTARIZED
+        #else
         
         let latestSupportedVersion: AppVersion?
         if self.bundleIdentifier == StoreApp.altstoreAppID
@@ -466,10 +467,6 @@ internal extension StoreApp
         {
             latestSupportedVersion = versions.first(where: { $0.isSupported })
         }
-        
-        #else
-        
-        let latestSupportedVersion = versions.first(where: { $0.isSupported })
         
         #endif
         
