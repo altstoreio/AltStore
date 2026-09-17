@@ -26,4 +26,14 @@ extension FileManager
         let developerDisksDirectoryURL = self.altserverDirectory.appendingPathComponent("DeveloperDiskImages")
         return developerDisksDirectoryURL
     }
+    
+    var anisetteDirectory: URL {
+        let anisetteDirectoryURL = self.altserverDirectory.appendingPathComponent("Anisette")
+        return anisetteDirectoryURL
+    }
+    
+    var anisetteLibrariesDirectory: URL {
+        let anisetteLibrariesDirectoryURL = self.anisetteDirectory.appendingPathComponent("lib")
+        return anisetteLibrariesDirectoryURL
+    }
 }

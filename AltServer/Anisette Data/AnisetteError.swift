@@ -16,6 +16,7 @@ extension AnisetteError
         
         case aosKitFailure
         case missingValue
+        case localAnisetteFailed
     }
     
     static func aosKitFailure(file: String = #fileID, line: UInt = #line) -> AnisetteError {
@@ -24,6 +25,10 @@ extension AnisetteError
     
     static func missingValue(_ value: String?, file: String = #fileID, line: UInt = #line) -> AnisetteError {
         AnisetteError(code: .missingValue, value: value, sourceFile: file, sourceLine: line)
+    }
+    
+    static func localAnisetteFailed(underlyingError: Error, file: String = #fileID, line: UInt = #line) -> AnisetteError {
+        AnisetteError(code: .localAnisetteFailed, anisetteUnderlyingError: underlyingError as NSError, sourceFile: file, sourceLine: line)
     }
 }
 
@@ -36,6 +41,9 @@ struct AnisetteError: ALTLocalizedError
     @UserInfoValue
     var value: String?
     
+    @UserInfoValue(key: NSUnderlyingErrorKey)
+    var anisetteUnderlyingError: NSError? = nil
+    
     var sourceFile: String?
     var sourceLine: UInt?
     
@@ -46,6 +54,16 @@ struct AnisetteError: ALTLocalizedError
         case .missingValue:
             let valueName = self.value.map { "anisette data value “\($0)”" } ?? NSLocalizedString("anisette data values.", comment: "")
             return String(format: NSLocalizedString("AltServer could not retrieve %@.", comment: ""), valueName)
+            
+        case .localAnisetteFailed:
+            var baseMessage = NSLocalizedString("AltServer could not generate anisette data locally.", comment: "")
+            
+            if let underlyingError = self.anisetteUnderlyingError
+            {
+                baseMessage += " " + underlyingError.localizedDescription
+            }
+            
+            return baseMessage
         }
     }
 }

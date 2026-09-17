@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AnisetteKit",
+        "repositoryURL": "https://github.com/altstoreio/AnisetteKit",
+        "state": {
+          "branch": null,
+          "revision": "1f5a7e36553cc865b873f222b87a6486c0bcc7bf",
+          "version": null
+        }
+      },
+      {
         "package": "KeychainAccess",
         "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
         "state": {

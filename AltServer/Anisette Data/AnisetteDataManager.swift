@@ -59,27 +59,43 @@ class AnisetteDataManager: NSObject
     
     func requestAnisetteData(_ completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
     {
-        self.requestAnisetteDataFromAOSKit { (result) in
-            do
-            {
-                let anisetteData = try result.get()
-                completion(.success(anisetteData))
+        if #available(macOS 27, *)
+        {
+            // macOS 27 no longer provides anisette data, so generate it locally with AnisetteKit.
+            self.requestAnisetteDataLocally { (result) in
+                if case .failure(let error) = result
+                {
+                    let underlyingError = error.underlyingError ?? error
+                    Logger.main.error("Failed to generate anisette data locally. \(underlyingError.localizedDescription, privacy: .public)")
+                }
+                
+                completion(result)
             }
-            catch let aosKitError
-            {
-                // Fall back to Mail plug-in.
-                self.requestAnisetteDataFromPlugin { (result) in
-                    do
-                    {
-                        let anisetteData = try result.get()
-                        completion(.success(anisetteData))
-                    }
-                    catch
-                    {
-                        Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
-                        
-                        // Return original error.
-                        completion(.failure(aosKitError))
+        }
+        else
+        {
+            self.requestAnisetteDataFromAOSKit { (result) in
+                do
+                {
+                    let anisetteData = try result.get()
+                    completion(.success(anisetteData))
+                }
+                catch let aosKitError
+                {
+                    // Fall back to Mail plug-in.
+                    self.requestAnisetteDataFromPlugin { (result) in
+                        do
+                        {
+                            let anisetteData = try result.get()
+                            completion(.success(anisetteData))
+                        }
+                        catch
+                        {
+                            Logger.main.error("Failed to fetch anisette data via Mail plug-in. \(error.localizedDescription, privacy: .public)")
+                            
+                            // Return original error.
+                            completion(.failure(aosKitError))
+                        }
                     }
                 }
             }
@@ -169,6 +185,21 @@ private extension AnisetteDataManager
         RunLoop.main.add(timer, forMode: .default)
         
         DistributedNotificationCenter.default().postNotificationName(Notification.Name("com.rileytestut.AltServer.FetchAnisetteData"), object: nil, userInfo: ["requestUUID": requestUUID], options: .deliverImmediately)
+    }
+    
+    func requestAnisetteDataLocally(completion: @escaping (Result<ALTAnisetteData, Error>) -> Void)
+    {
+        Task<Void, Never> {
+            do
+            {
+                let anisetteData = try await LocalAnisetteDataManager.shared.fetchAnisetteData()
+                completion(.success(anisetteData))
+            }
+            catch
+            {
+                completion(.failure(error))
+            }
+        }
     }
     
     @objc func handleAnisetteDataResponse(_ notification: Notification)

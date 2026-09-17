@@ -19,6 +19,15 @@ extension UserDefaults
         }
     }
     
+    var anisetteID: String? {
+        get {
+            return self.string(forKey: "anisetteID")
+        }
+        set {
+            self.set(newValue, forKey: "anisetteID")
+        }
+    }
+    
     var didPresentInitialNotification: Bool {
         get {
             return self.bool(forKey: "didPresentInitialNotification")
