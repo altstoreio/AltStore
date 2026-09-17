@@ -58,7 +58,11 @@ class AppManager: ObservableObject
     }()
     
     private weak var requestUDIDAction: UIAlertAction?
-    
+
+    let authenticationCache = AuthenticationCache()
+    private weak var pendingAuthenticationOperation: AuthenticationOperation?
+    private let authenticationLock = NSLock()
+
     private init()
     {
         self.operationQueue.name = "com.altstore.AppManager.operationQueue"
@@ -319,10 +323,32 @@ extension AppManager
             completionHandler(result)
         }
         authenticationOperation.addDependency(prepareServerOperation)
-        
+
+        // Wait for a sign-in already in progress so this operation can reuse its session.
+        self.authenticationLock.lock()
+        if let pendingOperation = self.pendingAuthenticationOperation, !pendingOperation.isFinished
+        {
+            authenticationOperation.addDependency(pendingOperation)
+        }
+        self.pendingAuthenticationOperation = authenticationOperation
+        self.authenticationLock.unlock()
+
         self.run([authenticationOperation], context: context)
-        
+
         return authenticationOperation
+    }
+
+    /// Drops the reused sign-in after Apple rejects a request made with it, including a
+    /// result code AltSign passes through unmapped and an HTML error page that fails to
+    /// parse as a plist.
+    func invalidateAuthenticationIfNeeded(for error: Error)
+    {
+        let nsError = error as NSError
+        let isAppleError = (nsError.domain == ALTAppleAPIErrorDomain || nsError.domain == ALTUnderlyingAppleAPIErrorDomain)
+        let isUnparsedAppleResponse = (nsError.domain == NSCocoaErrorDomain && nsError.code == NSPropertyListReadCorruptError)
+        guard isAppleError || isUnparsedAppleResponse else { return }
+
+        self.authenticationCache.invalidate()
     }
     
     @discardableResult
@@ -705,7 +731,14 @@ extension AppManager
         }
         
         let fetchAppIDsOperation = FetchAppIDsOperation(context: authenticationOperation.context)
-        fetchAppIDsOperation.resultHandler = completionHandler
+        fetchAppIDsOperation.resultHandler = { (result) in
+            if case .failure(let error) = result
+            {
+                self.invalidateAuthenticationIfNeeded(for: error)
+            }
+
+            completionHandler(result)
+        }
         fetchAppIDsOperation.addDependency(authenticationOperation)
         self.run([fetchAppIDsOperation], context: authenticationOperation.context)
     }
@@ -2225,7 +2258,8 @@ private extension AppManager
             
             let error = nsError.withLocalizedTitle(localizedTitle)
             group.set(.failure(error), forAppWithBundleIdentifier: operation.bundleIdentifier)
-            
+
+            self.invalidateAuthenticationIfNeeded(for: nsError)
             self.log(error, operation: operation.loggedErrorOperation, app: operation.app)
         }
     }

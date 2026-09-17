@@ -37,11 +37,56 @@ enum AuthenticationErrorCode: Int, ALTErrorEnum, CaseIterable
     }
 }
 
+/// The result of the most recent successful sign-in, kept so later operations can reuse it
+/// instead of signing in again. Apple limits how often an account may sign in.
+final class AuthenticationCache
+{
+    struct Entry
+    {
+        let team: ALTTeam
+        let certificate: ALTCertificate
+        let session: ALTAppleAPISession
+        let date: Date
+    }
+
+    /// How long a sign-in is reused before the next operation signs in again.
+    static let lifetime: TimeInterval = 15 * 60
+
+    private var entry: Entry?
+    private let lock = NSLock()
+
+    var validEntry: Entry? {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+
+        guard let entry = self.entry, Date().timeIntervalSince(entry.date) < AuthenticationCache.lifetime else { return nil }
+        return entry
+    }
+
+    func store(team: ALTTeam, certificate: ALTCertificate, session: ALTAppleAPISession)
+    {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+
+        self.entry = Entry(team: team, certificate: certificate, session: session, date: Date())
+    }
+
+    func invalidate()
+    {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+
+        self.entry = nil
+    }
+}
+
 @objc(AuthenticationOperation)
 class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppleAPISession)>, @unchecked Sendable
 {
     let context: AuthenticatedOperationContext
-    
+
+    private var isReusingSession = false
+
     private var presentingViewController: UIViewController? {
         return self.context.presentingViewController
     }
@@ -88,8 +133,42 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
             self.finish(.failure(error))
             return
         }
-                
-        // Sign In
+
+        // Reuse the last sign-in while it is valid; only the anisette data must be fresh.
+        if let entry = AppManager.shared.authenticationCache.validEntry
+        {
+            self.fetchAnisetteData { (result) in
+                guard !self.isCancelled else { return self.finish(.failure(OperationError.cancelled)) }
+
+                switch result
+                {
+                case .failure(let error): self.finish(.failure(error))
+                case .success(let anisetteData) where anisetteData.machineID == entry.session.anisetteData.machineID:
+                    self.isReusingSession = true
+
+                    let session = ALTAppleAPISession(dsid: entry.session.dsid, authToken: entry.session.authToken, anisetteData: anisetteData)
+                    self.context.session = session
+                    self.context.team = entry.team
+                    self.context.certificate = entry.certificate
+                    self.progress.completedUnitCount = self.progress.totalUnitCount
+
+                    self.finish(.success((entry.team, entry.certificate, session)))
+
+                case .success:
+                    // The anisette identity changed since the sign-in, so its token no longer matches it.
+                    AppManager.shared.authenticationCache.invalidate()
+                    self.performSignIn()
+                }
+            }
+
+            return
+        }
+
+        self.performSignIn()
+    }
+
+    private func performSignIn()
+    {
         self.signIn() { (result) in
             guard !self.isCancelled else { return self.finish(.failure(OperationError.cancelled)) }
             
@@ -213,9 +292,19 @@ class AuthenticationOperation: ResultOperation<(ALTTeam, ALTCertificate, ALTAppl
         switch result
         {
         case .failure(let error): Logger.sideload.error("Failed to authenticate account. \(error.localizedDescription, privacy: .public)")
-        case .success((let team, _, _)): Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .public).")
+        case .success((let team, _, _)) where self.isReusingSession: Logger.sideload.notice("Reused sign-in for team \(team.identifier, privacy: .public).")
+        case .success((let team, let certificate, let session)):
+            Logger.sideload.notice("Authenticated account for team \(team.identifier, privacy: .public).")
+            AppManager.shared.authenticationCache.store(team: team, certificate: certificate, session: session)
         }
-        
+
+        if self.isReusingSession
+        {
+            // The sign-in this session came from already updated the database and keychain.
+            super.finish(result)
+            return
+        }
+
         let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
         context.perform {
             do
@@ -382,12 +471,18 @@ private extension AuthenticationOperation
         }
     }
     
+    func fetchAnisetteData(completionHandler: @escaping (Result<ALTAnisetteData, Swift.Error>) -> Void)
+    {
+        let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: self.context)
+        fetchAnisetteDataOperation.resultHandler = completionHandler
+        self.operationQueue.addOperation(fetchAnisetteDataOperation)
+    }
+
     func authenticate(appleID: String, password: String, completionHandler: @escaping (Result<(ALTAccount, ALTAppleAPISession), Swift.Error>) -> Void)
     {
         self.appleIDEmailAddress = appleID
-        
-        let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: self.context)
-        fetchAnisetteDataOperation.resultHandler = { (result) in
+
+        self.fetchAnisetteData { (result) in
             switch result
             {
             case .failure(let error): completionHandler(.failure(error))
@@ -451,8 +546,6 @@ private extension AuthenticationOperation
                 }
             }
         }
-        
-        self.operationQueue.addOperation(fetchAnisetteDataOperation)
     }
     
     func fetchTeam(for account: ALTAccount, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTTeam, Swift.Error>) -> Void)

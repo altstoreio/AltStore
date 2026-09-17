@@ -456,6 +456,8 @@ private extension SettingsViewController
     {
         func signOut()
         {
+            AppManager.shared.authenticationCache.invalidate()
+
             DatabaseManager.shared.signOut { (error) in
                 DispatchQueue.main.async {
                     if let error = error
