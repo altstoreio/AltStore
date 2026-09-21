@@ -16,15 +16,7 @@ import AltSign
 final class OnDeviceClient: Sendable
 {
     private static let tunnelHost = "10.7.0.1" // The address LocalDevVPN assigns to this device (must match the VPN's configured address).
-    private static let tunnelPort: UInt16 = 49152 // The fixed port iOS's pairing service listens on.
-    
-    private static let tunnelAddress: sockaddr_in = {
-        var address = sockaddr_in()
-        address.sin_family = sa_family_t(AF_INET)
-        address.sin_port = tunnelPort.bigEndian
-        inet_pton(AF_INET, tunnelHost, &address.sin_addr)
-        return address
-    }()
+    private static let defaultTunnelPort: UInt16 = 49152 // Used when the device doesn't advertise its pairing service.
     
     private let pairingFileData: Data
     
@@ -171,6 +163,18 @@ final class OnDeviceClient: Sendable
     @concurrent
     static func isReachable() async -> Bool
     {
+        return await self.reachableTunnelPort() != nil
+    }
+
+    @concurrent
+    private static func reachableTunnelPort() async -> UInt16?
+    {
+        guard !Task.isCancelled else { return nil }
+
+        // Resolve only this device's service, not another device advertising on the same Wi-Fi.
+        let tunnelPort = await LocalServiceDiscovery.port(for: "_remotepairing._tcp") ?? defaultTunnelPort
+        guard !Task.isCancelled else { return nil }
+
         // Give up if the device hasn't responded in a second. Normally connects in a few ms.
         let tcpOptions = NWProtocolTCP.Options()
         tcpOptions.connectionTimeout = 1
@@ -192,8 +196,6 @@ final class OnDeviceClient: Sendable
                 {
                 case .ready: finish(true)
                 case .waiting(let error):
-                    // https://developer.apple.com/documentation/network/nwconnection/state-swift.enum/waiting(_:)
-                    // Waiting means "no route to the device right now." Signals VPN is off.
                     Logger.sideload.error("Couldn't reach the device. \(error.localizedDescription, privacy: .public)")
                     finish(false)
                     
@@ -210,10 +212,10 @@ final class OnDeviceClient: Sendable
         
         guard isReachable else
         {
-            Logger.sideload.error("Device not reachable at \(tunnelHost, privacy: .public) — VPN tunnel likely down.")
-            return false
+            Logger.sideload.error("Device pairing service not reachable at \(tunnelHost, privacy: .public):\(tunnelPort, privacy: .public).")
+            return nil
         }
-        return true
+        return tunnelPort
     }
 }
 
@@ -229,19 +231,19 @@ private extension OnDeviceClient
     // Runs a device session on the shared background queue, suspending until it finishes. Sessions always run to completion.
     func perform<T>(withService service: Service, _ body: @escaping (OpaquePointer) throws -> T) async throws -> T
     {
-        // Make sure the device is reachable (Wi-Fi + VPN on) before we touch the tunnel. (This also means a socket error later can't be blamed on the VPN.)
-        guard await Self.isReachable() else { throw OperationError.vpnNotConnected() }
+        // Use the same resolved port for the reachability check and the authenticated device session.
+        guard let tunnelPort = await Self.reachableTunnelPort() else { throw OperationError.vpnNotConnected() }
 
         return try await withCheckedThrowingContinuation { continuation in
             Self.queue.async {
-                let result = Result { try self._perform(withService: service, body) }
+                let result = Result { try self._perform(withService: service, tunnelPort: tunnelPort, body) }
                 continuation.resume(with: result)
             }
         }
     }
     
     // One complete conversation with the device: opens a new tunnel, connects the requested service, runs the work, and closes everything before returning.
-    func _perform<T>(withService service: Service, _ body: (OpaquePointer) throws -> T) throws -> T
+    func _perform<T>(withService service: Service, tunnelPort: UInt16, _ body: (OpaquePointer) throws -> T) throws -> T
     {
         // 1. Convert our pairing file data to the form idevice needs.
         var pairingFile: OpaquePointer?
@@ -257,7 +259,10 @@ private extension OnDeviceClient
         defer { rp_pairing_file_free(pairingFile) } // tunnel_create_rppairing only borrows the file, so we have to free it ourselves.
         
         // 2. Open the encrypted tunnel to the device through the VPN and perform the RSD handshake.
-        var address = Self.tunnelAddress
+        var address = sockaddr_in()
+        address.sin_family = sa_family_t(AF_INET)
+        address.sin_port = tunnelPort.bigEndian
+        inet_pton(AF_INET, Self.tunnelHost, &address.sin_addr)
         let addressSize = idevice_socklen_t(MemoryLayout<sockaddr_in>.size)
         
         var adapter: OpaquePointer?

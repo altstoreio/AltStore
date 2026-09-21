@@ -15,6 +15,8 @@
 		823E345E305A00E900EBB2DE /* LocalAnisetteDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823E345D305A00E900EBB2DE /* LocalAnisetteDataManager.swift */; };
 		825E55C6302D5A2700392655 /* IDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 825E55C5302D5A2700392655 /* IDevice */; };
 		825E55C8302D621900392655 /* OnDeviceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E55C7302D621900392655 /* OnDeviceClient.swift */; };
+		E19A49621300000000000002 /* LocalServiceDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19A49621300000000000001 /* LocalServiceDiscovery.swift */; };
+		E19A49621300000000000004 /* LocalServiceDiscoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19A49621300000000000003 /* LocalServiceDiscoveryTests.swift */; };
 		825E55CC302E69CE00392655 /* RemoteAltServerSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E55CB302E69CE00392655 /* RemoteAltServerSetupView.swift */; };
 		826DFD67304B80080046A042 /* RemoteAltServerSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */; };
 		827C54343049D2F800770FD3 /* AnisetteServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827C54333049D2F800770FD3 /* AnisetteServerError.swift */; };
@@ -858,6 +860,8 @@
 		821769AA2FE99E2400980080 /* AnisetteServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServerManager.swift; sourceTree = "<group>"; };
 		823E345D305A00E900EBB2DE /* LocalAnisetteDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnisetteDataManager.swift; sourceTree = "<group>"; };
 		825E55C7302D621900392655 /* OnDeviceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceClient.swift; sourceTree = "<group>"; };
+		E19A49621300000000000001 /* LocalServiceDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServiceDiscovery.swift; sourceTree = "<group>"; };
+		E19A49621300000000000003 /* LocalServiceDiscoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServiceDiscoveryTests.swift; sourceTree = "<group>"; };
 		825E55CB302E69CE00392655 /* RemoteAltServerSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerSetupView.swift; sourceTree = "<group>"; };
 		826DFD66304B80080046A042 /* RemoteAltServerSetupComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAltServerSetupComponents.swift; sourceTree = "<group>"; };
 		827C54333049D2F800770FD3 /* AnisetteServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServerError.swift; sourceTree = "<group>"; };
@@ -2058,6 +2062,7 @@
 			isa = PBXGroup;
 			children = (
 				BFD52BD322A0800A000B7ED1 /* ServerManager.swift */,
+				E19A49621300000000000001 /* LocalServiceDiscovery.swift */,
 				BF770E5522BC3C02002A40FE /* Server.swift */,
 				BFA8172823C56042001B5953 /* ServerConnection.swift */,
 			);
@@ -2523,6 +2528,7 @@
 			children = (
 				D586D39A28EF58B0000E101F /* AltTests.swift */,
 				D56915082AD5F3E800A2B747 /* AltTests+Sources.swift */,
+				E19A49621300000000000003 /* LocalServiceDiscoveryTests.swift */,
 				D5F5AF2D28FDD2EC00C938F5 /* TestErrors.swift */,
 			);
 			path = AltTests;
@@ -3781,6 +3787,7 @@
 				BFC84A4D2421A19100853474 /* SourcesViewController.swift in Sources */,
 				BFF0B696232242D3007A79E1 /* LicensesViewController.swift in Sources */,
 				BFD52BD422A0800A000B7ED1 /* ServerManager.swift in Sources */,
+				E19A49621300000000000002 /* LocalServiceDiscovery.swift in Sources */,
 				D57FE84428C7DB7100216002 /* ErrorLogViewController.swift in Sources */,
 				D50107EC2ADF2E1A0069F2A1 /* AddSourceTextFieldCell.swift in Sources */,
 				D5151BD92A8FF64300C96F28 /* RefreshAllAppsIntent.swift in Sources */,
@@ -3839,6 +3846,7 @@
 			files = (
 				D586D39B28EF58B0000E101F /* AltTests.swift in Sources */,
 				D56915092AD5F3E800A2B747 /* AltTests+Sources.swift in Sources */,
+				E19A49621300000000000004 /* LocalServiceDiscoveryTests.swift in Sources */,
 				D5F5AF2E28FDD2EC00C938F5 /* TestErrors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
