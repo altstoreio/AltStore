@@ -125,6 +125,12 @@
                                         <menuItem title="Launch at Login" id="IyR-FQ-upe" userLabel="Launch At Login">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
+                                        <menuItem title="Hide Menu Bar Icon…" id="Hmi-Ba-r01">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="hideMenuBarIcon:" target="Voe-Tx-rLC" id="Hmi-Ac-t01"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Uninstall Mail Plug-in…" id="3CM-gV-X2G" userLabel="Mail Plug-in">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
