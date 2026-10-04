@@ -25,7 +25,10 @@ extension CodableError
     {
         case unknown(Any?)
         case string(String)
+        case bool(Bool)
         case number(Int)
+        case unsignedNumber(UInt)
+        case double(Double)
         case error(NSError)
         case codableError(CodableError)
         indirect case array([UserInfoValue])
@@ -36,7 +39,10 @@ extension CodableError
             {
             case .unknown(let value): return value
             case .string(let string): return string
+            case .bool(let bool): return bool
             case .number(let number): return number
+            case .unsignedNumber(let number): return number
+            case .double(let number): return number
             case .error(let error): return error
             case .codableError(let error): return error.error
             case .array(let array): return array.compactMap { $0.value } // .compactMap instead of .map to ensure nil values are removed.
@@ -47,7 +53,7 @@ extension CodableError
         var codableValue: Codable? {
             switch self
             {
-            case .unknown, .string, .number: return self.value as? Codable
+            case .unknown, .string, .bool, .number, .unsignedNumber, .double: return self.value as? Codable
             case .codableError(let error): return error
             case .error(let nsError):
                 // Ignore error because we don't want to fail completely if error contains invalid user info value.
@@ -65,8 +71,85 @@ extension CodableError
             switch rawValue
             {
             case let string as String: self = .string(string)
+            case let bool as Bool: self = .bool(bool)
             case let number as Int: self = .number(number)
-            case let number as UInt: self = .number(Int(number)) // No idea why this is necessary, but some values fail above cast (despite being in range). And appears to be random :(
+            case let number as Int8: self = .number(Int(number))
+            case let number as Int16: self = .number(Int(number))
+            case let number as Int32: self = .number(Int(number))
+            case let number as Int64:
+                if let value = Int(exactly: number)
+                {
+                    self = .number(value)
+                }
+                else
+                {
+                    self = .double(Double(number))
+                }
+            case let number as UInt:
+                self = .unsignedNumber(number)
+            case let number as UInt8:
+                if let value = UInt(exactly: number)
+                {
+                    self = .unsignedNumber(value)
+                }
+                else
+                {
+                    self = .double(Double(number))
+                }
+            case let number as UInt16:
+                if let value = UInt(exactly: number)
+                {
+                    self = .unsignedNumber(value)
+                }
+                else
+                {
+                    self = .double(Double(number))
+                }
+            case let number as UInt32:
+                if let value = UInt(exactly: number)
+                {
+                    self = .unsignedNumber(value)
+                }
+                else
+                {
+                    self = .double(Double(number))
+                }
+            case let number as UInt64:
+                if let value = UInt(exactly: number)
+                {
+                    self = .unsignedNumber(value)
+                }
+                else
+                {
+                    self = .double(Double(number))
+                }
+            case let number as Float: self = .double(Double(number))
+            case let number as Double: self = .double(number)
+            case let number as NSNumber:
+                if CFGetTypeID(number) == CFBooleanGetTypeID()
+                {
+                    self = .bool(number.boolValue)
+                }
+                else if number.doubleValue.isFinite, number.doubleValue.rounded() == number.doubleValue
+                {
+                    let int64Value = number.int64Value
+                    if Int64(Int.min) <= int64Value && int64Value <= Int64(Int.max)
+                    {
+                        self = .number(Int(int64Value))
+                    }
+                    else if number.uint64Value <= UInt64(UInt.max)
+                    {
+                        self = .unsignedNumber(UInt(number.uint64Value))
+                    }
+                    else
+                    {
+                        self = .double(number.doubleValue)
+                    }
+                }
+                else
+                {
+                    self = .double(number.doubleValue)
+                }
             case let error as NSError: self = .codableError(CodableError(error: error))
             case let array as [Any]: self = .array(array.compactMap(UserInfoValue.init))
             case let dictionary as [String: Any]: self = .dictionary(dictionary.compactMapValues(UserInfoValue.init))
@@ -92,9 +175,21 @@ extension CodableError
             {
                 self = .string(string)
             }
+            else if let bool = try? container.decode(Bool.self)
+            {
+                self = .bool(bool)
+            }
             else if let number = try? container.decode(Int.self)
             {
                 self = .number(number)
+            }
+            else if let number = try? container.decode(UInt.self)
+            {
+                self = .unsignedNumber(number)
+            }
+            else if let number = try? container.decode(Double.self)
+            {
+                self = .double(number)
             }
             else if let array = try? container.decode([UserInfoValue].self)
             {

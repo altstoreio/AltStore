@@ -1,0 +1,26 @@
+name: AltStore Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: AltTests
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run AltTests
+        run: |
+          xcodebuild \
+            -project AltStore.xcodeproj \
+            -scheme AltTests \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5' \
+            test

@@ -1249,9 +1249,11 @@ extension AltTests
             "RSTString": "test",
             "RSTNumber": -1 as Int,
             "RSTUnsignedNumber": 2 as UInt,
+            "RSTBool": true,
+            "RSTDouble": 3.5 as Double,
             // "RSTURL": URL(string: "https://rileytestut.com")!, // URLs get converted to Strings
-            "RSTArray": [1, "test"],
-            "RSTDictionary": ["key1": 11, "key2": "string"]
+            "RSTArray": [1, "test", true, 3.5],
+            "RSTDictionary": ["key1": 11, "key2": "string", "key3": true, "key4": 13.25]
         ] as [String: Any]
                 
         let error = NSError(domain: .testDomain, code: 17, userInfo: userInfo)
