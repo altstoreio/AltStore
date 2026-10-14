@@ -61,6 +61,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ServerConnectionManager.shared.start()
         ALTDeviceManager.shared.start()
         
+        // Apple rejects one-time passwords that were already used, so let AltSign ask for new anisette data between sign-in steps.
+        ALTAppleAPI.shared.anisetteDataRefreshHandler = { (completionHandler) in
+            AnisetteDataManager.shared.requestAnisetteData { (result) in
+                switch result
+                {
+                case .failure(let error): completionHandler(nil, error)
+                case .success(let anisetteData): completionHandler(anisetteData, nil)
+                }
+            }
+        }
+        
         #if STAGING
         SUUpdater.shared().feedURL = URL(string: "https://altstore.io/altserver/sparkle-macos-staging.xml")
         #else
