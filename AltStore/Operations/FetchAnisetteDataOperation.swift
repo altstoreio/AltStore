@@ -20,6 +20,11 @@ private extension URL
     static let appleGSALookup = URL(string: "https://gsa.apple.com/grandslam/GsService2/lookup")!
 }
 
+// Anisette servers generate data with Android's CoreADI, and Apple now rejects it (-80045)
+// unless the client info also claims to be Android.
+// Based on xtool: https://github.com/xtool-org/xtool/pull/337
+private let androidClientInfo = "<Pixel 7> <Android;14;UQ1A.240205.002> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+
 extension FetchAnisetteDataOperation
 {
     fileprivate struct AnisetteIdentity
@@ -249,17 +254,18 @@ private extension FetchAnisetteDataOperation
             Keychain.shared.anisetteIdentityKey = identity.bytes
         }
 
-        // 3. Provision against this server if we don't have a cached adi.pb
+        // 3. Provision against this server if we don't have a cached adi.pb (provisioned with the current client info)
         let adiPB: Data
-        if let pb = Keychain.shared.anisetteADIPB
+        if let pb = Keychain.shared.anisetteADIPB, Keychain.shared.anisetteADIPBClientInfo == androidClientInfo
         {
             adiPB = pb
         }
         else
         {
-            Logger.sideload.notice("No cached adi.pb; running anisette provisioning against \(serverURL.absoluteString, privacy: .public).")
-            adiPB = try await self.provision(against: serverURL, clientInfo: response.clientInfo, userAgent: response.userAgent, identity: identity)
+            Logger.sideload.notice("No up-to-date cached adi.pb; running anisette provisioning against \(serverURL.absoluteString, privacy: .public).")
+            adiPB = try await self.provision(against: serverURL, clientInfo: androidClientInfo, userAgent: response.userAgent, identity: identity)
             Keychain.shared.anisetteADIPB = adiPB
+            Keychain.shared.anisetteADIPBClientInfo = androidClientInfo
         }
         
         // 4. Fetch anisette headers
@@ -273,7 +279,7 @@ private extension FetchAnisetteDataOperation
             routingInfo: routingInfo,
             deviceUniqueIdentifier: identity.deviceID,
             deviceSerialNumber: "C02LKHBBFD57",
-            deviceDescription: response.clientInfo,
+            deviceDescription: androidClientInfo,
             date: .now,
             locale: .current,
             timeZone: .current
