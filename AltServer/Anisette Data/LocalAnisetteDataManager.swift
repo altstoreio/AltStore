@@ -20,6 +20,13 @@ private extension URL
     static let unzip = URL(fileURLWithPath: "/usr/bin/unzip")
 }
 
+private extension String
+{
+    // AnisetteKit provisions an Android device, and GrandSlam now rejects sign-in with -80045
+    // when X-MMe-Client-Info describes a Mac instead.
+    static let androidClientInfo = "<Pixel 7> <Android;14;UQ1A.240205.002> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+}
+
 // Swift wrapper around AnisetteKit to generate anisette data when macOS won't provide it.
 class LocalAnisetteDataManager
 {
@@ -155,7 +162,7 @@ private extension LocalAnisetteDataManager
                                routingInfo: routingInfo,
                                deviceUniqueIdentifier: identifier.uuidString.uppercased(),
                                deviceSerialNumber: AnisetteConstants.defaultSerialNumber,
-                               deviceDescription: client.clientInfo,
+                               deviceDescription: .androidClientInfo,
                                date: Date(),
                                locale: .current,
                                timeZone: .current)
