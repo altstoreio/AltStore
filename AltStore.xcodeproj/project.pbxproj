@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1D014260001000000000001 /* RemoteAnisetteDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D014260001000000000002 /* RemoteAnisetteDataFetcher.swift */; };
 		2A77E3D272F3D92436FAC272 /* Pods_AltStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EEAA842DA87A88A870053B /* Pods_AltStore.framework */; };
 		82D6ED8A2EEA137A009DC668 /* TaskGroup+Collated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D6ED892EEA137A009DC668 /* TaskGroup+Collated.swift */; };
 		821769AB2FE99E2400980080 /* AnisetteServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821769A92FE99E2400980080 /* AnisetteServer.swift */; };
@@ -852,6 +853,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A1D014260001000000000002 /* RemoteAnisetteDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAnisetteDataFetcher.swift; sourceTree = "<group>"; };
 		11611D46F8A7C8B928E8156B /* Pods-AltServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.debug.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.debug.xcconfig"; sourceTree = "<group>"; };
 		589BA531D903B28F292063E5 /* Pods-AltServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AltServer.release.xcconfig"; path = "Target Support Files/Pods-AltServer/Pods-AltServer.release.xcconfig"; sourceTree = "<group>"; };
 		821769A92FE99E2400980080 /* AnisetteServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServer.swift; sourceTree = "<group>"; };
@@ -2513,6 +2515,7 @@
 			children = (
 				D58032ED2AB241D100878F5E /* AnisetteError.swift */,
 				BFE48974238007CE003239E0 /* AnisetteDataManager.swift */,
+				A1D014260001000000000002 /* RemoteAnisetteDataFetcher.swift */,
 				823E345D305A00E900EBB2DE /* LocalAnisetteDataManager.swift */,
 			);
 			path = "Anisette Data";
@@ -3484,6 +3487,7 @@
 				D5F5AF7D28ECEA990067C736 /* ErrorDetailsViewController.swift in Sources */,
 				BFECAC9324FD98BA0077C41F /* CFNotificationName+AltStore.m in Sources */,
 				BFE48975238007CE003239E0 /* AnisetteDataManager.swift in Sources */,
+				A1D014260001000000000001 /* RemoteAnisetteDataFetcher.swift in Sources */,
 				D5DB145B28F9DC5C00A8F606 /* ALTLocalizedError.swift in Sources */,
 				D5BA9E9B2A9FE1E8007C0661 /* JITManager.swift in Sources */,
 				BFE972E3260A8B2700D0BDAC /* NSError+libimobiledevice.mm in Sources */,
