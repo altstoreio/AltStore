@@ -20,6 +20,10 @@ private extension URL
     static let appleGSALookup = URL(string: "https://gsa.apple.com/grandslam/GsService2/lookup")!
 }
 
+// Apple only accepts anisette data generated with Windows' ADI (iTunes), so try servers that provide it first.
+private let windowsAnisetteServers = [AnisetteServer(name: "jkcoxson", url: URL(string: "https://ani.jkcoxson.com")!),
+                                      AnisetteServer(name: "StikStore", url: URL(string: "https://ani2.stikstore.app")!)]
+
 extension FetchAnisetteDataOperation
 {
     fileprivate struct AnisetteIdentity
@@ -47,6 +51,9 @@ extension FetchAnisetteDataOperation
 class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked Sendable
 {
     let context: OperationContext
+    
+    // X-Apple-I-MD-DATA Apple returned with hsc 434, used to resynchronize remote anisette data.
+    var sim: String?
     
     private let session: URLSession
     
@@ -184,9 +191,10 @@ private extension FetchAnisetteDataOperation
     func fetchAnisetteDataFromAvailableServer() async throws -> ALTAnisetteData
     {
         // Use preferred URL if it exists.
-        if let preferredURL = UserDefaults.shared.preferredAnisetteServerURL
+        if let preferredURL = UserDefaults.shared.preferredAnisetteServerURL,
+           let anisetteData = try? await self.fetchAnisetteData(from: preferredURL)
         {
-            return try await self.fetchAnisetteData(from: preferredURL)
+            return anisetteData
         }
 
         // No preferred URL — fetch the list of available servers.
@@ -202,7 +210,7 @@ private extension FetchAnisetteDataOperation
         }
 
         // Shuffle and try each server. If successful, set preferred URL.
-        for server in servers.shuffled()
+        for server in windowsAnisetteServers + servers.shuffled()
         {
             do
             {
@@ -236,10 +244,11 @@ private extension FetchAnisetteDataOperation
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
         let response: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
+        guard response.clientInfo.contains("<Windows;") else { throw AnisetteServerError.invalidServer() }
 
         // 2. Load or generate the persisted device identity (16 random bytes -> derives identifier, localUserID, deviceID)
         let identity: AnisetteIdentity
-        if let id = Keychain.shared.anisetteIdentityKey
+        if let id = Keychain.shared.anisetteIdentityKey, Keychain.shared.anisetteADIPB != nil, Keychain.shared.anisetteProvisioningClientInfo == response.clientInfo
         {
             identity = AnisetteIdentity(bytes: id)
         }
@@ -251,7 +260,7 @@ private extension FetchAnisetteDataOperation
 
         // 3. Provision against this server if we don't have a cached adi.pb
         let adiPB: Data
-        if let pb = Keychain.shared.anisetteADIPB
+        if let pb = Keychain.shared.anisetteADIPB, Keychain.shared.anisetteProvisioningClientInfo == response.clientInfo
         {
             adiPB = pb
         }
@@ -260,10 +269,12 @@ private extension FetchAnisetteDataOperation
             Logger.sideload.notice("No cached adi.pb; running anisette provisioning against \(serverURL.absoluteString, privacy: .public).")
             adiPB = try await self.provision(against: serverURL, clientInfo: response.clientInfo, userAgent: response.userAgent, identity: identity)
             Keychain.shared.anisetteADIPB = adiPB
+            Keychain.shared.anisetteProvisioningClientInfo = response.clientInfo
         }
         
         // 4. Fetch anisette headers
-        let (machineID, oneTimePassword, routingInfo) = try await self.fetchHeaders(from: serverURL, identity: identity, adiPB: adiPB)
+        let (machineID, oneTimePassword, routingInfo) = try await self.fetchHeaders(from: serverURL, identity: identity, adiPB: adiPB, sim: self.sim)
+        ALTAppleAPI.shared.authenticationUserAgent = response.userAgent
 
         // 5. Construct & return ALTAnisetteData
         return ALTAnisetteData(
@@ -280,7 +291,7 @@ private extension FetchAnisetteDataOperation
         )
     }
 
-    func fetchHeaders(from serverURL: URL, identity: AnisetteIdentity, adiPB: Data) async throws -> (machineID: String, oneTimePassword: String, routingInfo: UInt64)
+    func fetchHeaders(from serverURL: URL, identity: AnisetteIdentity, adiPB: Data, sim: String?) async throws -> (machineID: String, oneTimePassword: String, routingInfo: UInt64)
     {
         let headersURL = serverURL.appending(components: "v3", "get_headers")
 
@@ -292,9 +303,13 @@ private extension FetchAnisetteDataOperation
         {
             var identifier: String
             var adi_pb: String
+            var sim: String?
+            var device_id: String?
+            var md_lu: String?
         }
 
-        let body = Body(identifier: identity.identifier, adi_pb: String(decoding: adiPB, as: UTF8.self))
+        let body = Body(identifier: identity.identifier, adi_pb: String(decoding: adiPB, as: UTF8.self),
+                        sim: sim, device_id: sim.map { _ in identity.deviceID }, md_lu: sim.map { _ in identity.localUserID })
         request.httpBody = try JSONEncoder().encode(body)
 
         struct Response: Decodable
