@@ -438,8 +438,20 @@ private extension AuthenticationOperation
                     verificationHandler = nil
                 }
                     
+                // Resynchronize anisette data when Apple says it's out of sync (hsc 434).
+                ALTAppleAPI.shared.anisetteDataResyncHandler = { (sim, completionHandler) in
+                    let fetchAnisetteDataOperation = FetchAnisetteDataOperation(context: self.context)
+                    fetchAnisetteDataOperation.sim = sim
+                    fetchAnisetteDataOperation.resultHandler = { (result) in
+                        completionHandler(result.value, result.error)
+                    }
+                    self.operationQueue.addOperation(fetchAnisetteDataOperation)
+                }
+
                 ALTAppleAPI.shared.authenticate(appleID: appleID, password: password, anisetteData: anisetteData,
                                                 verificationHandler: verificationHandler) { (account, session, error) in
+                    ALTAppleAPI.shared.anisetteDataResyncHandler = nil
+
                     if let account = account, let session = session
                     {
                         completionHandler(.success((account, session)))
