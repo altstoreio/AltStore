@@ -873,7 +873,7 @@ private extension AddSourceViewController
                 Logger.main.error("Error fetching recommended sources: \(error.localizedDescription, privacy: .public)")
                 
                 let sectionUpdate = RSTCellContentChange(type: .update, sectionIndex: 0)
-                self.featuredSourcesDataSource.setItems([], with: [sectionUpdate])
+                self.sourceCollectionsDataSource.setItems([], with: [sectionUpdate])
             }
             
             self.update()
