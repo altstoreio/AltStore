@@ -644,12 +644,7 @@ private extension SettingsViewController
         }
         
         let hostingController = RemoteAltServerSetupView.makeViewController {
-            // Move the pairing file embedded at install to the keychain.
-            if let pairingFile = AppManager.shared.embeddedPairingFile()
-            {
-                Keychain.shared.devicePairingFile = pairingFile.data
-                AppManager.shared.deleteEmbeddedPairingFile()
-            }
+            AppManager.shared.adoptEmbeddedPairingFileIfNeeded()
             
             UserDefaults.shared.prefersRemoteAltServer = true
             
