@@ -278,6 +278,7 @@ private extension FetchAnisetteDataOperation
         }
 
         let (machineID, oneTimePassword, routingInfo) = try await self.fetchHeaders(from: serverURL, identity: identity, adiPB: adiPB, sim: sim)
+        ALTAppleAPI.shared.authenticationUserAgent = response.userAgent
 
         // 4. Construct & return ALTAnisetteData
         return ALTAnisetteData(
