@@ -115,8 +115,20 @@ class FetchSourceOperation: ResultOperation<Source>, @unchecked Sendable
                         {
                             return date
                         }
-                        
+
+                        // ISO8601DateFormatter requires a separate format option for fractional seconds.
+                        self.dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                        if let date = self.dateFormatter.date(from: text)
+                        {
+                            return date
+                        }
+
                         // Just date portion of ISO8601.
+                        guard text.range(of: #"^\d{4}-\d{2}-\d{2}$"#, options: .regularExpression) != nil else
+                        {
+                            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date is in invalid format.")
+                        }
+
                         self.dateFormatter.formatOptions = [.withFullDate]
                         if let date = self.dateFormatter.date(from: text)
                         {
