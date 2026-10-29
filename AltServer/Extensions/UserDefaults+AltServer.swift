@@ -28,6 +28,15 @@ extension UserDefaults
         }
     }
     
+    var isMenuBarIconHidden: Bool {
+        get {
+            return self.bool(forKey: "isMenuBarIconHidden")
+        }
+        set {
+            self.set(newValue, forKey: "isMenuBarIconHidden")
+        }
+    }
+
     func registerDefaults()
     {
         if self.serverID == nil

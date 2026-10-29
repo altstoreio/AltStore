@@ -71,6 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         item.menu = self.appMenu
         item.button?.image = NSImage(named: "MenuBarIcon") 
         self.statusItem = item
+        self.setMenuBarIconHidden(UserDefaults.standard.isMenuBarIconHidden)
         
         self.appMenu.delegate = self
         
@@ -115,10 +116,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     {
         // Insert code here to tear down your application
     }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool
+    {
+        self.setMenuBarIconHidden(false)
+        return true
+    }
 }
 
 private extension AppDelegate
 {
+    func setMenuBarIconHidden(_ isHidden: Bool)
+    {
+        UserDefaults.standard.isMenuBarIconHidden = isHidden
+        self.statusItem?.isVisible = !isHidden
+    }
+
+    @IBAction private func hideMenuBarIcon(_ sender: NSMenuItem)
+    {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Hide Menu Bar Icon?", comment: "")
+        alert.informativeText = NSLocalizedString("AltServer will continue to run in the background. The icon will stay hidden after AltServer restarts.\n\nTo restore the icon, open AltServer again from Finder or Spotlight while AltServer is running.", comment: "")
+        alert.addButton(withTitle: NSLocalizedString("Hide Icon", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+
+        NSRunningApplication.current.activate(options: .activateIgnoringOtherApps)
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        self.setMenuBarIconHidden(true)
+    }
+
     @objc func installAltStore(to device: ALTDevice)
     {
         self.installApplication(at: nil, to: device)
