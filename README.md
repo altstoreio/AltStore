@@ -44,6 +44,8 @@ AltSign is my internal framework used by both AltStore and AltServer to communic
 ### Roxas
 Roxas is my internal framework used across all my iOS projects, developed to simplify a variety of common tasks used in iOS development. For more info, check the [Roxas repo](https://github.com/rileytestut/roxas).
 
+For Apple Watch companion signing behavior, provisioning requirements, refresh limitations, and regression validation, see [Watch companion signing](docs/WatchCompanionSigning.md).
+
 ## Compilation Instructions
 AltStore and AltServer are both fairly straightforward to compile and run if you're already an iOS or macOS developer. To compile AltStore and/or AltServer:
 
