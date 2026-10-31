@@ -12,6 +12,8 @@ Apple's [iOS App Development profile type covers iOS and watchOS](https://develo
 
 The target Watch must already be registered with the signing team and included in its development profiles. AltStore currently registers the iPhone; this change does not discover, register, pair with or directly install to an Apple Watch. Register the Watch with Xcode or the developer portal first. See Apple's [registered-device distribution guidance](https://developer.apple.com/documentation/xcode/distributing-your-app-to-registered-devices).
 
+As with ordinary AltStore signing, required capabilities are read from the input executable's code-signature entitlements. An unsigned build has no such entitlements; an external `.entitlements` file or source permission declaration does not add them to its executable. Prepare the input IPA with its intended code-signature entitlements before sideloading.
+
 HealthKit is requested through the existing modern capability API. Watch capability entitlements must be authorized by the returned profile; missing authorization produces an error instead of silently stripping a requested capability. Capability availability depends on Apple's account and platform policies. This does not bypass personal-team restrictions or implement approval for managed capabilities. Other existing unsupported capabilities remain unsupported.
 
 The signed IPA follows the existing iPhone installation path. Watch transfer and installation remain the operating system's responsibility. Standalone Watch-only app installation is outside this change.
