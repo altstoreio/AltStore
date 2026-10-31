@@ -1296,3 +1296,54 @@ extension AltTests
         XCTAssert(array.isEmpty)
     }
 }
+
+
+// No executable is read: these applications supply the entitlements that would
+// otherwise be extracted from their code signatures.
+private final class WatchPermissionTestApplication: ALTApplication
+{
+    var testEntitlements: [ALTEntitlement: Any] = [:]
+    var testChildren: [ALTApplication] = []
+
+    override var entitlements: [ALTEntitlement: Any] { self.testEntitlements }
+    override var nestedApplications: [ALTApplication] { self.testChildren }
+}
+
+extension AltTests
+{
+    func testWatchOnlyPermissionsAndRefresh() throws
+    {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        func application(_ path: String, info: [String: Any] = [:]) throws -> WatchPermissionTestApplication
+        {
+            let url = directory.appendingPathComponent(path)
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            var dictionary: [String: Any] = ["CFBundleIdentifier": "com.example.Test", "CFBundleName": "Test"]
+            dictionary.merge(info) { _, new in new }
+            try (dictionary as NSDictionary).write(to: url.appendingPathComponent("Info.plist"))
+            return try XCTUnwrap(WatchPermissionTestApplication(fileURL: url))
+        }
+
+        let phone = try application("Phone.app")
+        let watch = try application("Phone.app/Watch/Watch.app", info: ["WKApplication": true, "NSHealthShareUsageDescription": "Read workouts"])
+        watch.testEntitlements = [ALTEntitlement(rawValue: "com.apple.developer.healthkit"): true]
+        phone.testChildren = [watch]
+
+        let permissions = VerifyAppOperation.permissions(in: phone)
+        XCTAssertTrue(permissions.contains { $0.rawValue == "com.apple.developer.healthkit" })
+        XCTAssertTrue(permissions.contains { $0.rawValue == "NSHealthShareUsageDescription" })
+        XCTAssertTrue(phone.containsWatchApp, "Watch apps must use full resign/reinstall refresh")
+
+        let ordinary = try application("Ordinary.app")
+        let widget = try application("Ordinary.app/PlugIns/Widget.appex", info: ["NSCameraUsageDescription": "Scan codes"])
+        widget.testEntitlements = [.appGroups: ["group.com.example"]]
+        ordinary.testChildren = [widget]
+        let ordinaryPermissions = VerifyAppOperation.permissions(in: ordinary)
+        XCTAssertTrue(ordinaryPermissions.contains { $0.rawValue == ALTEntitlement.appGroups.rawValue })
+        XCTAssertTrue(ordinaryPermissions.contains { $0.rawValue == "NSCameraUsageDescription" })
+        XCTAssertFalse(ordinary.containsWatchApp, "Ordinary app/extension refresh stays on the existing path")
+        XCTAssertFalse(ordinaryPermissions.contains { $0.rawValue == "com.apple.developer.healthkit" })
+    }
+}

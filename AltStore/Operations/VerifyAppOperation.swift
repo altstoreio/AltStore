@@ -159,7 +159,7 @@ private extension VerifyAppOperation
             guard let previousApp = ALTApplication(fileURL: installedAppURL) else { throw OperationError.appNotFound(name: app.name) }
             
             var previousEntitlements = Set(previousApp.entitlements.keys)
-            for appExtension in previousApp.appExtensions
+            for appExtension in previousApp.nestedApplications
             {
                 previousEntitlements.formUnion(appExtension.entitlements.keys)
             }
@@ -179,44 +179,10 @@ private extension VerifyAppOperation
     @discardableResult
     func verifyPermissions(of app: ALTApplication, @AsyncManaged match storeApp: StoreApp) async throws -> [any ALTAppPermission]
     {
-        // Entitlements
-        var allEntitlements = Set(app.entitlements.keys)
-        for appExtension in app.appExtensions
-        {
-            allEntitlements.formUnion(appExtension.entitlements.keys)
-        }
-             
-        // Filter out ignored entitlements.
-        allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
-        
-        if let isDebuggable = app.entitlements[.getTaskAllow] as? Bool, !isDebuggable
-        {
-            // App has `get-task-allow` entitlement but the value is false, so remove from allEntitlements.
-            allEntitlements.remove(.getTaskAllow)
-        }
-        
-        // Privacy
-        let allPrivacyPermissions = ([app] + app.appExtensions).flatMap { (app) in
-            let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
-                if #available(iOS 16, *)
-                {
-                    guard key.wholeMatch(of: Regex.privacyPermission) != nil else { return nil }
-                }
-                else
-                {
-                    guard key.contains("UsageDescription") else { return nil }
-                }
-                
-                let permission = ALTAppPrivacyPermission(rawValue: key)
-                return permission
-            } ?? []
-            
-            return permissions
-        }
-        
+        let localPermissions = Self.permissions(in: app)
+
         // Verify permissions.
         let sourcePermissions: Set<AnyHashable> = Set(await $storeApp.perform { $0.permissions.map { AnyHashable($0.permission) } })
-        let localPermissions: [any ALTAppPermission] = Array(allEntitlements) + Array(allPrivacyPermissions)
         
         // To pass: EVERY permission in localPermissions must also appear in sourcePermissions.
         // If there is a single missing permission, throw error.
@@ -308,5 +274,50 @@ private extension VerifyAppOperation
             
             presentingViewController.present(navigationController, animated: true)
         }
+    }
+}
+
+// Kept separate from presentation and Core Data so permission discovery can be
+// regression-tested with Watch-only entitlements and usage descriptions.
+extension VerifyAppOperation
+{
+    static func permissions(in app: ALTApplication) -> [any ALTAppPermission]
+    {
+        // Entitlements
+        var allEntitlements = Set(app.entitlements.keys)
+        for appExtension in app.nestedApplications
+        {
+            allEntitlements.formUnion(appExtension.entitlements.keys)
+        }
+
+        // Filter out ignored entitlements.
+        allEntitlements = allEntitlements.filter { !ALTEntitlement.ignoredEntitlements.contains($0) }
+
+        if let isDebuggable = app.entitlements[.getTaskAllow] as? Bool, !isDebuggable
+        {
+            // App has `get-task-allow` entitlement but the value is false, so remove from allEntitlements.
+            allEntitlements.remove(.getTaskAllow)
+        }
+
+        // Privacy
+        let allPrivacyPermissions = ([app] + app.nestedApplications).flatMap { (app) in
+            let permissions = app.bundle.infoDictionary?.keys.compactMap { key -> ALTAppPrivacyPermission? in
+                if #available(iOS 16, *)
+                {
+                    guard key.wholeMatch(of: Regex.privacyPermission) != nil else { return nil }
+                }
+                else
+                {
+                    guard key.contains("UsageDescription") else { return nil }
+                }
+
+                let permission = ALTAppPrivacyPermission(rawValue: key)
+                return permission
+            } ?? []
+
+            return permissions
+        }
+
+        return Array(allEntitlements) + Array(allPrivacyPermissions)
     }
 }
