@@ -32,6 +32,27 @@ public extension Bundle
 
 public extension Bundle
 {
+    /// The URL scheme AltStore embeds in sideloaded apps, and later uses to open them: "altstore-<bundle ID>".
+    ///
+    /// URL schemes may only contain letters, digits, "+", "-" and ".", but bundle identifiers can contain other characters
+    /// (for example underscores). Building the URL straight from the bundle ID returned nil for those apps and crashed on the
+    /// force unwrap, so any other character is replaced with "-". Valid bundle IDs are unchanged.
+    static func altstoreURLScheme(forBundleIdentifier bundleIdentifier: String) -> String
+    {
+        let allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-.")
+        let suffix = String(bundleIdentifier.unicodeScalars.map { allowed.contains($0) ? Character($0) : "-" })
+        return "altstore-" + suffix
+    }
+    
+    static func altstoreOpenAppURL(forBundleIdentifier bundleIdentifier: String) -> URL
+    {
+        // Safe to force unwrap: the scheme only contains characters that are valid in a URL scheme.
+        URL(string: altstoreURLScheme(forBundleIdentifier: bundleIdentifier) + "://")!
+    }
+}
+
+public extension Bundle
+{
     var infoPlistURL: URL {
         let infoPlistURL = self.bundleURL.appendingPathComponent("Info.plist")
         return infoPlistURL
