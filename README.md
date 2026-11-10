@@ -22,6 +22,20 @@ For the initial release, I focused on building a solid foundation for distributi
 - iOS 14.0 (AltStore)
 - macOS 11.0 (AltServer)
 
+## iPhone Duo
+
+Build with Xcode 27.1 or later (iOS 27.1 SDK or later) to use the full inner and outer displays and the system's adaptive bars on iPhone Duo. Older SDKs use compatibility layouts. The deployment target does not need to change.
+
+The app supports portrait and landscape on iPhone. Authentication and instructions adapt to the current view height, including repeated fold/unfold or window-size changes. App and source detail screens keep custom controls inside the horizontal safe area and size their headers for wide, short windows.
+
+Before shipping, test on the iPhone Duo simulator or a device:
+- Fold and unfold repeatedly on each tab and while an app detail page is scrolled.
+- Rotate in both directions and verify the Back, Like, More, and download controls remain reachable beside vertical system bars.
+- Resize authentication and instructions between short and tall windows, including with the keyboard visible. Verify entered text and navigation state are retained.
+- Check other iPhones in portrait/landscape for regressions, including larger Dynamic Type sizes.
+
+The `AltTests` scheme includes regression tests for compact-height detection and restoring authentication/instructions layouts after repeated resizing.
+
 ## Project Overview
 
 ### AltStore

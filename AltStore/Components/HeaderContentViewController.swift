@@ -57,6 +57,8 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
     private var contentSizeObservation: NSKeyValueObservation?
     
     private var _shouldResetLayout = false
+    private var previousLayoutBounds: CGRect?
+    private var previousSafeAreaInsets: UIEdgeInsets?
     private var _backgroundBlurEffect: UIBlurEffect?
     private var _backgroundBlurTintColor: UIColor?
     
@@ -308,6 +310,13 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
     {
         super.viewDidLayoutSubviews()
         
+        if self.previousLayoutBounds != self.view.bounds || self.previousSafeAreaInsets != self.view.safeAreaInsets
+        {
+            self.previousLayoutBounds = self.view.bounds
+            self.previousSafeAreaInsets = self.view.safeAreaInsets
+            self._shouldResetLayout = true
+        }
+
         if self._shouldResetLayout
         {
             // Various events can cause UI to mess up, so reset affected components now.
@@ -326,25 +335,30 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         {
             statusBarHeight = 20
         }
-        else if let statusBarManager = (self.view.window ?? self.presentedViewController?.view.window)?.windowScene?.statusBarManager
+        else if let window = self.view.window ?? self.presentedViewController?.view.window
         {
-            statusBarHeight = statusBarManager.statusBarFrame.height
+            // The status bar can be vertical on iPhone Duo. Its height is not a top inset.
+            let safeAreaFrame = self.view.convert(window.safeAreaLayoutGuide.layoutFrame, from: window)
+            statusBarHeight = max(0, safeAreaFrame.minY - self.view.bounds.minY)
         }
         else
         {
             statusBarHeight = 0
         }
         
+        // Only the top overlap affects vertical scrolling when navigation bars move to the side.
+        let navigationBarHeight = max(0, self.view.safeAreaInsets.top - statusBarHeight)
         let cornerRadius = self.contentViewControllerShadowView.layer.cornerRadius
         
+        let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
         let inset = 15 as CGFloat
         let padding = 20 as CGFloat
         
         let backButtonSize = self.backButton.sizeThatFits(CGSize(width: Double.infinity, height: .infinity))
         let largestBackButtonDimension = max(backButtonSize.width, backButtonSize.height) // Enforce 1:1 aspect ratio.
-        var backButtonFrame = CGRect(x: inset, y: statusBarHeight, width: largestBackButtonDimension, height: largestBackButtonDimension)
+        var backButtonFrame = CGRect(x: safeAreaFrame.minX + inset, y: statusBarHeight, width: largestBackButtonDimension, height: largestBackButtonDimension)
         
-        var headerFrame = CGRect(x: inset, y: 0, width: self.view.bounds.width - inset * 2, height: self.headerView.bounds.height)
+        var headerFrame = CGRect(x: safeAreaFrame.minX + inset, y: 0, width: max(0, safeAreaFrame.width - inset * 2), height: self.headerView.bounds.height)
         var contentFrame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         var backgroundIconFrame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.width)
         
@@ -362,7 +376,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         }
         
         let minimumContentHeight = minimumHeaderY + headerFrame.height + padding // Minimum height for header + back button + spacing.
-        let maximumContentY = max(self.view.bounds.width * 0.667, minimumContentHeight) // Initial Y-value of content view.
+        let maximumContentY = max(min(safeAreaFrame.width, safeAreaFrame.height) * 0.667, minimumContentHeight) // Initial Y-value of content view.
         
         contentFrame.origin.y = maximumContentY - self.scrollView.contentOffset.y
         headerFrame.origin.y = contentFrame.origin.y - padding - headerFrame.height
@@ -389,7 +403,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
             if self.presentingViewController == nil && self.parent?.presentingViewController == nil
             {
                 // Not presented modally, so rely on safe area + navigation bar height.
-                range = (headerFrame.height + padding) - (self.navigationController?.navigationBar.bounds.height ?? self.view.safeAreaInsets.top)
+                range = max(1, headerFrame.height + padding - navigationBarHeight)
             }
             else
             {
@@ -453,7 +467,7 @@ class HeaderContentViewController<Header: UIView, Content: ScrollableContentView
         var contentSize = self.contentViewController.scrollView.contentSize
         contentSize.height += self.contentViewController.scrollView.contentInset.top + self.contentViewController.scrollView.contentInset.bottom
         contentSize.height += maximumContentY
-        contentSize.height = max(contentSize.height, self.view.bounds.height + maximumContentY - (self.navigationController?.navigationBar.bounds.height ?? 0))
+        contentSize.height = max(contentSize.height, self.view.bounds.height + maximumContentY - navigationBarHeight)
         self.scrollView.contentSize = contentSize
         
         self.scrollView.contentOffset = contentOffset

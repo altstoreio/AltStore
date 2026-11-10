@@ -14,6 +14,8 @@ class InstructionsViewController: UIViewController
     
     var showsBottomButton: Bool = false
     
+    private var defaultContentMargins: UIEdgeInsets = .zero
+
     @IBOutlet private var contentStackView: UIStackView!
     @IBOutlet private var dismissButton: UIButton!
     
@@ -25,11 +27,7 @@ class InstructionsViewController: UIViewController
     {
         super.viewDidLoad()
         
-        if UIScreen.main.isExtraCompactHeight
-        {
-            self.contentStackView.layoutMargins.top = 0
-            self.contentStackView.layoutMargins.bottom = self.contentStackView.layoutMargins.left
-        }
+        self.defaultContentMargins = self.contentStackView.layoutMargins
         
         self.dismissButton.clipsToBounds = true
         self.dismissButton.layer.cornerRadius = 16
@@ -41,6 +39,23 @@ class InstructionsViewController: UIViewController
         else
         {
             self.dismissButton.isHidden = true
+        }
+    }
+
+    override func viewWillLayoutSubviews()
+    {
+        super.viewWillLayoutSubviews()
+
+        var margins = self.defaultContentMargins
+        if self.view.isExtraCompactHeight
+        {
+            margins.top = 0
+            margins.bottom = margins.left
+        }
+
+        if self.contentStackView.layoutMargins != margins
+        {
+            self.contentStackView.layoutMargins = margins
         }
     }
 }
