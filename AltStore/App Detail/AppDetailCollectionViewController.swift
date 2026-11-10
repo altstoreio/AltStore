@@ -32,8 +32,10 @@ extension AppDetailCollectionViewController
     {
         override var safeAreaInsets: UIEdgeInsets {
             get {
-                // Fixes incorrect layout if collection view height is taller than safe area height.
-                return .zero
+                // Ignore vertical insets when the collection is taller than the safe area,
+                // but preserve horizontal insets for side-mounted bars and display cutouts.
+                let insets = super.safeAreaInsets
+                return UIEdgeInsets(top: 0, left: insets.left, bottom: 0, right: insets.right)
             }
             set {
                 // There MUST be a setter for this to work, even if it does nothing ¯\_(ツ)_/¯

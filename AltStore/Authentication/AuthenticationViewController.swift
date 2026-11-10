@@ -16,6 +16,7 @@ class AuthenticationViewController: UIViewController
     var completionHandler: (((ALTAccount, ALTAppleAPISession, String)?) -> Void)?
     
     private weak var toastView: ToastView?
+    private var defaultContentSpacing: CGFloat = 0
     
     @IBOutlet private var appleIDTextField: UITextField!
     @IBOutlet private var passwordTextField: UITextField!
@@ -40,15 +41,23 @@ class AuthenticationViewController: UIViewController
             view.layer.cornerRadius = 16
         }
 
-        if UIScreen.main.isExtraCompactHeight
-        {
-            self.contentStackView.spacing = 20
-        }
+        self.defaultContentSpacing = self.contentStackView.spacing
         
         NotificationCenter.default.addObserver(self, selector: #selector(AuthenticationViewController.textFieldDidChangeText(_:)), name: UITextField.textDidChangeNotification, object: self.appleIDTextField)
         NotificationCenter.default.addObserver(self, selector: #selector(AuthenticationViewController.textFieldDidChangeText(_:)), name: UITextField.textDidChangeNotification, object: self.passwordTextField)
         
         self.update()
+    }
+
+    override func viewWillLayoutSubviews()
+    {
+        super.viewWillLayoutSubviews()
+
+        let spacing = self.view.isExtraCompactHeight ? 20 : self.defaultContentSpacing
+        if self.contentStackView.spacing != spacing
+        {
+            self.contentStackView.spacing = spacing
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -152,7 +161,7 @@ extension AuthenticationViewController: UITextFieldDelegate
     
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
-        guard UIScreen.main.isExtraCompactHeight else { return }
+        guard self.view.isExtraCompactHeight else { return }
         
         // Position all the controls within visible frame.
         var contentOffset = self.scrollView.contentOffset
