@@ -1337,12 +1337,15 @@ private extension AppManager
                     if app.certificateSerialNumber != group.context.certificate?.serialNumber ||
                         uti != nil ||
                         app.needsResign ||
+                        ALTApplication(fileURL: app.fileURL)?.containsWatchApp == true ||
                         (group.context.server?.connectionType == .local && !UserDefaults.standard.localServerSupportsRefreshing)
                     {
                         // Resign app instead of just refreshing profiles because either:
                         // * Refreshing using different certificate
                         // * Backup app is still installed
                         // * App explicitly needs resigning
+                        // * Watch profiles must be embedded in a newly signed IPA and synced to the Watch.
+                        //   Installing profiles on the phone alone cannot refresh the Watch.
                         // * Device is jailbroken and using AltDaemon on iOS 14.0 or later (b/c refreshing with provisioning profiles is broken)
                         
                         let installProgress = self._install(app, operation: operation, group: group) { (result) in

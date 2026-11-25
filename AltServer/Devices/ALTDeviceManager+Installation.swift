@@ -670,20 +670,23 @@ private extension ALTDeviceManager
                 
                 var profiles = [application.bundleIdentifier: profile]
                 var error: Error?
+                let profilesLock = NSLock()
                 
                 let dispatchGroup = DispatchGroup()
                 
-                for appExtension in application.appExtensions
+                for appExtension in application.nestedApplications
                 {
                     dispatchGroup.enter()
                     
                     self.prepareProvisioningProfile(for: appExtension, parentApp: application, device: device, team: team, session: session) { (result) in
+                        profilesLock.lock()
                         switch result
                         {
                         case .failure(let e): error = e
                         case .success(let profile): profiles[appExtension.bundleIdentifier] = profile
                         }
                         
+                        profilesLock.unlock()
                         dispatchGroup.leave()
                     }
                 }
@@ -721,7 +724,10 @@ private extension ALTDeviceManager
             updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
         }
         
-        let bundleID = application.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+        guard application.bundleIdentifier == parentBundleID || application.bundleIdentifier.hasPrefix(parentBundleID + ".") else {
+            return completionHandler(.failure(ALTError(.invalidApp)))
+        }
+        let bundleID = updatedParentBundleID + application.bundleIdentifier.dropFirst(parentBundleID.count)
         
         let preferredName: String
         
@@ -750,7 +756,13 @@ private extension ALTDeviceManager
                                 let appID = try result.get()
                                 
                                 self.fetchProvisioningProfile(for: appID, device: device, team: team, session: session) { (result) in
-                                    completionHandler(result)
+                                    do
+                                    {
+                                        let profile = try result.get()
+                                        try application.validateWatchProvisioningProfile(profile)
+                                        completionHandler(.success(profile))
+                                    }
+                                    catch { completionHandler(.failure(error)) }
                                 }
                             }
                             catch
@@ -966,9 +978,10 @@ private extension ALTDeviceManager
     
     func install(_ application: ALTApplication, to device: ALTDevice, team: ALTTeam, certificate: ALTCertificate, profiles: [String: ALTProvisioningProfile], completionHandler: @escaping (Result<Void, Error>) -> Void)
     {
-        func prepare(_ bundle: Bundle, additionalInfoDictionaryValues: [String: Any] = [:]) throws
+        func prepare(_ app: ALTApplication, additionalInfoDictionaryValues: [String: Any] = [:]) throws
         {
-            guard let identifier = bundle.bundleIdentifier else { throw ALTError(.missingAppBundle) }
+            let bundle = app.bundle
+            let identifier = app.bundleIdentifier
             guard let profile = profiles[identifier] else { throw ALTError(.missingProvisioningProfile) }
             guard var infoDictionary = bundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
             
@@ -1041,12 +1054,13 @@ private extension ALTDeviceManager
                     additionalValues[Bundle.Info.serverID] = UserDefaults.standard.serverID
                 }
                 
-                try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
-                
-                for appExtension in application.appExtensions
+                let nestedApplications = application.nestedApplications
+                try application.remapBundleIdentifiers(profiles.mapValues { $0.bundleIdentifier })
+                try prepare(application, additionalInfoDictionaryValues: additionalValues)
+
+                for appExtension in nestedApplications
                 {
-                    guard let bundle = Bundle(url: appExtension.fileURL) else { throw ALTError(.missingAppBundle) }
-                    try prepare(bundle)
+                    try prepare(appExtension)
                 }
                 
                 let resigner = ALTSigner(team: team, certificate: certificate)

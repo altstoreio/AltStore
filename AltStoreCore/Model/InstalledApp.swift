@@ -143,6 +143,16 @@ public extension InstalledApp
         {
             self.update(provisioningProfile: provisioningProfile)
         }
+
+        // A companion with an earlier expiry needs refreshing even while the phone
+        // profile is valid. Watch apps always refresh by resigning the complete IPA.
+        for application in resignedApp.nestedApplications where application.isWatchOSApplication
+        {
+            if let profile = application.provisioningProfile
+            {
+                self.expirationDate = min(self.expirationDate, profile.expirationDate)
+            }
+        }
     }
     
     func update(provisioningProfile: ALTProvisioningProfile)

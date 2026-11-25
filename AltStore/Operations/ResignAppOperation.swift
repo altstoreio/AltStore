@@ -109,9 +109,10 @@ private extension ResignAppOperation
         
         let fileURL = app.fileURL
         
-        func prepare(_ bundle: Bundle, additionalInfoDictionaryValues: [String: Any] = [:]) throws
+        func prepare(_ application: ALTApplication, additionalInfoDictionaryValues: [String: Any] = [:]) throws
         {
-            guard let identifier = bundle.bundleIdentifier else { throw ALTError(.missingAppBundle) }
+            let bundle = application.bundle
+            let identifier = application.bundleIdentifier
             guard let profile = profiles[identifier] else { throw ALTError(.missingProvisioningProfile) }
             guard var infoDictionary = bundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
             
@@ -225,27 +226,33 @@ private extension ResignAppOperation
                     additionalValues["CFBundleIcons"] = iconDictionary
                 }
                 
+                // Snapshot original identifiers before rewriting; NSBundle caches Info.plist values.
+                guard let copiedApp = ALTApplication(fileURL: appBundleURL) else { throw ALTError(.invalidApp) }
+                let nestedApplications = copiedApp.nestedApplications
+                try copiedApp.remapBundleIdentifiers(profiles.mapValues { $0.bundleIdentifier })
+
                 // Prepare app
-                try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
+                try prepare(copiedApp, additionalInfoDictionaryValues: additionalValues)
                 try self.removeMissingAppExtensionReferences(from: appBundle)
                 
-                if let directory = appBundle.builtInPlugInsURL, let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
+                for application in nestedApplications
                 {
-                    for case let fileURL as URL in enumerator
+                    try prepare(application)
+                    try self.removeMissingAppExtensionReferences(from: application.bundle)
+                }
+
+                #if DEBUG
+                // Test bundles are not provisioned applications.
+                if let directory = appBundle.builtInPlugInsURL,
+                   let files = try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+                {
+                    for fileURL in files where fileURL.lastPathComponent.lowercased().contains(".xctest")
                     {
-                        #if DEBUG
-                        guard !fileURL.lastPathComponent.lowercased().contains(".xctest") else {
-                            // Remove embedded XCTest (+ dSYM) bundle from copied app bundle.
-                            try FileManager.default.removeItem(at: fileURL)
-                            continue
-                        }
-                        #endif
-                        
-                        guard let appExtension = Bundle(url: fileURL) else { throw ALTError(.missingAppBundle) }
-                        try prepare(appExtension)
+                        try FileManager.default.removeItem(at: fileURL)
                     }
                 }
-                
+                #endif
+
                 completionHandler(.success(appBundleURL))
             }
             catch

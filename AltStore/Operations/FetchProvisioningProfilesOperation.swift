@@ -50,7 +50,7 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
         
         Logger.sideload.notice("Fetching provisioning profiles for app \(self.context.bundleIdentifier, privacy: .public)...")
         
-        self.progress.totalUnitCount = Int64(1 + app.appExtensions.count)
+        self.progress.totalUnitCount = Int64(1 + app.nestedApplications.count)
         
         self.prepareProvisioningProfile(for: app, parentApp: nil, resignedParentBundleID: nil, team: team, session: session) { (result) in
             do
@@ -61,20 +61,23 @@ class FetchProvisioningProfilesOperation: ResultOperation<[String: ALTProvisioni
                 
                 var profiles = [app.bundleIdentifier: profile]
                 var error: Error?
+                let profilesLock = NSLock()
                 
                 let dispatchGroup = DispatchGroup()
                 
-                for appExtension in app.appExtensions
+                for appExtension in app.nestedApplications
                 {
                     dispatchGroup.enter()
                     
                     self.prepareProvisioningProfile(for: appExtension, parentApp: app, resignedParentBundleID: profile.bundleIdentifier, team: team, session: session) { (result) in
+                        profilesLock.lock()
                         switch result
                         {
                         case .failure(let e): error = e
                         case .success(let profile): profiles[appExtension.bundleIdentifier] = profile
                         }
                         
+                        profilesLock.unlock()
                         dispatchGroup.leave()
                         
                         self.progress.completedUnitCount += 1
@@ -204,7 +207,11 @@ extension FetchProvisioningProfilesOperation
                     updatedParentBundleID = parentBundleID + "." + team.identifier // Append just team identifier to make it harder to track.
                 }
                 
-                bundleID = app.bundleIdentifier.replacingOccurrences(of: parentBundleID, with: updatedParentBundleID)
+                // Replace only the leading parent ID. Repeated substrings are valid in bundle IDs.
+                guard app.bundleIdentifier == parentBundleID || app.bundleIdentifier.hasPrefix(parentBundleID + ".") else {
+                    return completionHandler(.failure(OperationError.invalidApp))
+                }
+                bundleID = updatedParentBundleID + app.bundleIdentifier.dropFirst(parentBundleID.count)
             }
             
             let preferredName: String
@@ -241,7 +248,13 @@ extension FetchProvisioningProfilesOperation
                                     
                                     // Fetch Provisioning Profile
                                     self.fetchProvisioningProfile(for: appID, team: team, session: session) { (result) in
-                                        completionHandler(result)
+                                        do
+                                        {
+                                            let profile = try result.get()
+                                            try app.validateWatchProvisioningProfile(profile)
+                                            completionHandler(.success(profile))
+                                        }
+                                        catch { completionHandler(.failure(error)) }
                                     }
                                 }
                             }
@@ -267,7 +280,7 @@ extension FetchProvisioningProfilesOperation
                 }
                 else
                 {
-                    let requiredAppIDs = 1 + application.appExtensions.count
+                    let requiredAppIDs = 1 + application.nestedApplications.count
                     let availableAppIDs = max(0, Team.maximumFreeAppIDs - appIDs.count)
                     
                     let sortedExpirationDates = appIDs.compactMap { $0.expirationDate }.sorted(by: { $0 < $1 })
@@ -514,6 +527,8 @@ extension FetchProvisioningProfilesOperation
     
     func fetchProvisioningProfile(for appID: ALTAppID, team: ALTTeam, session: ALTAppleAPISession, completionHandler: @escaping (Result<ALTProvisioningProfile, Error>) -> Void)
     {
+        // Apple's iOS App Development profile type covers both iOS and watchOS.
+        // Watch devices must already be registered with this team (e.g. using Xcode).
         ALTAppleAPI.shared.fetchProvisioningProfile(for: appID, deviceType: .iphone, team: team, session: session) { (profile, error) in
             switch Result(profile, error)
             {
