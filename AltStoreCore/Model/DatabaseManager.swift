@@ -454,8 +454,12 @@ private extension DatabaseManager
     
     func migrateDatabaseToAppGroupIfNeeded(completion: @escaping (Result<Void, Error>) -> Void)
     {
-        // Only migrate if we haven't migrated yet and there's a valid AltStore app group.
-        guard UserDefaults.shared.requiresAppGroupMigration && Bundle.main.altstoreAppGroup != nil else { return completion(.success(())) }
+        // Only migrate if we haven't migrated yet and there's a shared app-group container to migrate into.
+        // `altstoreAppGroup` alone isn't enough: it comes from Info.plist, which still lists the group
+        // when the app is signed without the app-group entitlement (e.g. free Apple IDs).
+        guard UserDefaults.shared.requiresAppGroupMigration,
+              Bundle.main.altstoreAppGroup != nil,
+              FileManager.default.altstoreSharedDirectory != nil else { return completion(.success(())) }
 
         func finish(_ result: Result<Void, Error>)
         {
@@ -508,8 +512,9 @@ private extension DatabaseManager
                     try FileManager.default.removeItem(at: previousDatabaseURL)
                 }
                 
-                // Migrate apps
-                if FileManager.default.fileExists(atPath: previousAppsDirectoryURL.path, isDirectory: nil)
+                // Migrate apps (skip if they're already in place).
+                if FileManager.default.fileExists(atPath: previousAppsDirectoryURL.path, isDirectory: nil),
+                   previousAppsDirectoryURL.standardizedFileURL != appsDirectoryURL.standardizedFileURL
                 {
                     _ = try FileManager.default.replaceItemAt(appsDirectoryURL, withItemAt: previousAppsDirectoryURL)
                 }
