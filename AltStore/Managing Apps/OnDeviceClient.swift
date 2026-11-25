@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import os
 import IDevice
 import AltStoreCore
 import AltSign
@@ -179,9 +180,19 @@ final class OnDeviceClient: Sendable
             let connection = NWConnection(host: NWEndpoint.Host(tunnelHost), port: NWEndpoint.Port(integerLiteral: tunnelPort), using: NWParameters(tls: nil, tcp: tcpOptions))
             let queue = DispatchQueue(label: "io.altstore.reachability-probe")
             
-            // We can only resume the continuation once, so stop listening for state changes before we do.
+            // We can only resume the continuation once. Clearing the handler isn't enough to guarantee that: Network can already
+            // have queued another state change (e.g. .waiting followed right away by .failed) that still calls this closure.
+            // Resuming twice traps, so only the first result counts.
+            let didFinish = OSAllocatedUnfairLock(initialState: false)
+            
             @Sendable func finish(_ result: Bool)
             {
+                let isFirst = didFinish.withLock { (finished) -> Bool in
+                    defer { finished = true }
+                    return !finished
+                }
+                guard isFirst else { return }
+                
                 connection.stateUpdateHandler = nil
                 connection.cancel()
                 continuation.resume(returning: result)
