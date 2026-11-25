@@ -60,6 +60,7 @@ extension UserDefaults
 {
     private static let altJITTimeoutKey = "JITTimeout"
     private static let anisetteServerURLKey = "RemoteAltServerURL"
+    private static let usesAnisetteServerClientInfoKey = "UseAnisetteServerClientInfo"
     
     var altJITTimeout: TimeInterval? {
         let timeout = self.double(forKey: UserDefaults.altJITTimeoutKey) // Coerces strings into doubles.
@@ -70,5 +71,10 @@ extension UserDefaults
     
     var anisetteServerURLOverride: URL? {
         return self.string(forKey: UserDefaults.anisetteServerURLKey).flatMap { URL(string: $0) }
+    }
+    
+    // Opts out of identifying as this Mac, and uses the anisette server's (outdated) client info instead.
+    var usesAnisetteServerClientInfo: Bool {
+        return self.bool(forKey: UserDefaults.usesAnisetteServerClientInfoKey)
     }
 }

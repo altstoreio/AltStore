@@ -294,7 +294,33 @@ private extension RemoteAnisetteDataFetcher
         guard !response.clientInfo.isEmpty, !response.clientInfo.contains("\r"), !response.clientInfo.contains("\n"),
               !response.userAgent.isEmpty, !response.userAgent.contains("\r"), !response.userAgent.contains("\n")
         else { throw AnisetteError.remoteServerInvalidResponse(serverURL: serverURL, debugDescription: "The server must supply a client_info and a user_agent.") }
+        
+        // Public anisette servers identify as macOS 10.12, which accounts with Advanced Data Protection can't sign in from
+        // (the 2FA code never arrives, and manually generated codes are rejected). Apple accepts their anisette data
+        // with a current client info, so identify as this Mac instead.
+        if !UserDefaults.standard.usesAnisetteServerClientInfo, let currentMac = self.currentMacClientInfo()
+        {
+            return currentMac
+        }
+        
         return (response.clientInfo, response.userAgent)
+    }
+    
+    func currentMacClientInfo() -> (clientInfo: String, userAgent: String)?
+    {
+        guard let deviceModel = ProcessInfo.processInfo.deviceModel,
+              let buildVersion = ProcessInfo.processInfo.operatingSystemBuildVersion,
+              let cfNetworkVersion = Bundle(identifier: "com.apple.CFNetwork")?.infoDictionary?["CFBundleVersion"] as? String
+        else { return nil }
+        
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let darwinVersion = withUnsafeBytes(of: &systemInfo.release) { String(decoding: $0.prefix(while: { $0 != 0 }), as: UTF8.self) }
+        
+        let osVersion = ProcessInfo.processInfo.operatingSystemVersion.stringValue
+        let clientInfo = "<\(deviceModel)> <macOS;\(osVersion);\(buildVersion)> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+        let userAgent = "akd/1.0 CFNetwork/\(cfNetworkVersion) Darwin/\(darwinVersion)"
+        return (clientInfo, userAgent)
     }
 
     enum HeadersResult
