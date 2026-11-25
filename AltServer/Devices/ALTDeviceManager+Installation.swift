@@ -987,6 +987,14 @@ private extension ALTDeviceManager
             if let appGroups = profile.entitlements[.appGroups] as? [String]
             {
                 infoDictionary[Bundle.Info.appGroups] = appGroups
+
+                if var extensionInfo = infoDictionary["NSExtension"] as? [String: Any],
+                    let appGroup = extensionInfo["NSExtensionFileProviderDocumentGroup"] as? String,
+                    let localAppGroup = appGroups.filter({ $0.contains(appGroup) }).min(by: { $0.count < $1.count })
+                {
+                    extensionInfo["NSExtensionFileProviderDocumentGroup"] = localAppGroup
+                    infoDictionary["NSExtension"] = extensionInfo
+                }
             }
             
             if let backgroundTaskIDs = infoDictionary[Bundle.Info.backgroundTaskIDs] as? [String]
@@ -1047,6 +1055,11 @@ private extension ALTDeviceManager
                 {
                     guard let bundle = Bundle(url: appExtension.fileURL) else { throw ALTError(.missingAppBundle) }
                     try prepare(bundle)
+                }
+                
+                if let profile = profiles[application.bundleIdentifier]
+                {
+                    try application.updateExtensionPoints(from: application.bundleIdentifier, to: profile.bundleIdentifier)
                 }
                 
                 let resigner = ALTSigner(team: team, certificate: certificate)

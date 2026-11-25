@@ -80,37 +80,28 @@ class InstallAppOperation: ResultOperation<InstalledApp>, @unchecked Sendable
             /* App Extensions */
             var installedExtensions = Set<InstalledExtension>()
             
-            if
-                let bundle = Bundle(url: resignedApp.fileURL),
-                let directory = bundle.builtInPlugInsURL,
-                let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
+            for appExtension in resignedApp.appExtensions
             {
-                for case let fileURL as URL in enumerator
+                let parentBundleID = self.context.bundleIdentifier
+                let resignedParentBundleID = resignedApp.bundleIdentifier
+                
+                let resignedBundleID = appExtension.bundleIdentifier
+                let originalBundleID = resignedBundleID.replacingOccurrences(of: resignedParentBundleID, with: parentBundleID)
+                
+                let installedExtension: InstalledExtension
+                
+                if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == originalBundleID })
                 {
-                    guard let appExtensionBundle = Bundle(url: fileURL) else { continue }
-                    guard let appExtension = ALTApplication(fileURL: appExtensionBundle.bundleURL) else { continue }
-                    
-                    let parentBundleID = self.context.bundleIdentifier
-                    let resignedParentBundleID = resignedApp.bundleIdentifier
-                    
-                    let resignedBundleID = appExtension.bundleIdentifier
-                    let originalBundleID = resignedBundleID.replacingOccurrences(of: resignedParentBundleID, with: parentBundleID)
-                    
-                    let installedExtension: InstalledExtension
-                    
-                    if let appExtension = installedApp.appExtensions.first(where: { $0.bundleIdentifier == originalBundleID })
-                    {
-                        installedExtension = appExtension
-                    }
-                    else
-                    {
-                        installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: originalBundleID, context: backgroundContext)
-                    }
-                    
-                    installedExtension.update(resignedAppExtension: appExtension)
-                    
-                    installedExtensions.insert(installedExtension)
+                    installedExtension = appExtension
                 }
+                else
+                {
+                    installedExtension = InstalledExtension(resignedAppExtension: appExtension, originalBundleIdentifier: originalBundleID, context: backgroundContext)
+                }
+                
+                installedExtension.update(resignedAppExtension: appExtension)
+                
+                installedExtensions.insert(installedExtension)
             }
             
             installedApp.appExtensions = installedExtensions

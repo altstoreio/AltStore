@@ -229,8 +229,11 @@ private extension ResignAppOperation
                 try prepare(appBundle, additionalInfoDictionaryValues: additionalValues)
                 try self.removeMissingAppExtensionReferences(from: appBundle)
                 
-                if let directory = appBundle.builtInPlugInsURL, let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants])
+                let extensionDirectories = [appBundle.builtInPlugInsURL, appBundleURL.appendingPathComponent("Extensions")].compactMap { $0 }
+                for directory in extensionDirectories
                 {
+                    guard let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants]) else { continue }
+                    
                     for case let fileURL as URL in enumerator
                     {
                         #if DEBUG
@@ -241,9 +244,16 @@ private extension ResignAppOperation
                         }
                         #endif
                         
+                        guard fileURL.pathExtension.lowercased() == "appex" else { continue }
+                        
                         guard let appExtension = Bundle(url: fileURL) else { throw ALTError(.missingAppBundle) }
                         try prepare(appExtension)
                     }
+                }
+                
+                if let profile = profiles[bundleIdentifier]
+                {
+                    try ALTApplication(fileURL: appBundleURL)?.updateExtensionPoints(from: bundleIdentifier, to: profile.bundleIdentifier)
                 }
                 
                 completionHandler(.success(appBundleURL))
