@@ -352,7 +352,7 @@ public extension InstalledApp
 public extension InstalledApp
 {
     var openAppURL: URL {
-        let openAppURL = URL(string: "altstore-" + self.bundleIdentifier + "://")!
+        let openAppURL = Bundle.altstoreOpenAppURL(forBundleIdentifier: self.bundleIdentifier)
         return openAppURL
     }
     
@@ -363,7 +363,7 @@ public extension InstalledApp
     
     class func openAppURL(for app: AppProtocol) -> URL
     {
-        let openAppURL = URL(string: "altstore-" + app.bundleIdentifier + "://")!
+        let openAppURL = Bundle.altstoreOpenAppURL(forBundleIdentifier: app.bundleIdentifier)
         return openAppURL
     }
     

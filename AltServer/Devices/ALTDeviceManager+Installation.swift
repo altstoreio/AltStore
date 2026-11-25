@@ -1007,7 +1007,7 @@ private extension ALTDeviceManager
                 guard let appBundle = Bundle(url: application.fileURL) else { throw ALTError(.missingAppBundle) }
                 guard let infoDictionary = appBundle.completeInfoDictionary else { throw ALTError(.missingInfoPlist) }
                 
-                let openAppURL = URL(string: "altstore-" + application.bundleIdentifier + "://")!
+                let openAppURL = Bundle.altstoreOpenAppURL(forBundleIdentifier: application.bundleIdentifier)
                 
                 var allURLSchemes = infoDictionary[Bundle.Info.urlTypes] as? [[String: Any]] ?? []
                 
