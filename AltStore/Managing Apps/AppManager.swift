@@ -148,8 +148,22 @@ extension AppManager
         }
     }
 
+    /// Moves the pairing file AltServer embedded at install into the keychain. AltServer pairs afresh
+    /// each time it installs AltStore, and the device only trusts its newest record.
+    func adoptEmbeddedPairingFileIfNeeded()
+    {
+        guard let pairingFile = self.embeddedPairingFile() else { return }
+
+        Keychain.shared.devicePairingFile = pairingFile.data
+        self.deleteEmbeddedPairingFile()
+
+        Logger.sideload.notice("Adopted the pairing file provided by AltServer.")
+    }
+
     func makeOnDeviceClient() throws -> OnDeviceClient
     {
+        self.adoptEmbeddedPairingFileIfNeeded()
+
         guard let pairingFile = Keychain.shared.devicePairingFile else { throw OperationError.missingPairingFile() }
         return try OnDeviceClient(pairingFile: pairingFile)
     }
