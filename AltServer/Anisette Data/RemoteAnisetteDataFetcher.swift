@@ -87,6 +87,10 @@ actor RemoteAnisetteDataFetcher
     private static let timeout: TimeInterval = 90
     private static let placeholderSerialNumber = "C02LKHBBFD57"
 
+    // Apple rejects the client info anisette servers currently report with -23782 ("A Mac with macOS version 10.13 or later is required"),
+    // so identify as akd on macOS instead until servers report client info Apple accepts. Same override as iloader v2.4.1 (nab138/iloader@d319ce7).
+    private static let clientInfoOverride: (clientInfo: String, userAgent: String)? = ("<Mac15,7> <macOS;27.0;26A5378j> <com.apple.AuthKit/1 (com.apple.akd/1.0)>", "akd/1.0 CFNetwork/811.5.4")
+
     private let session: URLSession
     private let sessionDelegate = AnisetteSessionDelegate()
 
@@ -265,7 +269,7 @@ private extension RemoteAnisetteDataFetcher
             throw AnisetteError.remoteServerInvalidResponse(serverURL: serverURL)
         }
 
-        // 5. Assemble the result. deviceDescription and userAgent must be the server's, so they match the client that generated the anisette data.
+        // 5. Assemble the result. deviceDescription and userAgent must match the client info used for provisioning.
         let anisetteData = RemoteAnisetteData(machineID: machineID,
                                               oneTimePassword: oneTimePassword,
                                               localUserID: identity.localUserID,
@@ -279,6 +283,11 @@ private extension RemoteAnisetteDataFetcher
 
     func fetchClientInfo(from serverURL: URL) async throws -> (clientInfo: String, userAgent: String)
     {
+        if let clientInfoOverride = RemoteAnisetteDataFetcher.clientInfoOverride
+        {
+            return clientInfoOverride
+        }
+
         struct Response: Decodable
         {
             var clientInfo: String

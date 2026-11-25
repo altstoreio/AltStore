@@ -48,6 +48,10 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
 {
     let context: OperationContext
 
+    // Apple rejects the client info anisette servers currently report with -23782 ("A Mac with macOS version 10.13 or later is required"),
+    // so identify as akd on macOS instead until servers report client info Apple accepts. Same override as AltServer and iloader v2.4.1 (nab138/iloader@d319ce7).
+    fileprivate static let clientInfoOverride: (clientInfo: String, userAgent: String)? = ("<Mac15,7> <macOS;27.0;26A5378j> <com.apple.AuthKit/1 (com.apple.akd/1.0)>", "akd/1.0 CFNetwork/811.5.4")
+
     // Set to Apple's X-Apple-I-MD-DATA to resynchronize the existing anisette data instead of fetching it normally.
     var resynchronizationData: String?
 
@@ -124,6 +128,12 @@ class FetchAnisetteDataOperation: ResultOperation<ALTAnisetteData>, @unchecked S
                     // Replace legacy Xcode identifier (which Apple's servers now reject) with akd's.
                     let sanitizedDescription = anisetteData.deviceDescription.replacing(regex, with: "com.apple.akd/1.0")
                     anisetteData.deviceDescription = sanitizedDescription
+                }
+
+                if let clientInfoOverride = FetchAnisetteDataOperation.clientInfoOverride
+                {
+                    // GrandSlam also rejects akd's client info unless it's sent with a matching user agent, including anisette data from AltServer.
+                    ALTAppleAPI.shared.authenticationUserAgent = clientInfoOverride.userAgent
                 }
 
                 self.finish(.success(anisetteData))
@@ -245,7 +255,15 @@ private extension FetchAnisetteDataOperation
         let decoder = Foundation.JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
-        let response: Response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
+        let response: Response
+        if let clientInfoOverride = FetchAnisetteDataOperation.clientInfoOverride
+        {
+            response = Response(clientInfo: clientInfoOverride.clientInfo, userAgent: clientInfoOverride.userAgent)
+        }
+        else
+        {
+            response = try await self.send(URLRequest(url: clientInfoURL), decoder: decoder, anisetteServerURL: serverURL)
+        }
         
         // 2. Provision against this server unless we have a cached anisette identifier + adi.pb with the same client info.
         // A cached adi.pb from a different anisette implementation is no longer accepted, so discard it when the client info changes.
