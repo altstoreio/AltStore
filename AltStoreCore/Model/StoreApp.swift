@@ -355,14 +355,14 @@ public class StoreApp: NSManagedObject, Decodable, Fetchable, @unchecked Sendabl
                 let versionDescription = try container.decodeIfPresent(String.self, forKey: .versionDescription)
                 
                 let downloadURL = try container.decode(URL.self, forKey: .downloadURL)
-                let size = try container.decode(Int32.self, forKey: .size)
-                
+                let size = try container.decode(Int64.self, forKey: .size)
+
                 let appVersion = AppVersion.makeAppVersion(version: version,
                                                            buildVersion: nil,
                                                            date: versionDate,
                                                            localizedDescription: versionDescription,
                                                            downloadURL: downloadURL,
-                                                           size: Int64(size),
+                                                           size: size,
                                                            appBundleID: self.bundleIdentifier,
                                                            in: context)
                 try self.setVersions([appVersion])
