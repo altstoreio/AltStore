@@ -54,13 +54,17 @@ final class OnDeviceClient: Sendable
     {
         progress.totalUnitCount = 100
         
-        let stagingPath = "/PublicStaging/\(bundleIdentifier).ipa"
+        let stagingDirectory = "/PublicStaging"
+        let stagingPath = "\(stagingDirectory)/\(bundleIdentifier).ipa"
         
         Logger.sideload.notice("Transferring \(bundleIdentifier, privacy: .public) to device...")
         
         // First, copy the .ipa into the device's staging folder.
         try await self.perform(withService: .afc) { afc in
             let ipaData = try Data(contentsOf: ipaURL, options: .mappedIfSafe)
+            
+            // Fix Issue #1811: S'assurer que le répertoire /PublicStaging existe sur le device
+            _ = afc_make_directory(afc, stagingDirectory)
             
             var file: OpaquePointer?
             if let openError = afc_file_open(afc, stagingPath, AfcWrOnly, &file)
@@ -73,7 +77,7 @@ final class OnDeviceClient: Sendable
                 if let closeError = afc_file_close(file)
                 {
                     let error = OnDeviceError.serviceFailed(ffiError: closeError)
-                    Logger.sideload.error("Failed to close staged .ipa on device: \(error.ffiUnderlyingError?.localizedDescription ?? "unknown error", privacy: .public)")
+                    Logger.sideload.error("Failed to close staged .ipa on device: \(error.localizedDescription, privacy: .public)")
                 }
             }
             
