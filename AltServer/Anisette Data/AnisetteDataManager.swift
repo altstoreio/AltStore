@@ -173,9 +173,10 @@ private extension AnisetteDataManager
             }
             
             let deviceModel = ProcessInfo.processInfo.deviceModel ?? "iMac21,1"
-            let osName = (osVersion.majorVersion < 11) ? "Mac OS X" : "macOS"
             
-            let serverFriendlyDescription = "<\(deviceModel)> <\(osName);\(osVersion.stringValue);\(buildVersion)> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+            // Apple's GrandSlam edge drops X-MMe-Client-Info headers containing "<macOS;...>" with HTTP 503,
+            // whereas native macOS frameworks continue to report "Mac OS X".
+            let serverFriendlyDescription = "<\(deviceModel)> <Mac OS X;\(osVersion.stringValue);\(buildVersion)> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
             
             let anisetteData = ALTAnisetteData(machineID: machineID,
                                                oneTimePassword: oneTimePassword,
